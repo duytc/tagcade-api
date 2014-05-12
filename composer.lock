@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2330cc978fd087cad54ee53e5df61bf6",
+    "hash": "4e16e04e27ccdf7aafe727422d706748",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -625,6 +625,116 @@
             "time": "2014-02-08 16:35:09"
         },
         {
+            "name": "friendsofsymfony/user-bundle",
+            "version": "v1.3.3",
+            "target-dir": "FOS/UserBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
+                "reference": "0fc044447ca41acc73d424a6a90d1b9f7fa25d7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/0fc044447ca41acc73d424a6a90d1b9f7fa25d7b",
+                "reference": "0fc044447ca41acc73d424a6a90d1b9f7fa25d7b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": "~2.1",
+                "symfony/security-bundle": "~2.1"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "*",
+                "swiftmailer/swiftmailer": "~4.3",
+                "symfony/validator": "~2.1",
+                "symfony/yaml": "~2.1",
+                "twig/twig": "~1.5",
+                "willdurand/propel-typehintable-behavior": "dev-master"
+            },
+            "suggest": {
+                "willdurand/propel-typehintable-behavior": "Needed when using the propel implementation"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "FOS\\UserBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christophe Coevoet",
+                    "email": "stof@notk.org"
+                },
+                {
+                    "name": "Thibault Duplessis",
+                    "email": "thibault.duplessis@gmail.com",
+                    "homepage": "http://ornicar.github.com"
+                },
+                {
+                    "name": "FriendsOfSymfony Community",
+                    "homepage": "https://github.com/friendsofsymfony/FOSUserBundle/contributors"
+                }
+            ],
+            "description": "Symfony FOSUserBundle",
+            "homepage": "http://friendsofsymfony.github.com",
+            "keywords": [
+                "User management"
+            ],
+            "time": "2013-09-23 08:24:12"
+        },
+        {
+            "name": "gfreeau/get-jwt-bundle",
+            "version": "dev-master",
+            "target-dir": "Gfreeau/Bundle/GetJWTBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gfreeau/GfreeauGetJWTBundle.git",
+                "reference": "0484c0d8350eb2af04b6d6e8e05d950a3c8ab60f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gfreeau/GfreeauGetJWTBundle/zipball/0484c0d8350eb2af04b6d6e8e05d950a3c8ab60f",
+                "reference": "0484c0d8350eb2af04b6d6e8e05d950a3c8ab60f",
+                "shasum": ""
+            },
+            "require": {
+                "lexik/jwt-authentication-bundle": "1.0.*@dev",
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/symfony": "~2.3"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Gfreeau\\Bundle\\GetJWTBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "This Symfony2 bundle provide a security listener to return a JWT",
+            "homepage": "https://github.com/gfreeau/GfreeauGetJWTBundle",
+            "keywords": [
+                "Authentication",
+                "JWS",
+                "Symfony2",
+                "bundle",
+                "jwt"
+            ],
+            "time": "2014-05-12 13:23:40"
+        },
+        {
             "name": "incenteev/composer-parameter-handler",
             "version": "v2.1.0",
             "target-dir": "Incenteev/ParameterHandler",
@@ -727,6 +837,71 @@
             "time": "2014-01-12 16:20:24"
         },
         {
+            "name": "lexik/jwt-authentication-bundle",
+            "version": "dev-master",
+            "target-dir": "Lexik/Bundle/JWTAuthenticationBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
+                "reference": "a601ad2c69928f812894affdb05403ee67fb24c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/a601ad2c69928f812894affdb05403ee67fb24c5",
+                "reference": "a601ad2c69928f812894affdb05403ee67fb24c5",
+                "shasum": ""
+            },
+            "require": {
+                "namshi/jose": "1.0.2",
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/symfony": "~2.3"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Lexik\\Bundle\\JWTAuthenticationBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeremy Barthe",
+                    "email": "j.barthe@lexik.fr"
+                },
+                {
+                    "name": "Dev Lexik",
+                    "email": "dev@lexik.fr"
+                },
+                {
+                    "name": "Cedric Girard",
+                    "email": "c.girard@lexik.fr"
+                },
+                {
+                    "name": "Nicolas Cabot",
+                    "email": "n.cabot@lexik.fr"
+                }
+            ],
+            "description": "This Symfony2 bundle provide JWT authentication services",
+            "homepage": "https://github.com/lexik/LexikJWTAuthenticationBundle",
+            "keywords": [
+                "Authentication",
+                "JWS",
+                "Symfony2",
+                "bundle",
+                "jwt"
+            ],
+            "time": "2014-05-12 07:38:36"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.9.1",
             "source": {
@@ -793,6 +968,44 @@
                 "psr-3"
             ],
             "time": "2014-04-24 13:29:03"
+        },
+        {
+            "name": "namshi/jose",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/namshi/jose.git",
+                "reference": "57e808ea48d0b63acd4aff69164b806495583d33"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/namshi/jose/zipball/57e808ea48d0b63acd4aff69164b806495583d33",
+                "reference": "57e808ea48d0b63acd4aff69164b806495583d33",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Namshi\\JOSE": "src/",
+                    "Namshi\\JOSE\\Test": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alessandro Nadalin",
+                    "email": "alessandro.nadalin@gmail.com",
+                    "homepage": "http://www.odino.org"
+                }
+            ],
+            "description": "JSON Object Signing and Encryption library for PHP.",
+            "time": "2013-09-19 14:08:47"
         },
         {
             "name": "psr/log",
@@ -1387,9 +1600,10 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "lexik/jwt-authentication-bundle": 20,
+        "gfreeau/get-jwt-bundle": 20
+    },
     "platform": {
         "php": ">=5.3.3"
     },
