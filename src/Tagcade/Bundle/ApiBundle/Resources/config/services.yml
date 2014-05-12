@@ -1,5 +1,5 @@
 services:
-    api.event.authentication_success_listener:
+    tagcade.apibundle.event.authentication_success_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
         tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccess }
+            - { priority: 0, name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccess }
