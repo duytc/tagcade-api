@@ -19,15 +19,6 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/switchUser")
-     */
-    public function switchUserAction()
-    {
-        // The security layer will intercept this request
-        return new Response('', 401);
-    }
-
-    /**
      * @Route("/test")
      */
     public function testAction()
