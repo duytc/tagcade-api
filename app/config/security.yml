@@ -51,5 +51,4 @@ security:
             lexik_jwt: ~ # check token in Authorization Header, with a value prefix of e:    bearer
 
     access_control:
-        - { path: ^/api/getToken$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: ROLE_USER }
