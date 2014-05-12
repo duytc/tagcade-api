@@ -14,6 +14,13 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+
+            new \FOS\UserBundle\FOSUserBundle(),
+            new \Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
+            new \Gfreeau\Bundle\GetJWTBundle\GfreeauGetJWTBundle(),
+
+            new \Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
+            new \Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

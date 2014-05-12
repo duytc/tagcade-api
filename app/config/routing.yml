@@ -1,0 +1,4 @@
+tagcade_api:
+    resource: "@TagcadeApiBundle/Controller/"
+    type:     annotation
+    prefix:   /api
