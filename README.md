@@ -1,170 +1,74 @@
-Symfony Standard Edition
-========================
+Tagcade API
+===========
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony2
-application that you can use as the skeleton for your new applications.
+1) Installing and running the API
+---------------------------------
 
-This document contains information on how to download, install, and start
-using Symfony. For a more detailed explanation, see the [Installation][1]
-chapter of the Symfony Documentation.
+You should be running a newer version of php that includes the built-in development server. Make sure you are running PHP 5.4 or PHP 5.5. You will also need a local MySQL instance, have these details handy.
 
-1) Installing the Standard Edition
-----------------------------------
+Clone or download the repository:
 
-When it comes to installing the Symfony Standard Edition, you have the
-following options.
+```
+git clone git@github.com:tagcade/tagcade-api.git
+```
 
-### Use Composer (*recommended*)
+Alternatively, you can click the "Download ZIP" link to the right to download the code manually.
 
-As Symfony uses [Composer][2] to manage its dependencies, the recommended way
-to create a new project is to use it.
+Download and install composer:
 
-If you don't have Composer yet, download it following the instructions on
-http://getcomposer.org/ or just run the following command:
+For linux: https://getcomposer.org/doc/00-intro.md#installation-nix
+For windows: https://getcomposer.org/doc/00-intro.md#installation-nix
 
-    curl -s http://getcomposer.org/installer | php
+Open a terminal and change directory to the tagcade-api directory and run:
 
-Then, use the `create-project` command to generate a new Symfony application:
+```
+composer install
+```
 
-    php composer.phar create-project symfony/framework-standard-edition path/to/install
+Enter your database connection details when prompted.
 
-Composer will install Symfony and all its dependencies under the
-`path/to/install` directory.
+Then create your database tables and an existing user:
 
-### Download an Archive File
+```
+php app/console doctrine:schema:create 
+php app/console fos:user:create
+```
 
-To quickly test Symfony, you can also download an [archive][3] of the Standard
-Edition and unpack it somewhere under your web server root directory.
+Remember your user details and also note there are two test users built-in for testing. user:userpass and admin:adminpass (user and pass separated by a colon).
 
-If you downloaded an archive "without vendors", you also need to install all
-the necessary dependencies. Download composer (see above) and run the
-following command:
+To start the API run:
 
-    php composer.phar install
+```
+php app/console serve:run
+```
 
-2) Checking your System Configuration
--------------------------------------
+A message should come up displaying the hostname and port such as localhost:8000.
 
-Before starting coding, make sure that your local system is properly
-configured for Symfony.
+To test the API use a browser extension such as:
 
-Execute the `check.php` script from the command line:
+https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en
+https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo
 
-    php app/check.php
+Assuming your server is running at localhost:8000, send a post request to http://localhost:8000/app_dev.php/api/getToken, ensure you are sending two parameters called 'username' and 'password'. Assuming you logged in with username=admin&password=adminpass, you should get a response such as:
 
-The script returns a status code of `0` if all mandatory requirements are met,
-`1` otherwise.
+```
+{
+    "token": "......",
+    "roles": {}
+}
+```
 
-Access the `config.php` script from a browser:
+The token is your json web token, you can now use this to request things from the API. Using this token, you can request a secured resource by sending it in a HTTP Authorization header in the form:
 
-    http://localhost/path/to/symfony/app/web/config.php
+```
+Authorization: Bearer ......
+```
 
-If you get any warnings or recommendations, fix them before moving on.
+With this header, send a request to http://localhost:8000/app_dev.php/api/test and you should see a response:
 
-3) Browsing the Demo Application
---------------------------------
+"test"
 
-Congratulations! You're now ready to use Symfony.
+If there is something wrong with the token, you will see a response code of 401 and/or a blank page.
 
-From the `config.php` page, click the "Bypass configuration and go to the
-Welcome page" link to load up your first Symfony page.
+In the Tagcade user interface, this complexity will be handled by AngularJS, however our customers will be able to use a provided PHP Library to also query our API.
 
-You can also use a web-based configurator by clicking on the "Configure your
-Symfony Application online" link of the `config.php` page.
-
-To see a real-live Symfony page in action, access the following page:
-
-    web/app_dev.php/demo/hello/Fabien
-
-4) Getting started with Symfony
--------------------------------
-
-This distribution is meant to be the starting point for your Symfony
-applications, but it also contains some sample code that you can learn from
-and play with.
-
-A great way to start learning Symfony is via the [Quick Tour][4], which will
-take you through all the basic features of Symfony2.
-
-Once you're feeling good, you can move onto reading the official
-[Symfony2 book][5].
-
-A default bundle, `AcmeDemoBundle`, shows you Symfony2 in action. After
-playing with it, you can remove it by following these steps:
-
-  * delete the `src/Acme` directory;
-
-  * remove the routing entry referencing AcmeDemoBundle in `app/config/routing_dev.yml`;
-
-  * remove the AcmeDemoBundle from the registered bundles in `app/AppKernel.php`;
-
-  * remove the `web/bundles/acmedemo` directory;
-
-  * empty the `security.yml` file or tweak the security configuration to fit
-    your needs.
-
-What's inside?
----------------
-
-The Symfony Standard Edition is configured with the following defaults:
-
-  * Twig is the only configured template engine;
-
-  * Doctrine ORM/DBAL is configured;
-
-  * Swiftmailer is configured;
-
-  * Annotations for everything are enabled.
-
-It comes pre-configured with the following bundles:
-
-  * **FrameworkBundle** - The core Symfony framework bundle
-
-  * [**SensioFrameworkExtraBundle**][6] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][7] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][8] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][9] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][10] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][11] - Adds support for Monolog, a logging library
-
-  * [**AsseticBundle**][12] - Adds support for Assetic, an asset processing
-    library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][13] (in dev/test env) - Adds code generation
-    capabilities
-
-  * **AcmeDemoBundle** (in dev/test env) - A demo bundle with some example
-    code
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Enjoy!
-
-[1]:  http://symfony.com/doc/2.4/book/installation.html
-[2]:  http://getcomposer.org/
-[3]:  http://symfony.com/download
-[4]:  http://symfony.com/doc/2.4/quick_tour/the_big_picture.html
-[5]:  http://symfony.com/doc/2.4/index.html
-[6]:  http://symfony.com/doc/2.4/bundles/SensioFrameworkExtraBundle/index.html
-[7]:  http://symfony.com/doc/2.4/book/doctrine.html
-[8]:  http://symfony.com/doc/2.4/book/templating.html
-[9]:  http://symfony.com/doc/2.4/book/security.html
-[10]: http://symfony.com/doc/2.4/cookbook/email.html
-[11]: http://symfony.com/doc/2.4/cookbook/logging/monolog.html
-[12]: http://symfony.com/doc/2.4/cookbook/assetic/asset_management.html
-[13]: http://symfony.com/doc/2.4/bundles/SensioGeneratorBundle/index.html
