@@ -55,7 +55,7 @@ swiftmailer:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: api
-    user_class: Tagcade\Bundle\UserBundle\Entity\User
+    user_class: Tagcade\Bundle\CoreBundle\Entity\User
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'   # path to the private key

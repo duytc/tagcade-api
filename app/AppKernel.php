@@ -21,6 +21,7 @@ class AppKernel extends Kernel
 
             new \Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
             new \Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),
+            new Tagcade\Bundle\CoreBundle\TagcadeCoreBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
