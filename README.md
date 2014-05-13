@@ -4,7 +4,7 @@ Tagcade API
 1) Installing and running the API
 ---------------------------------
 
-You should be running a newer version of php that includes the built-in development server. Make sure you are running PHP 5.4 or PHP 5.5. You will also need a local MySQL instance, have these details handy.
+You should be running a newer version of php that includes the built-in development server. It is recommended to use PHP 5.5 as we use bcrypt to hash passwords, this is only available in older PHP versions with an additional library. You will also need a local MySQL instance, have these details handy.
 
 Clone or download the repository:
 
@@ -42,7 +42,7 @@ To start the API run:
 php app/console serve:run
 ```
 
-A message should come up displaying the hostname and port such as localhost:8000.
+A message should come up displaying the hostname and port such as localhost:8000. This command uses the new built-in development server to run the application, so you don't need to setup a full web server such as apache. Note that this is a development server and not as performant as a real web server.
 
 To test the API use a browser extension such as:
 
