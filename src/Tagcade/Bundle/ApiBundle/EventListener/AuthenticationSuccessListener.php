@@ -3,7 +3,7 @@
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
-use Symfony\Component\Security\Core\User\User;
+use FOS\UserBundle\Model\UserInterface;
 
 class AuthenticationSuccessListener
 {
@@ -15,7 +15,7 @@ class AuthenticationSuccessListener
         $data = $event->getData();
         $user = $event->getUser();
 
-        if (!$user instanceof User) {
+        if (!$user instanceof UserInterface) {
             return;
         }
 
