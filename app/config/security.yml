@@ -1,9 +1,11 @@
 security:
     encoders:
         Symfony\Component\Security\Core\User\User: plaintext
-        Tagcade\Bundle\CoreBundle\Entity\User:
-            algorithm: bcrypt
-            cost:      15
+        #Tagcade\Bundle\CoreBundle\Entity\User:
+        #    algorithm: bcrypt
+        #    cost:      15
+
+        Tagcade\Bundle\CoreBundle\Entity\User: sha512
 
     role_hierarchy:
         ROLE_PUBLISHER:             ROLE_USER
