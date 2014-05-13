@@ -49,7 +49,7 @@ To test the API use a browser extension such as:
 https://chrome.google.com/webstore/detail/postman-rest-client/fdmmgilgnpjigdojojpjoooidkmcomcm?hl=en
 https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo
 
-Assuming your server is running at localhost:8000, send a post request to http://localhost:8000/app_dev.php/api/getToken, ensure you are sending two parameters called 'username' and 'password'. Assuming you logged in with username=admin&password=adminpass, you should get a response such as:
+Assuming your server is running at localhost:8000, send a post request to [this link](http://localhost:8000/api/getToken), ensure you are sending two parameters called 'username' and 'password'. Assuming you logged in with username=admin&password=adminpass, you should get a response such as:
 
 ```
 {
@@ -64,7 +64,7 @@ The token is your json web token, you can now use this to request things from th
 Authorization: Bearer ......
 ```
 
-With this header, send a request to http://localhost:8000/app_dev.php/api/test and you should see a response:
+With this header, send a request to [this link](http://localhost:8000/api/test) and you should see a response:
 
 "test"
 
