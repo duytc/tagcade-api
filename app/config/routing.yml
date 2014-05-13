@@ -1,4 +1,4 @@
 tagcade_api:
-    resource: "@TagcadeApiBundle/Controller/"
-    type:     annotation
+    resource: "@TagcadeApiBundle/Resources/config/routes.yml"
+    type:     rest
     prefix:   /api

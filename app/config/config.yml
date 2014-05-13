@@ -44,7 +44,6 @@ doctrine:
         auto_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
 
-# Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"
     host:      "%mailer_host%"
@@ -53,12 +52,22 @@ swiftmailer:
     spool:     { type: memory }
 
 fos_user:
-    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+    db_driver: orm
     firewall_name: api
     user_class: Tagcade\Bundle\CoreBundle\Entity\User
 
+sensio_framework_extra:
+    view:
+        annotations: false
+
+fos_rest:
+    routing_loader:
+        default_format: json
+    view:
+        view_response_listener: force
+
 lexik_jwt_authentication:
-    private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'   # path to the private key
-    public_key_path:    '%kernel.root_dir%/var/jwt/public-dev.pem'    # path to the public key
-    pass_phrase:        'tagcade'                                 # optional - pass phrase, defaults to ''
+    private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
+    public_key_path:    '%kernel.root_dir%/var/jwt/public-dev.pem'
+    pass_phrase:        'tagcade'
     token_ttl:          86400

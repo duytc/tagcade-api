@@ -16,12 +16,15 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
 
-            new \FOS\UserBundle\FOSUserBundle(),
-            new \Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
-            new \Gfreeau\Bundle\GetJWTBundle\GfreeauGetJWTBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
+            new Gfreeau\Bundle\GetJWTBundle\GfreeauGetJWTBundle(),
 
-            new \Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
-            new \Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),
+            new Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
+            new Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),
             new Tagcade\Bundle\CoreBundle\TagcadeCoreBundle(),
         );
 

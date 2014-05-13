@@ -1,0 +1,5 @@
+tagcade_core_site:
+    type: rest
+    prefix: /v1
+    resource: "Tagcade\Bundle\ApiBundle\Controller\SiteController"
+    name_prefix:  api_1_
