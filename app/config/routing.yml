@@ -1,4 +1,8 @@
 tagcade_api:
+    resource: "@TagcadeApiBundle/Controller/DefaultController.php"
+    type:     annotation
+
+tagcade_rest_test:
     resource: "@TagcadeApiBundle/Resources/config/routes.yml"
     type:     rest
     prefix:   /api

@@ -25,6 +25,13 @@ framework:
     fragments:       ~
     http_method_override: true
 
+swiftmailer:
+    transport: "%mailer_transport%"
+    host:      "%mailer_host%"
+    username:  "%mailer_user%"
+    password:  "%mailer_password%"
+    spool:     { type: memory }
+
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -41,20 +48,27 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
-        auto_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            model:
+                type: xml
+                dir: %kernel.root_dir%/../src/Tagcade/Entity/config/doctrine
+                prefix: Tagcade\Entity
+                alias: TagcadeEntity
+                is_bundle: false
 
-swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
-    spool:     { type: memory }
+jms_serializer:
+    metadata:
+        directories:
+            tagcade-entity:
+                namespace_prefix: "Tagcade\\Entity"
+                path: %kernel.root_dir%/../src/Tagcade/Entity/config/serializer
 
 fos_user:
     db_driver: orm
     firewall_name: api
-    user_class: Tagcade\Bundle\CoreBundle\Entity\User
+    user_class: Tagcade\Bundle\UserBundle\Entity\User
 
 sensio_framework_extra:
     view:

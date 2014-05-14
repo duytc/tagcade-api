@@ -5,7 +5,7 @@ security:
         #    algorithm: bcrypt
         #    cost:      15
 
-        Tagcade\Bundle\CoreBundle\Entity\User: sha512
+        Tagcade\Bundle\UserBundle\Entity\User: sha512
 
     role_hierarchy:
         ROLE_PUBLISHER:             ROLE_USER

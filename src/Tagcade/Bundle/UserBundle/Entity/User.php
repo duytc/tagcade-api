@@ -3,9 +3,10 @@
 namespace Tagcade\Bundle\UserBundle\Entity;
 
 use FOS\UserBundle\Entity\User as BaseUser;
+use Tagcade\Model\User\UserInterface as TagcadeUserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-class User extends BaseUser
+class User extends BaseUser implements TagcadeUserInterface
 {
     public function setEmail($email)
     {

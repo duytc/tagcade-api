@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/getToken")
+     * @Route("/api/getToken")
      */
     public function getTokenAction()
     {
@@ -20,11 +20,11 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/test")
+     * @Route("/api/test")
      * @Security("has_role('ROLE_ADMIN')")
      */
     public function testAction()
     {
-        return new JsonResponse("test");
+        return new JsonResponse("You are an admin");
     }
 }

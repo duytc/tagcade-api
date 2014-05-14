@@ -4,7 +4,10 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                     http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
-    <mapped-superclass name="Tagcade\Bundle\UserBundle\Entity\User">
+    <entity name="Tagcade\Bundle\UserBundle\Entity\User" table="users">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO" />
+        </id>
         <attribute-overrides>
             <attribute-override name="email">
                 <field nullable="true"/>
@@ -13,5 +16,5 @@
                 <field nullable="true" unique="false" />
             </attribute-override>
         </attribute-overrides>
-    </mapped-superclass>
+    </entity>
 </doctrine-mapping>

@@ -3,12 +3,13 @@
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
-use Tagcade\Bundle\CoreBundle\Entity\Site;
+use Tagcade\Entity\Site;
 use FOS\RestBundle\Controller\Annotations\View;
 
 class SiteController extends FOSRestController
 {
     /**
+     * @View()
      */
     public function getSiteAction(Site $site)
     {
