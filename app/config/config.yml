@@ -14,7 +14,7 @@ framework:
         enabled: false
     validation:      { enable_annotations: true }
     templating:
-        engines: ['php']
+        engines: ['twig']
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_hosts:   ~
@@ -24,6 +24,11 @@ framework:
         handler_id:  ~
     fragments:       ~
     http_method_override: true
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
 
 swiftmailer:
     transport: "%mailer_transport%"
@@ -80,9 +85,9 @@ fos_rest:
     format_listener:
         rules:
             - { path: '^/api', fallback_format: json, prefer_extension: true, priorities: ['json', 'xml'] }
-    access_denied_listener:
-        json: true
-        xml: true
+    #access_denied_listener:
+    #    json: true
+    #    xml: true
     view:
         view_response_listener: force
         formats:

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f844dd463a4870e90647966c0819bd2d",
+    "hash": "a6b22a2aae9672a6e50112e602afc6ee",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -2859,6 +2859,56 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2014-03-07 15:35:33"
+        },
+        {
+            "name": "webfactory/exceptions-bundle",
+            "version": "4.0.0",
+            "target-dir": "Webfactory/Bundle/ExceptionsBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webfactory/exceptions-bundle.git",
+                "reference": "28b79273c26af2d4a5ecb4cc1764eb4f222afd62"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webfactory/exceptions-bundle/zipball/28b79273c26af2d4a5ecb4cc1764eb4f222afd62",
+                "reference": "28b79273c26af2d4a5ecb4cc1764eb4f222afd62",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/twig-bundle": "~2.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "sensio/framework-extra-bundle": "~2.2",
+                "symfony/framework-bundle": "~2.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-default": "3.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Webfactory\\Bundle\\ExceptionsBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "webfactory GmbH",
+                    "email": "info@webfactory.de",
+                    "homepage": "http://www.webfactory.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple controller to display error pages during development plus some building blocks for more user-friendly error pages.",
+            "homepage": "http://inside.webfactory.de/de/blog/symfony2-exception-handling-and-custom-error-pages-explained.html",
+            "time": "2014-04-30 16:46:25"
         }
     ],
     "aliases": [
@@ -2873,7 +2923,8 @@
     "stability-flags": {
         "jms/serializer-bundle": 20,
         "lexik/jwt-authentication-bundle": 20,
-        "gfreeau/get-jwt-bundle": 20
+        "gfreeau/get-jwt-bundle": 20,
+        "webfactory/exceptions-bundle": 0
     },
     "platform": {
         "php": "~5.5.0"
