@@ -77,8 +77,19 @@ sensio_framework_extra:
 fos_rest:
     routing_loader:
         default_format: json
+    format_listener:
+        rules:
+            - { path: '^/api', fallback_format: json, prefer_extension: true, priorities: ['json', 'xml'] }
+    access_denied_listener:
+        json: true
+        xml: true
     view:
         view_response_listener: force
+        formats:
+            json: true
+            xml: true
+        templating_formats:
+            html: false
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
