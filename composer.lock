@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a6b22a2aae9672a6e50112e602afc6ee",
+    "hash": "243af04bdf9fa696c4c2388062b9d984",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1147,13 +1147,13 @@
             "target-dir": "Lexik/Bundle/JWTAuthenticationBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "99a8d440e6b18c461ef03e1280e681b671d4724a"
+                "url": "https://github.com/gfreeau/LexikJWTAuthenticationBundle.git",
+                "reference": "34b7cffdde039e1d2ffda95b9e4fbd4d221aec3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/99a8d440e6b18c461ef03e1280e681b671d4724a",
-                "reference": "99a8d440e6b18c461ef03e1280e681b671d4724a",
+                "url": "https://api.github.com/repos/gfreeau/LexikJWTAuthenticationBundle/zipball/34b7cffdde039e1d2ffda95b9e4fbd4d221aec3b",
+                "reference": "34b7cffdde039e1d2ffda95b9e4fbd4d221aec3b",
                 "shasum": ""
             },
             "require": {
@@ -1173,7 +1173,6 @@
                     "Lexik\\Bundle\\JWTAuthenticationBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1183,28 +1182,31 @@
                     "email": "j.barthe@lexik.fr"
                 },
                 {
-                    "name": "Dev Lexik",
-                    "email": "dev@lexik.fr"
+                    "name": "Nicolas Cabot",
+                    "email": "n.cabot@lexik.fr"
                 },
                 {
                     "name": "Cedric Girard",
                     "email": "c.girard@lexik.fr"
                 },
                 {
-                    "name": "Nicolas Cabot",
-                    "email": "n.cabot@lexik.fr"
+                    "name": "Dev Lexik",
+                    "email": "dev@lexik.fr"
                 }
             ],
             "description": "This Symfony2 bundle provide JWT authentication services",
             "homepage": "https://github.com/lexik/LexikJWTAuthenticationBundle",
             "keywords": [
-                "Authentication",
-                "JWS",
                 "Symfony2",
+                "authentication",
                 "bundle",
+                "jws",
                 "jwt"
             ],
-            "time": "2014-05-14 14:49:08"
+            "support": {
+                "source": "https://github.com/gfreeau/LexikJWTAuthenticationBundle/tree/master"
+            },
+            "time": "2014-05-15 21:22:31"
         },
         {
             "name": "michelf/php-markdown",
