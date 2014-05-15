@@ -40,19 +40,18 @@ security:
             pattern:  ^/api/getToken$
             stateless: true
             gfreeau_get_jwt:
-                # this is the default config
                 username_parameter: username
                 password_parameter: password
                 post_only: true
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-        # protected firewall, where a user will be authenticated by its jwt token
         api:
             pattern:   ^/api
             stateless: true
-            # default configuration
-            lexik_jwt: ~ # check token in Authorization Header, with a value prefix of e:    bearer
+            lexik_jwt:
+                throw_exceptions: true
+                create_entry_point: false
 
     access_control:
         - { path: ^/api, roles: ROLE_USER }
