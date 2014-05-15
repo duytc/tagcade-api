@@ -24,6 +24,9 @@
         "lexik/jwt-authentication-bundle": "dev-master as 1.0.*@dev",
         "gfreeau/get-jwt-bundle": "dev-master"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*"
+    },
     "scripts": {
         "post-install-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
