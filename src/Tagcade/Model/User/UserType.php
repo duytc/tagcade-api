@@ -26,9 +26,4 @@ abstract class UserType
     {
         return $this->user;
     }
-
-    public function getId()
-    {
-        return $this->user->getId();
-    }
 }

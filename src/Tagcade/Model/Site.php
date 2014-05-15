@@ -3,13 +3,14 @@
 namespace Tagcade\Model;
 
 use Tagcade\Model\User\Publisher;
+use Tagcade\Model\User\UserInterface;
 
 class Site
 {
     protected $id;
 
     /**
-     * @var Publisher
+     * @var UserInterface
      */
     protected $publisher;
     protected $name;

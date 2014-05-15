@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <serializer>
-    <class name="Tagcade\Entity\Site" exclusion-policy="NONE">
+    <class name="Tagcade\Entity\Site">
         <property name="publisher" accessor-getter="getPublisherId" type="integer" serialized-name="publisher_id" />
     </class>
 </serializer>
