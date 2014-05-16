@@ -5,7 +5,6 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 use FOS\RestBundle\Controller\FOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\View;
-use FOS\RestBundle\Controller\Annotations\RouteResource;
 use Tagcade\Entity\Site;
 
 class SiteController extends FOSRestController
@@ -26,8 +25,6 @@ class SiteController extends FOSRestController
      *  200 = "Returned when successful",
      *  404 = "Returned when the site is not found"
      * })
-     *
-     * @View()
      */
     public function getSiteAction(Site $site)
     {
@@ -38,10 +35,11 @@ class SiteController extends FOSRestController
      * Get all sites for the current publisher
      *
      * @ApiDoc()
-     * @View(templateVar="sites")
+     * @View()
      */
     public function getSitesAction()
     {
+        // just for testing
         return $this->getDoctrine()->getManager()->getRepository('TagcadeEntity:Site')->findAll();
     }
 }

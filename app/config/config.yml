@@ -59,7 +59,7 @@ doctrine:
         mappings:
             model:
                 type: xml
-                dir: %kernel.root_dir%/../src/Tagcade/Entity/config/doctrine
+                dir: %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine
                 prefix: Tagcade\Entity
                 alias: TagcadeEntity
                 is_bundle: false
@@ -67,9 +67,9 @@ doctrine:
 jms_serializer:
     metadata:
         directories:
-            tagcade-entity:
-                namespace_prefix: "Tagcade\\Entity"
-                path: %kernel.root_dir%/../src/Tagcade/Entity/config/serializer
+            tagcade:
+                namespace_prefix: "Tagcade\\"
+                path: %kernel.root_dir%/../src/Tagcade/Resources/config/serializer
 
 fos_user:
     db_driver: orm
@@ -83,7 +83,7 @@ sensio_framework_extra:
 fos_rest:
     routing_loader:
         default_format: json
-        include_format: false
+        #include_format: false
     format_listener:
         rules:
             - { path: '^/api', fallback_format: json, prefer_extension: false, priorities: ['json', 'xml'] }

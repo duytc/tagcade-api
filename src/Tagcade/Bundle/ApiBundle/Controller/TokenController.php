@@ -2,10 +2,9 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\Annotations\RequestParam;
 
 class TokenController extends Controller
@@ -21,7 +20,6 @@ class TokenController extends Controller
      *  200 = "Successful login",
      *  401 = "Login failed"
      * })
-     * @Route("/auth/getToken")
      */
     public function getTokenAction()
     {
