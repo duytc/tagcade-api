@@ -85,15 +85,12 @@ fos_rest:
         default_format: json
     format_listener:
         rules:
-            - { path: '^/api', fallback_format: json, prefer_extension: true, priorities: ['json', 'xml', 'html'] }
+            - { path: '^/api', fallback_format: json, prefer_extension: false, priorities: ['json', 'xml', 'html'] }
             - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: true }
     access_denied_listener:
         json: true
         xml: true
         html: true
-    exception:
-        codes:
-            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
     view:
         view_response_listener: force
         formats:
@@ -101,8 +98,6 @@ fos_rest:
             xml: true
         templating_formats:
             html: true
-            json: true
-            xml: true
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
