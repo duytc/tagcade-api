@@ -36,8 +36,12 @@ security:
             pattern:  ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        apidoc:
+            pattern:  ^/api/doc/?$
+            security: false
+
         gettoken:
-            pattern:  ^/api/getToken$
+            pattern:  ^/auth/getToken$
             stateless: true
             gfreeau_get_jwt:
                 username_parameter: username

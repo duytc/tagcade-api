@@ -32,3 +32,9 @@ monolog:
 #swiftmailer:
 #    delivery_address: me@example.com
 
+nelmio_api_doc:
+    name: Tagcade API
+    request_listener:
+        enabled: false
+    sandbox:
+        enabled: false
