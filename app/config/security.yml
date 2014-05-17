@@ -37,25 +37,25 @@ security:
             security: false
 
         apidoc:
-            pattern:  ^/api/doc/?$
+            pattern:  ^/docs/?$
             security: false
 
         gettoken:
-            pattern:  ^/auth/getToken$
+            pattern:  ^/api/getToken$
             stateless: true
             gfreeau_get_jwt:
                 username_parameter: username
                 password_parameter: password
                 post_only: true
                 success_handler: lexik_jwt_authentication.handler.authentication_success
-                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+                throw_exceptions: true
 
         api:
-            pattern:   ^/api
+            pattern:   ^/api/
             stateless: true
             lexik_jwt:
                 throw_exceptions: true
                 create_entry_point: false
 
     access_control:
-        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/api/, roles: ROLE_USER }

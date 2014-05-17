@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "002b2809e90474bfdbfc72c88d41f2c7",
+    "hash": "dc1ec5bce2c93b4058c50df8aa7dffea",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -771,18 +771,60 @@
             "time": "2013-09-23 08:24:12"
         },
         {
+            "name": "gfreeau/custom-validation-path-bundle",
+            "version": "dev-master",
+            "target-dir": "Gfreeau/Bundle/CustomValidationPathBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle.git",
+                "reference": "1b0abe9e2a10824319ef728622fe08c92707bf3e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gfreeau/GfreeauCustomValidationPathBundle/zipball/1b0abe9e2a10824319ef728622fe08c92707bf3e",
+                "reference": "1b0abe9e2a10824319ef728622fe08c92707bf3e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/symfony": "~2.3"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Gfreeau\\Bundle\\CustomValidationPathBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "This Symfony2 bundle provides a method for adding custom validation directories",
+            "homepage": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle",
+            "keywords": [
+                "Symfony2",
+                "custom",
+                "validation"
+            ],
+            "support": {
+                "source": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle/tree/master",
+                "issues": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle/issues"
+            },
+            "time": "2014-05-17 16:33:20"
+        },
+        {
             "name": "gfreeau/get-jwt-bundle",
             "version": "dev-master",
             "target-dir": "Gfreeau/Bundle/GetJWTBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gfreeau/GfreeauGetJWTBundle.git",
-                "reference": "0484c0d8350eb2af04b6d6e8e05d950a3c8ab60f"
+                "reference": "a35cb5bbfadfa375105b69f7be059d088d538868"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gfreeau/GfreeauGetJWTBundle/zipball/0484c0d8350eb2af04b6d6e8e05d950a3c8ab60f",
-                "reference": "0484c0d8350eb2af04b6d6e8e05d950a3c8ab60f",
+                "url": "https://api.github.com/repos/gfreeau/GfreeauGetJWTBundle/zipball/a35cb5bbfadfa375105b69f7be059d088d538868",
+                "reference": "a35cb5bbfadfa375105b69f7be059d088d538868",
                 "shasum": ""
             },
             "require": {
@@ -801,7 +843,7 @@
             "license": [
                 "MIT"
             ],
-            "description": "This Symfony2 bundle provide a security listener to return a JWT",
+            "description": "This Symfony2 bundle provides a security listener to return a JWT",
             "homepage": "https://github.com/gfreeau/GfreeauGetJWTBundle",
             "keywords": [
                 "Authentication",
@@ -810,7 +852,7 @@
                 "bundle",
                 "jwt"
             ],
-            "time": "2014-05-12 13:23:40"
+            "time": "2014-05-16 22:22:40"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -3097,6 +3139,7 @@
         "jms/serializer-bundle": 20,
         "lexik/jwt-authentication-bundle": 20,
         "gfreeau/get-jwt-bundle": 20,
+        "gfreeau/custom-validation-path-bundle": 20,
         "doctrine/doctrine-fixtures-bundle": 20,
         "liip/functional-test-bundle": 20,
         "webfactory/exceptions-bundle": 0

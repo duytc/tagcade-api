@@ -71,6 +71,13 @@ jms_serializer:
                 namespace_prefix: "Tagcade\\"
                 path: %kernel.root_dir%/../src/Tagcade/Resources/config/serializer
 
+gfreeau_custom_validation_path:
+    directories:
+        -
+            path: %kernel.root_dir%/../src/Tagcade/Resources/config/validation
+            type: xml
+            recursive: true
+
 fos_user:
     db_driver: orm
     firewall_name: api
@@ -86,8 +93,8 @@ fos_rest:
         #include_format: false
     format_listener:
         rules:
-            - { path: '^/api', fallback_format: json, prefer_extension: false, priorities: ['json', 'xml'] }
-            - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: false }
+            - { path: '^/api/', fallback_format: json, prefer_extension: false, priorities: ['json', 'xml'] }
+            - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: json, prefer_extension: false }
     access_denied_listener:
         json: true
         xml: true
@@ -98,7 +105,7 @@ fos_rest:
             json: true
             xml: true
         templating_formats:
-            html: false
+            html: true
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
