@@ -1,0 +1,13 @@
+Tagcade\Bundle\UserBundle\Entity\User:
+    table: users
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    attributeOverride:
+        email:
+            nullable: true
+        emailCanonical:
+            nullable: true
+            unique: false

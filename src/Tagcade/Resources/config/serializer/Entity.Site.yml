@@ -1,0 +1,8 @@
+Tagcade\Entity\Site:
+    exclusion_policy: NONE
+    properties:
+        publisher:
+            accessor:
+                getter: getPublisherId
+            type: integer
+            serialized_name: publisher_id

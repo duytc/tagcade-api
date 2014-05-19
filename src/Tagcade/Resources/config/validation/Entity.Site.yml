@@ -1,0 +1,4 @@
+Tagcade\Entity\Site:
+    properties:
+        name:
+            NotBlank: ~

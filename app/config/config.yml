@@ -58,7 +58,7 @@ doctrine:
         auto_mapping: true
         mappings:
             model:
-                type: xml
+                type: yml
                 dir: %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine
                 prefix: Tagcade\Entity
                 alias: TagcadeEntity
@@ -75,7 +75,7 @@ gfreeau_custom_validation_path:
     directories:
         -
             path: %kernel.root_dir%/../src/Tagcade/Resources/config/validation
-            type: xml
+            type: yml
             recursive: true
 
 fos_user:

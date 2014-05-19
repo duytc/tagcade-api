@@ -1,0 +1,11 @@
+parameters:
+    tagcade.apibundle.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
+
+services:
+    tagcade.apibundle.event.authentication_success_listener:
+        class: %tagcade.apibundle.event.authentication_success_listener.class%
+        tags:
+            -
+                name: kernel.event_listener
+                event: 'lexik_jwt_authentication.on_authentication_success'
+                method: 'onAuthenticationSuccess'

@@ -1,0 +1,21 @@
+Tagcade\Entity\Site:
+    type: entity
+    table: sites
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        domain:
+            type: string
+            length: 255
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+            joinColumns:
+                publisher_id:
+                    referencedColumnName: id

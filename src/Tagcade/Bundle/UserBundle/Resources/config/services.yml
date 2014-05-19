@@ -1,0 +1,13 @@
+parameters:
+    tagcade.userbundle.event.authentication_success_listener.class: Tagcade\Bundle\UserBundle\EventListener\AuthenticationSuccessListener
+
+services:
+    tagcade.userbundle.event.authentication_success_listener:
+        class: %tagcade.userbundle.event.authentication_success_listener.class%
+        arguments: [@fos_user.user_manager]
+        tags:
+            -
+                name: kernel.event_listener
+                event: 'lexik_jwt_authentication.on_authentication_success'
+                method: 'onAuthenticationSuccess'
+                priority: 10
