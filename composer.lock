@@ -3,8 +3,109 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "dc1ec5bce2c93b4058c50df8aa7dffea",
+    "hash": "ea7a27bf9aa12a64540c59ec63d4db5b",
     "packages": [
+        {
+            "name": "dms/dms-filter",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rdohms/dms-filter.git",
+                "reference": "4ede7bb701d6dd5239abeff0017aed726d460e53"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rdohms/dms-filter/zipball/4ede7bb701d6dd5239abeff0017aed726d460e53",
+                "reference": "4ede7bb701d6dd5239abeff0017aed726d460e53",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/annotations": "~1.1",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/cache": "~1.3",
+                "phpunit/phpunit": "~3.7",
+                "zendframework/zend-filter": "~2.0"
+            },
+            "suggest": {
+                "zendframework/zend-filter": "Use Zend Filters via DMS Filter"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "DMS": [
+                        "src",
+                        "tests"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rafael Dohms",
+                    "homepage": "http://doh.ms"
+                }
+            ],
+            "description": "DMS Filter provides Annotation based entity filtering.",
+            "homepage": "https://github.com/rdohms/dms-filter",
+            "keywords": [
+                "dms",
+                "filter"
+            ],
+            "time": "2014-01-17 16:30:23"
+        },
+        {
+            "name": "dms/dms-filter-bundle",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rdohms/dms-filter-bundle.git",
+                "reference": "9f7fc5ff934069834ef02abf94ad126efa9a3daa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rdohms/dms-filter-bundle/zipball/9f7fc5ff934069834ef02abf94ad126efa9a3daa",
+                "reference": "9f7fc5ff934069834ef02abf94ad126efa9a3daa",
+                "shasum": ""
+            },
+            "require": {
+                "dms/dms-filter": "~2.0",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~3.7",
+                "symfony/symfony": ">=2.3.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "DMS": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rafael Dohms",
+                    "homepage": "http://doh.ms"
+                }
+            ],
+            "description": "DMS Filter Bundle, makes Annotation based entity filtering available in Symfony",
+            "homepage": "https://github.com/rdohms/dms-filter-bundle",
+            "keywords": [
+                "bundle",
+                "dms",
+                "filter",
+                "symfony"
+            ],
+            "time": "2014-04-19 17:17:18"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.1.2",
@@ -777,12 +878,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle.git",
-                "reference": "1b0abe9e2a10824319ef728622fe08c92707bf3e"
+                "reference": "7059a81e6ffa7121ab6f038c60dc8ade5d9bc701"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gfreeau/GfreeauCustomValidationPathBundle/zipball/1b0abe9e2a10824319ef728622fe08c92707bf3e",
-                "reference": "1b0abe9e2a10824319ef728622fe08c92707bf3e",
+                "url": "https://api.github.com/repos/gfreeau/GfreeauCustomValidationPathBundle/zipball/7059a81e6ffa7121ab6f038c60dc8ade5d9bc701",
+                "reference": "7059a81e6ffa7121ab6f038c60dc8ade5d9bc701",
                 "shasum": ""
             },
             "require": {
@@ -799,6 +900,12 @@
             "license": [
                 "MIT"
             ],
+            "authors": [
+                {
+                    "name": "Greg Freeman",
+                    "homepage": "http://www.gregfreeman.org"
+                }
+            ],
             "description": "This Symfony2 bundle provides a method for adding custom validation directories",
             "homepage": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle",
             "keywords": [
@@ -810,7 +917,7 @@
                 "source": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle/tree/master",
                 "issues": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle/issues"
             },
-            "time": "2014-05-17 16:33:20"
+            "time": "2014-05-17 22:02:09"
         },
         {
             "name": "gfreeau/get-jwt-bundle",
@@ -819,12 +926,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gfreeau/GfreeauGetJWTBundle.git",
-                "reference": "a35cb5bbfadfa375105b69f7be059d088d538868"
+                "reference": "ec2c607fc962699a733336dab7760cf0be09e263"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gfreeau/GfreeauGetJWTBundle/zipball/a35cb5bbfadfa375105b69f7be059d088d538868",
-                "reference": "a35cb5bbfadfa375105b69f7be059d088d538868",
+                "url": "https://api.github.com/repos/gfreeau/GfreeauGetJWTBundle/zipball/ec2c607fc962699a733336dab7760cf0be09e263",
+                "reference": "ec2c607fc962699a733336dab7760cf0be09e263",
                 "shasum": ""
             },
             "require": {
@@ -843,6 +950,12 @@
             "license": [
                 "MIT"
             ],
+            "authors": [
+                {
+                    "name": "Greg Freeman",
+                    "homepage": "http://www.gregfreeman.org"
+                }
+            ],
             "description": "This Symfony2 bundle provides a security listener to return a JWT",
             "homepage": "https://github.com/gfreeau/GfreeauGetJWTBundle",
             "keywords": [
@@ -852,7 +965,7 @@
                 "bundle",
                 "jwt"
             ],
-            "time": "2014-05-16 22:22:40"
+            "time": "2014-05-17 21:58:31"
         },
         {
             "name": "incenteev/composer-parameter-handler",

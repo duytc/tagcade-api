@@ -12,7 +12,7 @@ framework:
     form:            ~
     csrf_protection:
         enabled: false
-    validation:      { enable_annotations: true }
+    validation:      { enable_annotations: false }
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
@@ -86,6 +86,9 @@ fos_user:
 sensio_framework_extra:
     view:
         annotations: false
+
+dms_filter:
+    auto_filter_forms: false
 
 fos_rest:
     routing_loader:

@@ -18,6 +18,7 @@ class AppKernel extends Kernel
 
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new DMS\Bundle\FilterBundle\DMSFilterBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
