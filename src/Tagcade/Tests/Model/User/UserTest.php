@@ -3,9 +3,10 @@
 namespace Tagcade\Tests\Model\User;
 
 use InvalidArgumentException;
-use Tagcade\Model\User\Publisher;
+use Tagcade\Model\User\Role\Publisher;
+use Tagcade\Test\TestCase;
 
-class UserTest extends \PHPUnit_Framework_TestCase
+class UserTest extends TestCase
 {
     public function testCorrectRoles()
     {
@@ -22,16 +23,5 @@ class UserTest extends \PHPUnit_Framework_TestCase
     {
         $user = $this->getUser(['ROLE_ADMIN']);
         $publisher = new Publisher($user);
-    }
-
-    protected function getUser(array $roles)
-    {
-        $user = $this->getMock('Tagcade\Model\User\UserInterface');
-
-        $user->expects($this->any())
-            ->method('getRoles')
-            ->will($this->returnValue($roles));
-
-        return $user;
     }
 }

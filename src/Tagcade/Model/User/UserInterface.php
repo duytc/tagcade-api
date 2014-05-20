@@ -19,4 +19,6 @@ interface UserInterface
      * @return []
      */
     public function getRoles();
+
+    public function hasRole($role);
 }

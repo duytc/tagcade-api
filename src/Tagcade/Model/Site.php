@@ -2,10 +2,10 @@
 
 namespace Tagcade\Model;
 
-use Tagcade\Model\User\Publisher;
+use Tagcade\Model\User\Role\Publisher;
 use Tagcade\Model\User\UserInterface;
 
-class Site
+class Site implements SiteInterface
 {
     protected $id;
 
