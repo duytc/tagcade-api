@@ -2,11 +2,11 @@
 
 namespace Tagcade\Bundle\ApiBundle\Tests\Controller;
 
-use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Tagcade\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\Response;
 
-class SiteControllerTest extends WebTestCase
+class SiteControllerTest extends ApiTestCase
 {
     public function setUp()
     {
@@ -21,7 +21,8 @@ class SiteControllerTest extends WebTestCase
     {
         $client = $this->getClientForUser('pub');
         $response = $this->makeGetSitesActionRequest($client);
-        $this->assertEquals(200, $response->getStatusCode());
+
+        $this->assertJsonResponse($response, 200);
     }
 
     public function testXmlGetSitesActionWithValidUserAndAcceptHeader()
@@ -38,52 +39,18 @@ class SiteControllerTest extends WebTestCase
 
     public function testJsonGetSitesActionWithInvalidUser()
     {
-        $client = static::createClient();
+        $client = $this->getClient();
         $response = $this->makeGetSitesActionRequest($client);
-        $this->assertEquals(401, $response->getStatusCode());
+
+        $this->assertJsonResponse($response, 401);
     }
 
     public function testJsonGetSitesActionWithInvalidRole()
     {
         $client = $this->getClientForUser('admin');
         $response = $this->makeGetSitesActionRequest($client);
-        $this->assertEquals(403, $response->getStatusCode());
-    }
 
-    protected function getClient($accepts = 'application/json')
-    {
-        $client = static::createClient();
-
-        if ($accepts) {
-            $client->setServerParameter('HTTP_Accept', $accepts);
-        }
-
-        return $client;
-    }
-
-    protected function getClientForUser($user = null, $client = null)
-    {
-        if (!$client) {
-            $client = $this->getClient();
-        }
-
-        if ($user) {
-            $jwt = $this->getJWT($user);
-            $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $jwt->getTokenString()));
-        }
-
-        return $client;
-    }
-
-    /**
-     * @param $user
-     * @return \Namshi\JOSE\JWS;
-     */
-    protected function getJWT($user)
-    {
-        return $this->getContainer()->get('lexik_jwt_authentication.jwt_encoder')->encode([
-            'username' => $user,
-        ]);
+        $this->assertJsonResponse($response, 403);
     }
 
     /**

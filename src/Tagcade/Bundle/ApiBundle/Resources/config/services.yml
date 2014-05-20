@@ -1,9 +1,16 @@
 parameters:
-    tagcade.apibundle.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
+    tagcade_api.site.handler.class: Tagcade\Bundle\ApiBundle\Handler\SiteHandler
+    tagcade_api.site.class: Tagcade\Entity\Site
+
+    tagcade_api.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
 
 services:
-    tagcade.apibundle.event.authentication_success_listener:
-        class: %tagcade.apibundle.event.authentication_success_listener.class%
+    tagcade_api.site.handler:
+        class: %tagcade_api.site.handler.class%
+        arguments: [@doctrine.orm.entity_manager, %tagcade_api.site.class%, @form.factory, @tagcade_user.factory.role]
+
+    tagcade_api.event.authentication_success_listener:
+        class: %tagcade_api.event.authentication_success_listener.class%
         tags:
             -
                 name: kernel.event_listener

@@ -63,7 +63,6 @@ class SiteController extends FOSRestController
      */
     public function getSitesAction()
     {
-        // just for testing
-        return $this->getDoctrine()->getManager()->getRepository('TagcadeEntity:Site')->findAll();
+        return $this->get('tagcade_api.site.handler')->all();
     }
 }

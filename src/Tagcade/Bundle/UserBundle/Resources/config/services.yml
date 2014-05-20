@@ -1,9 +1,18 @@
 parameters:
-    tagcade.userbundle.event.authentication_success_listener.class: Tagcade\Bundle\UserBundle\EventListener\AuthenticationSuccessListener
+    tagcade_user.user.class: Tagcade\Model\User\UserInterface
+    tagcade_user.user.factory.class: Tagcade\Factory\UserFactory
+
+    tagcade_user.event.authentication_success_listener.class: Tagcade\Bundle\UserBundle\EventListener\AuthenticationSuccessListener
 
 services:
-    tagcade.userbundle.event.authentication_success_listener:
-        class: %tagcade.userbundle.event.authentication_success_listener.class%
+    tagcade_user.factory.role:
+        class: "%tagcade_user.user.class%"
+        factory_class:  "%tagcade_user.user.factory.class%"
+        factory_method: getRole
+        arguments: ["@=service('security.context').getToken() != null ? service('security.context').getToken().getUser() : null"]
+
+    tagcade_user.event.authentication_success_listener:
+        class: %tagcade_user.event.authentication_success_listener.class%
         arguments: [@fos_user.user_manager]
         tags:
             -
