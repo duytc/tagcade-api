@@ -10,4 +10,7 @@ class Site extends SiteModel
     protected $publisher;
     protected $name;
     protected $domain;
+
+    public function __construct()
+    {}
 }

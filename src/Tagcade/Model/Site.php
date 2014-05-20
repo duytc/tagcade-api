@@ -16,11 +16,19 @@ class Site
     protected $name;
     protected $domain;
 
-    public function __construct(Publisher $publisher, $name, $domain)
+    public function __construct($name, $domain, Publisher $publisher = null)
     {
-        $this->setPublisher($publisher);
         $this->name = $name;
         $this->domain = $domain;
+
+        if ($publisher){
+            $this->setPublisher($publisher);
+        }
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 
     public function setPublisher(Publisher $publisher) {
@@ -29,6 +37,30 @@ class Site
 
     public function getPublisherId()
     {
+        if (!$this->publisher) {
+            return null;
+        }
+
         return $this->publisher->getId();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    public function getDomain()
+    {
+        return $this->domain;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->domain = $domain;
     }
 }

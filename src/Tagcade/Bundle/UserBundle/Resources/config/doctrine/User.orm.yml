@@ -1,4 +1,5 @@
 Tagcade\Bundle\UserBundle\Entity\User:
+    type: entity
     table: users
     id:
         id:

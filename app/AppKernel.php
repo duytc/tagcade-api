@@ -29,9 +29,12 @@ class AppKernel extends Kernel
             new Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),
         );
 
+        if ($this->getEnvironment() == 'test') {
+            $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
+        }
+
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
-            $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
             $bundles[] = new Webfactory\Bundle\ExceptionsBundle\WebfactoryExceptionsBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
