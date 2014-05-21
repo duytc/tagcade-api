@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\User\Role;
 
-use Tagcade\Model\User\UserInterface;
+use Tagcade\Model\User\UserEntityInterface;
 use InvalidArgumentException;
 
 abstract class AbstractRole
@@ -10,7 +10,7 @@ abstract class AbstractRole
     protected static $requiredRoles = [];
     private $user;
 
-    public function __construct(UserInterface $user)
+    public function __construct(UserEntityInterface $user)
     {
         if (!empty(static::$requiredRoles)) {
             $missingRoles = array_diff(static::$requiredRoles, $user->getRoles());

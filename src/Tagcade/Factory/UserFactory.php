@@ -2,7 +2,7 @@
 
 namespace Tagcade\Factory;
 
-use Tagcade\Model\User\UserInterface;
+use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\User\Role\SuperAdmin;
 use Tagcade\Model\User\Role\Admin;
 use Tagcade\Model\User\Role\Publisher;
@@ -15,7 +15,13 @@ use \InvalidArgumentException;
  */
 class UserFactory
 {
-    public static function getRole(UserInterface $user = null)
+    /**
+     * @param UserEntityInterface $user
+     * @return \Tagcade\Model\User\Role\RoleInterface
+     * @throws \Tagcade\Exception\InvalidUserRoleException
+     * @throws \InvalidArgumentException
+     */
+    public static function getRole(UserEntityInterface $user = null)
     {
         if (null == $user) {
             throw new InvalidArgumentException('user is not set');
@@ -42,5 +48,22 @@ class UserFactory
         }
 
         throw new InvalidUserRoleException('user does not have a valid role');
+    }
+
+    /**
+     * @param UserEntityInterface $user
+     * @return Publisher
+     * @throws \Tagcade\Exception\InvalidUserRoleException
+     */
+    public static function getPublisher(UserEntityInterface $user = null)
+    {
+        $role = static::getRole($user);
+
+        if (!$role instanceof Publisher)
+        {
+            throw new InvalidUserRoleException('user is not a publisher');
+        }
+
+        return $role;
     }
 }

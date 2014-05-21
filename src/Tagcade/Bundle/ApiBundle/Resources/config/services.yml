@@ -7,7 +7,7 @@ parameters:
 services:
     tagcade_api.site.handler:
         class: %tagcade_api.site.handler.class%
-        arguments: [@doctrine.orm.entity_manager, %tagcade_api.site.class%, @form.factory, @tagcade_user.factory.role]
+        arguments: [@doctrine.orm.entity_manager, %tagcade_api.site.class%, @form.factory, @tagcade_user.role.publisher]
 
     tagcade_api.event.authentication_success_listener:
         class: %tagcade_api.event.authentication_success_listener.class%

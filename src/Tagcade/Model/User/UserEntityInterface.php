@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\User;
 
-interface UserInterface
+interface UserEntityInterface
 {
     public function getId();
 

@@ -2,17 +2,17 @@
 
 namespace Tagcade\Test;
 
-use Tagcade\Model\User\UserInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @param array $roles
-     * @return UserInterface
+     * @return UserEntityInterface
      */
     protected function getUser(array $roles)
     {
-        $user = $this->getMock('Tagcade\Model\User\UserInterface');
+        $user = $this->getMock('Tagcade\Model\User\UserEntityInterface');
 
         $user->expects($this->any())
             ->method('getRoles')

@@ -3,14 +3,14 @@
 namespace Tagcade\Model;
 
 use Tagcade\Model\User\Role\Publisher;
-use Tagcade\Model\User\UserInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 class Site implements SiteInterface
 {
     protected $id;
 
     /**
-     * @var UserInterface
+     * @var UserEntityInterface
      */
     protected $publisher;
     protected $name;
