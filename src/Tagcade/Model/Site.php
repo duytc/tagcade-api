@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model;
 
-use Tagcade\Model\User\Role\Publisher;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class Site implements SiteInterface
@@ -31,7 +31,7 @@ class Site implements SiteInterface
         return $this->id;
     }
 
-    public function setPublisher(Publisher $publisher) {
+    public function setPublisher(PublisherInterface $publisher) {
         $this->publisher = $publisher->getUser();
     }
 

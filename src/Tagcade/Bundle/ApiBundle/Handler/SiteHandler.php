@@ -15,7 +15,7 @@ class SiteHandler implements SiteHandlerInterface
     private $entityClass;
     private $repository;
     private $formFactory;
-    private $user;
+    private $publisher;
 
     public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory, PublisherInterface $publisher)
     {
@@ -23,7 +23,7 @@ class SiteHandler implements SiteHandlerInterface
         $this->entityClass = $entityClass;
         $this->repository = $this->om->getRepository($this->entityClass);
         $this->formFactory = $formFactory;
-        $this->user = $publisher->getUser();
+        $this->publisher = $publisher;
     }
 
     /**
@@ -107,10 +107,10 @@ class SiteHandler implements SiteHandlerInterface
         $form = $this->formFactory->create(new SiteType(), $site, array('method' => $method));
         $form->submit($parameters, 'PATCH' !== $method);
         if ($form->isValid()) {
+            $site->setPublisher($this->publisher);
 
-            $site = $form->getData();
-            //$this->om->persist($site);
-            //$this->om->flush($site);
+            $this->om->persist($site);
+            $this->om->flush($site);
 
             return $site;
         }

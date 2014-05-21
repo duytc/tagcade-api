@@ -102,6 +102,7 @@ fos_rest:
         json: true
         xml: true
         html: true
+    param_fetcher_listener: true
     view:
         view_response_listener: force
         formats:
