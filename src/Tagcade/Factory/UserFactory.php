@@ -7,6 +7,7 @@ use Tagcade\Model\User\Role\SuperAdmin;
 use Tagcade\Model\User\Role\Admin;
 use Tagcade\Model\User\Role\Publisher;
 use Tagcade\Model\User\Role\PublisherSubAccount;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Exception\InvalidUserRoleException;
 use \InvalidArgumentException;
 
@@ -59,7 +60,7 @@ class UserFactory
     {
         $role = static::getRole($user);
 
-        if (!$role instanceof Publisher)
+        if (!$role instanceof PublisherInterface)
         {
             throw new InvalidUserRoleException('user is not a publisher');
         }

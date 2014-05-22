@@ -3,20 +3,23 @@
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+
+// annotations
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Form\FormTypeInterface;
+// end annotations
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-use FOS\RestBundle\Controller\Annotations\QueryParam;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-use Tagcade\Model\SiteInterface;
-
-use Tagcade\Bundle\ApiBundle\Exception\InvalidFormException;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use Tagcade\Exception\InvalidFormException;
+use Tagcade\Model\SiteInterface;
 
 /**
  * @Security("has_role('ROLE_PUBLISHER')")
@@ -33,8 +36,8 @@ class SiteController extends FOSRestController
      *  }
      * )
      *
-     * @QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing sites.")
-     * @QueryParam(name="limit", requirements="\d+", default="5", description="How many sites to return.")
+     * @Rest\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing sites.")
+     * @Rest\QueryParam(name="limit", requirements="\d+", default="5", description="How many sites to return.")
      *
      * @param ParamFetcherInterface $paramFetcher param fetcher service
      *
@@ -62,12 +65,11 @@ class SiteController extends FOSRestController
      *  }
      * )
      *
-     *
      * @param int $id the site id
      *
      * @return array
      *
-     * @throws NotFoundHttpException when site not exist
+     * @throws NotFoundHttpException when site does not exist
      */
     public function getSiteAction($id)
     {

@@ -1,5 +1,5 @@
 api_get_token:
-    path:      /auth/getToken
+    path:      /user/getToken
     defaults:  { _controller: TagcadeUserBundle:Token:getToken }
     methods:  [POST]
 

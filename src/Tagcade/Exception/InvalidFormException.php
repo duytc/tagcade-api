@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Bundle\ApiBundle\Exception;
+namespace Tagcade\Exception;
 
 class InvalidFormException extends \RuntimeException
 {

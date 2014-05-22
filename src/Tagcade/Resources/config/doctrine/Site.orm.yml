@@ -1,5 +1,6 @@
 Tagcade\Entity\Site:
     type: entity
+    repositoryClass: Tagcade\Repository\SiteRepository
     table: sites
     id:
         id:

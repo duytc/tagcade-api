@@ -6,23 +6,32 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Tagcade\Model\SiteInterface;
 use Tagcade\Form\Type\SiteType;
-use Tagcade\Bundle\ApiBundle\Exception\InvalidFormException;
+use Tagcade\Exception\InvalidFormException;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class SiteHandler implements SiteHandlerInterface
 {
     private $om;
     private $entityClass;
+
+    /**
+     * @var \Tagcade\Repository\SiteRepository
+     */
     private $repository;
     private $formFactory;
+
+    /**
+     * @var PublisherInterface|null
+     */
     private $publisher;
 
-    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory)
+    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory, PublisherInterface $publisher)
     {
         $this->om = $om;
         $this->entityClass = $entityClass;
         $this->repository = $this->om->getRepository($this->entityClass);
         $this->formFactory = $formFactory;
+        $this->publisher = $publisher;
     }
 
     public function setPublisher(PublisherInterface $publisher)
@@ -41,9 +50,9 @@ class SiteHandler implements SiteHandlerInterface
     /**
      * @inheritdoc
      */
-    public function all($limit = 5, $offset = 0)
+    public function all($limit = null, $offset = 0)
     {
-        return $this->repository->findBy(array(), null, $limit, $offset);
+        return $this->repository->getSitesForPublisher($this->publisher, $limit, $offset);
     }
 
     /**
@@ -88,7 +97,9 @@ class SiteHandler implements SiteHandlerInterface
         $form = $this->formFactory->create(new SiteType(), $site, array('method' => $method));
         $form->submit($parameters, 'PATCH' !== $method);
         if ($form->isValid()) {
-            $site->setPublisher($this->publisher);
+            if (null == $site->getPublisher()) {
+                $site->setPublisher($this->publisher);
+            }
 
             $this->om->persist($site);
             $this->om->flush($site);

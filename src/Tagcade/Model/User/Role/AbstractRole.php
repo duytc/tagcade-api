@@ -27,4 +27,13 @@ abstract class AbstractRole
     {
         return $this->user;
     }
+
+    public function getId()
+    {
+        if (null == $this->getUser()) {
+            return null;
+        }
+
+        return $this->getUser()->getId();
+    }
 }

@@ -35,6 +35,11 @@ class Site implements SiteInterface
         $this->publisher = $publisher->getUser();
     }
 
+    public function getPublisher()
+    {
+        return $this->publisher;
+    }
+
     public function getPublisherId()
     {
         if (!$this->publisher) {
