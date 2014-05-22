@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Bundle\ApiBundle\Controller;
+namespace Tagcade\Bundle\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Bundle\ApiBundle\Handler;
+namespace Tagcade\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -26,12 +26,13 @@ class SiteHandler implements SiteHandlerInterface
         $this->publisher = $publisher;
     }
 
+    public function setPublisher(PublisherInterface $publisher)
+    {
+        $this->publisher = $publisher;
+    }
+
     /**
-     * Get a Site.
-     *
-     * @param mixed $id
-     *
-     * @return SiteInterface
+     * @inheritdoc
      */
     public function get($id)
     {
@@ -39,12 +40,7 @@ class SiteHandler implements SiteHandlerInterface
     }
 
     /**
-     * Get a list of Sites.
-     *
-     * @param int $limit the limit of the result
-     * @param int $offset starting from the offset
-     *
-     * @return array
+     * @inheritdoc
      */
     public function all($limit = 5, $offset = 0)
     {
@@ -52,11 +48,7 @@ class SiteHandler implements SiteHandlerInterface
     }
 
     /**
-     * Create a new Site.
-     *
-     * @param array $parameters
-     *
-     * @return SiteInterface
+     * @inheritdoc
      */
     public function post(array $parameters)
     {
@@ -66,12 +58,7 @@ class SiteHandler implements SiteHandlerInterface
     }
 
     /**
-     * Edit a Site.
-     *
-     * @param SiteInterface $site
-     * @param array $parameters
-     *
-     * @return SiteInterface
+     * @inheritdoc
      */
     public function put(SiteInterface $site, array $parameters)
     {
@@ -79,12 +66,7 @@ class SiteHandler implements SiteHandlerInterface
     }
 
     /**
-     * Partially update a Site.
-     *
-     * @param SiteInterface $site
-     * @param array $parameters
-     *
-     * @return SiteInterface
+     * @inheritdoc
      */
     public function patch(SiteInterface $site, array $parameters)
     {

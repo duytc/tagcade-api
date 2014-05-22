@@ -93,7 +93,7 @@ dms_filter:
 fos_rest:
     routing_loader:
         default_format: json
-        #include_format: false
+        include_format: false
     format_listener:
         rules:
             - { path: '^/api/', fallback_format: json, prefer_extension: false, priorities: ['json', 'xml'] }

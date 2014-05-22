@@ -1,11 +1,10 @@
 <?php
 
-namespace Tagcade\Bundle\ApiBundle\Form\Type;
+namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\FormInterface;
 use Tagcade\Entity\Site;
 
 class SiteType extends AbstractType
@@ -27,6 +26,6 @@ class SiteType extends AbstractType
 
     public function getName()
     {
-        return 'site';
+        return '';
     }
 }

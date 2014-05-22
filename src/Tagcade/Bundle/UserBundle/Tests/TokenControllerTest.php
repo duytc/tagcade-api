@@ -10,7 +10,7 @@ class TokenControllerTest extends WebTestCase
     public function setUp()
     {
         $classes = array(
-            'Tagcade\Bundle\ApiBundle\Tests\Fixtures\LoadUserData',
+            'Tagcade\Tests\Fixtures\LoadUserData',
         );
         $this->loadFixtures($classes);
     }

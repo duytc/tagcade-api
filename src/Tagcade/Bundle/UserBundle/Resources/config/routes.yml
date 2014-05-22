@@ -1,0 +1,3 @@
+tagcade_get_token:
+    path:     /user/getToken
+    defaults: { _controller: tagcade_user.token.controller:getTokenAction }

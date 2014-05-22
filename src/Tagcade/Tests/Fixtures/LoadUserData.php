@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Bundle\ApiBundle\Tests\Fixtures;
+namespace Tagcade\Tests\Fixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;

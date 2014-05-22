@@ -11,8 +11,8 @@ class SiteControllerTest extends ApiTestCase
     public function setUp()
     {
         $classes = array(
-            'Tagcade\Bundle\ApiBundle\Tests\Fixtures\LoadUserData',
-            'Tagcade\Bundle\ApiBundle\Tests\Fixtures\LoadSiteData',
+            'Tagcade\Tests\Fixtures\LoadUserData',
+            'Tagcade\Tests\Fixtures\LoadSiteData',
         );
         $this->loadFixtures($classes);
     }
