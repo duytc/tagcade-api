@@ -5,7 +5,7 @@ namespace Tagcade\Handler;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Tagcade\Model\SiteInterface;
-use Tagcade\Bundle\ApiBundle\Form\Type\SiteType;
+use Tagcade\Form\Type\SiteType;
 use Tagcade\Bundle\ApiBundle\Exception\InvalidFormException;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -17,13 +17,12 @@ class SiteHandler implements SiteHandlerInterface
     private $formFactory;
     private $publisher;
 
-    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory, PublisherInterface $publisher)
+    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory)
     {
         $this->om = $om;
         $this->entityClass = $entityClass;
         $this->repository = $this->om->getRepository($this->entityClass);
         $this->formFactory = $formFactory;
-        $this->publisher = $publisher;
     }
 
     public function setPublisher(PublisherInterface $publisher)

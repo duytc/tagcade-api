@@ -36,12 +36,11 @@ class SiteController extends FOSRestController
      * @QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing sites.")
      * @QueryParam(name="limit", requirements="\d+", default="5", description="How many sites to return.")
      *
-     * @param Request $request the request object
      * @param ParamFetcherInterface $paramFetcher param fetcher service
      *
      * @return array
      */
-    public function getSitesAction(Request $request, ParamFetcherInterface $paramFetcher)
+    public function getSitesAction(ParamFetcherInterface $paramFetcher)
     {
         $offset = $paramFetcher->get('offset');
         $offset = null == $offset ? 0 : $offset;
