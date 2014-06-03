@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
             new Gfreeau\Bundle\GetJWTBundle\GfreeauGetJWTBundle(),
             new Gfreeau\Bundle\CustomValidationPathBundle\GfreeauCustomValidationPathBundle(),
+            new Nelmio\CorsBundle\NelmioCorsBundle(),
 
             new Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
             new Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),
@@ -47,5 +48,23 @@ class AppKernel extends Kernel
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+    }
+
+    public function getCacheDir()
+    {
+        if (in_array($this->environment, array('dev', 'test'))) {
+            return '/dev/shm/tagcade-api/cache/' .  $this->environment;
+        }
+
+        return parent::getCacheDir();
+    }
+
+    public function getLogDir()
+    {
+        if (in_array($this->environment, array('dev', 'test'))) {
+            return '/dev/shm/tagcade-api/logs';
+        }
+
+        return parent::getLogDir();
     }
 }

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ea7a27bf9aa12a64540c59ec63d4db5b",
+    "hash": "afe4f5fd1225a6caa90a2a6c3f3d1545",
     "packages": [
         {
             "name": "dms/dms-filter",
@@ -878,12 +878,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle.git",
-                "reference": "7059a81e6ffa7121ab6f038c60dc8ade5d9bc701"
+                "reference": "dd7bb4e9a17f967d39e8292a72943049d008d348"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gfreeau/GfreeauCustomValidationPathBundle/zipball/7059a81e6ffa7121ab6f038c60dc8ade5d9bc701",
-                "reference": "7059a81e6ffa7121ab6f038c60dc8ade5d9bc701",
+                "url": "https://api.github.com/repos/gfreeau/GfreeauCustomValidationPathBundle/zipball/dd7bb4e9a17f967d39e8292a72943049d008d348",
+                "reference": "dd7bb4e9a17f967d39e8292a72943049d008d348",
                 "shasum": ""
             },
             "require": {
@@ -917,7 +917,7 @@
                 "source": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle/tree/master",
                 "issues": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle/issues"
             },
-            "time": "2014-05-17 22:02:09"
+            "time": "2014-05-20 12:14:29"
         },
         {
             "name": "gfreeau/get-jwt-bundle",
@@ -1592,6 +1592,61 @@
                 "rest"
             ],
             "time": "2014-05-16 09:33:58"
+        },
+        {
+            "name": "nelmio/cors-bundle",
+            "version": "1.3.0",
+            "target-dir": "Nelmio/CorsBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nelmio/NelmioCorsBundle.git",
+                "reference": "5f78712e585d3a42fbad2969e0b8010a492031d5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nelmio/NelmioCorsBundle/zipball/5f78712e585d3a42fbad2969e0b8010a492031d5",
+                "reference": "5f78712e585d3a42fbad2969e0b8010a492031d5",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/framework-bundle": "~2.1"
+            },
+            "require-dev": {
+                "matthiasnoback/symfony-dependency-injection-test": "0.2.*",
+                "mockery/mockery": "dev-master"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Nelmio\\CorsBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nelmio",
+                    "homepage": "http://nelm.io"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://github.com/nelmio/NelmioCorsBundle/contributors"
+                }
+            ],
+            "description": "Adds CORS (Cross-Origin Resource Sharing) headers support in your Symfony2 application",
+            "keywords": [
+                "api",
+                "cors",
+                "crossdomain"
+            ],
+            "time": "2014-02-05 23:25:21"
         },
         {
             "name": "phpcollection/phpcollection",
