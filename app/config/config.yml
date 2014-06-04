@@ -69,9 +69,11 @@ doctrine:
                 connection: default
                 naming_strategy: doctrine.orm.naming_strategy.underscore
                 mappings:
+                    # bundles
                     FOSUserBundle: ~
                     TagcadeUserBundle: ~
-                    model:
+                    # custom
+                    CoreEntities:
                         type: yml
                         dir: %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Core
                         prefix: Tagcade\Entity\Core
@@ -82,7 +84,7 @@ doctrine:
                 connection: reports
                 naming_strategy: doctrine.orm.naming_strategy.underscore
                 mappings:
-                    model:
+                    ReportEntities:
                         type: yml
                         dir: %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Report
                         prefix: Tagcade\Entity\Report
