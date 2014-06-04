@@ -1,6 +1,7 @@
 Tagcade\Entity\Report\SourceReport\Report:
     type: entity
     table: source_reports
+    readOnly: true
     uniqueConstraints:
         unique_report_idx:
             columns:
