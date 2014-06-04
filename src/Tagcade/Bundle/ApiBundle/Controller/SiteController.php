@@ -58,7 +58,7 @@ class SiteController extends FOSRestController
      * @ApiDoc(
      *  resource = true,
      *  description = "Gets a Site for a given id",
-     *  output = "Tagcade\Entity\Site",
+     *  output = "Tagcade\Entity\Core\Site",
      *  statusCodes = {
      *      200 = "Returned when successful",
      *      404 = "Returned when the site is not found"

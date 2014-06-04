@@ -1,0 +1,25 @@
+Tagcade\Entity\Report\SourceReport\Report:
+    type: entity
+    table: source_reports
+    uniqueConstraints:
+        unique_report_idx:
+            columns:
+                - date
+                - site
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        site:
+            type: string
+    oneToMany:
+        records:
+            targetEntity: Tagcade\Entity\Report\SourceReport\Record
+            cascade:
+                - remove
+                - persist
+            mappedBy: sourceReport

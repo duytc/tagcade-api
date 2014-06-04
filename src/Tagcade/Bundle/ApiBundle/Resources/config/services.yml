@@ -1,6 +1,6 @@
 parameters:
     tagcade_api.site.handler.class: Tagcade\Handler\SiteHandler
-    tagcade_api.site.class: Tagcade\Entity\Site
+    tagcade_api.site.class: Tagcade\Entity\Core\Site
 
     tagcade_api.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
 

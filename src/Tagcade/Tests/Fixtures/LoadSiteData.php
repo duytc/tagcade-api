@@ -5,7 +5,7 @@ namespace Tagcade\Tests\Fixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Entity\Site;
+use Tagcade\Entity\Core\Site;
 use Tagcade\Model\User\Role\Publisher;
 
 class LoadSiteData extends AbstractFixture implements OrderedFixtureInterface

@@ -58,7 +58,7 @@ class TokenControllerTest extends WebTestCase
     protected function makeJWTRequest(array $parameters)
     {
         $client = static::createClient();
-        $client->request('POST', $this->getUrl('api_get_token'), $parameters);
+        $client->request('POST', $this->getUrl('user_get_token'), $parameters);
 
         return $client->getResponse();
     }

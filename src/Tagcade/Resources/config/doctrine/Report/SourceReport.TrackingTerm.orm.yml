@@ -1,0 +1,13 @@
+Tagcade\Entity\Report\SourceReport\TrackingTerm:
+    type: entity
+    table: tracking_terms
+    repositoryClass: Tagcade\Entity\Report\SourceReport\TrackingTermRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        term:
+            type: string
+

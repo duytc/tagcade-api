@@ -1,0 +1,96 @@
+Tagcade\Entity\Report\SourceReport\Record:
+    type: entity
+    table: source_report_records
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        displayOpportunities:
+            type: integer
+            nullable: true
+        displayImpressions:
+            type: integer
+            nullable: true
+        displayFillRate:
+            type: decimal
+            scale: 4
+            precision: 5
+            nullable: true
+        displayClicks:
+            type: integer
+            nullable: true
+        displayCTR:
+            type: decimal
+            scale: 4
+            precision: 5
+            nullable: true
+        displayIPV:
+            type: decimal
+            scale: 4
+            precision: 5
+            nullable: true
+        videoPlayerReady:
+            type: integer
+            nullable: true
+        videoAdPlays:
+            type: integer
+            nullable: true
+        videoAdImpressions:
+            type: integer
+            nullable: true
+        videoAdCompletions:
+            type: integer
+            nullable: true
+        videoAdCompletionRate:
+            type: decimal
+            scale: 4
+            precision: 5
+            nullable: true
+        videoIPV:
+            type: decimal
+            scale: 4
+            precision: 5
+            nullable: true
+        videoAdClicks:
+            type: integer
+            nullable: true
+        videoStarts:
+            type: integer
+            nullable: true
+        videoEnds:
+            type: integer
+            nullable: true
+        visits:
+            type: integer
+        pageViews:
+            type: integer
+        qtos:
+            type: integer
+        qtosPercentage:
+            type: decimal
+            scale: 4
+            precision: 5
+    manyToOne:
+        sourceReport:
+            targetEntity: Tagcade\Entity\Report\SourceReport\Report
+            inversedBy: records
+    manyToMany:
+        trackingKeys:
+            targetEntity: Tagcade\Entity\Report\SourceReport\TrackingKey
+            cascade:
+                - remove
+                - persist
+            joinTable:
+                name: source_report_record_tracking_keys
+                joinColumns:
+                    -
+                        name: record_id
+                        referencedColumnName: id
+                        onDelete: CASCADE
+                inverseJoinColumns:
+                    -
+                        name: tracking_key_id
+                        referencedColumnName: id
+                        onDelete: CASCADE

@@ -5,7 +5,7 @@ namespace Tagcade\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tagcade\Entity\Site;
+use Tagcade\Entity\Core\Site;
 
 class SiteType extends AbstractType
 {
@@ -20,7 +20,7 @@ class SiteType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => '\Tagcade\Entity\Site',
+            'data_class' => '\Tagcade\Entity\Core\Site',
         ));
     }
 

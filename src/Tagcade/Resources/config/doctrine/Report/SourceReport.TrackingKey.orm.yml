@@ -1,0 +1,16 @@
+Tagcade\Entity\Report\SourceReport\TrackingKey:
+    type: entity
+    table: tracking_keys
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        value:
+            type: string
+    manyToOne:
+        trackingTerm:
+            targetEntity: Tagcade\Entity\Report\SourceReport\TrackingTerm
+            cascade:
+                - persist

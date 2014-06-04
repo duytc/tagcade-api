@@ -1,9 +1,7 @@
-api_get_token:
-    path:      /user/getToken
-    defaults:  { _controller: TagcadeUserBundle:Token:getToken }
-    methods:  [POST]
+user:
+    resource: "@TagcadeUserBundle/Resources/config/routing.yml"
 
 api:
-    resource: "@TagcadeApiBundle/Resources/config/routes.yml"
+    resource: "@TagcadeApiBundle/Resources/config/routing.yml"
     type:     rest
     prefix:   /api/v1

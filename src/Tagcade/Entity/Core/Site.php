@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Entity;
+namespace Tagcade\Entity\Core;
 
 use Tagcade\Model\Site as SiteModel;
 

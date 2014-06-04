@@ -1,4 +1,4 @@
-Tagcade\Entity\Site:
+Tagcade\Entity\Core\Site:
     type: entity
     repositoryClass: Tagcade\Repository\SiteRepository
     table: sites
