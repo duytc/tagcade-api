@@ -1,0 +1,7 @@
+parameters:
+    tagcade_api.report.source_report.handler.class: Tagcade\Handler\Report\SourceReportHandler
+
+services:
+    tagcade_api.report.source_report.handler:
+        class: %tagcade_api.report.source_report.handler.class%
+        arguments: [@doctrine.orm.reports_entity_manager]

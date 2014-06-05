@@ -1,0 +1,4 @@
+report_api_source_report:
+    type: rest
+    resource: "Tagcade\Bundle\ReportApiBundle\Controller\SourceReportController"
+    name_prefix:  report_api_1_
