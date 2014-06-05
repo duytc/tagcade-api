@@ -25,6 +25,7 @@ class SourceReportController extends FOSRestController implements ClassResourceI
      *
      * @Rest\QueryParam(name="from", requirements="\d{6}", nullable=true, description="Date of the report in format YYMMDD, defaults to the current day")
      * @Rest\QueryParam(name="to", requirements="\d{6}", nullable=true, description="If you want a report range, set this to a date in format YYMMDD - must be older than 'from'")
+     * @Rest\QueryParam(name="rowLimit", requirements="\d+", default="250", description="Limit the amount of rows returned in the report, -1 for no limit")
      *
      * @param string $domain domain name of the site you want reports for
      * @param ParamFetcherInterface $paramFetcher
@@ -35,7 +36,8 @@ class SourceReportController extends FOSRestController implements ClassResourceI
     {
         $dateFrom = $paramFetcher->get('from', true);
         $dateTo = $paramFetcher->get('to', true);
+        $rowLimit = $paramFetcher->get('rowLimit');
 
-        return $this->get('tagcade_api.report.source_report.handler')->getReports($domain, $dateFrom, $dateTo);
+        return $this->get('tagcade.handler.source_report')->getReports($domain, $dateFrom, $dateTo, $rowLimit);
     }
 }

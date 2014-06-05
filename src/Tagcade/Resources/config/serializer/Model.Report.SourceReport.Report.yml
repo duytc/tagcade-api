@@ -1,2 +1,9 @@
 Tagcade\Model\Report\SourceReport\Report:
     exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+        site:
+            expose: true
+        records:
+            expose: true

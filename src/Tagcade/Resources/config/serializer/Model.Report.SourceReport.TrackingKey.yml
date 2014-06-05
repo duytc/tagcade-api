@@ -1,2 +1,8 @@
 Tagcade\Model\Report\SourceReport\TrackingKey:
     exclusion_policy: ALL
+    properties:
+        trackingTerm:
+            expose: true
+            inline: true
+        value:
+            expose: true

@@ -2,20 +2,33 @@
 
 namespace Tagcade\Handler\Report;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use \DateTime;
+use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
+use Tagcade\Service\Reporting\ReportUtilInterface;
+use DateTime;
 
 class SourceReportHandler
 {
-    private $om;
+    private $repository;
+    private $reportUtil;
 
-    public function __construct(ObjectManager $om)
+    public function __construct(ReportRepositoryInterface $repository, ReportUtilInterface $reportUtil)
     {
-        $this->om = $om;
+        $this->repository = $repository;
+        $this->reportUtil = $reportUtil;
     }
 
-    public function getReports($domain, $dateTo, $dateFrom)
+    /**
+     * @param string $domain
+     * @param int|DateTime|null $dateTo date in format of YYMMDD, a datetime or null for the current date
+     * @param int|DateTime|null $dateFrom date in format of YYMMDD, a datetime or null for no date range
+     * @param int $rowLimit Limit the amount of rows returned in the report, -1 for no limit
+     * @return array
+     */
+    public function getReports($domain, $dateTo = null, $dateFrom = null, $rowLimit = -1)
     {
-        return [];
+        $dateTo = $this->reportUtil->getDateTime($dateTo, true);
+        $dateFrom = $this->reportUtil->getDateTime($dateFrom);
+
+        return $this->repository->getReports($domain, $dateTo, $dateFrom, $rowLimit);
     }
 }

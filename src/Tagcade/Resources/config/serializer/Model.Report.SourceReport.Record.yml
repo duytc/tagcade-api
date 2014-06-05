@@ -1,2 +1,46 @@
 Tagcade\Model\Report\SourceReport\Record:
     exclusion_policy: ALL
+    properties:
+        trackingKeys:
+            expose: true
+        displayOpportunities:
+            expose: true
+        displayImpressions:
+            expose: true
+        displayFillRate:
+            expose: true
+        displayClicks:
+            expose: true
+        displayCTR:
+            expose: true
+            serialized_name: display_ctr
+        displayIPV:
+            expose: true
+            serialized_name: display_ipv
+        videoPlayerReady:
+            expose: true
+        videoAdPlays:
+            expose: true
+        videoAdImpressions:
+            expose: true
+        videoAdCompletions:
+            expose: true
+        videoAdCompletionRate:
+            expose: true
+        videoIPV:
+            expose: true
+            serialized_name: video_ipv
+        videoAdClicks:
+            expose: true
+        videoStarts:
+            expose: true
+        videoEnds:
+            expose: true
+        visits:
+            expose: true
+        pageViews:
+            expose: true
+        qtos:
+            expose: true
+        qtosPercentage:
+            expose: true

@@ -8,6 +8,10 @@ Tagcade\Entity\Report\SourceReport\Record:
             generator:
                 strategy: IDENTITY
     fields:
+        trackingKeys1:
+            json_array: true
+            nullable: true
+            type: text
         displayOpportunities:
             type: integer
             nullable: true

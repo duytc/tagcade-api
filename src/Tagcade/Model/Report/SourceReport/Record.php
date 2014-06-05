@@ -14,6 +14,11 @@ class Record
     /**
      * @var array
      */
+    protected $trackingKeys1;
+
+    /**
+     * @var array
+     */
     protected $trackingKeys;
 
     /**
