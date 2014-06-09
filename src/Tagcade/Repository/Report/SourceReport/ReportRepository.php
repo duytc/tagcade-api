@@ -16,6 +16,10 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
      */
     public function getReports($domain, DateTime $dateFrom, DateTime $dateTo = null, $rowOffset = null, $rowLimit = null, $sortField = null)
     {
+        if (null == $dateTo) {
+            $dateTo = $dateFrom;
+        }
+
         $allowedSortFields = ['visits', 'displayOpportunities', 'videoAdImpressions'];
 
         if (!in_array($sortField, $allowedSortFields)) {
@@ -26,7 +30,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             SELECT report, rec FROM %s report
             JOIN report.records rec
             WHERE report.site = :domain
-            AND report.date = :date
+            AND report.date BETWEEN :dateFrom AND :dateTo
             ORDER BY rec.visits DESC
         ';
 
@@ -43,7 +47,8 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         }
 
         $query->setParameter('domain', $domain, Type::STRING);
-        $query->setParameter('date', $dateFrom, Type::DATE);
+        $query->setParameter('dateFrom', $dateFrom, Type::DATE);
+        $query->setParameter('dateTo', $dateTo, Type::DATE);
 
         return $query->getResult();
     }
