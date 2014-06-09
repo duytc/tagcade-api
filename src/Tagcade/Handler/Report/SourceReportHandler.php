@@ -31,6 +31,9 @@ class SourceReportHandler
         $dateFrom = $this->reportUtil->getDateTime($dateFrom, $todayIfEmpty = true);
         $dateTo = $this->reportUtil->getDateTime($dateTo);
 
+        $rowOffset = intval($rowOffset);
+        $rowLimit = intval($rowLimit);
+
         return $this->repository->getReports($domain, $dateFrom, $dateTo, $rowOffset, $rowLimit, $sortField);
     }
 }
