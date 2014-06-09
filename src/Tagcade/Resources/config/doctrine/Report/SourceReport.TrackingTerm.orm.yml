@@ -1,7 +1,6 @@
 Tagcade\Entity\Report\SourceReport\TrackingTerm:
     type: entity
     table: tracking_terms
-    readOnly: true
     repositoryClass: Tagcade\Entity\Report\SourceReport\TrackingTermRepository
     id:
         id:
@@ -11,4 +10,5 @@ Tagcade\Entity\Report\SourceReport\TrackingTerm:
     fields:
         term:
             type: string
+            unique: true
 

@@ -16,16 +16,6 @@ class TrackingKey
      */
     protected $value;
 
-    /**
-     * @param TrackingTerm $trackingTerm
-     * @param $value
-     */
-    public function __construct(TrackingTerm  $trackingTerm, $value)
-    {
-        $this->trackingTerm = $trackingTerm;
-        $this->value = $value;
-    }
-
     public function getTrackingTerm()
     {
         return $this->trackingTerm;

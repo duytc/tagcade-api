@@ -2,7 +2,10 @@ Tagcade\Model\Report\SourceReport\Record:
     exclusion_policy: ALL
     properties:
         trackingKeys:
+            expose: false
+        embeddedTrackingKeys:
             expose: true
+            serialized_name: tracking_keys
         displayOpportunities:
             expose: true
         displayImpressions:

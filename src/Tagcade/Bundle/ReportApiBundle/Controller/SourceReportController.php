@@ -25,7 +25,9 @@ class SourceReportController extends FOSRestController implements ClassResourceI
      *
      * @Rest\QueryParam(name="from", requirements="\d{6}", nullable=true, description="Date of the report in format YYMMDD, defaults to the current day")
      * @Rest\QueryParam(name="to", requirements="\d{6}", nullable=true, description="If you want a report range, set this to a date in format YYMMDD - must be older than 'from'")
-     * @Rest\QueryParam(name="rowLimit", requirements="\d+", default="250", description="Limit the amount of rows returned in the report, -1 for no limit")
+     * @Rest\QueryParam(name="rowOffset", requirements="\d+", nullable=true, description="Number of rows to skip before rowLimit kicks in")
+     * @Rest\QueryParam(name="rowLimit", requirements="\d+", default=200, description="Limit the amount of rows returned in the report, -1 for no limit")
+     * @Rest\QueryParam(name="sortField", requirements="[a-z_]+", default="visits", description="Column to sort by, i.e visits - not all columns are supported")
      *
      * @param string $domain domain name of the site you want reports for
      * @param ParamFetcherInterface $paramFetcher
@@ -36,8 +38,10 @@ class SourceReportController extends FOSRestController implements ClassResourceI
     {
         $dateFrom = $paramFetcher->get('from', true);
         $dateTo = $paramFetcher->get('to', true);
-        $rowLimit = $paramFetcher->get('rowLimit');
+        $rowOffset = $paramFetcher->get('rowOffset', true);
+        $rowLimit = $paramFetcher->get('rowLimit', true);
+        $sortField = $paramFetcher->get('sortField');
 
-        return $this->get('tagcade.handler.source_report')->getReports($domain, $dateFrom, $dateTo, $rowLimit);
+        return $this->get('tagcade.handler.source_report')->getReports($domain, $dateFrom, $dateTo, $rowOffset, $rowLimit, $sortField);
     }
 }

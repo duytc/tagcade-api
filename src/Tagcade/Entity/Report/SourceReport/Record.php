@@ -7,6 +7,11 @@ use Tagcade\Model\Report\SourceReport\Record as RecordModel;
 
 class Record extends RecordModel
 {
+    /**
+     * @var string
+     */
+    protected $trackingKeysInline;
+
     public function __construct()
     {
         $this->trackingKeys = new ArrayCollection();

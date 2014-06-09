@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\SourceReport;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use \DateTime;
 
 class Report
@@ -22,15 +23,9 @@ class Report
      */
     protected $records;
 
-    /**
-     * @param DateTime $date
-     * @param string $site
-     */
-    public function __construct(DateTime $date, $site)
+    public function __construct()
     {
-        $this->date = $date;
-        $this->site = $site;
-        $this->records = [];
+        $this->records = new ArrayCollection();
     }
 
     /**

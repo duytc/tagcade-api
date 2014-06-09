@@ -1,17 +1,15 @@
 Tagcade\Entity\Report\SourceReport\Record:
     type: entity
     table: source_report_records
-    readOnly: true
     id:
         id:
             type: integer
             generator:
                 strategy: IDENTITY
     fields:
-        trackingKeys1:
-            json_array: true
+        embeddedTrackingKeys:
             nullable: true
-            type: text
+            type: json_array
         displayOpportunities:
             type: integer
             nullable: true
@@ -21,7 +19,6 @@ Tagcade\Entity\Report\SourceReport\Record:
         displayFillRate:
             type: decimal
             scale: 4
-            precision: 5
             nullable: true
         displayClicks:
             type: integer
@@ -29,12 +26,10 @@ Tagcade\Entity\Report\SourceReport\Record:
         displayCTR:
             type: decimal
             scale: 4
-            precision: 5
             nullable: true
         displayIPV:
             type: decimal
             scale: 4
-            precision: 5
             nullable: true
         videoPlayerReady:
             type: integer
@@ -51,12 +46,10 @@ Tagcade\Entity\Report\SourceReport\Record:
         videoAdCompletionRate:
             type: decimal
             scale: 4
-            precision: 5
             nullable: true
         videoIPV:
             type: decimal
             scale: 4
-            precision: 5
             nullable: true
         videoAdClicks:
             type: integer
@@ -69,14 +62,17 @@ Tagcade\Entity\Report\SourceReport\Record:
             nullable: true
         visits:
             type: integer
+            nullable: true
         pageViews:
             type: integer
+            nullable: true
         qtos:
             type: integer
+            nullable: true
         qtosPercentage:
             type: decimal
             scale: 4
-            precision: 5
+            nullable: true
     manyToOne:
         sourceReport:
             targetEntity: Tagcade\Entity\Report\SourceReport\Report
@@ -99,3 +95,6 @@ Tagcade\Entity\Report\SourceReport\Record:
                         name: tracking_key_id
                         referencedColumnName: id
                         onDelete: CASCADE
+    lifecycleCallbacks:
+        prePersist: [ setCalculatedFields ]
+        preUpdate: [ setCalculatedFields ]

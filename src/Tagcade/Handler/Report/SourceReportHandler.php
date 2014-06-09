@@ -19,16 +19,18 @@ class SourceReportHandler
 
     /**
      * @param string $domain
-     * @param int|DateTime|null $dateTo date in format of YYMMDD, a datetime or null for the current date
-     * @param int|DateTime|null $dateFrom date in format of YYMMDD, a datetime or null for no date range
-     * @param int $rowLimit Limit the amount of rows returned in the report, -1 for no limit
+     * @param int|DateTime|null $dateFrom date in format of YYMMDD, a datetime or null for the current date
+     * @param int|DateTime|null $dateTo date in format of YYMMDD, a datetime or null for no date range
+     * @param int|null $rowOffset
+     * @param int|null $rowLimit Limit the amount of rows returned in the report, -1 for no limit
+     * @param string|null $sortField
      * @return array
      */
-    public function getReports($domain, $dateTo = null, $dateFrom = null, $rowLimit = -1)
+    public function getReports($domain, $dateFrom = null, $dateTo = null, $rowOffset = null, $rowLimit = null, $sortField = null)
     {
-        $dateTo = $this->reportUtil->getDateTime($dateTo, true);
-        $dateFrom = $this->reportUtil->getDateTime($dateFrom);
+        $dateFrom = $this->reportUtil->getDateTime($dateFrom, $todayIfEmpty = true);
+        $dateTo = $this->reportUtil->getDateTime($dateTo);
 
-        return $this->repository->getReports($domain, $dateTo, $dateFrom, $rowLimit);
+        return $this->repository->getReports($domain, $dateFrom, $dateTo, $rowOffset, $rowLimit, $sortField);
     }
 }

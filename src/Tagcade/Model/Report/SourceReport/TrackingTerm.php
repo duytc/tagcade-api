@@ -11,14 +11,6 @@ class TrackingTerm
      */
     protected $term;
 
-    /**
-     * @param string $term
-     */
-    public function __construct($term)
-    {
-        $this->term = $term;
-    }
-
     public function getTerm()
     {
         return $this->term;

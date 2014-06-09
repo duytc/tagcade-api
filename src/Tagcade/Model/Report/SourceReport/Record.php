@@ -2,6 +2,8 @@
 
 namespace Tagcade\Model\Report\SourceReport;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class Record
 {
     protected $id;
@@ -12,9 +14,9 @@ class Record
     protected $sourceReport;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $trackingKeys1;
+    protected $embeddedTrackingKeys;
 
     /**
      * @var array
@@ -118,7 +120,7 @@ class Record
 
     public function __construct()
     {
-        $this->trackingKeys = [];
+        $this->trackingKeys = new ArrayCollection();
     }
 
     /**
@@ -157,77 +159,20 @@ class Record
     }
 
     /**
-     * @return float
-     */
-    public function getDisplayCTR()
-    {
-        return $this->displayCTR;
-    }
-
-    /**
-     * @param float $displayCTR
-     * @return $this
-     */
-    public function setDisplayCTR($displayCTR)
-    {
-        $this->displayCTR = $displayCTR;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
-    public function getDisplayClicks()
+    public function getDisplayOpportunities()
     {
-        return $this->displayClicks;
+        return $this->displayOpportunities;
     }
 
     /**
-     * @param int $displayClicks
+     * @param int $displayOpportunities
      * @return $this
      */
-    public function setDisplayClicks($displayClicks)
+    public function setDisplayOpportunities($displayOpportunities)
     {
-        $this->displayClicks = $displayClicks;
-
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getDisplayFillRate()
-    {
-        return $this->displayFillRate;
-    }
-
-    /**
-     * @param float $displayFillRate
-     * @return $this
-     */
-    public function setDisplayFillRate($displayFillRate)
-    {
-        $this->displayFillRate = $displayFillRate;
-
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getDisplayIPV()
-    {
-        return $this->displayIPV;
-    }
-
-    /**
-     * @param float $displayIPV
-     * @return $this
-     */
-    public function setDisplayIPV($displayIPV)
-    {
-        $this->displayIPV = $displayIPV;
+        $this->displayOpportunities = (int) $displayOpportunities;
 
         return $this;
     }
@@ -246,7 +191,25 @@ class Record
      */
     public function setDisplayImpressions($displayImpressions)
     {
-        $this->displayImpressions = $displayImpressions;
+        $this->displayImpressions = (int) $displayImpressions;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDisplayFillRate()
+    {
+        return $this->displayFillRate;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDisplayFillRate()
+    {
+        $this->displayFillRate = $this->getPercentage($this->displayImpressions, $this->displayOpportunities);
 
         return $this;
     }
@@ -254,18 +217,54 @@ class Record
     /**
      * @return int
      */
-    public function getDisplayOpportunities()
+    public function getDisplayClicks()
     {
-        return $this->displayOpportunities;
+        return $this->displayClicks;
     }
 
     /**
-     * @param int $displayOpportunities
+     * @param int $displayClicks
      * @return $this
      */
-    public function setDisplayOpportunities($displayOpportunities)
+    public function setDisplayClicks($displayClicks)
     {
-        $this->displayOpportunities = $displayOpportunities;
+        $this->displayClicks = (int) $displayClicks;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDisplayCTR()
+    {
+        return $this->displayCTR;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDisplayCTR()
+    {
+        $this->displayCTR = $this->getPercentage($this->displayClicks, $this->displayImpressions);
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDisplayIPV()
+    {
+        return $this->displayIPV;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setDisplayIPV()
+    {
+        $this->displayIPV = $this->getRatio($this->displayImpressions, $this->visits);
 
         return $this;
     }
@@ -284,26 +283,7 @@ class Record
      */
     public function setVideoPlayerReady($videoPlayerReady)
     {
-        $this->videoPlayerReady = $videoPlayerReady;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getVideoAdImpressions()
-    {
-        return $this->videoAdImpressions;
-    }
-
-    /**
-     * @param int $videoAdImpressions
-     * @return $this
-     */
-    public function setVideoAdImpressions($videoAdImpressions)
-    {
-        $this->videoAdImpressions = $videoAdImpressions;
+        $this->videoPlayerReady = (int) $videoPlayerReady;
 
         return $this;
     }
@@ -322,45 +302,26 @@ class Record
      */
     public function setVideoAdPlays($videoAdPlays)
     {
-        $this->videoAdPlays = $videoAdPlays;
+        $this->videoAdPlays = (int) $videoAdPlays;
 
         return $this;
     }
 
     /**
-     * @return float
+     * @return int
      */
-    public function getVideoIPV()
+    public function getVideoAdImpressions()
     {
-        return $this->videoIPV;
+        return $this->videoAdImpressions;
     }
 
     /**
-     * @param float $videoIPV
+     * @param int $videoAdImpressions
      * @return $this
      */
-    public function setVideoIPV($videoIPV)
+    public function setVideoAdImpressions($videoAdImpressions = null)
     {
-        $this->videoIPV = $videoIPV;
-
-        return $this;
-    }
-
-    /**
-     * @return float
-     */
-    public function getVideoAdCompletionRate()
-    {
-        return $this->videoAdCompletionRate;
-    }
-
-    /**
-     * @param float $videoAdCompletionRate
-     * @return $this
-     */
-    public function setVideoAdCompletionRate($videoAdCompletionRate)
-    {
-        $this->videoAdCompletionRate = $videoAdCompletionRate;
+        $this->videoAdImpressions = (int) $videoAdImpressions;
 
         return $this;
     }
@@ -379,7 +340,43 @@ class Record
      */
     public function setVideoAdCompletions($videoAdCompletions)
     {
-        $this->videoAdCompletions = $videoAdCompletions;
+        $this->videoAdCompletions = (int) $videoAdCompletions;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getVideoAdCompletionRate()
+    {
+        return $this->videoAdCompletionRate;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setVideoAdCompletionRate()
+    {
+        $this->videoAdCompletionRate = $this->getPercentage($this->videoAdCompletions, $this->videoAdPlays);
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getVideoIPV()
+    {
+        return $this->videoIPV;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setVideoIPV()
+    {
+        $this->videoIPV = $this->getRatio($this->videoAdImpressions, $this->visits);
 
         return $this;
     }
@@ -398,7 +395,7 @@ class Record
      */
     public function setVideoAdClicks($videoAdClicks)
     {
-        $this->videoAdClicks = $videoAdClicks;
+        $this->videoAdClicks = (int) $videoAdClicks;
 
         return $this;
     }
@@ -417,7 +414,7 @@ class Record
      */
     public function setVideoStarts($videoStarts)
     {
-        $this->videoStarts = $videoStarts;
+        $this->videoStarts = (int) $videoStarts;
 
         return $this;
     }
@@ -436,7 +433,7 @@ class Record
      */
     public function setVideoEnds($videoEnds)
     {
-        $this->videoEnds = $videoEnds;
+        $this->videoEnds = (int) $videoEnds;
 
         return $this;
     }
@@ -455,7 +452,7 @@ class Record
      */
     public function setVisits($visits)
     {
-        $this->visits = $visits;
+        $this->visits = (int) $visits;
 
         return $this;
     }
@@ -474,7 +471,7 @@ class Record
      */
     public function setPageViews($pageViews)
     {
-        $this->pageViews = $pageViews;
+        $this->pageViews = (int) $pageViews;
 
         return $this;
     }
@@ -497,7 +494,7 @@ class Record
      */
     public function setQtos($qtos)
     {
-        $this->qtos = $qtos;
+        $this->qtos = (int) $qtos;
 
         return $this;
     }
@@ -511,13 +508,98 @@ class Record
     }
 
     /**
-     * @param float $qtosPercentage
      * @return $this
      */
-    public function setQtosPercentage($qtosPercentage)
+    public function setQtosPercentage()
     {
-        $this->qtosPercentage = $qtosPercentage;
+        $this->qtosPercentage = $this->getPercentage($this->qtos, $this->pageViews);
 
         return $this;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getTrackingKeyTerms()
+    {
+        if (null == $this->embeddedTrackingKeys) {
+            $this->setEmbeddedTrackingKeys();
+
+            if (!is_array($this->embeddedTrackingKeys)) {
+                return null;
+            }
+        }
+
+        return array_keys($this->embeddedTrackingKeys);
+    }
+
+    public function setCalculatedFields()
+    {
+        $this->setEmbeddedTrackingKeys();
+
+        if (null == $this->videoAdImpressions && is_numeric($this->videoAdPlays)) {
+            $this->setVideoAdImpressions($this->videoAdPlays);
+        }
+
+        $this->setDisplayIPV();
+        $this->setVideoIPV();
+
+        $this->setDisplayFillRate();
+        $this->setDisplayCTR();
+        $this->setVideoAdCompletionRate();
+        $this->setQtosPercentage();
+    }
+
+    protected function setEmbeddedTrackingKeys()
+    {
+        if ($this->trackingKeys->isEmpty()) {
+            $this->embeddedTrackingKeys = null;
+            return;
+        }
+
+        $embeddedTrackingKeys = [];
+
+        foreach($this->trackingKeys as $trackingKey) {
+            /** @var TrackingKey $trackingKey */
+            $embeddedTrackingKeys[$trackingKey->getTrackingTerm()->getTerm()] = $trackingKey->getValue();
+        }
+
+        $this->embeddedTrackingKeys = $embeddedTrackingKeys;
+    }
+
+    /**
+     * @param $numerator
+     * @param $denominator
+     * @return float|null
+     */
+    protected function getRatio($numerator, $denominator)
+    {
+        $ratio = null;
+
+        if (is_numeric($denominator) && $denominator > 0 && is_numeric($numerator)) {
+            $ratio = $numerator / $denominator;
+        }
+
+        return $ratio;
+    }
+
+    /**
+     * @param $numerator
+     * @param $denominator
+     * @return float|null
+     */
+    protected function getPercentage($numerator, $denominator)
+    {
+        $ratio = $this->getRatio($numerator, $denominator);
+
+        if (null == $ratio) {
+            return null;
+        }
+
+        if ($ratio > 1.00) {
+            $ratio = 1.00;
+        }
+
+        return $ratio;
     }
 }
