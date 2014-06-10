@@ -4,6 +4,9 @@ namespace Tagcade\Repository\Report\SourceReport;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\NoResultException;
+
 use Tagcade\Entity\Report\SourceReport\Report;
 use DateTime;
 
@@ -20,6 +23,46 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             $dateTo = $dateFrom;
         }
 
+        $dql = '
+            SELECT report.id FROM %s report
+            WHERE report.site = :domain
+            AND report.date BETWEEN :dateFrom AND :dateTo
+            ORDER BY report.date DESC
+        ';
+
+        $dql = sprintf($dql, Report::class);
+
+        $query = $this->getEntityManager()->createQuery($dql);
+
+        $query->setParameter('domain', $domain, Type::STRING);
+        $query->setParameter('dateFrom', $dateFrom, Type::DATE);
+        $query->setParameter('dateTo', $dateTo, Type::DATE);
+
+        // converts to one dimensional array containing just the ids
+        $sourceReportIds = array_map('current', $query->getScalarResult());
+
+        $reports = [];
+
+        foreach($sourceReportIds as $id) {
+            if ($report = $this->getReport($id, $rowOffset, $rowLimit, $sortField)) {
+                $reports[] = $report;
+            }
+
+            unset($id, $report);
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        return $reports;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getReport($reportId, $rowOffset = null, $rowLimit = null, $sortField = null)
+    {
         $allowedSortFields = ['visits', 'displayOpportunities', 'videoAdImpressions'];
 
         if (!in_array($sortField, $allowedSortFields)) {
@@ -29,9 +72,8 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         $dql = '
             SELECT report, rec FROM %s report
             JOIN report.records rec
-            WHERE report.site = :domain
-            AND report.date BETWEEN :dateFrom AND :dateTo
-            ORDER BY rec.visits DESC
+            WHERE report.id = :reportId
+            ORDER BY rec.%s DESC
         ';
 
         $dql = sprintf($dql, Report::class, $sortField);
@@ -39,17 +81,20 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         $query = $this->getEntityManager()->createQuery($dql);
 
         if (is_int($rowOffset)) {
-            $query->setFirstResult((int) $rowOffset);
+            $query->setFirstResult(intval($rowOffset));
         }
 
         if (is_int($rowLimit)) {
-            $query->setMaxResults((int) $rowLimit);
+            $query->setMaxResults(intval($rowLimit));
         }
 
-        $query->setParameter('domain', $domain, Type::STRING);
-        $query->setParameter('dateFrom', $dateFrom, Type::DATE);
-        $query->setParameter('dateTo', $dateTo, Type::DATE);
+        $query->setParameter('reportId', $reportId, Type::INTEGER);
 
-        return $query->getResult();
+        try {
+            return $query->getResult();
+        }
+        catch(NoResultException $e) {
+            return false;
+        }
     }
 }

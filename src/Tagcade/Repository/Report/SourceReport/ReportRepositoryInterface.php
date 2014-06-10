@@ -2,6 +2,7 @@
 
 namespace Tagcade\Repository\Report\SourceReport;
 
+use Tagcade\Model\Report\SourceReport\Report;
 use DateTime;
 
 interface ReportRepositoryInterface
@@ -13,7 +14,16 @@ interface ReportRepositoryInterface
      * @param int|null $rowOffset
      * @param int|null $rowLimit Limit the amount of rows returned in the report, -1 for no limit
      * @param string|null $sortField
-     * @return array
+     * @return array|bool
      */
     public function getReports($domain, DateTime $dateTo, DateTime $dateFrom = null, $rowOffset = null, $rowLimit = null, $sortField = null);
+
+    /**
+     * @param int $reportId
+     * @param int|null $rowOffset
+     * @param int|null $rowLimit Limit the amount of rows returned in the report, -1 for no limit
+     * @param null $sortField
+     * @return Report|boolean
+     */
+    public function getReport($reportId, $rowOffset = null, $rowLimit = null, $sortField = null);
 }

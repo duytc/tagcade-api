@@ -10,5 +10,5 @@ Tagcade\Entity\Report\SourceReport\TrackingTerm:
     fields:
         term:
             type: string
-            unique: true
+            #unique: true
 
