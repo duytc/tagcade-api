@@ -1,6 +1,7 @@
 Tagcade\Entity\Report\SourceReport\Record:
     type: entity
     table: source_report_records
+    readOnly: true
     id:
         id:
             type: integer
