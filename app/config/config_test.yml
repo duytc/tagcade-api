@@ -23,6 +23,10 @@ doctrine:
                 driver:     pdo_sqlite
                 path:       %kernel.cache_dir%/test.db
                 charset:    UTF8
+            reports:
+                driver:     pdo_sqlite
+                path:       %kernel.cache_dir%/reports.db
+                charset:    UTF8
 
 liip_functional_test:
     cache_sqlite_db: true
