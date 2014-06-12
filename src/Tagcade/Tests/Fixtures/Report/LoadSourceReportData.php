@@ -3,7 +3,6 @@
 namespace Tagcade\Tests\Fixtures\Report;
 
 use Doctrine\Common\DataFixtures\FixtureInterface;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use DateTime;
 use Tagcade\Entity\Report\SourceReport\Report;
@@ -11,13 +10,17 @@ use Tagcade\Entity\Report\SourceReport\TrackingKey;
 use Tagcade\Entity\Report\SourceReport\Record;
 use Tagcade\Entity\Report\SourceReport\TrackingTerm;
 
-class LoadSourceReportData implements FixtureInterface, OrderedFixtureInterface
+class LoadSourceReportData implements  FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        $mysite1 = (new Report())
+        // need to see about loading references from another entity manager
+        $siteId1 = 1;
+        $siteId2 = 2;
+
+        $mysitereport1 = (new Report())
             ->setDate($this->getDate(2014, 6, 1))
-            ->setSite('mysite.com')
+            ->setSiteId($siteId1)
             ->addRecord(
                 (new Record())
                     ->addTrackingKey($this->createTrackingKey('utm_source', '111_111'))
@@ -52,9 +55,9 @@ class LoadSourceReportData implements FixtureInterface, OrderedFixtureInterface
             )
         ;
 
-        $mysite2 = (new Report())
+        $mysitereport2 = (new Report())
             ->setDate($this->getDate(2014, 6, 2))
-            ->setSite('mysite.com')
+            ->setSiteId($siteId1)
             ->addRecord(
                 (new Record())
                     ->addTrackingKey($this->createTrackingKey('utm_source', '111_111'))
@@ -73,9 +76,9 @@ class LoadSourceReportData implements FixtureInterface, OrderedFixtureInterface
             )
         ;
 
-        $anotherdomain1 = (new Report())
+        $anotherdomainreport1 = (new Report())
             ->setDate($this->getDate(2014, 6, 1))
-            ->setSite('anotherdomain.com')
+            ->setSiteId($siteId2)
             ->addRecord(
                 (new Record())
                     ->addTrackingKey($this->createTrackingKey('utm_source', '111_111'))
@@ -110,16 +113,11 @@ class LoadSourceReportData implements FixtureInterface, OrderedFixtureInterface
             )
         ;
 
-        $manager->persist($mysite1);
-        $manager->persist($mysite2);
-        $manager->persist($anotherdomain1);
+        $manager->persist($mysitereport1);
+        $manager->persist($mysitereport2);
+        $manager->persist($anotherdomainreport1);
 
         $manager->flush();
-    }
-
-    public function getOrder()
-    {
-        return 10;
     }
 
     protected function getDate($y = 2014, $m = 6, $d = 1)

@@ -8,7 +8,7 @@ use DateTime;
 interface ReportRepositoryInterface
 {
     /**
-     * @param string $domain
+     * @param int $siteId
      * @param DateTime|null $dateFrom a datetime
      * @param DateTime|null $dateTo a datetime or null for no date range
      * @param int|null $rowOffset
@@ -16,7 +16,7 @@ interface ReportRepositoryInterface
      * @param string|null $sortField
      * @return array|bool
      */
-    public function getReports($domain, DateTime $dateTo, DateTime $dateFrom = null, $rowOffset = null, $rowLimit = null, $sortField = null);
+    public function getReports($siteId, DateTime $dateTo, DateTime $dateFrom = null, $rowOffset = null, $rowLimit = null, $sortField = null);
 
     /**
      * @param int $reportId

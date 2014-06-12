@@ -62,7 +62,7 @@ class UserFactory
 
         if (!$role instanceof PublisherInterface)
         {
-            throw new InvalidUserRoleException('user is not a publisher');
+            $role = null;
         }
 
         return $role;

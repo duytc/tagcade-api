@@ -14,9 +14,10 @@ class Report
     protected $date;
 
     /**
-     * @var string
+     * @var integer
+     * this is not a foreign key at the moment, just an integer
      */
-    protected $site;
+    protected $siteId;
 
     /**
      * @var array
@@ -64,18 +65,18 @@ class Report
         return $this;
     }
 
-    public function getSite()
+    public function getSiteId()
     {
-        return $this->site;
+        return $this->siteId;
     }
 
     /**
-     * @param string $site
+     * @param int $siteId
      * @return $this
      */
-    public function setSite($site)
+    public function setSiteId($siteId)
     {
-        $this->site = $site;
+        $this->siteId = $siteId;
 
         return $this;
     }

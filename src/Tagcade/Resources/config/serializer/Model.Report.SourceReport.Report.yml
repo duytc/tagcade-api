@@ -3,7 +3,7 @@ Tagcade\Model\Report\SourceReport\Report:
     properties:
         date:
             expose: true
-        site:
+        siteId:
             expose: true
         records:
             expose: true

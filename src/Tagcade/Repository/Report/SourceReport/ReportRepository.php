@@ -17,15 +17,18 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
     /**
      * @inheritdoc
      */
-    public function getReports($domain, DateTime $dateFrom, DateTime $dateTo = null, $rowOffset = null, $rowLimit = null, $sortField = null)
+    public function getReports($siteId, DateTime $dateFrom, DateTime $dateTo = null, $rowOffset = null, $rowLimit = null, $sortField = null)
     {
         if (null == $dateTo) {
             $dateTo = $dateFrom;
         }
 
+        $rowLimit = intval($rowLimit);
+        $rowOffset = intval($rowOffset);
+
         $dql = '
             SELECT report.id FROM %s report
-            WHERE report.site = :domain
+            WHERE report.siteId = :siteId
             AND report.date BETWEEN :dateFrom AND :dateTo
             ORDER BY report.date DESC
         ';
@@ -34,7 +37,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
 
         $query = $this->getEntityManager()->createQuery($dql);
 
-        $query->setParameter('domain', $domain, Type::STRING);
+        $query->setParameter('siteId', $siteId, Type::INTEGER);
         $query->setParameter('dateFrom', $dateFrom, Type::DATE);
         $query->setParameter('dateTo', $dateTo, Type::DATE);
 
@@ -63,7 +66,13 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
      */
     public function getReport($reportId, $rowOffset = null, $rowLimit = null, $sortField = null)
     {
-        $allowedSortFields = ['visits', 'displayOpportunities', 'videoAdImpressions'];
+        $allowedSortFields = [
+            'visits',
+            'pageViews',
+            'displayOpportunities',
+            'videoAdPlays',
+            'videoAdImpressions',
+        ];
 
         if (!in_array($sortField, $allowedSortFields)) {
             $sortField = static::DEFAULT_SORT_FIELD;

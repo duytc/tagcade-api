@@ -18,4 +18,9 @@ interface SiteInterface
      * @return UserEntityInterface|null
      */
     public function getPublisher();
+
+    /**
+     * @return int|null
+     */
+    public function getPublisherId();
 }

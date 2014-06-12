@@ -1,4 +1,7 @@
 security:
+    access_decision_manager:
+        strategy: unanimous
+
     encoders:
         #Tagcade\Bundle\UserBundle\Entity\User:
         #    algorithm: bcrypt

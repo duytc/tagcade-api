@@ -7,7 +7,7 @@ Tagcade\Entity\Report\SourceReport\Report:
         unique_report_idx:
             columns:
                 - date
-                - site
+                - site_id # underscore column name
     id:
         id:
             type: integer
@@ -16,8 +16,8 @@ Tagcade\Entity\Report\SourceReport\Report:
     fields:
         date:
             type: date
-        site:
-            type: string
+        siteId:
+            type: integer
     oneToMany:
         records:
             targetEntity: Tagcade\Entity\Report\SourceReport\Record

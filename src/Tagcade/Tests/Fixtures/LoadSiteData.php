@@ -16,20 +16,23 @@ class LoadSiteData extends AbstractFixture implements OrderedFixtureInterface
         $user = $this->getReference('test-user-publisher');
         $publisher = new Publisher($user);
 
-        $site = new Site();
-        $site->setName('my test');
-        $site->setDomain('mytest.com');
-        $site->setPublisher($publisher);
+        $site1 = new Site();
+        $site1->setName('my test');
+        $site1->setDomain('mytest.com');
+        $site1->setPublisher($publisher);
 
         $site2 = new Site();
         $site2->setName('another test');
         $site2->setDomain('anothertest.com');
         $site2->setPublisher($publisher);
 
-        $manager->persist($site);
+        $manager->persist($site1);
         $manager->persist($site2);
 
         $manager->flush();
+
+        $this->addReference('test-site-mytest.com', $site1);
+        $this->addReference('test-site-anothertest.com', $site2);
     }
 
     public function getOrder()

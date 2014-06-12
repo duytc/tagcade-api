@@ -5,17 +5,12 @@ namespace Tagcade\Bundle\ReportApiBundle\Tests\Controller;
 use Tagcade\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\Response;
-use Tagcade\Tests\Fixtures\LoadUserData;
 use Tagcade\Tests\Fixtures\Report\LoadSourceReportData;
 
 class SourceReportControllerTest extends ApiTestCase
 {
     public function setUp()
     {
-        $this->loadFixtures([
-            LoadUserData::class
-        ]);
-
         $this->loadFixtures([
             LoadSourceReportData::class
         ], 'reports');
@@ -63,7 +58,7 @@ class SourceReportControllerTest extends ApiTestCase
     protected function makeGetSourceReportsActionRequest(Client $client, array $params = [])
     {
         $params = array_merge([
-            'domain' => 'mysite.com',
+            'siteId' => 1,
             'from'   => '140601',
         ], $params);
 

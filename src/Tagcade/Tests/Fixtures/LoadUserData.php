@@ -14,10 +14,12 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         $super_admin = $this->createUser('superadmin', 'greg@tagcade.com', '12345', ['ROLE_SUPER_ADMIN']);
         $admin = $this->createUser('admin', 'greg@tagcade.com', '12345', ['ROLE_ADMIN']);
         $publisher = $this->createUser('pub', 'greg@tagcade.com', '12345', ['ROLE_PUBLISHER']);
+        $publisher2 = $this->createUser('pub2', 'greg@tagcade.com', '12345', ['ROLE_PUBLISHER']);
 
         $manager->persist($super_admin);
         $manager->persist($admin);
         $manager->persist($publisher);
+        $manager->persist($publisher2);
 
         $manager->flush();
 
