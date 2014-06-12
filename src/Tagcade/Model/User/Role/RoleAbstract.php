@@ -3,9 +3,9 @@
 namespace Tagcade\Model\User\Role;
 
 use Tagcade\Model\User\UserEntityInterface;
-use InvalidArgumentException;
+use Tagcade\Exception\InvalidUserRoleException;
 
-abstract class AbstractRole
+abstract class RoleAbstract
 {
     protected static $requiredRoles = [];
     private $user;
@@ -16,7 +16,7 @@ abstract class AbstractRole
             $missingRoles = array_diff(static::$requiredRoles, $user->getRoles());
 
             if (!empty($missingRoles)) {
-                throw new InvalidArgumentException(sprintf('user is missing required roles: %s', join(' ,', $missingRoles)));
+                throw new InvalidUserRoleException(sprintf('user is missing required roles: %s', join(' ,', $missingRoles)));
             }
         }
 

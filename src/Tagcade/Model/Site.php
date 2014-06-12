@@ -16,7 +16,7 @@ class Site implements SiteInterface
     protected $name;
     protected $domain;
 
-    public function __construct($name, $domain, Publisher $publisher = null)
+    public function __construct($name, $domain, PublisherInterface $publisher = null)
     {
         $this->name = $name;
         $this->domain = $domain;

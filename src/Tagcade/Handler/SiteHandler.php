@@ -4,46 +4,37 @@ namespace Tagcade\Handler;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\Form\FormFactoryInterface;
-use Tagcade\Exception\BadMethodCallException;
-use Tagcade\Exception\InvalidFormException;
+use Symfony\Component\Form\FormTypeInterface;
 use Tagcade\Model\SiteInterface;
-use Tagcade\Form\Type\SiteType;
-use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\RoleInterface;
+use Tagcade\Exception\InvalidFormException;
 
-class SiteHandler implements SiteHandlerInterface
+abstract class SiteHandler implements SiteHandlerInterface
 {
     private $om;
     private $entityClass;
-
     /**
      * @var \Tagcade\Repository\SiteRepository
      */
     private $repository;
     private $formFactory;
-
-    /**
-     * @var PublisherInterface|null
-     */
-    private $publisher;
+    private $userRole;
 
     /**
      * @param ObjectManager $om
      * @param $entityClass
      * @param FormFactoryInterface $formFactory
-     * @param PublisherInterface $publisher If this is empty, the handler can still be used to retrieve sites, however many methods rely on a publisher
+     * @param FormTypeInterface|string $formType
+     * @param RoleInterface $role
      */
-    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory, PublisherInterface $publisher = null)
+    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory, $formType, RoleInterface $role)
     {
         $this->om = $om;
         $this->entityClass = $entityClass;
         $this->repository = $this->om->getRepository($this->entityClass);
         $this->formFactory = $formFactory;
-        $this->publisher = $publisher;
-    }
-
-    public function setPublisher(PublisherInterface $publisher)
-    {
-        $this->publisher = $publisher;
+        $this->formType = $formType;
+        $this->setUserRole($role);
     }
 
     /**
@@ -57,14 +48,7 @@ class SiteHandler implements SiteHandlerInterface
     /**
      * @inheritdoc
      */
-    public function all($limit = null, $offset = 0)
-    {
-        if ($this->publisher) {
-            return $this->repository->getSitesForPublisher($this->publisher, $limit, $offset);
-        }
-
-        throw new BadMethodCallException('publisher must be set to retrieve a list of sites');
-    }
+    abstract public function all($limit = null, $offset = 0);
 
     /**
      * @inheritdoc
@@ -92,6 +76,21 @@ class SiteHandler implements SiteHandlerInterface
         return $this->processForm($site, $parameters, 'PATCH');
     }
 
+    public function getUserRole()
+    {
+        return $this->userRole;
+    }
+
+    protected function setUserRole(RoleInterface $user)
+    {
+        $this->userRole = $user;
+    }
+
+    protected function getRepository()
+    {
+        return $this->repository;
+    }
+
     /**
      * Processes the form.
      *
@@ -102,20 +101,16 @@ class SiteHandler implements SiteHandlerInterface
      * @return SiteInterface
      *
      * @throws InvalidFormException
-     * @throws BadMethodCallException
      */
-    private function processForm(SiteInterface $site, array $parameters, $method = "PUT")
+    protected function processForm(SiteInterface $site, array $parameters, $method = "PUT")
     {
-        $form = $this->formFactory->create(new SiteType(), $site, array('method' => $method));
+        $options = [
+            'method' => $method,
+            'current_user_role' => $this->getUserRole(),
+        ];
+
+        $form = $this->formFactory->create($this->formType, $site, $options);
         $form->submit($parameters, 'PATCH' !== $method);
-
-        if (null == $site->getPublisher()) {
-            if (null == $this->publisher) {
-                throw new BadMethodCallException('Publisher is not set');
-            }
-
-            $site->setPublisher($this->publisher);
-        }
 
         if ($form->isValid()) {
             $this->om->persist($site);

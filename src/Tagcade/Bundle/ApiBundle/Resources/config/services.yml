@@ -1,13 +1,27 @@
 parameters:
-    tagcade_api.site.handler.class: Tagcade\Handler\SiteHandler
-    tagcade_api.site.class: Tagcade\Entity\Core\Site
+    tagcade_api.factory.site_handler.class: Tagcade\Factory\SiteHandlerFactory
+    tagcade_api.handler.site.class: Tagcade\Handler\SiteHandler
+    tagcade_api.entity.site.class: Tagcade\Entity\Core\Site
+    tagcade_api.form.type.site.class: Tagcade\Form\Type\SiteType
 
     tagcade_api.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
 
 services:
-    tagcade_api.site.handler:
-        class: %tagcade_api.site.handler.class%
-        arguments: [@doctrine.orm.entity_manager, %tagcade_api.site.class%, @form.factory, @tagcade_user.role.publisher]
+    tagcade_api.form.type.site:
+        class: %tagcade_api.form.type.site.class%
+        tags:
+            - { name: form.type, alias: tagcade_site }
+
+    tagcade_api.handler.site:
+        class: %tagcade_api.handler.site.class%
+        factory_class:  %tagcade_api.factory.site_handler.class%
+        factory_method: getHandler
+        arguments:
+            - @doctrine.orm.entity_manager
+            - %tagcade_api.entity.site.class%
+            - @form.factory
+            - 'tagcade_site'
+            - @tagcade_user.role
 
     tagcade_api.event.authentication_success_listener:
         class: %tagcade_api.event.authentication_success_listener.class%

@@ -6,21 +6,14 @@ use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\User\Role\SuperAdmin;
 use Tagcade\Model\User\Role\Admin;
 use Tagcade\Model\User\Role\Publisher;
-use Tagcade\Model\User\Role\PublisherSubAccount;
-use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\PublisherSubAccount;;
 use Tagcade\Exception\InvalidUserRoleException;
 use \InvalidArgumentException;
 
-/**
- * Converts a user entity with roles to our model classes
- */
-class UserFactory
+class UserRoleFactory implements UserRoleFactoryInterface
 {
     /**
-     * @param UserEntityInterface $user
-     * @return \Tagcade\Model\User\Role\RoleInterface
-     * @throws \Tagcade\Exception\InvalidUserRoleException
-     * @throws \InvalidArgumentException
+     * @inheritdoc
      */
     public static function getRole(UserEntityInterface $user = null)
     {
@@ -49,22 +42,5 @@ class UserFactory
         }
 
         throw new InvalidUserRoleException('user does not have a valid role');
-    }
-
-    /**
-     * @param UserEntityInterface $user
-     * @return Publisher
-     * @throws \Tagcade\Exception\InvalidUserRoleException
-     */
-    public static function getPublisher(UserEntityInterface $user = null)
-    {
-        $role = static::getRole($user);
-
-        if (!$role instanceof PublisherInterface)
-        {
-            $role = null;
-        }
-
-        return $role;
     }
 }

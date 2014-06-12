@@ -1,23 +1,19 @@
 parameters:
-    tagcade_user.user.role.class: Tagcade\Model\User\Role\RoleInterface
-    tagcade_user.user.role.publisher.class: Tagcade\Model\User\Role\PublisherInterface
-    tagcade_user.user.factory.class: Tagcade\Factory\UserFactory
+    tagcade_user.model.user.role.class: Tagcade\Model\User\Role\RoleInterface
+    tagcade_user.model.user.role.publisher.class: Tagcade\Model\User\Role\PublisherInterface
+    tagcade_user.factory.user_role.class: Tagcade\Factory\UserRoleFactory
 
     tagcade_user.event.authentication_success_listener.class: Tagcade\Bundle\UserBundle\EventListener\AuthenticationSuccessListener
 
 services:
+    tagcade_user.factory.user_role:
+        class: %tagcade_user.factory.user_role.class%
+
     # returns our role model class for the current authenticated user entity
     tagcade_user.role:
-        class: %tagcade_user.user.role.class%
-        factory_class:  %tagcade_user.user.factory.class%
+        class: %tagcade_user.model.user.role.class%
+        factory_service: tagcade_user.factory.user_role
         factory_method: getRole
-        arguments: ["@=service('security.context').getToken() != null ? service('security.context').getToken().getUser() : null"]
-
-    # checks if the current user is a publisher, if so converts the user entity class to our model
-    tagcade_user.role.publisher:
-        class: %tagcade_user.user.role.publisher.class%
-        factory_class:  %tagcade_user.user.factory.class%
-        factory_method: getPublisher
         arguments: ["@=service('security.context').getToken() != null ? service('security.context').getToken().getUser() : null"]
 
     tagcade_user.event.authentication_success_listener:

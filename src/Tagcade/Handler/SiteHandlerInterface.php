@@ -3,12 +3,9 @@
 namespace Tagcade\Handler;
 
 use Tagcade\Model\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SiteHandlerInterface
 {
-    public function setPublisher(PublisherInterface $publisher);
-
     /**
      * Get a Site.
      *

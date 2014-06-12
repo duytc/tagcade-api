@@ -11,3 +11,8 @@ Tagcade\Entity\Core\Site:
                 min: 2
                 minMessage: "Domain name must be at least {{ limit }} characters in length"
             - Url: ~
+        publisher:
+            - NotBlank: ~
+            - Type:
+                type: integer
+                message: "The publisher ID {{ value }} is not valid"

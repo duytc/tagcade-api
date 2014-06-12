@@ -2,7 +2,7 @@
 
 namespace Tagcade\Tests\Factory;
 
-use Tagcade\Factory\UserFactory;
+use Tagcade\Factory\UserRoleFactory;
 use Tagcade\Test\TestCase;
 
 class UserFactoryTest extends TestCase
@@ -10,13 +10,13 @@ class UserFactoryTest extends TestCase
     public function testReturnPublisher()
     {
         $user = $this->getUser(['ROLE_PUBLISHER']);
-        $this->assertInstanceOf('Tagcade\Model\User\Role\Publisher', UserFactory::getRole($user));
+        $this->assertInstanceOf('Tagcade\Model\User\Role\Publisher', UserRoleFactory::getRole($user));
     }
 
     public function testReturnAdmin()
     {
         $user = $this->getUser(['ROLE_ADMIN']);
-        $this->assertInstanceOf('Tagcade\Model\User\Role\Admin', UserFactory::getRole($user));
+        $this->assertInstanceOf('Tagcade\Model\User\Role\Admin', UserRoleFactory::getRole($user));
     }
 
     /**
@@ -25,7 +25,7 @@ class UserFactoryTest extends TestCase
     public function testInvalidRole()
     {
         $user = $this->getUser(['ROLE_INVALID']);
-        UserFactory::getRole($user);
+        UserRoleFactory::getRole($user);
     }
 
     /**
@@ -33,6 +33,6 @@ class UserFactoryTest extends TestCase
      */
     public function testNoUser()
     {
-        UserFactory::getRole(null);
+        UserRoleFactory::getRole(null);
     }
 }

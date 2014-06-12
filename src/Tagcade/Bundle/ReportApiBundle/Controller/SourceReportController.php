@@ -40,7 +40,7 @@ class SourceReportController extends FOSRestController
      */
     public function cgetAction($siteId, ParamFetcherInterface $paramFetcher)
     {
-        $site = $this->container->get('tagcade_api.site.handler')->get($siteId);
+        $site = $this->container->get('tagcade_api.handler.site')->get($siteId);
 
         if (!$site) {
             throw new NotFoundHttpException('This site does not exist or you do not have access');

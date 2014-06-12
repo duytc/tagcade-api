@@ -6,6 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
+use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\RoleInterface;
 
 class SiteType extends AbstractType
 {
@@ -15,17 +18,33 @@ class SiteType extends AbstractType
             ->add('name')
             ->add('domain')
         ;
+
+        if ($options['current_user_role'] instanceof AdminInterface) {
+            $builder->add(
+                $builder->create('publisher')
+                    ->addModelTransformer(
+                        new RoleToUserEntityTransformer(), false
+                    )
+            );
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => '\Tagcade\Entity\Core\Site',
-        ));
+        $resolver
+            ->setDefaults([
+                'data_class' => Site::class,
+            ])
+            ->setRequired([
+                'current_user_role',
+            ])
+            ->setAllowedTypes([
+                'current_user_role' => RoleInterface::class,
+            ]);
     }
 
     public function getName()
     {
-        return '';
+        return 'tagcade_site';
     }
 }

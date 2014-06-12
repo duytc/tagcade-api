@@ -17,13 +17,13 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Model\SiteInterface;
 
-/**
- * @Security("has_role('ROLE_PUBLISHER')")
- */
+use InvalidArgumentException;
+
 class SiteController extends FOSRestController
 {
     /**
@@ -49,7 +49,7 @@ class SiteController extends FOSRestController
         $offset = null == $offset ? 0 : $offset;
         $limit = $paramFetcher->get('limit');
 
-        return $this->container->get('tagcade_api.site.handler')->all($limit, $offset);
+        return $this->container->get('tagcade_api.handler.site')->all($limit, $offset);
     }
 
     /**
@@ -74,6 +74,7 @@ class SiteController extends FOSRestController
     public function getSiteAction($id)
     {
         $site = $this->getOr404($id);
+        $this->checkUserPermission($site, 'view');
 
         return $site;
     }
@@ -98,7 +99,7 @@ class SiteController extends FOSRestController
     public function postSiteAction(Request $request)
     {
         try {
-            $newSite = $this->get('tagcade_api.site.handler')->post(
+            $newSite = $this->get('tagcade_api.handler.site')->post(
                 $request->request->all()
             );
 
@@ -137,14 +138,17 @@ class SiteController extends FOSRestController
     public function putSiteAction(Request $request, $id)
     {
         try {
-            if (!($site = $this->container->get('tagcade_api.site.handler')->get($id))) {
+            if (!($site = $this->container->get('tagcade_api.handler.site')->get($id))) {
+                // create new
                 $statusCode = Codes::HTTP_CREATED;
-                $site = $this->container->get('tagcade_api.site.handler')->post(
+                $site = $this->container->get('tagcade_api.handler.site')->post(
                     $request->request->all()
                 );
             } else {
+                $this->checkUserPermission($site, 'edit');
+
                 $statusCode = Codes::HTTP_NO_CONTENT;
-                $site = $this->container->get('tagcade_api.site.handler')->put(
+                $site = $this->container->get('tagcade_api.handler.site')->put(
                     $site,
                     $request->request->all()
                 );
@@ -185,8 +189,11 @@ class SiteController extends FOSRestController
     public function patchSiteAction(Request $request, $id)
     {
         try {
-            $site = $this->container->get('tagcade_api.site.handler')->patch(
-                $this->getOr404($id),
+            $site = $this->getOr404($id);
+            $this->checkUserPermission($site, 'edit');
+
+            $site = $this->container->get('tagcade_api.handler.site')->patch(
+                $site,
                 $request->request->all()
             );
 
@@ -207,17 +214,36 @@ class SiteController extends FOSRestController
      * Fetch a Site or throw an 404 Exception.
      *
      * @param mixed $id
-     *
      * @return SiteInterface
      *
      * @throws NotFoundHttpException
      */
     protected function getOr404($id)
     {
-        if (!($site = $this->container->get('tagcade_api.site.handler')->get($id))) {
-            throw new NotFoundHttpException(sprintf('The resource \'%s\' was not found.',$id));
+        if (!($site = $this->container->get('tagcade_api.handler.site')->get($id))) {
+            throw new NotFoundHttpException(sprintf("The site resource '%s' was not found or you do not have access", $id));
         }
 
         return $site;
+    }
+
+    /**
+     * @param SiteInterface $site
+     * @param string $permission
+     * @return bool
+     * @throws InvalidArgumentException if you pass an unknown permission
+     * @throws AccessDeniedException
+     */
+    protected function checkUserPermission(SiteInterface $site, $permission = 'view')
+    {
+        if (!in_array($permission, ['view', 'edit'])) {
+            throw new InvalidArgumentException('checking for an invalid permission');
+        }
+
+        if (false === $this->get('security.context')->isGranted($permission, $site)) {
+            throw new AccessDeniedException(sprintf('You do not have permission to %s this site or it does not exist', $permission));
+        }
+
+        return true;
     }
 }

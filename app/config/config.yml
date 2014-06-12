@@ -139,6 +139,9 @@ fos_rest:
             xml: true
         templating_formats:
             html: true
+    exception:
+        codes:
+            'Tagcade\Exception\InvalidUserRoleException': 400
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
