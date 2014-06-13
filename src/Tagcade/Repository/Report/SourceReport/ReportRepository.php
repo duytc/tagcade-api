@@ -23,9 +23,6 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             $dateTo = $dateFrom;
         }
 
-        $rowLimit = intval($rowLimit);
-        $rowOffset = intval($rowOffset);
-
         $dql = '
             SELECT report.id FROM %s report
             WHERE report.siteId = :siteId
@@ -90,11 +87,11 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         $query = $this->getEntityManager()->createQuery($dql);
 
         if (is_int($rowOffset)) {
-            $query->setFirstResult(intval($rowOffset));
+            $query->setFirstResult($rowOffset);
         }
 
         if (is_int($rowLimit)) {
-            $query->setMaxResults(intval($rowLimit));
+            $query->setMaxResults($rowLimit);
         }
 
         $query->setParameter('reportId', $reportId, Type::INTEGER);

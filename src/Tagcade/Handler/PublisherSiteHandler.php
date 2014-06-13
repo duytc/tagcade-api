@@ -26,7 +26,7 @@ class PublisherSiteHandler extends SiteHandler
     /**
      * @inheritdoc
      */
-    public function all($limit = null, $offset = 0)
+    public function all($limit = null, $offset = null)
     {
         return $this->getRepository()->getSitesForPublisher($this->getUserRole(), $limit, $offset);
     }

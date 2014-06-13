@@ -2,11 +2,29 @@
 
 namespace Tagcade\Test;
 
+use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiTestCase extends WebTestCase
 {
+    protected $fixtureExecutor;
+
+    protected function getFixtureReference($ref)
+    {
+        if ($this->fixtureExecutor instanceof AbstractExecutor) {
+            $repo = $this->fixtureExecutor->getReferenceRepository();
+
+            if ($repo->hasReference($ref)) {
+                return $repo->getReference($ref);
+            }
+
+            throw new \Exception('that fixture reference does not exist');
+        }
+
+        throw new \Exception('executor is not set, did you call loadFixtures?');
+    }
+
     protected function getClient($accepts = 'application/json')
     {
         $client = static::createClient();

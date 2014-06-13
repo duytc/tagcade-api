@@ -13,6 +13,4 @@ Tagcade\Entity\Core\Site:
             - Url: ~
         publisher:
             - NotBlank: ~
-            - Type:
-                type: integer
-                message: "The publisher ID {{ value }} is not valid"
+            - Valid: ~

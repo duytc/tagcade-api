@@ -5,12 +5,14 @@ namespace Tagcade\Form\DataTransformer;
 use Symfony\Component\Form\DataTransformerInterface;
 use Tagcade\Model\User\Role\Publisher;
 use Tagcade\Model\User\Role\RoleInterface;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Tagcade\Exception\InvalidUserRoleException;
 
 Class RoleToUserEntityTransformer implements DataTransformerInterface
 {
     public function transform($role)
     {
-        if (null === $role) {
+        if (!$role) {
             return null;
         }
 
@@ -23,6 +25,17 @@ Class RoleToUserEntityTransformer implements DataTransformerInterface
 
     public function reverseTransform($user)
     {
-        return new Publisher($user);
+        if (!$user) {
+            return null;
+        }
+
+        try {
+            return new Publisher($user);
+        }
+        catch (InvalidUserRoleException $e) {
+            throw new TransformationFailedException(sprintf(
+                'The user could not be converted to a publisher role'
+            ));
+        }
     }
 }

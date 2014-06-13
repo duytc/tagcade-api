@@ -46,7 +46,6 @@ class SiteController extends FOSRestController
     public function getSitesAction(ParamFetcherInterface $paramFetcher)
     {
         $offset = $paramFetcher->get('offset');
-        $offset = null == $offset ? 0 : $offset;
         $limit = $paramFetcher->get('limit');
 
         return $this->container->get('tagcade_api.handler.site')->all($limit, $offset);

@@ -48,7 +48,7 @@ abstract class SiteHandler implements SiteHandlerInterface
     /**
      * @inheritdoc
      */
-    abstract public function all($limit = null, $offset = 0);
+    abstract public function all($limit = null, $offset = null);
 
     /**
      * @inheritdoc
@@ -113,6 +113,8 @@ abstract class SiteHandler implements SiteHandlerInterface
         $form->submit($parameters, 'PATCH' !== $method);
 
         if ($form->isValid()) {
+            $site = $form->getData();
+
             $this->om->persist($site);
             $this->om->flush($site);
 

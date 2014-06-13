@@ -25,7 +25,7 @@ doctrine:
                 charset:    UTF8
             reports:
                 driver:     pdo_sqlite
-                path:       %kernel.cache_dir%/reports.db
+                path:       %kernel.cache_dir%/test-reports.db
                 charset:    UTF8
 
 liip_functional_test:

@@ -8,13 +8,122 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SiteControllerTest extends ApiTestCase
 {
+    protected $executor;
+
     public function setUp()
     {
         $classes = array(
             'Tagcade\Tests\Fixtures\LoadUserData',
             'Tagcade\Tests\Fixtures\LoadSiteData',
         );
-        $this->loadFixtures($classes);
+
+        $this->fixtureExecutor = $this->loadFixtures($classes);
+    }
+
+    public function testPublisherCanCreateASiteWithUrlEncodedData()
+    {
+        $client = $this->getClientForUser('pub');
+
+        $client->request(
+            'POST',
+            $this->getUrl('api_1_post_site'),
+            array(
+                'name' => 'mysite.com',
+                'domain' => 'mysite.com',
+            ),
+            array(),
+            array('CONTENT_TYPE' => 'application/x-www-form-urlencoded')
+        );
+
+        $this->assertJsonResponse($client->getResponse(), 201, false);
+    }
+
+    public function testPublisherCanCreateASite()
+    {
+        $client = $this->getClientForUser('pub');
+
+        $client->request(
+            'POST',
+            $this->getUrl('api_1_post_site'),
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"name":"mysite.com","domain":"mysite.com"}'
+        );
+
+        $this->assertJsonResponse($client->getResponse(), 201, false);
+    }
+
+    public function testPublisherCannotCreateASiteWithInvalidData()
+    {
+        $client = $this->getClientForUser('pub');
+
+        $client->request(
+            'POST',
+            $this->getUrl('api_1_post_site'),
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"name":"my","domain":"2"}'
+        );
+
+        $this->assertJsonResponse($client->getResponse(), 400, false);
+    }
+
+    public function testPublisherCannotCreateASiteWithPublisher()
+    {
+        $client = $this->getClientForUser('pub');
+
+        $client->request(
+            'POST',
+            $this->getUrl('api_1_post_site'),
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"name":"mysite.com","domain":"mysite.com","publisher":"10"}'
+        );
+
+        $this->assertJsonResponse($client->getResponse(), 400, false);
+    }
+
+    public function testAdminCannotCreateASiteWithoutPublisher()
+    {
+        $client = $this->getClientForUser('admin');
+
+        $client->request(
+            'POST',
+            $this->getUrl('api_1_post_site'),
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{"name":"mysite.com","domain":"mysite.com"}'
+        );
+
+        $this->assertJsonResponse($client->getResponse(), 400, false);
+    }
+
+    public function testAdminCanCreateASiteWithPublisher()
+    {
+        $pub = $this->getFixtureReference('test-user-publisher1');
+
+        $client = $this->getClientForUser('admin');
+
+        $payload = array(
+            'name' => 'mysite.com',
+            'domain' => 'mysite.com',
+            'publisher' => $pub->getId(),
+        );
+
+        $client->request(
+            'POST',
+            $this->getUrl('api_1_post_site'),
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            json_encode($payload)
+        );
+
+        $this->assertJsonResponse($client->getResponse(), 201, false);
     }
 
     public function testJsonGetSitesActionWithValidUser()
