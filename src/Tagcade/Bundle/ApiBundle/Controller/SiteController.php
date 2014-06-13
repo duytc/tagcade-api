@@ -37,7 +37,7 @@ class SiteController extends FOSRestController
      * )
      *
      * @Rest\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing sites.")
-     * @Rest\QueryParam(name="limit", requirements="\d+", default="5", description="How many sites to return.")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="How many sites to return.")
      *
      * @param ParamFetcherInterface $paramFetcher param fetcher service
      *

@@ -27,6 +27,6 @@ class AdminSiteHandler extends SiteHandler
      */
     public function all($limit = null, $offset = 0)
     {
-        return $this->getRepository()->findAll();
+        return $this->getRepository()->findBy($criteria = [], $orderBy = null, $limit, $offset);
     }
 }
