@@ -25,7 +25,8 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
 
         $this->addReference('test-user-super-admin', $super_admin);
         $this->addReference('test-user-admin', $admin);
-        $this->addReference('test-user-publisher', $publisher);
+        $this->addReference('test-user-publisher1', $publisher);
+        $this->addReference('test-user-publisher2', $publisher2);
     }
 
     public function getOrder()

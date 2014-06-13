@@ -12,22 +12,32 @@ class LoadSiteData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        /** @var \Tagcade\Bundle\UserBundle\Entity\User $user */
-        $user = $this->getReference('test-user-publisher');
-        $publisher = new Publisher($user);
+        /** @var \Tagcade\Bundle\UserBundle\Entity\User $user1 */
+        $user1 = $this->getReference('test-user-publisher1');
+        /** @var \Tagcade\Bundle\UserBundle\Entity\User $user2 */
+        $user2 = $this->getReference('test-user-publisher2');
+
+        $publisher1 = new Publisher($user1);
+        $publisher2 = new Publisher($user2);
 
         $site1 = new Site();
         $site1->setName('my test');
         $site1->setDomain('mytest.com');
-        $site1->setPublisher($publisher);
+        $site1->setPublisher($publisher1);
 
         $site2 = new Site();
         $site2->setName('another test');
         $site2->setDomain('anothertest.com');
-        $site2->setPublisher($publisher);
+        $site2->setPublisher($publisher1);
+
+        $site3 = new Site();
+        $site3->setName('one more');
+        $site3->setDomain('onemore.com');
+        $site3->setPublisher($publisher2);
 
         $manager->persist($site1);
         $manager->persist($site2);
+        $manager->persist($site3);
 
         $manager->flush();
 

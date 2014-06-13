@@ -50,7 +50,7 @@ class SiteControllerTest extends ApiTestCase
         $client = $this->getClientForUser('admin');
         $response = $this->makeGetSitesActionRequest($client);
 
-        $this->assertJsonResponse($response, 403);
+        $this->assertJsonResponse($response, 200);
     }
 
     /**

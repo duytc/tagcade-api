@@ -24,15 +24,43 @@ class SourceReportControllerTest extends ApiTestCase
         $this->assertJsonResponse($response, 200);
     }
 
-    public function testPubCannotAccess()
+    public function testPubCanAccess()
     {
         $client = $this->getClientForUser('pub');
         $response = $this->makeGetSourceReportsActionRequest($client);
 
+        $this->assertJsonResponse($response, 200);
+    }
+
+    public function testAnonCannotAccess()
+    {
+        $client = $this->getClientForUser(null);
+        $response = $this->makeGetSourceReportsActionRequest($client);
+
+        $this->assertJsonResponse($response, 401);
+    }
+
+    public function testPubCannotAccessNonOwnedSite()
+    {
+        $client = $this->getClientForUser('pub');
+        $response = $this->makeGetSourceReportsActionRequest($client, [
+            'siteId' => 3,
+        ]);
+
         $this->assertEquals($response->getStatusCode(), 403);
     }
 
-    public function testCorrectNumberOfReports()
+    public function testPubCannotAccessOwnedSite()
+    {
+        $client = $this->getClientForUser('pub');
+        $response = $this->makeGetSourceReportsActionRequest($client, [
+            'siteId' => 2,
+        ]);
+
+        $this->assertEquals($response->getStatusCode(), 200);
+    }
+
+    public function testCorrectNumberOfReportsForAdmin()
     {
         $reports = $this->getReportData([
             'to' => '140607',
