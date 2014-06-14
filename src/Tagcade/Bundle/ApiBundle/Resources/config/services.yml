@@ -1,4 +1,5 @@
 parameters:
+    tagcade.entity.core.site.class: Tagcade\Entity\Core\Site
     tagcade.form.type.site.class: Tagcade\Form\Type\SiteFormType
     tagcade_api.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
 
@@ -38,13 +39,14 @@ services:
     tagcade.handler.handler_manager.site:
         class: Tagcade\Handler\HandlerManager
         arguments:
+            - %tagcade.entity.core.site.class%
             -
                 - @tagcade.handler.handlers.site.admin
                 - @tagcade.handler.handlers.site.publisher
 
     tagcade_api.handler.site:
-        class: Tagcade\Handler\Handlers\Core\SiteHandlerInterface
-        factory_service:  tagcade.handler.handler_manager.site
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.site
         factory_method: getHandler
         arguments:
             - @tagcade.user_role

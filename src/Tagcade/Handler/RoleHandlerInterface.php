@@ -5,7 +5,7 @@ namespace Tagcade\Handler;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Exception\LogicException;
 
-interface RoleHandlerInterface
+interface RoleHandlerInterface extends HandlerInterface
 {
     /**
      * @param UserRoleInterface $role

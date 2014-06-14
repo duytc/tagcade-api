@@ -2,36 +2,24 @@
 
 namespace Tagcade\Handler\Handlers\Core;
 
-use Tagcade\DomainManager\SiteManagerInterface;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormTypeInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\SiteInterface;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\SiteInterface;
 
 class PublisherSiteHandler extends SiteHandlerAbstract
 {
     /**
      * @inheritdoc
-     * @param PublisherInterface|null $admin
      */
-    public function __construct(
-        FormFactoryInterface $formFactory,
-        FormTypeInterface $formType,
-        SiteManagerInterface $domainManager,
-        PublisherInterface $publisher = null
-    )
-    {
-        parent::__construct($formFactory, $formType, $domainManager, $publisher);
-    }
-
     public function supportsRole(UserRoleInterface $role)
     {
         return $role instanceof PublisherInterface;
     }
 
     /**
+     * @inheritdoc
      * @return PublisherInterface
      * @throws LogicException
      */
@@ -57,8 +45,9 @@ class PublisherSiteHandler extends SiteHandlerAbstract
     /**
      * @inheritdoc
      */
-    protected function processForm(SiteInterface $site, array $parameters, $method = "PUT")
+    protected function processForm(ModelInterface $site, array $parameters, $method = "PUT")
     {
+        /** @var SiteInterface $site */
         if (null == $site->getPublisher()) {
             $site->setPublisher($this->getUserRole());
         }

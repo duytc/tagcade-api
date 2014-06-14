@@ -2,18 +2,30 @@
 
 namespace Tagcade\Handler;
 
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\NoHandlerForRoleException;
 use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Model\ModelInterface;
+use ReflectionClass;
 
 class HandlerManager
 {
+    protected $entityClass;
+
     /**
      * @var RoleHandlerInterface[]
      */
     protected $handlers;
 
-    public function __construct(array $handlers)
+    public function __construct($entityClass, array $handlers)
     {
+        $entityRef = new ReflectionClass($entityClass);
+
+        if (!$entityRef->isInstantiable() || !$entityRef->implementsInterface(ModelInterface::class)) {
+            throw new InvalidArgumentException('entity class must be instantiable and implement %s', ModelInterface::class);
+        }
+
+        $this->entityClass = $entityClass;
         $this->handlers = [];
 
         foreach($handlers as $handler) {
@@ -23,6 +35,10 @@ class HandlerManager
 
     public function addHandler(RoleHandlerInterface $handler)
     {
+        if (!$handler->supportsEntity($this->entityClass)) {
+            throw new InvalidArgumentException(sprintf('handler must support the entity %s', $this->entityClass));
+        }
+
         $this->handlers[] = $handler;
     }
 

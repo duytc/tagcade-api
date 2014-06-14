@@ -5,7 +5,7 @@ namespace Tagcade\Model;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
-interface SiteInterface
+interface SiteInterface extends ModelInterface
 {
     public function getId();
     public function setName($name);
