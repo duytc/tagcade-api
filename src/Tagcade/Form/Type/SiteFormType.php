@@ -19,7 +19,7 @@ class SiteFormType extends AbstractType
             ->add('domain')
         ;
 
-        if ($options['current_user_role'] instanceof AdminInterface) {
+        if (isset($options['user_role']) && $options['user_role'] instanceof AdminInterface) {
             $builder->add(
                 $builder->create('publisher')
                     ->addModelTransformer(
@@ -35,11 +35,11 @@ class SiteFormType extends AbstractType
             ->setDefaults([
                 'data_class' => Site::class,
             ])
-            ->setRequired([
-                'current_user_role',
+            ->setOptional([
+                'user_role',
             ])
             ->setAllowedTypes([
-                'current_user_role' => UserRoleInterface::class,
+                'user_role' => UserRoleInterface::class,
             ]);
     }
 

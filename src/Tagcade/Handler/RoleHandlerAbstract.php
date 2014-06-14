@@ -109,10 +109,16 @@ abstract class RoleHandlerAbstract implements RoleHandlerInterface
 
         $options = [
             'method' => $method,
-            'current_user_role' => $this->getUserRole(),
+            'user_role' => $this->getUserRole(),
         ];
 
         $form = $this->formFactory->create($this->formType, $entity, $options);
+
+        $formConfig = $form->getConfig();
+
+        if (!is_a($entity, $formConfig->getDataClass())) {
+            throw new LogicException(sprintf('Form data class does not match entity returned from domain manager'));
+        }
 
         $form->submit($parameters, 'PATCH' !== $method);
 
