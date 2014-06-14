@@ -4,40 +4,41 @@ imports:
     - { resource: services.yml }
 
 framework:
-    #esi:             ~
-    #translator:      { fallback: "%locale%" }
-    secret:          "%secret%"
+    #esi: ~
+    #translator: { fallback: "%locale%" }
+    secret: "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: ~
-    form:            ~
+    form: ~
     csrf_protection:
         enabled: false
-    validation:      { enable_annotations: false }
+    validation:
+        enable_annotations: false
     templating:
         engines: ['twig']
         #assets_version: SomeVersionScheme
-    default_locale:  "%locale%"
-    trusted_hosts:   ~
+    default_locale: "%locale%"
+    trusted_hosts: ~
     trusted_proxies: ~
     session:
         # handler_id set to null will use default session handler from php.ini
-        handler_id:  ~
-    fragments:       ~
+        handler_id: ~
+    fragments: ~
     http_method_override: true
 
 # Twig Configuration
 twig:
-    debug:            "%kernel.debug%"
-    strict_variables: "%kernel.debug%"
-    exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'
+    debug:                  "%kernel.debug%"
+    strict_variables:       "%kernel.debug%"
+    exception_controller:   'FOS\RestBundle\Controller\ExceptionController::showAction'
 
 swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
-    spool:     { type: memory }
+    transport:  "%mailer_transport%"
+    host:       "%mailer_host%"
+    username:   "%mailer_user%"
+    password:   "%mailer_password%"
+    spool:      { type: memory }
 
 # Doctrine Configuration
 doctrine:
@@ -45,71 +46,71 @@ doctrine:
         default_connection: default
         connections:
             default:
-                driver:   "%database_driver%"
-                host:     "%database_host%"
-                port:     "%database_port%"
-                dbname:   "%database_name%"
-                user:     "%database_user%"
-                password: "%database_password%"
-                charset:  UTF8
+                driver:     "%database_driver%"
+                host:       "%database_host%"
+                port:       "%database_port%"
+                dbname:     "%database_name%"
+                user:       "%database_user%"
+                password:   "%database_password%"
+                charset:    UTF8
             reports:
-                driver:   "%report_database_driver%"
-                host:     "%report_database_host%"
-                port:     "%report_database_port%"
-                dbname:   "%report_database_name%"
-                user:     "%report_database_user%"
-                password: "%report_database_password%"
-                charset:  UTF8
+                driver:     "%report_database_driver%"
+                host:       "%report_database_host%"
+                port:       "%report_database_port%"
+                dbname:     "%report_database_name%"
+                user:       "%report_database_user%"
+                password:   "%report_database_password%"
+                charset:    UTF8
 
     orm:
-        default_entity_manager: default
-        auto_generate_proxy_classes: "%kernel.debug%"
+        default_entity_manager:         default
+        auto_generate_proxy_classes:    "%kernel.debug%"
 
         entity_managers:
             default:
-                connection: default
-                naming_strategy: doctrine.orm.naming_strategy.underscore
+                connection:         default
+                naming_strategy:    doctrine.orm.naming_strategy.underscore
                 mappings:
                     # bundles
-                    FOSUserBundle: ~
-                    TagcadeUserBundle: ~
+                    FOSUserBundle:      ~
+                    TagcadeUserBundle:  ~
                     # custom
                     CoreEntities:
-                        type: yml
-                        dir: %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Core
-                        prefix: Tagcade\Entity\Core
-                        alias: TagcadeCoreEntity
-                        is_bundle: false
+                        type:       yml
+                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Core
+                        prefix:     Tagcade\Entity\Core
+                        alias:      TagcadeCoreEntity
+                        is_bundle:  false
 
             reports:
-                connection: reports
-                naming_strategy: doctrine.orm.naming_strategy.underscore
+                connection:         reports
+                naming_strategy:    doctrine.orm.naming_strategy.underscore
                 mappings:
                     ReportEntities:
-                        type: yml
-                        dir: %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Report
-                        prefix: Tagcade\Entity\Report
-                        alias: TagcadeReportEntity
-                        is_bundle: false
+                        type:       yml
+                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Report
+                        prefix:     Tagcade\Entity\Report
+                        alias:      TagcadeReportEntity
+                        is_bundle:  false
 
 jms_serializer:
     metadata:
         directories:
             tagcade:
-                namespace_prefix: "Tagcade\\"
-                path: %kernel.root_dir%/../src/Tagcade/Resources/config/serializer
+                namespace_prefix:   "Tagcade\\"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer
 
 gfreeau_custom_validation_path:
     directories:
         -
-            path: %kernel.root_dir%/../src/Tagcade/Resources/config/validation
-            type: yml
-            recursive: true
+            path:       %kernel.root_dir%/../src/Tagcade/Resources/config/validation
+            type:       yml
+            recursive:  true
 
 fos_user:
-    db_driver: orm
-    firewall_name: api
-    user_class: Tagcade\Bundle\UserBundle\Entity\User
+    db_driver:      orm
+    firewall_name:  api
+    user_class:     Tagcade\Bundle\UserBundle\Entity\User
 
 sensio_framework_extra:
     view:
@@ -122,23 +123,28 @@ fos_rest:
     routing_loader:
         default_format: json
         include_format: false
-    body_listener: true
-    param_fetcher_listener: true
+
+    body_listener:              true
+    param_fetcher_listener:     true
+
     format_listener:
         rules:
             - { path: '^/api/', fallback_format: json, prefer_extension: false, priorities: ['json', 'xml'] }
             - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: json, prefer_extension: false }
+
     access_denied_listener:
-        json: true
-        xml: true
-        html: true
+        json:   true
+        xml:    true
+        html:   true
+
     view:
         view_response_listener: force
         formats:
-            json: true
-            xml: true
+            json:   true
+            xml:    true
         templating_formats:
-            html: true
+            html:   true
+
     exception:
         codes:
             'Tagcade\Exception\InvalidUserRoleException': 400
@@ -151,9 +157,9 @@ lexik_jwt_authentication:
 
 nelmio_cors:
     defaults:
-        allow_origin: ['*']
-        allow_headers: ['authorization', 'content-type']
-        max_age: 3600
+        allow_origin:   ['*']
+        allow_headers:  ['authorization', 'content-type']
+        max_age:        3600
     paths:
         '^/user/getToken$':
             allow_methods: ['POST']

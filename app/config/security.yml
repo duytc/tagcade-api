@@ -21,28 +21,28 @@ security:
 
     firewalls:
         dev:
-            pattern:  ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+            pattern:    ^/(_(profiler|wdt)|css|images|js)/
+            security:   false
 
         apidoc:
-            pattern:  ^/docs/?$
-            security: false
+            pattern:    ^/docs/?$
+            security:   false
 
         gettoken:
-            pattern:  ^/user/getToken$
-            stateless: true
+            pattern:    ^/user/getToken$
+            stateless:  true
             gfreeau_get_jwt:
                 username_parameter: username
                 password_parameter: password
-                post_only: true
-                success_handler: lexik_jwt_authentication.handler.authentication_success
-                throw_exceptions: true
+                post_only:          true
+                success_handler:    lexik_jwt_authentication.handler.authentication_success
+                throw_exceptions:   true
 
         api:
-            pattern:   ^/api/
-            stateless: true
+            pattern:    ^/api/
+            stateless:  true
             lexik_jwt:
-                throw_exceptions: true
+                throw_exceptions:   true
                 create_entry_point: false
 
     access_control:

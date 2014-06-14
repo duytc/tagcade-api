@@ -3,10 +3,10 @@ user:
 
 api:
     resource: "@TagcadeApiBundle/Resources/config/routing.yml"
-    type: rest
+    type:   rest
     prefix: /api/v1
 
 report_api:
     resource: "@TagcadeReportApiBundle/Resources/config/routing.yml"
-    type: rest
+    type:   rest
     prefix: /api/reports/v1
