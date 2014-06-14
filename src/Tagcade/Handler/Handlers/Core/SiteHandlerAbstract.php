@@ -1,40 +1,54 @@
 <?php
 
-namespace Tagcade\Handler;
+namespace Tagcade\Handler\Handlers\Core;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
+use Tagcade\Exception\InvalidUserRoleException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\SiteInterface;
-use Tagcade\Model\User\Role\RoleInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Exception\InvalidFormException;
 
-abstract class SiteHandler implements SiteHandlerInterface
+abstract class SiteHandlerAbstract implements SiteHandlerInterface
 {
-    private $om;
-    private $entityClass;
-    /**
-     * @var \Tagcade\Repository\SiteRepository
-     */
-    private $repository;
     private $formFactory;
+    private $formType;
+    protected $domainManager;
     private $userRole;
 
-    /**
-     * @param ObjectManager $om
-     * @param $entityClass
-     * @param FormFactoryInterface $formFactory
-     * @param FormTypeInterface|string $formType
-     * @param RoleInterface $role
-     */
-    public function __construct(ObjectManager $om, $entityClass, FormFactoryInterface $formFactory, $formType, RoleInterface $role)
+    public function __construct(
+        FormFactoryInterface $formFactory,
+        FormTypeInterface $formType,
+        SiteManagerInterface $domainManager,
+        UserRoleInterface $userRole = null)
     {
-        $this->om = $om;
-        $this->entityClass = $entityClass;
-        $this->repository = $this->om->getRepository($this->entityClass);
         $this->formFactory = $formFactory;
         $this->formType = $formType;
-        $this->setUserRole($role);
+        $this->domainManager = $domainManager;
+
+        if ($userRole) {
+            $this->setUserRole($userRole);
+        }
+    }
+
+    public function setUserRole(UserRoleInterface $userRole)
+    {
+        if (!$this->supportsRole($userRole)) {
+            throw new InvalidUserRoleException();
+        }
+
+        $this->userRole = $userRole;
+    }
+
+    public function getUserRole()
+    {
+        if (!$this->userRole instanceof UserRoleInterface) {
+            throw new LogicException('userRole is not set');
+        }
+
+        return $this->userRole;
     }
 
     /**
@@ -42,7 +56,7 @@ abstract class SiteHandler implements SiteHandlerInterface
      */
     public function get($id)
     {
-        return $this->repository->find($id);
+        return $this->domainManager->find($id);
     }
 
     /**
@@ -55,7 +69,7 @@ abstract class SiteHandler implements SiteHandlerInterface
      */
     public function post(array $parameters)
     {
-        $site = $this->createSite();
+        $site = $this->domainManager->createNew();
 
         return $this->processForm($site, $parameters, 'POST');
     }
@@ -74,21 +88,6 @@ abstract class SiteHandler implements SiteHandlerInterface
     public function patch(SiteInterface $site, array $parameters)
     {
         return $this->processForm($site, $parameters, 'PATCH');
-    }
-
-    public function getUserRole()
-    {
-        return $this->userRole;
-    }
-
-    protected function setUserRole(RoleInterface $user)
-    {
-        $this->userRole = $user;
-    }
-
-    protected function getRepository()
-    {
-        return $this->repository;
     }
 
     /**
@@ -110,22 +109,17 @@ abstract class SiteHandler implements SiteHandlerInterface
         ];
 
         $form = $this->formFactory->create($this->formType, $site, $options);
+
         $form->submit($parameters, 'PATCH' !== $method);
 
         if ($form->isValid()) {
             $site = $form->getData();
 
-            $this->om->persist($site);
-            $this->om->flush($site);
+            $this->domainManager->save($site);
 
             return $site;
         }
 
         throw new InvalidFormException('Invalid submitted data', $form);
-    }
-
-    private function createSite()
-    {
-        return new $this->entityClass();
     }
 }

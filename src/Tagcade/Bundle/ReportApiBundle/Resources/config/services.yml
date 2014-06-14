@@ -1,6 +1,6 @@
 parameters:
     tagcade.service.reporting.report_util.class: Tagcade\Service\Reporting\ReportUtil
-    tagcade.handler.source_report.class: Tagcade\Handler\Report\SourceReportHandler
+    tagcade.handler.source_report.class: Tagcade\Handler\Handlers\Report\SourceReportHandler
 
 services:
     tagcade.repository.source_report.report:

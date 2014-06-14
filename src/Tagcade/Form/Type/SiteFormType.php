@@ -8,9 +8,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\Role\RoleInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
-class SiteType extends AbstractType
+class SiteFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -39,7 +39,7 @@ class SiteType extends AbstractType
                 'current_user_role',
             ])
             ->setAllowedTypes([
-                'current_user_role' => RoleInterface::class,
+                'current_user_role' => UserRoleInterface::class,
             ]);
     }
 

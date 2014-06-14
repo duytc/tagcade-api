@@ -3,7 +3,7 @@ parameters:
 
 services:
     tagcade.security.auth.voter.site:
-        class: %tagcade.security.auth.voter.site.class%
+        class:  %tagcade.security.auth.voter.site.class%
         public: false
         tags:
             - { name: security.voter }

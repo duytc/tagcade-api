@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\User\Role;
 
-interface AdminInterface extends RoleInterface
+interface AdminInterface extends UserRoleInterface
 {
 
 }

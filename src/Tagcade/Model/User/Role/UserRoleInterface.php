@@ -4,7 +4,7 @@ namespace Tagcade\Model\User\Role;
 
 use Tagcade\Model\User\UserEntityInterface;
 
-interface RoleInterface
+interface UserRoleInterface
 {
     /**
      * @return UserEntityInterface

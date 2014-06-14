@@ -12,7 +12,7 @@ interface UserRoleFactoryInterface
 {
     /**
      * @param UserEntityInterface $user
-     * @return \Tagcade\Model\User\Role\RoleInterface
+     * @return \Tagcade\Model\User\Role\UserRoleInterface
      * @throws \Tagcade\Exception\InvalidUserRoleException
      * @throws \InvalidArgumentException
      */

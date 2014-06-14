@@ -5,7 +5,7 @@ namespace Tagcade\Model\User\Role;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Exception\InvalidUserRoleException;
 
-abstract class RoleAbstract
+abstract class UserRoleAbstract
 {
     protected static $requiredRoles = [];
     private $user;

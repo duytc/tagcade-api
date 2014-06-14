@@ -1,18 +1,14 @@
 parameters:
-    tagcade_user.model.user.role.class: Tagcade\Model\User\Role\RoleInterface
-    tagcade_user.model.user.role.publisher.class: Tagcade\Model\User\Role\PublisherInterface
-    tagcade_user.factory.user_role.class: Tagcade\Factory\UserRoleFactory
-
     tagcade_user.event.authentication_success_listener.class: Tagcade\Bundle\UserBundle\EventListener\AuthenticationSuccessListener
 
 services:
-    tagcade_user.factory.user_role:
-        class: %tagcade_user.factory.user_role.class%
+    tagcade.factory.user_role:
+        class: Tagcade\Factory\UserRoleFactory
 
     # returns our role model class for the current authenticated user entity
-    tagcade_user.role:
-        class: %tagcade_user.model.user.role.class%
-        factory_service: tagcade_user.factory.user_role
+    tagcade.user_role:
+        class: Tagcade\Model\User\Role\UserRoleInterface
+        factory_service: tagcade.factory.user_role
         factory_method: getRole
         arguments: ["@=service('security.context').getToken() != null ? service('security.context').getToken().getUser() : null"]
 

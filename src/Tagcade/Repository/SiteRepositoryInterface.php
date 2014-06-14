@@ -2,9 +2,10 @@
 
 namespace Tagcade\Repository;
 
+use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface SiteRepositoryInterface
+interface SiteRepositoryInterface extends ObjectRepository
 {
     /**
      * @param PublisherInterface $publisher

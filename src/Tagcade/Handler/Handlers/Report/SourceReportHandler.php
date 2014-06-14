@@ -1,10 +1,9 @@
 <?php
 
-namespace Tagcade\Handler\Report;
+namespace Tagcade\Handler\Handlers\Report;
 
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Service\Reporting\ReportUtilInterface;
-use Tagcade\Model\Report\SourceReport\Report;
 use DateTime;
 
 class SourceReportHandler

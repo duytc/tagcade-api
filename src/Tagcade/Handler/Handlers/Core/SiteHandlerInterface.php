@@ -1,10 +1,11 @@
 <?php
 
-namespace Tagcade\Handler;
+namespace Tagcade\Handler\Handlers\Core;
 
+use Tagcade\Handler\RoleHandlerInterface;
 use Tagcade\Model\SiteInterface;
 
-interface SiteHandlerInterface
+interface SiteHandlerInterface extends RoleHandlerInterface
 {
     /**
      * Get a Site.
