@@ -5,13 +5,16 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use FOS\UserBundle\Model\UserInterface;
+use Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer;
 
 class AuthenticationSuccessListener
 {
+    protected $jwtResponseTransformer;
     protected $userManager;
 
-    public function __construct(UserManagerInterface $userManager)
+    public function __construct(JWTResponseTransformer $jwtResponseTransformer, UserManagerInterface $userManager)
     {
+        $this->jwtResponseTransformer = $jwtResponseTransformer;
         $this->userManager = $userManager;
     }
 
@@ -27,8 +30,7 @@ class AuthenticationSuccessListener
             return;
         }
 
-        $data['username'] = $user->getUsername();
-        $data['roles'] = $user->getRoles();
+        $data = $this->jwtResponseTransformer->transform($data, $user);
 
         $event->setData($data);
 

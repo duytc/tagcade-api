@@ -3,9 +3,9 @@ api_get_token:
     defaults:  { _controller: TagcadeApiBundle:Token:getToken }
     methods:  [POST]
 
-api_refresh_token:
-    path:      /refreshToken
-    defaults:  { _controller: TagcadeApiBundle:Token:refreshToken }
+api_check_token:
+    path:      /checkToken
+    defaults:  { _controller: TagcadeApiBundle:Token:checkToken }
     methods:  [POST]
 
 api_site:

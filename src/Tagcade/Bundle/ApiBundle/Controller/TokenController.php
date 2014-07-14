@@ -33,24 +33,20 @@ class TokenController extends Controller
     }
 
     /**
-     * Regenerate a token for the current authenticated user
+     * check token for the current authenticated user
      *
      * @param Request $request
      * @return JsonResponse
      */
-    public function refreshTokenAction(Request $request)
+    public function checkTokenAction(Request $request)
     {
-        // todo : waiting for 3rd party bundle to be refactored so this can be moved to a service
+        // The security layer has already checked if the user has a valid token
 
+        $data = [];
         $user = $this->getUser();
 
-        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')
-            ->create($user)
-        ;
-
-        $event = new AuthenticationSuccessEvent(array('token' => $jwt), $user, $request);
-        $this->get('event_dispatcher')->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
-
-        return new JsonResponse($event->getData());
+        return new JsonResponse(
+            $this->get('tagcade.service.jwt_response_transformer')->transform($data, $user)
+        );
     }
 }
