@@ -86,18 +86,18 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
 
         $query = $this->getEntityManager()->createQuery($dql);
 
-        if (is_int($rowOffset)) {
+        if (is_numeric($rowOffset)) {
             $query->setFirstResult($rowOffset);
         }
 
-        if (is_int($rowLimit)) {
+        if (is_numeric($rowLimit)) {
             $query->setMaxResults($rowLimit);
         }
 
         $query->setParameter('reportId', $reportId, Type::INTEGER);
 
         try {
-            return $query->getResult();
+            return $query->getSingleResult();
         }
         catch(NoResultException $e) {
             return false;
