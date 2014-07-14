@@ -2,11 +2,19 @@
 
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
+use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use FOS\UserBundle\Model\UserInterface;
 
 class AuthenticationSuccessListener
 {
+    protected $userManager;
+
+    public function __construct(UserManagerInterface $userManager)
+    {
+        $this->userManager = $userManager;
+    }
+
     /**
      * @param AuthenticationSuccessEvent $event
      */
@@ -19,8 +27,12 @@ class AuthenticationSuccessListener
             return;
         }
 
+        $data['username'] = $user->getUsername();
         $data['roles'] = $user->getRoles();
 
         $event->setData($data);
+
+        $user->setLastLogin(new \DateTime());
+        $this->userManager->updateUser($user);
     }
 }

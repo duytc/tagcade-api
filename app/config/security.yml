@@ -29,7 +29,7 @@ security:
             security:   false
 
         gettoken:
-            pattern:    ^/user/getToken$
+            pattern:    ^/api/v1/getToken$
             stateless:  true
             gfreeau_get_jwt:
                 username_parameter: username

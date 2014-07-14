@@ -1,6 +1,3 @@
-user:
-    resource: "@TagcadeUserBundle/Resources/config/routing.yml"
-
 api:
     resource: "@TagcadeApiBundle/Resources/config/routing.yml"
     type:   rest

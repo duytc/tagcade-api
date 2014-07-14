@@ -1,6 +1,3 @@
-parameters:
-    tagcade_user.event.authentication_success_listener.class: Tagcade\Bundle\UserBundle\EventListener\AuthenticationSuccessListener
-
 services:
     tagcade.factory.user_role:
         class: Tagcade\Factory\UserRoleFactory
@@ -11,13 +8,3 @@ services:
         factory_service: tagcade.factory.user_role
         factory_method: getRole
         arguments: ["@=service('security.context').getToken() != null ? service('security.context').getToken().getUser() : null"]
-
-    tagcade_user.event.authentication_success_listener:
-        class: %tagcade_user.event.authentication_success_listener.class%
-        arguments: [@fos_user.user_manager]
-        tags:
-            -
-                name: kernel.event_listener
-                event: 'lexik_jwt_authentication.on_authentication_success'
-                method: 'onAuthenticationSuccess'
-                priority: 10

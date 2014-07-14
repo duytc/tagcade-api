@@ -1,3 +1,13 @@
+api_get_token:
+    path:      /getToken
+    defaults:  { _controller: TagcadeApiBundle:Token:getToken }
+    methods:  [POST]
+
+api_refresh_token:
+    path:      /refreshToken
+    defaults:  { _controller: TagcadeApiBundle:Token:refreshToken }
+    methods:  [POST]
+
 api_site:
     type: rest
     resource: "Tagcade\Bundle\ApiBundle\Controller\SiteController"

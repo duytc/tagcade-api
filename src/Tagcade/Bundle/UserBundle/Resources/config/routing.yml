@@ -1,4 +1,0 @@
-user_get_token:
-    path:      /user/getToken
-    defaults:  { _controller: TagcadeUserBundle:Token:getToken }
-    methods:  [POST]

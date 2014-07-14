@@ -1,7 +1,8 @@
 parameters:
     tagcade.entity.core.site.class: Tagcade\Entity\Core\Site
     tagcade.form.type.site.class: Tagcade\Form\Type\SiteFormType
-    tagcade_api.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
+    tagcade.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
+    tagcade.event.jwt_created_listener.class: Tagcade\Bundle\ApiBundle\EventListener\JWTCreatedListener
 
 services:
     tagcade.repository.site:
@@ -56,10 +57,22 @@ services:
         tags:
             - { name: form.type, alias: tagcade_site }
 
-    tagcade_api.event.authentication_success_listener:
-        class: %tagcade_api.event.authentication_success_listener.class%
+
+    tagcade.event.authentication_success_listener:
+        class: %tagcade.event.authentication_success_listener.class%
+        arguments: [@fos_user.user_manager]
         tags:
             -
                 name: kernel.event_listener
                 event: 'lexik_jwt_authentication.on_authentication_success'
                 method: 'onAuthenticationSuccess'
+                priority: 10
+
+    #tagcade.event.jwt_created_listener:
+    #    class: %tagcade.event.jwt_created_listener.class%
+    #    tags:
+    #        -
+    #            name: kernel.event_listener
+    #            event: 'lexik_jwt_authentication.on_jwt_created'
+    #            method: 'onJWTCreated'
+    #            priority: 10
