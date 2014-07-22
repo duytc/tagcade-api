@@ -8,6 +8,14 @@ use Tagcade\Model\User\Role\PublisherInterface;
 interface SiteManagerInterface
 {
     /**
+     * @see \Tagcade\DomainManager\ManagerInterface
+     *
+     * @param SiteInterface|string $entity
+     * @return bool
+     */
+    public function supportsEntity($entity);
+
+    /**
      * @param SiteInterface $site
      * @return void
      */

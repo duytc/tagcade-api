@@ -8,6 +8,10 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\ModelInterface;
 use ReflectionClass;
 
+/**
+ * Returns a resource handler for the current user role
+ * if available
+ */
 class HandlerManager
 {
     protected $entityClass;

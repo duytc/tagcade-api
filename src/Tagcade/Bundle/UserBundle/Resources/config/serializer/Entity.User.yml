@@ -1,4 +1,15 @@
 Tagcade\Bundle\UserBundle\Entity\User:
+    exclusion_policy: ALL
     properties:
+        id:
+            expose: true
         username:
+            expose: true
+        email:
+            expose: true
+        roles:
+            expose: true
+        last_login:
+            expose: true
+        enabled:
             expose: true

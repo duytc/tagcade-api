@@ -2,32 +2,15 @@ services:
     # main public services
 
     tagcade_admin_api.handler.user:
-        class: Tagcade\Handler\HandlerInterface
-        factory_service: tagcade.handler.handler_manager.user
-        factory_method: getHandler
+        class: Tagcade\Bundle\AdminApiBundle\Handler\UserHandler
         arguments:
-            - @tagcade.user_role
+            - @form.factory
+            - @tagcade_admin_api.form.type.user
+            - @tagcade_user.domain_manager.user
 
+    # forms
 
-    # used as dependencies
-
-    tagcade.domain_manager.user:
-        class: Tagcade\DomainManager\UserManager
-        arguments:
-            - @doctrine.orm.entity_manager
-            - @tagcade.repository.user
-
-    tagcade.handler.handlers.admin.user:
-        parent: tagcade.handler.role_handler_abstract
-        class: Tagcade\Handler\Handlers\Admin\UserHandler
-        public: false
-        arguments:
-            - @tagcade.form.type.site
-            - @tagcade.domain_manager.user
-
-    tagcade.handler.handler_manager.user:
-        class: Tagcade\Handler\HandlerManager
-        arguments:
-            - %tagcade.bundle.user.entity.user.class%
-            -
-                - @tagcade.handler.handlers.admin.user
+    tagcade_admin_api.form.type.user:
+        class: Tagcade\Bundle\AdminApiBundle\Form\Type\UserFormType
+        tags:
+            - { name: form.type, alias: tagcade_admin_api.user }

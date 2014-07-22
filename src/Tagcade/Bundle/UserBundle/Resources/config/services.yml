@@ -12,9 +12,7 @@ services:
         factory_method: getRole
         arguments: ["@=service('security.context').getToken() != null ? service('security.context').getToken().getUser() : null"]
 
-    tagcade.repository.user:
-        class: Doctrine\ORM\EntityRepository
-        factory_service: doctrine.orm.entity_manager
-        factory_method: getRepository
+    tagcade_user.domain_manager.user:
+        class: Tagcade\Bundle\UserBundle\DomainManager\UserManager
         arguments:
-            - %tagcade.bundle.user.entity.user.class%
+            - @fos_user.user_manager

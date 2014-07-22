@@ -11,6 +11,15 @@ use Tagcade\Model\ModelInterface;
 interface ManagerInterface
 {
     /**
+     * Should take an object instance or string class name
+     * Should return true if the supplied entity object or class is supported by this manager
+     *
+     * @param ModelInterface|string $entity
+     * @return bool
+     */
+    public function supportsEntity($entity);
+
+    /**
      * @param ModelInterface $entity
      * @return void
      */

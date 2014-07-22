@@ -22,6 +22,14 @@ class SiteManager implements SiteManagerInterface
     /**
      * @inheritdoc
      */
+    public function supportsEntity($entity)
+    {
+        return is_subclass_of($entity, SiteInterface::class);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function save(SiteInterface $site)
     {
         $this->om->persist($site);

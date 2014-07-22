@@ -4,10 +4,15 @@ namespace Tagcade\Handler;
 
 use Tagcade\Model\ModelInterface;
 
+/**
+ * This is the base API for all handlers in the system.
+ * It includes the common rest methods for managing a resource
+ */
 interface HandlerInterface
 {
     /**
      * Should take an object instance or string class name
+     * Should return true if the supplied entity object or class is supported by this handler
      *
      * @param ModelInterface|string $entity
      * @return bool
