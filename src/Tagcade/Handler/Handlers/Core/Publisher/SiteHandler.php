@@ -1,14 +1,15 @@
 <?php
 
-namespace Tagcade\Handler\Handlers\Core;
+namespace Tagcade\Handler\Handlers\Core\Publisher;
 
+use Tagcade\Handler\Handlers\Core\SiteHandlerAbstract;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\SiteInterface;
 
-class PublisherSiteHandler extends SiteHandlerAbstract
+class SiteHandler extends SiteHandlerAbstract
 {
     /**
      * @inheritdoc
@@ -39,7 +40,7 @@ class PublisherSiteHandler extends SiteHandlerAbstract
      */
     public function all($limit = null, $offset = null)
     {
-        return $this->domainManager->getSitesForPublisher($this->getUserRole(), $limit, $offset);
+        return $this->getDomainManager()->getSitesForPublisher($this->getUserRole(), $limit, $offset);
     }
 
     /**

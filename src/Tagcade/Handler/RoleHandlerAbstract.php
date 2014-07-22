@@ -2,7 +2,6 @@
 
 namespace Tagcade\Handler;
 
-use Tagcade\DomainManager\SiteManagerInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Tagcade\Model\ModelInterface;
@@ -13,20 +12,31 @@ use Tagcade\Exception\InvalidFormException;
 
 abstract class RoleHandlerAbstract implements RoleHandlerInterface
 {
-    private $formFactory;
-    private $formType;
-    protected $domainManager;
-    private $userRole;
+    protected $formFactory;
 
-    public function __construct(
-        FormFactoryInterface $formFactory,
-        FormTypeInterface $formType,
-        SiteManagerInterface $domainManager,
-        UserRoleInterface $userRole = null)
+    protected $formType;
+
+    /**
+     * @var \Tagcade\DomainManager\ManagerInterface
+     *
+     * We are using the dummy class above only for IDE completion.
+     *
+     * We had to do this because PHP does not support generics and we wanted to type hint
+     * our domain managers/models.
+     *
+     * At a minimum it should support the methods in the dummy class above.
+     *
+     * The existence of the required methods will be checked in setDomainManager of this class
+     */
+    protected $domainManager;
+
+    protected $userRole;
+
+    public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, $domainManager, UserRoleInterface $userRole = null)
     {
         $this->formFactory = $formFactory;
         $this->formType = $formType;
-        $this->domainManager = $domainManager;
+        $this->setDomainManager($domainManager);
 
         if ($userRole) {
             $this->setUserRole($userRole);
@@ -131,5 +141,22 @@ abstract class RoleHandlerAbstract implements RoleHandlerInterface
         }
 
         throw new InvalidFormException('Invalid submitted data', $form);
+    }
+
+    /**
+     * Returns the domain manager object
+     * PHP's lack of generics support requires this, see comments at top of class
+     *
+     * @return \Tagcade\DomainManager\ManagerInterface
+     */
+    protected function getDomainManager()
+    {
+        return $this->domainManager;
+    }
+
+    private function setDomainManager($domainManager)
+    {
+        // todo check object methods
+        $this->domainManager = $domainManager;
     }
 }

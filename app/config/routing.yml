@@ -1,3 +1,8 @@
+tagcade_admin_api:
+    resource: "@TagcadeAdminApiBundle/Resources/config/routing.yml"
+    type:   rest
+    prefix: /api/admin/v1
+
 api:
     resource: "@TagcadeApiBundle/Resources/config/routing.yml"
     type:   rest

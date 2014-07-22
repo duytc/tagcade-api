@@ -1,11 +1,12 @@
 <?php
 
-namespace Tagcade\Handler\Handlers\Core;
+namespace Tagcade\Handler\Handlers\Core\Admin;
 
+use Tagcade\Handler\Handlers\Core\SiteHandlerAbstract;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 
-class AdminSiteHandler extends SiteHandlerAbstract
+class SiteHandler extends SiteHandlerAbstract
 {
     public function supportsRole(UserRoleInterface $role)
     {
@@ -17,6 +18,6 @@ class AdminSiteHandler extends SiteHandlerAbstract
      */
     public function all($limit = null, $offset = null)
     {
-        return $this->domainManager->all($limit, $offset);
+        return $this->getDomainManager()->all($limit, $offset);
     }
 }

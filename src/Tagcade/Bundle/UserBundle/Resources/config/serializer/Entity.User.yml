@@ -1,0 +1,4 @@
+Tagcade\Bundle\UserBundle\Entity\User:
+    properties:
+        username:
+            expose: true

@@ -6,6 +6,9 @@ use Tagcade\Test\ApiTestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Component\HttpFoundation\Response;
 
+use Tagcade\Tests\Fixtures\LoadUserData;
+use Tagcade\Tests\Fixtures\LoadSiteData;
+
 class SiteControllerTest extends ApiTestCase
 {
     protected $executor;
@@ -13,8 +16,8 @@ class SiteControllerTest extends ApiTestCase
     public function setUp()
     {
         $classes = array(
-            'Tagcade\Tests\Fixtures\LoadUserData',
-            'Tagcade\Tests\Fixtures\LoadSiteData',
+            LoadUserData::class,
+            LoadSiteData::class
         );
 
         $this->fixtureExecutor = $this->loadFixtures($classes);

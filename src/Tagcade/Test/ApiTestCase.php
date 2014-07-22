@@ -5,6 +5,7 @@ namespace Tagcade\Test;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Tagcade\Bundle\UserBundle\Entity\User;
 
 class ApiTestCase extends WebTestCase
 {
@@ -44,7 +45,7 @@ class ApiTestCase extends WebTestCase
 
         if ($user) {
             $jwt = $this->getJWT($user);
-            $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $jwt->getTokenString()));
+            $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $jwt));
         }
 
         return $client;
@@ -56,9 +57,10 @@ class ApiTestCase extends WebTestCase
      */
     protected function getJWT($user)
     {
-        return $this->getContainer()->get('lexik_jwt_authentication.jwt_encoder')->encode([
-            'username' => $user,
-        ]);
+        $userEntity = new User();
+        $userEntity->setUsername($user);
+
+        return $this->getContainer()->get('lexik_jwt_authentication.jwt_manager')->create($userEntity);
     }
 
     protected function assertJsonResponse(

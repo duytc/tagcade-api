@@ -46,4 +46,5 @@ security:
                 create_entry_point: false
 
     access_control:
+        - { path: ^/api/admin/, roles: ROLE_ADMIN }
         - { path: ^/api/, roles: ROLE_USER }

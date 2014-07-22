@@ -3,17 +3,16 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Repository\SiteRepositoryInterface;
-use Tagcade\Model\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
+use Doctrine\Common\Persistence\ObjectRepository;
+use Tagcade\Model\User\UserEntityInterface;
 use ReflectionClass;
 
-class SiteManager implements SiteManagerInterface
+class UserManager implements UserManagerInterface
 {
     protected $om;
     protected $repository;
 
-    public function __construct(ObjectManager $om, SiteRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, ObjectRepository $repository)
     {
         $this->om = $om;
         $this->repository = $repository;
@@ -22,18 +21,18 @@ class SiteManager implements SiteManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(SiteInterface $site)
+    public function save(UserEntityInterface $user)
     {
-        $this->om->persist($site);
+        $this->om->persist($user);
         $this->om->flush();
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(SiteInterface $site)
+    public function delete(UserEntityInterface $user)
     {
-        $this->om->remove($site);
+        $this->om->remove($user);
         $this->om->flush();
     }
 
@@ -59,14 +58,6 @@ class SiteManager implements SiteManagerInterface
      */
     public function all($limit = null, $offset = null)
     {
-        return $this->repository->findBy($criteria = [], $orderBy = null, $limit, $offset);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
-    {
-        return $this->repository->getSitesForPublisher($publisher, $limit, $offset);
+        return $this->repository->findAll();
     }
 }

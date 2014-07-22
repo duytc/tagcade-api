@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "76dd8f51434107764a6fd8cd6610f1d9",
+    "hash": "3855ad214f93c76427b5aa4838efcb1e",
     "packages": [
         {
             "name": "dms/dms-filter",
@@ -1305,17 +1305,17 @@
         },
         {
             "name": "lexik/jwt-authentication-bundle",
-            "version": "dev-master",
+            "version": "v1.0.3",
             "target-dir": "Lexik/Bundle/JWTAuthenticationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "1dce62ebef5c7234f041d09c8688bfaa4c69890e"
+                "reference": "a066b42946bde675f986c8b4f9b5cb536ad36a7a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/1dce62ebef5c7234f041d09c8688bfaa4c69890e",
-                "reference": "1dce62ebef5c7234f041d09c8688bfaa4c69890e",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/a066b42946bde675f986c8b4f9b5cb536ad36a7a",
+                "reference": "a066b42946bde675f986c8b4f9b5cb536ad36a7a",
                 "shasum": ""
             },
             "require": {
@@ -1371,7 +1371,7 @@
                 "jwt",
                 "rest"
             ],
-            "time": "2014-07-12 11:58:46"
+            "time": "2014-07-15 08:26:51"
         },
         {
             "name": "michelf/php-markdown",
@@ -3323,18 +3323,10 @@
             "time": "2014-04-30 16:46:25"
         }
     ],
-    "aliases": [
-        {
-            "alias": "1.0.*@dev",
-            "alias_normalized": "dev-1.0.*@",
-            "version": "9999999-dev",
-            "package": "lexik/jwt-authentication-bundle"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "jms/serializer-bundle": 20,
-        "lexik/jwt-authentication-bundle": 20,
         "gfreeau/get-jwt-bundle": 20,
         "gfreeau/custom-validation-path-bundle": 20,
         "doctrine/doctrine-fixtures-bundle": 20,

@@ -6,6 +6,24 @@ parameters:
     tagcade.event.jwt_created_listener.class: Tagcade\Bundle\ApiBundle\EventListener\JWTCreatedListener
 
 services:
+    # main public services
+
+    tagcade_api.handler.site:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.site
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    # used as dependencies
+
+    tagcade.handler.role_handler_abstract:
+        class: Tagcade\Handler\RoleHandlerAbstract
+        abstract: true
+        public: false
+        arguments:
+            - @form.factory
+
     tagcade.repository.site:
         class: Doctrine\ORM\EntityRepository
         factory_service: doctrine.orm.entity_manager
@@ -21,20 +39,20 @@ services:
 
     tagcade.handler.handlers.site.abstract:
         class: Tagcade\Handler\Handlers\Core\SiteHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
         abstract: true
         public: false
         arguments:
-            - @form.factory
             - @tagcade.form.type.site
             - @tagcade.domain_manager.site
 
     tagcade.handler.handlers.site.admin:
-        class: Tagcade\Handler\Handlers\Core\AdminSiteHandler
+        class: Tagcade\Handler\Handlers\Core\Admin\SiteHandler
         parent: tagcade.handler.handlers.site.abstract
         public: false
 
     tagcade.handler.handlers.site.publisher:
-        class: Tagcade\Handler\Handlers\Core\PublisherSiteHandler
+        class: Tagcade\Handler\Handlers\Core\Publisher\SiteHandler
         parent: tagcade.handler.handlers.site.abstract
         public: false
 
@@ -45,13 +63,6 @@ services:
             -
                 - @tagcade.handler.handlers.site.admin
                 - @tagcade.handler.handlers.site.publisher
-
-    tagcade_api.handler.site:
-        class: Tagcade\Handler\HandlerInterface
-        factory_service: tagcade.handler.handler_manager.site
-        factory_method: getHandler
-        arguments:
-            - @tagcade.user_role
 
     tagcade.form.type.site:
         class: %tagcade.form.type.site.class%
@@ -71,11 +82,10 @@ services:
                 method: 'onAuthenticationSuccess'
                 priority: 10
 
-    #tagcade.event.jwt_created_listener:
-    #    class: %tagcade.event.jwt_created_listener.class%
-    #    tags:
-    #        -
-    #            name: kernel.event_listener
-    #            event: 'lexik_jwt_authentication.on_jwt_created'
-    #            method: 'onJWTCreated'
-    #            priority: 10
+    tagcade.event.jwt_created_listener:
+        class: %tagcade.event.jwt_created_listener.class%
+        tags:
+            -
+                name: kernel.event_listener
+                event: 'lexik_jwt_authentication.on_jwt_created'
+                method: 'onJWTCreated'

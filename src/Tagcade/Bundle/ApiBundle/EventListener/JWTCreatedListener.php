@@ -6,11 +6,19 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 
 class JWTCreatedListener
 {
+    /**
+     * @param JWTCreatedEvent $event
+     *
+     * @return void
+     */
     public function onJWTCreated(JWTCreatedEvent $event)
     {
-        $payload = $event->getData();
+        if (!($request = $event->getRequest())) {
+            return;
+        }
 
-        $payload['ip'] = $_SERVER['REMOTE_ADDR'];
+        $payload       = $event->getData();
+        $payload['ip'] = $request->getClientIp();
 
         $event->setData($payload);
     }

@@ -22,7 +22,7 @@ class HandlerManager
         $entityRef = new ReflectionClass($entityClass);
 
         if (!$entityRef->isInstantiable() || !$entityRef->implementsInterface(ModelInterface::class)) {
-            throw new InvalidArgumentException('entity class must be instantiable and implement %s', ModelInterface::class);
+            throw new InvalidArgumentException(sprintf('entity class must be instantiable and implement %s', ModelInterface::class));
         }
 
         $this->entityClass = $entityClass;

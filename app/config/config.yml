@@ -100,6 +100,10 @@ jms_serializer:
                 namespace_prefix:   "Tagcade\\"
                 path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer
 
+            FOSUserBundle:
+                namespace_prefix: "FOS\\UserBundle"
+                path: "@TagcadeUserBundle/Resources/config/serializer/fos"
+
 gfreeau_custom_validation_path:
     directories:
         -
@@ -144,6 +148,9 @@ fos_rest:
             xml:    true
         templating_formats:
             html:   true
+
+    serializer:
+        serialize_null: true
 
     exception:
         codes:
