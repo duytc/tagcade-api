@@ -23,4 +23,13 @@ interface UserEntityInterface extends ModelInterface
     public function getRoles();
 
     public function hasRole($role);
+
+    /**
+     * Adds a role to the user.
+     *
+     * @param string $role
+     *
+     * @return self
+     */
+    public function addRole($role);
 }

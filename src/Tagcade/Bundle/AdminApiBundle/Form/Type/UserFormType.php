@@ -6,6 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserFormType extends AbstractType
 {
@@ -14,10 +17,55 @@ class UserFormType extends AbstractType
         $builder
             ->add('username')
             ->add('email')
-            ->add('password')
-            ->add('roles')
+            ->add('plainPassword')
             ->add('enabled')
+
+            ->add('role', 'choice', [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+                'mapped' => false,
+                'empty_data' => null,
+                'choices' => [
+                    'publisher' => 'Publisher',
+                    'admin' => 'Admin'
+                ],
+            ])
+
+            ->add('features', 'choice', [
+                'mapped' => false,
+                'multiple' => true,
+                'empty_data' => null,
+                'choices' => [
+                    'display' => 'Display',
+                    'video' => 'Video',
+                    'analytics' => 'Analytics',
+                    'fraud_detection' => 'Fraud Detection'
+                ],
+            ])
         ;
+
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) {
+                /** @var User $user */
+                $user = $event->getData();
+                $form = $event->getForm();
+
+                $mainUserRole = $form->get('role')->getData();
+                $features = $form->get('features')->getData();
+
+                // todo features is not setting to null when it is not present
+
+                if (null !== $mainUserRole) {
+                    $user->setUserRoles((array) $mainUserRole);
+                }
+
+                if (null !== $features && is_array($features)) {
+                    $user->setEnabledFeatures($features);
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -25,6 +73,9 @@ class UserFormType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => User::class,
+                // Registration is from FOSUserBundle
+                'validation_groups' => ['Default', 'Registration'],
+                'intention' => '',
             ])
         ;
     }

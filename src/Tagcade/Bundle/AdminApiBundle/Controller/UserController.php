@@ -58,6 +58,14 @@ class UserController extends RestController implements ClassResourceInterface
      * @ApiDoc(
      *  section = "admin",
      *  resource = true,
+     *  parameters={
+     *      {"name"="username", "dataType"="string", "required"=true},
+     *      {"name"="email", "dataType"="string", "required"=false},
+     *      {"name"="plainPassword", "dataType"="string", "required"=true},
+     *      {"name"="role", "dataType"="string", "required"=true, "default"="publisher", "description"="The role of the user, i.e publisher or admin"},
+     *      {"name"="features", "dataType"="array", "required"=false, "description"="An array of enabled features for this user, not applicable to admins"},
+     *      {"name"="enabled", "dataType"="boolean", "required"=false, "description"="Is this user account enabled or not?"},
+     *  },
      *  statusCodes = {
      *      200 = "Returned when successful",
      *      400 = "Returned when the submitted data has errors"
