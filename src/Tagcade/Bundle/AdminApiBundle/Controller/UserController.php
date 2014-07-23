@@ -2,64 +2,169 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Tagcade\Bundle\ApiBundle\Controller\RestController;
+use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class UserController extends FOSRestController
+class UserController extends RestController implements ClassResourceInterface
 {
     /**
      * Get all users
      *
      * @ApiDoc(
+     *  section = "admin",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
      *  }
      * )
      *
-     * @return array
+     * @return \Tagcade\Bundle\UserBundle\Entity\User[]
      */
-    public function getUsersAction()
+    public function cgetAction()
     {
-        return $this->getUserHandler()->all();
+        return $this->all();
     }
 
     /**
-     * Get single User.
+     * Get a single user for the given id
      *
      * @ApiDoc(
+     *  section = "admin",
      *  resource = true,
-     *  description = "Gets a User for a given id",
-     *  output = "Tagcade\Bundle\UserBundle\Entity\User",
      *  statusCodes = {
      *      200 = "Returned when successful",
-     *      404 = "Returned when the user is not found"
+     *      404 = "Returned when the resource is not found"
      *  }
      * )
      *
-     * @param int $id the site id
+     * @param int $id the resource id
      *
      * @return \Tagcade\Bundle\UserBundle\Entity\User
-     *
-     * @throws NotFoundHttpException when site does not exist
+     * @throws NotFoundHttpException when the resource does not exist
      */
-    public function getUserAction($id)
+    public function getAction($id)
     {
         return $this->getOr404($id);
     }
 
-    protected function getOr404($id)
+    /**
+     * Create a user from the submitted data
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     *
+     * @return FormTypeInterface|View
+     */
+    public function postAction(Request $request)
     {
-        if (!($user = $this->getUserHandler()->get($id))) {
-            throw new NotFoundHttpException(sprintf("The user resource '%s' was not found or you do not have access", $id));
-        }
-
-        return $user;
+        return $this->post($request);
     }
 
-    protected function getUserHandler()
+    /**
+     * Update an existing user from the submitted data or create a new user
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when the resource is created",
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function putAction(Request $request, $id)
+    {
+        return $this->put($request, $id);
+    }
+
+    /**
+     * Update an existing user from the submitted data or create a new user at a specific location
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when resource not exist
+     */
+    public function patchAction(Request $request, $id)
+    {
+        return $this->patch($request, $id);
+    }
+
+    /**
+     * Delete an existing user
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     *
+     * @return View
+     *
+     * @throws NotFoundHttpException when the resource not exist
+     */
+    public function deleteAction($id)
+    {
+        return $this->delete($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getResourceName()
+    {
+        return 'user';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getGETRouteName()
+    {
+        return 'admin_api_1_get_user';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getHandler()
     {
         return $this->container->get('tagcade_admin_api.handler.user');
     }

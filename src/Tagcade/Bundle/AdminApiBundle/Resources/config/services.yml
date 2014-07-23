@@ -13,4 +13,4 @@ services:
     tagcade_admin_api.form.type.user:
         class: Tagcade\Bundle\AdminApiBundle\Form\Type\UserFormType
         tags:
-            - { name: form.type, alias: tagcade_admin_api.user }
+            - { name: form.type, alias: tagcade_admin_api__user }

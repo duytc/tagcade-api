@@ -7,14 +7,13 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class User extends BaseUser implements UserEntityInterface
 {
-    /**
-     * These properties are required to be redeclared by jms serializer
-     * We excluded all fields in the parent class, in order to expose
-     * a subset of the fields we need to overwrite that config.
-     *
-     * The only way to do it is to redeclare them here so that out new config works
-     * See the serializer config in the Resources/config/serializer directory of this bundle
-     */
+    // These properties are required to be redeclared by jms serializer
+    // We excluded all fields in the parent class, in order to expose
+    // a subset of the fields we need to overwrite that config.
+    //
+    // The only way to do it is to redeclare them here so that out new config works
+    // See the serializer config in the Resources/config/serializer directory of this bundle
+
     protected $id;
     protected $username;
     protected $email;

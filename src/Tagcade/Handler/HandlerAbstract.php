@@ -59,6 +59,14 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @inheritdoc
      */
+    public function delete(ModelInterface $entity)
+    {
+        $this->domainManager->delete($entity);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function all($limit = 5, $offset = 0)
     {
         return $this->domainManager->all($limit, $offset);
@@ -110,6 +118,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $formOptions = [
             'method' => $method,
         ];
+
         $form = $this->formFactory->create($this->getFormType(), $entity, $formOptions);
 
         $formConfig = $form->getConfig();

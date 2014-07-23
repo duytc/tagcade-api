@@ -22,11 +22,20 @@ interface HandlerInterface
     /**
      * Get a Entity.
      *
-     * @param mixed $id
+     * @param int $id
      *
      * @return ModelInterface
      */
     public function get($id);
+
+    /**
+     * Delete an Entity.
+     *
+     * @param ModelInterface $entity
+     *
+     * @return void
+     */
+    public function delete(ModelInterface $entity);
 
     /**
      * Get a list of Entities.

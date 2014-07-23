@@ -2,32 +2,18 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-
-// annotations
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-// end annotations
-
-use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
-use FOS\RestBundle\Request\ParamFetcherInterface;
-
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
-use Tagcade\Exception\InvalidFormException;
 use Tagcade\Model\SiteInterface;
 
-use InvalidArgumentException;
-
-class SiteController extends FOSRestController
+class SiteController extends RestController implements ClassResourceInterface
 {
     /**
-     * List all sites.
+     * Get all sites
      *
      * @ApiDoc(
      *  resource = true,
@@ -36,213 +22,144 @@ class SiteController extends FOSRestController
      *  }
      * )
      *
-     * @Rest\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing sites.")
-     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="How many sites to return.")
-     *
-     * @param ParamFetcherInterface $paramFetcher param fetcher service
-     *
-     * @return array
+     * @return SiteInterface[]
      */
-    public function getSitesAction(ParamFetcherInterface $paramFetcher)
+    public function cgetAction()
     {
-        $offset = $paramFetcher->get('offset');
-        $limit = $paramFetcher->get('limit');
-
-        return $this->container->get('tagcade_api.handler.site')->all($limit, $offset);
+        return $this->all();
     }
 
     /**
-     * Get single Site.
+     * Get a single site for the given id
      *
      * @ApiDoc(
      *  resource = true,
-     *  description = "Gets a Site for a given id",
-     *  output = "Tagcade\Entity\Core\Site",
      *  statusCodes = {
      *      200 = "Returned when successful",
-     *      404 = "Returned when the site is not found"
+     *      404 = "Returned when the resource is not found"
      *  }
      * )
      *
-     * @param int $id the site id
+     * @param int $id the resource id
      *
-     * @return array
-     *
-     * @throws NotFoundHttpException when site does not exist
-     */
-    public function getSiteAction($id)
-    {
-        $site = $this->getOr404($id);
-        $this->checkUserPermission($site, 'view');
-
-        return $site;
-    }
-
-    /**
-     * Create a Site from the submitted data.
-     *
-     * @ApiDoc(
-     *  resource = true,
-     *  description = "Creates a new site from the submitted data.",
-     *  input = "Tagcade\Bundle\ApiBundle\Form\Type\SiteType",
-     *  statusCodes = {
-     *      200 = "Returned when successful",
-     *      400 = "Returned when the form has errors"
-     *  }
-     * )
-     *
-     * @param Request $request the request object
-     *
-     * @return FormTypeInterface|View
-     */
-    public function postSiteAction(Request $request)
-    {
-        try {
-            $newSite = $this->get('tagcade_api.handler.site')->post(
-                $request->request->all()
-            );
-
-            $routeOptions = array(
-                'id' => $newSite->getId(),
-                '_format' => $request->get('_format')
-            );
-
-            return $this->routeRedirectView('api_1_get_site', $routeOptions, Codes::HTTP_CREATED);
-
-        } catch (InvalidFormException $exception) {
-            return $exception->getForm();
-        }
-    }
-
-    /**
-     * Update existing site from the submitted data or create a new site at a specific location.
-     *
-     * @ApiDoc(
-     *  resource = true,
-     *  input = "Tagcade\Bundle\ApiBundle\Form\Type\SiteType",
-     *  statusCodes = {
-     *      201 = "Returned when the Site is created",
-     *      204 = "Returned when successful",
-     *      400 = "Returned when the form has errors"
-     *  }
-     * )
-     *
-     * @param Request $request the request object
-     * @param int $id the site id
-     *
-     * @return FormTypeInterface|View
-     *
-     * @throws NotFoundHttpException when site not exist
-     */
-    public function putSiteAction(Request $request, $id)
-    {
-        try {
-            if (!($site = $this->container->get('tagcade_api.handler.site')->get($id))) {
-                // create new
-                $statusCode = Codes::HTTP_CREATED;
-                $site = $this->container->get('tagcade_api.handler.site')->post(
-                    $request->request->all()
-                );
-            } else {
-                $this->checkUserPermission($site, 'edit');
-
-                $statusCode = Codes::HTTP_NO_CONTENT;
-                $site = $this->container->get('tagcade_api.handler.site')->put(
-                    $site,
-                    $request->request->all()
-                );
-            }
-
-            $routeOptions = array(
-                'id' => $site->getId(),
-                '_format' => $request->get('_format')
-            );
-
-            return $this->routeRedirectView('api_1_get_site', $routeOptions, $statusCode);
-
-        } catch (InvalidFormException $exception) {
-
-            return $exception->getForm();
-        }
-    }
-
-    /**
-     * Update existing site from the submitted data or create a new site at a specific location.
-     *
-     * @ApiDoc(
-     *  resource = true,
-     *  input = "Tagcade\Bundle\ApiBundle\Form\Type\SiteType",
-     *  statusCodes = {
-     *      204 = "Returned when successful",
-     *      400 = "Returned when the form has errors"
-     *  }
-     * )
-     *
-     * @param Request $request the request object
-     * @param int $id the site id
-     *
-     * @return FormTypeInterface|View
-     *
-     * @throws NotFoundHttpException when site not exist
-     */
-    public function patchSiteAction(Request $request, $id)
-    {
-        try {
-            $site = $this->getOr404($id);
-            $this->checkUserPermission($site, 'edit');
-
-            $site = $this->container->get('tagcade_api.handler.site')->patch(
-                $site,
-                $request->request->all()
-            );
-
-            $routeOptions = array(
-                'id' => $site->getId(),
-                '_format' => $request->get('_format')
-            );
-
-            return $this->routeRedirectView('api_1_get_site', $routeOptions, Codes::HTTP_NO_CONTENT);
-
-        } catch (InvalidFormException $exception) {
-
-            return $exception->getForm();
-        }
-    }
-
-    /**
-     * Fetch a Site or throw an 404 Exception.
-     *
-     * @param mixed $id
      * @return SiteInterface
-     *
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException when the resource does not exist
      */
-    protected function getOr404($id)
+    public function getAction($id)
     {
-        if (!($site = $this->container->get('tagcade_api.handler.site')->get($id))) {
-            throw new NotFoundHttpException(sprintf("The site resource '%s' was not found or you do not have access", $id));
-        }
-
-        return $site;
+        return $this->getOr404($id);
     }
 
     /**
-     * @param SiteInterface $site
-     * @param string $permission
-     * @return bool
-     * @throws InvalidArgumentException if you pass an unknown permission
-     * @throws AccessDeniedException
+     * Create a site from the submitted data
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     *
+     * @return FormTypeInterface|View
      */
-    protected function checkUserPermission(SiteInterface $site, $permission = 'view')
+    public function postAction(Request $request)
     {
-        if (!in_array($permission, ['view', 'edit'])) {
-            throw new InvalidArgumentException('checking for an invalid permission');
-        }
+        return $this->post($request);
+    }
 
-        if (false === $this->get('security.context')->isGranted($permission, $site)) {
-            throw new AccessDeniedException(sprintf('You do not have permission to %s this site or it does not exist', $permission));
-        }
+    /**
+     * Update an existing site from the submitted data or create a new site
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when the resource is created",
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function putAction(Request $request, $id)
+    {
+        return $this->put($request, $id);
+    }
 
-        return true;
+    /**
+     * Update an existing site from the submitted data or create a new site at a specific location
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when resource not exist
+     */
+    public function patchAction(Request $request, $id)
+    {
+        return $this->patch($request, $id);
+    }
+
+    /**
+     * Delete an existing site
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     *
+     * @return View
+     *
+     * @throws NotFoundHttpException when the resource not exist
+     */
+    public function deleteAction($id)
+    {
+        return $this->delete($id);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getResourceName()
+    {
+        return 'site';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getGETRouteName()
+    {
+        return 'api_1_get_site';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getHandler()
+    {
+        return $this->container->get('tagcade_api.handler.site');
     }
 }

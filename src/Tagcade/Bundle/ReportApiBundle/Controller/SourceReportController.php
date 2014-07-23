@@ -20,6 +20,7 @@ class SourceReportController extends FOSRestController
      * Get source reports for a site with optional date range.
      *
      * @ApiDoc(
+     *  section = "reports",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"

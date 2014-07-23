@@ -58,7 +58,10 @@ abstract class RoleHandlerAbstract extends HandlerAbstract implements RoleHandle
      */
     protected function getFormType()
     {
-        $this->formType->setUserRole($this->getUserRole());
+        if ($this->formType instanceof RoleSpecificFormTypeInterface) {
+            $this->formType->setUserRole($this->getUserRole());
+        }
+
         return $this->formType;
     }
 }
