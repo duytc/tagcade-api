@@ -96,13 +96,12 @@ abstract class HandlerAbstract implements HandlerInterface
      * @param ModelInterface $entity
      * @param array $parameters
      * @param String $method
-     * @param array $extraFormOptions
      *
      * @return ModelInterface
      *
      * @throws InvalidFormException
      */
-    protected function processForm(ModelInterface $entity, array $parameters, $method = 'PUT', $extraFormOptions = [])
+    protected function processForm(ModelInterface $entity, array $parameters, $method = 'PUT')
     {
         if (!$this->supportsEntity($entity)) {
             throw new LogicException(sprintf('%s is not supported by this handler', get_class($entity)));
@@ -111,10 +110,7 @@ abstract class HandlerAbstract implements HandlerInterface
         $formOptions = [
             'method' => $method,
         ];
-
-        $formOptions += $extraFormOptions;
-
-        $form = $this->formFactory->create($this->formType, $entity, $formOptions);
+        $form = $this->formFactory->create($this->getFormType(), $entity, $formOptions);
 
         $formConfig = $form->getConfig();
 
@@ -133,6 +129,14 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         throw new InvalidFormException('Invalid submitted data', $form);
+    }
+
+    /**
+     * @return FormTypeInterface
+     */
+    protected function getFormType()
+    {
+        return $this->formType;
     }
 
     /**

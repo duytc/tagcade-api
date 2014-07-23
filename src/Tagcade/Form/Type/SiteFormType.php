@@ -2,15 +2,13 @@
 
 namespace Tagcade\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\Role\UserRoleInterface;
 
-class SiteFormType extends AbstractType
+class SiteFormType extends AbstractRoleSpecificFormType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -19,7 +17,7 @@ class SiteFormType extends AbstractType
             ->add('domain')
         ;
 
-        if (isset($options['user_role']) && $options['user_role'] instanceof AdminInterface) {
+        if ($this->userRole instanceof AdminInterface) {
             $builder->add(
                 $builder->create('publisher')
                     ->addModelTransformer(
@@ -35,12 +33,7 @@ class SiteFormType extends AbstractType
             ->setDefaults([
                 'data_class' => Site::class,
             ])
-            ->setOptional([
-                'user_role',
-            ])
-            ->setAllowedTypes([
-                'user_role' => UserRoleInterface::class,
-            ]);
+        ;
     }
 
     public function getName()

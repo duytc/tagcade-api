@@ -3,8 +3,7 @@
 namespace Tagcade\Handler;
 
 use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormTypeInterface;
-use Tagcade\Model\ModelInterface;
+use Tagcade\Form\Type\RoleSpecificFormTypeInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\InvalidUserRoleException;
@@ -17,9 +16,17 @@ use Tagcade\Exception\InvalidUserRoleException;
  */
 abstract class RoleHandlerAbstract extends HandlerAbstract implements RoleHandlerInterface
 {
+    /**
+     * @var RoleSpecificFormTypeInterface
+     */
+    protected $formType;
+
+    /**
+     * @var UserRoleInterface|null
+     */
     protected $userRole;
 
-    public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, $domainManager, UserRoleInterface $userRole = null)
+    public function __construct(FormFactoryInterface $formFactory, RoleSpecificFormTypeInterface $formType, $domainManager, UserRoleInterface $userRole = null)
     {
         parent::__construct($formFactory, $formType, $domainManager);
 
@@ -49,13 +56,9 @@ abstract class RoleHandlerAbstract extends HandlerAbstract implements RoleHandle
     /**
      * @inheritdoc
      */
-    protected function processForm(ModelInterface $entity, array $parameters, $method = 'PUT', $extraFormOptions = [])
+    protected function getFormType()
     {
-        $extraFormOptions = array_merge(
-            ['user_role' => $this->getUserRole()],
-            $extraFormOptions
-        );
-
-        return parent::processForm($entity, $parameters, $method, $extraFormOptions);
+        $this->formType->setUserRole($this->getUserRole());
+        return $this->formType;
     }
 }
