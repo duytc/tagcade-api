@@ -35,7 +35,8 @@ class UserFormType extends AbstractType
             ->add('features', 'choice', [
                 'mapped' => false,
                 'multiple' => true,
-                'empty_data' => null,
+                    'empty_data' => null,
+                    'required' => false,
                 'choices' => [
                     'display' => 'Display',
                     'video' => 'Video',
@@ -46,7 +47,7 @@ class UserFormType extends AbstractType
         ;
 
         $builder->addEventListener(
-            FormEvents::SUBMIT,
+            FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 /** @var User $user */
                 $user = $event->getData();
@@ -54,8 +55,6 @@ class UserFormType extends AbstractType
 
                 $mainUserRole = $form->get('role')->getData();
                 $features = $form->get('features')->getData();
-
-                // todo features is not setting to null when it is not present
 
                 if (null !== $mainUserRole) {
                     $user->setUserRoles((array) $mainUserRole);
@@ -75,7 +74,6 @@ class UserFormType extends AbstractType
                 'data_class' => User::class,
                 // Registration is from FOSUserBundle
                 'validation_groups' => ['Default', 'Registration'],
-                'intention' => '',
             ])
         ;
     }
