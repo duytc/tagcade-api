@@ -8,7 +8,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserFormType extends AbstractType
 {
@@ -21,9 +20,6 @@ class UserFormType extends AbstractType
             ->add('enabled')
 
             ->add('role', 'choice', [
-                'constraints' => [
-                    new NotBlank(),
-                ],
                 'mapped' => false,
                 'empty_data' => null,
                 'choices' => [
@@ -34,9 +30,8 @@ class UserFormType extends AbstractType
 
             ->add('features', 'choice', [
                 'mapped' => false,
+                'empty_data' => null,
                 'multiple' => true,
-                    'empty_data' => null,
-                    'required' => false,
                 'choices' => [
                     'display' => 'Display',
                     'video' => 'Video',
@@ -47,7 +42,7 @@ class UserFormType extends AbstractType
         ;
 
         $builder->addEventListener(
-            FormEvents::PRE_SUBMIT,
+            FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
                 /** @var User $user */
                 $user = $event->getData();
@@ -72,8 +67,6 @@ class UserFormType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => User::class,
-                // Registration is from FOSUserBundle
-                'validation_groups' => ['Default', 'Registration'],
             ])
         ;
     }
