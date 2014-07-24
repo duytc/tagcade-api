@@ -127,7 +127,11 @@ abstract class HandlerAbstract implements HandlerInterface
             throw new LogicException(sprintf('Form data class does not match entity returned from domain manager'));
         }
 
-        $form->submit($parameters, 'PATCH' !== $method);
+        // on any request except for PATCH, set any missing fields to null if they are missing from the request
+        // this means that in a PUT request, if fields are missing, they are set to null overwriting the old values!
+        $initializeMissingFields = 'PATCH' !== $method;
+
+        $form->submit($parameters, $initializeMissingFields);
 
         if ($form->isValid()) {
             $entity = $form->getData();
