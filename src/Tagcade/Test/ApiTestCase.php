@@ -2,10 +2,11 @@
 
 namespace Tagcade\Test;
 
+use Symfony\Bundle\FrameworkBundle\Client;
 use Doctrine\Common\DataFixtures\Executor\AbstractExecutor;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use Tagcade\Bundle\UserBundle\Entity\User;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class ApiTestCase extends WebTestCase
 {
@@ -52,15 +53,43 @@ class ApiTestCase extends WebTestCase
     }
 
     /**
-     * @param $user
+     * @param $username
      * @return \Namshi\JOSE\JWS;
      */
-    protected function getJWT($user)
+    protected function getJWT($username)
     {
-        $userEntity = new User();
-        $userEntity->setUsername($user);
+        $user = $this->getMock(UserInterface::class);
 
-        return $this->getContainer()->get('lexik_jwt_authentication.jwt_manager')->create($userEntity);
+        $user->expects($this->any())
+            ->method('getUsername')
+            ->will($this->returnValue($username));
+
+        return $this->getContainer()->get('lexik_jwt_authentication.jwt_manager')->create($user);
+    }
+
+    /**
+     * @param array $payload
+     * @param string $route The symfony route name
+     * @param string $method the HTTP method
+     * @param Client|null $client
+     * @return Response
+     */
+    protected function makeJsonRequest(array $payload, $route, $method = 'POST', Client $client = null)
+    {
+        if (null === $client) {
+            $client = $this->getClient();
+        }
+
+        $client->request(
+            $method,
+            $this->getUrl($route),
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            json_encode($payload)
+        );
+
+        return $client->getResponse();
     }
 
     protected function assertJsonResponse(

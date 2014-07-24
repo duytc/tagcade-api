@@ -4,10 +4,12 @@ Tagcade\Bundle\UserBundle\Entity\User:
             fields: usernameCanonical
             errorPath: username
             message: fos_user.username.already_used
+            groups: [Manage]
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
             fields: emailCanonical
             errorPath: email
             message: fos_user.email.already_used
+            groups: [Manage]
     properties:
         username:
             - NotBlank:
@@ -28,7 +30,9 @@ Tagcade\Bundle\UserBundle\Entity\User:
         plainPassword:
             - NotBlank:
                 message: fos_user.password.blank
+                groups: [Manage]
             - Length:
                 min: 2
                 minMessage: fos_user.password.short
                 max: 4096
+                groups: [Manage]
