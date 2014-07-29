@@ -67,7 +67,7 @@ class UserFormType extends AbstractType
         $resolver
             ->setDefaults([
                 'data_class' => User::class,
-                'validation_groups' => ['Manage', 'Default'],
+                'validation_groups' => ['Admin', 'Default'],
             ])
         ;
     }
