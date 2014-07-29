@@ -4,9 +4,9 @@ namespace Tagcade\Handler;
 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Exception\LogicException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\InvalidFormException;
 
 use Tagcade\DomainManager\ManagerInterface as DummyManagerInterface;
@@ -67,7 +67,7 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @inheritdoc
      */
-    public function all($limit = 5, $offset = 0)
+    public function all($limit = null, $offset = null)
     {
         return $this->domainManager->all($limit, $offset);
     }

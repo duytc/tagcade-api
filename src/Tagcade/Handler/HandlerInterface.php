@@ -40,12 +40,12 @@ interface HandlerInterface
     /**
      * Get a list of Entities.
      *
-     * @param int $limit the limit of the result
-     * @param int $offset starting from the offset
+     * @param int|null $limit the limit of the result
+     * @param int|null $offset starting from the offset
      *
      * @return array
      */
-    public function all($limit = 5, $offset = 0);
+    public function all($limit = null, $offset = null);
 
     /**
      * Create a new Entity.
