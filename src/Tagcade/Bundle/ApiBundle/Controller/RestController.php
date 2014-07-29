@@ -29,6 +29,17 @@ abstract class RestController extends FOSRestController
     }
 
     /**
+     * @param int $id
+     * @return ModelInterface
+     */
+    protected function one($id)
+    {
+        $entity = $this->getOr404($id);
+        $this->checkUserPermission($entity, 'view');
+        return $entity;
+    }
+
+    /**
      * @param Request $request
      * @return FormTypeInterface|View
      */

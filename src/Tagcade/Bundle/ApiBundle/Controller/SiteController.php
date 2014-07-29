@@ -47,7 +47,7 @@ class SiteController extends RestController implements ClassResourceInterface
      */
     public function getAction($id)
     {
-        return $this->getOr404($id);
+        return $this->one($id);
     }
 
     /**
