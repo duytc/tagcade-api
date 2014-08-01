@@ -9,7 +9,7 @@ use Tagcade\Model\User\UserEntityInterface;
 class User extends BaseUser implements UserEntityInterface
 {
     const USER_ROLE_PREFIX = 'ROLE_';
-    const FEATURE_PREFIX = 'FEATURE_';
+    const MODULE_PREFIX = 'MODULE_';
 
     // we have to redefine the properties we wish to expose with JMS Serializer Bundle
 
@@ -23,12 +23,12 @@ class User extends BaseUser implements UserEntityInterface
     /**
      * @inheritdoc
      */
-    public function setEnabledFeatures(array $features)
+    public function setEnabledModules(array $modules)
     {
         $this->replaceRoles(
-            $this->getEnabledFeatures(), // old roles
-            $features, // new roles
-            static::FEATURE_PREFIX,
+            $this->getEnabledModules(), // old roles
+            $modules, // new roles
+            static::MODULE_PREFIX,
             $strict = false // this means we add the role prefix and convert to uppercase if it does not exist
         );
     }
@@ -49,9 +49,9 @@ class User extends BaseUser implements UserEntityInterface
     /**
      * @inheritdoc
      */
-    public function getEnabledFeatures()
+    public function getEnabledModules()
     {
-        return $this->getRolesWithPrefix(static::FEATURE_PREFIX);
+        return $this->getRolesWithPrefix(static::MODULE_PREFIX);
     }
 
     /**
@@ -59,7 +59,13 @@ class User extends BaseUser implements UserEntityInterface
      */
     public function getUserRoles()
     {
-        return $this->getRolesWithPrefix(static::USER_ROLE_PREFIX);
+        $roles = $this->getRolesWithPrefix(static::USER_ROLE_PREFIX);
+
+        $roles = array_filter($roles, function($role) {
+            return $role !== static::ROLE_DEFAULT;
+        });
+
+        return $roles;
     }
 
     public function setEmail($email)
@@ -90,9 +96,11 @@ class User extends BaseUser implements UserEntityInterface
      */
     protected function getRolesWithPrefix($prefix)
     {
-        return array_filter($this->getRoles(), function($role) use($prefix) {
+        $roles = array_filter($this->getRoles(), function($role) use($prefix) {
             return $this->checkRoleHasPrefix($role, $prefix);
         });
+
+        return array_values($roles);
     }
 
     protected function checkRoleHasPrefix($role, $prefix)

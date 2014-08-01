@@ -19,24 +19,27 @@ class UserFormType extends AbstractType
             ->add('plainPassword')
             ->add('enabled')
 
-            ->add('role', 'choice', [
-                'mapped' => false,
-                'empty_data' => null,
-                'choices' => [
-                    'publisher' => 'Publisher',
-                    'admin' => 'Admin'
-                ],
-            ])
-
-            ->add('features', 'choice', [
+            // custom fields
+            // even though in the system, roles and modules are simply just symfony2 roles
+            // we separate the collection of them
+            ->add('userRoles', 'choice', [
                 'mapped' => false,
                 'empty_data' => null,
                 'multiple' => true,
                 'choices' => [
-                    'display' => 'Display',
-                    'video' => 'Video',
-                    'analytics' => 'Analytics',
-                    'fraud_detection' => 'Fraud Detection'
+                    'ROLE_PUBLISHER' => 'Publisher',
+                    'ROLE_ADMIN'     => 'Admin'
+                ],
+            ])
+            ->add('enabledModules', 'choice', [
+                'mapped' => false,
+                'empty_data' => null,
+                'multiple' => true,
+                'choices' => [
+                    'MODULE_DISPLAY'         => 'Display',
+                    'MODULE_VIDEO'           => 'Video',
+                    'MODULE_ANALYTICS'       => 'Analytics',
+                    'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
                 ],
             ])
         ;
@@ -48,15 +51,15 @@ class UserFormType extends AbstractType
                 $user = $event->getData();
                 $form = $event->getForm();
 
-                $mainUserRole = $form->get('role')->getData();
-                $features = $form->get('features')->getData();
+                $mainUserRole = $form->get('userRoles')->getData();
+                $modules = $form->get('enabledModules')->getData();
 
                 if (null !== $mainUserRole) {
                     $user->setUserRoles((array) $mainUserRole);
                 }
 
-                if (null !== $features && is_array($features)) {
-                    $user->setEnabledFeatures($features);
+                if (null !== $modules && is_array($modules)) {
+                    $user->setEnabledModules($modules);
                 }
             }
         );

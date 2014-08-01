@@ -5,7 +5,7 @@ imports:
 
 framework:
     #esi: ~
-    #translator: { fallback: "%locale%" }
+    translator: { fallback: "%locale%" }
     secret: "%secret%"
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
@@ -150,9 +150,6 @@ fos_rest:
         templating_formats:
             html:   true
 
-    serializer:
-        serialize_null: true
-
     exception:
         codes:
             'Tagcade\Exception\InvalidUserRoleException': 400
@@ -172,4 +169,6 @@ nelmio_cors:
         '^/user/getToken$':
             allow_methods: ['POST']
         '^/api/':
-            allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']
+        '^/admin/api/':
+            allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']

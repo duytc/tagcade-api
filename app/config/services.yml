@@ -1,4 +1,10 @@
 parameters:
+    # https://github.com/schmittjoh/JMSSerializerBundle/pull/270
+    # not really happy about doing this, but there is no proper config
+    # for setting camelcase, so we overwrite the default naming strategy here to match the name
+    # of the property in the php class
+    jms_serializer.cache_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
+
     tagcade.security.auth.voter.site.class: Tagcade\Security\Authorization\Voter\SiteVoter
 
 services:

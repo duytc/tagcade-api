@@ -32,4 +32,26 @@ interface UserEntityInterface extends ModelInterface
      * @return self
      */
     public function addRole($role);
+
+    /**
+     * @param array $modules
+     * @return void
+     */
+    public function setEnabledModules(array $modules);
+
+    /**
+     * @param array $roles
+     * @return void
+     */
+    public function setUserRoles(array $roles);
+
+    /**
+     * @return array
+     */
+    public function getEnabledModules();
+
+    /**
+     * @return array
+     */
+    public function getUserRoles();
 }

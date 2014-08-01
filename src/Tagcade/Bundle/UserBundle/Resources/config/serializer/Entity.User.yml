@@ -1,5 +1,18 @@
 Tagcade\Bundle\UserBundle\Entity\User:
     exclusion_policy: ALL
+    accessor_order: custom
+    custom_accessor_order:
+        - id
+        - username
+        - email
+        - roles
+        - enabledModules
+        - userRoles # camel case without get i.e getUserRoles becomes userRoles
+        - last_login
+        - enabled
+    virtual_properties:
+        getUserRoles: ~
+        getEnabledModules: ~
     properties:
         id:
             expose: true
@@ -7,9 +20,7 @@ Tagcade\Bundle\UserBundle\Entity\User:
             expose: true
         email:
             expose: true
-        roles:
-            expose: true
-        last_login:
+        lastLogin:
             expose: true
         enabled:
             expose: true
