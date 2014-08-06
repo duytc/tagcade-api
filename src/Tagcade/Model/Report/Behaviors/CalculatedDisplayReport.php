@@ -9,51 +9,12 @@ trait CalculatedDisplayReport
     use GenericReport;
     use CalculateRatios;
 
-    protected $id;
-    protected $name;
-    protected $date;
     protected $totalOpportunities;
     protected $slotOpportunities;
     protected $impressions;
     protected $passbacks;
     protected $fillRate;
     protected $subReports = [];
-
-    /**
-     * @return string|null
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return self
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @param DateTime $date
-     * @return self
-     */
-    public function setDate(DateTime $date)
-    {
-        $this->date = $date;
-        return $this;
-    }
 
     /**
      * @return int|null
@@ -83,10 +44,13 @@ trait CalculatedDisplayReport
 
     /**
      * @param int $slotOpportunities
+     * @return self
      */
     public function setSlotOpportunities($slotOpportunities)
     {
         $this->slotOpportunities = $slotOpportunities;
+
+        return $this;
     }
 
     /**

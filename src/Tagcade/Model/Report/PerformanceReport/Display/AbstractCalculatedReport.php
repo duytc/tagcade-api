@@ -29,6 +29,14 @@ abstract class AbstractCalculatedReport implements CalculatedReportInterface
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getSubReports()
+    {
+        return $this->subReports;
+    }
+
+    /**
      * @inheritdoc
      */
     public function addSubReport(ReportInterface $report)

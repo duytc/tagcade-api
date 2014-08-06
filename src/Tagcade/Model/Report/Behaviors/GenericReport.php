@@ -37,10 +37,10 @@ trait GenericReport
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTime|null $date
      * @return self
      */
-    public function setDate(DateTime $date)
+    public function setDate(DateTime $date = null)
     {
         $this->date = $date;
         return $this;

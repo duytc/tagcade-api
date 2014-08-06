@@ -2,5 +2,5 @@
 
 namespace Tagcade\Exception;
 
-class LogicException extends \LogicException
+class RuntimeException extends \RuntimeException
 {}

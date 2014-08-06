@@ -37,6 +37,8 @@ trait CalculateRatios
             $ratio = 1.00;
         }
 
+        $ratio = round($ratio, 4);
+
         return $ratio;
     }
 }

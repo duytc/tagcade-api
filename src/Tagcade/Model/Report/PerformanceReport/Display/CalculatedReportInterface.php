@@ -2,6 +2,8 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 interface CalculatedReportInterface extends ReportInterface
 {
     /**
@@ -13,6 +15,11 @@ interface CalculatedReportInterface extends ReportInterface
      * @return int|null
      */
     public function getTotalOpportunities();
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSubReports();
 
     /**
      * @param ReportInterface $report
