@@ -4,7 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Repository\SiteRepositoryInterface;
-use Tagcade\Model\SiteInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use ReflectionClass;
 

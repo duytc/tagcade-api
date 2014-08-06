@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\SiteInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 class SiteVoter implements VoterInterface
 {

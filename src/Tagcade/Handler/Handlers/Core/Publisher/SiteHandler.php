@@ -7,7 +7,7 @@ use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\SiteInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 class SiteHandler extends SiteHandlerAbstract
 {

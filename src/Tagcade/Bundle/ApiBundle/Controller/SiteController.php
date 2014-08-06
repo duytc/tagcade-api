@@ -8,7 +8,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Model\SiteInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 class SiteController extends RestController implements ClassResourceInterface
 {
@@ -42,7 +42,7 @@ class SiteController extends RestController implements ClassResourceInterface
      *
      * @param int $id the resource id
      *
-     * @return SiteInterface
+     * @return \Tagcade\Model\Core\SiteInterface
      * @throws NotFoundHttpException when the resource does not exist
      */
     public function getAction($id)

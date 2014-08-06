@@ -2,7 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
-use Tagcade\Model\SiteInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SiteManagerInterface

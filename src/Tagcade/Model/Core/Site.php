@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Model;
+namespace Tagcade\Model\Core;
 
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;

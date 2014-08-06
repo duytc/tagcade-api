@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
-use Tagcade\Model\SiteInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 abstract class SiteHandlerAbstract extends RoleHandlerAbstract
 {

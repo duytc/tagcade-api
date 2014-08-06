@@ -1,2 +1,2 @@
-Tagcade\Model\Site:
+Tagcade\Model\Core\Site:
     exclusion_policy: ALL

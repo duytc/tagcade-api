@@ -2,7 +2,7 @@
 
 namespace Tagcade\Entity\Core;
 
-use Tagcade\Model\Site as SiteModel;
+use Tagcade\Model\Core\Site as SiteModel;
 
 class Site extends SiteModel
 {
