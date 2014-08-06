@@ -62,8 +62,8 @@ class UserControllerTest extends ApiTestCase
         $payload = array(
             'username' => 'myroletest',
             'plainPassword' => '12345',
-            'role' => 'publisher',
-            'features' => ['analytics', 'display']
+            'userRoles' => ['ROLE_PUBLISHER'],
+            'enabledModules' => ['MODULE_ANALYTICS', 'MODULE_DISPLAY']
         );
 
         $response = $this->doPostUserRequest($payload, $client);
@@ -80,7 +80,7 @@ class UserControllerTest extends ApiTestCase
 
         $rawData = $response->getContent();
         $user = json_decode($rawData, true);
-        $this->assertEquals(3, count($user['roles']));
+        $this->assertEquals(1, count($user['userRoles']));
     }
 
     /**
