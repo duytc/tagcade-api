@@ -31,6 +31,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setOpportunities(10)
             ->setImpressions(5)
             ->setPassbacks(5)
+            ->setPosition(1)
         ;
 
         $this->adTagReport1 = $adTagReport1;
@@ -39,6 +40,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setOpportunities(5)
             ->setImpressions(1)
             ->setPassbacks(4)
+            ->setPosition(2)
         ;
 
         $this->adTagReport2 = $adTagReport2;
@@ -55,12 +57,14 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setOpportunities(20)
             ->setImpressions(16)
             ->setPassbacks(4)
+            ->setPosition(1)
         ;
 
         $adTagReport4 = (new AdTagReport())
             ->setOpportunities(4)
             ->setImpressions(1)
             ->setPassbacks(3)
+            ->setPosition(2)
         ;
 
         $adSlotReport2 = (new AdSlotReport())

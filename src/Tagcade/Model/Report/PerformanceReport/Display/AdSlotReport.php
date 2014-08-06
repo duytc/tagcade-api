@@ -4,6 +4,7 @@ namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\Behaviors\CalculatedDisplayReport;
+use Tagcade\Model\Core\AdSlotInterface;
 
 /**
  * The Ad Slot report extends the common AbstractCalculatedReport but it modifies the setCalculatedFields method
@@ -15,6 +16,24 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
     use CalculatedDisplayReport;
 
     protected $adSlot;
+
+    /**
+     * @return AdSlotInterface|null
+     */
+    public function getAdSlot()
+    {
+        return $this->adSlot;
+    }
+
+    /**
+     * @param AdSlotInterface $adSlot
+     * @return self
+     */
+    public function setAdSlot(AdSlotInterface $adSlot)
+    {
+        $this->adSlot = $adSlot;
+        return $this;
+    }
 
     public function isValidSubReport(ReportInterface $report)
     {
@@ -28,6 +47,10 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
      */
     public function setCalculatedFields()
     {
+        if ($this->slotOpportunities === null) {
+            throw new RuntimeException('slotOpportunities must be set for AdSlotReports, it is required to calculate the relative fill rate for AdTagReports');
+        }
+
         $totalOpportunities = $impressions = $passbacks = 0;
 
         foreach($this->subReports as $adTagReport) {
@@ -52,5 +75,16 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         $this->setPassbacks($passbacks);
 
         $this->setFillRate();
+
+        if ($this->getName() === null) {
+            $this->setDefaultName();
+        }
+    }
+
+    protected function setDefaultName()
+    {
+        if ($adSlot = $this->getAdSlot()) {
+            $this->setName($adSlot->getName());
+        }
     }
 }

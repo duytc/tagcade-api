@@ -8,4 +8,9 @@ class PlatformReport extends AbstractCalculatedReport
     {
         return $report instanceof AccountReportInterface;
     }
+
+    protected function setDefaultName()
+    {
+        // do nothing, a name isn't needed for this report
+    }
 }

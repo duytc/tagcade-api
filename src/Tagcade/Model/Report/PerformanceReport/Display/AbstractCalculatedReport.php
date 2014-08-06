@@ -77,5 +77,14 @@ abstract class AbstractCalculatedReport implements CalculatedReportInterface
         $this->setPassbacks($passbacks);
 
         $this->setFillRate();
+
+        if ($this->getName() === null) {
+            $this->setDefaultName();
+        }
     }
+
+    /**
+     * @return void
+     */
+    abstract protected function setDefaultName();
 }

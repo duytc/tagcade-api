@@ -8,6 +8,8 @@ interface UserEntityInterface extends ModelInterface
 {
     public function getId();
 
+    public function getUsername();
+
     /**
      * Returns the roles granted to the user.
      *

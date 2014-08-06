@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\Behaviors\CalculateRatios;
 use Tagcade\Model\Report\Behaviors\GenericReport;
 use Tagcade\Model\Core\AdTagInterface;
@@ -64,6 +65,9 @@ class AdTagReport implements AdTagReportInterface
     }
 
     /**
+     * It is important to record the position of the ad tag on the day on this report
+     * so we can show the correct ad tag order
+     *
      * @param int $position
      * @return self
      */
@@ -154,11 +158,26 @@ class AdTagReport implements AdTagReportInterface
 
     public function setCalculatedFields()
     {
+        if ($this->position === null) {
+            throw new RuntimeException('position should be set for AdTagReports');
+        }
+
         $this->setFillRate();
+
+        if ($this->getName() === null) {
+            $this->setDefaultName();
+        }
     }
 
     protected function setFillRate()
     {
         $this->fillRate = $this->getPercentage($this->getImpressions(), $this->getOpportunities());
+    }
+
+    protected function setDefaultName()
+    {
+        if ($adTag = $this->getAdTag()) {
+            $this->setName($adTag->getName());
+        }
     }
 }
