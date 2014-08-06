@@ -5,15 +5,31 @@ namespace Tagcade\Model\Core;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 
 interface SiteInterface extends ModelInterface
 {
-    public function getId();
+    /**
+     * @param string $name
+     * @return self
+     */
     public function setName($name);
+
+    /**
+     * @return string|null
+     */
     public function getName();
+
+    /**
+     * @param string $domain
+     * @return self
+     */
     public function setDomain($domain);
+
+    /**
+     * @return string|null
+     */
     public function getDomain();
-    public function setPublisher(PublisherInterface $publisher);
 
     /**
      * @return UserEntityInterface|null
@@ -24,4 +40,11 @@ interface SiteInterface extends ModelInterface
      * @return int|null
      */
     public function getPublisherId();
+
+    public function setPublisher(PublisherInterface $publisher);
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAdSlots();
 }
