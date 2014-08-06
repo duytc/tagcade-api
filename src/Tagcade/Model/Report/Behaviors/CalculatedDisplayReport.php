@@ -14,7 +14,6 @@ trait CalculatedDisplayReport
     protected $impressions;
     protected $passbacks;
     protected $fillRate;
-    protected $subReports = [];
 
     /**
      * @return int|null

@@ -1,6 +1,6 @@
 Tagcade\Bundle\UserBundle\Entity\User:
     type: entity
-    table: users
+    table: core_user
     id:
         id:
             type: integer

@@ -1,0 +1,19 @@
+Tagcade\Entity\Core\AdSlot:
+    type: entity
+    table: core_ad_slot
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        width:
+            type: integer
+        height:
+            type: integer
+    manyToOne:
+        site:
+            targetEntity: Tagcade\Entity\Core\Site

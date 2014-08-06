@@ -6,6 +6,7 @@ use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\Behaviors\CalculateRatios;
 use Tagcade\Model\Report\Behaviors\GenericReport;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Report\Behaviors\HasSuperReport;
 
 /**
  * Ad Tag report is unique because it is the inner core report for all other reports
@@ -19,6 +20,7 @@ use Tagcade\Model\Core\AdTagInterface;
 class AdTagReport implements AdTagReportInterface
 {
     use GenericReport;
+    use HasSuperReport;
     use CalculateRatios;
 
     protected $adTag;

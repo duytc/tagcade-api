@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\Behaviors\CalculatedDisplayReport;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Report\Behaviors\HasSubReports;
 
 /**
  * A calculated report contains sub reports
@@ -17,38 +18,11 @@ use Tagcade\Exception\RuntimeException;
 abstract class AbstractCalculatedReport implements CalculatedReportInterface
 {
     use CalculatedDisplayReport;
-
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $subReports;
+    use HasSubReports;
 
     public function __construct()
     {
         $this->subReports = new ArrayCollection();
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getSubReports()
-    {
-        return $this->subReports;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function addSubReport(ReportInterface $report)
-    {
-        if (!$this->isValidSubReport($report)) {
-            throw new InvalidArgumentException('That sub report is valid for this report');
-        }
-
-        $report->setDate($this->getDate());
-        $this->subReports->add($report);
-
-        return $this;
     }
 
     public function setCalculatedFields()

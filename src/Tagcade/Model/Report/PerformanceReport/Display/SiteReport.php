@@ -4,7 +4,7 @@ namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Tagcade\Model\Core\SiteInterface;
 
-class SiteReport extends AbstractCalculatedReport implements SiteReportInterface
+class SiteReport extends AbstractCalculatedReportWithSuper implements SiteReportInterface
 {
     protected $site;
 

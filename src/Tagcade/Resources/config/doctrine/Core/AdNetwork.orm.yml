@@ -1,0 +1,14 @@
+Tagcade\Entity\Core\AdNetwork:
+    type: entity
+    table: core_ad_network
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        url:
+            type: string

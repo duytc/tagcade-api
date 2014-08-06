@@ -1,6 +1,6 @@
 Tagcade\Entity\Report\SourceReport\Record:
     type: entity
-    table: source_report_records
+    table: report_analytics_source_report_record
     readOnly: true
     id:
         id:

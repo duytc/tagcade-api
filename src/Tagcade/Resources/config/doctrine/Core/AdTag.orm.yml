@@ -1,0 +1,21 @@
+Tagcade\Entity\Core\AdTag:
+    type: entity
+    table: core_ad_tag
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        html:
+            type: text
+        position:
+            type: integer
+    manyToOne:
+        adSlot:
+            targetEntity: Tagcade\Entity\Core\AdSlot
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork

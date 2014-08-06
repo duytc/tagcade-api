@@ -1,0 +1,27 @@
+Tagcade\Entity\Report\PerformanceReport\AdTagReport:
+    type: entity
+    table: report_performance_display_ad_tag
+    readOnly: true
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            nullable: 100
+        opportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 2
+        relativeFillRate:
+            type: decimal
+            scale: 2

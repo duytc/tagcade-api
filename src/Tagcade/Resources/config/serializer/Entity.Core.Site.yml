@@ -1,5 +1,5 @@
 Tagcade\Entity\Core\Site:
-    exclusion_policy: NONE
+    exclusion_policy: ALL
     properties:
         publisher:
             accessor:

@@ -1,6 +1,6 @@
 Tagcade\Entity\Report\SourceReport\TrackingKey:
     type: entity
-    table: tracking_keys
+    table: report_analytics_tracking_key
     readOnly: true
     id:
         id:

@@ -82,17 +82,26 @@ doctrine:
                         prefix:     Tagcade\Entity\Core
                         alias:      TagcadeCoreEntity
                         is_bundle:  false
-
-            reports:
-                connection:         reports
-                naming_strategy:    doctrine.orm.naming_strategy.underscore
-                mappings:
                     ReportEntities:
                         type:       yml
                         dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Report
                         prefix:     Tagcade\Entity\Report
                         alias:      TagcadeReportEntity
                         is_bundle:  false
+
+            #
+            # This is the config for multiple entity managers, for now, we will put all entities in one database
+            #
+            #reports:
+            #    connection:         reports
+            #    naming_strategy:    doctrine.orm.naming_strategy.underscore
+            #    mappings:
+            #        ReportEntities:
+            #            type:       yml
+            #            dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Report
+            #            prefix:     Tagcade\Entity\Report
+            #            alias:      TagcadeReportEntity
+            #            is_bundle:  false
 
 jms_serializer:
     metadata:

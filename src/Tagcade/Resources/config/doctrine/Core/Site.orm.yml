@@ -1,7 +1,7 @@
 Tagcade\Entity\Core\Site:
     type: entity
+    table: core_site
     repositoryClass: Tagcade\Repository\SiteRepository
-    table: sites
     id:
         id:
             type: integer
@@ -17,6 +17,3 @@ Tagcade\Entity\Core\Site:
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
-            joinColumns:
-                publisher_id:
-                    referencedColumnName: id

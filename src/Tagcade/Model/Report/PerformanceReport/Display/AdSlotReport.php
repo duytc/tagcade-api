@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Report\Behaviors\CalculatedDisplayReport;
 use Tagcade\Model\Core\AdSlotInterface;
 
 /**
@@ -11,10 +10,8 @@ use Tagcade\Model\Core\AdSlotInterface;
  * because its sub reports are the core ad tag reports which do not have separate total and slot opportunities
  * So the setCalculatedFields method is custom for this type of report
  */
-class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInterface
+class AdSlotReport extends AbstractCalculatedReportWithSuper implements AdSlotReportInterface
 {
-    use CalculatedDisplayReport;
-
     protected $adSlot;
 
     /**

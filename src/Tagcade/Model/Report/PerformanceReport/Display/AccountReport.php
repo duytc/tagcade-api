@@ -5,7 +5,7 @@ namespace Tagcade\Model\Report\PerformanceReport\Display;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
-class AccountReport extends AbstractCalculatedReport implements AccountReportInterface
+class AccountReport extends AbstractCalculatedReportWithSuper implements AccountReportInterface
 {
     protected $publisher;
 

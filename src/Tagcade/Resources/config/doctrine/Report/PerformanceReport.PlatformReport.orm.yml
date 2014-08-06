@@ -1,0 +1,31 @@
+Tagcade\Entity\Report\PerformanceReport\PlatformReport:
+    type: entity
+    table: report_performance_display_platform
+    readOnly: true
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            nullable: 100
+        totalOpportunities:
+            type: integer
+        slotOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 2
+    oneToMany:
+        subReports:
+          targetEntity: AccountReport
+          mappedBy: superReport
+          cascade: ["persist", "remove", "detach"]
