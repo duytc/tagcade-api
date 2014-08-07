@@ -1,6 +1,6 @@
-Tagcade\Entity\Report\PerformanceReport\PlatformReport:
+Tagcade\Entity\Report\PerformanceReport\Display\SiteReport:
     type: entity
-    table: report_performance_display_platform
+    table: report_performance_display_site
     readOnly: true
     id:
         id:
@@ -26,6 +26,6 @@ Tagcade\Entity\Report\PerformanceReport\PlatformReport:
             scale: 2
     oneToMany:
         subReports:
-          targetEntity: AccountReport
+          targetEntity: AdSlotReport
           mappedBy: superReport
           cascade: ["persist", "remove", "detach"]

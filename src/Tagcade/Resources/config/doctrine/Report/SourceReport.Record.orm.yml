@@ -1,6 +1,6 @@
 Tagcade\Entity\Report\SourceReport\Record:
     type: entity
-    table: report_analytics_source_report_record
+    table: report_source_report_record
     readOnly: true
     id:
         id:
@@ -85,7 +85,7 @@ Tagcade\Entity\Report\SourceReport\Record:
                 - remove
                 - persist
             joinTable:
-                name: source_report_record_tracking_keys
+                name: report_source_report_record_tracking_keys
                 joinColumns:
                     -
                         name: record_id

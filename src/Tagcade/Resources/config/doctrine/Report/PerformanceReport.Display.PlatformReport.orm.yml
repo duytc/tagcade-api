@@ -1,6 +1,6 @@
-Tagcade\Entity\Report\PerformanceReport\AccountReport:
+Tagcade\Entity\Report\PerformanceReport\Display\PlatformReport:
     type: entity
-    table: report_performance_display_account
+    table: report_performance_display_platform
     readOnly: true
     id:
         id:
@@ -26,6 +26,6 @@ Tagcade\Entity\Report\PerformanceReport\AccountReport:
             scale: 2
     oneToMany:
         subReports:
-          targetEntity: SiteReport
+          targetEntity: AccountReport
           mappedBy: superReport
           cascade: ["persist", "remove", "detach"]

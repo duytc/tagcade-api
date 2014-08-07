@@ -3,10 +3,9 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\Behaviors\CalculatedDisplayReport;
+use Tagcade\Model\Report\PerformanceReport\Behaviors\CalculatedDisplayReport;
+use Tagcade\Model\Report\PerformanceReport\Behaviors\HasSubReports;
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Report\Behaviors\HasSubReports;
 
 /**
  * A calculated report contains sub reports

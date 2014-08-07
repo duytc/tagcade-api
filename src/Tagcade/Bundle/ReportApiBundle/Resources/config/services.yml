@@ -5,7 +5,7 @@ parameters:
 services:
     tagcade.repository.source_report.report:
         class: Doctrine\ORM\EntityRepository
-        factory_service: doctrine.orm.reports_entity_manager
+        factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\SourceReport\Report

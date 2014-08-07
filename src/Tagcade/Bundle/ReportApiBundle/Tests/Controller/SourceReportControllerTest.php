@@ -15,12 +15,9 @@ class SourceReportControllerTest extends ApiTestCase
     {
         $this->loadFixtures([
             LoadUserData::class,
-            LoadSiteData::class
-        ]);
-
-        $this->loadFixtures([
+            LoadSiteData::class,
             LoadSourceReportData::class
-        ], 'reports');
+        ]);
     }
 
     public function testAdminCanAccess()

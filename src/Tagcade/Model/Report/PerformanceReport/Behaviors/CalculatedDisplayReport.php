@@ -1,8 +1,8 @@
 <?php
 
-namespace Tagcade\Model\Report\Behaviors;
+namespace Tagcade\Model\Report\PerformanceReport\Behaviors;
 
-use DateTime;
+use Tagcade\Model\Report\Behaviors\CalculateRatios;
 
 trait CalculatedDisplayReport
 {

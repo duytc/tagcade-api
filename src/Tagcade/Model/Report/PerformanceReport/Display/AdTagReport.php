@@ -3,10 +3,10 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Report\Behaviors\CalculateRatios;
-use Tagcade\Model\Report\Behaviors\GenericReport;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Report\Behaviors\HasSuperReport;
+use Tagcade\Model\Report\Behaviors\CalculateRatios;
+use Tagcade\Model\Report\PerformanceReport\Behaviors\GenericReport;
+use Tagcade\Model\Report\PerformanceReport\Behaviors\HasSuperReport;
 
 /**
  * Ad Tag report is unique because it is the inner core report for all other reports

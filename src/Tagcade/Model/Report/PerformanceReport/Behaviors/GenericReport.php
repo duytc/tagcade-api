@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Model\Report\Behaviors;
+namespace Tagcade\Model\Report\PerformanceReport\Behaviors;
 
 use DateTime;
 

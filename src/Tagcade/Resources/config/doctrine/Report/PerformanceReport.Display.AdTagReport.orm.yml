@@ -1,4 +1,4 @@
-Tagcade\Entity\Report\PerformanceReport\AdTagReport:
+Tagcade\Entity\Report\PerformanceReport\Display\AdTagReport:
     type: entity
     table: report_performance_display_ad_tag
     readOnly: true

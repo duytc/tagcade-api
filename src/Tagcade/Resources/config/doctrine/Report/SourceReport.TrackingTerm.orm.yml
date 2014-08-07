@@ -1,6 +1,6 @@
 Tagcade\Entity\Report\SourceReport\TrackingTerm:
     type: entity
-    table: report_analytics_tracking_term
+    table: report_source_tracking_term
     readOnly: true
     id:
         id:
