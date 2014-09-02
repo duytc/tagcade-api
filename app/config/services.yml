@@ -13,3 +13,29 @@ services:
         public: false
         tags:
             - { name: security.voter }
+
+
+
+
+
+
+
+
+    #
+    # An example of custom caching for doctrine and jms serializer
+    #
+    #redis:
+    #    class: Redis
+    #    calls:
+    #        - [connect, ['127.0.0.1', '6379']]
+
+    #cache.redis:
+    #    class: Doctrine\Common\Cache\RedisCache
+    #    calls:
+    #        - [setRedis, ["@redis"]]
+
+    #my.jms_serializer.cache:
+    #    class: Metadata\Cache\DoctrineCacheAdapter
+    #    arguments:
+    #        - "_serializer"
+    #        - @cache.redis

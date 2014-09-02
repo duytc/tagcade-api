@@ -1,6 +1,6 @@
-Tagcade\Entity\Report\PerformanceReport\Display\AdSlotReport:
+Tagcade\Entity\Report\PerformanceReport\Display\AdNetworkReport:
     type: entity
-    table: report_performance_display_ad_slot
+    table: report_performance_display_ad_network
     readOnly: true
     id:
         id:
@@ -25,12 +25,15 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdSlotReport:
         fillRate:
             type: decimal
             scale: 2
-    manyToOne:
-        superReport:
-            targetEntity: SiteReport
-            inversedBy: subReports
-    oneToMany:
+    manyToMany:
         subReports:
             targetEntity: AdTagReport
-            mappedBy: superReport
             cascade: ["persist", "remove", "detach"]
+            joinTable:
+                name: report_performance_display_ad_network_x_ad_tag
+                joinColumns:
+                    ad_network_report_id:
+                        referencedColumnName: id
+                inverseJoinColumns:
+                    ad_tag_report_id:
+                        referencedColumnName: id

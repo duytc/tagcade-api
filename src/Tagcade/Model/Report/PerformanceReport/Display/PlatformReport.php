@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
-class PlatformReport extends AbstractCalculatedReport
+class PlatformReport extends AbstractCalculatedReport implements PlatformReportInterface
 {
     public function isValidSubReport(ReportInterface $report)
     {

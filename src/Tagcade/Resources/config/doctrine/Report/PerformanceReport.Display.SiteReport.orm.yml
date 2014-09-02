@@ -12,7 +12,8 @@ Tagcade\Entity\Report\PerformanceReport\Display\SiteReport:
             type: date
         name:
             type: string
-            nullable: 100
+            length: 100
+            nullable: true
         totalOpportunities:
             type: integer
         slotOpportunities:
@@ -24,8 +25,12 @@ Tagcade\Entity\Report\PerformanceReport\Display\SiteReport:
         fillRate:
             type: decimal
             scale: 2
+    manyToOne:
+        superReport:
+            targetEntity: AccountReport
+            inversedBy: subReports
     oneToMany:
         subReports:
-          targetEntity: AdSlotReport
-          mappedBy: superReport
-          cascade: ["persist", "remove", "detach"]
+            targetEntity: AdSlotReport
+            mappedBy: superReport
+            cascade: ["persist", "remove", "detach"]

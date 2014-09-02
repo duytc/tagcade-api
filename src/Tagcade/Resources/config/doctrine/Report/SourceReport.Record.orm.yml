@@ -76,16 +76,16 @@ Tagcade\Entity\Report\SourceReport\Record:
             nullable: true
     manyToOne:
         sourceReport:
-            targetEntity: Tagcade\Entity\Report\SourceReport\Report
+            targetEntity: Report
             inversedBy: records
     manyToMany:
         trackingKeys:
-            targetEntity: Tagcade\Entity\Report\SourceReport\TrackingKey
+            targetEntity: TrackingKey
             cascade:
                 - remove
                 - persist
             joinTable:
-                name: report_source_report_record_tracking_keys
+                name: report_source_report_record_x_tracking_key
                 joinColumns:
                     -
                         name: record_id

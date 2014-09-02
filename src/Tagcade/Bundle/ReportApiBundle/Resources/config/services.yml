@@ -1,10 +1,11 @@
 parameters:
     tagcade.service.reporting.report_util.class: Tagcade\Service\Reporting\ReportUtil
     tagcade.handler.source_report.class: Tagcade\Handler\Handlers\Report\SourceReportHandler
+    tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
 
 services:
     tagcade.repository.source_report.report:
-        class: Doctrine\ORM\EntityRepository
+        class: %tagcade.repository.source_report.report.class%
         factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:

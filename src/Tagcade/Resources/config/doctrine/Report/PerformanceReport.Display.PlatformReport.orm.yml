@@ -10,9 +10,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\PlatformReport:
     fields:
         date:
             type: date
-        name:
-            type: string
-            nullable: 100
         totalOpportunities:
             type: integer
         slotOpportunities:
@@ -26,6 +23,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\PlatformReport:
             scale: 2
     oneToMany:
         subReports:
-          targetEntity: AccountReport
-          mappedBy: superReport
-          cascade: ["persist", "remove", "detach"]
+            targetEntity: AccountReport
+            mappedBy: superReport
+            cascade: ["persist", "remove", "detach"]
