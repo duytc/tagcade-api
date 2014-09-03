@@ -3,10 +3,15 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Model\Core\SiteInterface;
 
 class AdSlot implements AdSlotInterface
 {
     protected $id;
+
+    /**
+     * @var SiteInterface
+     */
     protected $site;
     protected $name;
     protected $width;
@@ -43,6 +48,18 @@ class AdSlot implements AdSlotInterface
     {
         $this->site = $site;
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSiteId()
+    {
+        if (!$this->site) {
+            return null;
+        }
+
+        return $this->site->getId();
     }
 
     /**
@@ -102,5 +119,10 @@ class AdSlot implements AdSlotInterface
     public function getAdTags()
     {
         return $this->adTags;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

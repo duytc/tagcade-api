@@ -1,7 +1,7 @@
-Tagcade\Entity\Core\Site:
+Tagcade\Entity\Core\AdSlot:
     exclusion_policy: NONE
     properties:
-        publisher:
+        site:
             accessor:
-                getter: getPublisherId
+                getter: getSiteId
             type: integer

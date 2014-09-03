@@ -109,4 +109,9 @@ class AdTag implements AdTagInterface
         $this->position = $position;
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Repository;
+namespace Tagcade\Repository\Core;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
@@ -9,9 +9,18 @@ use Tagcade\Model\User\Role\PublisherInterface;
 class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 {
     /**
-     * inheritdoc
+     * @inheritdoc
      */
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesForPublisherQuery($publisher, $limit, $offset);
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('s')
             ->where('s.publisher = :publisher_id')
@@ -27,6 +36,6 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
             $qb->setFirstResult($offset);
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 }

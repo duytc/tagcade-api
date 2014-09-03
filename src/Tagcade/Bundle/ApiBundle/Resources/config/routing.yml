@@ -12,3 +12,8 @@ api_site:
     type: rest
     resource: "Tagcade\Bundle\ApiBundle\Controller\SiteController"
     name_prefix:  api_1_
+
+api_ad_slot:
+    type: rest
+    resource: "Tagcade\Bundle\ApiBundle\Controller\AdSlotController"
+    name_prefix:  api_1_

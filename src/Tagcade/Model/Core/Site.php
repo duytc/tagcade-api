@@ -103,4 +103,9 @@ class Site implements SiteInterface
     {
         return $this->adSlots;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

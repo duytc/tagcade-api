@@ -212,7 +212,7 @@ abstract class RestController extends FOSRestController
 
         // check voters
         if (false === $securityContext->isGranted($permission, $entity)) {
-            throw new AccessDeniedException(sprintf('You do not have permission to %s this site or it does not exist', $permission));
+            throw new AccessDeniedException(sprintf('You do not have permission to %s this %s or it does not exist', $permission, $this->getResourceName()));
         }
 
         return true;

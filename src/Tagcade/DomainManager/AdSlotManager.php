@@ -3,17 +3,17 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Repository\Core\SiteRepositoryInterface;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use ReflectionClass;
 
-class SiteManager implements SiteManagerInterface
+class AdSlotManager implements AdSlotManagerInterface
 {
     protected $om;
     protected $repository;
 
-    public function __construct(ObjectManager $om, SiteRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, AdSlotRepositoryInterface $repository)
     {
         $this->om = $om;
         $this->repository = $repository;
@@ -24,24 +24,24 @@ class SiteManager implements SiteManagerInterface
      */
     public function supportsEntity($entity)
     {
-        return is_subclass_of($entity, SiteInterface::class);
+        return is_subclass_of($entity, AdSlotInterface::class);
     }
 
     /**
      * @inheritdoc
      */
-    public function save(SiteInterface $site)
+    public function save(AdSlotInterface $adSlot)
     {
-        $this->om->persist($site);
+        $this->om->persist($adSlot);
         $this->om->flush();
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(SiteInterface $site)
+    public function delete(AdSlotInterface $adSlot)
     {
-        $this->om->remove($site);
+        $this->om->remove($adSlot);
         $this->om->flush();
     }
 
@@ -73,8 +73,8 @@ class SiteManager implements SiteManagerInterface
     /**
      * @inheritdoc
      */
-    public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
-        return $this->repository->getSitesForPublisher($publisher, $limit, $offset);
+        return $this->repository->getAdSlotsForSite($site, $limit, $offset);
     }
 }

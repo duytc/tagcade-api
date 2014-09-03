@@ -9,32 +9,15 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\AdSlotInterface;
 
 /**
- * @Rest\RouteResource("Site")
+ * @Rest\RouteResource("Adslot")
  */
-class SiteController extends RestController implements ClassResourceInterface
+class AdSlotController extends RestController implements ClassResourceInterface
 {
     /**
-     * Get all sites
-     *
-     * @ApiDoc(
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @return SiteInterface[]
-     */
-    public function cgetAction()
-    {
-        return $this->all();
-    }
-
-    /**
-     * Get a single site for the given id
+     * Get a single adSlot for the given id
      *
      * @ApiDoc(
      *  resource = true,
@@ -46,7 +29,7 @@ class SiteController extends RestController implements ClassResourceInterface
      *
      * @param int $id the resource id
      *
-     * @return \Tagcade\Model\Core\SiteInterface
+     * @return AdSlotInterface
      * @throws NotFoundHttpException when the resource does not exist
      */
     public function getAction($id)
@@ -55,7 +38,7 @@ class SiteController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * Create a site from the submitted data
+     * Create a adSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -75,7 +58,7 @@ class SiteController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * Update an existing site from the submitted data or create a new site
+     * Update an existing adSlot from the submitted data or create a new adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -99,7 +82,7 @@ class SiteController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * Update an existing site from the submitted data or create a new site at a specific location
+     * Update an existing adSlot from the submitted data or create a new adSlot at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -122,7 +105,7 @@ class SiteController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * Delete an existing site
+     * Delete an existing adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -143,22 +126,12 @@ class SiteController extends RestController implements ClassResourceInterface
         return $this->delete($id);
     }
 
-    public function getAdslotsAction($id)
-    {
-        /** @var SiteInterface $site */
-        $site = $this->one($id);
-
-        return $this->get('tagcade.domain_manager.ad_slot')
-            ->getAdSlotsForSite($site)
-        ;
-    }
-
     /**
      * @inheritdoc
      */
     protected function getResourceName()
     {
-        return 'site';
+        return 'adslot';
     }
 
     /**
@@ -166,7 +139,7 @@ class SiteController extends RestController implements ClassResourceInterface
      */
     protected function getGETRouteName()
     {
-        return 'api_1_get_site';
+        return 'api_1_get_adslot';
     }
 
     /**
@@ -174,6 +147,6 @@ class SiteController extends RestController implements ClassResourceInterface
      */
     protected function getHandler()
     {
-        return $this->container->get('tagcade_api.handler.site');
+        return $this->container->get('tagcade_api.handler.ad_slot');
     }
 }

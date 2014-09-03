@@ -1,6 +1,7 @@
 Tagcade\Entity\Core\AdSlot:
     type: entity
     table: core_ad_slot
+    repositoryClass: Tagcade\Repository\Core\AdSlotRepository
     id:
         id:
             type: integer

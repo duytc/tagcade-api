@@ -19,6 +19,12 @@ interface AdSlotInterface extends ModelInterface
     public function setSite(SiteInterface $site);
 
     /**
+     * @return int|null
+     */
+    public function getSiteId();
+
+
+    /**
      * @return string|null
      */
     public function getName();

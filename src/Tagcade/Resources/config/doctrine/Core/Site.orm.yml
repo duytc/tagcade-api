@@ -1,7 +1,7 @@
 Tagcade\Entity\Core\Site:
     type: entity
     table: core_site
-    repositoryClass: Tagcade\Repository\SiteRepository
+    repositoryClass: Tagcade\Repository\Core\SiteRepository
     id:
         id:
             type: integer

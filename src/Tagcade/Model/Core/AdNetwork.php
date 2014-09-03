@@ -49,4 +49,9 @@ class AdNetwork implements AdNetworkInterface
         $this->url = $url;
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
