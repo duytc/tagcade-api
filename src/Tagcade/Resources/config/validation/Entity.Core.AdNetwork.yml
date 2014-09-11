@@ -1,0 +1,16 @@
+Tagcade\Entity\Core\AdNetwork:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                min: 2
+                minMessage: "Site name must be at least {{ limit }} characters in length"
+        url:
+            - NotBlank: ~
+            - Length:
+                min: 2
+                minMessage: "Domain name must be at least {{ limit }} characters in length"
+            - Url: ~
+        publisher:
+            - NotBlank: ~
+            - Valid: ~

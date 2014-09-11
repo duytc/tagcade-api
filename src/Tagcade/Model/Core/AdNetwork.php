@@ -2,9 +2,17 @@
 
 namespace Tagcade\Model\Core;
 
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
+
 class AdNetwork implements AdNetworkInterface
 {
     protected $id;
+
+    /**
+     * @var UserEntityInterface
+     */
+    protected $publisher;
     protected $name;
     protected $url;
 
@@ -14,6 +22,34 @@ class AdNetwork implements AdNetworkInterface
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherId()
+    {
+        if (!$this->publisher) {
+            return null;
+        }
+
+        return $this->publisher->getId();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPublisher(PublisherInterface $publisher) {
+        $this->publisher = $publisher->getUser();
+        return $this;
     }
 
     /**
