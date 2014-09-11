@@ -1,76 +1,27 @@
 parameters:
+    #entity classes
+
     tagcade.entity.core.site.class: Tagcade\Entity\Core\Site
+    tagcade.entity.core.ad_slot.class: Tagcade\Entity\Core\AdSlot
+    tagcade.entity.core.ad_tag.class: Tagcade\Entity\Core\AdTag
+    tagcade.entity.core.ad_network.class: Tagcade\Entity\Core\AdNetwork
+
+    #form classes
+
     tagcade.form.type.site.class: Tagcade\Form\Type\SiteFormType
+    tagcade.form.type.ad_slot.class: Tagcade\Form\Type\AdSlotFormType
+    tagcade.form.type.ad_tag.class: Tagcade\Form\Type\AdTagFormType
+    tagcade.form.type.ad_network.class: Tagcade\Form\Type\AdNetworkFormType
+
+    # jwt
+
     tagcade.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
     tagcade.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
     tagcade.event.jwt_created_listener.class: Tagcade\Bundle\ApiBundle\EventListener\JWTCreatedListener
 
 services:
-    # ad slot
-    tagcade.repository.ad_slot:
-        class: Doctrine\ORM\EntityRepository
-        factory_service: doctrine.orm.entity_manager
-        factory_method: getRepository
-        arguments:
-            - Tagcade\Entity\Core\AdSlot
 
-    tagcade.domain_manager.ad_slot:
-        class: Tagcade\DomainManager\AdSlotManager
-        arguments:
-            - @doctrine.orm.entity_manager
-            - @tagcade.repository.ad_slot
-
-    tagcade.form.type.ad_slot:
-        class: Tagcade\Form\Type\AdSlotFormType
-        tags:
-            - { name: form.type, alias: tagcade_form_ad_slot }
-
-    tagcade.handler.handlers.ad_slot.abstract:
-        class: Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract
-        parent: tagcade.handler.role_handler_abstract
-        abstract: true
-        public: false
-        arguments:
-            - @tagcade.form.type.ad_slot
-            - @tagcade.domain_manager.ad_slot
-
-    tagcade.handler.handlers.ad_slot.admin:
-        class: Tagcade\Handler\Handlers\Core\Admin\AdSlotHandler
-        parent: tagcade.handler.handlers.ad_slot.abstract
-        public: false
-
-    tagcade.handler.handlers.ad_slot.publisher:
-        class: Tagcade\Handler\Handlers\Core\Publisher\AdSlotHandler
-        parent: tagcade.handler.handlers.ad_slot.abstract
-        public: false
-
-    tagcade.handler.handler_manager.ad_slot:
-        class: Tagcade\Handler\HandlerManager
-        arguments:
-            - Tagcade\Entity\Core\AdSlot
-            -
-                - @tagcade.handler.handlers.ad_slot.admin
-                - @tagcade.handler.handlers.ad_slot.publisher
-
-    tagcade_api.handler.ad_slot:
-        class: Tagcade\Handler\HandlerInterface
-        factory_service: tagcade.handler.handler_manager.ad_slot
-        factory_method: getHandler
-        arguments:
-            - @tagcade.user_role
-    # end ad slot
-
-
-    # main public services
-
-    tagcade_api.handler.site:
-        class: Tagcade\Handler\HandlerInterface
-        factory_service: tagcade.handler.handler_manager.site
-        factory_method: getHandler
-        arguments:
-            - @tagcade.user_role
-
-    # used as dependencies
+    # handlers
 
     tagcade.handler.role_handler_abstract:
         class: Tagcade\Handler\RoleHandlerAbstract
@@ -79,8 +30,23 @@ services:
         arguments:
             - @form.factory
 
+
+
+
+
+    # site handler #####################################################
+
+    tagcade_api.handler.site:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.site
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for site handler ##############
+
     tagcade.repository.site:
-        class: Doctrine\ORM\EntityRepository
+        class: Tagcade\Repository\Core\SiteRepositoryInterface
         factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
@@ -91,6 +57,11 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.site
+
+    tagcade.form.type.site:
+        class: %tagcade.form.type.site.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_site }
 
     tagcade.handler.handlers.site.abstract:
         class: Tagcade\Handler\Handlers\Core\SiteHandlerAbstract
@@ -119,10 +90,198 @@ services:
                 - @tagcade.handler.handlers.site.admin
                 - @tagcade.handler.handlers.site.publisher
 
-    tagcade.form.type.site:
-        class: %tagcade.form.type.site.class%
+    # end site #####################################################
+
+
+
+
+
+    # ad slot ######################################################
+
+    tagcade_api.handler.ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.ad_slot:
+        class: Tagcade\Repository\Core\AdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\AdSlot
+
+    tagcade.domain_manager.ad_slot:
+        class: Tagcade\DomainManager\AdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.ad_slot
+
+    tagcade.form.type.ad_slot:
+        class: %tagcade.form.type.ad_slot.class%
         tags:
-            - { name: form.type, alias: tagcade_site }
+            - { name: form.type, alias: tagcade_form_ad_slot }
+
+    tagcade.handler.handlers.ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ad_slot
+            - @tagcade.domain_manager.ad_slot
+
+    tagcade.handler.handlers.ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\AdSlotHandler
+        parent: tagcade.handler.handlers.ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\AdSlotHandler
+        parent: tagcade.handler.handlers.ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ad_slot.class%
+            -
+                - @tagcade.handler.handlers.ad_slot.admin
+                - @tagcade.handler.handlers.ad_slot.publisher
+
+    # end ad slot #####################################################
+
+
+
+
+
+
+    # ad tag ######################################################
+
+    tagcade_api.handler.ad_tag:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ad_tag
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.ad_tag:
+        class: Tagcade\Repository\Core\AdTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.ad_tag.class%
+
+    tagcade.domain_manager.ad_tag:
+        class: Tagcade\DomainManager\AdTagManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.ad_tag
+
+    tagcade.form.type.ad_tag:
+        class: %tagcade.form.type.ad_tag.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_ad_tag }
+
+    tagcade.handler.handlers.ad_tag.abstract:
+        class: Tagcade\Handler\Handlers\Core\AdTagHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ad_tag
+            - @tagcade.domain_manager.ad_tag
+
+    tagcade.handler.handlers.ad_tag.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\AdTagHandler
+        parent: tagcade.handler.handlers.ad_tag.abstract
+        public: false
+
+    tagcade.handler.handlers.ad_tag.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\AdTagHandler
+        parent: tagcade.handler.handlers.ad_tag.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ad_tag:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ad_tag.class%
+            -
+                - @tagcade.handler.handlers.ad_tag.admin
+                - @tagcade.handler.handlers.ad_tag.publisher
+
+    # end ad tag #####################################################
+
+
+
+
+
+    # ad network ######################################################
+
+    tagcade_api.handler.ad_network:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ad_network
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.ad_network:
+        class: Tagcade\Repository\Core\AdTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.ad_network.class%
+
+    tagcade.domain_manager.ad_network:
+        class: Tagcade\DomainManager\AdNetworkManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.ad_network
+
+    tagcade.form.type.ad_network:
+        class: %tagcade.form.type.ad_network.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_ad_network }
+
+    tagcade.handler.handlers.ad_network.abstract:
+        class: Tagcade\Handler\Handlers\Core\AdNetworkHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ad_network
+            - @tagcade.domain_manager.ad_network
+
+    tagcade.handler.handlers.ad_network.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\AdNetworkHandler
+        parent: tagcade.handler.handlers.ad_network.abstract
+        public: false
+
+    tagcade.handler.handlers.ad_network.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\AdNetworkHandler
+        parent: tagcade.handler.handlers.ad_network.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ad_network:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ad_network.class%
+            -
+                - @tagcade.handler.handlers.ad_network.admin
+                - @tagcade.handler.handlers.ad_network.publisher
+
+    # end ad network #####################################################
+
+
+
+
 
     tagcade.service.jwt_response_transformer:
         class: %tagcade.service.jwt_response_transformer.class%

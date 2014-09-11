@@ -17,3 +17,13 @@ api_ad_slot:
     type: rest
     resource: "Tagcade\Bundle\ApiBundle\Controller\AdSlotController"
     name_prefix:  api_1_
+
+api_ad_tag:
+    type: rest
+    resource: "Tagcade\Bundle\ApiBundle\Controller\AdTagController"
+    name_prefix:  api_1_
+
+api_ad_network:
+    type: rest
+    resource: "Tagcade\Bundle\ApiBundle\Controller\AdNetworkController"
+    name_prefix:  api_1_
