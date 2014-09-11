@@ -18,13 +18,13 @@ class AppKernel extends Kernel
 
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\RestBundle\FOSRestBundle(),
-            new DMS\Bundle\FilterBundle\DMSFilterBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
             new Gfreeau\Bundle\GetJWTBundle\GfreeauGetJWTBundle(),
             new Gfreeau\Bundle\CustomValidationPathBundle\GfreeauCustomValidationPathBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
 
             new Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
             new Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),

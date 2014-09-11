@@ -130,8 +130,8 @@ sensio_framework_extra:
     view:
         annotations: false
 
-dms_filter:
-    auto_filter_forms: false
+#dms_filter:
+#    auto_filter_forms: false
 
 fos_rest:
     routing_loader:
@@ -162,6 +162,8 @@ fos_rest:
     exception:
         codes:
             'Tagcade\Exception\InvalidUserRoleException': 400
+            'Tagcade\Exception\InvalidArgumentException': 400
+            'Tagcade\Exception\NotImplementedException': 400
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
@@ -181,3 +183,9 @@ nelmio_cors:
             allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']
         '^/admin/api/':
             allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']
+
+stof_doctrine_extensions:
+    orm:
+        default:
+            sortable: true
+            timestampable: true
