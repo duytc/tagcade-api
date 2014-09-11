@@ -163,7 +163,6 @@ fos_rest:
         codes:
             'Tagcade\Exception\InvalidUserRoleException': 400
             'Tagcade\Exception\InvalidArgumentException': 400
-            'Tagcade\Exception\NotImplementedException': 400
 
 lexik_jwt_authentication:
     private_key_path:   '%kernel.root_dir%/var/jwt/private-dev.pem'
