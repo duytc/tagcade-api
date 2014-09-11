@@ -1,0 +1,11 @@
+Tagcade\Entity\Core\AdTag:
+    exclusion_policy: NONE
+    properties:
+        adSlot:
+            accessor:
+                getter: getAdSlotId
+            type: integer
+        adNetwork:
+            accessor:
+                getter: getAdNetworkId
+            type: integer

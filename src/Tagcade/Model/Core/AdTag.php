@@ -5,7 +5,15 @@ namespace Tagcade\Model\Core;
 class AdTag implements AdTagInterface
 {
     protected $id;
+
+    /**
+     * @var AdSlotInterface
+     */
     protected $adSlot;
+
+    /**
+     * @var AdNetworkInterface
+     */
     protected $adNetwork;
     protected $name;
     protected $html;
@@ -39,6 +47,18 @@ class AdTag implements AdTagInterface
         return $this->adSlot;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotId()
+    {
+        if (!$this->adSlot) {
+            return null;
+        }
+
+        return $this->adSlot->getId();
+    }
+
     public function setAdSlot(AdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
@@ -51,6 +71,18 @@ class AdTag implements AdTagInterface
     public function getAdNetwork()
     {
         return $this->adNetwork;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdNetworkId()
+    {
+        if (!$this->adNetwork) {
+            return null;
+        }
+
+        return $this->adNetwork->getId();
     }
 
     public function setAdNetwork(AdNetworkInterface $adNetwork)
