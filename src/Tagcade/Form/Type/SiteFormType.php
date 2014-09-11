@@ -38,6 +38,6 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
     public function getName()
     {
-        return 'tagcade_site';
+        return 'tagcade_form_site';
     }
 }

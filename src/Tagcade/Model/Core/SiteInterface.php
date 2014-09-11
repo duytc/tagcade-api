@@ -41,6 +41,10 @@ interface SiteInterface extends ModelInterface
      */
     public function getPublisherId();
 
+    /**
+     * @param PublisherInterface $publisher
+     * @return self
+     */
     public function setPublisher(PublisherInterface $publisher);
 
     /**

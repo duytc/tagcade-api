@@ -22,10 +22,10 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
      */
     public function getSitesForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        $qb = $this->createQueryBuilder('s')
-            ->where('s.publisher = :publisher_id')
+        $qb = $this->createQueryBuilder('st')
+            ->where('st.publisher = :publisher_id')
             ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
-            ->addOrderBy('s.name', 'asc')
+            ->addOrderBy('st.name', 'asc')
         ;
 
         if (is_int($limit)) {
