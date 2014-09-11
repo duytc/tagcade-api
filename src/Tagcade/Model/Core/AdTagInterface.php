@@ -12,6 +12,11 @@ interface AdTagInterface extends ModelInterface
     public function getAdSlot();
 
     /**
+     * @return int|null
+     */
+    public function getAdSlotId();
+
+    /**
      * @param AdSlotInterface $adSlot
      * @return self
      */
@@ -21,6 +26,11 @@ interface AdTagInterface extends ModelInterface
      * @return AdNetworkInterface|null
      */
     public function getAdNetwork();
+
+    /**
+     * @return int|null
+     */
+    public function getAdNetworkId();
 
     /**
      * @param AdNetworkInterface $adNetwork
