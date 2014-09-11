@@ -9,12 +9,12 @@ Tagcade\Entity\Core\AdSlot:
             - NotBlank: ~
             - Type:
                 type: integer
-                message: "The value {{ value }} is not a valid {{ type }}."
+                message: "The value {{ value }} is not a valid number."
         height:
             - NotBlank: ~
             - Type:
                 type: integer
-                message: "The value {{ value }} is not a valid {{ type }}."
+                message: "The value {{ value }} is not a valid number."
         site:
             - NotBlank: ~
             - Valid: ~

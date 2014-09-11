@@ -3,6 +3,7 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -76,5 +77,13 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
         return $this->repository->getAdSlotsForSite($site, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdSlotsForPublisher($publisher, $limit, $offset);
     }
 }

@@ -18,3 +18,8 @@ Tagcade\Entity\Core\AdSlot:
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site
+    oneToMany:
+        adTags:
+            targetEntity: AdTag
+            mappedBy: adSlot
+            cascade: ["persist", "remove", "detach"]

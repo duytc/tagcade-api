@@ -8,6 +8,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\AdSlotInterface;
 
@@ -16,6 +17,23 @@ use Tagcade\Model\Core\AdSlotInterface;
  */
 class AdSlotController extends RestController implements ClassResourceInterface
 {
+    /**
+     * Get all ad slots
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @return AdSlotInterface[]
+     */
+    public function cgetAction()
+    {
+        return $this->all();
+    }
+
     /**
      * Get a single adSlot for the given id
      *
@@ -126,6 +144,41 @@ class AdSlotController extends RestController implements ClassResourceInterface
         return $this->delete($id);
     }
 
+    public function getAdtagsAction($id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        return $this->get('tagcade.domain_manager.ad_tag')
+            ->getAdTagsForAdSlot($adSlot)
+        ;
+    }
+
+    /**
+     * @Rest\Post("/adslots/{id}/adtags/reorder")
+     *
+     * @param Request $request
+     * @param int $id
+     * @return View
+     */
+    public function reorderAdtagsAction(Request $request, $id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        $newAdTagOrderIds = $request->request->get('adTags');
+
+        if (!$newAdTagOrderIds) {
+            throw new BadRequestHttpException("Ad adTags parameter is required");
+        }
+
+        $adTags = $adSlot->getAdTags()->toArray();
+
+        return $this->get('tagcade.domain_manager.ad_tag')
+            ->reorderAdTags($adTags, $newAdTagOrderIds)
+        ;
+    }
+
     /**
      * @inheritdoc
      */
@@ -143,7 +196,7 @@ class AdSlotController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * @inheritdoc
+     * @return AdSlotHandlerInterface
      */
     protected function getHandler()
     {

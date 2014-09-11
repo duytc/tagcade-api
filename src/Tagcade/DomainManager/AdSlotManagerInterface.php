@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface AdSlotManagerInterface
 {
@@ -52,4 +53,12 @@ interface AdSlotManagerInterface
      * @return AdSlotInterface[]
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdSlotInterface[]
+     */
+    public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 }
