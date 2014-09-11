@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Core;
 use Doctrine\DBAL\Types\Type;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdTagRepository extends SortableRepository implements AdTagRepositoryInterface
@@ -53,5 +54,22 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function saveAdTagPosition(AdTagInterface $adTag)
+    {
+        $this->getEntityManager()
+            ->createQueryBuilder()
+            ->update($this->getEntityName(), 't')
+            ->set('t.position', ':position')
+            ->where('t.id = :tag_id')
+            ->setParameter('position', $adTag->getPosition(), Type::INTEGER)
+            ->setParameter('tag_id', $adTag->getId(), Type::INTEGER)
+            ->getQuery()
+            ->execute()
+        ;
     }
 }

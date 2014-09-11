@@ -121,7 +121,7 @@ class AdTagManager implements AdTagManagerInterface
             /** @var AdTagInterface $adTag */
             $adTag->setPosition($position);
 
-            $this->save($adTag);
+            $this->repository->saveAdTagPosition($adTag);
 
             $position++;
         }

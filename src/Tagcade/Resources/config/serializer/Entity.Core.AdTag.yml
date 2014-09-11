@@ -9,3 +9,7 @@ Tagcade\Entity\Core\AdTag:
             accessor:
                 getter: getAdNetworkId
             type: integer
+        created:
+            exclude: true
+        updated:
+            exclude: true
