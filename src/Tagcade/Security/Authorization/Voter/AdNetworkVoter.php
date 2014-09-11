@@ -3,25 +3,25 @@
 namespace Tagcade\Security\Authorization\Voter;
 
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
 
-class SiteVoter extends EntityVoterAbstract
+class AdNetworkVoter extends EntityVoterAbstract
 {
     public function supportsClass($class)
     {
-        $supportedClass = SiteInterface::class;
+        $supportedClass = AdNetworkInterface::class;
 
         return $supportedClass === $class || is_subclass_of($class, $supportedClass);
     }
 
     /**
-     * @param SiteInterface $site
+     * @param AdNetworkInterface $adNetwork
      * @param UserEntityInterface $user
      * @param $action
      * @return bool
      */
-    protected function isPublisherActionAllowed($site, UserEntityInterface $user, $action)
+    protected function isPublisherActionAllowed($adNetwork, UserEntityInterface $user, $action)
     {
-        return $user->getId() == $site->getPublisherId();
+        return $user->getId() == $adNetwork->getPublisherId();
     }
 }

@@ -8,6 +8,7 @@ parameters:
     tagcade.security.auth.voter.site.class: Tagcade\Security\Authorization\Voter\SiteVoter
     tagcade.security.auth.voter.ad_slot.class: Tagcade\Security\Authorization\Voter\AdSlotVoter
     tagcade.security.auth.voter.ad_tag.class: Tagcade\Security\Authorization\Voter\AdTagVoter
+    tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
 
 services:
     tagcade.security.auth.voter.site:
@@ -28,6 +29,11 @@ services:
         tags:
             - { name: security.voter }
 
+    tagcade.security.auth.voter.ad_network:
+        class:  %tagcade.security.auth.voter.ad_network.class%
+        public: false
+        tags:
+            - { name: security.voter }
 
 
 
