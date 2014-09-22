@@ -35,6 +35,11 @@ services:
         tags:
             - { name: security.voter }
 
+    tagcade.service.tag_generator:
+        class: Tagcade\Service\TagGenerator
+        arguments:
+            - %base_tag_url%
+
 
 
 
