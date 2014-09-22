@@ -153,6 +153,16 @@ class SiteController extends RestController implements ClassResourceInterface
         ;
     }
 
+    public function getJstagsAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        return $this->get('tagcade.service.tag_generator')
+            ->getTagsForSite($site)
+        ;
+    }
+
     /**
      * @inheritdoc
      */

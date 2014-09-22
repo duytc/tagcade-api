@@ -166,10 +166,10 @@ class AdSlotController extends RestController implements ClassResourceInterface
         /** @var AdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        $newAdTagOrderIds = $request->request->get('adTags');
+        $newAdTagOrderIds = $request->request->get('tagIds');
 
         if (!$newAdTagOrderIds) {
-            throw new BadRequestHttpException("Ad adTags parameter is required");
+            throw new BadRequestHttpException("Ad tagIds parameter is required");
         }
 
         $adTags = $adSlot->getAdTags()->toArray();
@@ -177,6 +177,18 @@ class AdSlotController extends RestController implements ClassResourceInterface
         return $this->get('tagcade.domain_manager.ad_tag')
             ->reorderAdTags($adTags, $newAdTagOrderIds)
         ;
+    }
+
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function getJstagAction($id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($adSlot);
     }
 
     /**
