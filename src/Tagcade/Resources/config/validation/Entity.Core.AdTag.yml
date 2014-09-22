@@ -8,7 +8,6 @@ Tagcade\Entity\Core\AdTag:
         html:
             - NotBlank: ~
         position:
-            - NotBlank: ~
             - Type:
                 type: integer
                 message: "The value {{ value }} is not a valid number."
