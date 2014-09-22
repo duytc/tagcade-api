@@ -11,10 +11,30 @@ use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
  * Not using a RoleHandlerInterface because this Handler is local
  * to the admin api bundle. All routes to this bundle are protected in app/config/security.yml
  */
-class UserHandler extends HandlerAbstract
+class UserHandler extends HandlerAbstract implements UserHandlerInterface
 {
     public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, UserManagerInterface $domainManager)
     {
         parent::__construct($formFactory, $formType, $domainManager);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * Auto complete helper method
+     *
+     * @return UserManagerInterface
+     */
+    protected function getDomainManager()
+    {
+        return parent::getDomainManager();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function allPublishers()
+    {
+        return $this->getDomainManager()->allPublishers();
     }
 }

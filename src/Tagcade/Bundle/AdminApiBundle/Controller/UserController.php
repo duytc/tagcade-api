@@ -3,12 +3,15 @@
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
 use Tagcade\Bundle\ApiBundle\Controller\RestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 
 class UserController extends RestController implements ClassResourceInterface
 {
@@ -23,10 +26,19 @@ class UserController extends RestController implements ClassResourceInterface
      *  }
      * )
      *
+     * @Rest\QueryParam(name="filter", requirements="[a-z]+", nullable=true, description="Limit the users returned to a defined role")
+     *
+     * @param ParamFetcherInterface $paramFetcher
      * @return \Tagcade\Bundle\UserBundle\Entity\User[]
      */
-    public function cgetAction()
+    public function cgetAction(ParamFetcherInterface $paramFetcher)
     {
+        $filter = $paramFetcher->get('filter');
+
+        if ($filter == 'publisher') {
+            return $this->getHandler()->allPublishers();
+        }
+
         return $this->all();
     }
 
@@ -170,7 +182,7 @@ class UserController extends RestController implements ClassResourceInterface
     }
 
     /**
-     * @inheritdoc
+     * @return UserHandlerInterface
      */
     protected function getHandler()
     {
