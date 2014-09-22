@@ -43,4 +43,9 @@ interface UserManagerInterface
      * @return FOSUserInterface[]
      */
     public function all($limit = null, $offset = null);
+
+    /**
+     * @return array
+     */
+    public function allPublishers();
 }

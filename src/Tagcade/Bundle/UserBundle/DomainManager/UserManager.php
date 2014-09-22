@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserManagerInterface as FOSUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 /**
  * Most of the other handlers talk to doctrine directly
@@ -12,6 +13,9 @@ use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
  */
 class UserManager implements UserManagerInterface
 {
+    const ROLE_PUBLISHER = 'ROLE_PUBLISHER';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+
     protected $FOSUserManager;
 
     public function __construct(FOSUserManagerInterface $userManager)
@@ -65,5 +69,17 @@ class UserManager implements UserManagerInterface
     public function all($limit = null, $offset = null)
     {
         return $this->FOSUserManager->findUsers();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function allPublishers()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER);
+        });
+
+        return array_values($publishers);
     }
 }

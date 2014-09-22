@@ -11,6 +11,11 @@ class User extends BaseUser implements UserEntityInterface
     const USER_ROLE_PREFIX = 'ROLE_';
     const MODULE_PREFIX = 'MODULE_';
 
+    const MODULE_DISPLAY = 'MODULE_DISPLAY';
+    const MODULE_VIDEO = 'MODULE_VIDEO';
+    const MODULE_ANALYTICS = 'MODULE_ANALYTICS';
+    const MODULE_FRAUD_DETECTION = 'MODULE_FRAUD_DETECTION';
+
     // we have to redefine the properties we wish to expose with JMS Serializer Bundle
 
     protected $id;
@@ -19,6 +24,14 @@ class User extends BaseUser implements UserEntityInterface
     protected $enabled;
     protected $lastLogin;
     protected $roles;
+
+    /**
+     * @inheritdoc
+     */
+    public function hasDisplayModule()
+    {
+        return in_array(static::MODULE_DISPLAY, $this->getEnabledModules());
+    }
 
     /**
      * @inheritdoc
