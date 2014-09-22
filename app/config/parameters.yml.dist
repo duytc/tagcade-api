@@ -20,3 +20,5 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    base_tag_url: http://tags.tagcade.dev

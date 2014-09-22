@@ -2,6 +2,10 @@ Tagcade\Entity\Core\Site:
     type: entity
     table: core_site
     repositoryClass: Tagcade\Repository\Core\SiteRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
     id:
         id:
             type: integer
@@ -14,6 +18,14 @@ Tagcade\Entity\Core\Site:
         domain:
             type: string
             length: 255
+        deletedAt:
+            type: date
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        adSlots:
+            targetEntity: AdSlot
+            mappedBy: site
+            cascade: ["persist", "remove", "detach"]

@@ -70,4 +70,15 @@ interface AdTagInterface extends ModelInterface
      * @return self
      */
     public function setPosition($position);
+
+    /**
+     * @return bool
+     */
+    public function isActive();
+
+    /**
+     * @param $boolean
+     * @return $this
+     */
+    public function setActive($boolean);
 }

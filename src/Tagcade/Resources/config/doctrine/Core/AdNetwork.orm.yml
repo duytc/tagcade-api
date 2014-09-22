@@ -13,6 +13,11 @@ Tagcade\Entity\Core\AdNetwork:
             length: 100
         url:
             type: string
+            nullable: true
+        active:
+            type: boolean
+            options:
+                default: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

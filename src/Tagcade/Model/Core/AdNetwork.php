@@ -15,6 +15,7 @@ class AdNetwork implements AdNetworkInterface
     protected $publisher;
     protected $name;
     protected $url;
+    protected $active;
 
     /**
      * @inheritdoc
@@ -83,6 +84,23 @@ class AdNetwork implements AdNetworkInterface
     public function setUrl($url)
     {
         $this->url = $url;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setActive($boolean)
+    {
+        $this->active = (Boolean) $boolean;
         return $this;
     }
 

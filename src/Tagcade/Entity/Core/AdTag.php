@@ -3,6 +3,7 @@
 namespace Tagcade\Entity\Core;
 
 use Tagcade\Model\Core\AdTag as AdTagModel;
+use DateTime;
 
 class AdTag extends AdTagModel
 {
@@ -12,26 +13,28 @@ class AdTag extends AdTagModel
     protected $name;
     protected $html;
     protected $position;
+    protected $active;
 
-    protected $created;
-    protected $updated;
+    protected $createdAt;
+    protected $updatedAt;
+    protected $deletedAt;
 
     public function __construct()
     {}
 
     /**
-     * @return null|\DateTime
+     * @return null|DateTime
      */
-    public function getCreated()
+    public function getCreatedAt()
     {
-        return $this->created;
+        return $this->createdAt;
     }
 
     /**
-     * @return null|\DateTime
+     * @return null|DateTime
      */
-    public function getUpdated()
+    public function getUpdatedAt()
     {
-        return $this->updated;
+        return $this->updatedAt;
     }
 }

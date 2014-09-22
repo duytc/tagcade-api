@@ -45,4 +45,15 @@ interface AdNetworkInterface extends ModelInterface
      * @return self
      */
     public function setUrl($url);
+
+    /**
+     * @return bool
+     */
+    public function isActive();
+
+    /**
+     * @param $boolean
+     * @return $this
+     */
+    public function setActive($boolean);
 }

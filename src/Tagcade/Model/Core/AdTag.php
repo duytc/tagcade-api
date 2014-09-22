@@ -18,6 +18,7 @@ class AdTag implements AdTagInterface
     protected $name;
     protected $html;
     protected $position;
+    protected $active;
 
     /**
      * @param string $name
@@ -145,5 +146,22 @@ class AdTag implements AdTagInterface
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setActive($boolean)
+    {
+        $this->active = (Boolean) $boolean;
+        return $this;
     }
 }

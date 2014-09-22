@@ -2,6 +2,10 @@ Tagcade\Entity\Core\AdSlot:
     type: entity
     table: core_ad_slot
     repositoryClass: Tagcade\Repository\Core\AdSlotRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
     id:
         id:
             type: integer
@@ -15,6 +19,9 @@ Tagcade\Entity\Core\AdSlot:
             type: integer
         height:
             type: integer
+        deletedAt:
+            type: date
+            nullable: true
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site

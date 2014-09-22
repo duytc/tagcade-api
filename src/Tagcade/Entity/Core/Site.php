@@ -10,6 +10,7 @@ class Site extends SiteModel
     protected $publisher;
     protected $name;
     protected $domain;
+    protected $deletedAt;
 
     public function __construct()
     {}
