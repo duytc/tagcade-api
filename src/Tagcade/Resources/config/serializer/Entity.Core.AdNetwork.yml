@@ -1,7 +1,7 @@
 Tagcade\Entity\Core\AdNetwork:
     exclusion_policy: NONE
-    properties:
-        publisher:
-            accessor:
-                getter: getPublisherId
-            type: integer
+#    properties:
+#        publisher:
+#            accessor:
+#                getter: getPublisherId
+#            type: integer

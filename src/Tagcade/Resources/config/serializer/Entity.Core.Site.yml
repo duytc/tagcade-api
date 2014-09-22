@@ -1,7 +1,9 @@
 Tagcade\Entity\Core\Site:
     exclusion_policy: NONE
     properties:
-        publisher:
-            accessor:
-                getter: getPublisherId
-            type: integer
+#        publisher:
+#            accessor:
+#                getter: getPublisherId
+#            type: integer
+        deletedAt:
+            exclude: true

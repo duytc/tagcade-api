@@ -1,7 +1,9 @@
 Tagcade\Entity\Core\AdSlot:
     exclusion_policy: NONE
     properties:
-        site:
-            accessor:
-                getter: getSiteId
-            type: integer
+#        site:
+#            accessor:
+#                getter: getSiteId
+#            type: integer
+        deletedAt:
+            exclude: true

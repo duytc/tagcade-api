@@ -1,15 +1,17 @@
 Tagcade\Entity\Core\AdTag:
     exclusion_policy: NONE
     properties:
-        adSlot:
-            accessor:
-                getter: getAdSlotId
-            type: integer
-        adNetwork:
-            accessor:
-                getter: getAdNetworkId
-            type: integer
-        created:
+#        adSlot:
+#            accessor:
+#                getter: getAdSlotId
+#            type: integer
+#        adNetwork:
+#            accessor:
+#                getter: getAdNetworkId
+#            type: integer
+        createdAt:
             exclude: true
-        updated:
+        updatedAt:
+            exclude: true
+        deletedAt:
             exclude: true
