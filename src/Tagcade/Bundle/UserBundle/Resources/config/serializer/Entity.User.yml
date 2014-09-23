@@ -16,10 +16,13 @@ Tagcade\Bundle\UserBundle\Entity\User:
     properties:
         id:
             expose: true
+            groups: [summary]
         username:
             expose: true
+            groups: [summary]
         email:
             expose: true
+            groups: [summary]
         lastLogin:
             expose: true
         enabled:

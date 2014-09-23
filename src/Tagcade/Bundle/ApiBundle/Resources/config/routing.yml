@@ -8,22 +8,27 @@ api_check_token:
     defaults:  { _controller: TagcadeApiBundle:Token:checkToken }
     methods:  [POST]
 
+api_account:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\AccountController
+    name_prefix:  api_1_
+
 api_site:
     type: rest
-    resource: "Tagcade\Bundle\ApiBundle\Controller\SiteController"
+    resource: Tagcade\Bundle\ApiBundle\Controller\SiteController
     name_prefix:  api_1_
 
 api_ad_slot:
     type: rest
-    resource: "Tagcade\Bundle\ApiBundle\Controller\AdSlotController"
+    resource: Tagcade\Bundle\ApiBundle\Controller\AdSlotController
     name_prefix:  api_1_
 
 api_ad_tag:
     type: rest
-    resource: "Tagcade\Bundle\ApiBundle\Controller\AdTagController"
+    resource: Tagcade\Bundle\ApiBundle\Controller\AdTagController
     name_prefix:  api_1_
 
 api_ad_network:
     type: rest
-    resource: "Tagcade\Bundle\ApiBundle\Controller\AdNetworkController"
+    resource: Tagcade\Bundle\ApiBundle\Controller\AdNetworkController
     name_prefix:  api_1_
