@@ -77,6 +77,6 @@ class UserFormType extends AbstractType
 
     public function getName()
     {
-        return 'tagcade_admin_api__user';
+        return 'tagcade_form_admin_api_user';
     }
 }
