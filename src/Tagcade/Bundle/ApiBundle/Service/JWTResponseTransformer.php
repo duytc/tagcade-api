@@ -2,14 +2,16 @@
 
 namespace Tagcade\Bundle\ApiBundle\Service;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 class JWTResponseTransformer
 {
-    public function transform(array $data, UserInterface $user)
+    public function transform(array $data, UserEntityInterface $user)
     {
+        $data['id'] = $user->getId();
         $data['username'] = $user->getUsername();
-        $data['roles'] = $user->getRoles();
+        $data['userRoles'] = $user->getUserRoles();
+        $data['enabledModules'] = $user->getEnabledModules();
 
         return $data;
     }
