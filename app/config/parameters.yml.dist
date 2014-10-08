@@ -6,13 +6,6 @@ parameters:
     database_user:     root
     database_password: ~
 
-    report_database_driver:   pdo_mysql
-    report_database_host:     127.0.0.1
-    report_database_port:     ~
-    report_database_name:     symfony
-    report_database_user:     root
-    report_database_password: ~
-
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_user:       ~

@@ -54,14 +54,6 @@ doctrine:
                 user:       "%database_user%"
                 password:   "%database_password%"
                 charset:    UTF8
-            reports:
-                driver:     "%report_database_driver%"
-                host:       "%report_database_host%"
-                port:       "%report_database_port%"
-                dbname:     "%report_database_name%"
-                user:       "%report_database_user%"
-                password:   "%report_database_password%"
-                charset:    UTF8
 
     orm:
         default_entity_manager:         default
