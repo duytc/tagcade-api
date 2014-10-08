@@ -54,7 +54,7 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        if (in_array($this->environment, array('dev', 'test'))) {
+        if ($this->isRunningOnDevelopmentVM()) {
             return '/dev/shm/tagcade-api/cache/' .  $this->environment;
         }
 
@@ -63,10 +63,32 @@ class AppKernel extends Kernel
 
     public function getLogDir()
     {
-        if (in_array($this->environment, array('dev', 'test'))) {
+        if ($this->isRunningOnDevelopmentVM()) {
             return '/dev/shm/tagcade-api/logs';
         }
 
         return parent::getLogDir();
+    }
+
+    /**
+     * Checks that an environment variable is set and has a truthy value
+     *
+     * @param string $variable
+     * @return bool
+     */
+    protected function checkForEnvironmentVariable($variable)
+    {
+        return isset($_SERVER[$variable]) && (bool) $_SERVER[$variable];
+    }
+
+    /**
+     * The application is in development mode if an environment variable TAGCADE_DEV is set
+     * and an environment variable TAGCADE_PROD is not set
+     *
+     * @return bool
+     */
+    protected function isRunningOnDevelopmentVM()
+    {
+        return !$this->checkForEnvironmentVariable('TAGCADE_PROD') && $this->checkForEnvironmentVariable('TAGCADE_DEV');
     }
 }
