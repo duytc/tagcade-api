@@ -24,8 +24,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdSlotReport:
             type: integer
         fillRate:
             type: decimal
-            scale: 2
+            scale: 4
     manyToOne:
+        adSlot:
+            targetEntity: Tagcade\Entity\Core\AdSlot
         superReport:
             targetEntity: SiteReport
             inversedBy: subReports

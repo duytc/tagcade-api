@@ -2,5 +2,5 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
-interface SiteReportInterface extends CalculatedReportInterface
+interface SiteReportInterface extends CalculatedReportWithSuperInterface
 {}

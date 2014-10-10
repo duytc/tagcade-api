@@ -27,7 +27,7 @@ trait HasSubReports
     public function addSubReport(ReportInterface $report)
     {
         if (!$this->isValidSubReport($report)) {
-            throw new InvalidArgumentException('That sub report is valid for this report');
+            throw new InvalidArgumentException('That sub report is not valid for this report');
         }
 
         $report->setDate($this->getDate());

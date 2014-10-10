@@ -25,7 +25,7 @@ trait CalculatedDisplayReport
 
     /**
      * @param int $totalOpportunities
-     * @return self
+     * @return static
      */
     public function setTotalOpportunities($totalOpportunities)
     {
@@ -43,7 +43,7 @@ trait CalculatedDisplayReport
 
     /**
      * @param int $slotOpportunities
-     * @return self
+     * @return static
      */
     public function setSlotOpportunities($slotOpportunities)
     {
@@ -62,7 +62,7 @@ trait CalculatedDisplayReport
 
     /**
      * @param int $impressions
-     * @return self
+     * @return static
      */
     public function setImpressions($impressions)
     {
@@ -80,7 +80,7 @@ trait CalculatedDisplayReport
 
     /**
      * @param int $passbacks
-     * @return self;
+     * @return static;
      */
     public function setPassbacks($passbacks)
     {
@@ -97,7 +97,7 @@ trait CalculatedDisplayReport
     }
 
     /**
-     * @return $this
+     * @return static
      */
     protected function setFillRate()
     {

@@ -31,6 +31,11 @@ class SiteReport extends AbstractCalculatedReportWithSuper implements SiteReport
         return $report instanceof AdSlotReportInterface;
     }
 
+    public function isValidSuperReport(ReportInterface $report)
+    {
+        return $report instanceof AccountReportInterface;
+    }
+
     protected function setDefaultName()
     {
         if ($site = $this->getSite()) {

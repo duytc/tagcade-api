@@ -24,8 +24,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\SiteReport:
             type: integer
         fillRate:
             type: decimal
-            scale: 2
+            scale: 4
     manyToOne:
+        site:
+            targetEntity: Tagcade\Entity\Core\Site
         superReport:
             targetEntity: AccountReport
             inversedBy: subReports

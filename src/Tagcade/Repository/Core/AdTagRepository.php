@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Gedmo\Sortable\Entity\Repository\SortableRepository;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdTagRepository extends SortableRepository implements AdTagRepositoryInterface
@@ -43,6 +44,25 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
             ->where('st.publisher = :publisher_id')
             ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
             ->orderBy('t.id', 'asc')
+        ;
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.adNetwork = :ad_network_id')
+            ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER)
+            ->addOrderBy('t.position', 'asc')
         ;
 
         if (is_int($limit)) {

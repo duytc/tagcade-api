@@ -32,6 +32,11 @@ class AccountReport extends AbstractCalculatedReportWithSuper implements Account
         return $report instanceof SiteReportInterface;
     }
 
+    public function isValidSuperReport(ReportInterface $report)
+    {
+        return $report instanceof PlatformReportInterface;
+    }
+
     protected function setDefaultName()
     {
         if ($publisher = $this->getPublisher()) {

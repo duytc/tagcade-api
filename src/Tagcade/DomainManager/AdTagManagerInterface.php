@@ -2,6 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -61,6 +62,14 @@ interface AdTagManagerInterface
      * @return AdTagInterface[]
      */
     public function getAdTagsForPublisher(Publisherinterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     /**
      * @param adTagInterface[] $adTags

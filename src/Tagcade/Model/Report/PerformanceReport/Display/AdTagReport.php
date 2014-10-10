@@ -50,7 +50,7 @@ class AdTagReport implements AdTagReportInterface
 
     /**
      * @param AdTagInterface $adTag
-     * @return $this
+     * @return self
      */
     public function setAdTag(AdTagInterface $adTag)
     {
@@ -156,6 +156,11 @@ class AdTagReport implements AdTagReportInterface
     {
         $this->relativeFillRate = $this->getPercentage($this->getImpressions(), $totalOpportunities);
         return $this;
+    }
+
+    public function isValidSuperReport(ReportInterface $report)
+    {
+        return $report instanceof AdSlotReportInterface;
     }
 
     public function setCalculatedFields()

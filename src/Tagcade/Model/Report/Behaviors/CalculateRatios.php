@@ -23,14 +23,14 @@ trait CalculateRatios
     /**
      * @param $numerator
      * @param $denominator
-     * @return float|null
+     * @return float
      */
     protected function getPercentage($numerator, $denominator)
     {
         $ratio = $this->getRatio($numerator, $denominator);
 
         if (null == $ratio) {
-            return null;
+            return 0.00;
         }
 
         if ($ratio > 1.00) {

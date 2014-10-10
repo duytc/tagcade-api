@@ -14,6 +14,8 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdTagReport:
             type: string
             length: 100
             nullable: true
+        position:
+            type: integer
         opportunities:
             type: integer
         impressions:
@@ -22,11 +24,13 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdTagReport:
             type: integer
         fillRate:
             type: decimal
-            scale: 2
+            scale: 4
         relativeFillRate:
             type: decimal
-            scale: 2
+            scale: 4
     manyToOne:
+        adTag:
+            targetEntity: Tagcade\Entity\Core\AdTag
         superReport:
             targetEntity: AdSlotReport
             inversedBy: subReports

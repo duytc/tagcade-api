@@ -20,7 +20,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\PlatformReport:
             type: integer
         fillRate:
             type: decimal
-            scale: 2
+            scale: 4
     oneToMany:
         subReports:
             targetEntity: AccountReport

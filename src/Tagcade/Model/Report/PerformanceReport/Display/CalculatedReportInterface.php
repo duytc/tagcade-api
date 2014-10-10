@@ -23,7 +23,7 @@ interface CalculatedReportInterface extends ReportInterface
 
     /**
      * @param ReportInterface $report
-     * @return self
+     * @return static
      */
     public function addSubReport(ReportInterface $report);
 

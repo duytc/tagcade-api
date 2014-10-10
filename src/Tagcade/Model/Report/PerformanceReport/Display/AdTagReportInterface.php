@@ -16,4 +16,6 @@ interface AdTagReportInterface extends ReportInterface
      * @return self
      */
     public function setRelativeFillRate($totalOpportunities);
+
+    public function setSuperReport(ReportInterface $report);
 }

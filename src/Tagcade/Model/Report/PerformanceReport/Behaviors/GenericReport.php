@@ -20,7 +20,7 @@ trait GenericReport
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
     public function setName($name)
     {
@@ -38,7 +38,7 @@ trait GenericReport
 
     /**
      * @param DateTime|null $date
-     * @return self
+     * @return static
      */
     public function setDate(DateTime $date = null)
     {

@@ -3,6 +3,7 @@
 namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -24,6 +25,14 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return AdTagInterface[]
      */
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     /**
      * Saves the ad tag position bypassing doctrine flush and events (useful for bulk updates)

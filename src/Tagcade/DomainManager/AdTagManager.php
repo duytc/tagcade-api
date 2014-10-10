@@ -7,6 +7,7 @@ use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use ReflectionClass;
 
@@ -86,6 +87,14 @@ class AdTagManager implements AdTagManagerInterface
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagsForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagsForAdNetwork($adNetwork, $limit, $offset);
     }
 
     /**

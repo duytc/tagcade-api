@@ -19,3 +19,35 @@ services:
         arguments:
             - @tagcade.repository.source_report.report
             - @tagcade.service.reporting.report_util
+
+    # Performance report types
+
+    tagcade.service.report.performance_report.display.creator.report_type.ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\AdTag
+
+    tagcade.service.report.performance_report.display.creator.report_type.ad_slot:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\AdSlot
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.report_type.ad_tag
+
+    tagcade.service.report.performance_report.display.creator.report_type.site:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\Site
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.report_type.ad_slot
+
+    tagcade.service.report.performance_report.display.creator.report_type.ad_network:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\AdNetwork
+        arguments:
+            - @tagcade.domain_manager.ad_tag
+            - @tagcade.service.report.performance_report.display.creator.report_type.ad_tag
+
+    tagcade.service.report.performance_report.display.creator.report_type.account:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\Account
+        arguments:
+            - @tagcade.domain_manager.site
+            - @tagcade.service.report.performance_report.display.creator.report_type.site
+
+    tagcade.service.report.performance_report.display.creator.report_type.platform:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\Platform
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.report_type.account

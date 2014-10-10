@@ -3,6 +3,7 @@
 namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface UserManagerInterface
 {
@@ -48,4 +49,9 @@ interface UserManagerInterface
      * @return array
      */
     public function allPublishers();
+
+    /**
+     * @return array
+     */
+    public function allPublisherRoles();
 }

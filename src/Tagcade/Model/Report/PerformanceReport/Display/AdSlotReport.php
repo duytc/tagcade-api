@@ -37,6 +37,11 @@ class AdSlotReport extends AbstractCalculatedReportWithSuper implements AdSlotRe
         return $report instanceof AdTagReportInterface;
     }
 
+    public function isValidSuperReport(ReportInterface $report)
+    {
+        return $report instanceof SiteReportInterface;
+    }
+
     /**
      * Overwrite the parent setCalculatedFields
      *

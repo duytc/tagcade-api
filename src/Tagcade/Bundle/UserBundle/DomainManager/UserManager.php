@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\UserBundle\DomainManager;
 use FOS\UserBundle\Model\UserManagerInterface as FOSUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Factory\UserRoleFactory;
 
 /**
  * Most of the other handlers talk to doctrine directly
@@ -81,5 +82,15 @@ class UserManager implements UserManagerInterface
         });
 
         return array_values($publishers);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function allPublisherRoles()
+    {
+        return array_map(function(UserEntityInterface $user) {
+            return UserRoleFactory::getRole($user);
+        }, $this->allPublishers());
     }
 }

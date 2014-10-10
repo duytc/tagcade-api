@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
-interface AdSlotReportInterface extends CalculatedReportInterface
+interface AdSlotReportInterface extends CalculatedReportWithSuperInterface
 {
     /**
      * Very important to set the slot opportunities
