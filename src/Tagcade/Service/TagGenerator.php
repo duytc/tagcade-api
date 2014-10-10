@@ -52,7 +52,7 @@ class TagGenerator
      */
     public function createHeaderTag(SiteInterface $site)
     {
-        $tag = sprintf('<script type="text/javascript" src="%s/%d/tagcade.js"></script>' . "\n", $this->baseTagUrl, $site->getId());
+        $tag = sprintf('<script type="text/javascript" src="%s/2.0/%d/tagcade.js"></script>' . "\n", $this->baseTagUrl, $site->getId());
 
         return $tag;
     }
@@ -70,7 +70,7 @@ class TagGenerator
         $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
         $tag .= sprintf("var tc_size = '%dx%d';\n", $adSlot->getWidth(), $adSlot->getHeight());
         $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/adtag.js"></script>' . "\n", $this->baseTagUrl);
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
 
         return $tag;
     }
@@ -81,7 +81,7 @@ class TagGenerator
      */
     public function createDisplayPassbackTag(SiteInterface $site)
     {
-        $tag = sprintf('<script type="text/javascript" src="%s/%d/passback.js"></script>' . "\n", $this->baseTagUrl, $site->getId());
+        $tag = sprintf('<script type="text/javascript" src="%s/2.0/%d/passback.js"></script>' . "\n", $this->baseTagUrl, $site->getId());
 
         return $tag;
     }
