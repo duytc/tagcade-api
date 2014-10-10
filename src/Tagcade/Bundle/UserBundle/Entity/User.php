@@ -24,6 +24,7 @@ class User extends BaseUser implements UserEntityInterface
     protected $enabled;
     protected $lastLogin;
     protected $roles;
+    protected $joinDate;
 
     /**
      * @inheritdoc

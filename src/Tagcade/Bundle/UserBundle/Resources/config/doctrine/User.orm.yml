@@ -12,3 +12,9 @@ Tagcade\Bundle\UserBundle\Entity\User:
         emailCanonical:
             nullable: true
             unique: false
+    fields:
+        joinDate:
+            type: date
+            gedmo:
+                timestampable:
+                    on: create
