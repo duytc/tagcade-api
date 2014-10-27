@@ -36,7 +36,7 @@ security:
                 password_parameter: password
                 post_only:          true
                 success_handler:    lexik_jwt_authentication.handler.authentication_success
-                throw_exceptions:   true
+                failure_handler:    lexik_jwt_authentication.handler.authentication_failure
 
         api:
             pattern:    ^/api/
