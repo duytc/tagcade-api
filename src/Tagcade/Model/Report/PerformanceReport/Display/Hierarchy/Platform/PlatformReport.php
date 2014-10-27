@@ -6,6 +6,8 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class PlatformReport extends AbstractCalculatedReport implements PlatformReportInterface
 {
+    const REPORT_TYPE = 'platform.platform';
+
     public function isValidSubReport(ReportInterface $report)
     {
         return $report instanceof AccountReportInterface;

@@ -9,6 +9,8 @@ use Tagcade\Model\Core\AdTagInterface;
 
 class AdTagReport extends AbstractReport implements AdTagReportInterface
 {
+    const REPORT_TYPE = 'adNetwork.adTag';
+
     use SuperReportTrait;
 
     /**

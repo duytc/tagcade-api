@@ -9,6 +9,8 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class AccountReport extends AbstractCalculatedReport implements AccountReportInterface
 {
+    const REPORT_TYPE = 'platform.account';
+
     use SuperReportTrait;
 
     /**
@@ -29,7 +31,7 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
      */
     public function getPublisherId()
     {
-        if ($this->publisher instanceof PublisherInterface) {
+        if ($this->publisher instanceof UserEntityInterface) {
             return $this->publisher->getId();
         }
 

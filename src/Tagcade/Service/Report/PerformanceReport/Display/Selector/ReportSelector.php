@@ -98,10 +98,6 @@ class ReportSelector implements ReportSelectorInterface
                     continue;
                 }
 
-                if ($report->getSubReports()->isEmpty()) {
-                    continue;
-                }
-
                 $report = $report->getSubReports()->toArray();
             }
         }

@@ -7,6 +7,11 @@ use DateTime;
 interface ReportInterface
 {
     /**
+     * @return string|null
+     */
+    public function getReportType();
+
+    /**
      * @return DateTime|null
      */
     public function getDate();

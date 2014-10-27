@@ -14,6 +14,8 @@ use Tagcade\Exception\RuntimeException;
  */
 class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInterface
 {
+    const REPORT_TYPE = 'platform.adSlot';
+
     use SuperReportTrait;
 
     /**

@@ -1,5 +1,10 @@
 Tagcade\Model\Report\PerformanceReport\Display\AbstractReport:
     exclusion_policy: NONE
+    virtual_properties:
+        getReportType:
+            type: string
     properties:
         id:
             exclude: true
+        date:
+            type: DateTime<'Y-m-d'>

@@ -8,6 +8,8 @@ use Tagcade\Model\Core\SiteInterface;
 
 class SiteReport extends AbstractCalculatedReport implements SiteReportInterface
 {
+    const REPORT_TYPE = 'platform.site';
+
     use SuperReportTrait;
 
     /**

@@ -28,7 +28,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/platform")
+     * @Rest\Get("/performancereports/platform/reports")
      *
      * Get performance reports for the platform with optional date range.
      *
@@ -56,7 +56,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/account/{publisherId}", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/performancereports/account/{publisherId}/reports", requirements={"publisherId" = "\d+"})
      *
      * Get performance reports for a publisher with optional date range.
      *
@@ -90,7 +90,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/performancereports/account")
+     * @Rest\Get("/performancereports/account/reports")
      *
      * Get performance reports for the current publisher with optional date range. Must be logged in as a publisher to access
      *
@@ -124,7 +124,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/site/{siteId}", requirements={"siteId" = "\d+"})
+     * @Rest\Get("/performancereports/site/{siteId}/reports", requirements={"siteId" = "\d+"})
      *
      * Get performance reports for a site with optional date range.
      *
@@ -158,7 +158,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adslot/{adSlotId}", requirements={"adSlotId" = "\d+"})
+     * @Rest\Get("/performancereports/adslot/{adSlotId}/reports", requirements={"adSlotId" = "\d+"})
      *
      * Get performance reports for an ad slot with optional date range.
      *
@@ -192,7 +192,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adtag/{adTagId}", requirements={"adTagId" = "\d+"})
+     * @Rest\Get("/performancereports/adtag/{adTagId}/reports", requirements={"adTagId" = "\d+"})
      *
      * Get performance reports for an ad tag with optional date range.
      *
@@ -206,7 +206,6 @@ class PerformanceReportController extends FOSRestController
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
      *
      * @param int $adTagId ID of the ad tag you want the report for
      *
@@ -226,7 +225,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adnetwork/{adNetworkId}", requirements={"adNetworkId" = "\d+"})
+     * @Rest\Get("/performancereports/adnetwork/{adNetworkId}/reports", requirements={"adNetworkId" = "\d+"})
      *
      * Get performance reports for an ad network with optional date range.
      *
@@ -260,7 +259,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adnetwork/{adNetworkId}/site/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
+     * @Rest\Get("/performancereports/adnetwork/{adNetworkId}/site/{siteId}/reports", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
      * Get performance reports for an ad network and site with optional date range.
      *
@@ -305,10 +304,17 @@ class PerformanceReportController extends FOSRestController
     {
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
 
-        $expand = filter_var($paramFetcher->get('expand'), FILTER_VALIDATE_BOOLEAN);
+        try {
+            // fosrestbundle throws exception if parameter is not defined
+            $expand = $paramFetcher->get('expand', true);
+        } catch (\InvalidArgumentException $e) {
+            $expand = false;
+        }
+
+        $expand = filter_var($expand, FILTER_VALIDATE_BOOLEAN);
 
         return $this->get('tagcade.service.report.performance_report.display.creator.report_selector')
-            ->getReports($reportType, $paramFetcher->get('startDate'), $paramFetcher->get('endDate'), $expand)
+            ->getReports($reportType, $paramFetcher->get('startDate', true), $paramFetcher->get('endDate', true), $expand)
         ;
     }
 
