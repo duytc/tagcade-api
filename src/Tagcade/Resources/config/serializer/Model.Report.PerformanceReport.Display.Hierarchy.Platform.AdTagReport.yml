@@ -1,0 +1,10 @@
+Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getAdTagId:
+            type: integer
+    properties:
+        adTag:
+            exclude: true
+        superReport:
+            exclude: true

@@ -1,0 +1,5 @@
+Tagcade\Model\Report\PerformanceReport\Display\AbstractReport:
+    exclusion_policy: NONE
+    properties:
+        id:
+            exclude: true

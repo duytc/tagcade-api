@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
 
 interface SiteManagerInterface
 {
@@ -52,4 +53,6 @@ interface SiteManagerInterface
      * @return SiteInterface[]
      */
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 }

@@ -7,6 +7,7 @@ use Gedmo\Sortable\Entity\Repository\SortableRepository;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdTagRepository extends SortableRepository implements AdTagRepositoryInterface
@@ -57,12 +58,37 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
-    public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    public function getAdTagsForAdNetworkQuery(AdNetworkInterface $adNetwork)
     {
-        $qb = $this->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->where('t.adNetwork = :ad_network_id')
             ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER)
             ->addOrderBy('t.position', 'asc')
+        ;
+    }
+
+
+    public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->andWhere('sl.site = :site_id')
+            ->join('t.adSlot', 'sl')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
         ;
 
         if (is_int($limit)) {

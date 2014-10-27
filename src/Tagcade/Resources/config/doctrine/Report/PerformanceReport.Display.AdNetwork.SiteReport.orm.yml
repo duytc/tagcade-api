@@ -1,0 +1,40 @@
+Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_ad_network_site
+    readOnly: true
+    uniqueConstraints:
+        unique_ad_network_site_report_idx:
+            columns: [date, site_id, super_report_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+        totalOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 4
+    manyToOne:
+        site:
+            targetEntity: Tagcade\Entity\Core\Site
+        superReport:
+            targetEntity: AdNetworkReport
+            inversedBy: subReports
+    oneToMany:
+        subReports:
+            targetEntity: AdTagReport
+            mappedBy: superReport
+            cascade: ["persist", "remove", "detach"]

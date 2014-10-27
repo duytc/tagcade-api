@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Doctrine\ORM\QueryBuilder;
 
 interface SiteRepositoryInterface extends ObjectRepository
@@ -23,4 +24,6 @@ interface SiteRepositoryInterface extends ObjectRepository
      * @return QueryBuilder
      */
     public function getSitesForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 }

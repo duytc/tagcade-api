@@ -4,13 +4,14 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
 
+use Doctrine\Common\Cache\Cache;
 use Tagcade\Model\Core\AdSlot;
 
 /**
  * This counter is only used for testing
  */
 
-class TestEventCounter implements EventCounterInterface
+class TestEventCounter extends AbstractEventCounter
 {
     const SLOT_OPPORTUNITIES = 'slotOpportunities';
     const OPPORTUNITIES = 'opportunities';
@@ -18,7 +19,6 @@ class TestEventCounter implements EventCounterInterface
     const PASSBACKS = 'passbacks';
 
     protected $adSlots;
-
     protected $adSlotData = [];
     protected $adTagData = [];
 
@@ -30,26 +30,15 @@ class TestEventCounter implements EventCounterInterface
         $this->adSlots = $adSlots;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function setDate(DateTime $date = null)
-    {
-        // do nothing
-    }
-
-    public function getDate()
-    {
-        return new DateTime('today');
-    }
-
     public function refreshTestData()
     {
         $this->adSlotData = [];
         $this->adTagData = [];
 
         foreach($this->adSlots as $adSlot) {
-            $slotOpportunities = mt_rand(1000, 1000000);
+            $this->seedRandomGenerator();
+
+            $slotOpportunities = mt_rand(1000, 100000);
             $opportunitiesRemaining = $slotOpportunities;
 
             $this->adSlotData[$adSlot->getId()] = [
@@ -67,7 +56,8 @@ class TestEventCounter implements EventCounterInterface
                     $impressions = 0;
                 }
 
-                $impressions -= mt_rand(0, $impressions);
+                // can be used to simulate "missing impressions"
+                //$impressions -= mt_rand(0, $impressions);
 
                 $this->adTagData[$adTag->getId()] = [
                     static::OPPORTUNITIES => $opportunities,
@@ -78,6 +68,16 @@ class TestEventCounter implements EventCounterInterface
                 $opportunitiesRemaining = $passbacks;
             }
         }
+    }
+
+    public function getAdSlotData()
+    {
+        return $this->adSlotData;
+    }
+
+    public function getAdTagData()
+    {
+        return $this->adTagData;
     }
 
     /**
@@ -126,5 +126,13 @@ class TestEventCounter implements EventCounterInterface
         }
 
         return $this->adTagData[$tagId][static::PASSBACKS];
+    }
+
+    protected function seedRandomGenerator()
+    {
+        list($usec, $sec) = explode(' ', microtime());
+        $seed = (float) $sec + ((float) $usec * 100000);
+
+        mt_srand($seed);
     }
 }

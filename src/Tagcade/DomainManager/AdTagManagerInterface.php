@@ -6,6 +6,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 interface AdTagManagerInterface
 {
@@ -70,6 +71,8 @@ interface AdTagManagerInterface
      * @return AdTagInterface[]
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
     /**
      * @param adTagInterface[] $adTags

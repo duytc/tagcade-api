@@ -1,0 +1,40 @@
+Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_platform_ad_tag
+    readOnly: true
+    uniqueConstraints:
+        unique_platform_adtag_report_idx:
+            columns: [date, ad_tag_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+        position:
+            type: integer
+        totalOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 4
+        relativeFillRate:
+            type: decimal
+            scale: 4
+    manyToOne:
+        adTag:
+            targetEntity: Tagcade\Entity\Core\AdTag
+        superReport:
+            targetEntity: AdSlotReport
+            inversedBy: subReports

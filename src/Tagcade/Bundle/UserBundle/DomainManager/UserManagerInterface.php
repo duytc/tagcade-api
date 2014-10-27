@@ -3,7 +3,9 @@
 namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
-use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Exception\InvalidUserRoleException;
 
 interface UserManagerInterface
 {
@@ -34,7 +36,7 @@ interface UserManagerInterface
 
     /**
      * @param int $id
-     * @return FOSUserInterface|null
+     * @return FOSUserInterface|UserEntityInterface|null
      */
     public function find($id);
 
@@ -54,4 +56,13 @@ interface UserManagerInterface
      * @return array
      */
     public function allPublisherRoles();
+
+    public function getUserRole(UserEntityInterface $user);
+
+    /**
+     * @param int $id
+     * @return PublisherInterface|bool
+     * @throws InvalidUserRoleException
+     */
+    public function findPublisher($id);
 }

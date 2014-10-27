@@ -2,33 +2,20 @@
 
 namespace Tagcade\Tests\Model\Report\PerformanceReport\Display;
 
-use Tagcade\Model\Report\PerformanceReport\Display\AccountReport;
-use Tagcade\Model\Report\PerformanceReport\Display\AdSlotReport;
-use Tagcade\Model\Report\PerformanceReport\Display\AdTagReport;
-use Tagcade\Model\Report\PerformanceReport\Display\PlatformReport;
-use Tagcade\Model\Report\PerformanceReport\Display\SiteReport;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork as AdNetworkReportTypes;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform as PlatformReportTypes;
 
 class ReportTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var AdTagReport
-     */
     protected $adTagReport1;
-
-    /**
-     * @var AdTagReport
-     */
     protected $adTagReport2;
-
-    /**
-     * @var PlatformReport
-     */
     protected $platformReport;
+    protected $adNetworkReport;
 
     public function setUp()
     {
-        $adTagReport1 = (new AdTagReport())
-            ->setOpportunities(10)
+        $adTagReport1 = (new PlatformReportTypes\AdTagReport())
+            ->setTotalOpportunities(10)
             ->setImpressions(5)
             ->setPassbacks(5)
             ->setPosition(1)
@@ -36,8 +23,8 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
         $this->adTagReport1 = $adTagReport1;
 
-        $adTagReport2 = (new AdTagReport())
-            ->setOpportunities(5)
+        $adTagReport2 = (new PlatformReportTypes\AdTagReport())
+            ->setTotalOpportunities(5)
             ->setImpressions(1)
             ->setPassbacks(4)
             ->setPosition(2)
@@ -45,7 +32,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
         $this->adTagReport2 = $adTagReport2;
 
-        $adSlotReport1 = (new AdSlotReport())
+        $adSlotReport1 = (new PlatformReportTypes\AdSlotReport())
             ->setSlotOpportunities(10)
             ->addSubReport($adTagReport1)
             ->addSubReport($adTagReport2)
@@ -53,21 +40,21 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
         // end first ad slot
 
-        $adTagReport3 = (new AdTagReport())
-            ->setOpportunities(20)
+        $adTagReport3 = (new PlatformReportTypes\AdTagReport())
+            ->setTotalOpportunities(20)
             ->setImpressions(16)
             ->setPassbacks(4)
             ->setPosition(1)
         ;
 
-        $adTagReport4 = (new AdTagReport())
-            ->setOpportunities(4)
+        $adTagReport4 = (new PlatformReportTypes\AdTagReport())
+            ->setTotalOpportunities(4)
             ->setImpressions(1)
             ->setPassbacks(3)
             ->setPosition(2)
         ;
 
-        $adSlotReport2 = (new AdSlotReport())
+        $adSlotReport2 = (new PlatformReportTypes\AdSlotReport())
             ->setSlotOpportunities(22)
             ->addSubReport($adTagReport3)
             ->addSubReport($adTagReport4)
@@ -75,16 +62,16 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
         // end ad slot
 
-        $siteReport = (new SiteReport())
+        $siteReport = (new PlatformReportTypes\SiteReport())
             ->addSubReport($adSlotReport1)
             ->addSubReport($adSlotReport2)
         ;
 
-        $accountReport = (new AccountReport())
+        $accountReport = (new PlatformReportTypes\AccountReport())
             ->addSubReport($siteReport)
         ;
 
-        $platformReport = (new PlatformReport())
+        $platformReport = (new PlatformReportTypes\PlatformReport())
             ->addSubReport($accountReport)
         ;
 
@@ -118,12 +105,12 @@ class ReportTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0.7188, $this->platformReport->getFillRate());
     }
 
-    public function testAdTagFillRate()
+    public function testAdTagReportFillRate()
     {
         $this->assertEquals(0.2, $this->adTagReport2->getFillRate());
     }
 
-    public function testAdTagRelativeFillRate()
+    public function testAdTagReportRelativeFillRate()
     {
         $this->assertEquals(0.1, $this->adTagReport2->getRelativeFillRate());
     }

@@ -1,0 +1,20 @@
+set foreign_key_checks = 0;
+
+truncate table report_performance_display_hierarchy_platform;
+truncate table report_performance_display_hierarchy_platform_account;
+truncate table report_performance_display_hierarchy_platform_site;
+truncate table report_performance_display_hierarchy_platform_ad_slot;
+truncate table report_performance_display_hierarchy_platform_ad_tag;
+
+truncate table report_performance_display_hierarchy_ad_network;
+truncate table report_performance_display_hierarchy_ad_network_site;
+truncate table report_performance_display_hierarchy_ad_network_ad_tag;
+--
+-- drop table report_performance_display_platform;
+-- drop table report_performance_display_account;
+-- drop table report_performance_display_site;
+-- drop table report_performance_display_ad_slot;
+-- drop table report_performance_display_ad_tag;
+--
+-- drop table report_performance_display_ad_network;
+-- drop table report_performance_display_ad_network_x_ad_tag;

@@ -3,14 +3,18 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 
 use DateTime;
-use Exception;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use \Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
 
 class ReportCreator implements ReportCreatorInterface
 {
-    protected $reportTypes;
+    /**
+     * @var CreatorInterface[]
+     */
+    protected $creators;
 
     /**
      * @var EventCounterInterface
@@ -20,15 +24,14 @@ class ReportCreator implements ReportCreatorInterface
     protected $date;
 
     /**
-     * @param ReportTypeInterface[] $reportTypes
+     * @param CreatorInterface[] $creators
      * @param EventCounterInterface $eventCounter
      */
-    public function __construct(array $reportTypes, EventCounterInterface $eventCounter)
+    public function __construct(array $creators, EventCounterInterface $eventCounter)
     {
-        foreach($reportTypes as $name => $type)
+        foreach($creators as $creator)
         {
-            $this->addReportType($name, $type);
-            unset($name, $type);
+            $this->addCreator($creator);
         }
 
         $this->eventCounter = $eventCounter;
@@ -39,17 +42,9 @@ class ReportCreator implements ReportCreatorInterface
     /**
      * @inheritdoc
      */
-    public function addReportType($name, ReportTypeInterface $reportType)
+    public function addCreator(CreatorInterface $creator)
     {
-        if (!is_string($name)) {
-            throw new InvalidArgumentException('report type name should be a string');
-        }
-
-        if ($this->reportTypeExists($name)) {
-            throw new Exception(sprintf('The report type "%s" already exists', $name));
-        }
-
-        $this->reportTypes[$name] = $reportType;
+        $this->creators[] = $creator;
     }
 
     /**
@@ -74,23 +69,15 @@ class ReportCreator implements ReportCreatorInterface
     /**
      * @inheritdoc
      */
-    public function getReport($name, $parameter)
+    public function getReport(ReportTypeInterface $reportType)
     {
-        if (!$this->reportTypeExists($name))
-        {
-            throw new InvalidArgumentException('that report type does not exist');
-        }
+        $creator = $this->getCreatorFor($reportType);
 
         try {
-            /** @var ReportTypeInterface $reportType */
-            $reportType = $this->reportTypes[$name];
-
-            $reportType->setEventCounter($this->eventCounter);
-            $report = $reportType->createReport($parameter);
-        } catch(InvalidArgumentException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            throw new Exception('Could get the report');
+            $creator->setEventCounter($this->eventCounter);
+            $report = $creator->createReport($reportType);
+        } catch (\Exception $e) {
+            throw new RunTimeException('Could not get the report', $e->getCode(), $e);
         }
 
         // very important!!!
@@ -101,11 +88,18 @@ class ReportCreator implements ReportCreatorInterface
     }
 
     /**
-     * @param string $name
-     * @return bool
+     * @param ReportTypeInterface $reportType
+     * @return CreatorInterface
+     * @throws RunTimeException
      */
-    protected function reportTypeExists($name)
+    protected function getCreatorFor(ReportTypeInterface $reportType)
     {
-        return isset($this->reportTypes[$name]);
+        foreach($this->creators as $creator) {
+            if ($creator->supportsReportType($reportType)) {
+                return $creator;
+            }
+        }
+
+        throw new RuntimeException('cannot find a creator for this report type');
     }
 }

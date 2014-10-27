@@ -8,6 +8,7 @@ use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use ReflectionClass;
 
@@ -95,6 +96,11 @@ class AdTagManager implements AdTagManagerInterface
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagsForAdNetwork($adNetwork, $limit, $offset);
+    }
+
+    public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagsForAdNetworkAndSite($adNetwork, $site, $limit, $offset);
     }
 
     /**

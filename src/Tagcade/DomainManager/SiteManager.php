@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
 use ReflectionClass;
 
 class SiteManager implements SiteManagerInterface
@@ -76,5 +77,10 @@ class SiteManager implements SiteManagerInterface
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getSitesForPublisher($publisher, $limit, $offset);
+    }
+
+    public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        return $this->repository->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
     }
 }

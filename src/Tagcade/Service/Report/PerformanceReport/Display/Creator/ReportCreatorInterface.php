@@ -3,8 +3,9 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 
 use DateTime;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorInterface;
 
 interface ReportCreatorInterface
 {
@@ -20,17 +21,15 @@ interface ReportCreatorInterface
     public function getDate();
 
     /**
-     * @param string $name
-     * @param ReportTypeInterface $reportType
+     * @param CreatorInterface $creator
      */
-    public function addReportType($name, ReportTypeInterface $reportType);
+    public function addCreator(CreatorInterface $creator);
 
     /**
-     * @param string $name
-     * @param mixed $parameter The parameter is passed to createReport() method of ReportTypeInterface children
+     * @param ReportTypeInterface $reportType
      * @return ReportTypeInterface
      * @throws InvalidArgumentException usually if the parameter is incorrect for the supplied report type or the
      *                                  report type does not exist
      */
-    public function getReport($name, $parameter);
+    public function getReport(ReportTypeInterface $reportType);
 }

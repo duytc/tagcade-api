@@ -18,14 +18,53 @@ interface ReportInterface
     public function setDate(DateTime $date);
 
     /**
+     * @return string|null
+     */
+    public function getName();
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name);
+
+    /**
+     * @return int|null
+     */
+    public function getTotalOpportunities();
+
+    /**
+     * @param int $totalOpportunities
+     * @return $this
+     */
+    public function setTotalOpportunities($totalOpportunities);
+
+    /**
      * @return int|null
      */
     public function getImpressions();
 
     /**
+     * @param int $impressions
+     * @return $this
+     */
+    public function setImpressions($impressions);
+
+    /**
      * @return int|null
      */
     public function getPassbacks();
+
+    /**
+     * @param int $passbacks
+     * @return $this
+     */
+    public function setPassbacks($passbacks);
+
+    /**
+     * @return float|null
+     */
+    public function getFillRate();
 
     /**
      * Sets all calculated fields
