@@ -22,6 +22,8 @@ services:
         arguments:
             - @=service('security.context').getToken().getUser()
             - @doctrine.orm.entity_manager
-            - "@request_stack"
+            - @request_stack
         tags:
-            - { name: kernel.event_listener, event: tagcade_admin.events.action_log, method: onActionLogEvent }
+            - { name: kernel.event_listener, event: tagcade.events.handler_event, method: onHandlerEvent }
+            - { name: kernel.event_listener, event: tagcade_user.events.login_success, method: onHandlerEvent }
+

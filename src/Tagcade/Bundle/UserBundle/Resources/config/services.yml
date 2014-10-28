@@ -1,5 +1,7 @@
 parameters:
     tagcade.bundle.user.entity.user.class: Tagcade\Bundle\UserBundle\Entity\User
+    # event dispatched on login success
+    tagcade_user.events.login_success: tagcade_user.events.login_success
 
 services:
     tagcade.factory.user_role:
@@ -16,3 +18,12 @@ services:
         class: Tagcade\Bundle\UserBundle\DomainManager\UserManager
         arguments:
             - @fos_user.user_manager
+
+    tagcade_user.handler.authentication_success:
+        class: Tagcade\Bundle\UserBundle\Handler\AuthenticationSuccessHandler
+        arguments:
+            - @lexik_jwt_authentication.handler.authentication_success
+        calls:
+            - [setEventDispatcher, ["@event_dispatcher"]]
+            - [setSuccessEventName, ["%tagcade_user.events.login_success%"]]
+

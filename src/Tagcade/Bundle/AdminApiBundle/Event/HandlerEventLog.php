@@ -3,15 +3,14 @@
 namespace Tagcade\Bundle\AdminApiBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
+use Tagcade\Bundle\UserBundle\Event\LogEventInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\ModelInterface;
 
-class ActionLogEvent extends Event
+class HandlerEventLog extends Event implements LogEventInterface
 {
     protected $action;
     protected $entity;
-
-    const EVENT_NAME = 'tagcade_admin.events.action_log';
 
     const HTTP_GET = 'GET';
     const HTTP_POST = 'POST';
@@ -66,10 +65,21 @@ class ActionLogEvent extends Event
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getAction()
     {
        return $this->action;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getData()
+    {
+      return [
+            'entity' => get_class($this->getEntity()),
+            'id' => $this->getEntity()->getId()
+        ];
     }
 }

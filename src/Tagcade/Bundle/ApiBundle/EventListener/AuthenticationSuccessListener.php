@@ -5,12 +5,18 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use FOS\UserBundle\Model\UserInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer;
 
 class AuthenticationSuccessListener
 {
     protected $jwtResponseTransformer;
     protected $userManager;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
 
     public function __construct(JWTResponseTransformer $jwtResponseTransformer, UserManagerInterface $userManager)
     {
@@ -37,4 +43,5 @@ class AuthenticationSuccessListener
         $user->setLastLogin(new \DateTime());
         $this->userManager->updateUser($user);
     }
+
 }

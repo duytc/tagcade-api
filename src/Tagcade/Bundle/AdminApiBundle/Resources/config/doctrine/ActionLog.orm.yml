@@ -1,6 +1,7 @@
 Tagcade\Bundle\AdminApiBundle\Entity\ActionLog:
     type: entity
     table: action_log
+    repositoryClass: Tagcade\Bundle\AdminApiBundle\Repository\ActionLogRepository
     id:
         id:
             type: integer
@@ -12,7 +13,7 @@ Tagcade\Bundle\AdminApiBundle\Entity\ActionLog:
             length: 45
         action:
             type: string
-            columnDefinition: ENUM('ADD', 'UPDATE', 'DELETE')
+            columnDefinition: ENUM('LOGIN', 'ADD', 'UPDATE', 'DELETE')
         data:
             type: json_array
             nullable: true

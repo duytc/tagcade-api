@@ -35,7 +35,7 @@ security:
                 username_parameter: username
                 password_parameter: password
                 post_only:          true
-                success_handler:    lexik_jwt_authentication.handler.authentication_success
+                success_handler:    tagcade_user.handler.authentication_success
                 failure_handler:    lexik_jwt_authentication.handler.authentication_failure
 
         api:

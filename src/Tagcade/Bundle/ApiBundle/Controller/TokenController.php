@@ -46,7 +46,7 @@ class TokenController extends Controller
         $user = $this->getUser();
 
         return new JsonResponse(
-            $this->get('tagcade.service.jwt_response_transformer')->transform($data, $user)
+            $this->get('tagcade_admin.service.jwt_response_transformer')->transform($data, $user)
         );
     }
 }

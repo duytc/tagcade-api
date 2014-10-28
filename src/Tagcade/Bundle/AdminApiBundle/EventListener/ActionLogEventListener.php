@@ -3,24 +3,33 @@
 namespace Tagcade\Bundle\AdminApiBundle\EventListener;
 
 use Tagcade\Bundle\AdminApiBundle\Entity\ActionLog;
-use Tagcade\Bundle\AdminApiBundle\Event\ActionLogEvent;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Tagcade\Bundle\UserBundle\Event\LogEventInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class ActionLogEventListener
 {
+    /**
+     * @var UserEntityInterface
+     */
     protected $user;
+
+    /**
+     * @var ObjectManager
+     */
     protected $em;
+
+    /**
+     * @var RequestStack
+     */
     protected $requestStack;
 
-    // map action names to english words
-    protected $actionMap = [
-        ActionLogEvent::ADD => 'added',
-        ActionLogEvent::UPDATE => 'edited',
-        ActionLogEvent::DELETE => 'deleted',
-    ];
-
+    /**
+     * @param UserEntityInterface $user
+     * @param ObjectManager $em
+     * @param RequestStack $requestStack
+     */
     public function __construct(UserEntityInterface $user, ObjectManager $em, RequestStack $requestStack)
     {
         $this->user = $user;
@@ -28,7 +37,10 @@ class ActionLogEventListener
         $this->requestStack = $requestStack;
     }
 
-    public function onActionLogEvent(ActionLogEvent $event)
+    /**
+     * @param LogEventInterface $event
+     */
+    public function onHandlerEvent(LogEventInterface $event)
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -36,13 +48,11 @@ class ActionLogEventListener
             ->setUser($this->user)
             ->setIp($request->getClientIp())
             ->setAction($event->getAction())
-            ->setData([
-                'entity' => get_class($event->getEntity()),
-                'id' => $event->getEntity()->getId()
-            ])
+            ->setData($event->getData());
         ;
 
         $this->em->persist($actionLog);
         $this->em->flush();
     }
+
 }

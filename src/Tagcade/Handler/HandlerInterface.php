@@ -18,6 +18,13 @@ interface HandlerInterface
      */
     public function setEventDispatcher(EventDispatcherInterface $dispatcher);
 
+
+    /**
+     * @param string $handlerEvent
+     * @return $this
+     */
+    public function setEvent($handlerEvent);
+
     /**
      * Should take an object instance or string class name
      * Should return true if the supplied entity object or class is supported by this handler

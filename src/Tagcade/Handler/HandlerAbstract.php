@@ -4,6 +4,7 @@ namespace Tagcade\Handler;
 
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
+use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\InvalidArgumentException;
@@ -13,7 +14,6 @@ use Tagcade\DomainManager\ManagerInterface as DummyManagerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Tagcade\Bundle\AdminApiBundle\Event\ActionLogEvent;
 
 abstract class HandlerAbstract implements HandlerInterface
 {
@@ -40,11 +40,25 @@ abstract class HandlerAbstract implements HandlerInterface
      */
     protected $domainManager;
 
+    /**
+     * Dispatched on user action such as add, remove, delete items
+     * @var string
+     */
+    protected $handlerEvent;
+
     public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, $domainManager)
     {
         $this->formFactory = $formFactory;
         $this->formType = $formType;
         $this->setDomainManager($domainManager);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function supportsEntity($entity)
+    {
+        return $this->domainManager->supportsEntity($entity);
     }
 
     /**
@@ -60,9 +74,11 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @inheritdoc
      */
-    public function supportsEntity($entity)
+    public function setEvent($handlerEvent)
     {
-        return $this->domainManager->supportsEntity($entity);
+        $this->handlerEvent = $handlerEvent;
+
+        return $this;
     }
 
     /**
@@ -155,9 +171,9 @@ abstract class HandlerAbstract implements HandlerInterface
 
             $this->domainManager->save($entity);
 
-            if ($this->eventDispatcher !== null) {
-                $event = new ActionLogEvent($entity, $method);
-                $this->eventDispatcher->dispatch(ActionLogEvent::EVENT_NAME, $event);
+            if ($this->eventDispatcher !== null && $this->handlerEvent != null) {
+                $event = new HandlerEventLog($entity, $method);
+                $this->eventDispatcher->dispatch($this->handlerEvent, $event);
             }
 
             return $entity;

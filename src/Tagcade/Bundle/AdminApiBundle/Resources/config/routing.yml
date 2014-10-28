@@ -2,3 +2,8 @@ admin_api_user:
     type: rest
     resource: Tagcade\Bundle\AdminApiBundle\Controller\UserController
     name_prefix: admin_api_1_
+
+admin_api_log:
+    type: rest
+    resource: Tagcade\Bundle\AdminApiBundle\Controller\ActionLogController
+    name_prefix: admin_api_1_

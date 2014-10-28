@@ -14,10 +14,10 @@ parameters:
     tagcade.form.type.ad_network.class: Tagcade\Form\Type\AdNetworkFormType
 
     # jwt
-
-    tagcade.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
+    tagcade_admin.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
     tagcade.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
     tagcade.event.jwt_created_listener.class: Tagcade\Bundle\ApiBundle\EventListener\JWTCreatedListener
+
 
 services:
 
@@ -281,21 +281,19 @@ services:
     # end ad network #####################################################
 
 
-
-
-
-    tagcade.service.jwt_response_transformer:
-        class: %tagcade.service.jwt_response_transformer.class%
+    # authentication
+    tagcade_admin.service.jwt_response_transformer:
+        class: %tagcade_admin.service.jwt_response_transformer.class%
 
     tagcade.event.authentication_success_listener:
         class: %tagcade.event.authentication_success_listener.class%
-        arguments: [@tagcade.service.jwt_response_transformer, @fos_user.user_manager]
+        arguments: [@tagcade_admin.service.jwt_response_transformer, @fos_user.user_manager]
         tags:
             -
-                name: kernel.event_listener
-                event: 'lexik_jwt_authentication.on_authentication_success'
-                method: 'onAuthenticationSuccess'
-                priority: 10
+               name: kernel.event_listener
+               event: 'lexik_jwt_authentication.on_authentication_success'
+               method: 'onAuthenticationSuccess'
+               priority: 10
 
     tagcade.event.jwt_created_listener:
         class: %tagcade.event.jwt_created_listener.class%
@@ -304,3 +302,5 @@ services:
                 name: kernel.event_listener
                 event: 'lexik_jwt_authentication.on_jwt_created'
                 method: 'onJWTCreated'
+
+
