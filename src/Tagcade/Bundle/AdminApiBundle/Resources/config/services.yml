@@ -3,7 +3,8 @@ services:
 
     tagcade_admin_api.handler.user:
         class: Tagcade\Bundle\AdminApiBundle\Handler\UserHandler
-        parent : tagcade.handler.handler_abstract
+        parent: tagcade.handler.handler_abstract
+        public: true
         arguments:
             - @form.factory
             - @tagcade_admin_api.form.type.user
