@@ -3,6 +3,7 @@ services:
 
     tagcade_admin_api.handler.user:
         class: Tagcade\Bundle\AdminApiBundle\Handler\UserHandler
+        parent : tagcade.handler.handler_abstract
         arguments:
             - @form.factory
             - @tagcade_admin_api.form.type.user
@@ -14,3 +15,12 @@ services:
         class: Tagcade\Bundle\AdminApiBundle\Form\Type\UserFormType
         tags:
             - { name: form.type, alias: tagcade_form_admin_api_user }
+
+    tagcade_admin_api.event_listener.action_log_event_listener:
+        class: Tagcade\Bundle\AdminApiBundle\EventListener\ActionLogEventListener
+        arguments:
+            - @=service('security.context').getToken().getUser()
+            - @doctrine.orm.entity_manager
+            - "@request_stack"
+        tags:
+            - { name: kernel.event_listener, event: tagcade_admin.events.action_log, method: onActionLogEvent }

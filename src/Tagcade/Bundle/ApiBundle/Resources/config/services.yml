@@ -27,6 +27,7 @@ services:
         class: Tagcade\Handler\RoleHandlerAbstract
         abstract: true
         public: false
+        parent : tagcade.handler.handler_abstract
         arguments:
             - @form.factory
 

@@ -71,6 +71,7 @@ doctrine:
                     # bundles
                     FOSUserBundle:      ~
                     TagcadeUserBundle:  ~
+                    TagcadeAdminApiBundle:  ~
                     # custom
                     CoreEntities:
                         type:       yml

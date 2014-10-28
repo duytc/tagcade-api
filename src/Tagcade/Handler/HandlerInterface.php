@@ -2,6 +2,7 @@
 
 namespace Tagcade\Handler;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Model\ModelInterface;
 
 /**
@@ -10,6 +11,13 @@ use Tagcade\Model\ModelInterface;
  */
 interface HandlerInterface
 {
+
+    /**
+     * @param EventDispatcherInterface $dispatcher
+     * @return $this
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher);
+
     /**
      * Should take an object instance or string class name
      * Should return true if the supplied entity object or class is supported by this handler

@@ -12,12 +12,19 @@ use Tagcade\Exception\InvalidFormException;
 use Tagcade\DomainManager\ManagerInterface as DummyManagerInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tagcade\Bundle\AdminApiBundle\Event\ActionLogEvent;
 
 abstract class HandlerAbstract implements HandlerInterface
 {
     protected $formFactory;
 
     protected $formType;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
 
     /**
      * @var DummyManagerInterface
@@ -38,6 +45,16 @@ abstract class HandlerAbstract implements HandlerInterface
         $this->formFactory = $formFactory;
         $this->formType = $formType;
         $this->setDomainManager($domainManager);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEventDispatcher(EventDispatcherInterface $dispatcher)
+    {
+        $this->eventDispatcher = $dispatcher;
+
+        return $this;
     }
 
     /**
@@ -137,6 +154,11 @@ abstract class HandlerAbstract implements HandlerInterface
             $entity = $form->getData();
 
             $this->domainManager->save($entity);
+
+            if ($this->eventDispatcher !== null) {
+                $event = new ActionLogEvent($entity, $method);
+                $this->eventDispatcher->dispatch(ActionLogEvent::EVENT_NAME, $event);
+            }
 
             return $entity;
         }

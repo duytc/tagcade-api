@@ -40,9 +40,12 @@ services:
         arguments:
             - %base_tag_url%
 
-
-
-
+    tagcade.handler.handler_abstract:
+        class: Tagcade\Handler\HandlerAbstract
+        abstract: true
+        public: false
+        calls:
+            - [setEventDispatcher, ["@event_dispatcher"]]
 
 
 
