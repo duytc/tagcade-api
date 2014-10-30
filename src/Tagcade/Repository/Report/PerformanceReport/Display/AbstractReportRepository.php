@@ -17,6 +17,7 @@ abstract class AbstractReportRepository extends EntityRepository
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->orderBy('r.date', 'desc')
+            ->addOrderBy('r.totalOpportunities', 'desc')
         ;
     }
 }
