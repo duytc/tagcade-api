@@ -10,6 +10,9 @@ parameters:
     tagcade.security.auth.voter.ad_tag.class: Tagcade\Security\Authorization\Voter\AdTagVoter
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
 
+    # event dispatched on user action such as add, remove, delete
+    tagcade.events.handler_event: 'tagcade.events.handler_event'
+
 services:
     tagcade.security.auth.voter.site:
         class:  %tagcade.security.auth.voter.site.class%
@@ -46,6 +49,7 @@ services:
         public: false
         calls:
             - [setEventDispatcher, ["@event_dispatcher"]]
+            - [setEvent, [%tagcade.events.handler_event%]]
 
     # jms serializer cache
 

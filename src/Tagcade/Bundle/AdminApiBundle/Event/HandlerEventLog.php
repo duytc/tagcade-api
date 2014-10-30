@@ -18,7 +18,7 @@ class HandlerEventLog extends Event implements LogEventInterface
     const HTTP_PATCH = 'PATCH';
     const HTTP_DELETE = 'DELETE';
 
-    const ADD = 'ADD';
+    const CREATE = 'CREATE';
     const UPDATE = 'UPDATE';
     const DELETE = 'DELETE';
 
@@ -35,8 +35,8 @@ class HandlerEventLog extends Event implements LogEventInterface
      * @var array
      */
     protected $actionMap = [
-        self::HTTP_POST => self::ADD,
-        self::HTTP_PUT => self::ADD,
+        self::HTTP_POST => self::CREATE,
+        self::HTTP_PUT => self::CREATE,
         self::HTTP_PATCH => self::UPDATE,
         self::HTTP_DELETE => self::DELETE,
     ];
