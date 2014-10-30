@@ -10,10 +10,6 @@ parameters:
     tagcade.security.auth.voter.ad_tag.class: Tagcade\Security\Authorization\Voter\AdTagVoter
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
 
-
-    # event dispatched on user action such as add, remove, delete
-    tagcade.events.handler_event: tagcade.events.handler_event
-
 services:
     tagcade.security.auth.voter.site:
         class:  %tagcade.security.auth.voter.site.class%
@@ -42,31 +38,24 @@ services:
     tagcade.service.tag_generator:
         class: Tagcade\Service\TagGenerator
         arguments:
-            - %base_tag_url%
+            - %tc.base_tag_url%
 
     tagcade.handler.handler_abstract:
         class: Tagcade\Handler\HandlerAbstract
         abstract: true
+        public: false
         calls:
             - [setEventDispatcher, ["@event_dispatcher"]]
-            - [setEvent, [%tagcade.events.handler_event%]]
 
+    # jms serializer cache
 
-    #
-    # An example of custom caching for doctrine and jms serializer
-    #
-    #redis:
-    #    class: Redis
-    #    calls:
-    #        - [connect, ['127.0.0.1', '6379']]
+    cache.apc.jms_serializer:
+        class: Doctrine\Common\Cache\ApcCache
+        calls:
+            - [setNamespace, ["jms_serializer"]]
 
-    #cache.redis:
-    #    class: Doctrine\Common\Cache\RedisCache
-    #    calls:
-    #        - [setRedis, ["@redis"]]
-
-    #my.jms_serializer.cache:
-    #    class: Metadata\Cache\DoctrineCacheAdapter
-    #    arguments:
-    #        - "_serializer"
-    #        - @cache.redis
+    jms_serializer.metadata_cache.apc:
+        class: Metadata\Cache\DoctrineCacheAdapter
+        arguments:
+            - ""
+            - @cache.apc.jms_serializer

@@ -15,10 +15,9 @@ $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
 $testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->all());
 $testEventCounter->refreshTestData();
 
-$redis = new Redis();
-$redis->connect('localhost');
+$redis = new RedisArray(['localhost']);
 
-$cache = new \Doctrine\Common\Cache\RedisCache();
+$cache = new Tagcade\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache);
@@ -50,5 +49,3 @@ foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
 
     unset($tagId, $tagData);
 }
-
-$redis->close();

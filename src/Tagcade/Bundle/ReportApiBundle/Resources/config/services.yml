@@ -4,6 +4,20 @@ parameters:
     tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
 
 services:
+    # legacy access to live performance report data
+
+    redis_array.performance_report_data:
+        class: RedisArray
+        arguments:
+            - %tc.legacy.live_performance_report.redis_hosts%
+
+    tagcade.legacy.cache.performance_report_data:
+        class: Tagcade\Legacy\Cache\RedisArrayCache
+        calls:
+            - [setRedis, [@redis_array.performance_report_data]]
+
+    ###
+
     tagcade.repository.source_report.report:
         class: %tagcade.repository.source_report.report.class%
         factory_service: doctrine.orm.entity_manager
@@ -65,20 +79,10 @@ services:
 
     ###
 
-    redis:
-        class: Redis
-        calls:
-            - [connect, [%redis_host%]]
-
-    tagcade.doctrine.redis.cache:
-        class: Doctrine\Common\Cache\RedisCache
-        calls:
-            - [setRedis, [@redis]]
-
     tagcade.service.report.performance_report.display.counter.cache_event_counter:
         class: Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter
         arguments:
-            - @tagcade.doctrine.redis.cache
+            - @tagcade.legacy.cache.performance_report_data
 
     ### Report creator service
 
