@@ -38,5 +38,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
     oneToMany:
         subReports:
             targetEntity: AdSlotReport
+            orderBy: { 'totalOpportunities': 'DESC' }
             mappedBy: superReport
             cascade: ["persist", "remove", "detach"]

@@ -33,5 +33,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
     oneToMany:
         subReports:
             targetEntity: SiteReport
+            orderBy: { 'totalOpportunities': 'DESC' }
             mappedBy: superReport
             cascade: ["persist", "remove", "detach"]

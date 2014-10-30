@@ -28,5 +28,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
     oneToMany:
         subReports:
             targetEntity: AccountReport
+            orderBy: { 'totalOpportunities': 'DESC' }
             mappedBy: superReport
             cascade: ["persist", "remove", "detach"]
