@@ -5,7 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
-use Tagcade\Service\Report\DateUtilInterface;
+use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\SelectorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreatorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;

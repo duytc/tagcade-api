@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Service\Report;
+namespace Tagcade\Service;
 
 use DateTime;
 use Tagcade\Exception\Report\InvalidDateException;

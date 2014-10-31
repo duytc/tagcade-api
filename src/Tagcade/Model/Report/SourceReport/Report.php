@@ -4,6 +4,7 @@ namespace Tagcade\Model\Report\SourceReport;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use \DateTime;
+use Tagcade\Model\Core\SiteInterface;
 
 class Report
 {
@@ -14,10 +15,9 @@ class Report
     protected $date;
 
     /**
-     * @var integer
-     * this is not a foreign key at the moment, just an integer
+     * @var SiteInterface
      */
-    protected $siteId;
+    protected $site;
 
     /**
      * @var array
@@ -65,18 +65,18 @@ class Report
         return $this;
     }
 
-    public function getSiteId()
+    public function getSite()
     {
-        return $this->siteId;
+        return $this->site;
     }
 
     /**
-     * @param int $siteId
+     * @param SiteInterface $site
      * @return $this
      */
-    public function setSiteId($siteId)
+    public function setSite($site)
     {
-        $this->siteId = $siteId;
+        $this->site = $site;
 
         return $this;
     }

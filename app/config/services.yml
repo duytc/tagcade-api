@@ -63,3 +63,6 @@ services:
         arguments:
             - ""
             - @cache.apc.jms_serializer
+
+    tagcade.service.date_util:
+        class: Tagcade\Service\DateUtil

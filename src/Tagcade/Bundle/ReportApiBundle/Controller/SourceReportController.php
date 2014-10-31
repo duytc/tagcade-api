@@ -8,6 +8,8 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use DateTime;
+use Tagcade\Exception\Report\InvalidDateException;
 
 /**
  * @Rest\RouteResource("SourceReport")
@@ -27,12 +29,10 @@ class SourceReportController extends FOSRestController
      *  }
      * )
      *
-     * @Rest\QueryParam(name="from", requirements="\d{6}", nullable=true, description="Date of the report in format YYMMDD, defaults to the yesterday")
-     * @Rest\QueryParam(name="to", requirements="\d{6}", nullable=true, description="If you want a report range, set this to a date in format YYMMDD - must be older than 'from'")
-     * @Rest\QueryParam(name="rowOffset", requirements="\d+", nullable=true, description="Number of rows to skip before rowLimit kicks in")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
+     * @Rest\QueryParam(name="rowOffset", requirements="\d+", default=0, description="Order number of rows to skip before rowLimit kicks in")
      * @Rest\QueryParam(name="rowLimit", requirements="\d+", default=200, description="Limit the amount of rows returned in the report, -1 for no limit")
-     * @Rest\QueryParam(name="sortField", requirements="[a-zA-Z_]+", nullable=true, description="Column to sort by, i.e visits - not all columns are supported")
-     * @Rest\QueryParam(name="viewPreset", requirements="[a-zA-Z_]+", nullable=true, description="A view preset is a defined subset of columns, i.e display_only, video_only")
      *
      * @param int $siteId ID of the site you want the report for
      * @param ParamFetcherInterface $paramFetcher
@@ -41,7 +41,16 @@ class SourceReportController extends FOSRestController
      */
     public function cgetAction($siteId, ParamFetcherInterface $paramFetcher)
     {
-        $site = $this->container->get('tagcade_api.handler.site')->get($siteId);
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $site = $this->container->get('tagcade.domain_manager.site')->find($siteId);
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true));
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));
+
+        if (!$endDate) {
+            $endDate = $startDate;
+        }
 
         if (!$site) {
             throw new NotFoundHttpException('This site does not exist or you do not have access');
@@ -51,13 +60,14 @@ class SourceReportController extends FOSRestController
             throw new AccessDeniedException('You do not have permission to view this site');
         }
 
-        $dateFrom = $paramFetcher->get('from', true);
-        $dateTo = $paramFetcher->get('to', true);
-        $rowOffset = $paramFetcher->get('rowOffset', true);
-        $rowLimit = $paramFetcher->get('rowLimit', true);
-        $sortField = $paramFetcher->get('sortField');
+        if ($startDate > $endDate) {
+            throw new InvalidDateException('start date must be before the end date');
+        }
 
-        $reports = $this->get('tagcade.handler.source_report')->getReports($siteId, $dateFrom, $dateTo, $rowOffset, $rowLimit, $sortField);
+        $rowOffset = intval($paramFetcher->get('rowOffset', true));
+        $rowLimit = intval($paramFetcher->get('rowLimit', true));
+
+        $reports = $this->get('tagcade.service.report.source_report.report_selector')->getReports($site, $startDate, $endDate, $rowOffset, $rowLimit);
 
         if (!$reports) {
             throw new NotFoundHttpException('No Reports found for that query');

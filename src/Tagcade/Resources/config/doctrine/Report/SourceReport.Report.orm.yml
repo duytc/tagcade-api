@@ -7,7 +7,7 @@ Tagcade\Entity\Report\SourceReport\Report:
         unique_report_idx:
             columns:
                 - date
-                - site_id # underscore column name
+                - site # underscore column name
     id:
         id:
             type: integer
@@ -16,8 +16,6 @@ Tagcade\Entity\Report\SourceReport\Report:
     fields:
         date:
             type: date
-        siteId:
-            type: integer
     oneToMany:
         records:
             targetEntity: Tagcade\Entity\Report\SourceReport\Record
@@ -25,3 +23,6 @@ Tagcade\Entity\Report\SourceReport\Report:
                 - remove
                 - persist
             mappedBy: sourceReport
+    manyToOne:
+        site:
+            targetEntity: Tagcade\Entity\Core\Site

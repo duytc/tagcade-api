@@ -41,8 +41,7 @@ class ActionLogController extends FOSRestController
      */
     public function getAction(ParamFetcherInterface $paramFetcher)
     {
-        // TODO - move DateUtil service to outside of report namespace
-        $dateUtil = $this->get('tagcade.service.report.date_util');
+        $dateUtil = $this->get('tagcade.service.date_util');
 
         $startDate = $dateUtil->getDateTime( $paramFetcher->get('startDate', true));
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));

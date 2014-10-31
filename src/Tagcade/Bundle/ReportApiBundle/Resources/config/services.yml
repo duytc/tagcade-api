@@ -1,6 +1,5 @@
 parameters:
     tagcade.service.reporting.report_util.class: Tagcade\Service\Reporting\ReportUtil
-    tagcade.handler.source_report.class: Tagcade\Handler\Handlers\Report\SourceReportHandler
     tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
 
 services:
@@ -28,11 +27,11 @@ services:
     tagcade.service.reporting.report_util:
         class: %tagcade.service.reporting.report_util.class%
 
-    tagcade.handler.source_report:
-        class: %tagcade.handler.source_report.class%
+    tagcade.service.report.source_report.report_selector:
+        class: Tagcade\Service\Report\SourceReport\ReportSelector
         arguments:
             - @tagcade.repository.source_report.report
-            - @tagcade.service.reporting.report_util
+            - @tagcade.service.date_util
 
     ### Performance report creators
 
@@ -101,11 +100,6 @@ services:
                 - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site
                 - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_network
             - @tagcade.service.report.performance_report.display.counter.cache_event_counter
-
-    ###
-
-    tagcade.service.report.date_util:
-        class: Tagcade\Service\Report\DateUtil
 
     ### Performance report repositories
 
@@ -227,5 +221,5 @@ services:
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_network
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.site
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_tag
-            - @tagcade.service.report.date_util
+            - @tagcade.service.date_util
             - @tagcade.service.report.performance_report.display.creator.report_creator

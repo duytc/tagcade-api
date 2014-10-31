@@ -1,9 +1,11 @@
 <?php
 
-namespace Tagcade\Service\Report;
+namespace Tagcade\Service;
 
 use DateTime;
 use Tagcade\Exception\Report\InvalidDateException;
+use DateInterval;
+use DatePeriod;
 
 class DateUtil implements DateUtilInterface
 {
@@ -49,5 +51,15 @@ class DateUtil implements DateUtilInterface
     public function formatDate(DateTime $date)
     {
         return $date->format(self::DATE_FORMAT);
+    }
+
+    public function getPeriodOneDay(DateTime $startDate, DateTime $endDate)
+    {
+        return $this->getDatePeriod($startDate, $endDate, new DateInterval('P1D'));
+    }
+
+    public function getDatePeriod(DateTime $startDate, DateTime $endDate, DateInterval $interval)
+    {
+        return new DatePeriod($startDate, $interval, $endDate);
     }
 }
