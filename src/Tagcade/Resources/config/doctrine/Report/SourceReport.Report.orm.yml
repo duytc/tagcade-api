@@ -19,6 +19,8 @@ Tagcade\Entity\Report\SourceReport\Report:
     oneToMany:
         records:
             targetEntity: Tagcade\Entity\Report\SourceReport\Record
+            fetch: EXTRA_LAZY
+            orderBy: { 'visits': 'DESC' }
             cascade:
                 - remove
                 - persist

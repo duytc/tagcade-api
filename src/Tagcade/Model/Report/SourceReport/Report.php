@@ -30,6 +30,14 @@ class Report
     }
 
     /**
+     * @return int|null
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return DateTime
      */
     public function getDate()

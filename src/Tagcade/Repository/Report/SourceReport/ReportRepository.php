@@ -3,37 +3,31 @@
 namespace Tagcade\Repository\Report\SourceReport;
 
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use DateTime;
-use Tagcade\Entity\Report\SourceReport\Record;
-use Tagcade\Entity\Report\SourceReport\Report;
 use Tagcade\Model\Core\SiteInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class ReportRepository extends EntityRepository implements ReportRepositoryInterface
 {
-
     /**
      * @inheritdoc
      */
-    public function getReport(SiteInterface $site, DateTime $date, $rowOffset = 0, $rowLimit = 200)
+    public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate)
     {
+        $qb = $this->createQueryBuilder('r');
 
-        $qb = $this->createQueryBuilder('r')
-            ->select('r', 'rec')
-            ->join('r.records', 'rec')
+        $qb
+            ->select('r')
             ->Where('r.site = :site')
-            ->andwhere('r.date = :date')
-            ->setFirstResult($rowOffset)
-            ->setMaxResults($rowLimit)
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('site', $site)
-            ->setParameter('date', $date, TYPE::DATE);
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
+            ->orderBy('r.date', 'desc')
+        ;
 
-        //TODO - Find a way to remove this hack, a way to get result with row limit correctly. It seems Paginator bug.
-        $re = $qb->getQuery()->getResult();
-
-        return iterator_to_array(new Paginator($qb->getQuery()));
+        return $qb->getQuery()->getResult();
     }
 }

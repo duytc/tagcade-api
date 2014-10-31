@@ -4,17 +4,18 @@ namespace Tagcade\Repository\Report\SourceReport;
 
 use DateTime;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\SourceReport\Report as ReportModel;
 
 interface ReportRepositoryInterface
 {
     /**
-     * Retrieved all reports data on date time
+     * Retrieved source reports between a date range
+     *
      * @param SiteInterface $site
-     * @param DateTime $date a date that report record is stored.
-     * @param int $rowOffset
-     * @param int $rowLimit Limit the amount of rows returned in the report, -1 for no limit
-     * @return array|bool
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return ReportModel[]
      */
-    public function getReport(SiteInterface $site, DateTime $date, $rowOffset = 0, $rowLimit = 200);
+    public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
 }

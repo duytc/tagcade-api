@@ -52,14 +52,4 @@ class DateUtil implements DateUtilInterface
     {
         return $date->format(self::DATE_FORMAT);
     }
-
-    public function getPeriodOneDay(DateTime $startDate, DateTime $endDate)
-    {
-        return $this->getDatePeriod($startDate, $endDate, new DateInterval('P1D'));
-    }
-
-    public function getDatePeriod(DateTime $startDate, DateTime $endDate, DateInterval $interval)
-    {
-        return new DatePeriod($startDate, $interval, $endDate);
-    }
 }

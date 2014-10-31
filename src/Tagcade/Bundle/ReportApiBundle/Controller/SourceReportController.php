@@ -8,8 +8,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use DateTime;
-use Tagcade\Exception\Report\InvalidDateException;
 
 /**
  * @Rest\RouteResource("SourceReport")
@@ -45,12 +43,8 @@ class SourceReportController extends FOSRestController
 
         $site = $this->container->get('tagcade.domain_manager.site')->find($siteId);
 
-        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true));
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true), $returnTodayIfEmpty = true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));
-
-        if (!$endDate) {
-            $endDate = $startDate;
-        }
 
         if (!$site) {
             throw new NotFoundHttpException('This site does not exist or you do not have access');
@@ -60,12 +54,8 @@ class SourceReportController extends FOSRestController
             throw new AccessDeniedException('You do not have permission to view this site');
         }
 
-        if ($startDate > $endDate) {
-            throw new InvalidDateException('start date must be before the end date');
-        }
-
-        $rowOffset = intval($paramFetcher->get('rowOffset', true));
-        $rowLimit = intval($paramFetcher->get('rowLimit', true));
+        $rowOffset = $paramFetcher->get('rowOffset', true);
+        $rowLimit = $paramFetcher->get('rowLimit', true);
 
         $reports = $this->get('tagcade.service.report.source_report.report_selector')->getReports($site, $startDate, $endDate, $rowOffset, $rowLimit);
 
