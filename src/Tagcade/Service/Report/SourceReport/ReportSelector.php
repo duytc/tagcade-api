@@ -54,7 +54,7 @@ class ReportSelector implements ReportSelectorInterface
         foreach($reports as $report) {
             $reportSubset[] = new ReportDTO(
                 $report->getDate(),
-                $report->getSiteId(),
+                $report->getSite()->getId(),
                 $report->getRecords()->slice($rowOffset, $rowLimit)
             );
         }
