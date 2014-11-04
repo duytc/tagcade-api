@@ -133,6 +133,9 @@ sensio_framework_extra:
 #    auto_filter_forms: false
 
 fos_rest:
+    serializer:
+        serialize_null: true
+
     routing_loader:
         default_format: json
         include_format: false

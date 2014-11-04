@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\SourceReport;
 
 use DateTime;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Service\DateUtil;
@@ -34,7 +35,7 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate = null, $rowOffset = 0, $rowLimit = 200)
+    public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate = null, $rowOffset = 0, $rowLimit = null)
     {
         if (!$endDate) {
             $endDate = $startDate;
@@ -45,7 +46,10 @@ class ReportSelector implements ReportSelectorInterface
         }
 
         $rowOffset = intval($rowOffset);
-        $rowLimit = intval($rowLimit);
+
+        if ($rowLimit !== null) {
+            $rowLimit = intval($rowLimit);
+        }
 
         $reportSubset = [];
 
@@ -53,6 +57,7 @@ class ReportSelector implements ReportSelectorInterface
 
         foreach($reports as $report) {
             $reportSubset[] = new ReportDTO(
+                $report->getId(),
                 $report->getDate(),
                 $report->getSite()->getId(),
                 $report->getRecords()->slice($rowOffset, $rowLimit)

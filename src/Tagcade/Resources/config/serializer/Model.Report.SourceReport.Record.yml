@@ -5,7 +5,6 @@ Tagcade\Model\Report\SourceReport\Record:
             expose: false
         embeddedTrackingKeys:
             expose: true
-            serialized_name: tracking_keys
         displayOpportunities:
             expose: true
         displayImpressions:
@@ -16,10 +15,8 @@ Tagcade\Model\Report\SourceReport\Record:
             expose: true
         displayCTR:
             expose: true
-            serialized_name: display_ctr
         displayIPV:
             expose: true
-            serialized_name: display_ipv
         videoPlayerReady:
             expose: true
         videoAdPlays:
@@ -32,7 +29,6 @@ Tagcade\Model\Report\SourceReport\Record:
             expose: true
         videoIPV:
             expose: true
-            serialized_name: video_ipv
         videoAdClicks:
             expose: true
         videoStarts:
