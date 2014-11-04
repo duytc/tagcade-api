@@ -7,7 +7,7 @@ Tagcade\Entity\Report\SourceReport\Report:
         unique_report_idx:
             columns:
                 - date
-                - site # underscore column name
+                - site_id # underscore column name
     id:
         id:
             type: integer
