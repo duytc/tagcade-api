@@ -1,9 +1,18 @@
 Tagcade\Entity\Core\AdSlot:
-    exclusion_policy: NONE
+    exclusion_policy: ALL
     properties:
-#        site:
-#            accessor:
-#                getter: getSiteId
-#            type: integer
-        deletedAt:
-            exclude: true
+        id:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+        site:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+        name:
+            expose: true
+            groups: [adslot.detail]
+        width:
+            expose: true
+            groups: [adslot.detail]
+        height:
+            expose: true
+            groups: [adslot.detail]

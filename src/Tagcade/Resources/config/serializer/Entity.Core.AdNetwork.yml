@@ -1,7 +1,18 @@
 Tagcade\Entity\Core\AdNetwork:
-    exclusion_policy: NONE
-#    properties:
-#        publisher:
-#            accessor:
-#                getter: getPublisherId
-#            type: integer
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [adnetwork.detail, adnetwork.summary]
+        publisher:
+            expose: true
+            groups: [adnetwork.detail]
+        name:
+            expose: true
+            groups: [adnetwork.detail]
+        url:
+            expose: true
+            groups: [adnetwork.detail]
+        active:
+            expose: true
+            groups: [adnetwork.detail]

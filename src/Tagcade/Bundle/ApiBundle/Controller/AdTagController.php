@@ -34,6 +34,10 @@ class AdTagController extends RestController implements ClassResourceInterface
     }
 
     /**
+     * @Rest\View(
+     *      serializerGroups={"adtag.detail", "adslot.summary", "site.summary", "adnetwork.summary", "user.summary"}
+     * )
+     *
      * Get a single adTag for the given id
      *
      * @ApiDoc(

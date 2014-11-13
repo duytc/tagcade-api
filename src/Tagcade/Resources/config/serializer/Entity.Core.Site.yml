@@ -1,9 +1,15 @@
 Tagcade\Entity\Core\Site:
-    exclusion_policy: NONE
+    exclusion_policy: ALL
     properties:
-#        publisher:
-#            accessor:
-#                getter: getPublisherId
-#            type: integer
-        deletedAt:
-            exclude: true
+        id:
+            expose: true
+            groups: [site.detail, site.summary]
+        publisher:
+            expose: true
+            groups: [site.detail, site.summary]
+        name:
+            expose: true
+            groups: [site.detail]
+        domain:
+            expose: true
+            groups: [site.detail]

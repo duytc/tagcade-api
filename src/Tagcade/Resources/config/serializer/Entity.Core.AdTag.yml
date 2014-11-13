@@ -1,17 +1,24 @@
 Tagcade\Entity\Core\AdTag:
-    exclusion_policy: NONE
+    exclusion_policy: ALL
     properties:
-#        adSlot:
-#            accessor:
-#                getter: getAdSlotId
-#            type: integer
-#        adNetwork:
-#            accessor:
-#                getter: getAdNetworkId
-#            type: integer
-        createdAt:
-            exclude: true
-        updatedAt:
-            exclude: true
-        deletedAt:
-            exclude: true
+        id:
+            expose: true
+            groups: [adtag.detail, adtag.summary]
+        adSlot:
+            expose: true
+            groups: [adtag.detail, adtag.summary]
+        adNetwork:
+            expose: true
+            groups: [adtag.detail, adtag.summary]
+        name:
+            expose: true
+            groups: [adtag.detail]
+        html:
+            expose: true
+            groups: [adtag.detail]
+        position:
+            expose: true
+            groups: [adtag.detail]
+        active:
+            expose: true
+            groups: [adtag.detail]
