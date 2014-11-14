@@ -32,6 +32,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
         relativeFillRate:
             type: decimal
             scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag

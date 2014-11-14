@@ -19,6 +19,7 @@ abstract class AbstractReport implements ReportInterface
     protected $impressions;
     protected $passbacks;
     protected $fillRate;
+    protected $estRevenue;
 
     public function getReportType()
     {
@@ -113,6 +114,24 @@ abstract class AbstractReport implements ReportInterface
     /**
      * @inheritdoc
      */
+    public function getEstRevenue()
+    {
+        return $this->estRevenue;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEstRevenue($estRevenue)
+    {
+        $this->estRevenue = $estRevenue;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setCalculatedFields()
     {
         $this->setFillRate();
@@ -144,4 +163,6 @@ abstract class AbstractReport implements ReportInterface
     {
         // do nothing by default
     }
+
+
 }

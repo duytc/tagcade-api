@@ -72,6 +72,16 @@ interface ReportInterface
     public function getFillRate();
 
     /**
+     * @return float|null
+     */
+    public function getEstRevenue();
+
+    /**
+     * @param float $estRevenue
+     */
+    public function setEstRevenue($estRevenue);
+
+    /**
      * Sets all calculated fields
      * i.e fill rate
      */
