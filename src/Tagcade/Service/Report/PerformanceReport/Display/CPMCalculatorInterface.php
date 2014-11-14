@@ -11,5 +11,5 @@ interface CPMCalculatorInterface {
      * @param int $opportunities
      * @return float
      */
-    public function calculateCPM(AdTagInterface $adTag, $opportunities);
+    public function calculateRevenue(AdTagInterface $adTag, $opportunities);
 } 
