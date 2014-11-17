@@ -1,7 +1,7 @@
 Tagcade\Entity\Report\PerformanceReport\Display\CPMRateDisplayAdTag:
     type: entity
     table: cpm_rate_display_ad_tag
-    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\CPMRateDisplayAdTagRepository
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\CPMRateRepository
     readOnly: true
     id:
         id:

@@ -7,7 +7,7 @@ use Tagcade\Entity\Report\PerformanceReport\Display\CPMRateDisplayAdTag;
 use Tagcade\Model\Core\AdTagInterface;
 use DateTime;
 
-class CPMRateDisplayAdTagRepository extends EntityRepository implements CPMRateDisplayAdTagRepositoryInterface
+class CPMRateRepository extends EntityRepository implements CPMRateRepositoryInterface
 {
     /**
      * @inheritdoc

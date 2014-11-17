@@ -4,16 +4,16 @@ namespace Tagcade\Service\Report\PerformanceReport\Display;
 
 use Doctrine\ORM\NoResultException;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Repository\Report\PerformanceReport\Display\CPMRateDisplayAdTagRepositoryInterface;
+use Tagcade\Repository\Report\PerformanceReport\Display\CPMRateRepositoryInterface;
 
 class RevenueCalculator implements RevenueCalculatorInterface
 {
     /**
-     * @var CPMRateDisplayAdTagRepositoryInterface
+     * @var CPMRateRepositoryInterface
      */
     private $cpmRateRepository;
 
-    function __construct(CPMRateDisplayAdTagRepositoryInterface $cpmRateRepository)
+    function __construct(CPMRateRepositoryInterface $cpmRateRepository)
     {
         $this->cpmRateRepository = $cpmRateRepository;
     }
