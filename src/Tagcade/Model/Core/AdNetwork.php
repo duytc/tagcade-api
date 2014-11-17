@@ -16,6 +16,7 @@ class AdNetwork implements AdNetworkInterface
     protected $name;
     protected $url;
     protected $active;
+    protected $cpmRate;
 
     /**
      * @inheritdoc
@@ -101,6 +102,24 @@ class AdNetwork implements AdNetworkInterface
     public function setActive($boolean)
     {
         $this->active = (Boolean) $boolean;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCpmRate()
+    {
+        return $this->cpmRate;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setCpmRate($cpmRate)
+    {
+        $this->cpmRate = $cpmRate;
+
         return $this;
     }
 

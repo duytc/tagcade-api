@@ -16,8 +16,18 @@ services:
             - [setRedis, [@redis_array.performance_report_data]]
 
     ###
+
+    tagcade.repository.cmp_rate_display_adtag:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\CPMRateDisplayAdTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\PerformanceReport\Display\CPMRateDisplayAdTag
+
     tagcade.service.report.performance_report.revenue_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\RevenueCalculator
+        arguments:
+            - @tagcade.repository.cmp_rate_display_adtag
 
     ###
     tagcade.repository.source_report.report:

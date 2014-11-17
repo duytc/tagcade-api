@@ -8,7 +8,6 @@ use Tagcade\Repository\Report\PerformanceReport\Display\CPMRateDisplayAdTagRepos
 
 class RevenueCalculator implements RevenueCalculatorInterface
 {
-    const PER_MILE = 1000;
     /**
      * @var CPMRateDisplayAdTagRepositoryInterface
      */
@@ -28,10 +27,10 @@ class RevenueCalculator implements RevenueCalculatorInterface
             $rate = $this->cpmRateRepository->getRateByAdTag($adTag);
         }
         catch (NoResultException $ex) {
-            $rate = $adTag->getAdNetwork(); // TODO Get default rate here
+            $rate = $adTag->getAdNetwork()->getCpmRate();
         }
 
-        return ($rate * $opportunities) / self::PER_MILE;
+        return ($rate * $opportunities);
     }
 
 }

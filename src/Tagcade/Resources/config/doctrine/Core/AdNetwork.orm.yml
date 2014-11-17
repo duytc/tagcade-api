@@ -18,6 +18,9 @@ Tagcade\Entity\Core\AdNetwork:
             type: boolean
             options:
                 default: true
+        cpmRate:
+            type: decimal
+            scale: 4
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

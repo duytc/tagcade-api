@@ -5,7 +5,6 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display;
 
 use Doctrine\ORM\NoResultException;
 use Tagcade\Model\Core\AdTagInterface;
-use DateTime;
 
 interface CPMRateDisplayAdTagRepositoryInterface
 {
