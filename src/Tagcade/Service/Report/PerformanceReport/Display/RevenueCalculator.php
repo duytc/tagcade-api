@@ -6,7 +6,7 @@ use Doctrine\ORM\NoResultException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\CPMRateDisplayAdTagRepositoryInterface;
 
-class CPMCalculator implements CPMCalculatorInterface
+class RevenueCalculator implements RevenueCalculatorInterface
 {
     const PER_MILE = 1000;
     /**

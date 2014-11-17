@@ -4,7 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display;
 
 use Tagcade\Model\Core\AdTagInterface;
 
-interface CPMCalculatorInterface {
+interface RevenueCalculatorInterface {
 
     /**
      * @param AdTagInterface $adTag
