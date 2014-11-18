@@ -12,7 +12,7 @@ Tagcade\Entity\Core\AdTag:
             groups: [adtag.detail, adtag.summary]
         name:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         html:
             expose: true
             groups: [adtag.detail]

@@ -9,7 +9,7 @@ Tagcade\Entity\Core\AdSlot:
             groups: [adslot.detail, adslot.summary]
         name:
             expose: true
-            groups: [adslot.detail]
+            groups: [adslot.detail, adslot.summary]
         width:
             expose: true
             groups: [adslot.detail]

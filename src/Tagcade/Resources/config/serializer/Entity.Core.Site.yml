@@ -9,7 +9,7 @@ Tagcade\Entity\Core\Site:
             groups: [site.detail, site.summary]
         name:
             expose: true
-            groups: [site.detail]
+            groups: [site.detail, site.summary]
         domain:
             expose: true
             groups: [site.detail]

@@ -6,10 +6,10 @@ Tagcade\Entity\Core\AdNetwork:
             groups: [adnetwork.detail, adnetwork.summary]
         publisher:
             expose: true
-            groups: [adnetwork.detail]
+            groups: [adnetwork.detail, adnetwork.summary]
         name:
             expose: true
-            groups: [adnetwork.detail]
+            groups: [adnetwork.detail, adnetwork.summary]
         url:
             expose: true
             groups: [adnetwork.detail]
