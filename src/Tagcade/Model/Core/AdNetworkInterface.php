@@ -60,11 +60,16 @@ interface AdNetworkInterface extends ModelInterface
     /**
      * @return float
      */
-    public function getCpmRate();
+    public function getDefaultCpmRate();
 
     /**
-     * @param float $cpmRate
+     * @param float $defaultCpmRate
      * @return $this
      */
-    public function setCpmRate($cpmRate);
+    public function setDefaultCpmRate($defaultCpmRate);
+
+    /**
+     * @return array
+     */
+    public function getAdTags();
 }

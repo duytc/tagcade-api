@@ -93,6 +93,7 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         $this->setImpressions($impressions);
         $this->setPassbacks($passbacks);
         $this->setEstRevenue($estRevenue);
+        $this->setEstCpm($this->calculateEstCpm());
     }
 
     protected function setDefaultName()

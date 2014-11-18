@@ -96,6 +96,13 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface
         return $this;
     }
 
+    public function setCalculatedFields()
+    {
+        $this->setEstRevenue($this->calculateEstRevenue());
+
+        parent::setCalculatedFields();
+    }
+
     /**
      * @inheritdoc
      */

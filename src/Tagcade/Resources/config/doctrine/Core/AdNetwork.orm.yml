@@ -18,9 +18,13 @@ Tagcade\Entity\Core\AdNetwork:
             type: boolean
             options:
                 default: true
-        cpmRate:
+        defaultCpmRate:
             type: decimal
             scale: 4
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        adTags:
+            targetEntity: AdTag
+            mappedBy: adNetwork

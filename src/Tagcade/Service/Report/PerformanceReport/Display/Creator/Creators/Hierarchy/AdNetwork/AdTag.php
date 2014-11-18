@@ -2,7 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork;
 
-use Tagcade\Service\Report\PerformanceReport\Display\RevenueCalculatorInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -13,13 +13,13 @@ class AdTag extends CreatorAbstract implements AdTagInterface
 {
 
     /**
-     * @var RevenueCalculatorInterface
+     * @var EstCpmCalculatorInterface
      */
-    private $revenueCalculator;
+    private $cpmCalculator;
 
-    function __construct(RevenueCalculatorInterface $revenueCalculator)
+    function __construct(EstCpmCalculatorInterface $revenueCalculator)
     {
-        $this->revenueCalculator = $revenueCalculator;
+        $this->cpmCalculator = $revenueCalculator;
     }
 
     /**
@@ -38,7 +38,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setTotalOpportunities($totalOpportunities)
             ->setImpressions($this->eventCounter->getImpressionCount($adTag->getId()))
             ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
-            ->setEstRevenue($this->revenueCalculator->calculateRevenue($adTag, $totalOpportunities));
+            ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
         ;
 
         return $report;

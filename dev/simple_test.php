@@ -10,19 +10,15 @@ $kernel->boot();
 
 $container = $kernel->getContainer();
 
-/**
- * @var \Tagcade\Service\Report\PerformanceReport\Display\RevenueCalculatorInterface
- */
-$cpmCalculator = $container->get('tagcade.service.report.performance_report.revenue_calculator');
+$revenueEditor = $container->get('tagcade.service.revenue_editor');
 
-/**
- * @var \Doctrine\Common\Persistence\ObjectManager
- */
-$entityManager = $container->get('doctrine.orm.entity_manager');
-$repository = $entityManager->getRepository('Tagcade\Entity\Core\AdTag');
+$adTagManager = $container->get('tagcade.domain_manager.ad_tag');
+$adTag = $adTagManager->find(2);
 
-$adTag = $repository->find(2);
+$revenueEditor->updateRevenueForAdTag($adTag, 100, new DateTime('yesterday'));
 
-$revenue = $cpmCalculator->calculateRevenue($adTag, 10);
+//$adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
 
-echo $revenue . "\n";
+//$adNetwork = $adNetworkManager->find(1);
+
+//$revenueEditor->updateRevenueForAdNetwork($adNetwork, 0.6, new DateTime('2014-10-30'));

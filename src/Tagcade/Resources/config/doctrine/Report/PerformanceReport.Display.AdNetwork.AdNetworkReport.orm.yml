@@ -2,7 +2,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
     repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportRepository
     type: entity
     table: report_performance_display_hierarchy_ad_network
-    readOnly: true
     uniqueConstraints:
         unique_ad_network_report_idx:
             columns: [date, ad_network_id]
@@ -30,6 +29,11 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
         estRevenue:
             type: decimal
             scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         adNetwork:
             targetEntity: Tagcade\Entity\Core\AdNetwork

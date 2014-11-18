@@ -42,5 +42,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->setImpressions($impressions);
         $this->setPassbacks($passbacks);
         $this->setEstRevenue($estRevenue);
+        $this->setEstCpm($this->calculateEstCpm());
     }
 }

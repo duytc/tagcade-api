@@ -78,8 +78,15 @@ interface ReportInterface
 
     /**
      * @param float $estRevenue
+     * @return $this
      */
     public function setEstRevenue($estRevenue);
+
+    /**
+     * @param float $estCpm
+     * @return $this
+     */
+    public function setEstCpm($estCpm);
 
     /**
      * Sets all calculated fields
