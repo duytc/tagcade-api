@@ -59,10 +59,6 @@ abstract class AbstractCalculatedReport extends AbstractReport
             $totalWeight += $weight;
         }
 
-        if ($totalWeight == 0) {
-            return null;
-        }
-
-        return $total / $totalWeight;
+        return $this->getRatio($total, $totalWeight);
     }
 }
