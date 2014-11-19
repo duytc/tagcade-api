@@ -20,7 +20,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
     protected function doCalculateFields()
     {
-        $totalOpportunities = $impressions = $passbacks = 0;
+        $totalOpportunities = $impressions = $passbacks = $estRevenue = 0;
 
         foreach($this->subReports as $subReport) {
             if (!$this->isValidSubReport($subReport)) {
@@ -33,6 +33,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
             $totalOpportunities += $subReport->getTotalOpportunities();
             $impressions += $subReport->getImpressions();
             $passbacks += $subReport->getPassbacks();
+            $estRevenue += $subReport->getEstRevenue();
 
             unset($subReport);
         }
@@ -40,5 +41,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->setTotalOpportunities($totalOpportunities);
         $this->setImpressions($impressions);
         $this->setPassbacks($passbacks);
+        $this->setEstRevenue($estRevenue);
+        $this->setEstCpm($this->calculateEstCpm());
     }
 }

@@ -2,7 +2,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
     repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportRepository
     type: entity
     table: report_performance_display_hierarchy_platform_ad_slot
-    readOnly: true
     uniqueConstraints:
         unique_platform_adslot_report_idx:
             columns: [date, ad_slot_id]
@@ -29,6 +28,14 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
         fillRate:
             type: decimal
             scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlot

@@ -63,34 +63,28 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         return $report instanceof SiteReportInterface;
     }
 
-    /**
-     * Overwrite the parent doCalculateFields
-     *
-     * This is because the sub reports are not calculated and contain the base values
-     *
-     * @throws \Tagcade\Exception\RuntimeException
-     */
     protected function doCalculateFields()
     {
         if ($this->slotOpportunities === null) {
             throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an AdTagReport');
         }
 
-        $totalOpportunities = $impressions = $passbacks = 0;
+        $totalOpportunities = $impressions = $passbacks = $estRevenue = 0;
 
         foreach($this->subReports as $adTagReport) {
             if (!$this->isValidSubReport($adTagReport)) {
                 throw new RuntimeException('That sub report is not valid for this report');
             }
 
+            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
+
             /** @var AdTagReportInterface $adTagReport */
             $adTagReport->setCalculatedFields(); // chain the calls to setCalculatedFields
-
-            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
 
             $totalOpportunities += $adTagReport->getTotalOpportunities();
             $impressions += $adTagReport->getImpressions();
             $passbacks += $adTagReport->getPassbacks();
+            $estRevenue += $adTagReport->getEstRevenue();
 
             unset($adTagReport);
         }
@@ -98,6 +92,8 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         $this->setTotalOpportunities($totalOpportunities);
         $this->setImpressions($impressions);
         $this->setPassbacks($passbacks);
+        $this->setEstRevenue($estRevenue);
+        $this->setEstCpm($this->calculateEstCpm());
     }
 
     protected function setDefaultName()

@@ -16,6 +16,7 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('url')
             ->add('active')
+            ->add('defaultCpmRate')
         ;
 
         if ($this->userRole instanceof AdminInterface) {

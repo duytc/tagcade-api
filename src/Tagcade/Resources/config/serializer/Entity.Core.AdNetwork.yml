@@ -16,3 +16,6 @@ Tagcade\Entity\Core\AdNetwork:
         active:
             expose: true
             groups: [adnetwork.detail]
+        defaultCpmRate:
+            expose: true
+            groups: [adnetwork.detail]

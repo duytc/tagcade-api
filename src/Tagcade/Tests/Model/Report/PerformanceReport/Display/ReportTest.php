@@ -9,6 +9,9 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 {
     protected $adTagReport1;
     protected $adTagReport2;
+    /**
+     * @var PlatformReportTypes\PlatformReport
+     */
     protected $platformReport;
     protected $adNetworkReport;
 
@@ -19,6 +22,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(5)
             ->setPassbacks(5)
             ->setPosition(1)
+            ->setEstRevenue(5)
         ;
 
         $this->adTagReport1 = $adTagReport1;
@@ -28,6 +32,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(1)
             ->setPassbacks(4)
             ->setPosition(2)
+            ->setEstRevenue(10)
         ;
 
         $this->adTagReport2 = $adTagReport2;
@@ -113,5 +118,10 @@ class ReportTest extends \PHPUnit_Framework_TestCase
     public function testAdTagReportRelativeFillRate()
     {
         $this->assertEquals(0.1, $this->adTagReport2->getRelativeFillRate());
+    }
+
+    public function testPlatformEstRevenue()
+    {
+        $this->assertEquals(15, $this->platformReport->getEstRevenue());
     }
 }

@@ -3,7 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use DateTime;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 interface ReportSelectorInterface
 {
@@ -12,7 +12,7 @@ interface ReportSelectorInterface
      * @param null $startDate
      * @param null $endDate
      * @param bool $expand
-     * @return array
+     * @return ReportInterface[]
      */
     public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $expand = false);
 }

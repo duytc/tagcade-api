@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
 use DateTime;
@@ -19,6 +20,8 @@ abstract class AbstractReport implements ReportInterface
     protected $impressions;
     protected $passbacks;
     protected $fillRate;
+    protected $estRevenue;
+    protected $estCpm;
 
     public function getReportType()
     {
@@ -113,6 +116,43 @@ abstract class AbstractReport implements ReportInterface
     /**
      * @inheritdoc
      */
+    public function getEstRevenue()
+    {
+        return $this->estRevenue;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEstRevenue($estRevenue)
+    {
+        $this->estRevenue = $estRevenue;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEstCpm()
+    {
+        return $this->estCpm;
+    }
+
+    /**
+     * @param float $estCpm
+     * @return $this
+     */
+    public function setEstCpm($estCpm)
+    {
+        $this->estCpm = $estCpm;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setCalculatedFields()
     {
         $this->setFillRate();
@@ -143,5 +183,23 @@ abstract class AbstractReport implements ReportInterface
     protected function setDefaultName()
     {
         // do nothing by default
+    }
+
+    protected function calculateEstRevenue()
+    {
+        $estCpm = $this->getEstCpm();
+        $totalOpportunities = $this->getTotalOpportunities();
+
+        if ($estCpm === null || $totalOpportunities === null) {
+            throw new RuntimeException('cannot calculate estRevenue, missing data');
+        }
+
+        $ratio = $this->getRatio($totalOpportunities, 1000);
+
+        if (!$estCpm || !$ratio) {
+            return 0;
+        }
+
+        return $estCpm * $ratio;
     }
 }
