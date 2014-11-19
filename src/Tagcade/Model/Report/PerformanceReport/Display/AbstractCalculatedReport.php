@@ -45,9 +45,6 @@ abstract class AbstractCalculatedReport extends AbstractReport
 
     protected function getWeightedEstCpm()
     {
-        if( !$this instanceof SuperReportInterface) {
-            throw new LogicException('Weighted EstCpm calculation can only be done with super report type');
-        }
         /**
          * @var ReportInterface $report
          */
