@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display;
 
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -40,9 +41,9 @@ class RevenueEditor implements RevenueEditorInterface {
      */
     public function updateRevenueForAdTag(AdTagInterface $adTag, $cpmRate, DateTime $startDate, DateTime $endDate = null)
     {
-        //
-
-        // check for valid cpm rate, should be a float
+        if( !is_numeric($cpmRate)) {
+            throw new InvalidArgumentException('CpmRate must be a float number');
+        }
 
         $baseReportTypes = [
             new Platform\AdTag($adTag),
