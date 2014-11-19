@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\BaseAdTagReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\BaseAdTagReportInterface;
 
 interface AdTagReportInterface extends BaseAdTagReportInterface
 {

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -12,7 +13,7 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface
     const REPORT_TYPE = 'platform.adTag';
 
     use SuperReportTrait;
-
+    use CalculateRevenueTrait;
     /**
      * @var AdTagInterface
      */
@@ -98,7 +99,8 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface
 
     public function setCalculatedFields()
     {
-        $this->setEstRevenue($this->calculateEstRevenue());
+        $estRevenue = $this->calculateEstRevenue($this->getImpressions(), $this->getEstCpm());
+        $this->setEstRevenue($estRevenue);
 
         parent::setCalculatedFields();
     }

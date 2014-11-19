@@ -75,12 +75,8 @@ class RevenueEditor implements RevenueEditorInterface {
         unset($report);
 
         foreach ($rootReports as $report) {
-            if (!$report instanceof RootReportInterface) {
-                throw new LogicException('Expected a RootReportInterface');
-            }
-
             // very important, must be called manually
-            // we should move this to Doctrine PrePersist and PreUpdate events
+            // we should move this to Doctrine PreUpdate events
             $report->setCalculatedFields();
 
             $this->om->persist($report);

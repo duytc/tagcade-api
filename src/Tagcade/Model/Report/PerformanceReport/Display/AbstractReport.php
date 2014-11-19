@@ -184,22 +184,4 @@ abstract class AbstractReport implements ReportInterface
     {
         // do nothing by default
     }
-
-    protected function calculateEstRevenue()
-    {
-        $estCpm = $this->getEstCpm();
-        $totalOpportunities = $this->getTotalOpportunities();
-
-        if ($estCpm === null || $totalOpportunities === null) {
-            throw new RuntimeException('cannot calculate estRevenue, missing data');
-        }
-
-        $ratio = $this->getRatio($totalOpportunities, 1000);
-
-        if (!$estCpm || !$ratio) {
-            return 0;
-        }
-
-        return $estCpm * $ratio;
-    }
 }

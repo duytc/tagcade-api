@@ -2,7 +2,6 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display;
 
-use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use \DateTime;
 
