@@ -77,7 +77,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->setImpressions($impressions);
         $this->setPassbacks($passbacks);
         $this->setEstRevenue($estRevenue);
-        // TODO calculate weighted estCpm
-        //$this->setEstCpm($this->calculateEstCpm());
+        $this->setEstCpm($this->getWeightedEstCpm());
     }
 }

@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SubReportsTrait;
 
@@ -33,12 +34,38 @@ abstract class AbstractCalculatedReport extends AbstractReport
             throw new RuntimeException('cannot calculate estCpm, missing data');
         }
 
-        $ratio = $this->getRatio($this->getEstRevenue(), $this->getTotalOpportunities());
+        $estCpm = $this->getRatio($this->getEstRevenue() * 1000, $this->getTotalOpportunities());
 
-        if (!$ratio) {
+        if (!$estCpm) {
             return 0;
         }
 
-        return $ratio * 1000;
+        return $estCpm;
+    }
+
+    protected function getWeightedEstCpm()
+    {
+        if( !$this instanceof SuperReportInterface) {
+            throw new LogicException('Weighted EstCpm calculation can only be done with super report type');
+        }
+        /**
+         * @var ReportInterface $report
+         */
+        $total = 0;
+        $totalWeight = 0;
+
+        foreach($this->getSubReports() as $report) {
+            $number = &$report->getEstCpm();
+            $weight = &$report->getEstRevenue();
+
+            $total += $number * $weight;
+            $totalWeight += $weight;
+        }
+
+        if ($totalWeight == 0) {
+            return null;
+        }
+
+        return $total / $totalWeight;
     }
 }

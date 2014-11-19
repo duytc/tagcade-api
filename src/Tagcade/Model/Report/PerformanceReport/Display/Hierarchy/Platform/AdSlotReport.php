@@ -93,8 +93,7 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         $this->setImpressions($impressions);
         $this->setPassbacks($passbacks);
         $this->setEstRevenue($estRevenue);
-        // TODO calculate weighted estCpm
-        //$this->setEstCpm($this->calculateEstCpm());
+        $this->setEstCpm($this->getWeightedEstCpm());
     }
 
     protected function setDefaultName()

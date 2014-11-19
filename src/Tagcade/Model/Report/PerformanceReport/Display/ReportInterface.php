@@ -89,6 +89,11 @@ interface ReportInterface
     public function setEstCpm($estCpm);
 
     /**
+     * @return float
+     */
+    public function getEstCpm();
+
+    /**
      * Sets all calculated fields
      * i.e fill rate
      */
