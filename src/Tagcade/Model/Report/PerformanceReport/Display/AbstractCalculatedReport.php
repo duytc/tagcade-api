@@ -25,24 +25,6 @@ abstract class AbstractCalculatedReport extends AbstractReport
 
     abstract protected function doCalculateFields();
 
-    protected function calculateEstCpm()
-    {
-        $estRevenue = $this->getEstRevenue();
-        $totalOpportunities = $this->getTotalOpportunities();
-
-        if ($estRevenue === null || $totalOpportunities === null) {
-            throw new RuntimeException('cannot calculate estCpm, missing data');
-        }
-
-        $estCpm = $this->getRatio($this->getEstRevenue() * 1000, $this->getTotalOpportunities());
-
-        if (!$estCpm) {
-            return 0;
-        }
-
-        return $estCpm;
-    }
-
     protected function getWeightedEstCpm()
     {
         /**

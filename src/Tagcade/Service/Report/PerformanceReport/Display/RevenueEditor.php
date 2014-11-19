@@ -45,6 +45,16 @@ class RevenueEditor implements RevenueEditorInterface {
             throw new InvalidArgumentException('CpmRate must be a float number');
         }
 
+        $today = new DateTime('today');
+
+        if(!$endDate) {
+            $endDate = $startDate;
+        }
+
+        if ($startDate >= $today || $endDate >= $today ) {
+            throw new InvalidArgumentException('Can only update revenue information for reports older than today');
+        }
+
         $baseReportTypes = [
             new Platform\AdTag($adTag),
             new AdNetwork\AdTag($adTag),
@@ -52,6 +62,7 @@ class RevenueEditor implements RevenueEditorInterface {
 
         $rootReports = [];
 
+        // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
             $reports = $this->reportSelector->getReports($reportType, $startDate, $endDate);
 
@@ -61,7 +72,6 @@ class RevenueEditor implements RevenueEditorInterface {
                 }
 
                 $report->setEstCpm($cpmRate);
-
                 $root = $this->getRootReport($report);
 
                 if (!in_array($root, $rootReports, true)) {
@@ -74,12 +84,16 @@ class RevenueEditor implements RevenueEditorInterface {
 
         unset($report);
 
+        // Step 2. update database from top level (Platform) then it will cascade to sub level (Account, Site, AdSlot, Site)
         foreach ($rootReports as $report) {
             // very important, must be called manually
             // we should move this to Doctrine PreUpdate events
+            /**
+             * @var RootReportInterface
+             */
             $report->setCalculatedFields();
 
-            $this->om->persist($report);
+            //$this->om->persist($report);
         }
 
         $this->om->flush();

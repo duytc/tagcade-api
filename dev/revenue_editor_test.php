@@ -10,6 +10,13 @@ $kernel->boot();
 
 $container = $kernel->getContainer();
 
+$em = $container->get('doctrine.orm.entity_manager');
+
+//$adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
+//$adSlot = $adSlotManager->find(1);
+//$adSlot->setName('My ad slot');
+//$em->persist($adSlot);
+
 $revenueEditor = $container->get('tagcade.service.revenue_editor');
 
 $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
@@ -17,8 +24,5 @@ $adTag = $adTagManager->find(2);
 
 $revenueEditor->updateRevenueForAdTag($adTag, 100, new DateTime('yesterday'));
 
-//$adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
 
-//$adNetwork = $adNetworkManager->find(1);
 
-//$revenueEditor->updateRevenueForAdNetwork($adNetwork, 0.6, new DateTime('2014-10-30'));
