@@ -8,7 +8,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\BaseAdTagReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\BaseAdTagReportInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelectorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork;
