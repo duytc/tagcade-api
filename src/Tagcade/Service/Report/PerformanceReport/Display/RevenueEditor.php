@@ -84,18 +84,16 @@ class RevenueEditor implements RevenueEditorInterface {
 
         unset($report);
 
-        // Step 2. update database from top level (Platform) then it will cascade to sub level (Account, Site, AdSlot, Site)
+        // Step 2. update calculated fields from top level (Platform) to sub level (Account, Site, AdSlot, Site)
         foreach ($rootReports as $report) {
-            // very important, must be called manually
-            // we should move this to Doctrine PreUpdate events
+            // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
             /**
-             * @var RootReportInterface
+             * @var RootReportInterface $report
              */
             $report->setCalculatedFields();
-
-            //$this->om->persist($report);
         }
 
+        // Step 3. Update database
         $this->om->flush();
 
         return $this;
