@@ -9,7 +9,6 @@ $kernel->boot();
 $container = $kernel->getContainer();
 
 $em = $container->get('doctrine.orm.entity_manager');
-$adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
 $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
 $userManager = $container->get('tagcade_user.domain_manager.user');
 
@@ -25,16 +24,30 @@ $reportTypes = [
     $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site'),
 ];
 
-$eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->all());
-$eventCounter->refreshTestData();
+$dbh = new PDO('mysql:host=localhost;dbname=tagcade_temp', 'root', 'root');
+
+require 'PdoEventCounter.php';
+
+$eventCounter = new PdoEventCounter($dbh);
 
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
-$reportCreator->setDate(new DateTime('1 days ago'));
-
 
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
-$dailyReportCreator->createAndSave(
-    $userManager->allPublisherRoles(),
-    $adNetworkManager->all()
-);
+$begin = new DateTime('2014-10-29');
+$end = new DateTime('2014-11-03');
+$end = $end->modify('+1 day');
+
+$interval = new DateInterval('P1D');
+$dateRange = new DatePeriod($begin, $interval ,$end);
+
+foreach($dateRange as $date){
+    $reportCreator->setDate($date);
+
+    $dailyReportCreator->createAndSave(
+        $userManager->allPublisherRoles(),
+        $adNetworkManager->all()
+    );
+
+    echo $date->format('Y-m-d') . " created\n";
+}
