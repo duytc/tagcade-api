@@ -14,11 +14,11 @@ class AdTag extends CreatorAbstract implements AdTagInterface
     /**
      * @var EstCpmCalculatorInterface
      */
-    private $revenueCalculator;
+    private $estCpmCalculator;
 
     function __construct(EstCpmCalculatorInterface $revenueCalculator)
     {
-        $this->revenueCalculator = $revenueCalculator;
+        $this->estCpmCalculator = $revenueCalculator;
     }
 
     /**
@@ -38,7 +38,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setImpressions($this->eventCounter->getImpressionCount($adTag->getId()))
             ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
             ->setPosition($adTag->getPosition())
-            ->setEstCpm($this->revenueCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
+            ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
         ;
 
         return $report;

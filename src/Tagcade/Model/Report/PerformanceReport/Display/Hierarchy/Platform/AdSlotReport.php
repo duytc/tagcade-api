@@ -69,37 +69,26 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
             throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an AdTagReport');
         }
 
-        $totalOpportunities = $impressions = $passbacks = $estRevenue = 0;
+        $this->_doSetRelativeFillRate();
 
-        foreach($this->subReports as $adTagReport) {
-            if (!$this->isValidSubReport($adTagReport)) {
-                throw new RuntimeException('That sub report is not valid for this report');
-            }
-
-            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
-
-            /** @var AdTagReportInterface $adTagReport */
-            $adTagReport->setCalculatedFields(); // chain the calls to setCalculatedFields
-
-            $totalOpportunities += $adTagReport->getTotalOpportunities();
-            $impressions += $adTagReport->getImpressions();
-            $passbacks += $adTagReport->getPassbacks();
-            $estRevenue += $adTagReport->getEstRevenue();
-
-            unset($adTagReport);
-        }
-
-        $this->setTotalOpportunities($totalOpportunities);
-        $this->setImpressions($impressions);
-        $this->setPassbacks($passbacks);
-        $this->setEstRevenue($estRevenue);
-        $this->setEstCpm($this->getWeightedEstCpm());
+        parent::doCalculateFields();
     }
 
     protected function setDefaultName()
     {
         if ($this->adSlot instanceof AdSlotInterface) {
             $this->setName($this->adSlot->getName());
+        }
+    }
+
+    private function _doSetRelativeFillRate()
+    {
+        foreach($this->subReports as $adTagReport) {
+            if (!$this->isValidSubReport($adTagReport)) {
+                throw new RuntimeException('That sub report is not valid for this report');
+            }
+
+            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
         }
     }
 }

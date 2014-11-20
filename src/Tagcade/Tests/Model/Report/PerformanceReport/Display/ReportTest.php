@@ -22,7 +22,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(5)
             ->setPassbacks(5)
             ->setPosition(1)
-            ->setEstRevenue(5)
+            ->setEstCpm(400)
         ;
 
         $this->adTagReport1 = $adTagReport1;
@@ -32,7 +32,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(1)
             ->setPassbacks(4)
             ->setPosition(2)
-            ->setEstRevenue(10)
+            ->setEstCpm(1000)
         ;
 
         $this->adTagReport2 = $adTagReport2;
@@ -50,6 +50,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(16)
             ->setPassbacks(4)
             ->setPosition(1)
+            ->setEstCpm(100)
         ;
 
         $adTagReport4 = (new PlatformReportTypes\AdTagReport())
@@ -57,6 +58,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(1)
             ->setPassbacks(3)
             ->setPosition(2)
+            ->setEstCpm(1000)
         ;
 
         $adSlotReport2 = (new PlatformReportTypes\AdSlotReport())
@@ -122,6 +124,6 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
     public function testPlatformEstRevenue()
     {
-        $this->assertEquals(15, $this->platformReport->getEstRevenue());
+        $this->assertEquals(5.6, $this->platformReport->getEstRevenue());
     }
 }

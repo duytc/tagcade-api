@@ -53,30 +53,30 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
     protected function doCalculateFields()
     {
-        $slotOpportunities = $totalOpportunities = $impressions = $passbacks = $estRevenue = 0;
+        parent::doCalculateFields();
 
+        // Set slot opportunities for Platform, Account, and Site
+        if( !$this instanceof AdSlotReportInterface) {
+            $this->setSlotOpportunities($this->_doCalculateSlotOpportunities());
+        }
+    }
+
+    private function _doCalculateSlotOpportunities()
+    {
+        $slotOpportunities = 0;
         foreach($this->subReports as $subReport) {
             if (!$this->isValidSubReport($subReport)) {
                 throw new RuntimeException('That sub report is not valid for this report');
             }
 
-            /** @var CalculatedReportInterface $subReport */
-            $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
-
-            $slotOpportunities += $subReport->getSlotOpportunities();
-            $totalOpportunities += $subReport->getTotalOpportunities();
-            $impressions += $subReport->getImpressions();
-            $passbacks += $subReport->getPassbacks();
-            $estRevenue += $subReport->getEstRevenue();
+            // Slot opportunities calculated for Platform, Account and Site only.
+            if($subReport instanceof CalculatedReportInterface){
+                $slotOpportunities += $subReport->getSlotOpportunities();
+            }
 
             unset($subReport);
         }
 
-        $this->setSlotOpportunities($slotOpportunities);
-        $this->setTotalOpportunities($totalOpportunities);
-        $this->setImpressions($impressions);
-        $this->setPassbacks($passbacks);
-        $this->setEstRevenue($estRevenue);
-        $this->setEstCpm($this->getWeightedEstCpm());
+        return $slotOpportunities;
     }
 }
