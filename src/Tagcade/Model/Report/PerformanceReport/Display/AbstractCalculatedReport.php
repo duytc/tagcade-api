@@ -29,10 +29,6 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $totalOpportunities = $impressions = $passbacks = $estRevenue = 0;
 
         foreach($this->subReports as $subReport) {
-            if (!$this->isValidSubReport($subReport)) {
-                throw new RuntimeException('That sub report is not valid for this report');
-            }
-
             /** @var ReportInterface $subReport */
             $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
 
@@ -60,8 +56,8 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $totalWeight = 0;
 
         foreach($this->getSubReports() as $report) {
-            $number = &$report->getEstCpm();
-            $weight = &$report->getEstRevenue();
+            $number = $report->getEstCpm();
+            $weight = $report->getEstRevenue();
 
             $total += $number * $weight;
             $totalWeight += $weight;

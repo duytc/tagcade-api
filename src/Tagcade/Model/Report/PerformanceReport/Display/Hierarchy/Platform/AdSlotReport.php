@@ -84,10 +84,6 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
     private function _doSetRelativeFillRate()
     {
         foreach($this->subReports as $adTagReport) {
-            if (!$this->isValidSubReport($adTagReport)) {
-                throw new RuntimeException('That sub report is not valid for this report');
-            }
-
             $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
         }
     }

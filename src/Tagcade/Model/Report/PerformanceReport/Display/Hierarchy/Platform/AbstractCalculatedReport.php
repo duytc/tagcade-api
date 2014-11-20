@@ -56,7 +56,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         parent::doCalculateFields();
 
         // Set slot opportunities for Platform, Account, and Site
-        if( !$this instanceof AdSlotReportInterface) {
+        if( $this->isGrandParents()) {
             $this->setSlotOpportunities($this->_doCalculateSlotOpportunities());
         }
     }
@@ -65,11 +65,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     {
         $slotOpportunities = 0;
         foreach($this->subReports as $subReport) {
-            if (!$this->isValidSubReport($subReport)) {
-                throw new RuntimeException('That sub report is not valid for this report');
-            }
-
-            // Slot opportunities calculated for Platform, Account and Site only.
+            // Calculate slot opportunities for Platform, Account and Site only.
             if($subReport instanceof CalculatedReportInterface){
                 $slotOpportunities += $subReport->getSlotOpportunities();
             }
