@@ -7,6 +7,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
 trait SubReportsTrait
 {
@@ -17,7 +18,7 @@ trait SubReportsTrait
 
     public function getSubReports()
     {
-        return $this->subReports;
+        return $this->subReports->toArray();
     }
 
     public function addSubReport(ReportInterface $report)
@@ -35,6 +36,11 @@ trait SubReportsTrait
         $this->subReports->add($report);
 
         return $this;
+    }
+
+    public function isGrandParents()
+    {
+        return $this->subReports->first() instanceof SuperReportInterface;
     }
 
     abstract public function isValidSubReport(ReportInterface $report);

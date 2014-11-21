@@ -63,47 +63,28 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         return $report instanceof SiteReportInterface;
     }
 
-    /**
-     * Overwrite the parent doCalculateFields
-     *
-     * This is because the sub reports are not calculated and contain the base values
-     *
-     * @throws \Tagcade\Exception\RuntimeException
-     */
     protected function doCalculateFields()
     {
         if ($this->slotOpportunities === null) {
             throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an AdTagReport');
         }
 
-        $totalOpportunities = $impressions = $passbacks = 0;
+        $this->_doSetRelativeFillRate();
 
-        foreach($this->subReports as $adTagReport) {
-            if (!$this->isValidSubReport($adTagReport)) {
-                throw new RuntimeException('That sub report is not valid for this report');
-            }
-
-            /** @var AdTagReportInterface $adTagReport */
-            $adTagReport->setCalculatedFields(); // chain the calls to setCalculatedFields
-
-            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
-
-            $totalOpportunities += $adTagReport->getTotalOpportunities();
-            $impressions += $adTagReport->getImpressions();
-            $passbacks += $adTagReport->getPassbacks();
-
-            unset($adTagReport);
-        }
-
-        $this->setTotalOpportunities($totalOpportunities);
-        $this->setImpressions($impressions);
-        $this->setPassbacks($passbacks);
+        parent::doCalculateFields();
     }
 
     protected function setDefaultName()
     {
         if ($this->adSlot instanceof AdSlotInterface) {
             $this->setName($this->adSlot->getName());
+        }
+    }
+
+    private function _doSetRelativeFillRate()
+    {
+        foreach($this->subReports as $adTagReport) {
+            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
         }
     }
 }

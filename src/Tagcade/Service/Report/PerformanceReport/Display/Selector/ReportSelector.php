@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
@@ -64,6 +65,11 @@ class ReportSelector implements ReportSelectorInterface
 
         if ($startDate > $endDate) {
             throw new InvalidDateException('start date must be before the end date');
+        }
+
+        $today = new DateTime('today');
+        if ($startDate > $today || $endDate > $today) {
+            throw new InvalidArgumentException('Can only get report information for reports older than today');
         }
 
         $todayIncludedInDateRange = $this->dateUtil->isTodayInRange($startDate, $endDate);
