@@ -18,3 +18,7 @@ Tagcade\Bundle\UserBundle\Entity\User:
             gedmo:
                 timestampable:
                     on: create
+        billingRate:
+            type: decimal
+            scale: 4
+            nullable: true

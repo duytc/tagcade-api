@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
@@ -16,6 +17,17 @@ class AdNetwork implements AdNetworkInterface
     protected $name;
     protected $url;
     protected $active;
+    protected $adTags;
+
+    /**
+     * This is the default CPM assigned to all ad tags unless it is overwritten
+     */
+    protected $defaultCpmRate;
+
+    public function __construct()
+    {
+        $this->adTags = new ArrayCollection();
+    }
 
     /**
      * @inheritdoc
@@ -102,6 +114,32 @@ class AdNetwork implements AdNetworkInterface
     {
         $this->active = (Boolean) $boolean;
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDefaultCpmRate()
+    {
+        return $this->defaultCpmRate;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDefaultCpmRate($defaultCpmRate)
+    {
+        $this->defaultCpmRate = $defaultCpmRate;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdTags()
+    {
+        return $this->adTags;
     }
 
     public function __toString()

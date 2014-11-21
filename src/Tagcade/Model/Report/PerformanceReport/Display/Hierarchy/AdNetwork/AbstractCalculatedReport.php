@@ -17,28 +17,4 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
         return $this;
     }
-
-    protected function doCalculateFields()
-    {
-        $totalOpportunities = $impressions = $passbacks = 0;
-
-        foreach($this->subReports as $subReport) {
-            if (!$this->isValidSubReport($subReport)) {
-                throw new RuntimeException('That sub report is not valid for this report');
-            }
-
-            /** @var ReportInterface $subReport */
-            $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
-
-            $totalOpportunities += $subReport->getTotalOpportunities();
-            $impressions += $subReport->getImpressions();
-            $passbacks += $subReport->getPassbacks();
-
-            unset($subReport);
-        }
-
-        $this->setTotalOpportunities($totalOpportunities);
-        $this->setImpressions($impressions);
-        $this->setPassbacks($passbacks);
-    }
 }

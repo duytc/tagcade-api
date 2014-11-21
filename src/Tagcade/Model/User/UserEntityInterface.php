@@ -61,4 +61,14 @@ interface UserEntityInterface extends ModelInterface
      * @return array
      */
     public function getUserRoles();
+
+    /**
+     * @return float
+     */
+    public function getBillingRate();
+
+    /**
+     * @param float $billingRate
+     */
+    public function setBillingRate($billingRate);
 }

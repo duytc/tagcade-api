@@ -7,3 +7,8 @@ report_api_performance_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\PerformanceReportController
     name_prefix:  report_api_1_
+
+report_api_statistics:
+    type: rest
+    resource: Tagcade\Bundle\ReportApiBundle\Controller\StatisticsController
+    name_prefix:  report_api_1_

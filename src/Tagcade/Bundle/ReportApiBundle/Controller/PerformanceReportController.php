@@ -20,29 +20,19 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwor
  * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY') )")
  *
  * Only allow admins and publishers with the display module enabled
- *
- * @Rest\RouteResource("PerformanceReports")
  */
 class PerformanceReportController extends FOSRestController
 {
+
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/platform/reports")
+     * @Rest\Get("/performancereports/platform")
      *
-     * Get performance reports for the platform with optional date range.
-     *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @return array
      */
@@ -56,33 +46,43 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/account/{publisherId}/reports", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/performancereports/publishers", requirements={"publisherId" = "\d+"})
      *
-     * Get performance reports for a publisher with optional date range.
-     *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
-     *
-     * @param int $publisherId ID of the publisher you want the report for
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @return array
      */
-    public function getAccountReportAction($publisherId)
+    public function getPublishersAction()
     {
-        $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
+        $publishers = $this->get('tagcade_user.domain_manager.user')->allPublisherRoles();
 
-        if (!$publisher) {
-            throw new NotFoundHttpException('That publisher does not exist');
-        }
+        $reportTypes = array_map(function(PublisherInterface $publisher) {
+            return new PlatformReportTypes\Account($publisher);
+        }, $publishers);
+
+        return $this->getReport($reportTypes);
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @Rest\Get("/performancereports/publishers/{publisherId}", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @param int $publisherId
+     *
+     * @return array
+     */
+    public function getPublisherAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
 
         return $this->getReport(new PlatformReportTypes\Account($publisher));
     }
@@ -90,162 +90,72 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/performancereports/account/reports")
+     * @Rest\Get("/performancereports/publishers/current")
      *
-     * Get performance reports for the current publisher with optional date range. Must be logged in as a publisher to access
-     *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @return array
      */
-    public function getAccountReportForCurrentPublisherAction()
+    public function getPublisherReportForCurrentPublisherAction()
     {
-        $publisher = $this->get('tagcade_user.domain_manager.user')->getUserRole($this->getUser());
-
-        if (!$publisher instanceof PublisherInterface) {
-            throw new LogicException('The user should have the publisher role');
-        }
-
-        if (!$publisher) {
-            throw new NotFoundHttpException('That publisher does not exist');
-        }
+        $publisher = $this->getCurrentPublisher();
 
         return $this->getReport(new PlatformReportTypes\Account($publisher));
     }
 
     /**
-     * @Rest\Get("/performancereports/site/{siteId}/reports", requirements={"siteId" = "\d+"})
+     * @Security("has_role('ROLE_ADMIN')")
      *
-     * Get performance reports for a site with optional date range.
+     * @Rest\Get("/performancereports/publishers/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
      *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
-     *
-     * @param int $siteId ID of the site you want the report for
-     *
+     * @param int $publisherId
      * @return array
      */
-    public function getSiteReportAction($siteId)
+    public function getPublisherAdNetworksAction($publisherId)
     {
-        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+        $publisher = $this->getPublisher($publisherId);
 
-        if (!$site) {
-            throw new NotFoundHttpException('That site does not exist');
-        }
-
-        $this->checkUserPermission($site);
-
-        return $this->getReport(new PlatformReportTypes\Site($site));
+        return $this->getAllAdNetworkReports($publisher);
     }
 
     /**
-     * @Rest\Get("/performancereports/adslot/{adSlotId}/reports", requirements={"adSlotId" = "\d+"})
+     * @Security("has_role('ROLE_PUBLISHER')")
      *
-     * Get performance reports for an ad slot with optional date range.
+     * @Rest\Get("/performancereports/publishers/current/adnetworks")
      *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
-     *
-     * @param int $adSlotId ID of the ad slot you want the report for
-     *
-     * @return array
      */
-    public function getAdSlotReportAction($adSlotId)
+    public function getCurrentPublisherAdNetworksAction()
     {
-        $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($adSlotId);
+        $publisher = $this->getCurrentPublisher();
 
-        if (!$adSlot) {
-            throw new NotFoundHttpException('That ad slot does not exist');
-        }
-
-        $this->checkUserPermission($adSlot);
-
-        return $this->getReport(new PlatformReportTypes\AdSlot($adSlot));
+        return $this->getAllAdNetworkReports($publisher);
     }
 
     /**
-     * @Rest\Get("/performancereports/adtag/{adTagId}/reports", requirements={"adTagId" = "\d+"})
+     * @Rest\Get("/performancereports/adnetworks/{adNetworkId}", requirements={"adNetworkId" = "\d+"})
      *
-     * Get performance reports for an ad tag with optional date range.
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     *
-     * @param int $adTagId ID of the ad tag you want the report for
-     *
+     * @param int $adNetworkId
      * @return array
      */
-    public function getAdTagReportAction($adTagId)
-    {
-        $adTag = $this->get('tagcade.domain_manager.ad_tag')->find($adTagId);
-
-        if (!$adTag) {
-            throw new NotFoundHttpException('That ad tag does not exist');
-        }
-
-        $this->checkUserPermission($adTag);
-
-        return $this->getReport(new PlatformReportTypes\AdTag($adTag));
-    }
-
-    /**
-     * @Rest\Get("/performancereports/adnetwork/{adNetworkId}/reports", requirements={"adNetworkId" = "\d+"})
-     *
-     * Get performance reports for an ad network with optional date range.
-     *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
-     *
-     * @param int $adNetworkId ID of the ad network you want the report for
-     *
-     * @return array
-     */
-    public function getAdNetworkReportAction($adNetworkId)
+    public function getAdnetworkAction($adNetworkId)
     {
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
 
@@ -259,28 +169,51 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adnetwork/{adNetworkId}/site/{siteId}/reports", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
+     * @Rest\Get("/performancereports/adnetworks/{adNetworkId}/sites", requirements={"adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @param int $adNetworkId
+     * @return array
+     */
+    public function getAdnetworkSitesAction($adNetworkId)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
+
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That ad network does not exist');
+        }
+
+        $this->checkUserPermission($adNetwork);
+
+        $sites = $this->get('tagcade.domain_manager.site')->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
+
+        $reportTypes = array_map(function($site) use($adNetwork) {
+            return new AdNetworkReportTypes\Site($site, $adNetwork);
+        }, $sites);
+
+        return $this->getReport($reportTypes);
+    }
+
+    /**
+     * @Rest\Get("/performancereports/adnetworks/{adNetworkId}/sites/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
      * Get performance reports for an ad network and site with optional date range.
      *
-     * @ApiDoc(
-     *  section = "reports",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true, description="A report can be expanded to return sub reports instead of the calculated totals")
-     *
-     * @param int $adNetworkId ID of the ad network you want the report for
-     * @param int $siteId ID of the site you want the report for
+     * @param int $adNetworkId
+     * @param int $siteId ID
      *
      * @return array
      */
-    public function getAdNetworkSiteReportAction($adNetworkId, $siteId)
+    public function getAdNetworkSiteAction($adNetworkId, $siteId)
     {
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
 
@@ -300,22 +233,215 @@ class PerformanceReportController extends FOSRestController
         return $this->getReport(new AdNetworkReportTypes\Site($site, $adNetwork));
     }
 
-    protected function getReport(ReportTypeInterface $reportType)
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @Rest\Get("/performancereports/publishers/{publisherId}/sites", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getPublisherSitesAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getAllSiteReports($publisher);
+    }
+
+    /**
+     * @Security("has_role('ROLE_PUBLISHER')")
+     *
+     * @Rest\Get("/performancereports/publishers/current/sites")
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @return array
+     */
+    public function getCurrentPublisherSitesAction()
+    {
+        $publisher = $this->getCurrentPublisher();
+
+        return $this->getAllSiteReports($publisher);
+    }
+
+    /**
+     * @Rest\Get("/performancereports/sites/{siteId}", requirements={"siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @param int $siteId ID of the site you want the report for
+     *
+     * @return array
+     */
+    public function getSiteAction($siteId)
+    {
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+        $this->checkUserPermission($site);
+
+        return $this->getReport(new PlatformReportTypes\Site($site));
+    }
+
+    /**
+     * @Rest\Get("/performancereports/sites/{siteId}/adslots", requirements={"siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @param int $siteId
+     *
+     * @return array
+     */
+    public function getSiteAdSlotsAction($siteId)
+    {
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+        $this->checkUserPermission($site);
+
+        $adSlots = $site->getAdSlots()->toArray();
+
+        $reportTypes = array_map(function($adSlot) {
+                return new PlatformReportTypes\AdSlot($adSlot);
+            }, $adSlots);
+
+        return $this->getReport($reportTypes);
+    }
+
+    /**
+     * @Rest\Get("/performancereports/adslots/{adSlotId}", requirements={"adSlotId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @param int $adSlotId
+     *
+     * @return array
+     */
+    public function getAdSlotAction($adSlotId)
+    {
+        $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($adSlotId);
+
+        if (!$adSlot) {
+            throw new NotFoundHttpException('That ad slot does not exist');
+        }
+
+        $this->checkUserPermission($adSlot);
+
+        return $this->getReport(new PlatformReportTypes\AdSlot($adSlot));
+    }
+
+    /**
+     * @Rest\Get("/performancereports/adslots/{adSlotId}/adtags", requirements={"adSlotId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $adSlotId
+     *
+     * @return array
+     */
+    public function getAdSlotAdTagsAction($adSlotId)
+    {
+        $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($adSlotId);
+
+        if (!$adSlot) {
+            throw new NotFoundHttpException('That ad tag does not exist');
+        }
+
+        $this->checkUserPermission($adSlot);
+
+        $adTags = $adSlot->getAdTags()->toArray();
+
+        $reportTypes = array_map(function($adTag) {
+                return new PlatformReportTypes\AdTag($adTag);
+            }, $adTags);
+
+        return $this->getReport($reportTypes);
+    }
+
+    /**
+     * @Rest\Get("/performancereports/adtags/{adTagId}", requirements={"adTagId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $adTagId
+     *
+     * @return array
+     */
+    public function getAdTagAction($adTagId)
+    {
+        $adTag = $this->get('tagcade.domain_manager.ad_tag')->find($adTagId);
+
+        if (!$adTag) {
+            throw new NotFoundHttpException('That ad tag does not exist');
+        }
+
+        $this->checkUserPermission($adTag);
+
+        return $this->getReport(new PlatformReportTypes\AdTag($adTag));
+    }
+
+    protected function getOptionalParam($param, $default = null)
+    {
+        try {
+            // fosrestbundle throws exception if parameter is not defined
+            $value = $this->get('fos_rest.request.param_fetcher')->get((string) $param, true);
+        } catch (\InvalidArgumentException $e) {
+            $value = $default;
+        }
+
+        return $value;
+    }
+
+    /**
+     * @param ReportTypeInterface|ReportTypeInterface[] $reportType
+     * @return array
+     */
+    protected function getReport($reportType)
     {
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
 
-        try {
-            // fosrestbundle throws exception if parameter is not defined
-            $expand = $paramFetcher->get('expand', true);
-        } catch (\InvalidArgumentException $e) {
-            $expand = false;
-        }
+        $startDate = $paramFetcher->get('startDate', true);
+        $endDate = $paramFetcher->get('endDate', true);
+        $group = $this->getOptionalParam('group', $default = false);
+        $expand = $this->getOptionalParam('expand', $default = false);
 
+        $group = filter_var($group, FILTER_VALIDATE_BOOLEAN);
         $expand = filter_var($expand, FILTER_VALIDATE_BOOLEAN);
 
-        return $this->get('tagcade.service.report.performance_report.display.creator.report_selector')
-            ->getReports($reportType, $paramFetcher->get('startDate', true), $paramFetcher->get('endDate', true), $expand)
-        ;
+        $selector = $this->get('tagcade.service.report.performance_report.display.selector.report_selector');
+
+        if (is_array($reportType)) {
+            return $selector->getMultipleReports($reportType, $startDate, $endDate, $group, $expand);
+        }
+        // else
+        return $selector->getReports($reportType, $startDate, $endDate, $group, $expand);
     }
 
     /**
@@ -338,5 +464,60 @@ class PerformanceReportController extends FOSRestController
         }
 
         return true;
+    }
+
+    /**
+     * @param $publisherId
+     * @return PublisherInterface
+     */
+    protected function getPublisher($publisherId)
+    {
+        $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
+
+        if (!$publisher) {
+            throw new NotFoundHttpException('That publisher does not exist');
+        }
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new LogicException('The user should have the publisher role');
+        }
+
+        return $publisher;
+    }
+
+    /**
+     * @return PublisherInterface
+     */
+    protected function getCurrentPublisher()
+    {
+        $publisher = $this->get('tagcade_user.domain_manager.user')->getUserRole($this->getUser());
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new LogicException('The user should have the publisher role');
+        }
+
+        return $publisher;
+    }
+
+    protected function getAllAdNetworkReports(PublisherInterface $publisher)
+    {
+        $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
+
+        $reportTypes = array_map(function($adNetwork) {
+                return new AdNetworkReportTypes\AdNetwork($adNetwork);
+            }, $adNetworks);
+
+        return $this->getReport($reportTypes);
+    }
+
+    protected function getAllSiteReports(PublisherInterface $publisher)
+    {
+        $sites = $this->get('tagcade.domain_manager.site')->getSitesForPublisher($publisher);
+
+        $reportTypes = array_map(function($site) {
+                return new PlatformReportTypes\Site($site);
+            }, $sites);
+
+        return $this->getReport($reportTypes);
     }
 }

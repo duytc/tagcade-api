@@ -1,7 +1,5 @@
 <?php
 
-date_default_timezone_set('Asia/Bangkok');
-
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
 

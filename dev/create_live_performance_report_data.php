@@ -1,7 +1,5 @@
 <?php
 
-date_default_timezone_set('Asia/Bangkok');
-
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
 
@@ -21,6 +19,7 @@ $cache = new Tagcade\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache);
+$cacheEventCounter->setDate(new DateTime('today'));
 
 foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
     $cache->save(

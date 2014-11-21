@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
 use DateTime;
@@ -19,6 +20,9 @@ abstract class AbstractReport implements ReportInterface
     protected $impressions;
     protected $passbacks;
     protected $fillRate;
+    protected $estRevenue;
+    protected $estCpm;
+    protected $billingCost;
 
     public function getReportType()
     {
@@ -113,6 +117,43 @@ abstract class AbstractReport implements ReportInterface
     /**
      * @inheritdoc
      */
+    public function getEstRevenue()
+    {
+        return $this->estRevenue;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEstRevenue($estRevenue)
+    {
+        $this->estRevenue = $estRevenue;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEstCpm()
+    {
+        return $this->estCpm;
+    }
+
+    /**
+     * @param float $estCpm
+     * @return $this
+     */
+    public function setEstCpm($estCpm)
+    {
+        $this->estCpm = $estCpm;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setCalculatedFields()
     {
         $this->setFillRate();
@@ -144,4 +185,23 @@ abstract class AbstractReport implements ReportInterface
     {
         // do nothing by default
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBillingCost()
+    {
+        return $this->billingCost;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBillingCost($billingCost)
+    {
+        $this->billingCost = $billingCost;
+
+        return $this;
+    }
+
 }

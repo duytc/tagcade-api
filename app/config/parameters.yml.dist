@@ -16,4 +16,6 @@ parameters:
 
     tc.base_tag_url:   http://tags.tagcade.dev
 
+    tc.defaultBillingRate: 10
+
     tc.legacy.live_performance_report.redis_hosts: [127.0.0.1:6379] # host:port pairs

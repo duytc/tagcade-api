@@ -2,7 +2,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
     repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportRepository
     type: entity
     table: report_performance_display_hierarchy_platform_site
-    readOnly: true
     uniqueConstraints:
         unique_platform_site_report_idx:
             columns: [date, site_id]
@@ -29,6 +28,18 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
         fillRate:
             type: decimal
             scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+        billingCost:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site

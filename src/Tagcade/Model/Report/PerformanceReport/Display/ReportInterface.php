@@ -72,8 +72,41 @@ interface ReportInterface
     public function getFillRate();
 
     /**
+     * @return float|null
+     */
+    public function getEstRevenue();
+
+    /**
+     * @param float $estRevenue
+     * @return $this
+     */
+    public function setEstRevenue($estRevenue);
+
+    /**
+     * @param float $estCpm
+     * @return $this
+     */
+    public function setEstCpm($estCpm);
+
+    /**
+     * @return float
+     */
+    public function getEstCpm();
+
+    /**
      * Sets all calculated fields
      * i.e fill rate
      */
     public function setCalculatedFields();
+
+    /**
+     * @return float|null
+     */
+    public function getBillingCost();
+
+    /**
+     * @param $billingCost
+     * @return float
+     */
+    public function setBillingCost($billingCost);
 }

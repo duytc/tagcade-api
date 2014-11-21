@@ -2,7 +2,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport:
     repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdTagReportRepository
     type: entity
     table: report_performance_display_hierarchy_ad_network_ad_tag
-    readOnly: true
     uniqueConstraints:
         unique_ad_network_adtag_report_idx:
             columns: [date, ad_tag_id]
@@ -27,6 +26,18 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport:
         fillRate:
             type: decimal
             scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+        billingCost:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag

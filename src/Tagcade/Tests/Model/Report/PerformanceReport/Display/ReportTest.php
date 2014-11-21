@@ -4,11 +4,15 @@ namespace Tagcade\Tests\Model\Report\PerformanceReport\Display;
 
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork as AdNetworkReportTypes;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform as PlatformReportTypes;
+use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
 class ReportTest extends \PHPUnit_Framework_TestCase
 {
     protected $adTagReport1;
     protected $adTagReport2;
+    /**
+     * @var PlatformReportTypes\PlatformReport
+     */
     protected $platformReport;
     protected $adNetworkReport;
 
@@ -19,6 +23,8 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(5)
             ->setPassbacks(5)
             ->setPosition(1)
+            ->setEstCpm(400)
+            ->setBillingCost(2)
         ;
 
         $this->adTagReport1 = $adTagReport1;
@@ -28,6 +34,8 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(1)
             ->setPassbacks(4)
             ->setPosition(2)
+            ->setEstCpm(1000)
+            ->setBillingCost(3)
         ;
 
         $this->adTagReport2 = $adTagReport2;
@@ -45,6 +53,8 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(16)
             ->setPassbacks(4)
             ->setPosition(1)
+            ->setEstCpm(100)
+            ->setBillingCost(4)
         ;
 
         $adTagReport4 = (new PlatformReportTypes\AdTagReport())
@@ -52,6 +62,8 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setImpressions(1)
             ->setPassbacks(3)
             ->setPosition(2)
+            ->setEstCpm(1000)
+            ->setBillingCost(5)
         ;
 
         $adSlotReport2 = (new PlatformReportTypes\AdSlotReport())
@@ -113,5 +125,65 @@ class ReportTest extends \PHPUnit_Framework_TestCase
     public function testAdTagReportRelativeFillRate()
     {
         $this->assertEquals(0.1, $this->adTagReport2->getRelativeFillRate());
+    }
+
+    public function testPlatformEstRevenue()
+    {
+        $this->assertEquals(5.6, $this->platformReport->getEstRevenue());
+    }
+
+    public function testAdSlotEstCpm()
+    {
+        /**
+         * @var PlatformReportTypes\AccountReportInterface $account
+         */
+        $accountReport = $this->platformReport->getSubReports()[0];
+
+        /**
+         * @var PlatformReportTypes\SiteReport
+         */
+        $siteReport = $accountReport->getSubReports()[0];
+
+
+        /**
+         * @var PlatformReportTypes\AdSlotReportInterface $adSlotReport1
+         */
+        $adSlotReport1 = $siteReport->getSubReports()[0];
+
+        /**
+         * @var PlatformReportTypes\AdSlotReportInterface
+         */
+        $adSlotReport2 = $siteReport->getSubReports()[1];
+
+
+        $this->assertEquals(600, $adSlotReport1->getEstCpm());
+
+        $this->assertEquals(446.1538, round($adSlotReport2->getEstCpm(), 4));
+
+    }
+
+    public function testSiteEstCpm()
+    {
+        /**
+         * @var PlatformReportTypes\AccountReportInterface $account
+         */
+        $accountReport = $this->platformReport->getSubReports()[0];
+
+        /**
+         * @var PlatformReportTypes\SiteReport
+         */
+        $siteReport = $accountReport->getSubReports()[0];
+
+        $this->assertEquals(528.5714, round($siteReport->getEstCpm(), 4));
+    }
+
+    public function testPlatformEstCpm()
+    {
+        $this->assertEquals(528.5714, round($this->platformReport->getEstCpm(), 4));
+    }
+
+    public function testPlatformBillingCost()
+    {
+        $this->assertEquals(14, $this->platformReport->getBillingCost());
     }
 }
