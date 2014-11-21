@@ -244,7 +244,7 @@ services:
     tagcade.service.revenue_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\RevenueEditor
         arguments:
-            - @tagcade.service.report.performance_report.display.creator.report_selector
+            - @tagcade.service.report.performance_report.display.selector.report_selector
             - @tagcade.service.report.performance_report.est_cpm_calculator
             - @doctrine.orm.entity_manager
     
@@ -259,20 +259,20 @@ services:
     tagcade.service.statistics.platform.selector:
         class: Tagcade\Service\Report\Statistics\Selector\PlatformStatistics
         arguments:
-            - @tagcade.service.report.performance_report.display.creator.report_selector
+            - @tagcade.service.report.performance_report.display.selector.report_selector
             - @tagcade.service.statistics.account.selector
 
     tagcade.service.statistics.account.selector:
         class: Tagcade\Service\Report\Statistics\Selector\AccountStatistics
         arguments:
-            - @tagcade.service.report.performance_report.display.creator.report_selector
+            - @tagcade.service.report.performance_report.display.selector.report_selector
             - @tagcade_user.domain_manager.user
             - @tagcade.service.statistics.site.selector
 
     tagcade.service.statistics.site.selector:
         class: Tagcade\Service\Report\Statistics\Selector\SiteStatistics
         arguments:
-                - @tagcade.service.report.performance_report.display.creator.report_selector
+                - @tagcade.service.report.performance_report.display.selector.report_selector
                 - @tagcade.domain_manager.site
 
     ## statistics selector service
