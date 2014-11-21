@@ -6,8 +6,9 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use DateTime;
+use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
-final class Collection
+final class ReportCollection implements ReportResultInterface
 {
     /**
      * @var ReportTypeInterface
@@ -17,7 +18,7 @@ final class Collection
     /**
      * @var string
      */
-    private $reportName;
+    private $name;
     /**
      * @var DateTime
      */
@@ -31,13 +32,16 @@ final class Collection
      */
     private $reports;
 
+    private $isExpanded = false;
+
     /**
      * @param ReportTypeInterface $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
      * @param ReportInterface[] $reports
+     * @param bool $expand
      */
-    public function __construct(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, array $reports)
+    public function __construct(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, array $reports, $expand = false)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
@@ -48,16 +52,24 @@ final class Collection
                 throw new InvalidArgumentException('You tried to add reports to a collection that did not match the supplied report type');
             }
 
-            if (null === $this->reportName) {
-                $this->reportName = $report->getName();
+            if (null === $this->name) {
+                $this->name = $report->getName();
             }
+        }
+
+        if ($expand && $reportType->isExpandable()) {
+            $reports = array_map(function(SuperReportInterface $report) {
+                return $report->getSubReports();
+            }, $reports);
+
+            $this->isExpanded = true;
         }
 
         $this->reports = $reports;
     }
 
     /**
-     * @return ReportTypeInterface
+     * @inheritdoc
      */
     public function getReportType()
     {
@@ -65,15 +77,15 @@ final class Collection
     }
 
     /**
-     * @return string|null
+     * @inheritdoc
      */
-    public function getReportName()
+    public function getName()
     {
-        return $this->reportName;
+        return $this->name;
     }
 
     /**
-     * @return DateTime
+     * @inheritdoc
      */
     public function getStartDate()
     {
@@ -81,7 +93,7 @@ final class Collection
     }
 
     /**
-     * @return DateTime
+     * @inheritdoc
      */
     public function getEndDate()
     {
@@ -89,10 +101,18 @@ final class Collection
     }
 
     /**
-     * @return array|\Tagcade\Model\Report\PerformanceReport\Display\ReportInterface[]
+     * @inheritdoc
      */
     public function getReports()
     {
         return $this->reports;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isExpanded()
+    {
+        return $this->isExpanded;
     }
 }

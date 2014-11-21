@@ -4,7 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Grouper\Groupers;
 
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Collection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use DateTime;
@@ -24,6 +24,7 @@ abstract class AbstractGrouper implements GrouperInterface
     use CalculateRatiosTrait;
 
     private $reportType;
+    private $reports;
     private $reportName;
     private $startDate;
     private $endDate;
@@ -33,18 +34,19 @@ abstract class AbstractGrouper implements GrouperInterface
     private $fillRate;
 
     /**
-     * @param Collection $reportCollection
+     * @param ReportCollection $reportCollection
      */
-    public function __construct(Collection $reportCollection)
+    public function __construct(ReportCollection $reportCollection)
     {
         $reports = $reportCollection->getReports();
+        $this->reports = $reports;
 
         if (empty($reports)) {
             throw new InvalidArgumentException('Expected a non-empty array of reports');
         }
 
         $this->reportType = $reportCollection->getReportType();
-        $this->reportName = $reportCollection->getReportName();
+        $this->reportName = $reportCollection->getName();
 
         $this->groupReports($reports);
     }
@@ -56,6 +58,7 @@ abstract class AbstractGrouper implements GrouperInterface
     {
         return new ReportGroup(
             $this->getReportType(),
+            $this->getReports(),
             $this->getReportName(),
             $this->getStartDate(),
             $this->getEndDate(),
@@ -132,6 +135,11 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getReportType()
     {
         return $this->reportType;
+    }
+
+    public function getReports()
+    {
+        return $this->reports;
     }
 
     /**

@@ -3,11 +3,14 @@
 namespace Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group;
 
 use DateTime;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportResultInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-class ReportGroup
+class ReportGroup implements ReportResultInterface
 {
     private $reportType;
+    private $reports;
     private $name;
     private $startDate;
     private $endDate;
@@ -18,6 +21,7 @@ class ReportGroup
 
     /**
      * @param ReportTypeInterface $reportType
+     * @param ReportInterface[] $reports
      * @param string $name
      * @param DateTime $startDate
      * @param DateTime $endDate
@@ -26,9 +30,10 @@ class ReportGroup
      * @param int $passbacks
      * @param float $fillRate
      */
-    public function __construct(ReportTypeInterface $reportType, $name, DateTime $startDate, DateTime $endDate, $totalOpportunities, $impressions, $passbacks, $fillRate)
+    public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate, $totalOpportunities, $impressions, $passbacks, $fillRate)
     {
         $this->reportType = $reportType;
+        $this->reports = $reports;
         $this->name = $name;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
@@ -39,7 +44,7 @@ class ReportGroup
     }
 
     /**
-     * @return ReportTypeInterface
+     * @inheritdoc
      */
     public function getReportType()
     {
@@ -47,7 +52,7 @@ class ReportGroup
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
@@ -55,7 +60,7 @@ class ReportGroup
     }
 
     /**
-     * @return DateTime
+     * @inheritdoc
      */
     public function getStartDate()
     {
@@ -63,11 +68,19 @@ class ReportGroup
     }
 
     /**
-     * @return DateTime
+     * @inheritdoc
      */
     public function getEndDate()
     {
         return $this->endDate;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getReports()
+    {
+        return $this->reports;
     }
 
     /**

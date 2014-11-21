@@ -8,7 +8,7 @@ use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouperInterface;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Collection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\SelectorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreatorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -106,13 +106,10 @@ class ReportSelector implements ReportSelectorInterface
             unset($historicalReports); // used a var here for clarity
         }
 
-        if ($group) {
-            $reports = $this->reportGrouper->groupReports(new Collection($reportType, $startDate, $endDate, $reports));
-        } else if ($expand && $reportType->isExpandable()) {
-            // do not allow both group and expand
-            $reports = array_map(function(SuperReportInterface $report) {
-                return $report->getSubReports()->toArray();
-            }, $reports);
+        $reports = new ReportCollection($reportType, $startDate, $endDate, $reports, $expand);
+
+        if ($group && !$reports->isExpanded()) {
+            $reports = $this->reportGrouper->groupReports($reports);
         }
 
         return $reports;

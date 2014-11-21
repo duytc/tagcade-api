@@ -9,8 +9,6 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class AccountReport extends AbstractCalculatedReport implements AccountReportInterface
 {
-    const REPORT_TYPE = 'platform.account';
-
     use SuperReportTrait;
 
     /**
