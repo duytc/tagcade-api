@@ -7,7 +7,7 @@ use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportResultInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-class ReportGroup implements ReportResultInterface
+class ReportGroup
 {
     private $reportType;
     private $reports;

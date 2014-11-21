@@ -3,7 +3,8 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportResultInterface;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 
 interface ReportSelectorInterface
 {
@@ -17,7 +18,7 @@ interface ReportSelectorInterface
      * @param null $endDate
      * @param bool $group
      * @param bool $expand
-     * @return ReportResultInterface
+     * @return ReportCollection|ReportGroup
      */
     public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $group = false, $expand = false);
 
@@ -32,7 +33,7 @@ interface ReportSelectorInterface
      * @param bool $group Group the results into one report with aggregated/averaged values
      * @param bool $expand Expand the results into their sub reports, i.e expand a site report into ad slot reports
      *                     This option has no effect if group is true, it will take priority
-     * @return ReportResultInterface[]
+     * @return ReportCollection[]|ReportGroup[]
      */
     public function getMultipleReports(array $reportTypes, $startDate = null, $endDate = null, $group = false, $expand = false);
 }

@@ -8,7 +8,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
-final class ReportCollection implements ReportResultInterface
+final class ReportCollection
 {
     /**
      * @var ReportTypeInterface
