@@ -1,5 +1,4 @@
 parameters:
-    tagcade.service.reporting.report_util.class: Tagcade\Service\Reporting\ReportUtil
     tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
 
 services:
@@ -27,9 +26,6 @@ services:
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\SourceReport\Report
-
-    tagcade.service.reporting.report_util:
-        class: %tagcade.service.reporting.report_util.class%
 
     tagcade.service.report.source_report.report_selector:
         class: Tagcade\Service\Report\SourceReport\ReportSelector

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
@@ -106,12 +107,14 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface
     /**
      * @inheritdoc
      */
-    protected function setFillRate()
+    protected function calculateFillRate()
     {
-        // note that we use slot opportunities to calculate fill rate in this Reports
-        $this->fillRate = $this->getPercentage($this->getImpressions(), $this->getTotalOpportunities());
+        if ($this->getTotalOpportunities() === null) {
+            throw new RuntimeException('total opportunities must be defined to calculate ad tag fill rates');
+        }
 
-        return $this;
+        // note that we use slot opportunities to calculate fill rate in this Reports
+        return $this->getPercentage($this->getImpressions(), $this->getTotalOpportunities());
     }
 
     public function isValidSuperReport(ReportInterface $report)

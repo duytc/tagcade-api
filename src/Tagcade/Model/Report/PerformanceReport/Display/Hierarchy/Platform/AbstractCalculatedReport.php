@@ -2,8 +2,11 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractCalculatedReport as BaseAbstractCalculatedReport;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\Fields\SlotOpportunitiesTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
 /**
@@ -15,64 +18,29 @@ use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
  */
 abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport implements CalculatedReportInterface, SuperReportInterface
 {
-    protected $slotOpportunities;
-
-    /**
-     * @return int|null
-     */
-    public function getSlotOpportunities()
-    {
-        return $this->slotOpportunities;
-    }
-
-    /**
-     * @param int $slotOpportunities
-     * @return $this
-     */
-    public function setSlotOpportunities($slotOpportunities)
-    {
-        $this->slotOpportunities = (int) $slotOpportunities;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function setFillRate()
-    {
-        if ($this->getSlotOpportunities() === null) {
-            throw new RuntimeException('slot opportunities must be defined to calculate fill rates');
-        }
-
-        // note that we use slot opportunities to calculate fill rate in this Reports except for AdTagReport
-        $this->fillRate = $this->getPercentage($this->getImpressions(), $this->getSlotOpportunities());
-
-        return $this;
-    }
+    use SlotOpportunitiesTrait;
 
     protected function doCalculateFields()
     {
-        parent::doCalculateFields();
+        $this->slotOpportunities = 0;
 
-        // Set slot opportunities for Platform, Account, and Site
-        if( $this->isGrandParents()) {
-            $this->setSlotOpportunities($this->_doCalculateSlotOpportunities());
-        }
+        parent::doCalculateFields();
     }
 
-    private function _doCalculateSlotOpportunities()
+    protected function aggregateSubReport(ReportInterface $subReport)
     {
-        $slotOpportunities = 0;
-        foreach($this->subReports as $subReport) {
-            // Calculate slot opportunities for Platform, Account and Site only.
-            if($subReport instanceof CalculatedReportInterface){
-                $slotOpportunities += $subReport->getSlotOpportunities();
-            }
-
-            unset($subReport);
+        if (!$subReport instanceof CalculatedReportInterface) {
+            throw new InvalidArgumentException('Expected a CalculatedReportInterface');
         }
 
-        return $slotOpportunities;
+        $this->addSlotOpportunities($subReport->getSlotOpportunities());
+
+        parent::aggregateSubReport($subReport);
+
+    }
+
+    protected function addSlotOpportunities($slotOpportunities)
+    {
+        $this->slotOpportunities += $slotOpportunities;
     }
 }

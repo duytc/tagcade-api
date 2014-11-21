@@ -21,31 +21,60 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->doCalculateFields();
 
         parent::setCalculatedFields();
-
     }
 
     protected function doCalculateFields()
     {
-        $totalOpportunities = $impressions = $passbacks = $estRevenue = $billingCost = 0;
+        $this->totalOpportunities = 0;
+        $this->impressions = 0;
+        $this->passbacks = 0;
+        $this->estRevenue = 0;
+        $this->billingCost = 0;
 
         foreach($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
             $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
 
-            $totalOpportunities += $subReport->getTotalOpportunities();
-            $impressions += $subReport->getImpressions();
-            $passbacks += $subReport->getPassbacks();
-            $estRevenue += $subReport->getEstRevenue();
-            $billingCost += $subReport->getBillingCost();
+            $this->aggregateSubReport($subReport);
+
             unset($subReport);
         }
 
-        $this->setTotalOpportunities($totalOpportunities);
-        $this->setImpressions($impressions);
-        $this->setPassbacks($passbacks);
-        $this->setEstRevenue($estRevenue);
         $this->setEstCpm($this->getWeightedEstCpm());
-        $this->setBillingCost($billingCost);
+    }
+
+    protected function aggregateSubReport(ReportInterface $subReport)
+    {
+        $this->addTotalOpportunities($subReport->getTotalOpportunities());
+        $this->addImpressions($subReport->getImpressions());
+        $this->addPassbacks($subReport->getPassbacks());
+        $this->addEstRevenue($subReport->getEstRevenue());
+        $this->addBillingCost($subReport->getBillingCost());
+    }
+
+    protected function addTotalOpportunities($totalOpportunities)
+    {
+        $this->totalOpportunities += (int)$totalOpportunities;
+    }
+
+    protected function addImpressions($impressions)
+    {
+        $this->impressions += (int)$impressions;
+    }
+
+    protected function addPassbacks($passbacks)
+    {
+        $this->passbacks += (int)$passbacks;
+    }
+
+    protected function addEstRevenue($estRevenue)
+    {
+        $this->estRevenue += (float)$estRevenue;
+    }
+
+    protected function addBillingCost($billingCost)
+    {
+        $this->billingCost += (float)$billingCost;
     }
 
     protected function getWeightedEstCpm()
