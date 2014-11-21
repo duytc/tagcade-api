@@ -45,6 +45,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->setPassbacks($passbacks);
         $this->setEstRevenue($estRevenue);
         $this->setEstCpm($this->getWeightedEstCpm());
+        $this->setBillingCost($billingCost);
     }
 
     protected function getWeightedEstCpm()

@@ -184,6 +184,6 @@ class ReportTest extends \PHPUnit_Framework_TestCase
 
     public function testPlatformBillingCost()
     {
-        //$this->assertEquals(14, $this->platformReport->getBillingCost());
+        $this->assertEquals(14, $this->platformReport->getBillingCost());
     }
 }
