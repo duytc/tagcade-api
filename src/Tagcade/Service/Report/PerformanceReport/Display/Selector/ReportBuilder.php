@@ -15,6 +15,7 @@ use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
+use Tagcade\Service\DateUtilInterface;
 
 class ReportBuilder implements ReportBuilderInterface
 {
@@ -27,6 +28,10 @@ class ReportBuilder implements ReportBuilderInterface
      * @var ReportSelectorInterface
      */
     protected $reportSelector;
+    /**
+     * @var DateUtilInterface
+     */
+    protected $dateUtil;
     /**
      * @var UserManagerInterface
      */
@@ -42,12 +47,14 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function __construct(
         ReportSelectorInterface $reportSelector,
+        DateUtilInterface $dateUtil,
         UserManagerInterface $userManager,
         AdNetworkManagerInterface $adNetworkManager,
         SiteManagerInterface $siteManager
     )
     {
         $this->reportSelector = $reportSelector;
+        $this->dateUtil = $dateUtil;
         $this->userManager = $userManager;
         $this->adNetworkManager = $adNetworkManager;
         $this->siteManager = $siteManager;
@@ -212,25 +219,15 @@ class ReportBuilder implements ReportBuilderInterface
 
         $params = array_merge($defaultParams, $params);
 
-        $params[self::PARAM_GROUP] = filter_var($params[self::PARAM_GROUP], FILTER_VALIDATE_BOOLEAN);
-        $params[self::PARAM_EXPAND] = filter_var($params[self::PARAM_EXPAND], FILTER_VALIDATE_BOOLEAN);
+        $startDate = $this->dateUtil->getDateTime($params[self::PARAM_START_DATE], true);
+        $endDate = $this->dateUtil->getDateTime($params[self::PARAM_END_DATE]);
+        $group = filter_var($params[self::PARAM_GROUP], FILTER_VALIDATE_BOOLEAN);
+        $expand = filter_var($params[self::PARAM_EXPAND], FILTER_VALIDATE_BOOLEAN);
 
         if (is_array($reportType)) {
-            return $this->reportSelector->getMultipleReports(
-                $reportType,
-                $params[self::PARAM_START_DATE],
-                $params[self::PARAM_END_DATE],
-                $params[self::PARAM_GROUP],
-                $params[self::PARAM_EXPAND]
-            );
+            return $this->reportSelector->getMultipleReports($reportType, $startDate, $endDate, $group, $expand);
         }
 
-        return $this->reportSelector->getReports(
-            $reportType,
-            $params[self::PARAM_START_DATE],
-            $params[self::PARAM_END_DATE],
-            $params[self::PARAM_GROUP],
-            $params[self::PARAM_EXPAND]
-        );
+        return $this->reportSelector->getReports($reportType, $startDate, $endDate, $group, $expand);
     }
 }

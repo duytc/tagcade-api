@@ -11,8 +11,6 @@ use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
 
 /**
  * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY') )")

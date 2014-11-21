@@ -5,7 +5,6 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouperInterface;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
@@ -61,12 +60,9 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $group = false, $expand = false)
+    public function getReports(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate = null, $group = false, $expand = false)
     {
         $selector = $this->getSelectorFor($reportType);
-
-        $startDate = $this->dateUtil->getDateTime($startDate, true);
-        $endDate = $this->dateUtil->getDateTime($endDate);
 
         if (!$endDate) {
             $endDate = $startDate;
@@ -118,7 +114,7 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getMultipleReports(array $reportTypes, $startDate = null, $endDate = null, $group = false, $expand = false)
+    public function getMultipleReports(array $reportTypes, DateTime $startDate, DateTime $endDate = null, $group = false, $expand = false)
     {
         $reports = [];
 
