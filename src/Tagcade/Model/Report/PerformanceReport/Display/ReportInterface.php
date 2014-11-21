@@ -101,7 +101,7 @@ interface ReportInterface
 
     /**
      * @param $billingCost
-     * @return float
+     * @return $this
      */
     public function setBillingCost($billingCost);
 }
