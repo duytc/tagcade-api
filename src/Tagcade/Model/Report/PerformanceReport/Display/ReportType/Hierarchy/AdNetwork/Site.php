@@ -4,10 +4,14 @@ namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Ad
 
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-class Site implements ReportTypeInterface
+class Site extends AbstractCalculatedReportType
 {
+    const REPORT_TYPE = 'adNetwork.site';
+
     /**
      * @var SiteInterface
      */
@@ -38,5 +42,29 @@ class Site implements ReportTypeInterface
     public function getAdNetwork()
     {
         return $this->adNetwork;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSiteId()
+    {
+        return $this->site->getId();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAdNetworkId()
+    {
+        return $this->adNetwork->getId();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidReport(ReportInterface $report)
+    {
+        return $report instanceof SiteReportInterface;
     }
 }

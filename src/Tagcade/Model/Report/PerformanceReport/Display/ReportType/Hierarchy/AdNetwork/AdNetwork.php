@@ -3,10 +3,14 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork;
 
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-class AdNetwork implements ReportTypeInterface
+class AdNetwork extends AbstractCalculatedReportType
 {
+    const REPORT_TYPE = 'adNetwork.adNetwork';
+
     /**
      * @var AdNetworkInterface
      */
@@ -23,5 +27,21 @@ class AdNetwork implements ReportTypeInterface
     public function getAdNetwork()
     {
         return $this->adNetwork;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAdNetworkId()
+    {
+        return $this->adNetwork->getId();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidReport(ReportInterface $report)
+    {
+        return $report instanceof AdNetworkReportInterface;
     }
 }

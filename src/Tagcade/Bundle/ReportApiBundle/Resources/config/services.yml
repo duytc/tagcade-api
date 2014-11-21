@@ -214,9 +214,14 @@ services:
         arguments:
             - @tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_tag
 
+    ### Report grouper service
+
+    tagcade.service.report.performance_report.display.grouper.report_report_grouper:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouper
+
     ### Report selector service
 
-    tagcade.service.report.performance_report.display.creator.report_selector:
+    tagcade.service.report.performance_report.display.selector.report_selector:
         class: Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelector
         arguments:
             -
@@ -232,6 +237,7 @@ services:
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_tag
             - @tagcade.service.date_util
             - @tagcade.service.report.performance_report.display.creator.report_creator
+            - @tagcade.service.report.performance_report.display.grouper.report_report_grouper
 
 
     ### Revenue editor

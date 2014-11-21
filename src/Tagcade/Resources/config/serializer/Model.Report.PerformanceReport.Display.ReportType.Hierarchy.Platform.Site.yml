@@ -1,0 +1,8 @@
+Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site:
+    exclusion_policy: NONE
+    virtual_properties:
+        getSiteId:
+            type: integer
+    properties:
+        site:
+            exclude: true

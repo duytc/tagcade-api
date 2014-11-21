@@ -1,0 +1,5 @@
+Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractReportType:
+    exclusion_policy: NONE
+    virtual_properties:
+        getReportType:
+            type: string

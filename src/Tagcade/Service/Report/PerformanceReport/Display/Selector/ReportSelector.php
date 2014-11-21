@@ -7,6 +7,8 @@ use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 use Tagcade\Service\DateUtilInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouperInterface;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Collection;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\SelectorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreatorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -30,11 +32,17 @@ class ReportSelector implements ReportSelectorInterface
     protected $reportCreator;
 
     /**
+     * @var ReportGrouperInterface
+     */
+    protected $reportGrouper;
+
+    /**
      * @param SelectorInterface[] $selectors
      * @param DateUtilInterface $dateUtil
      * @param ReportCreatorInterface $reportCreator
+     * @param ReportGrouperInterface $reportAggregator
      */
-    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportCreatorInterface $reportCreator)
+    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportCreatorInterface $reportCreator, ReportGrouperInterface $reportAggregator)
     {
         foreach($selectors as $selector) {
             $this->addSelector($selector);
@@ -42,6 +50,7 @@ class ReportSelector implements ReportSelectorInterface
 
         $this->reportCreator = $reportCreator;
         $this->dateUtil = $dateUtil;
+        $this->reportGrouper = $reportAggregator;
     }
 
     public function addSelector(SelectorInterface $selector)
@@ -52,7 +61,7 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $expand = false)
+    public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $group = false, $expand = false)
     {
         $selector = $this->getSelectorFor($reportType);
 
@@ -97,15 +106,27 @@ class ReportSelector implements ReportSelectorInterface
             unset($historicalReports); // used a var here for clarity
         }
 
-        if ($expand) {
-            // if the expand option is true, instead of returning the report, we return an array of its sub reports
-            foreach($reports as &$report) { // notice the &$report reference
-                if (!$report instanceof SuperReportInterface) {
-                    continue;
-                }
+        if ($group) {
+            $reports = $this->reportGrouper->groupReports(new Collection($reportType, $startDate, $endDate, $reports));
+        } else if ($expand && $reportType->isExpandable()) {
+            // do not allow both group and expand
+            $reports = array_map(function(SuperReportInterface $report) {
+                return $report->getSubReports()->toArray();
+            }, $reports);
+        }
 
-                $report = $report->getSubReports()->toArray();
-            }
+        return $reports;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMultipleReports(array $reportTypes, $startDate = null, $endDate = null, $group = false, $expand = false)
+    {
+        $reports = [];
+
+        foreach($reportTypes as $reportType) {
+            $reports[] = $this->getReports($reportType, $startDate, $endDate, $group, $expand);
         }
 
         return $reports;
