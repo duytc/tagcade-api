@@ -63,6 +63,13 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
         return $report instanceof SiteReportInterface;
     }
 
+    /**
+     * Overwrite the parent doCalculateFields
+     *
+     * This is because the sub reports are not calculated and contain the base values
+     *
+     * @throws \Tagcade\Exception\RuntimeException
+     */
     protected function doCalculateFields()
     {
         if ($this->slotOpportunities === null) {

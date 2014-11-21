@@ -18,7 +18,7 @@ class SiteReport extends AbstractCalculatedReport implements SiteReportInterface
     protected $site;
 
     /**
-     * @return SiteInterface
+     * @inheritdoc
      */
     public function getSite()
     {

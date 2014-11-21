@@ -32,6 +32,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             type: decimal
             scale: 4
             nullable: true
+        billingCost:
+            type: decimal
+            scale: 4
+            nullable: true
     oneToMany:
         subReports:
             targetEntity: AccountReport

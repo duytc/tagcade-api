@@ -98,4 +98,15 @@ interface ReportInterface
      * i.e fill rate
      */
     public function setCalculatedFields();
+
+    /**
+     * @return float|null
+     */
+    public function getBillingCost();
+
+    /**
+     * @param $billingCost
+     * @return float
+     */
+    public function setBillingCost($billingCost);
 }

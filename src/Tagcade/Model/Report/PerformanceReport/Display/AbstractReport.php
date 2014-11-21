@@ -22,6 +22,7 @@ abstract class AbstractReport implements ReportInterface
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
+    protected $billingCost;
 
     public function getReportType()
     {
@@ -184,4 +185,23 @@ abstract class AbstractReport implements ReportInterface
     {
         // do nothing by default
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBillingCost()
+    {
+        return $this->billingCost;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBillingCost($billingCost)
+    {
+        $this->billingCost = $billingCost;
+
+        return $this;
+    }
+
 }

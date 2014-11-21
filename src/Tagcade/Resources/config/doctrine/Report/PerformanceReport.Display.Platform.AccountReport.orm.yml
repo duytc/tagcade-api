@@ -36,6 +36,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
             type: decimal
             scale: 4
             nullable: true
+        billingCost:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

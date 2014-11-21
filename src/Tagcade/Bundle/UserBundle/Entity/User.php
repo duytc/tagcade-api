@@ -25,6 +25,7 @@ class User extends BaseUser implements UserEntityInterface
     protected $lastLogin;
     protected $roles;
     protected $joinDate;
+    protected $billingRate;
 
     /**
      * @inheritdoc
@@ -158,5 +159,21 @@ class User extends BaseUser implements UserEntityInterface
 
             $this->addRole($role);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBillingRate()
+    {
+        return $this->billingRate;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBillingRate($billingRate)
+    {
+        $this->billingRate = $billingRate;
     }
 }

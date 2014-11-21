@@ -26,7 +26,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
 
     protected function doCalculateFields()
     {
-        $totalOpportunities = $impressions = $passbacks = $estRevenue = 0;
+        $totalOpportunities = $impressions = $passbacks = $estRevenue = $billingCost = 0;
 
         foreach($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
@@ -36,7 +36,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
             $impressions += $subReport->getImpressions();
             $passbacks += $subReport->getPassbacks();
             $estRevenue += $subReport->getEstRevenue();
-
+            $billingCost += $subReport->getBillingCost();
             unset($subReport);
         }
 

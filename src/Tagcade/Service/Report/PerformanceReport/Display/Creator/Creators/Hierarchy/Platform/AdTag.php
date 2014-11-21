@@ -3,10 +3,10 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
 use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\BillingCostCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
 
 class AdTag extends CreatorAbstract implements AdTagInterface
@@ -16,9 +16,15 @@ class AdTag extends CreatorAbstract implements AdTagInterface
      */
     private $estCpmCalculator;
 
-    function __construct(EstCpmCalculatorInterface $revenueCalculator)
+    /**
+     * @var BillingCostCalculatorInterface
+     */
+    private $billingCostCalculator;
+    
+    function __construct(EstCpmCalculatorInterface $revenueCalculator, BillingCostCalculatorInterface $billingCostCalculator)
     {
         $this->estCpmCalculator = $revenueCalculator;
+        $this->billingCostCalculator = $billingCostCalculator;
     }
 
     /**
@@ -39,6 +45,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
             ->setPosition($adTag->getPosition())
             ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
+            ->setBillingCost($this->billingCostCalculator->calculateCostByAdTag($adTag->getAdNetwork()->getPublisher(), $report->getTotalOpportunities() ))
         ;
 
         return $report;

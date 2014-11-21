@@ -19,7 +19,7 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
     protected $publisher;
 
     /**
-     * @return UserEntityInterface
+     * @inheritdoc
      */
     public function getPublisher()
     {
@@ -27,7 +27,7 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
     }
 
     /**
-     * @return int|null
+     * @inheritdoc
      */
     public function getPublisherId()
     {
