@@ -235,6 +235,16 @@ services:
             - @tagcade.service.report.performance_report.display.creator.report_creator
             - @tagcade.service.report.performance_report.display.grouper.report_report_grouper
 
+    ###
+
+    tagcade.server.report.performance_report.display.selector.report_builder:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilder
+        arguments:
+            - @tagcade.service.report.performance_report.display.selector.report_selector
+            - @tagcade.service.date_util
+            - @tagcade_user.domain_manager.user
+            - @tagcade.domain_manager.ad_network
+            - @tagcade.domain_manager.site
 
     ### Revenue editor
     tagcade.service.revenue_editor:

@@ -38,6 +38,11 @@ trait SubReportsTrait
         return $this;
     }
 
+    public function isGrandParents()
+    {
+        return $this->subReports->first() instanceof SuperReportInterface;
+    }
+
     abstract public function isValidSubReport(ReportInterface $report);
 
     /**

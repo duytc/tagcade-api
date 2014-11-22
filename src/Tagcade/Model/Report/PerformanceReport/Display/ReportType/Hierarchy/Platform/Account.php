@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -41,8 +42,16 @@ class Account extends AbstractCalculatedReportType implements CalculatedReportTy
     /**
      * @inheritdoc
      */
-    public function isValidReport(ReportInterface $report)
+    public function matchesReport(ReportInterface $report)
     {
         return $report instanceof AccountReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidSubReport(ReportInterface $report)
+    {
+        return $report instanceof SiteReportInterface;
     }
 }

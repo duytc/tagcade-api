@@ -4,17 +4,13 @@ namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Model\ModelInterface;
-
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 /**
  * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY') )")
@@ -23,7 +19,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwor
  */
 class PerformanceReportController extends FOSRestController
 {
-
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
@@ -38,9 +33,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getPlatformAction()
     {
-        $publishers = $this->get('tagcade_user.domain_manager.user')->allPublisherRoles();
-
-        return $this->getReport(new PlatformReportTypes\Platform($publishers));
+        return $this->getReportBuilder()->getPlatformReport($this->getParams());
     }
 
     /**
@@ -57,13 +50,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getPublishersAction()
     {
-        $publishers = $this->get('tagcade_user.domain_manager.user')->allPublisherRoles();
-
-        $reportTypes = array_map(function(PublisherInterface $publisher) {
-            return new PlatformReportTypes\Account($publisher);
-        }, $publishers);
-
-        return $this->getReport($reportTypes);
+        return $this->getReportBuilder()->getPublishersReport($this->getParams());
     }
 
     /**
@@ -84,7 +71,7 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->getReport(new PlatformReportTypes\Account($publisher));
+        return $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams());
     }
 
     /**
@@ -103,7 +90,7 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getCurrentPublisher();
 
-        return $this->getReport(new PlatformReportTypes\Account($publisher));
+        return $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams());
     }
 
     /**
@@ -123,7 +110,7 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->getAllAdNetworkReports($publisher);
+        return $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams());
     }
 
     /**
@@ -141,7 +128,7 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getCurrentPublisher();
 
-        return $this->getAllAdNetworkReports($publisher);
+        return $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams());
     }
 
     /**
@@ -165,7 +152,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adNetwork);
 
-        return $this->getReport(new AdNetworkReportTypes\AdNetwork($adNetwork));
+        return $this->getReportBuilder()->getAdNetworkReport($adNetwork, $this->getParams());
     }
 
     /**
@@ -189,13 +176,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adNetwork);
 
-        $sites = $this->get('tagcade.domain_manager.site')->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
-
-        $reportTypes = array_map(function($site) use($adNetwork) {
-            return new AdNetworkReportTypes\Site($site, $adNetwork);
-        }, $sites);
-
-        return $this->getReport($reportTypes);
+        return $this->getReportBuilder()->getAdNetworkSitesReport($adNetwork, $this->getParams());
     }
 
     /**
@@ -230,7 +211,7 @@ class PerformanceReportController extends FOSRestController
         $this->checkUserPermission($adNetwork);
         $this->checkUserPermission($site);
 
-        return $this->getReport(new AdNetworkReportTypes\Site($site, $adNetwork));
+        return $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams());
     }
 
     /**
@@ -250,7 +231,7 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->getAllSiteReports($publisher);
+        return $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams());
     }
 
     /**
@@ -269,7 +250,7 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getCurrentPublisher();
 
-        return $this->getAllSiteReports($publisher);
+        return $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams());
     }
 
     /**
@@ -294,7 +275,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($site);
 
-        return $this->getReport(new PlatformReportTypes\Site($site));
+        return $this->getReportBuilder()->getSiteReport($site, $this->getParams());
     }
 
     /**
@@ -319,13 +300,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($site);
 
-        $adSlots = $site->getAdSlots()->toArray();
-
-        $reportTypes = array_map(function($adSlot) {
-                return new PlatformReportTypes\AdSlot($adSlot);
-            }, $adSlots);
-
-        return $this->getReport($reportTypes);
+        return $this->getReportBuilder()->getSiteAdSlotsReport($site, $this->getParams());
     }
 
     /**
@@ -350,7 +325,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adSlot);
 
-        return $this->getReport(new PlatformReportTypes\AdSlot($adSlot));
+        return $this->getReportBuilder()->getAdSlotReport($adSlot, $this->getParams());
     }
 
     /**
@@ -374,13 +349,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adSlot);
 
-        $adTags = $adSlot->getAdTags()->toArray();
-
-        $reportTypes = array_map(function($adTag) {
-                return new PlatformReportTypes\AdTag($adTag);
-            }, $adTags);
-
-        return $this->getReport($reportTypes);
+        return $this->getReportBuilder()->getAdSlotAdTagsReport($adSlot, $this->getParams());
     }
 
     /**
@@ -404,44 +373,7 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adTag);
 
-        return $this->getReport(new PlatformReportTypes\AdTag($adTag));
-    }
-
-    protected function getOptionalParam($param, $default = null)
-    {
-        try {
-            // fosrestbundle throws exception if parameter is not defined
-            $value = $this->get('fos_rest.request.param_fetcher')->get((string) $param, true);
-        } catch (\InvalidArgumentException $e) {
-            $value = $default;
-        }
-
-        return $value;
-    }
-
-    /**
-     * @param ReportTypeInterface|ReportTypeInterface[] $reportType
-     * @return array
-     */
-    protected function getReport($reportType)
-    {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-
-        $startDate = $paramFetcher->get('startDate', true);
-        $endDate = $paramFetcher->get('endDate', true);
-        $group = $this->getOptionalParam('group', $default = false);
-        $expand = $this->getOptionalParam('expand', $default = false);
-
-        $group = filter_var($group, FILTER_VALIDATE_BOOLEAN);
-        $expand = filter_var($expand, FILTER_VALIDATE_BOOLEAN);
-
-        $selector = $this->get('tagcade.service.report.performance_report.display.selector.report_selector');
-
-        if (is_array($reportType)) {
-            return $selector->getMultipleReports($reportType, $startDate, $endDate, $group, $expand);
-        }
-        // else
-        return $selector->getReports($reportType, $startDate, $endDate, $group, $expand);
+        return $this->getReportBuilder()->getAdTagReport($adTag, $this->getParams());
     }
 
     /**
@@ -499,25 +431,19 @@ class PerformanceReportController extends FOSRestController
         return $publisher;
     }
 
-    protected function getAllAdNetworkReports(PublisherInterface $publisher)
+    /**
+     * @return ReportBuilderInterface
+     */
+    protected function getReportBuilder()
     {
-        $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
-
-        $reportTypes = array_map(function($adNetwork) {
-                return new AdNetworkReportTypes\AdNetwork($adNetwork);
-            }, $adNetworks);
-
-        return $this->getReport($reportTypes);
+        return $this->get('tagcade.server.report.performance_report.display.selector.report_builder');
     }
 
-    protected function getAllSiteReports(PublisherInterface $publisher)
+    /**
+     * @return array
+     */
+    protected function getParams()
     {
-        $sites = $this->get('tagcade.domain_manager.site')->getSitesForPublisher($publisher);
-
-        $reportTypes = array_map(function($site) {
-                return new PlatformReportTypes\Site($site);
-            }, $sites);
-
-        return $this->getReport($reportTypes);
+        return $this->get('fos_rest.request.param_fetcher')->all($strict = true);
     }
 }

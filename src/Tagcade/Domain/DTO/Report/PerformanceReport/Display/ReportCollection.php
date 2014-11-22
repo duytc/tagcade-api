@@ -4,72 +4,51 @@ namespace Tagcade\Domain\DTO\Report\PerformanceReport\Display;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
-use Tagcade\Exception\InvalidArgumentException;
 use DateTime;
-use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
-final class ReportCollection
+class ReportCollection
 {
     /**
      * @var ReportTypeInterface
      */
-    private $reportType;
+    protected $reportType;
+    /**
+     * @var DateTime
+     */
+    protected $startDate;
+    /**
+     * @var DateTime
+     */
+    protected $endDate;
+
+    /**
+     * @var ReportInterface[]
+     */
+    protected $reports;
 
     /**
      * @var string
      */
-    private $name;
-    /**
-     * @var DateTime
-     */
-    private $startDate;
-    /**
-     * @var DateTime
-     */
-    private $endDate;
-    /**
-     * @var ReportInterface[]
-     */
-    private $reports;
-
-    private $isExpanded = false;
+    protected $name;
 
     /**
      * @param ReportTypeInterface $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param string $name
      * @param ReportInterface[] $reports
-     * @param bool $expand
      */
-    public function __construct(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, array $reports, $expand = false)
+    public function __construct(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, $name, array $reports)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-
-        foreach($reports as $report) {
-            if (!$reportType->isValidReport($report)) {
-                throw new InvalidArgumentException('You tried to add reports to a collection that did not match the supplied report type');
-            }
-
-            if (null === $this->name) {
-                $this->name = $report->getName();
-            }
-        }
-
-        if ($expand && $reportType->isExpandable()) {
-            $reports = array_map(function(SuperReportInterface $report) {
-                return $report->getSubReports();
-            }, $reports);
-
-            $this->isExpanded = true;
-        }
-
+        $this->name = $name;
         $this->reports = $reports;
     }
 
     /**
-     * @inheritdoc
+     * @return ReportTypeInterface
      */
     public function getReportType()
     {
@@ -77,15 +56,7 @@ final class ReportCollection
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @inheritdoc
+     * @return DateTime
      */
     public function getStartDate()
     {
@@ -93,7 +64,7 @@ final class ReportCollection
     }
 
     /**
-     * @inheritdoc
+     * @return DateTime
      */
     public function getEndDate()
     {
@@ -101,18 +72,18 @@ final class ReportCollection
     }
 
     /**
-     * @inheritdoc
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return ReportInterface[]
      */
     public function getReports()
     {
         return $this->reports;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isExpanded()
-    {
-        return $this->isExpanded;
     }
 }

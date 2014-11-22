@@ -41,15 +41,7 @@ class AdTag extends AbstractReportType implements ReportTypeInterface
     /**
      * @inheritdoc
      */
-    public function isExpandable()
-    {
-        return false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isValidReport(ReportInterface $report)
+    public function matchesReport(ReportInterface $report)
     {
         return $report instanceof AdTagReportInterface;
     }

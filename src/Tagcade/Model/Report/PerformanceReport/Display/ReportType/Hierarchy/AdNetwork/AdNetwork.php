@@ -4,6 +4,7 @@ namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Ad
 
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
@@ -40,8 +41,16 @@ class AdNetwork extends AbstractCalculatedReportType
     /**
      * @inheritdoc
      */
-    public function isValidReport(ReportInterface $report)
+    public function matchesReport(ReportInterface $report)
     {
         return $report instanceof AdNetworkReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidSubReport(ReportInterface $report)
+    {
+        return $report instanceof SiteReportInterface;
     }
 }
