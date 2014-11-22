@@ -22,7 +22,7 @@ interface ReportBuilderInterface
      * @param array $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getPublishersReport(array $params = []);
+    public function getAllPublishersReport(array $params = []);
 
     /**
      * @param PublisherInterface $publisher
@@ -59,6 +59,12 @@ interface ReportBuilderInterface
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
     public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, array $params = []);
+
+    /**
+     * @param array $params
+     * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
+     */
+    public function getAllSitesReport(array $params = []);
 
     /**
      * @param PublisherInterface $publisher

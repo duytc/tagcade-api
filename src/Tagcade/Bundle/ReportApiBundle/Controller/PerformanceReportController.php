@@ -50,7 +50,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getPublishersAction()
     {
-        return $this->getReportBuilder()->getPublishersReport($this->getParams());
+        return $this->getReportBuilder()->getAllPublishersReport($this->getParams());
     }
 
     /**
@@ -212,6 +212,23 @@ class PerformanceReportController extends FOSRestController
         $this->checkUserPermission($site);
 
         return $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams());
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @Rest\Get("/performancereports/sites")
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @return array
+     */
+    public function getSitesAction()
+    {
+        return $this->getReportBuilder()->getAllSitesReport($this->getParams());
     }
 
     /**

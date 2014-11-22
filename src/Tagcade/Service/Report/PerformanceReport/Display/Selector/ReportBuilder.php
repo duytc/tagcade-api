@@ -73,7 +73,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getPublishersReport(array $params = [])
+    public function getAllPublishersReport(array $params = [])
     {
         $publishers = $this->userManager->allPublisherRoles();
 
@@ -134,6 +134,20 @@ class ReportBuilder implements ReportBuilderInterface
     public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, array $params = [])
     {
         return $this->getReports(new AdNetworkReportTypes\Site($site, $adNetwork), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReport(array $params = [])
+    {
+        $publishers = $this->siteManager->all();
+
+        $reportTypes = array_map(function(SiteInterface $site) {
+            return new PlatformReportTypes\Site($site);
+        }, $publishers);
+
+        return $this->getReports($reportTypes, $params);
     }
 
     /**
