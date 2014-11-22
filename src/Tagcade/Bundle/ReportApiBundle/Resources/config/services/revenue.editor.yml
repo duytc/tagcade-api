@@ -1,0 +1,12 @@
+
+services:
+    tagcade.service.report.performance_report.est_cpm_calculator:
+        class: Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculator
+    ### Revenue editor
+    tagcade.service.revenue_editor:
+        class: Tagcade\Service\Report\PerformanceReport\Display\RevenueEditor
+        arguments:
+            - @tagcade.service.report.performance_report.display.selector.report_selector
+            - @tagcade.service.report.performance_report.est_cpm_calculator
+            - @doctrine.orm.entity_manager
+

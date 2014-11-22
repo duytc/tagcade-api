@@ -1,0 +1,37 @@
+
+services:
+
+    tagcade.service.billing.cost.calculator:
+        class: Tagcade\Service\Report\PerformanceReport\Display\BillingCostCalculator
+        arguments:
+            - %tc.defaultBillingRate%
+
+    ## statistics selector service
+
+    tagcade.service.statistics.platform.selector:
+        class: Tagcade\Service\Report\Statistics\Selector\PlatformStatistics
+        arguments:
+            - @tagcade.service.report.performance_report.display.selector.report_selector
+            - @tagcade.service.statistics.account.selector
+
+    tagcade.service.statistics.account.selector:
+        class: Tagcade\Service\Report\Statistics\Selector\AccountStatistics
+        arguments:
+            - @tagcade.service.report.performance_report.display.selector.report_selector
+            - @tagcade_user.domain_manager.user
+            - @tagcade.service.statistics.site.selector
+
+    tagcade.service.statistics.site.selector:
+        class: Tagcade\Service\Report\Statistics\Selector\SiteStatistics
+        arguments:
+                - @tagcade.service.report.performance_report.display.selector.report_selector
+                - @tagcade.domain_manager.site
+
+    ## statistics selector service
+    tagcade.service.statistics.selector:
+        class: Tagcade\Service\Report\Statistics\StatisticsSelector
+        arguments:
+            -
+                - @tagcade.service.statistics.platform.selector
+                - @tagcade.service.statistics.account.selector
+                - @tagcade.service.statistics.site.selector
