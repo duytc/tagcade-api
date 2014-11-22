@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
@@ -24,9 +25,9 @@ class Platform extends AbstractCalculatedReportType implements CalculatedReportT
                 throw new InvalidArgumentException('parameter must be an array of publishers');
             }
 
-            //if ($publisher->getUser()->hasDisplayModule()) {
+            if ($publisher->getUser()->hasDisplayModule()) {
                 $this->publishers[] = $publisher;
-            //}
+            }
         }
     }
 
@@ -38,8 +39,16 @@ class Platform extends AbstractCalculatedReportType implements CalculatedReportT
     /**
      * @inheritdoc
      */
-    public function isValidReport(ReportInterface $report)
+    public function matchesReport(ReportInterface $report)
     {
         return $report instanceof PlatformReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidSubReport(ReportInterface $report)
+    {
+        return $report instanceof AccountReportInterface;
     }
 }

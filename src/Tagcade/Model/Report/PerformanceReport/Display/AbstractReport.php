@@ -9,8 +9,6 @@ use DateTime;
 
 abstract class AbstractReport implements ReportInterface
 {
-    const REPORT_TYPE = null;
-
     use CalculateRatiosTrait;
 
     protected $id;
@@ -23,11 +21,6 @@ abstract class AbstractReport implements ReportInterface
     protected $estRevenue;
     protected $estCpm;
     protected $billingCost;
-
-    public function getReportType()
-    {
-        return static::REPORT_TYPE;
-    }
 
     /**
      * @inheritdoc
@@ -112,7 +105,15 @@ abstract class AbstractReport implements ReportInterface
     /**
      * @inheritdoc
      */
-    abstract protected function setFillRate();
+    protected function setFillRate()
+    {
+        $this->fillRate = $this->calculateFillRate();
+    }
+
+    /**
+     * @return float
+     */
+    abstract protected function calculateFillRate();
 
     /**
      * @inheritdoc

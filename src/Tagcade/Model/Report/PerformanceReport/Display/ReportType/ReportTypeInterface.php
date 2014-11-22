@@ -12,15 +12,10 @@ interface ReportTypeInterface
     public function getReportType();
 
     /**
-     * @return bool
-     */
-    public function isExpandable();
-
-    /**
      * Checks if the report is a valid report for this report type
      *
      * @param ReportInterface $report
      * @return bool
      */
-    public function isValidReport(ReportInterface $report);
+    public function matchesReport(ReportInterface $report);
 }

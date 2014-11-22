@@ -4,6 +4,7 @@ namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Pl
 
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
@@ -40,8 +41,16 @@ class AdSlot extends AbstractCalculatedReportType implements CalculatedReportTyp
     /**
      * @inheritdoc
      */
-    public function isValidReport(ReportInterface $report)
+    public function matchesReport(ReportInterface $report)
     {
         return $report instanceof AdSlotReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidSubReport(ReportInterface $report)
+    {
+        return $report instanceof AdTagReportInterface;
     }
 }

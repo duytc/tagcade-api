@@ -11,10 +11,12 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     /**
      * @inheritdoc
      */
-    protected function setFillRate()
+    protected function calculateFillRate()
     {
-        $this->fillRate = $this->getPercentage($this->getImpressions(), $this->getTotalOpportunities());
+        if ($this->getTotalOpportunities() === null) {
+            throw new RuntimeException('total opportunities must be defined to calculate fill rates');
+        }
 
-        return $this;
+        return $this->getPercentage($this->getImpressions(), $this->getTotalOpportunities());
     }
 }

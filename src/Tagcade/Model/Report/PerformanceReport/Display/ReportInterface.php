@@ -7,11 +7,6 @@ use DateTime;
 interface ReportInterface
 {
     /**
-     * @return string|null
-     */
-    public function getReportType();
-
-    /**
      * @return DateTime|null
      */
     public function getDate();
@@ -106,7 +101,7 @@ interface ReportInterface
 
     /**
      * @param $billingCost
-     * @return float
+     * @return $this
      */
     public function setBillingCost($billingCost);
 }

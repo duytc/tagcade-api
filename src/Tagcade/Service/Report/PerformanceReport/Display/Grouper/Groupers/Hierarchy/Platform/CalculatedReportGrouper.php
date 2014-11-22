@@ -15,6 +15,7 @@ class CalculatedReportGrouper extends AbstractGrouper
     {
         return new CalculatedReportGroup(
             $this->getReportType(),
+            $this->getReports(),
             $this->getReportName(),
             $this->getStartDate(),
             $this->getEndDate(),

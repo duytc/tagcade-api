@@ -5,6 +5,7 @@ namespace Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Pl
 use DateTime;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class CalculatedReportGroup extends ReportGroup
 {
@@ -12,6 +13,7 @@ class CalculatedReportGroup extends ReportGroup
 
     /**
      * @param ReportTypeInterface $reportType
+     * @param ReportInterface[] $reports
      * @param string $name
      * @param DateTime $startDate
      * @param DateTime $endDate
@@ -21,9 +23,9 @@ class CalculatedReportGroup extends ReportGroup
      * @param int $passbacks
      * @param float $fillRate
      */
-    public function __construct(ReportTypeInterface $reportType, $name, DateTime $startDate, DateTime $endDate, $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate)
+    public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate, $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate)
     {
-        parent::__construct($reportType, $name, $startDate, $endDate, $totalOpportunities, $impressions, $passbacks, $fillRate);
+        parent::__construct($reportType, $reports, $name, $startDate, $endDate, $totalOpportunities, $impressions, $passbacks, $fillRate);
 
         $this->slotOpportunities = $slotOpportunities;
     }

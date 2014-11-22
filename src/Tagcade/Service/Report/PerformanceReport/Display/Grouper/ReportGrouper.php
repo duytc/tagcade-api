@@ -2,7 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Grouper;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Collection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Service\Report\PerformanceReport\Display\Grouper\Groupers\DefaultGrouper;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
 use Tagcade\Service\Report\PerformanceReport\Display\Grouper\Groupers\Hierarchy\Platform\CalculatedReportGrouper;
@@ -13,7 +13,7 @@ class ReportGrouper implements ReportGrouperInterface
     /**
      * @inheritdoc
      */
-    public function groupReports(Collection $reportCollection)
+    public function groupReports(ReportCollection $reportCollection)
     {
         $grouper = static::group($reportCollection);
 
@@ -23,10 +23,10 @@ class ReportGrouper implements ReportGrouperInterface
     /**
      * Factory pattern to return a grouper
      *
-     * @param Collection $reportCollection
+     * @param ReportCollection $reportCollection
      * @return GrouperInterface
      */
-    public static function group(Collection $reportCollection)
+    public static function group(ReportCollection $reportCollection)
     {
         $reportType = $reportCollection->getReportType();
 

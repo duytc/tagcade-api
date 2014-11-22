@@ -2,16 +2,20 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
-use Tagcade\Exception\Report\InvalidDateException;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ExpandedReportCollection;
+use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\CalculatedReportTypeInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouperInterface;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Collection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\SelectorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreatorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 use DateTime;
 
 class ReportSelector implements ReportSelectorInterface
@@ -61,27 +65,11 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $group = false, $expand = false)
+    public function getReports(ReportTypeInterface $reportType, ParamsInterface $params)
     {
         $selector = $this->getSelectorFor($reportType);
 
-        $startDate = $this->dateUtil->getDateTime($startDate, true);
-        $endDate = $this->dateUtil->getDateTime($endDate);
-
-        if (!$endDate) {
-            $endDate = $startDate;
-        }
-
-        if ($startDate > $endDate) {
-            throw new InvalidDateException('start date must be before the end date');
-        }
-
-        $today = new DateTime('today');
-        if ($startDate > $today || $endDate > $today) {
-            throw new InvalidArgumentException('Can only get report information for reports older than today');
-        }
-
-        $todayIncludedInDateRange = $this->dateUtil->isTodayInRange($startDate, $endDate);
+        $todayIncludedInDateRange = $this->dateUtil->isTodayInRange($params->getStartDate(), $params->getEndDate());
 
         $reports = [];
 
@@ -90,29 +78,94 @@ class ReportSelector implements ReportSelectorInterface
             $reports[] = $this->reportCreator->getReport($reportType);
         }
 
-        if ($this->dateUtil->isDateBeforeToday($startDate)) {
+        if ($this->dateUtil->isDateBeforeToday($params->getStartDate())) {
             // get historical reports only if the start date is before today's date
+
+            $historicalEndDate = $params->getEndDate();
 
             if ($todayIncludedInDateRange) {
                 // since today is in the date range and we are building that report with the report creator
                 // set the end date to yesterday to make sure we do not query for the current day
-                $endDate = new DateTime('yesterday');
+                $historicalEndDate = new DateTime('yesterday');
             }
 
-            $historicalReports = $selector->getReports($reportType, $startDate, $endDate);
+            $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $historicalEndDate);
 
             $reports = array_merge($reports, $historicalReports);
 
-            unset($historicalReports); // used a var here for clarity
+            unset($historicalReports, $historicalEndDate);
         }
 
-        if ($group) {
-            $reports = $this->reportGrouper->groupReports(new Collection($reportType, $startDate, $endDate, $reports));
-        } else if ($expand && $reportType->isExpandable()) {
-            // do not allow both group and expand
-            $reports = array_map(function(SuperReportInterface $report) {
-                return $report->getSubReports()->toArray();
+        if (empty($reports)) {
+            false;
+        }
+
+        $reportName = null;
+
+        foreach($reports as $report) {
+            /** @var ReportInterface $report */
+
+            if (!$reportType->matchesReport($report)) {
+                throw new LogicException('You tried to add reports to a collection that did not match the supplied report type');
+            }
+
+            if (null === $reportName) {
+                $reportName = $report->getName();
+            }
+
+            unset($report);
+        }
+
+        if ($params->getExpanded() && $reportType instanceof CalculatedReportTypeInterface) {
+            $expandedReports = array_map(function(SuperReportInterface $report) {
+                return $report->getSubReports();
             }, $reports);
+
+            foreach($expandedReports as $subReports) {
+                foreach($subReports as $subReport) {
+                    /** @var ReportInterface $subReport */
+
+                    if (!$reportType->isValidSubReport($subReport)) {
+                        throw new LogicException('The sub reports were not valid for this report type');
+                    }
+                }
+            }
+
+            unset($subReports, $subReport);
+
+            $reportCollection = new ExpandedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reportName, $reports, $expandedReports);
+        } else {
+            $reportCollection = new ReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reportName, $reports);
+        }
+
+        $result = $reportCollection;
+
+        if ($params->getGrouped()) {
+            $result = $this->reportGrouper->groupReports($reportCollection);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getGroupedReports(ReportTypeInterface $reportType, ParamsInterface $params)
+    {
+        $params->setGrouped(true);
+
+        return $this->getReports($reportType, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMultipleReports(array $reportTypes, ParamsInterface $params)
+    {
+        $reports = [];
+
+        foreach($reportTypes as $reportType) {
+            $reports[] = $this->getReports($reportType, $params);
         }
 
         return $reports;
@@ -121,15 +174,11 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getMultipleReports(array $reportTypes, $startDate = null, $endDate = null, $group = false, $expand = false)
+    public function getMultipleGroupedReports(array $reportTypes, ParamsInterface $params)
     {
-        $reports = [];
+        $params->setGrouped(true);
 
-        foreach($reportTypes as $reportType) {
-            $reports[] = $this->getReports($reportType, $startDate, $endDate, $group, $expand);
-        }
-
-        return $reports;
+        return $this->getMultipleReports($reportTypes, $params);
     }
 
     /**

@@ -1,10 +1,8 @@
-Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup:
+Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection:
     exclusion_policy: NONE
     properties:
         reportType:
             inline: true
-        reports:
-            exclude: true
         startDate:
             type: DateTime<'Y-m-d'>
         endDate:

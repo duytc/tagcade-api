@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Grouper\Groupers;
 
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use DateTime;
 
 interface GrouperInterface
@@ -17,6 +18,11 @@ interface GrouperInterface
      * @return ReportTypeInterface
      */
     public function getReportType();
+
+    /**
+     * @return ReportInterface[]
+     */
+    public function getReports();
 
     /**
      * @return string

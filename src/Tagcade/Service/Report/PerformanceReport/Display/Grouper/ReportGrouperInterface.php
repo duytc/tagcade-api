@@ -3,13 +3,13 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Grouper;
 
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Collection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 
 interface ReportGrouperInterface
 {
     /**
-     * @param Collection $reportCollection
+     * @param ReportCollection $reportCollection
      * @return ReportGroup
      */
-    public function groupReports(Collection $reportCollection);
+    public function groupReports(ReportCollection $reportCollection);
 }

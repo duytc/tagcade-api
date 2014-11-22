@@ -2,21 +2,23 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\Fields\SlotOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Report\PerformanceReport\Display\AbstractCalculatedReport as BaseAbstractCalculatedReport;
 
 /**
  * The Ad Slot report extends the common AbstractCalculatedReport but it modifies the doCalculateFields method
  * because its sub reports are the core ad tag reports which do not have separate total and slot opportunities
  * So the doCalculateFields method is custom for this type of report
  */
-class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInterface
+class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportInterface
 {
-    const REPORT_TYPE = 'platform.adSlot';
-
     use SuperReportTrait;
+    use SlotOpportunitiesTrait;
 
     /**
      * @var AdSlotInterface
@@ -76,22 +78,25 @@ class AdSlotReport extends AbstractCalculatedReport implements AdSlotReportInter
             throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an AdTagReport');
         }
 
-        $this->_doSetRelativeFillRate();
-
         parent::doCalculateFields();
+    }
+
+    protected function aggregateSubReport(ReportInterface $subReport)
+    {
+        if (!$subReport instanceof AdTagReportInterface) {
+            throw new InvalidArgumentException('Expected AdTagReportInterface');
+        }
+
+        $subReport->setRelativeFillRate($this->getSlotOpportunities());
+
+        parent::aggregateSubReport($subReport);
+
     }
 
     protected function setDefaultName()
     {
         if ($this->adSlot instanceof AdSlotInterface) {
             $this->setName($this->adSlot->getName());
-        }
-    }
-
-    private function _doSetRelativeFillRate()
-    {
-        foreach($this->subReports as $adTagReport) {
-            $adTagReport->setRelativeFillRate($this->getSlotOpportunities());
         }
     }
 }

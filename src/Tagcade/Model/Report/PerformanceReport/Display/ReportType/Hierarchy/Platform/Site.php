@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -40,8 +41,16 @@ class Site extends AbstractCalculatedReportType implements CalculatedReportTypeI
     /**
      * @inheritdoc
      */
-    public function isValidReport(ReportInterface $report)
+    public function matchesReport(ReportInterface $report)
     {
         return $report instanceof SiteReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isValidSubReport(ReportInterface $report)
+    {
+        return $report instanceof AdSlotReportInterface;
     }
 }

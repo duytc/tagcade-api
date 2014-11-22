@@ -8,8 +8,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class SiteReport extends AbstractCalculatedReport implements SiteReportInterface
 {
-    const REPORT_TYPE = 'adNetwork.site';
-
     use SuperReportTrait;
 
     /**

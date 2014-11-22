@@ -7,8 +7,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkReportInterface
 {
-    const REPORT_TYPE = 'adNetwork.adNetwork';
-
     /**
      * @var AdNetworkInterface
      */

@@ -1,8 +1,8 @@
 Tagcade\Model\Report\PerformanceReport\Display\AbstractReport:
     exclusion_policy: NONE
-    virtual_properties:
-        getReportType:
-            type: string
+#    virtual_properties:
+#        getReportType:
+#            type: string
     properties:
         id:
             exclude: true

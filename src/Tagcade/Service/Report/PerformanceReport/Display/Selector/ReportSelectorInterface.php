@@ -3,7 +3,8 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 
 interface ReportSelectorInterface
 {
@@ -13,13 +14,19 @@ interface ReportSelectorInterface
      * i.e, a report for a single ad network over a date range
      *
      * @param ReportTypeInterface $reportType
-     * @param null $startDate
-     * @param null $endDate
-     * @param bool $group
-     * @param bool $expand
-     * @return ReportInterface[]
+     * @param ParamsInterface $params
+     * @return ReportCollection|ReportGroup|false
      */
-    public function getReports(ReportTypeInterface $reportType, $startDate = null, $endDate = null, $group = false, $expand = false);
+    public function getReports(ReportTypeInterface $reportType, ParamsInterface $params);
+
+    /**
+     * Convenience method to have a defined return type of ReportGroup
+     *
+     * @param ReportTypeInterface $reportType
+     * @param ParamsInterface $params
+     * @return ReportGroup|false
+     */
+    public function getGroupedReports(ReportTypeInterface $reportType, ParamsInterface $params);
 
     /**
      * Get reports for multiple report types over a date range
@@ -27,12 +34,17 @@ interface ReportSelectorInterface
      * i.e a report for multiple or all ad networks over a date range
      *
      * @param ReportTypeInterface[] $reportTypes
-     * @param null $startDate
-     * @param null $endDate
-     * @param bool $group Group the results into one report with aggregated/averaged values
-     * @param bool $expand Expand the results into their sub reports, i.e expand a site report into ad slot reports
-     *                     This option has no effect if group is true, it will take priority
-     * @return array
+     * @param ParamsInterface $params
+     * @return ReportCollection[]|ReportGroup[]|false
      */
-    public function getMultipleReports(array $reportTypes, $startDate = null, $endDate = null, $group = false, $expand = false);
+    public function getMultipleReports(array $reportTypes, ParamsInterface $params);
+
+    /**
+     * Convenience method to have a defined return type of ReportGroup[]
+     *
+     * @param array $reportTypes
+     * @param ParamsInterface $params
+     * @return ReportGroup[]|false
+     */
+    public function getMultipleGroupedReports(array $reportTypes, ParamsInterface $params);
 }
