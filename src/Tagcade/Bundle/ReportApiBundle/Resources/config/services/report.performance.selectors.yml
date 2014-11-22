@@ -1,0 +1,143 @@
+
+services:
+
+    ### Performance report repositories
+
+    tagcade.repository.report.performance_report.display.hierarchy.platform.platform:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.platform.account:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.platform.site:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.platform.ad_slot:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.platform.ad_tag:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport
+
+    ### get repository
+
+    tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_network:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.ad_network.site:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_tag:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport
+
+    ### Performance report selectors
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.platform:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Platform\Platform
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.platform
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.account:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Platform\Account
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.site:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Platform\Site
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.site
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.ad_slot:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Platform\AdSlot
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.ad_slot
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Platform\AdTag
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.ad_tag
+
+    ###
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_network:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork\AdNetwork
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_network
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.site:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork\Site
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.ad_network.site
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork\AdTag
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_tag
+
+    ### Report grouper service
+
+    tagcade.service.report.performance_report.display.grouper.report_report_grouper:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouper
+
+    ### Report selector service
+
+    tagcade.service.report.performance_report.display.selector.report_selector:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelector
+        arguments:
+            -
+                # platform selectors
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.platform
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.account
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.site
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.ad_slot
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.ad_tag
+                # ad network selectors
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_network
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.site
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_tag
+            - @tagcade.service.date_util
+            - @tagcade.service.report.performance_report.display.creator.report_creator
+            - @tagcade.service.report.performance_report.display.grouper.report_report_grouper
+
+    ###
+
+    tagcade.server.report.performance_report.display.selector.report_builder:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilder
+        arguments:
+            - @tagcade.service.report.performance_report.display.selector.report_selector
+            - @tagcade.service.date_util
+            - @tagcade_user.domain_manager.user
+            - @tagcade.domain_manager.ad_network
+            - @tagcade.domain_manager.site
+

@@ -1,0 +1,89 @@
+parameters:
+    tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
+
+services:
+
+    ### Performance report creators
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdTag
+        arguments:
+            - @tagcade.service.report.performance_report.est_cpm_calculator
+            - @tagcade.service.billing.cost.calculator
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlot
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\Site
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\Account
+        arguments:
+            - @tagcade.domain_manager.site
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.platform:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\Platform
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account
+
+    ###
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork\AdTag
+        arguments:
+            - @tagcade.service.report.performance_report.est_cpm_calculator
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork\Site
+        arguments:
+            - @tagcade.domain_manager.ad_tag
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_tag
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_network:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork\AdNetwork
+        arguments:
+            - @tagcade.domain_manager.site
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site
+
+
+    # legacy access to live performance report data
+
+    redis_array.performance_report_data:
+        class: RedisArray
+        arguments:
+            - %tc.legacy.live_performance_report.redis_hosts%
+
+    tagcade.legacy.cache.performance_report_data:
+        class: Tagcade\Legacy\Cache\RedisArrayCache
+        calls:
+            - [setRedis, [@redis_array.performance_report_data]]
+
+    tagcade.service.report.performance_report.display.counter.cache_event_counter:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter
+        arguments:
+            - @tagcade.legacy.cache.performance_report_data
+
+    ### Report creator service
+
+    tagcade.service.report.performance_report.display.creator.report_creator:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator
+        arguments:
+            -
+                # platform hierarchy
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.platform
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot
+                # ad network hierarchy
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_tag
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_network
+            - @tagcade.service.report.performance_report.display.counter.cache_event_counter
+

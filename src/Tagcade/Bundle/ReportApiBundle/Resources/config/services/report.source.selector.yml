@@ -1,0 +1,17 @@
+parameters:
+    tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
+
+services:
+    ###
+    tagcade.repository.source_report.report:
+        class: %tagcade.repository.source_report.report.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\SourceReport\Report
+
+    tagcade.service.report.source_report.report_selector:
+        class: Tagcade\Service\Report\SourceReport\ReportSelector
+        arguments:
+            - @tagcade.repository.source_report.report
+            - @tagcade.service.date_util
