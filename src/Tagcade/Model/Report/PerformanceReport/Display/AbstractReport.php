@@ -20,7 +20,6 @@ abstract class AbstractReport implements ReportInterface
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
-    protected $billingCost;
 
     /**
      * @inheritdoc
@@ -186,23 +185,4 @@ abstract class AbstractReport implements ReportInterface
     {
         // do nothing by default
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getBillingCost()
-    {
-        return $this->billingCost;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setBillingCost($billingCost)
-    {
-        $this->billingCost = $billingCost;
-
-        return $this;
-    }
-
 }

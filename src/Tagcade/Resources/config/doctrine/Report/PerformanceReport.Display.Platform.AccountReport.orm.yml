@@ -36,7 +36,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
             type: decimal
             scale: 4
             nullable: true
-        billingCost:
+        billedAmount:
             type: decimal
             scale: 4
             nullable: true

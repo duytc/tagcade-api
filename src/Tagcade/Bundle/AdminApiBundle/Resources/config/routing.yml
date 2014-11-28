@@ -7,3 +7,8 @@ admin_api_log:
     type: rest
     resource: Tagcade\Bundle\AdminApiBundle\Controller\ActionLogController
     name_prefix: admin_api_1_
+
+admin_api_billing:
+    type: rest
+    resource: Tagcade\Bundle\AdminApiBundle\Controller\BillingEditorController
+    name_prefix:  admin_api_1_

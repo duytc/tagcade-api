@@ -3,12 +3,17 @@ tagcade_admin_api:
     type:   rest
     prefix: /api/admin/v1
 
-api:
+tagcade_api:
     resource: "@TagcadeApiBundle/Resources/config/routing.yml"
     type:   rest
     prefix: /api/v1
 
-report_api:
+tagcade_report_api:
     resource: "@TagcadeReportApiBundle/Resources/config/routing.yml"
     type:   rest
     prefix: /api/reports/v1
+
+tagcade_statistics_api:
+    resource: "@TagcadeStatisticsApiBundle/Resources/config/routing.yml"
+    type:   rest
+    prefix: /api/staistics/v1

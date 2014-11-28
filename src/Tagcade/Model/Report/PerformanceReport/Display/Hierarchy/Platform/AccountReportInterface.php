@@ -6,7 +6,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
-interface AccountReportInterface extends CalculatedReportInterface, SuperReportInterface, SubReportInterface
+interface AccountReportInterface extends BillableInterface, CalculatedReportInterface, SuperReportInterface, SubReportInterface
 {
     /**
      * @return UserEntityInterface

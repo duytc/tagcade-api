@@ -5,11 +5,13 @@ namespace Tagcade\Model\Report\PerformanceReport\Display;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Report\PerformanceReport\CalculateEstCpmTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SubReportsTrait;
 
 abstract class AbstractCalculatedReport extends AbstractReport
 {
     use SubReportsTrait;
+    use CalculateEstCpmTrait;
 
     public function __construct()
     {
@@ -29,7 +31,6 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->impressions = 0;
         $this->passbacks = 0;
         $this->estRevenue = 0;
-        $this->billingCost = 0;
 
         foreach($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
@@ -40,7 +41,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
             unset($subReport);
         }
 
-        $this->setEstCpm($this->getWeightedEstCpm());
+        $this->setEstCpm($this->calculateEstCpm($this->getSubReports()));
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)
@@ -49,7 +50,6 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->addImpressions($subReport->getImpressions());
         $this->addPassbacks($subReport->getPassbacks());
         $this->addEstRevenue($subReport->getEstRevenue());
-        $this->addBillingCost($subReport->getBillingCost());
     }
 
     protected function addTotalOpportunities($totalOpportunities)
@@ -70,29 +70,5 @@ abstract class AbstractCalculatedReport extends AbstractReport
     protected function addEstRevenue($estRevenue)
     {
         $this->estRevenue += (float)$estRevenue;
-    }
-
-    protected function addBillingCost($billingCost)
-    {
-        $this->billingCost += (float)$billingCost;
-    }
-
-    protected function getWeightedEstCpm()
-    {
-        /**
-         * @var ReportInterface $report
-         */
-        $total = 0;
-        $totalWeight = 0;
-
-        foreach($this->getSubReports() as $report) {
-            $number = $report->getEstCpm();
-            $weight = $report->getEstRevenue();
-
-            $total += $number * $weight;
-            $totalWeight += $weight;
-        }
-
-        return $this->getRatio($total, $totalWeight);
     }
 }

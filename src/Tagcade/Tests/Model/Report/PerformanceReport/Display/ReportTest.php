@@ -24,7 +24,6 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setPassbacks(5)
             ->setPosition(1)
             ->setEstCpm(400)
-            ->setBillingCost(2)
         ;
 
         $this->adTagReport1 = $adTagReport1;
@@ -35,7 +34,6 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setPassbacks(4)
             ->setPosition(2)
             ->setEstCpm(1000)
-            ->setBillingCost(3)
         ;
 
         $this->adTagReport2 = $adTagReport2;
@@ -44,6 +42,7 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setSlotOpportunities(10)
             ->addSubReport($adTagReport1)
             ->addSubReport($adTagReport2)
+            ->setBilledAmount(10)
         ;
 
         // end first ad slot
@@ -54,7 +53,6 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setPassbacks(4)
             ->setPosition(1)
             ->setEstCpm(100)
-            ->setBillingCost(4)
         ;
 
         $adTagReport4 = (new PlatformReportTypes\AdTagReport())
@@ -63,13 +61,13 @@ class ReportTest extends \PHPUnit_Framework_TestCase
             ->setPassbacks(3)
             ->setPosition(2)
             ->setEstCpm(1000)
-            ->setBillingCost(5)
         ;
 
         $adSlotReport2 = (new PlatformReportTypes\AdSlotReport())
             ->setSlotOpportunities(22)
             ->addSubReport($adTagReport3)
             ->addSubReport($adTagReport4)
+            ->setBilledAmount(5)
         ;
 
         // end ad slot
@@ -182,8 +180,8 @@ class ReportTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(528.5714, round($this->platformReport->getEstCpm(), 4));
     }
 
-    public function testPlatformBillingCost()
+    public function testPlatformBilledAmount()
     {
-        $this->assertEquals(14, $this->platformReport->getBillingCost());
+        $this->assertEquals(15, $this->platformReport->getBilledAmount());
     }
 }

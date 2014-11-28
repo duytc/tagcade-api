@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
 use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
+use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
@@ -44,13 +45,19 @@ class ReportBuilder implements ReportBuilderInterface
      * @var SiteManagerInterface
      */
     protected $siteManager;
+    /**
+     * @var AdSlotManagerInterface
+     */
+    private $adSlotManager;
+
 
     public function __construct(
         ReportSelectorInterface $reportSelector,
         DateUtilInterface $dateUtil,
         UserManagerInterface $userManager,
         AdNetworkManagerInterface $adNetworkManager,
-        SiteManagerInterface $siteManager
+        SiteManagerInterface $siteManager,
+        AdSlotManagerInterface $adSlotManager
     )
     {
         $this->reportSelector = $reportSelector;
@@ -58,12 +65,13 @@ class ReportBuilder implements ReportBuilderInterface
         $this->userManager = $userManager;
         $this->adNetworkManager = $adNetworkManager;
         $this->siteManager = $siteManager;
+        $this->adSlotManager = $adSlotManager;
     }
 
     /**
      * @inheritdoc
      */
-    public function getPlatformReport(array $params = [])
+    public function getPlatformReport(Params $params)
     {
         $publishers = $this->userManager->allPublisherRoles();
 
@@ -73,7 +81,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getPublishersReport(array $params = [])
+    public function getAllPublishersReport(Params $params)
     {
         $publishers = $this->userManager->allPublisherRoles();
 
@@ -87,7 +95,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getPublisherReport(PublisherInterface $publisher, array $params = [])
+    public function getPublisherReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\Account($publisher), $params);
     }
@@ -95,7 +103,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getPublisherAdNetworksReport(PublisherInterface $publisher, array $params = [])
+    public function getPublisherAdNetworksReport(PublisherInterface $publisher, Params $params)
     {
         $adNetworks = $this->adNetworkManager->getAdNetworksForPublisher($publisher);
 
@@ -109,7 +117,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getAdNetworkReport(AdNetworkInterface $adNetwork, array $params = [])
+    public function getAdNetworkReport(AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getReports(new AdNetworkReportTypes\AdNetwork($adNetwork), $params);
     }
@@ -117,7 +125,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, array $params = [])
+    public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, Params $params)
     {
         $sites = $this->siteManager->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
 
@@ -131,7 +139,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, array $params = [])
+    public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
     {
         return $this->getReports(new AdNetworkReportTypes\Site($site, $adNetwork), $params);
     }
@@ -139,7 +147,21 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getPublisherSitesReport(PublisherInterface $publisher, array $params = [])
+    public function getAllSitesReport(Params $params)
+    {
+        $publishers = $this->siteManager->all();
+
+        $reportTypes = array_map(function(SiteInterface $site) {
+            return new PlatformReportTypes\Site($site);
+        }, $publishers);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherSitesReport(PublisherInterface $publisher, Params $params)
     {
         $sites = $this->siteManager->getSitesForPublisher($publisher);
 
@@ -153,7 +175,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getSiteReport(SiteInterface $site, array $params = [])
+    public function getSiteReport(SiteInterface $site, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\Site($site), $params);
     }
@@ -161,7 +183,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getSiteAdSlotsReport(SiteInterface $site, array $params = [])
+    public function getSiteAdSlotsReport(SiteInterface $site, Params $params)
     {
         $adSlots = $site->getAdSlots()->toArray();
 
@@ -175,7 +197,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getAdSlotReport(AdSlotInterface $adSlot, array $params = [])
+    public function getAdSlotReport(AdSlotInterface $adSlot, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\AdSlot($adSlot), $params);
     }
@@ -183,7 +205,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, array $params = [])
+    public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, Params $params)
     {
         $adTags = $adSlot->getAdTags()->toArray();
 
@@ -197,39 +219,38 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @inheritdoc
      */
-    public function getAdTagReport(AdTagInterface $adTag, array $params = [])
+    public function getAdTagReport(AdTagInterface $adTag, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\AdTag($adTag), $params);
     }
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    protected function getReports($reportType, array $params = [])
+    protected function getReports($reportType, Params $params)
     {
-        // create a params array with all values set to null
-        $defaultParams = array_fill_keys([
-            self::PARAM_START_DATE,
-            self::PARAM_END_DATE,
-            self::PARAM_EXPAND,
-            self::PARAM_GROUP
-        ], null);
-
-        $params = array_merge($defaultParams, $params);
-
-        $startDate = $this->dateUtil->getDateTime($params[self::PARAM_START_DATE], true);
-        $endDate = $this->dateUtil->getDateTime($params[self::PARAM_END_DATE]);
-        $expanded = filter_var($params[self::PARAM_EXPAND], FILTER_VALIDATE_BOOLEAN);
-        $grouped = filter_var($params[self::PARAM_GROUP], FILTER_VALIDATE_BOOLEAN);
-
-        $params = new Params($startDate, $endDate, $expanded, $grouped);
-
         if (is_array($reportType)) {
             return $this->reportSelector->getMultipleReports($reportType, $params);
         }
 
         return $this->reportSelector->getReports($reportType, $params);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params)
+    {
+        $adSlots = $this->adSlotManager->getAdSlotsForPublisher($publisher);
+
+        $reportTypes = array_map(function($adSlot) {
+            return new PlatformReportTypes\AdSlot($adSlot);
+        }, $adSlots);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+
 }

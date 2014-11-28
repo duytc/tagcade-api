@@ -58,4 +58,25 @@ interface GrouperInterface
      * @return float
      */
     public function getFillRate();
+
+    /**
+     * @return float
+     */
+    public function getEstCpm();
+
+    /**
+     * @return float
+     */
+    public function getEstRevenue();
+
+    /**
+     * @return float
+     */
+    public function getAverageEstCpm();
+
+    /**
+     * @return float
+     */
+    public function getAverageEstRevenue();
+
 }

@@ -34,10 +34,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
             type: decimal
             scale: 4
             nullable: true
-        billingCost:
-            type: decimal
-            scale: 4
-            nullable: true
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site

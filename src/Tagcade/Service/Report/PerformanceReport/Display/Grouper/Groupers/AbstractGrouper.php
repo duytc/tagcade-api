@@ -6,6 +6,8 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
+use Tagcade\Model\Report\CalculateRevenueTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateEstCpmTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use DateTime;
 
@@ -22,6 +24,8 @@ use DateTime;
 abstract class AbstractGrouper implements GrouperInterface
 {
     use CalculateRatiosTrait;
+    use CalculateEstCpmTrait;
+    use CalculateRevenueTrait;
 
     private $reportType;
     private $reports;
@@ -32,7 +36,15 @@ abstract class AbstractGrouper implements GrouperInterface
     private $impressions;
     private $passbacks;
     private $fillRate;
+    private $estCpm;
+    private $estRevenue;
+    private $averageTotalOpportunities;
+    private $averageImpressions;
+    private $averagePassbacks;
+    private $averageEstCpm;
+    private $averageEstRevenue;
 
+    private $totalEstCpm;
     /**
      * @param ReportCollection $reportCollection
      */
@@ -65,7 +77,14 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->getTotalOpportunities(),
             $this->getImpressions(),
             $this->getPassbacks(),
-            $this->getFillRate()
+            $this->getFillRate(),
+            $this->getEstCpm(),
+            $this->getEstRevenue(),
+            $this->getAverageTotalOpportunities(),
+            $this->getAverageImpressions(),
+            $this->getAveragePassbacks(),
+            $this->getAverageEstCpm(),
+            $this->getAverageEstRevenue()
         );
     }
 
@@ -95,6 +114,15 @@ abstract class AbstractGrouper implements GrouperInterface
         }
 
         $this->setFillRate();
+        $this->estCpm = $this->calculateEstCpm($reports);
+
+        // Calculate average for totalOpportunities,impressions and passbacks
+        $reportCount = count($this->getReports());
+        $this->averageTotalOpportunities = $this->getRatio($this->getTotalOpportunities(), $reportCount);
+        $this->averageImpressions = $this->getRatio($this->getImpressions(), $reportCount);
+        $this->averagePassbacks = $this->getRatio($this->getPassbacks(), $reportCount);
+        $this->averageEstCpm = $this->getRatio($this->getTotalEstCpm(), $reportCount);
+        $this->averageEstRevenue = $this->getRatio($this->getEstRevenue(), $reportCount);
     }
 
     protected function addTotalOpportunities($totalOpportunities)
@@ -112,6 +140,16 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->passbacks += (int) $passbacks;
     }
 
+    protected function addEstRevenue($estRevenue)
+    {
+        $this->estRevenue += (float) $estRevenue;
+    }
+
+    protected function addTotalEstCpm($estCpm)
+    {
+        $this->totalEstCpm += (float) $estCpm;
+    }
+
     protected function setFillRate()
     {
         $this->fillRate = $this->calculateFillRate();
@@ -127,6 +165,8 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->addTotalOpportunities($report->getTotalOpportunities());
         $this->addImpressions($report->getImpressions());
         $this->addPassbacks($report->getPassbacks());
+        $this->addTotalEstCpm($report->getEstCpm());
+        $this->addEstRevenue($report->getEstRevenue());
     }
 
     /**
@@ -197,4 +237,72 @@ abstract class AbstractGrouper implements GrouperInterface
     {
         return $this->fillRate;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAverageTotalOpportunities()
+    {
+        return $this->averageTotalOpportunities;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAverageImpressions()
+    {
+        return $this->averageImpressions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAveragePassbacks()
+    {
+        return $this->averagePassbacks;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEstCpm()
+    {
+        return $this->estCpm;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEstRevenue()
+    {
+        return $this->estRevenue;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAverageEstCpm()
+    {
+        return $this->averageEstCpm;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAverageEstRevenue()
+    {
+        return $this->averageEstRevenue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalEstCpm()
+    {
+        return $this->totalEstCpm;
+    }
+
+
+
+
 }

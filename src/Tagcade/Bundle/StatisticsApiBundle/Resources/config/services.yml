@@ -1,0 +1,22 @@
+services:
+    ## statistics service
+
+    tagcade.service.statistics.account:
+        class: Tagcade\Service\Statistics\Provider\AccountStatistics
+        arguments:
+            - @tagcade.server.report.performance_report.display.selector.report_builder
+
+    tagcade.service.statistics.site:
+        class: Tagcade\Service\Statistics\Provider\SiteStatistics
+        arguments:
+            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.domain_manager.site
+
+    ## statistics provider service
+    tagcade.service.statistics:
+        class: Tagcade\Service\Statistics\Statistics
+        arguments:
+            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.statistics.account
+            - @tagcade.service.statistics.site
+            - %tc.statistics.number_previous_days_to_include%

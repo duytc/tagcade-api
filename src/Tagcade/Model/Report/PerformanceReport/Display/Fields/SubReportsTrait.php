@@ -16,6 +16,9 @@ trait SubReportsTrait
      */
     protected $subReports;
 
+    /**
+     * @return ReportInterface[]
+     */
     public function getSubReports()
     {
         return $this->subReports->toArray();

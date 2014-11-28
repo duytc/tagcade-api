@@ -1,0 +1,4 @@
+api_statistics:
+    type: rest
+    resource: Tagcade\Bundle\StatisticsApiBundle\Controller\StatisticsController
+    name_prefix:  statistics_api_1_

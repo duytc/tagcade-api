@@ -23,6 +23,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     protected function doCalculateFields()
     {
         $this->slotOpportunities = 0;
+        $this->billedAmount = 0;
 
         parent::doCalculateFields();
     }
@@ -34,6 +35,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         }
 
         $this->addSlotOpportunities($subReport->getSlotOpportunities());
+        $this->addBilledAmount($subReport->getBilledAmount());
 
         parent::aggregateSubReport($subReport);
 
@@ -43,4 +45,10 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     {
         $this->slotOpportunities += $slotOpportunities;
     }
+
+    protected function addBilledAmount($billedAmount)
+    {
+        $this->billedAmount += (float)$billedAmount;
+    }
+
 }

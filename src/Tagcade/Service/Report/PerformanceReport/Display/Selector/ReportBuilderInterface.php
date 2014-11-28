@@ -13,92 +13,105 @@ use Tagcade\Model\User\Role\PublisherInterface;
 interface ReportBuilderInterface
 {
     /**
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getPlatformReport(array $params = []);
+    public function getPlatformReport(Params $params);
 
     /**
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getPublishersReport(array $params = []);
-
-    /**
-     * @param PublisherInterface $publisher
-     * @param array $params
-     * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
-     */
-    public function getPublisherReport(PublisherInterface $publisher, array $params = []);
+    public function getAllPublishersReport(Params $params);
 
     /**
      * @param PublisherInterface $publisher
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getPublisherAdNetworksReport(PublisherInterface $publisher, array $params = []);
+    public function getPublisherReport(PublisherInterface $publisher, Params $params);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
+     */
+    public function getPublisherAdNetworksReport(PublisherInterface $publisher, Params $params);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
+     */
+    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params);
 
     /**
      * @param AdNetworkInterface $adNetwork
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getAdNetworkReport(AdNetworkInterface $adNetwork, array $params = []);
+    public function getAdNetworkReport(AdNetworkInterface $adNetwork, Params $params);
 
     /**
      * @param AdNetworkInterface $adNetwork
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, array $params = []);
+    public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, Params $params);
 
     /**
      * @param AdNetworkInterface $adNetwork
      * @param SiteInterface $site
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, array $params = []);
+    public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
+
+    /**
+     * @param Params $params
+     * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
+     */
+    public function getAllSitesReport(Params $params);
 
     /**
      * @param PublisherInterface $publisher
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getPublisherSitesReport(PublisherInterface $publisher, array $params = []);
+    public function getPublisherSitesReport(PublisherInterface $publisher, Params $params);
 
     /**
      * @param SiteInterface $site
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getSiteReport(SiteInterface $site, array $params = []);
+    public function getSiteReport(SiteInterface $site, Params $params);
 
     /**
      * @param SiteInterface $site
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getSiteAdSlotsReport(SiteInterface $site, array $params = []);
+    public function getSiteAdSlotsReport(SiteInterface $site, Params $params);
 
     /**
      * @param AdSlotInterface $adSlot
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getAdSlotReport(AdSlotInterface $adSlot, array $params = []);
+    public function getAdSlotReport(AdSlotInterface $adSlot, Params $params);
 
     /**
      * @param AdSlotInterface $adSlot
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, array $params = []);
+    public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, Params $params);
 
     /**
      * @param AdTagInterface $adTag
-     * @param array $params
+     * @param Params $params
      * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
      */
-    public function getAdTagReport(AdTagInterface $adTag, array $params = []);
+    public function getAdTagReport(AdTagInterface $adTag, Params $params);
 }

@@ -1,0 +1,5 @@
+Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics:
+    exclusion_policy: NONE
+    properties:
+        report:
+            inline: true

@@ -9,12 +9,12 @@ services:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdTag
         arguments:
             - @tagcade.service.report.performance_report.est_cpm_calculator
-            - @tagcade.service.billing.cost.calculator
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlot
         arguments:
             - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag
+            - @tagcade.service.report.performance_report.display.billing.billing_calculator
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\Site

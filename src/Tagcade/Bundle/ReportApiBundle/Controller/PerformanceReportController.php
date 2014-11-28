@@ -10,6 +10,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 /**
@@ -50,7 +51,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getPublishersAction()
     {
-        return $this->getReportBuilder()->getPublishersReport($this->getParams());
+        return $this->getReportBuilder()->getAllPublishersReport($this->getParams());
     }
 
     /**
@@ -212,6 +213,23 @@ class PerformanceReportController extends FOSRestController
         $this->checkUserPermission($site);
 
         return $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams());
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @Rest\Get("/performancereports/sites")
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @return array
+     */
+    public function getSitesAction()
+    {
+        return $this->getReportBuilder()->getAllSitesReport($this->getParams());
     }
 
     /**
@@ -444,6 +462,33 @@ class PerformanceReportController extends FOSRestController
      */
     protected function getParams()
     {
-        return $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        return $this->_createParams($params);
+    }
+
+    /**
+     * @var array $params
+     * @return Params
+     */
+    private function _createParams(array $params)
+    {
+        // create a params array with all values set to null
+        $defaultParams = array_fill_keys([
+                Params::PARAM_START_DATE,
+                Params::PARAM_END_DATE,
+                Params::PARAM_EXPAND,
+                Params::PARAM_GROUP
+            ], null);
+
+        $params = array_merge($defaultParams, $params);
+
+        $dateUtil = $this->get('tagcade.service.date_util');
+        $startDate = $dateUtil->getDateTime($params[Params::PARAM_START_DATE], true);
+        $endDate = $dateUtil->getDateTime($params[Params::PARAM_END_DATE]);
+
+        $expanded = filter_var($params[Params::PARAM_EXPAND], FILTER_VALIDATE_BOOLEAN);
+        $grouped = filter_var($params[Params::PARAM_GROUP], FILTER_VALIDATE_BOOLEAN);
+
+        return new Params($startDate, $endDate, $expanded, $grouped);
     }
 }

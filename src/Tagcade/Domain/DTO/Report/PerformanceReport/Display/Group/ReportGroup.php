@@ -14,11 +14,36 @@ class ReportGroup
     private $name;
     private $startDate;
     private $endDate;
+    private $fillRate;
+
+    /**
+     * @var int
+     */
     private $totalOpportunities;
     private $impressions;
     private $passbacks;
-    private $fillRate;
 
+    /**
+     * @var float
+     */
+    private $estCpm;
+    /**
+     * @var float
+     */
+    private $estRevenue;
+
+    private $averageTotalOpportunities;
+    private $averageImpressions;
+    private $averagePassbacks;
+
+    /**
+     * @var float
+     */
+    private $averageEstCpm;
+    /**
+     * @var float
+     */
+    private $averageEstRevenue;
     /**
      * @param ReportTypeInterface $reportType
      * @param ReportInterface[] $reports
@@ -29,8 +54,18 @@ class ReportGroup
      * @param int $impressions
      * @param int $passbacks
      * @param float $fillRate
+     * @param float $estCpm
+     * @param float $estRevenue
+     * @param float $averageTotalOpportunities
+     * @param float $averageImpressions
+     * @param float $averagePassbacks
+     * @param float $averageEstCpm
+     * @param float $averageEstRevenue
      */
-    public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate, $totalOpportunities, $impressions, $passbacks, $fillRate)
+    public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
+        $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue
+    )
     {
         $this->reportType = $reportType;
         $this->reports = $reports;
@@ -41,6 +76,14 @@ class ReportGroup
         $this->impressions = $impressions;
         $this->passbacks = $passbacks;
         $this->fillRate = $fillRate;
+        $this->estCpm = $estCpm;
+        $this->estRevenue = $estRevenue;
+
+        $this->averageTotalOpportunities = $averageTotalOpportunities;
+        $this->averageImpressions = $averageImpressions;
+        $this->averagePassbacks = $averagePassbacks;
+        $this->averageEstCpm = $averageEstCpm;
+        $this->averageEstRevenue = $averageEstRevenue;
     }
 
     /**
@@ -114,4 +157,62 @@ class ReportGroup
     {
         return $this->fillRate;
     }
+
+    /**
+     * @return float
+     */
+    public function getAverageTotalOpportunities()
+    {
+        return $this->averageTotalOpportunities;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageImpressions()
+    {
+        return $this->averageImpressions;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAveragePassbacks()
+    {
+        return $this->averagePassbacks;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEstCpm()
+    {
+        return $this->estCpm;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEstRevenue()
+    {
+        return $this->estRevenue;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageEstCpm()
+    {
+        return $this->averageEstCpm;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageEstRevenue()
+    {
+        return $this->averageEstRevenue;
+    }
+
+
 }

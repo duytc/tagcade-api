@@ -94,14 +94,4 @@ interface ReportInterface
      */
     public function setCalculatedFields();
 
-    /**
-     * @return float|null
-     */
-    public function getBillingCost();
-
-    /**
-     * @param $billingCost
-     * @return $this
-     */
-    public function setBillingCost($billingCost);
 }
