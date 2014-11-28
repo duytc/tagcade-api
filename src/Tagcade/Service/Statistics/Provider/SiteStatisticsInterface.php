@@ -13,25 +13,22 @@ interface SiteStatisticsInterface extends ProviderStatisticsInterface
      * @param PublisherInterface $publisher
      * @param Params $params
      * @param int $limit
-     * @param string $order
      * @return CalculatedReportGroup[]
      */
-    public function getTopSitesForPublisherByTotalOpportunities(PublisherInterface $publisher, Params $params, $limit = 7, $order = 'DESC');
+    public function getTopSitesForPublisherByTotalOpportunities(PublisherInterface $publisher, Params $params, $limit = 10);
 
     /**
      * @param PublisherInterface $publisher
      * @param Params $params
      * @param int $limit
-     * @param string $order
      * @return CalculatedReportGroup[]
      */
-    public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, Params $params, $limit = 7, $order = 'DESC');
+    public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, Params $params, $limit = 10);
 
     /**
      * @param Params $params
      * @param int $limit
-     * @param string $order
      * @return CalculatedReportGroup[]
      */
-    public function getTopSiteByBilledAmount(Params $params, $limit = 7, $order = 'DESC');
+    public function getTopSitesByBilledAmount(Params $params, $limit = 10);
 } 

@@ -27,22 +27,22 @@ class AccountStatistics implements AccountStatisticsInterface
     /**
      * @inheritdoc
      */
-    public function getTopPublishersByBilledAmount(Params $params, $limit = 7, $order = 'DESC')
+    public function getTopPublishersByBilledAmount(Params $params, $limit = 10)
     {
         $params->setGrouped(true);
         $allPublishersReports = $this->reportBuilder->getAllPublishersReport($params);
 
-        return $this->topList($allPublishersReports, $sortBy = 'billedAmount', $limit, $order);
+        return $this->topList($allPublishersReports, $sortBy = 'billedAmount', $limit);
     }
 
     /**
      * @inheritdoc
      */
-    public function getTopAdNetworksByEstRevenueForPublisher(PublisherInterface $publisher, Params $params, $limit = 7, $order = 'DESC')
+    public function getTopAdNetworksByEstRevenueForPublisher(PublisherInterface $publisher, Params $params, $limit = 10)
     {
         $params->setGrouped(true);
         $adNetworksReports = $this->reportBuilder->getPublisherAdNetworksReport($publisher, $params);
 
-        return $this->topList($adNetworksReports, $sortBy = 'estRevenue', $limit, $order);
+        return $this->topList($adNetworksReports, $sortBy = 'estRevenue', $limit);
     }
 }

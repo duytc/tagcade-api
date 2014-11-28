@@ -14,7 +14,7 @@ trait TopListFilter
      * @param string $order
      * @return array
      */
-    protected function topList(array $statisticsList, $sortBy, $limit = 7, $order = 'ASC')
+    protected function topList(array $statisticsList, $sortBy, $limit = 10, $order = 'DESC')
     {
         if ($statisticsList === null || !is_array($statisticsList)) {
             throw new InvalidArgumentException('statistic list array required');

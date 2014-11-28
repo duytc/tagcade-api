@@ -21,27 +21,27 @@ class SiteStatistics implements SiteStatisticsInterface
     {
         $this->reportBuilder = $reportBuilder;
     }
-    public function getTopSitesForPublisherByTotalOpportunities(PublisherInterface $publisher, Params $params, $limit = 7, $order = 'DESC')
+    public function getTopSitesForPublisherByTotalOpportunities(PublisherInterface $publisher, Params $params, $limit = 10)
     {
         $params->setGrouped(true);
         $allSitesByPublisherReports = $this->reportBuilder->getPublisherSitesReport($publisher, $params);
 
-        return $this->topList($allSitesByPublisherReports, $sortBy = 'totalOpportunities', $limit, $order);
+        return $this->topList($allSitesByPublisherReports, $sortBy = 'totalOpportunities', $limit);
     }
 
-    public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, Params $params, $limit = 7, $order = 'DESC')
+    public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, Params $params, $limit = 10)
     {
         $params->setGrouped(true);
         $allSitesByPublisherReports = $this->reportBuilder->getPublisherSitesReport($publisher, $params);
 
-        return $this->topList($allSitesByPublisherReports, $sortBy = 'estRevenue', $limit, $order);
+        return $this->topList($allSitesByPublisherReports, $sortBy = 'estRevenue', $limit);
     }
 
-    public function getTopSiteByBilledAmount(Params $params, $limit = 7, $order = 'DESC')
+    public function getTopSitesByBilledAmount(Params $params, $limit = 10)
     {
         $params->setGrouped(true);
         $allSiteReports = $this->reportBuilder->getAllSitesReport($params);
 
-        return $this->topList($allSiteReports, $sortBy = 'billedAmount', $limit, $order);
+        return $this->topList($allSiteReports, $sortBy = 'billedAmount', $limit);
     }
 }

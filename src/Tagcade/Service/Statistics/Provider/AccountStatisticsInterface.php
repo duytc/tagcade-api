@@ -13,17 +13,15 @@ interface AccountStatisticsInterface extends ProviderStatisticsInterface
     /**
      * @param Params $params
      * @param int $limit
-     * @param string $order
      * @return AccountStatisticsDTO[]
      */
-    public function getTopPublishersByBilledAmount(Params $params, $limit = 7, $order = 'DESC');
+    public function getTopPublishersByBilledAmount(Params $params, $limit = 10);
 
     /**
      * @param PublisherInterface $publisher
      * @param Params $params
      * @param int $limit
-     * @param string $order
      * @return CalculatedReportGroup[]
      */
-    public function getTopAdNetworksByEstRevenueForPublisher(PublisherInterface $publisher, Params $params, $limit = 7, $order = 'DESC');
+    public function getTopAdNetworksByEstRevenueForPublisher(PublisherInterface $publisher, Params $params, $limit = 10);
 }
