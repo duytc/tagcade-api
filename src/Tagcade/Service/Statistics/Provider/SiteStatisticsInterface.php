@@ -5,9 +5,8 @@ namespace Tagcade\Service\Statistics\Provider;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
-use Tagcade\Service\Statistics\ProviderStatisticsInterface;
 
-interface SiteStatisticsInterface extends ProviderStatisticsInterface
+interface SiteStatisticsInterface
 {
     /**
      * @param PublisherInterface $publisher
