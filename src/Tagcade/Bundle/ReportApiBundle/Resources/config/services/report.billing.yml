@@ -1,0 +1,26 @@
+parameters:
+    tagcade.service.report.performance_report.display.billing.billing_calculator.class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculator
+services:
+
+    ### service billing rate
+    tagcade.service.report.performance_report.display.billing.calculator_config:
+        public: false
+        class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+        factory_class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+        factory_method: createConfig
+        arguments:
+            - %tc.billing.thresholds%
+
+    tagcade.service.report.performance_report.display.billing.billing_calculator:
+        class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+        arguments:
+            - %tc.billing.defaultCpmRate%
+            - @tagcade.service.report.performance_report.display.billing.calculator_config
+
+    tagcade.service.report.performance_report.display.billing.billed_amount_editor:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor
+        arguments:
+            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @doctrine.orm.entity_manager
+

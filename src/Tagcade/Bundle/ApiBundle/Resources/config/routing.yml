@@ -32,3 +32,8 @@ api_ad_network:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\AdNetworkController
     name_prefix:  api_1_
+
+api_revenue:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\Revenue\RevenueEditorController
+    name_prefix:  api_1_

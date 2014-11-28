@@ -5,10 +5,13 @@
 /app/logs/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
+/dev/
 /build/
 /vendor/
 /bin/
 /composer.phar
 .idea
 phpunit*
+app/SymfonyRequirements.php
+app/check.php
 dev/custom

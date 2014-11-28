@@ -14,8 +14,9 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork;
 use Tagcade\Model\Report\PerformanceReport\Display\RootReportInterface;
 
-class RevenueEditor implements RevenueEditorInterface {
-
+class RevenueEditor implements RevenueEditorInterface
+{
+    use GetRootReportTrait;
     /**
      * @var ReportSelectorInterface
      */
@@ -97,29 +98,6 @@ class RevenueEditor implements RevenueEditorInterface {
         $this->om->flush();
 
         return $this;
-    }
-
-    /**
-     * @param BaseAdTagReportInterface $adTagReport
-     * @return RootReportInterface;
-     */
-    protected function getRootReport(BaseAdTagReportInterface $adTagReport)
-    {
-        $current = $adTagReport;
-
-        // Loop 10 times to prevent infinite loop due to programming mistake
-        for($i = 0; $i < 10; $i ++) {
-            $current = $current->getSuperReport();
-            if($current instanceof RootReportInterface) {
-                break;
-            }
-        }
-
-        if(!$current instanceof RootReportInterface) {
-            throw new LogicException('Expected RootReportInterface');
-        }
-
-        return $current;
     }
 
     /**

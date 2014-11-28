@@ -2,11 +2,12 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
+use Tagcade\Model\User\Role\Publisher;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
-
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
 
@@ -14,9 +15,15 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
 {
     use HasSubReportsTrait;
 
-    public function __construct(AdTagInterface $subReportCreator)
+    /**
+     * @var BillingCalculatorInterface
+     */
+    private $billingCostCalculator;
+
+    public function __construct(AdTagInterface $subReportCreator, BillingCalculatorInterface $billingCostCalculator)
     {
         $this->subReportCreator = $subReportCreator;
+        $this->billingCostCalculator = $billingCostCalculator;
     }
 
     /**
@@ -34,6 +41,8 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             ->setAdSlot($adSlot)
             ->setDate($this->getDate())
             ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()))
+            ->setBilledAmount($this->billingCostCalculator->calculateBilledAmountForPublisher(new Publisher($adSlot->getSite()->getPublisher()), $report->getSlotOpportunities() ) )
+
         ;
 
         foreach ($adSlot->getAdTags() as $adTag) {

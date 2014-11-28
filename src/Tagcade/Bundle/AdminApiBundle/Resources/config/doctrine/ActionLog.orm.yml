@@ -13,7 +13,6 @@ Tagcade\Bundle\AdminApiBundle\Entity\ActionLog:
             length: 45
         action:
             type: string
-            columnDefinition: ENUM('LOGIN', 'CREATE', 'UPDATE', 'DELETE')
         data:
             type: json_array
             nullable: true

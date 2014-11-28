@@ -7,6 +7,10 @@ use Tagcade\Exception\Report\InvalidDateException;
 
 class Params implements ParamsInterface
 {
+    const PARAM_START_DATE = 'startDate';
+    const PARAM_END_DATE = 'endDate';
+    const PARAM_EXPAND = 'expand';
+    const PARAM_GROUP = 'group';
     /**
      * @var DateTime
      */

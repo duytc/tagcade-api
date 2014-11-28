@@ -9,6 +9,7 @@ parameters:
     tagcade.security.auth.voter.ad_slot.class: Tagcade\Security\Authorization\Voter\AdSlotVoter
     tagcade.security.auth.voter.ad_tag.class: Tagcade\Security\Authorization\Voter\AdTagVoter
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
+    tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
 
     # event dispatched on user action such as add, remove, delete
     tagcade.events.handler_event: 'tagcade.events.handler_event'
@@ -34,6 +35,12 @@ services:
 
     tagcade.security.auth.voter.ad_network:
         class:  %tagcade.security.auth.voter.ad_network.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.user:
+        class:  %tagcade.security.auth.voter.user.class%
         public: false
         tags:
             - { name: security.voter }

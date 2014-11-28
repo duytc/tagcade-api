@@ -99,4 +99,6 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
             $this->setName($this->adSlot->getName());
         }
     }
+
+
 }

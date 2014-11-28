@@ -10,6 +10,7 @@ use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform
 class CalculatedReportGrouper extends AbstractGrouper
 {
     private $slotOpportunities;
+    private $billedAmount;
 
     public function getGroupedReport()
     {
@@ -23,13 +24,28 @@ class CalculatedReportGrouper extends AbstractGrouper
             $this->getSlotOpportunities(), // added field
             $this->getImpressions(),
             $this->getPassbacks(),
-            $this->getFillRate()
+            $this->getFillRate(),
+            $this->getTotalBilledAmount(),
+            $this->getEstCpm(),
+            $this->getEstRevenue(),
+
+            $this->getAverageTotalOpportunities(),
+            $this->getAverageImpressions(),
+            $this->getAveragePassbacks(),
+            $this->getAverageEstCpm(),
+            $this->getAverageEstRevenue()
+
         );
     }
 
     protected function addSlotOpportunities($slotOpportunities)
     {
         $this->slotOpportunities += (int) $slotOpportunities;
+    }
+
+    protected function addBilledAmount($billedAmount)
+    {
+        $this->billedAmount += (float) $billedAmount;
     }
 
     protected function doGroupReport(ReportInterface $report)
@@ -39,6 +55,7 @@ class CalculatedReportGrouper extends AbstractGrouper
         /** @var CalculatedReportInterface $report */
 
         $this->addSlotOpportunities($report->getSlotOpportunities());
+        $this->addBilledAmount($report->getBilledAmount());
     }
 
     protected function calculateFillRate()
@@ -53,4 +70,14 @@ class CalculatedReportGrouper extends AbstractGrouper
     {
         return $this->slotOpportunities;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalBilledAmount()
+    {
+        return $this->billedAmount;
+    }
+
+
 }

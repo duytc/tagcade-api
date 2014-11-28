@@ -1,0 +1,5 @@
+Tagcade\Domain\DTO\Statistics\DaySummary:
+    exclusion_policy: NONE
+    properties:
+        report:
+            inline: true

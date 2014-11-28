@@ -6,7 +6,7 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
-interface SiteReportInterface extends CalculatedReportInterface, SuperReportInterface, SubReportInterface
+interface SiteReportInterface extends BillableInterface, CalculatedReportInterface, SuperReportInterface, SubReportInterface
 {
     /**
      * @return SiteInterface

@@ -2,4 +2,4 @@ imports:
     - { resource: services/revenue.editor.yml }
     - { resource: services/report.performance.creators.yml }
     - { resource: services/report.performance.selectors.yml }
-    - { resource: services/statistics.yml }
+    - { resource: services/report.billing.yml }

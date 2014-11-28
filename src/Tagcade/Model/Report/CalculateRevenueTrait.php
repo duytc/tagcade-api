@@ -6,8 +6,6 @@ use Tagcade\Exception\RuntimeException;
 
 trait CalculateRevenueTrait
 {
-    use CalculateRatiosTrait;
-
     /**
      * @param int $impressions
      * @param float $estCpm
@@ -28,4 +26,10 @@ trait CalculateRevenueTrait
         return $estRevenue;
     }
 
+    /**
+     * @param $numerator
+     * @param $denominator
+     * @return float|null
+     */
+    abstract protected function getRatio($numerator, $denominator);
 }
