@@ -5,12 +5,12 @@ namespace Tagcade\Service\Statistics\Provider;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
-use Tagcade\Service\Statistics\Provider\Fields\TopListFilter;
+use Tagcade\Service\Statistics\Provider\Behaviors\TopListFilterTrait;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
 
 class SiteStatistics implements SiteStatisticsInterface
 {
-    use TopListFilter;
+    use TopListFilterTrait;
 
     /**
      * @var ReportBuilderInterface
