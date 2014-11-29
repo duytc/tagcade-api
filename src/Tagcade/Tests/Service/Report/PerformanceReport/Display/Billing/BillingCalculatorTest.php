@@ -23,7 +23,7 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $this->billingCalculator = $billingCalculator;
     }
 
-    public function testCustomRateInRange()
+    public function testCustomRate()
     {
         $user = new User();
         $user->setBillingRate(0.01);
