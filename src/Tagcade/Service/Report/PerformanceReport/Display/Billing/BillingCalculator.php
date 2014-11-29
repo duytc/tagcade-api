@@ -71,12 +71,18 @@ class BillingCalculator implements BillingCalculatorInterface
         $cpmRate = $this->getCustomCpmRateForPublisher($publisher);
 
         if (null !== $cpmRate) {
-            return $this->calculateBilledAmount($cpmRate, $slotOpportunities);
+            return array(
+                'cpmRate'       => $cpmRate,
+                 'billedAmount' => $this->calculateBilledAmount($cpmRate, $slotOpportunities)
+            );
         }
 
         $cpmRate = $this->findDefaultCpmRate($slotOpportunities);
 
-        return $this->calculateBilledAmount($cpmRate, $slotOpportunities);
+        return array(
+            'cpmRate'       => $cpmRate,
+             'billedAmount' => $this->calculateBilledAmount($cpmRate, $slotOpportunities)
+        );
 
     }
 

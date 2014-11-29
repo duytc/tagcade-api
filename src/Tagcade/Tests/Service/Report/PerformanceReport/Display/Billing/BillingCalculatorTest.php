@@ -30,7 +30,9 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $user->addRole('ROLE_PUBLISHER');
         $publisher = new Publisher($user);
 
-        $this->assertEquals(160000*0.01, $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000));
+        $pair = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000);
+        $this->assertEquals(0.01, $pair['cpmRate']);
+        $this->assertEquals(160000*0.01, $pair['billedAmount']);
     }
 
     public function testRateInRange()
@@ -39,7 +41,9 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $user->addRole('ROLE_PUBLISHER');
         $publisher = new Publisher($user);
 
-        $this->assertEquals(160000*0.3, $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000));
+        $pair = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000);
+        $this->assertEquals(0.3, $pair['cpmRate']);
+        $this->assertEquals(160000*0.3, $pair['billedAmount']);
     }
 
     public function testRateOutOfRange()
@@ -48,6 +52,8 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $user->addRole('ROLE_PUBLISHER');
         $publisher = new Publisher($user);
 
-        $this->assertEquals(100*30, $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 100));
+        $pair = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 100);
+        $this->assertEquals(30, $pair['cpmRate']);
+        $this->assertEquals(100*30, $pair['billedAmount']);
     }
 }

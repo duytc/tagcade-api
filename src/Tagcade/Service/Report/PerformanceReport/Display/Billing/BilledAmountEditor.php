@@ -71,8 +71,8 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         foreach($reports as $report) {
             foreach ($report->getReports() as $reportRow) {
 
-                $newBilledAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, $reportRow->getSlotOpportunities());
-                $reportRow->setBilledAmount($newBilledAmount);
+                $cpmRateBilledAmountPair = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, $reportRow->getSlotOpportunities());
+                $reportRow->setBilledAmount($cpmRateBilledAmountPair['billedAmount']);
 
                 $root = $this->getRootReport($reportRow);
                 if (!in_array($root, $rootReports, true)) {

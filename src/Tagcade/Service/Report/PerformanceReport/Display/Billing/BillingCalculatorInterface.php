@@ -9,7 +9,7 @@ interface BillingCalculatorInterface
     /**
      * @param PublisherInterface $publisher
      * @param int $slotOpportunities
-     * @return float
+     * @return array (cpmRate=>value, billedAmount=>value)
      */
     public function calculateBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities);
 }
