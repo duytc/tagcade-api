@@ -42,9 +42,10 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             ->setDate($this->getDate())
             ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()));
 
-        $cpmRateBilledAmountPair = $this->billingCalculator->calculateBilledAmountForPublisher(new Publisher($adSlot->getSite()->getPublisher()), $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher(new Publisher($adSlot->getSite()->getPublisher()), $report->getSlotOpportunities());
 
-        $report->setBilledAmount($cpmRateBilledAmountPair['billedAmount']);
+        $report->setBilledAmount($rateAmount->getAmount());
+        $report->setBilledRate($rateAmount->getRate());
 
         foreach ($adSlot->getAdTags() as $adTag) {
             $report->addSubReport(

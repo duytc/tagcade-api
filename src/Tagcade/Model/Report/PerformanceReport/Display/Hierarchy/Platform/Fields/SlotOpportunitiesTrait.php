@@ -17,6 +17,11 @@ trait SlotOpportunitiesTrait
     protected $billedAmount;
 
     /**
+     * @var float
+     */
+    protected $billedRate;
+
+    /**
      * @inheritdoc
      */
     public function getSlotOpportunities()
@@ -53,7 +58,21 @@ trait SlotOpportunitiesTrait
         return $this;
     }
 
+    /**
+     * @return float
+     */
+    public function getBilledRate()
+    {
+        return $this->billedRate;
+    }
 
+    /**
+     * @param float $billedRate
+     */
+    public function setBilledRate($billedRate)
+    {
+        $this->billedRate = $billedRate;
+    }
 
     /**
      * @inheritdoc

@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\RootReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use DateTime;
@@ -68,12 +69,15 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         $rootReports = [];
 
+        /**
+         * @var CalculatedReportInterface $reportRow
+         */
         foreach($reports as $report) {
             foreach ($report->getReports() as $reportRow) {
 
-                $cpmRateBilledAmountPair = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, $reportRow->getSlotOpportunities());
-                $reportRow->setBilledAmount($cpmRateBilledAmountPair['billedAmount']);
-
+                $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, $reportRow->getSlotOpportunities());
+                $reportRow->setBilledAmount($rateAmount->getAmount());
+                $reportRow->setBilledRate($rateAmount->getRate());
                 $root = $this->getRootReport($reportRow);
                 if (!in_array($root, $rootReports, true)) {
                     $rootReports[] = $root;
