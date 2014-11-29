@@ -26,6 +26,13 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->billedAmount = 0;
 
         parent::doCalculateFields();
+
+    }
+
+    protected function postCalculateFields()
+    {
+        $weightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'billedRate', 'billedAmount');
+        $this->setBilledRate($weightedCpmRate);
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)

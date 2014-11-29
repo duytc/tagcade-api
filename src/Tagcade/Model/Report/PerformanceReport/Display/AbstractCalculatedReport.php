@@ -3,15 +3,13 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Exception\LogicException;
-use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Report\PerformanceReport\CalculateEstCpmTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SubReportsTrait;
 
 abstract class AbstractCalculatedReport extends AbstractReport
 {
     use SubReportsTrait;
-    use CalculateEstCpmTrait;
+    use CalculateWeightedValueTrait;
 
     public function __construct()
     {
@@ -23,6 +21,16 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->doCalculateFields();
 
         parent::setCalculatedFields();
+
+        $this->postCalculateFields();
+    }
+
+    /**
+     *  use if some fields need to be calculated base on calculated fields
+     */
+    protected function postCalculateFields()
+    {
+        // Empty for now since AdNetwork group doesn't require
     }
 
     protected function doCalculateFields()
@@ -41,7 +49,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
             unset($subReport);
         }
 
-        $this->setEstCpm($this->calculateEstCpm($this->getSubReports()));
+        $this->setEstCpm($this->calculateWeightedValue($this->getSubReports(), $frequency = 'estCpm', $weight = 'estRevenue'));
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)

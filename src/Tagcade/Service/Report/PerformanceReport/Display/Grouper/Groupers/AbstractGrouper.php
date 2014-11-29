@@ -7,7 +7,7 @@ use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Model\Report\CalculateRevenueTrait;
-use Tagcade\Model\Report\PerformanceReport\CalculateEstCpmTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use DateTime;
 
@@ -24,7 +24,7 @@ use DateTime;
 abstract class AbstractGrouper implements GrouperInterface
 {
     use CalculateRatiosTrait;
-    use CalculateEstCpmTrait;
+    use CalculateWeightedValueTrait;
     use CalculateRevenueTrait;
 
     private $reportType;
@@ -114,7 +114,7 @@ abstract class AbstractGrouper implements GrouperInterface
         }
 
         $this->setFillRate();
-        $this->estCpm = $this->calculateEstCpm($reports);
+        $this->estCpm = $this->$this->calculateWeightedValue($reports, $frequency = 'estCpm', $weight = 'estRevenue');
 
         // Calculate average for totalOpportunities,impressions and passbacks
         $reportCount = count($this->getReports());

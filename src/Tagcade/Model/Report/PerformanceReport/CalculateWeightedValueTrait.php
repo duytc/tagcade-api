@@ -7,13 +7,15 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-trait CalculateEstCpmTrait {
-
+trait CalculateWeightedValueTrait
+{
     /**
-     * @param ReportInterface[] $reports
+     * @param array $reports
+     * @param string $frequencyField
+     * @param string $weightField
      * @return float|null
      */
-    protected function calculateEstCpm(array $reports)
+    protected function calculateWeightedValue(array $reports, $frequencyField = 'estCpm', $weightField = 'EstRevenue')
     {
         if (null === $reports) {
             throw new InvalidArgumentException('Expect a valid report');
@@ -23,6 +25,15 @@ trait CalculateEstCpmTrait {
             return null;
         }
 
+        $reportClass = get_class(current($reports));
+
+        try {
+            $getterFrequencyMethod = new \ReflectionMethod($reportClass, 'get' . ucfirst($frequencyField));
+            $getterWeightMethod = new \ReflectionMethod($reportClass, 'get' . ucfirst($weightField));
+        } catch (\Exception $e) {
+            throw new InvalidArgumentException('frequency and weight field should have public getter methods');
+        }
+
         /**
          * @var ReportInterface $report
          */
@@ -30,12 +41,8 @@ trait CalculateEstCpmTrait {
         $totalWeight = 0;
 
         foreach($reports as $report) {
-            if (!$report instanceof ReportInterface) {
-                throw new LogicException('Not a valid report instance');
-            }
-
-            $number = $report->getEstCpm();
-            $weight = $report->getEstRevenue();
+            $number = $getterFrequencyMethod->invoke($report);
+            $weight = $getterWeightMethod->invoke($report);
             $total += $number * $weight;
             $totalWeight += $weight;
         }
