@@ -67,7 +67,7 @@ class Statistics implements StatisticsInterface
         $platformStatistics = new PlatformStatisticsDTO($platformReports);
 
         $topPublishers      = $this->accountStatistics->getTopPublishersByBilledAmount($params);
-        $topSites           = $this->siteStatistics->getTopSiteByBilledAmount($params);
+        $topSites           = $this->siteStatistics->getTopSitesByBilledAmount($params);
 
         $reports            = $platformReports->getReports();
         $todayReport        = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;

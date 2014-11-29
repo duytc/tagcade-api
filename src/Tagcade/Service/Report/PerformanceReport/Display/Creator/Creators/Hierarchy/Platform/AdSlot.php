@@ -18,12 +18,12 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
     /**
      * @var BillingCalculatorInterface
      */
-    private $billingCostCalculator;
+    private $billingCalculator;
 
-    public function __construct(AdTagInterface $subReportCreator, BillingCalculatorInterface $billingCostCalculator)
+    public function __construct(AdTagInterface $subReportCreator, BillingCalculatorInterface $billingCalculator)
     {
         $this->subReportCreator = $subReportCreator;
-        $this->billingCostCalculator = $billingCostCalculator;
+        $this->billingCalculator = $billingCalculator;
     }
 
     /**
@@ -40,10 +40,12 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
         $report
             ->setAdSlot($adSlot)
             ->setDate($this->getDate())
-            ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()))
-            ->setBilledAmount($this->billingCostCalculator->calculateBilledAmountForPublisher(new Publisher($adSlot->getSite()->getPublisher()), $report->getSlotOpportunities() ) )
+            ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()));
 
-        ;
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher(new Publisher($adSlot->getSite()->getPublisher()), $report->getSlotOpportunities());
+
+        $report->setBilledAmount($rateAmount->getAmount());
+        $report->setBilledRate($rateAmount->getRate());
 
         foreach ($adSlot->getAdTags() as $adTag) {
             $report->addSubReport(
