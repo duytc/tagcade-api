@@ -6,13 +6,13 @@ use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
-use Tagcade\Service\Statistics\Provider\Fields\TopListFilter;
+use Tagcade\Service\Statistics\Provider\Behaviors\TopListFilterTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
 
 class AccountStatistics implements AccountStatisticsInterface
 {
-    use TopListFilter;
+    use TopListFilterTrait;
 
     /**
      * @var ReportBuilderInterface

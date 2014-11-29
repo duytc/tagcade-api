@@ -1,11 +1,11 @@
 <?php
 
-namespace Tagcade\Service\Statistics\Provider\Fields;
+namespace Tagcade\Service\Statistics\Provider\Behaviors;
 
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Exception\InvalidArgumentException;
 
-trait TopListFilter
+trait TopListFilterTrait
 {
     /**
      * @param CalculatedReportGroup[] $statisticsList

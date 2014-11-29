@@ -6,9 +6,8 @@ use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
-use Tagcade\Service\Statistics\ProviderStatisticsInterface;
 
-interface AccountStatisticsInterface extends ProviderStatisticsInterface
+interface AccountStatisticsInterface
 {
     /**
      * @param Params $params
