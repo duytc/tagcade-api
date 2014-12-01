@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class SourceReportController extends FOSRestController
 {
     /**
-     * @Rest\Get("/sourcereports/{siteId}", requirements={"siteId" = "\d+"})
+     * @Rest\Get("/{siteId}", requirements={"siteId" = "\d+"})
      *
      * Get source reports for a site with optional date range.
      *

@@ -3,18 +3,21 @@
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
 
 /**
  * @Rest\RouteResource("Adtag")
  */
-class AdTagController extends RestController implements ClassResourceInterface
+class AdTagController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
      * Get all ad tags
@@ -103,6 +106,52 @@ class AdTagController extends RestController implements ClassResourceInterface
     }
 
     /**
+     * Update estCpm for ad tag.
+     *
+     * @ApiDoc(
+     *  section = "adTags",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="estCpm", requirements="\d+", description="Cpm rate of adTag")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the cpm in format YYYY-MM-DD, defaults to the today")
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want setting in a range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
+     *
+     * @param $id
+     *
+     * @return View
+     */
+    public function putEstcpmAction($id)
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $estCpm = (float)$paramFetcher->get('estCpm');
+        if (!is_numeric($estCpm) || $estCpm < 0) {
+            throw new InvalidArgumentException('estCpm should be numeric and positive value');
+        }
+
+        $adTag = $this->get('tagcade.domain_manager.ad_tag')->find($id);
+        if (!$adTag) {
+            throw new NotFoundHttpException('That adTag does not exist');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $adTag)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
+        }
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
+
+        $this->get('tagcade.service.revenue_editor')->updateRevenueForAdTag($adTag, $estCpm, $startDate, $endDate);
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Update an existing adTag from the submitted data or create a new adTag at a specific location
      *
      * @ApiDoc(
@@ -147,25 +196,16 @@ class AdTagController extends RestController implements ClassResourceInterface
         return $this->delete($id);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getResourceName()
     {
         return 'adtag';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getGETRouteName()
     {
         return 'api_1_get_adtag';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.ad_tag');

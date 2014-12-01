@@ -1,0 +1,7 @@
+Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AbstractCalculatedReport:
+    exclusion_policy: NONE
+    properties:
+        billedAmount:
+            type: double
+        billedRate:
+            type: double

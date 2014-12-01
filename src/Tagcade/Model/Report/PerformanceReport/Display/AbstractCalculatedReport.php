@@ -30,7 +30,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
      */
     protected function postCalculateFields()
     {
-        // Empty for now since AdNetwork group doesn't require
+        // Empty for now since some reports in hierarchy Platform and AdNetwork don't require
     }
 
     protected function doCalculateFields()

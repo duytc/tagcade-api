@@ -6,7 +6,6 @@ use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics;
 use Tagcade\Domain\DTO\Statistics\DaySummary;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics;
-use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\SiteStatistics;
 
 class AdminDashboard
 {
@@ -94,7 +93,7 @@ class AdminDashboard
     }
 
     /**
-     * @return \Tagcade\Domain\DTO\Statistics\SitesStatistics[]
+     * @return CalculatedReportGroup[]
      */
     public function getTopSites()
     {

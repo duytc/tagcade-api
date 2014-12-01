@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use InvalidArgumentException;
 
-abstract class RestController extends FOSRestController
+abstract class RestControllerAbstract extends FOSRestController
 {
     /**
      * @return ModelInterface[]
@@ -36,6 +36,7 @@ abstract class RestController extends FOSRestController
     {
         $entity = $this->getOr404($id);
         $this->checkUserPermission($entity, 'view');
+
         return $entity;
     }
 
@@ -143,7 +144,9 @@ abstract class RestController extends FOSRestController
     protected function getOr404($id)
     {
         if (!($entity = $this->getHandler()->get($id))) {
-            throw new NotFoundHttpException(sprintf("The %s resource '%s' was not found or you do not have access", $this->getResourceName(), $id));
+            throw new NotFoundHttpException(
+                sprintf("The %s resource '%s' was not found or you do not have access", $this->getResourceName(), $id)
+            );
         }
 
         return $entity;
@@ -212,7 +215,13 @@ abstract class RestController extends FOSRestController
 
         // check voters
         if (false === $securityContext->isGranted($permission, $entity)) {
-            throw new AccessDeniedException(sprintf('You do not have permission to %s this %s or it does not exist', $permission, $this->getResourceName()));
+            throw new AccessDeniedException(
+                sprintf(
+                    'You do not have permission to %s this %s or it does not exist',
+                    $permission,
+                    $this->getResourceName()
+                )
+            );
         }
 
         return true;

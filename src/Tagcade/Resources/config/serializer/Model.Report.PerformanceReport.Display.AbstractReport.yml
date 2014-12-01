@@ -8,3 +8,9 @@ Tagcade\Model\Report\PerformanceReport\Display\AbstractReport:
             exclude: true
         date:
             type: DateTime<'Y-m-d'>
+        fillRate:
+            type: double
+        estRevenue:
+            type: double
+        estCpm:
+            type: double

@@ -23,7 +23,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/platform")
+     * @Rest\Get("/platform")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -40,7 +40,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/publishers", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/publishers", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -57,7 +57,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/publishers/{publisherId}", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/publishers/{publisherId}", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -78,7 +78,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/performancereports/publishers/current")
+     * @Rest\Get("/publishers/current")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -97,7 +97,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/publishers/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/publishers/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -117,7 +117,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/performancereports/publishers/current/adnetworks")
+     * @Rest\Get("/publishers/current/adnetworks")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -133,7 +133,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adnetworks/{adNetworkId}", requirements={"adNetworkId" = "\d+"})
+     * @Rest\Get("/adnetworks/{adNetworkId}", requirements={"adNetworkId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -157,7 +157,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adnetworks/{adNetworkId}/sites", requirements={"adNetworkId" = "\d+"})
+     * @Rest\Get("/adnetworks/{adNetworkId}/sites", requirements={"adNetworkId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -181,7 +181,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adnetworks/{adNetworkId}/sites/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
+     * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
      * Get performance reports for an ad network and site with optional date range.
      *
@@ -218,7 +218,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/sites")
+     * @Rest\Get("/sites")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -235,7 +235,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/performancereports/publishers/{publisherId}/sites", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/publishers/{publisherId}/sites", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -255,7 +255,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/performancereports/publishers/current/sites")
+     * @Rest\Get("/publishers/current/sites")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -272,7 +272,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/sites/{siteId}", requirements={"siteId" = "\d+"})
+     * @Rest\Get("/sites/{siteId}", requirements={"siteId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -297,7 +297,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/sites/{siteId}/adslots", requirements={"siteId" = "\d+"})
+     * @Rest\Get("/sites/{siteId}/adslots", requirements={"siteId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -322,7 +322,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adslots/{adSlotId}", requirements={"adSlotId" = "\d+"})
+     * @Rest\Get("/adslots/{adSlotId}", requirements={"adSlotId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -347,7 +347,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adslots/{adSlotId}/adtags", requirements={"adSlotId" = "\d+"})
+     * @Rest\Get("/adslots/{adSlotId}/adtags", requirements={"adSlotId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -371,7 +371,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/performancereports/adtags/{adTagId}", requirements={"adTagId" = "\d+"})
+     * @Rest\Get("/adtags/{adTagId}", requirements={"adTagId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)

@@ -5,9 +5,7 @@ namespace Tagcade\Domain\DTO\Statistics\Dashboard;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics;
-use Tagcade\Domain\DTO\Statistics\Hierarchy\AdNetwork\AdNetworkStatistics;
 use Tagcade\Domain\DTO\Statistics\DaySummary;
-use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\SiteStatistics;
 
 class PublisherDashboard
 {

@@ -16,4 +16,4 @@ tagcade_report_api:
 tagcade_statistics_api:
     resource: "@TagcadeStatisticsApiBundle/Resources/config/routing.yml"
     type:   rest
-    prefix: /api/staistics/v1
+    prefix: /api/statistics/v1

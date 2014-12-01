@@ -14,7 +14,7 @@ use Tagcade\Model\Core\SiteInterface;
 /**
  * @Rest\RouteResource("Site")
  */
-class SiteController extends RestController implements ClassResourceInterface
+class SiteController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
      * Get all sites
@@ -143,45 +143,46 @@ class SiteController extends RestController implements ClassResourceInterface
         return $this->delete($id);
     }
 
+    /**
+     * Retrieve a list of ad slots for this site
+     *
+     * @param int $id
+     * @return \Tagcade\Model\Core\AdSlotInterface[]
+     */
     public function getAdslotsAction($id)
     {
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
         return $this->get('tagcade.domain_manager.ad_slot')
-            ->getAdSlotsForSite($site)
-        ;
+            ->getAdSlotsForSite($site);
     }
 
+    /**
+     * Get the javascript display ad tags for this site
+     *
+     * @param int $id
+     * @return array
+     */
     public function getJstagsAction($id)
     {
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
         return $this->get('tagcade.service.tag_generator')
-            ->getTagsForSite($site)
-        ;
+            ->getTagsForSite($site);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getResourceName()
     {
         return 'site';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getGETRouteName()
     {
         return 'api_1_get_site';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.site');
