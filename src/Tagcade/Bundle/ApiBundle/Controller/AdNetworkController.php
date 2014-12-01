@@ -3,18 +3,21 @@
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 
 /**
  * @Rest\RouteResource("Adnetwork")
  */
-class AdNetworkController extends RestController implements ClassResourceInterface
+class AdNetworkController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
      * Get all ad networks
@@ -99,6 +102,59 @@ class AdNetworkController extends RestController implements ClassResourceInterfa
     }
 
     /**
+     *
+     *
+     * Update revenue for ad network.
+     *
+     * @ApiDoc(
+     *  section = "adNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="estCpm", requirements="\d+", description="Cpm rate of ad network")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the cpm in format YYYY-MM-DD, defaults to the today")
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want setting in a range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
+     *
+     * @param $id
+     *
+     * @return View
+     */
+    public function putEstcpmAction($id)
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $estCpm = (float)$paramFetcher->get('estCpm');
+        if ($estCpm < 0) {
+            throw new InvalidArgumentException('estCpm should be positive value');
+        }
+
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $adNetwork)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
+        }
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
+
+        $this->get('tagcade.service.revenue_editor')->updateRevenueForAdNetwork(
+            $adNetwork,
+            $estCpm,
+            $startDate,
+            $endDate
+        );
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Update an existing ad network from the submitted data or create a new ad network at a specific location
      *
      * @ApiDoc(
@@ -143,25 +199,16 @@ class AdNetworkController extends RestController implements ClassResourceInterfa
         return $this->delete($id);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getResourceName()
     {
         return 'adnetwork';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getGETRouteName()
     {
         return 'api_1_get_adnetwork';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.ad_network');

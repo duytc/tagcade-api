@@ -15,7 +15,7 @@ use Tagcade\Model\Core\AdSlotInterface;
 /**
  * @Rest\RouteResource("Adslot")
  */
-class AdSlotController extends RestController implements ClassResourceInterface
+class AdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
      * Get all ad slots
@@ -150,23 +150,22 @@ class AdSlotController extends RestController implements ClassResourceInterface
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.domain_manager.ad_tag')
-            ->getAdTagsForAdSlot($adSlot)
-        ;
+            ->getAdTagsForAdSlot($adSlot);
     }
 
     /**
-     * @Rest\Post("/adslots/{id}/adtags/reorder")
+     * Update the position of all ad tags in an ad slot
      *
      * @param Request $request
      * @param int $id
      * @return View
      */
-    public function reorderAdtagsAction(Request $request, $id)
+    public function postAdtagsPositionsAction(Request $request, $id)
     {
         /** @var AdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        $newAdTagOrderIds = $request->request->get('tagIds');
+        $newAdTagOrderIds = $request->request->get('ids');
 
         if (!$newAdTagOrderIds) {
             throw new BadRequestHttpException("Ad tagIds parameter is required");
@@ -175,8 +174,7 @@ class AdSlotController extends RestController implements ClassResourceInterface
         $adTags = $adSlot->getAdTags()->toArray();
 
         return $this->get('tagcade.domain_manager.ad_tag')
-            ->reorderAdTags($adTags, $newAdTagOrderIds)
-        ;
+            ->reorderAdTags($adTags, $newAdTagOrderIds);
     }
 
     /**
@@ -191,25 +189,16 @@ class AdSlotController extends RestController implements ClassResourceInterface
         return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($adSlot);
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getResourceName()
     {
         return 'adslot';
     }
 
-    /**
-     * @inheritdoc
-     */
     protected function getGETRouteName()
     {
         return 'api_1_get_adslot';
     }
 
-    /**
-     * @return AdSlotHandlerInterface
-     */
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.ad_slot');

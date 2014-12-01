@@ -2,7 +2,7 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
-use Tagcade\Bundle\ApiBundle\Controller\RestController;
+use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 
-class UserController extends RestController implements ClassResourceInterface
+class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
      * Get all users

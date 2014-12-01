@@ -1,9 +1,20 @@
 report_api_source_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\SourceReportController
-    name_prefix:  report_api_1_
+    name_prefix: report_api_1_
+    prefix: /sourcereports
 
 report_api_performance_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\PerformanceReportController
-    name_prefix:  report_api_1_
+    name_prefix: report_api_1_
+    prefix: /performancereports
+
+# functional api calls
+
+report_api_functional_billing:
+    type: rest
+#    parent:   publisher
+    resource: Tagcade\Bundle\ReportApiBundle\Controller\BillingEditorController
+    name_prefix: report_api_1_func_
+    prefix: /billing

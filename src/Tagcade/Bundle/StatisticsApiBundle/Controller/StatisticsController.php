@@ -14,8 +14,6 @@ class StatisticsController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/statistics/platform")
-     *
      * Get statistics for the platform with optional date range.
      *
      * @return array
@@ -28,15 +26,13 @@ class StatisticsController extends FOSRestController
 
     /**
      *
-     * @Rest\Get("/statistics/account/{publisherId}", requirements={"publisherId" = "\d+"})
-     *
      * Get statistics for a publisher with optional date range.
      *
      * @param int $publisherId
      *
      * @return array
      */
-    public function getAccountReportAction($publisherId)
+    public function getAccountAction($publisherId)
     {
         $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
 
