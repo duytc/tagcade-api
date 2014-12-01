@@ -32,7 +32,7 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 
         $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000);
         $this->assertEquals(0.01, $rateAmount->getRate());
-        $this->assertEquals(160000*0.01, $rateAmount->getAmount());
+        $this->assertEquals(1.6000, round($rateAmount->getAmount(), 4));
     }
 
     public function testRateInRange()
@@ -43,7 +43,7 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 
         $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000);
         $this->assertEquals(0.3, $rateAmount->getRate());
-        $this->assertEquals(160000*0.3, $rateAmount->getAmount());
+        $this->assertEquals(48, $rateAmount->getAmount());
     }
 
     public function testRateOutOfRange()
@@ -54,6 +54,6 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 
         $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 100);
         $this->assertEquals(30, $rateAmount->getRate());
-        $this->assertEquals(100*30, $rateAmount->getAmount());
+        $this->assertEquals(3, $rateAmount->getAmount());
     }
 }
