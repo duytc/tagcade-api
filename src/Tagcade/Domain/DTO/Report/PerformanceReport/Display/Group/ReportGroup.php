@@ -79,11 +79,11 @@ class ReportGroup
         $this->estCpm = $estCpm;
         $this->estRevenue = $estRevenue;
 
-        $this->averageTotalOpportunities = $averageTotalOpportunities;
-        $this->averageImpressions = $averageImpressions;
-        $this->averagePassbacks = $averagePassbacks;
-        $this->averageEstCpm = $averageEstCpm;
-        $this->averageEstRevenue = $averageEstRevenue;
+        $this->averageTotalOpportunities = round($averageTotalOpportunities);
+        $this->averageImpressions = round($averageImpressions);
+        $this->averagePassbacks = round($averagePassbacks);
+        $this->averageEstCpm = round($averageEstCpm, 4);
+        $this->averageEstRevenue = round($averageEstRevenue, 4);
     }
 
     /**
