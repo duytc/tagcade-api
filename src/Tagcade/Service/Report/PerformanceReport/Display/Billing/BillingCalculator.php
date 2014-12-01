@@ -96,7 +96,7 @@ class BillingCalculator implements BillingCalculatorInterface
             throw new InvalidArgumentException('cpmRate must be a number');
         }
 
-        return (float) $cpmRate * $slotOpportunities;
+        return (float) $cpmRate * ($slotOpportunities / 1000);
     }
 
     /**
