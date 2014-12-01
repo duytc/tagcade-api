@@ -11,3 +11,6 @@ Tagcade\Entity\Core\AdNetwork:
         publisher:
             - NotBlank: ~
             - Valid: ~
+        defaultCpmRate:
+            - GreaterThan:
+                value: 0
