@@ -31,15 +31,16 @@ class CalculatedReportGroup extends ReportGroup
      * @param float $averagePassbacks
      * @param float $averageEstCpm
      * @param float $averageEstRevenue
+     * @param float $averageFillRate
      */
     public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
     )
     {
         parent::__construct($reportType, $reports, $name, $startDate, $endDate,
             $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
         );
 
         $this->slotOpportunities = $slotOpportunities;

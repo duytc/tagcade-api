@@ -33,7 +33,8 @@ class CalculatedReportGrouper extends AbstractGrouper
             $this->getAverageImpressions(),
             $this->getAveragePassbacks(),
             $this->getAverageEstCpm(),
-            $this->getAverageEstRevenue()
+            $this->getAverageEstRevenue(),
+            $this->getAverageFillRate()
 
         );
     }

@@ -44,6 +44,8 @@ class ReportGroup
      * @var float
      */
     private $averageEstRevenue;
+
+    protected $averageFillRate;
     /**
      * @param ReportTypeInterface $reportType
      * @param ReportInterface[] $reports
@@ -61,10 +63,11 @@ class ReportGroup
      * @param float $averagePassbacks
      * @param float $averageEstCpm
      * @param float $averageEstRevenue
+     * @param float $averageFillRate
      */
     public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
         $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
     )
     {
         $this->reportType = $reportType;
@@ -84,6 +87,7 @@ class ReportGroup
         $this->averagePassbacks = round($averagePassbacks);
         $this->averageEstCpm = round($averageEstCpm, 4);
         $this->averageEstRevenue = round($averageEstRevenue, 4);
+        $this->averageFillRate = round($averageFillRate, 4);
     }
 
     /**
@@ -212,6 +216,14 @@ class ReportGroup
     public function getAverageEstRevenue()
     {
         return $this->averageEstRevenue;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageFillRate()
+    {
+        return $this->averageFillRate;
     }
 
 
