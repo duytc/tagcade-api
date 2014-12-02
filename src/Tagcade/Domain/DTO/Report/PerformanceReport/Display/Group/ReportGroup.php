@@ -76,8 +76,8 @@ class ReportGroup
         $this->impressions = $impressions;
         $this->passbacks = $passbacks;
         $this->fillRate = $fillRate;
-        $this->estCpm = $estCpm;
-        $this->estRevenue = $estRevenue;
+        $this->estCpm = round($estCpm, 4);
+        $this->estRevenue = round($estRevenue, 4);
 
         $this->averageTotalOpportunities = round($averageTotalOpportunities);
         $this->averageImpressions = round($averageImpressions);

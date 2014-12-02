@@ -43,7 +43,7 @@ class CalculatedReportGroup extends ReportGroup
         );
 
         $this->slotOpportunities = $slotOpportunities;
-        $this->billedAmount = $billedAmount;
+        $this->billedAmount = round($billedAmount, 4);
     }
 
     /**
