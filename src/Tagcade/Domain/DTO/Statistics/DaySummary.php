@@ -23,7 +23,7 @@ class DaySummary
     {
         $this->report = $report;
 
-        if ($report !=null) {
+        if ($report !== null) {
             $this->billedRate = round($this->report->getBilledRate(), 4);
             $this->billedAmount = round($this->report->getBilledAmount(), 4);
             $this->estCpm = round($this->report->getEstCpm(), 4);
