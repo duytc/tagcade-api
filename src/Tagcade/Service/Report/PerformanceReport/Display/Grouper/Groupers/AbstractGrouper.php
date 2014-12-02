@@ -95,7 +95,7 @@ abstract class AbstractGrouper implements GrouperInterface
     /**
      * @param ReportInterface[] $reports
      */
-    private function groupReports(array $reports)
+    protected  function groupReports(array $reports)
     {
         $dates = array_map(function(ReportInterface $report) {
             return $report->getDate();
