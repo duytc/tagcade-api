@@ -9,7 +9,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Tagcade\Model\ModelInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
@@ -40,7 +39,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/publishers", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -55,9 +54,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @Rest\Get("/publishers/{publisherId}", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -76,28 +73,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_PUBLISHER')")
-     *
-     * @Rest\Get("/publishers/current")
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
-     *
-     * @return array
-     */
-    public function getPublisherReportForCurrentPublisherAction()
-    {
-        $publisher = $this->getCurrentPublisher();
-
-        return $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams());
-    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @Rest\Get("/publishers/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -110,24 +86,6 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherAdNetworksAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
-
-        return $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams());
-    }
-
-    /**
-     * @Security("has_role('ROLE_PUBLISHER')")
-     *
-     * @Rest\Get("/publishers/current/adnetworks")
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
-     *
-     */
-    public function getCurrentPublisherAdNetworksAction()
-    {
-        $publisher = $this->getCurrentPublisher();
 
         return $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams());
     }
@@ -235,7 +193,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/publishers/{publisherId}/sites", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/sites", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -248,25 +206,6 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherSitesAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
-
-        return $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams());
-    }
-
-    /**
-     * @Security("has_role('ROLE_PUBLISHER')")
-     *
-     * @Rest\Get("/publishers/current/sites")
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
-     *
-     * @return array
-     */
-    public function getCurrentPublisherSitesAction()
-    {
-        $publisher = $this->getCurrentPublisher();
 
         return $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams());
     }
@@ -395,11 +334,11 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @param ModelInterface $entity The entity instance
+     * @param mixed $entity The entity instance
      * @return bool
      * @throws AccessDeniedException
      */
-    protected function checkUserPermission(ModelInterface $entity)
+    protected function checkUserPermission($entity)
     {
         $securityContext = $this->get('security.context');
 
@@ -432,19 +371,7 @@ class PerformanceReportController extends FOSRestController
             throw new LogicException('The user should have the publisher role');
         }
 
-        return $publisher;
-    }
-
-    /**
-     * @return PublisherInterface
-     */
-    protected function getCurrentPublisher()
-    {
-        $publisher = $this->get('tagcade_user.domain_manager.user')->getUserRole($this->getUser());
-
-        if (!$publisher instanceof PublisherInterface) {
-            throw new LogicException('The user should have the publisher role');
-        }
+        $this->checkUserPermission($publisher);
 
         return $publisher;
     }
@@ -458,7 +385,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @return array
+     * @return Params
      */
     protected function getParams()
     {
