@@ -47,7 +47,7 @@ class CalculatedReportGroup extends ReportGroup
 
         $this->slotOpportunities = $slotOpportunities;
         $this->billedAmount = round($billedAmount, 4);
-        $this->averageSlotOpportunities = round($averageFillRate, 4);
+        $this->averageSlotOpportunities = round($averageSlotOpportunities);
     }
 
     /**
