@@ -38,13 +38,16 @@ abstract class AbstractGrouper implements GrouperInterface
     private $fillRate;
     private $estCpm;
     private $estRevenue;
+
     private $averageTotalOpportunities;
     private $averageImpressions;
     private $averagePassbacks;
+    private $averageFillRate;
     private $averageEstCpm;
     private $averageEstRevenue;
 
     private $totalEstCpm;
+    private $totalFillRate;
     /**
      * @param ReportCollection $reportCollection
      */
@@ -84,14 +87,15 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->getAverageImpressions(),
             $this->getAveragePassbacks(),
             $this->getAverageEstCpm(),
-            $this->getAverageEstRevenue()
+            $this->getAverageEstRevenue(),
+            $this->getAverageFillRate()
         );
     }
 
     /**
      * @param ReportInterface[] $reports
      */
-    private function groupReports(array $reports)
+    protected  function groupReports(array $reports)
     {
         $dates = array_map(function(ReportInterface $report) {
             return $report->getDate();
@@ -122,6 +126,7 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->averageImpressions = $this->getRatio($this->getImpressions(), $reportCount);
         $this->averagePassbacks = $this->getRatio($this->getPassbacks(), $reportCount);
         $this->averageEstCpm = $this->getRatio($this->getTotalEstCpm(), $reportCount);
+        $this->averageFillRate = $this->getRatio($this->getTotalFillRate(), $reportCount);
         $this->averageEstRevenue = $this->getRatio($this->getEstRevenue(), $reportCount);
     }
 
@@ -150,6 +155,11 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->totalEstCpm += (float) $estCpm;
     }
 
+    protected function addTotalFillRate($fillRate)
+    {
+        $this->totalFillRate += (float) $fillRate;
+    }
+
     protected function setFillRate()
     {
         $this->fillRate = $this->calculateFillRate();
@@ -167,6 +177,7 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->addPassbacks($report->getPassbacks());
         $this->addTotalEstCpm($report->getEstCpm());
         $this->addEstRevenue($report->getEstRevenue());
+        $this->addTotalFillRate($report->getFillRate());
     }
 
     /**
@@ -300,6 +311,22 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getTotalEstCpm()
     {
         return $this->totalEstCpm;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageFillRate()
+    {
+        return $this->averageFillRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalFillRate()
+    {
+        return $this->totalFillRate;
     }
 
 

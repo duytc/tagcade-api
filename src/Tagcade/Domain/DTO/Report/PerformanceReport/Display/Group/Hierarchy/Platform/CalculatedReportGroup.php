@@ -12,6 +12,7 @@ class CalculatedReportGroup extends ReportGroup
     private $slotOpportunities;
     private $billedAmount;
 
+    private $averageSlotOpportunities;
     /**
      * @param ReportTypeInterface $reportType
      * @param ReportInterface[] $reports
@@ -31,19 +32,22 @@ class CalculatedReportGroup extends ReportGroup
      * @param float $averagePassbacks
      * @param float $averageEstCpm
      * @param float $averageEstRevenue
+     * @param float $averageFillRate
+     * @param float $averageSlotOpportunities
      */
     public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities
     )
     {
         parent::__construct($reportType, $reports, $name, $startDate, $endDate,
             $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
         );
 
         $this->slotOpportunities = $slotOpportunities;
-        $this->billedAmount = $billedAmount;
+        $this->billedAmount = round($billedAmount, 4);
+        $this->averageSlotOpportunities = round($averageSlotOpportunities);
     }
 
     /**
@@ -62,5 +66,11 @@ class CalculatedReportGroup extends ReportGroup
         return $this->billedAmount;
     }
 
-
+    /**
+     * @return float
+     */
+    public function getAverageSlotOpportunities()
+    {
+        return $this->averageSlotOpportunities;
+    }
 }
