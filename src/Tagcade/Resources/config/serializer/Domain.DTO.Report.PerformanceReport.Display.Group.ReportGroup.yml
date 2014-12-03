@@ -3,7 +3,3 @@ Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup:
     properties:
         reportType:
             inline: true
-        startDate:
-            type: DateTime<'Y-m-d'>
-        endDate:
-            type: DateTime<'Y-m-d'>
