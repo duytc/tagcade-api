@@ -2,15 +2,11 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface as BaseReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-interface CalculatedReportInterface extends BaseReportInterface
+interface CalculatedReportInterface extends ReportInterface, BilledReportDataInterface
 {
-    /**
-     * @return int|null
-     */
-    public function getSlotOpportunities();
-
     /**
      * @param int $slotOpportunities
      * @return $this
@@ -18,20 +14,10 @@ interface CalculatedReportInterface extends BaseReportInterface
     public function setSlotOpportunities($slotOpportunities);
 
     /**
-     * @return float
-     */
-    public function getBilledAmount();
-
-    /**
      * @param float $billedAmount
      * @return $this
      */
     public function setBilledAmount($billedAmount);
-
-    /**
-     * @return float
-     */
-    public function getBilledRate();
 
     /**
      * @param float $billedRate
