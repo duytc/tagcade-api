@@ -5,7 +5,7 @@ namespace Tagcade\Legacy;
 
 interface NamespaceCacheInterface {
 
-    public function setNamespace($namespace);
+    public function setNamespaceForAdSlot($adSlotId, $namespace);
 
-    public function getNamespace();
+    public function getNamespaceForAdSlot($adSlotId);
 } 
