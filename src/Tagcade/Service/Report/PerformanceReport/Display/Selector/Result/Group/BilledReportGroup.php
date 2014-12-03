@@ -1,16 +1,17 @@
 <?php
 
-namespace Tagcade\Model\Report\PerformanceReport\Display\Group;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group;
 
 use DateTime;
+use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 
-class BilledReportGroup extends ReportGroup
+class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
 {
-    private $slotOpportunities;
-    private $billedAmount;
-    private $averageSlotOpportunities;
+    protected $slotOpportunities;
+    protected $billedAmount;
+    protected $averageSlotOpportunities;
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType

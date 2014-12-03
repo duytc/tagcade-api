@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Model\Report\PerformanceReport\Display\Group;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group;
 
 use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
@@ -9,24 +9,24 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class ReportGroup implements ReportDataInterface
 {
-    private $reportType;
-    private $reports;
-    private $name;
-    private $startDate;
-    private $endDate;
-    private $fillRate;
-    private $totalOpportunities;
-    private $impressions;
-    private $passbacks;
-    private $estCpm;
-    private $estRevenue;
+    protected $reportType;
+    protected $reports;
+    protected $name;
+    protected $startDate;
+    protected $endDate;
+    protected $fillRate;
+    protected $totalOpportunities;
+    protected $impressions;
+    protected $passbacks;
+    protected $estCpm;
+    protected $estRevenue;
 
-    private $averageTotalOpportunities;
-    private $averageImpressions;
-    private $averagePassbacks;
-    private $averageEstCpm;
-    private $averageEstRevenue;
-    private $averageFillRate;
+    protected $averageTotalOpportunities;
+    protected $averageImpressions;
+    protected $averagePassbacks;
+    protected $averageEstCpm;
+    protected $averageEstRevenue;
+    protected $averageFillRate;
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType

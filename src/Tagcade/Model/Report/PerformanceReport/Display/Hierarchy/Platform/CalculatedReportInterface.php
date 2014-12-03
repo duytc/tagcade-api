@@ -20,6 +20,11 @@ interface CalculatedReportInterface extends ReportInterface, BilledReportDataInt
     public function setBilledAmount($billedAmount);
 
     /**
+     * @return float
+     */
+    public function getBilledRate();
+
+    /**
      * @param float $billedRate
      */
     public function setBilledRate($billedRate);
