@@ -191,8 +191,6 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN')")
-     *
      * @Rest\Get("/accounts/{publisherId}/sites", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
