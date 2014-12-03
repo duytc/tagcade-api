@@ -24,3 +24,10 @@ services:
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @doctrine.orm.entity_manager
 
+
+    tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator
+        arguments:
+            - %tc.billing.defaultCpmRate%
+            - @tagcade.service.report.performance_report.display.billing.calculator_config
+            - @tagcade.server.report.performance_report.display.selector.report_builder
