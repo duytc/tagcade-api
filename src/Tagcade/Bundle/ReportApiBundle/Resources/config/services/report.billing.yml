@@ -11,11 +11,16 @@ services:
         arguments:
             - %tc.billing.thresholds%
 
-    tagcade.service.report.performance_report.display.billing.billing_calculator:
-        class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+    tagcade.service.report.performance_report.display.billing.default_rate_getter:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Billing\DefaultRateGetter
         arguments:
             - %tc.billing.defaultCpmRate%
             - @tagcade.service.report.performance_report.display.billing.calculator_config
+
+    tagcade.service.report.performance_report.display.billing.billing_calculator:
+        class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+        arguments:
+            - @tagcade.service.report.performance_report.display.billing.default_rate_getter
 
     tagcade.service.report.performance_report.display.billing.billed_amount_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor

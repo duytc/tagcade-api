@@ -7,56 +7,14 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 class BillingCalculator implements BillingCalculatorInterface
 {
-    protected $defaultCpmRate;
     /**
-     * @var BillingRateThreshold[]
+     * @var CpmRateGetterInterface
      */
-    protected $defaultBillingThresholds;
+    private $defaultRateGetter;
 
-    public static function createConfig(array $thresholds)
+    function __construct(CpmRateGetterInterface $defaultRateGetter)
     {
-        $config = [];
-
-        foreach ($thresholds as $threshold) {
-            if (!isset($threshold['threshold']) || !isset($threshold['cpmRate'])) {
-                throw new InvalidArgumentException('Cannot create configuration. Missing required threshold or rate');
-            }
-
-            $config[] = new BillingRateThreshold($threshold['threshold'], $threshold['cpmRate']);
-        }
-
-        return $config;
-    }
-
-    /**
-     * @param float $defaultCpmRate
-     * @param BillingRateThreshold[] $defaultBilledThresholds
-     */
-    public function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [])
-    {
-        if (!is_numeric($defaultCpmRate)) {
-            throw new InvalidArgumentException('Invalid default cpm rate');
-        }
-
-        foreach ($defaultBilledThresholds as $threshold) {
-            if (!$threshold instanceof BillingRateThreshold) {
-                throw new InvalidArgumentException('Invalid array of thresholds');
-            }
-
-            unset($threshold);
-        }
-
-        // sort thresholds, descending order
-        usort($defaultBilledThresholds, function(BillingRateThreshold $a, BillingRateThreshold $b) {
-            if ($a->getThreshold() === $b->getThreshold()) {
-                return 0;
-            }
-
-            return ($a->getThreshold() > $b->getThreshold()) ? -1 : 1;
-        });
-
-        $this->defaultCpmRate = (float) $defaultCpmRate;
-        $this->defaultBillingThresholds = $defaultBilledThresholds;
+        $this->defaultRateGetter = $defaultRateGetter;
     }
 
     /**
@@ -74,7 +32,7 @@ class BillingCalculator implements BillingCalculatorInterface
             return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $slotOpportunities));
         }
 
-        $cpmRate = $this->findDefaultCpmRate($slotOpportunities);
+        $cpmRate = $this->defaultRateGetter->getDefaultCpmRate($slotOpportunities);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $slotOpportunities));
     }
@@ -90,27 +48,12 @@ class BillingCalculator implements BillingCalculatorInterface
      * @param int $slotOpportunities
      * @return float
      */
-    protected function calculateBilledAmount($cpmRate, $slotOpportunities)
+    public function calculateBilledAmount($cpmRate, $slotOpportunities)
     {
         if (!is_numeric($cpmRate)) {
             throw new InvalidArgumentException('cpmRate must be a number');
         }
 
         return (float) ($cpmRate * $slotOpportunities) / 1000;
-    }
-
-    /**
-     * @param int $slotOpportunities
-     * @return float
-     */
-    protected function findDefaultCpmRate($slotOpportunities)
-    {
-        foreach($this->defaultBillingThresholds as $threshold) {
-            if($slotOpportunities >= $threshold->getThreshold()) {
-                return $threshold->getCpmRate();
-            }
-        }
-
-        return $this->defaultCpmRate;
     }
 }

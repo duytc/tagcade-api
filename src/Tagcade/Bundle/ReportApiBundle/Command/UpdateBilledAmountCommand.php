@@ -13,7 +13,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('tc:report:update')
+            ->setName('tc:report:billing:update')
             ->setDescription('Update billed amount corresponding to total slot opportunities up to current day and pre-configured thresholds')
             ->addArgument(
                 'date',
