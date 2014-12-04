@@ -58,14 +58,9 @@ class DateUtil implements DateUtilInterface
         return new DateTime(date('01-m-Y'));
     }
 
-    public function dateDiff(DateTime $startDate, DateTime $endDate)
-    {
-        // TODO: Implement dateDiff() method.
-    }
-
     public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate)
     {
-        // TODO: Implement dateDiffIncludeStartDate() method.
+        return $endDate->diff($startDate)->days + 1;
     }
 
     public function getLastDateOfMonth()
@@ -78,15 +73,18 @@ class DateUtil implements DateUtilInterface
      */
     public function getNumberOfRemainingDatesOfMonth()
     {
-        // TODO: Implement getNumberOfRemainingDatesOfMonth() method.
+        $lastDate = $this->getLastDateOfMonth();
+
+        return $lastDate->diff(new DateTime('today'))->days;
     }
 
     /**
      * @return int
      */
-    public function getNumberOfDatesUpToToday()
+    public function getNumberOfDatesPassedOfMonth()
     {
-        // TODO: Implement getNumberOfDatesUpToToday() method.
+        $today =  new DateTime('today');
+        return $today->diff($this->getFirstDateOfMonth())->days;
     }
 
 

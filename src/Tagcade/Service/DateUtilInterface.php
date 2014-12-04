@@ -27,8 +27,6 @@ interface DateUtilInterface
 
     public function getFirstDateOfMonth();
 
-    public function dateDiff(DateTime $startDate, DateTime $endDate);
-
     public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate);
 
     public function getLastDateOfMonth();
@@ -41,5 +39,5 @@ interface DateUtilInterface
     /**
      * @return int
      */
-    public function getNumberOfDatesUpToToday();
+    public function getNumberOfDatesPassedOfMonth();
 }

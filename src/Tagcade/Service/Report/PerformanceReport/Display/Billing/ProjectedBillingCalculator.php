@@ -31,7 +31,7 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
      */
     protected $billingCalculator;
 
-    function __construct(CpmRateGetterInterface $rateGetter, ReportBuilderInterface $reportBuilder, BillingCalculatorInterface $billingCalculator, DateUtil $dateUtil)
+    function __construct(CpmRateGetterInterface $rateGetter, ReportBuilderInterface $reportBuilder, BillingCalculatorInterface $billingCalculator, DateUtilInterface $dateUtil)
     {
         $this->rateGetter = $rateGetter;
         $this->reportBuilder = $reportBuilder;
@@ -76,8 +76,8 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 
         $cpmRate = $this->rateGetter->getBilledRateForPublisher($reportType->getPublisher(), $reportGroup->getSlotOpportunities());
         $billedAmountUpToToday  = $this->billingCalculator->calculateBilledAmount($cpmRate, $reportGroup->getSlotOpportunities());
-        $dayAverageBilledAmount = $billedAmountUpToToday / $this->dateUtil->getNumberOfDatesUpToToday();
-        $projectedBilledAmount  = $billedAmountUpToToday + ($dayAverageBilledAmount * $this->dateUtil->getNumberOfRemainingDatesOfMonth()) ;
+        $dayAverageBilledAmount = $billedAmountUpToToday / $this->dateUtil->getNumberOfDatesPassedOfMonth();
+        $projectedBilledAmount  = $billedAmountUpToToday + ($dayAverageBilledAmount * ($this->dateUtil->getNumberOfRemainingDatesOfMonth() + 1)) ; // +1 to include today
 
         return new RateAmount($cpmRate, $projectedBilledAmount);
     }
