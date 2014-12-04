@@ -16,7 +16,7 @@ interface BillingCalculatorInterface
     /**
      * @param float $cpmRate
      * @param int $slotOpportunities
-     * @return RateAmount
+     * @return float
      */
     public function calculateBilledAmount($cpmRate, $slotOpportunities);
 

@@ -119,9 +119,9 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         foreach($reports as $report) {
             foreach ($report->getReports() as $reportRow) {
 
-                $rateAmount = $this->billingCalculator->calculateBilledAmount($billedRate, $reportRow->getSlotOpportunities());
-                $reportRow->setBilledAmount($rateAmount->getAmount());
-                $reportRow->setBilledRate($rateAmount->getRate());
+                $billedAmount = $this->billingCalculator->calculateBilledAmount($billedRate, $reportRow->getSlotOpportunities());
+                $reportRow->setBilledAmount($billedAmount);
+                $reportRow->setBilledRate($billedRate);
                 $root = $this->getRootReport($reportRow);
                 if (!in_array($root, $rootReports, true)) {
                     $rootReports[] = $root;
