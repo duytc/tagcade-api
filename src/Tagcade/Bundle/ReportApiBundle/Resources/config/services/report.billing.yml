@@ -1,24 +1,24 @@
 parameters:
-    tagcade.service.report.performance_report.display.billing.billing_calculator.class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculator
+    tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class: Tagcade\Service\Report\PerformanceReport\Display\Billing\CpmRateGetter
 services:
 
     ### service billing rate
-    tagcade.service.report.performance_report.display.billing.calculator_config:
+    tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config:
         public: false
-        class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
-        factory_class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+        class: %tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%
+        factory_class: %tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%
         factory_method: createConfig
         arguments:
             - %tc.billing.thresholds%
 
     tagcade.service.report.performance_report.display.billing.cpm_rate_getter:
-        class: Tagcade\Service\Report\PerformanceReport\Display\Billing\CpmRateGetter
+        class: %tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%
         arguments:
             - %tc.billing.defaultCpmRate%
-            - @tagcade.service.report.performance_report.display.billing.calculator_config
+            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config
 
     tagcade.service.report.performance_report.display.billing.billing_calculator:
-        class: %tagcade.service.report.performance_report.display.billing.billing_calculator.class%
+        class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculator
         arguments:
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
 
@@ -28,11 +28,13 @@ services:
             - @tagcade.server.report.performance_report.display.selector.report_builder
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @doctrine.orm.entity_manager
+            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
+            - @tagcade.service.date_util
 
 
     tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator
         arguments:
             - %tc.billing.defaultCpmRate%
-            - @tagcade.service.report.performance_report.display.billing.calculator_config
+            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config
             - @tagcade.server.report.performance_report.display.selector.report_builder

@@ -17,12 +17,16 @@ $em = $container->get('doctrine.orm.entity_manager');
 //$adSlot->setName('My ad slot');
 //$em->persist($adSlot);
 
-$revenueEditor = $container->get('tagcade.service.revenue_editor');
+//$revenueEditor = $container->get('tagcade.service.revenue_editor');
+//
+//$adTagManager = $container->get('tagcade.domain_manager.ad_tag');
+//$adTag = $adTagManager->find(2);
+//
+//$revenueEditor->updateRevenueForAdTag($adTag, 100, new DateTime('yesterday'));
 
-$adTagManager = $container->get('tagcade.domain_manager.ad_tag');
-$adTag = $adTagManager->find(2);
+$userManager = $container->get('tagcade_user.domain_manager.user');
+$publisher = $userManager->findPublisher(2);
+$billingEditor = $container->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
-$revenueEditor->updateRevenueForAdTag($adTag, 100, new DateTime('yesterday'));
-
-
+$billingEditor->updateBilledAmountForPublisher($publisher, 1.5, new DateTime('20 days ago'), new DateTime('1 day ago'));
 
