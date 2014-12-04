@@ -57,17 +57,11 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     public function updateBilledAmountForPublisher(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate)
     {
-        $today = new DateTime('today');
-
-        if ($startDate >= $today || $endDate >= $today ) {
-            throw new InvalidArgumentException('Can only update billed amount information for reports older than today');
-        }
-
-        $this->doUpdateBilledAmountForPublisher($publisher, $billingRate, $startDate, $endDate);
         /**
          * @var AdSlotReportInterface $reportRow
          */
-        $publisher->getUser()->setBillingRate($billingRate);
+        $this->doUpdateBilledAmountForPublisher($publisher, $billingRate, $startDate, $endDate);
+        $publisher->getUser()->setBillingRate($billingRate); // set custom rate for publisher
 
         return $this;
     }
@@ -75,13 +69,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
     public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher)
     {
-        if (null !== $publisher->getUser()->getBillingRate()) {
-            return $this;
-        }
-
-        $endDate = new DateTime('today');
-        $startDate = $this->dateUtil->getFirstDateOfMonth();
-        $param = new Params($startDate, $endDate);
+        $param = new Params($this->dateUtil->getFirstDateOfMonth(), new DateTime('today'));
         $param->setGrouped(true);
         /**
          * @var CalculatedReportGroup $reportGroup
@@ -91,7 +79,8 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
 
         if ($lastRate != $newBilledRate) {
-            $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $startDate, $endDate);
+            // TODO set last rate for publisher then do update billedAmount
+            $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $param->getStartDate(), $param->getEndDate());
         }
 
         return $this;
@@ -111,6 +100,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             throw new InvalidArgumentException('Start date should be less than or equal end date');
         }
 
+        $today = new DateTime('today');
+
+        if ($startDate >= $today || $endDate >= $today ) {
+            throw new InvalidArgumentException('Can only update billed amount information for reports older than today');
+        }
+
         $param = new Params($startDate, $endDate);
         $reports = $this->reportBuilder->getPublisherAdSlotsReport($publisher, $param);
 
@@ -121,7 +116,6 @@ class BilledAmountEditor implements BilledAmountEditorInterface
          */
         foreach($reports as $report) {
             foreach ($report->getReports() as $reportRow) {
-
                 $billedAmount = $this->billingCalculator->calculateBilledAmount($billedRate, $reportRow->getSlotOpportunities());
                 $reportRow->setBilledAmount($billedAmount);
                 $reportRow->setBilledRate($billedRate);

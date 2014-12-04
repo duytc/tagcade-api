@@ -55,7 +55,7 @@ class DateUtil implements DateUtilInterface
 
     public function getFirstDateOfMonth()
     {
-        // TODO: Implement getFirstDateOfMonth() method.
+        return new DateTime(date('01-m-Y'));
     }
 
     public function dateDiff(DateTime $startDate, DateTime $endDate)
@@ -70,7 +70,7 @@ class DateUtil implements DateUtilInterface
 
     public function getLastDateOfMonth()
     {
-        // TODO: Implement getLastDateOfMonth() method.
+        return new DateTime(date('t-m-Y'));
     }
 
     /**
