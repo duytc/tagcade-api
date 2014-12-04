@@ -141,4 +141,5 @@ services:
             - @tagcade.domain_manager.ad_network
             - @tagcade.domain_manager.site
             - @tagcade.domain_manager.ad_slot
+            - @tagcade.domain_manager.ad_tag
 

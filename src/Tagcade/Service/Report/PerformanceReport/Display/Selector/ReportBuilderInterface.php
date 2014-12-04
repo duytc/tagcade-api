@@ -38,13 +38,6 @@ interface ReportBuilderInterface
     public function getPublisherAdNetworksReport(PublisherInterface $publisher, Params $params);
 
     /**
-     * @param PublisherInterface $publisher
-     * @param Params $params
-     * @return ReportResultInterface|false
-     */
-    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params);
-
-    /**
      * @param AdNetworkInterface $adNetwork
      * @param Params $params
      * @return ReportResultInterface|false
@@ -65,6 +58,21 @@ interface ReportBuilderInterface
      * @return ReportResultInterface|false
      */
     public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getAdNetworkAdTagsReport(AdNetworkInterface $adNetwork, Params $params);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getAdNetworkSiteAdTagsReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
 
     /**
      * @param Params $params
@@ -92,6 +100,13 @@ interface ReportBuilderInterface
      * @return ReportResultInterface|false
      */
     public function getSiteAdSlotsReport(SiteInterface $site, Params $params);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params);
 
     /**
      * @param AdSlotInterface $adSlot

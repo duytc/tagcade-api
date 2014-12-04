@@ -103,13 +103,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getAdnetworkAction($adNetworkId)
     {
-        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
-
-        if (!$adNetwork) {
-            throw new NotFoundHttpException('That ad network does not exist');
-        }
-
-        $this->checkUserPermission($adNetwork);
+        $adNetwork = $this->getAdNetwork($adNetworkId);
 
         return $this->getReportBuilder()->getAdNetworkReport($adNetwork, $this->getParams());
     }
@@ -127,21 +121,13 @@ class PerformanceReportController extends FOSRestController
      */
     public function getAdnetworkSitesAction($adNetworkId)
     {
-        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
-
-        if (!$adNetwork) {
-            throw new NotFoundHttpException('That ad network does not exist');
-        }
-
-        $this->checkUserPermission($adNetwork);
+        $adNetwork = $this->getAdNetwork($adNetworkId);
 
         return $this->getReportBuilder()->getAdNetworkSitesReport($adNetwork, $this->getParams());
     }
 
     /**
      * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
-     *
-     * Get performance reports for an ad network and site with optional date range.
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -155,22 +141,48 @@ class PerformanceReportController extends FOSRestController
      */
     public function getAdNetworkSiteAction($adNetworkId, $siteId)
     {
-        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
-
-        if (!$adNetwork) {
-            throw new NotFoundHttpException('That ad network does not exist');
-        }
-
-        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
-
-        if (!$site) {
-            throw new NotFoundHttpException('That site does not exist');
-        }
-
-        $this->checkUserPermission($adNetwork);
-        $this->checkUserPermission($site);
+        $adNetwork = $this->getAdNetwork($adNetworkId);
+        $site = $this->getSite($siteId);
 
         return $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams());
+    }
+
+    /**
+     * @Rest\Get("/adnetworks/{adNetworkId}/adtags", requirements={"adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $adNetworkId
+     *
+     * @return array
+     */
+    public function getAdNetworkAdTagsAction($adNetworkId)
+    {
+        $adNetwork = $this->getAdNetwork($adNetworkId);
+
+        return $this->getReportBuilder()->getAdNetworkAdTagsReport($adNetwork, $this->getParams());
+    }
+
+    /**
+     * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}/adtags", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $adNetworkId
+     * @param int $siteId ID
+     *
+     * @return array
+     */
+    public function getAdNetworkSiteAdTagsAction($adNetworkId, $siteId)
+    {
+        $adNetwork = $this->getAdNetwork($adNetworkId);
+        $site = $this->getSite($siteId);
+
+        return $this->getReportBuilder()->getAdNetworkSiteAdTagsReport($adNetwork, $site, $this->getParams());
     }
 
     /**
@@ -222,13 +234,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getSiteAction($siteId)
     {
-        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
-
-        if (!$site) {
-            throw new NotFoundHttpException('That site does not exist');
-        }
-
-        $this->checkUserPermission($site);
+        $site = $this->getSite($siteId);
 
         return $this->getReportBuilder()->getSiteReport($site, $this->getParams());
     }
@@ -247,13 +253,7 @@ class PerformanceReportController extends FOSRestController
      */
     public function getSiteAdSlotsAction($siteId)
     {
-        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
-
-        if (!$site) {
-            throw new NotFoundHttpException('That site does not exist');
-        }
-
-        $this->checkUserPermission($site);
+        $site = $this->getSite($siteId);
 
         return $this->getReportBuilder()->getSiteAdSlotsReport($site, $this->getParams());
     }
@@ -372,6 +372,40 @@ class PerformanceReportController extends FOSRestController
         $this->checkUserPermission($publisher);
 
         return $publisher;
+    }
+
+    /**
+     * @param int $adNetworkId
+     * @return \Tagcade\Model\Core\AdNetworkInterface
+     */
+    protected function getAdNetwork($adNetworkId)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($adNetworkId);
+
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That ad network does not exist');
+        }
+
+        $this->checkUserPermission($adNetwork);
+
+        return $adNetwork;
+    }
+
+    /**
+     * @param int $siteId
+     * @return \Tagcade\Model\Core\SiteInterface
+     */
+    protected function getSite($siteId)
+    {
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+        $this->checkUserPermission($site);
+
+        return $site;
     }
 
     /**
