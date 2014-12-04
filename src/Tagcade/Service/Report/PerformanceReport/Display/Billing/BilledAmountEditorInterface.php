@@ -20,5 +20,5 @@ interface BilledAmountEditorInterface
      * @param PublisherInterface $publisher
      * @return $this
      */
-    public function updateBilledAmountToCurrentDayForPublisher(PublisherInterface $publisher);
+    public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher);
 }

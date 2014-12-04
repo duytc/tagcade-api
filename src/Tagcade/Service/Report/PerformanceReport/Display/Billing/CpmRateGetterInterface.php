@@ -18,4 +18,10 @@ interface CpmRateGetterInterface
      * @return float
      */
     public function getBilledRateForPublisher(PublisherInterface $publisher, $slotOpportunities);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return float
+     */
+    public function getLastRateForPublisher(PublisherInterface $publisher);
 }

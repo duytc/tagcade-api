@@ -73,7 +73,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
     }
 
 
-    public function updateBilledAmountToCurrentDayForPublisher(PublisherInterface $publisher)
+    public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher)
     {
         if (null !== $publisher->getUser()->getBillingRate()) {
             return $this;
@@ -88,8 +88,11 @@ class BilledAmountEditor implements BilledAmountEditorInterface
          */
         $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $param);
         $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $reportGroup->getSlotOpportunities());
+        $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
 
-        $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $startDate, $endDate);
+        if ($lastRate != $newBilledRate) {
+            $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $startDate, $endDate);
+        }
 
         return $this;
     }

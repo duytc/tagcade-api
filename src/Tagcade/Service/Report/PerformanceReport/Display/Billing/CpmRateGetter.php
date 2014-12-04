@@ -82,5 +82,10 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->getDefaultCpmRate($slotOpportunities);
     }
 
+    public function getLastRateForPublisher(PublisherInterface $publisher)
+    {
+        // TODO return current rate of publisher
 
-} 
+        return $publisher->getUser()->getBillingRate();
+    }
+}
