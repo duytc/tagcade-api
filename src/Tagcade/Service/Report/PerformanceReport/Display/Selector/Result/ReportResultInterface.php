@@ -6,7 +6,7 @@ use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 
-interface ReportCollectionInterface
+interface ReportResultInterface
 {
     /**
      * @return ReportTypeInterface|ReportTypeInterface[]

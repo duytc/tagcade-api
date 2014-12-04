@@ -1,5 +1,0 @@
-Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection:
-    exclusion_policy: NONE
-    properties:
-        reportType:
-            inline: true

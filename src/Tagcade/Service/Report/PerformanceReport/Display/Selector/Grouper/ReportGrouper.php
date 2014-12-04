@@ -8,11 +8,11 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\BilledReportGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\DefaultGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\GrouperInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollectionInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 class ReportGrouper implements ReportGrouperInterface
 {
-    public function groupReports(ReportCollectionInterface $reportCollection)
+    public function groupReports(ReportResultInterface $reportCollection)
     {
         $grouper = static::group($reportCollection);
 
@@ -22,10 +22,10 @@ class ReportGrouper implements ReportGrouperInterface
     /**
      * Factory pattern to return a grouper
      *
-     * @param ReportCollectionInterface $reportCollection
+     * @param ReportResultInterface $reportCollection
      * @return GrouperInterface
      */
-    public static function group(ReportCollectionInterface $reportCollection)
+    public static function group(ReportResultInterface $reportCollection)
     {
         $reports = $reportCollection->getReports();
 

@@ -4,11 +4,11 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Grou
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
 
 
 /**

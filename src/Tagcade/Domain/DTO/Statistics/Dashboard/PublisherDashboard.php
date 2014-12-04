@@ -2,8 +2,8 @@
 
 namespace Tagcade\Domain\DTO\Statistics\Dashboard;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics;
 use Tagcade\Domain\DTO\Statistics\DaySummary;
 
@@ -26,37 +26,29 @@ class PublisherDashboard
     protected $yesterdaySummary;
 
     /**
-     * @var CalculatedReportGroup[]
+     * @var BilledReportGroup[]
      */
-    protected $topSite;
+    protected $topSites;
 
     /**
      * @var ReportGroup[]
      */
     protected $topAdNetworks;
 
-    /**
-     * @var array
-     */
-    protected $reportDetails;
-
     function __construct(
         AccountStatistics $accountStatistics,
         DaySummary $todaySummary = null,
         DaySummary $yesterdaySummary = null,
-        array $topSite = null,
-        array $topAdNetworks = null,
-        array $reportDetails = null
+        array $topSites = null,
+        array $topAdNetworks = null
     )
     {
         $this->accountStatistics = $accountStatistics;
         $this->todaySummary = $todaySummary;
         $this->yesterdaySummary = $todaySummary;
 
-        $this->topSite = $topSite;
+        $this->topSites = $topSites;
         $this->topAdNetworks = $topAdNetworks;
-
-        $this->reportDetails = $reportDetails;
     }
 
     /**
@@ -84,11 +76,11 @@ class PublisherDashboard
     }
 
     /**
-     * @return CalculatedReportGroup[]
+     * @return BilledReportGroup[]
      */
     public function getTopSite()
     {
-        return $this->topSite;
+        return $this->topSites;
     }
 
     /**
@@ -98,14 +90,4 @@ class PublisherDashboard
     {
         return $this->topAdNetworks;
     }
-
-    /**
-     * @return array
-     */
-    public function getReportDetails()
-    {
-        return $this->reportDetails;
-    }
-
-
 }

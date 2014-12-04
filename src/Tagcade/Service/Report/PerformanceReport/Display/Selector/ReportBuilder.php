@@ -14,9 +14,8 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Service\DateUtilInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 class ReportBuilder implements ReportBuilderInterface
 {
@@ -227,7 +226,7 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
      * @param Params $params
-     * @return ReportGroup|ReportGroup[]|ReportCollection|ReportCollection[]
+     * @return ReportResultInterface|false
      */
     protected function getReports($reportType, Params $params)
     {

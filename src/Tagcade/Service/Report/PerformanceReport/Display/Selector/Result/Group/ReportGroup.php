@@ -5,8 +5,9 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group
 use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
-class ReportGroup implements ReportDataInterface
+class ReportGroup implements ReportDataInterface, ReportResultInterface
 {
     protected $reportType;
     protected $reports;

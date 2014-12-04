@@ -4,7 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 interface ReportSelectorInterface
 {
@@ -15,7 +15,7 @@ interface ReportSelectorInterface
      *
      * @param ReportTypeInterface $reportType
      * @param ParamsInterface $params
-     * @return ReportCollection|ReportGroup|false
+     * @return ReportResultInterface|false
      */
     public function getReports(ReportTypeInterface $reportType, ParamsInterface $params);
 
@@ -35,7 +35,7 @@ interface ReportSelectorInterface
      *
      * @param ReportTypeInterface[] $reportTypes
      * @param ParamsInterface $params
-     * @return ReportCollection|ReportGroup|false
+     * @return ReportResultInterface|false
      */
     public function getMultipleReports(array $reportTypes, ParamsInterface $params);
 

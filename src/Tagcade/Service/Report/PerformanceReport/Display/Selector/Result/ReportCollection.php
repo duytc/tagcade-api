@@ -7,7 +7,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use DateTime;
 
-class ReportCollection implements ReportCollectionInterface
+class ReportCollection implements ReportResultInterface
 {
     protected $reportType;
     protected $startDate;
