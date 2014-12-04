@@ -24,26 +24,31 @@ class BilledAmountEditor implements BilledAmountEditorInterface
     /**
      * @var ReportSelectorInterface
      */
-    private $reportBuilder;
+    protected  $reportBuilder;
     /**
      * @var ObjectManager
      */
-    private $om;
+    protected $om;
     /**
      * @var BillingCalculatorInterface
      */
-    private $billingCalculator;
+    protected $billingCalculator;
     /**
      * @var CpmRateGetterInterface
      */
-    private $rateGetter;
+    protected $rateGetter;
     /**
      * @var DateUtilInterface
      */
-    private $dateUtil;
+    protected $dateUtil;
 
-    function __construct(ReportBuilderInterface $reportBuilder, BillingCalculatorInterface $billingCalculator,
-        ObjectManager $om, CpmRateGetterInterface $rateGetter,  DateUtilInterface $dateUtil)
+    function __construct(
+        ReportBuilderInterface $reportBuilder,
+        BillingCalculatorInterface $billingCalculator,
+        ObjectManager $om,
+        CpmRateGetterInterface $rateGetter,
+        DateUtilInterface $dateUtil
+    )
     {
         $this->reportBuilder     = $reportBuilder;
         $this->billingCalculator = $billingCalculator;
