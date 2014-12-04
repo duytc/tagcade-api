@@ -1,10 +1,10 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Grouper\Groupers;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use DateTime;
 
 interface GrouperInterface
@@ -15,12 +15,12 @@ interface GrouperInterface
     public function getGroupedReport();
 
     /**
-     * @return ReportTypeInterface
+     * @return ReportTypeInterface|ReportTypeInterface[]
      */
     public function getReportType();
 
     /**
-     * @return ReportInterface[]
+     * @return ReportDataInterface[]
      */
     public function getReports();
 

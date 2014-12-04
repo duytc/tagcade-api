@@ -107,8 +107,8 @@ services:
 
     ### Report grouper service
 
-    tagcade.service.report.performance_report.display.grouper.report_report_grouper:
-        class: Tagcade\Service\Report\PerformanceReport\Display\Grouper\ReportGrouper
+    tagcade.service.report.performance_report.display.select.grouper.report_grouper:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\ReportGrouper
 
     ### Report selector service
 
@@ -128,7 +128,7 @@ services:
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_tag
             - @tagcade.service.date_util
             - @tagcade.service.report.performance_report.display.creator.report_creator
-            - @tagcade.service.report.performance_report.display.grouper.report_report_grouper
+            - @tagcade.service.report.performance_report.display.select.grouper.report_grouper
 
     ###
 

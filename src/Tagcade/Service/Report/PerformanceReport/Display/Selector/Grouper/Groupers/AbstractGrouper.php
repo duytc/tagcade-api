@@ -1,15 +1,15 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Grouper\Groupers;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\CalculateRatiosTrait;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportCollection;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
 use Tagcade\Model\Report\CalculateRevenueTrait;
+use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
-use DateTime;
+use Tagcade\Exception\InvalidArgumentException;
+
 
 /**
  * A grouper is only designed to be run once, if you need to group multiple sets of reports
@@ -48,13 +48,13 @@ abstract class AbstractGrouper implements GrouperInterface
 
     private $totalEstCpm;
     private $totalFillRate;
+
     /**
      * @param ReportCollection $reportCollection
      */
     public function __construct(ReportCollection $reportCollection)
     {
         $reports = $reportCollection->getReports();
-        $this->reports = $reports;
 
         if (empty($reports)) {
             throw new InvalidArgumentException('Expected a non-empty array of reports');
@@ -62,21 +62,21 @@ abstract class AbstractGrouper implements GrouperInterface
 
         $this->reportType = $reportCollection->getReportType();
         $this->reportName = $reportCollection->getName();
+        $this->startDate = $reportCollection->getStartDate();
+        $this->endDate = $reportCollection->getEndDate();
+        $this->reports = $reports;
 
         $this->groupReports($reports);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getGroupedReport()
     {
         return new ReportGroup(
             $this->getReportType(),
-            $this->getReports(),
-            $this->getReportName(),
             $this->getStartDate(),
             $this->getEndDate(),
+            $this->getReports(),
+            $this->getReportName(),
             $this->getTotalOpportunities(),
             $this->getImpressions(),
             $this->getPassbacks(),
@@ -93,26 +93,10 @@ abstract class AbstractGrouper implements GrouperInterface
     }
 
     /**
-     * @param ReportInterface[] $reports
+     * @param ReportDataInterface[] $reports
      */
     protected  function groupReports(array $reports)
     {
-        $dates = array_map(function(ReportInterface $report) {
-            return $report->getDate();
-        }, $reports);
-
-        $startDate = min($dates);
-        $endDate = max($dates);
-
-        if ((!$startDate instanceof DateTime) || (!$endDate instanceof DateTime)) {
-            throw new InvalidArgumentException('invalid date range for report group');
-        }
-
-        $this->startDate = $startDate;
-        $this->endDate = $endDate;
-
-        unset($dates, $startDate, $endDate);
-
         foreach($reports as $report) {
             $this->doGroupReport($report);
         }
@@ -128,6 +112,16 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->averageEstCpm = $this->getRatio($this->getTotalEstCpm(), $reportCount);
         $this->averageFillRate = $this->getRatio($this->getTotalFillRate(), $reportCount);
         $this->averageEstRevenue = $this->getRatio($this->getEstRevenue(), $reportCount);
+    }
+
+    protected function doGroupReport(ReportDataInterface $report)
+    {
+        $this->addTotalOpportunities($report->getTotalOpportunities());
+        $this->addImpressions($report->getImpressions());
+        $this->addPassbacks($report->getPassbacks());
+        $this->addTotalEstCpm($report->getEstCpm());
+        $this->addEstRevenue($report->getEstRevenue());
+        $this->addTotalFillRate($report->getFillRate());
     }
 
     protected function addTotalOpportunities($totalOpportunities)
@@ -170,19 +164,6 @@ abstract class AbstractGrouper implements GrouperInterface
         return $this->getPercentage($this->getImpressions(), $this->getTotalOpportunities());
     }
 
-    protected function doGroupReport(ReportInterface $report)
-    {
-        $this->addTotalOpportunities($report->getTotalOpportunities());
-        $this->addImpressions($report->getImpressions());
-        $this->addPassbacks($report->getPassbacks());
-        $this->addTotalEstCpm($report->getEstCpm());
-        $this->addEstRevenue($report->getEstRevenue());
-        $this->addTotalFillRate($report->getFillRate());
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getReportType()
     {
         return $this->reportType;
@@ -193,143 +174,88 @@ abstract class AbstractGrouper implements GrouperInterface
         return $this->reports;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getReportName()
     {
         return $this->reportName;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getStartDate()
     {
         return $this->startDate;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getEndDate()
     {
         return $this->endDate;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTotalOpportunities()
     {
         return $this->totalOpportunities;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getImpressions()
     {
         return $this->impressions;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getPassbacks()
     {
         return $this->passbacks;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getFillRate()
     {
         return $this->fillRate;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAverageTotalOpportunities()
     {
         return $this->averageTotalOpportunities;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAverageImpressions()
     {
         return $this->averageImpressions;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAveragePassbacks()
     {
         return $this->averagePassbacks;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getEstCpm()
     {
         return $this->estCpm;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getEstRevenue()
     {
         return $this->estRevenue;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAverageEstCpm()
     {
         return $this->averageEstCpm;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getAverageEstRevenue()
     {
         return $this->averageEstRevenue;
     }
 
-    /**
-     * @return mixed
-     */
     public function getTotalEstCpm()
     {
         return $this->totalEstCpm;
     }
 
-    /**
-     * @return mixed
-     */
     public function getAverageFillRate()
     {
         return $this->averageFillRate;
     }
 
-    /**
-     * @return mixed
-     */
     public function getTotalFillRate()
     {
         return $this->totalFillRate;
     }
-
-
-
-
 }
