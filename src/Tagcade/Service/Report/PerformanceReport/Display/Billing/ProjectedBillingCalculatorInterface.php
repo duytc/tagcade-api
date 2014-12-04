@@ -5,7 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface ProjectedBillingCalculatorInterface extends BillingCalculatorInterface
+interface ProjectedBillingCalculatorInterface
 {
 
     /**

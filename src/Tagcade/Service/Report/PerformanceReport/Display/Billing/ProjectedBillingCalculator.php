@@ -12,8 +12,12 @@ use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
-class ProjectedBillingCalculator extends BillingCalculator implements ProjectedBillingCalculatorInterface
+class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 {
+    /**
+     * @var CpmRateGetterInterface
+     */
+    protected $rateGetter;
     /**
      * @var ReportBuilderInterface
      */
@@ -21,13 +25,17 @@ class ProjectedBillingCalculator extends BillingCalculator implements ProjectedB
     /**
      * @var DateUtilInterface
      */
-    private $dateUtil;
+    protected $dateUtil;
+    /**
+     * @var BillingCalculatorInterface
+     */
+    protected $billingCalculator;
 
-    function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [], ReportBuilderInterface $reportBuilder, DateUtil $dateUtil)
+    function __construct(CpmRateGetterInterface $rateGetter, ReportBuilderInterface $reportBuilder, BillingCalculatorInterface $billingCalculator, DateUtil $dateUtil)
     {
-        parent::__construct($defaultCpmRate, $defaultBilledThresholds);
-
+        $this->rateGetter = $rateGetter;
         $this->reportBuilder = $reportBuilder;
+        $this->billingCalculator = $billingCalculator;
         $this->dateUtil = $dateUtil;
     }
 
@@ -47,7 +55,6 @@ class ProjectedBillingCalculator extends BillingCalculator implements ProjectedB
         return $rateAmounts;
     }
 
-
     public function calculateProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
         /**
@@ -56,7 +63,7 @@ class ProjectedBillingCalculator extends BillingCalculator implements ProjectedB
         $params = $this->_createProjectedParam();
         $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $params);
 
-        return $this->getProjectedBilledAmount($reportGroup, $params);
+        return $this->getProjectedBilledAmount($reportGroup);
     }
 
     protected function getProjectedBilledAmount(CalculatedReportGroup $reportGroup)
@@ -67,14 +74,8 @@ class ProjectedBillingCalculator extends BillingCalculator implements ProjectedB
             throw new InvalidArgumentException('Expected calculated report of type account');
         }
 
-        $cpmRate = $this->getCustomCpmRateForPublisher($reportType->getPublisher());
-
-        if (null !== $cpmRate) {
-            return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $reportGroup->getSlotOpportunities()));
-        }
-
-        $cpmRate                = $this->findDefaultCpmRate($reportGroup->getSlotOpportunities());
-        $billedAmountUpToToday  = $this->calculateBilledAmount($cpmRate, $reportGroup->getSlotOpportunities());
+        $cpmRate = $this->rateGetter->getBilledRateForPublisher($reportType->getPublisher(), $reportGroup->getSlotOpportunities());
+        $billedAmountUpToToday  = $this->billingCalculator->calculateBilledAmount($cpmRate, $reportGroup->getSlotOpportunities());
         $dayAverageBilledAmount = $billedAmountUpToToday / $this->dateUtil->getNumberOfDatesUpToToday();
         $projectedBilledAmount  = $billedAmountUpToToday + ($dayAverageBilledAmount * $this->dateUtil->getNumberOfRemainingDatesOfMonth()) ;
 
