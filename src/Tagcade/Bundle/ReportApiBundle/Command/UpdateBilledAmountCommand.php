@@ -29,23 +29,19 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $publisherId   = $input->getArgument('id');
-
-        if (null === $publisherId) {
-            throw new InvalidArgumentException('publisher id required');
-        }
-
         $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
-        $publisher = $userManager->findPublisher($publisherId);
-
-        if ($publisher === false) {
-            throw new RuntimeException('that publisher is not existed');
-        }
+        $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
         $output->writeln('start updating billed amount for publisher');
 
-        $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
-        $billingEditor->updateBilledAmountToCurrentDateForPublisher($publisher);
+        if (null === $publisherId) {
+            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForAllPublishers();
+        }
+        else {
+            $publisher = $userManager->findPublisher($publisherId);
+            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForPublisher($publisher);
+        }
 
-        $output->writeln('finish updating billed amount for the publisher');
+        $output->writeln( sprintf('finish updating billed amount. %d publisher(s) get updated.', $updatedCount));
     }
 }

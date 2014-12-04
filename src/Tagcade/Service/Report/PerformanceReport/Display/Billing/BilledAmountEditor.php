@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
@@ -38,6 +39,10 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected $rateGetter;
     /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
+    /**
      * @var DateUtilInterface
      */
     protected $dateUtil;
@@ -47,6 +52,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         BillingCalculatorInterface $billingCalculator,
         ObjectManager $om,
         CpmRateGetterInterface $rateGetter,
+        UserManagerInterface $userManager,
         DateUtilInterface $dateUtil
     )
     {
@@ -54,6 +60,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $this->billingCalculator = $billingCalculator;
         $this->om                = $om;
         $this->rateGetter        = $rateGetter;
+        $this->userManager       = $userManager;
         $this->dateUtil          = $dateUtil;
     }
 
@@ -86,10 +93,25 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         if ($lastRate != $newBilledRate) {
             // TODO set last rate for publisher then do update billedAmount
             $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $param->getStartDate(), $param->getEndDate());
+
+            return 1; // 1 publisher updated
         }
 
-        return $this;
+        return 0; // none is updated
     }
+
+    public function updateBilledAmountToCurrentDateForAllPublishers()
+    {
+        $publishers = $this->userManager->allPublishers();
+
+        $updatedPublisher = 0;
+        foreach ($publishers as $publisher) {
+            $updatedPublisher += $this->updateBilledAmountToCurrentDateForPublisher($publisher);
+        }
+
+        return $updatedPublisher;
+    }
+
 
     protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, $billedRate, $startDate, $endDate)
     {
