@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ExpandedReportCollection;
+use Tagcade\Domain\DTO\Report\PerformanceReport\Display\MultipleReportCollection;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -168,7 +169,11 @@ class ReportSelector implements ReportSelectorInterface
             $reports[] = $this->getReports($reportType, $params);
         }
 
-        return $reports;
+        if (empty($reports)) {
+            return false;
+        }
+
+        return new MultipleReportCollection($reportTypes, $params->getStartDate(), $params->getEndDate(), $reports);
     }
 
     /**
