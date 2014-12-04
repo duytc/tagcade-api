@@ -27,7 +27,7 @@ $em = $container->get('doctrine.orm.entity_manager');
 $dateUtil = $container->get('tagcade.service.date_util');
 $remainingDays = $dateUtil->getNumberOfRemainingDatesOfMonth();
 
-$numDaysPasswd = $dateUtil->getNumberOfDatesUpToToday();
+$numDaysPasswd = $dateUtil->getNumberOfDatesPassedOfMonth();
 
 $userManager = $container->get('tagcade_user.domain_manager.user');
 $publisher = $userManager->findPublisher(2);
