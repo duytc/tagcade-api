@@ -5,7 +5,6 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group
 use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class ReportGroup implements ReportDataInterface
 {
@@ -30,10 +29,10 @@ class ReportGroup implements ReportDataInterface
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
-     * @param ReportInterface[] $reports
-     * @param string $name
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param ReportDataInterface[] $reports
+     * @param string $name
      * @param int $totalOpportunities
      * @param int $impressions
      * @param int $passbacks
@@ -47,16 +46,16 @@ class ReportGroup implements ReportDataInterface
      * @param float $averageEstRevenue
      * @param float $averageFillRate
      */
-    public function __construct($reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
         $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
     )
     {
         $this->reportType = $reportType;
-        $this->reports = $reports;
-        $this->name = $name;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->reports = $reports;
+        $this->name = $name;
         $this->totalOpportunities = $totalOpportunities;
         $this->impressions = $impressions;
         $this->passbacks = $passbacks;
@@ -81,14 +80,6 @@ class ReportGroup implements ReportDataInterface
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
      * @return DateTime
      */
     public function getStartDate()
@@ -105,11 +96,19 @@ class ReportGroup implements ReportDataInterface
     }
 
     /**
-     * @return ReportInterface[]
+     * @return ReportDataInterface[]
      */
     public function getReports()
     {
         return $this->reports;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**

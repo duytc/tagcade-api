@@ -4,7 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group
 
 use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 
 class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
@@ -15,10 +15,10 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
-     * @param ReportInterface[] $reports
-     * @param string $name
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param ReportDataInterface[] $reports
+     * @param string $name
      * @param int $totalOpportunities
      * @param int $slotOpportunities
      * @param int $impressions
@@ -35,12 +35,12 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param float $averageFillRate
      * @param float $averageSlotOpportunities
      */
-    public function __construct($reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
         $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities
     )
     {
-        parent::__construct($reportType, $reports, $name, $startDate, $endDate,
+        parent::__construct($reportType, $startDate, $endDate, $reports, $name,
             $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
             $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
         );
