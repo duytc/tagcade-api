@@ -19,7 +19,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
             ->setDescription('Update billed amount corresponding to total slot opportunities up to current day and pre-configured thresholds')
             ->addArgument(
                 'id',
-                InputArgument::REQUIRED,
+                InputArgument::OPTIONAL,
                 'Id of publisher to be updated'
             )
 
@@ -41,7 +41,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
             $publisher = $userManager->findPublisher($publisherId);
             $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForPublisher($publisher);
         }
-
-        $output->writeln( sprintf('finish updating billed amount. %d publisher(s) get updated.', $updatedCount));
+        
+        $output->writeln( sprintf('finish updating billed amount. Total %d publisher(s) gets updated.', $updatedCount));
     }
 }
