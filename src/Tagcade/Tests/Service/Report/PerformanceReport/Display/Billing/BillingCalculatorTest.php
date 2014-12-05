@@ -5,6 +5,8 @@ use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\Model\User\Role\Publisher;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculator;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\CpmRateGetter;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\CpmRateGetterInterface;
 
 class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,14 +15,22 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
      */
     protected $billingCalculator;
 
+    /**
+     * @var CpmRateGetterInterface
+     */
+    protected $cpmRateGetter;
+
     public function setUp()
     {
         $thresholds = [ ['threshold' => 100000, 'cpmRate' => 0.5], ['threshold' => 200000, 'cpmRate' => 0.2], ['threshold' => 150000, 'cpmRate' => 0.3] ];
-        $billingConfigs = BillingCalculator::createConfig($thresholds);
+        $billingConfigs = CpmRateGetter::createConfig($thresholds);
 
-        $billingCalculator = new BillingCalculator(30, $billingConfigs);
+        $cpmRate = new CpmRateGetter(30, $billingConfigs);
+        $billingCalculator = new BillingCalculator($cpmRate);
 
+        $this->cpmRateGetter = $cpmRate;
         $this->billingCalculator = $billingCalculator;
+
     }
 
     public function testCustomRate()
