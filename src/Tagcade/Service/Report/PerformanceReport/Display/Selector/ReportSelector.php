@@ -128,7 +128,19 @@ class ReportSelector implements ReportSelectorInterface
 //            $reportCollection = new ExpandedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reportName, $reports, $expandedReports);
 //        }
 
-        $reportCollection = new ReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reports, $reportName);
+        $dates = array_map(function(ReportInterface $report) {
+            return $report->getDate();
+        }, $reports);
+
+        // instead of using user-supplied dates for the collection date range
+        // determine what the actual date range is
+
+        $actualStartDate = min($dates);
+        $actualEndDate = max($dates);
+
+        $reportCollection = new ReportCollection($reportType, $actualStartDate, $actualEndDate, $reports, $reportName);
+
+        unset($dates, $actualStartDate, $actualEndDate);
 
         $result = $reportCollection;
 
