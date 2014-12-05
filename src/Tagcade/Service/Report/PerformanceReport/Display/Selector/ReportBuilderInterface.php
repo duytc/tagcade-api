@@ -102,6 +102,13 @@ interface ReportBuilderInterface
     public function getSiteAdSlotsReport(SiteInterface $site, Params $params);
 
     /**
+     * @param SiteInterface $site
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getSiteAdTagsReport(SiteInterface $site, Params $params);
+
+    /**
      * @param PublisherInterface $publisher
      * @param Params $params
      * @return ReportResultInterface|false

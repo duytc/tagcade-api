@@ -82,6 +82,11 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdSlot($adSlot, $limit, $offset);
     }
 
+    public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagsForSite($site, $limit, $offset);
+    }
+
     /**
      * @inheritdoc
      */
