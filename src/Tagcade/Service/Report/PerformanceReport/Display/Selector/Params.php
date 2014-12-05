@@ -57,12 +57,6 @@ class Params implements ParamsInterface
             throw new InvalidDateException('start date must be before the end date');
         }
 
-        $today = new DateTime('today');
-
-        if ($startDate > $today || $endDate > $today) {
-            throw new InvalidDateException('The date range cannot extend beyond today');
-        }
-
         $this->startDate = $startDate;
         $this->endDate = $endDate;
 
