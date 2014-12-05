@@ -17,4 +17,11 @@ interface CacheEventCounterInterface extends EventCounterInterface
      * @return string
      */
     public function getCacheKey($type, $id);
+
+    public function useLocalCache($bool);
+
+    /**
+     * @return void
+     */
+    public function resetLocalCache();
 }
