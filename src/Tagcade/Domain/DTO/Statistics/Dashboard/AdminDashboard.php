@@ -2,14 +2,13 @@
 
 namespace Tagcade\Domain\DTO\Statistics\Dashboard;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics;
 use Tagcade\Domain\DTO\Statistics\DaySummary;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics;
 
 class AdminDashboard
 {
-
     /**
      * @var PlatformStatistics
      */
@@ -26,37 +25,29 @@ class AdminDashboard
     protected $yesterdaySummary;
 
     /**
-     * @var AccountStatistics[]
+     * @var BilledReportGroup[]
      */
     protected $topPublishers;
 
     /**
-     * @var CalculatedReportGroup[]
+     * @var BilledReportGroup[]
      */
     protected $topSites;
-
-    /**
-     * @var array
-     */
-    protected $reportDetails;
-
 
     function __construct(
         PlatformStatistics $platformStatistics,
         DaySummary $todaySummary = null,
         DaySummary $yesterdaySummary = null,
-        array $topPublisher = null,
-        array $topSites = null,
-        array $reportDetails = null
+        array $topPublishers = null,
+        array $topSites = null
     )
     {
         $this->platformStatistics = $platformStatistics;
         $this->todaySummary = $todaySummary;
         $this->yesterdaySummary = $yesterdaySummary;
 
-        $this->topPublishers = $topPublisher;
+        $this->topPublishers = $topPublishers;
         $this->topSites = $topSites;
-        $this->reportDetails = $reportDetails;
     }
 
     /**
@@ -93,20 +84,10 @@ class AdminDashboard
     }
 
     /**
-     * @return CalculatedReportGroup[]
+     * @return BilledReportGroup[]
      */
     public function getTopSites()
     {
         return $this->topSites;
     }
-
-    /**
-     * @return array
-     */
-    public function getReportDetails()
-    {
-        return $this->reportDetails;
-    }
-
-
 }

@@ -2,7 +2,7 @@
 
 namespace Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\ReportGroup;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
 
 class AccountStatistics
 {

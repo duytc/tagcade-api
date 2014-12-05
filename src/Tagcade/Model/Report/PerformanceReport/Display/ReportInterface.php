@@ -4,7 +4,7 @@ namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 use DateTime;
 
-interface ReportInterface
+interface ReportInterface extends ReportDataInterface
 {
     /**
      * @return DateTime|null
@@ -29,20 +29,10 @@ interface ReportInterface
     public function setName($name);
 
     /**
-     * @return int|null
-     */
-    public function getTotalOpportunities();
-
-    /**
      * @param int $totalOpportunities
      * @return $this
      */
     public function setTotalOpportunities($totalOpportunities);
-
-    /**
-     * @return int|null
-     */
-    public function getImpressions();
 
     /**
      * @param int $impressions
@@ -51,25 +41,10 @@ interface ReportInterface
     public function setImpressions($impressions);
 
     /**
-     * @return int|null
-     */
-    public function getPassbacks();
-
-    /**
      * @param int $passbacks
      * @return $this
      */
     public function setPassbacks($passbacks);
-
-    /**
-     * @return float|null
-     */
-    public function getFillRate();
-
-    /**
-     * @return float|null
-     */
-    public function getEstRevenue();
 
     /**
      * @param float $estRevenue
@@ -82,11 +57,6 @@ interface ReportInterface
      * @return $this
      */
     public function setEstCpm($estCpm);
-
-    /**
-     * @return float
-     */
-    public function getEstCpm();
 
     /**
      * Sets all calculated fields

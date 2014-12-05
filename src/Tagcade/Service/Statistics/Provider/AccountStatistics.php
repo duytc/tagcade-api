@@ -24,9 +24,6 @@ class AccountStatistics implements AccountStatisticsInterface
         $this->reportBuilder = $reportBuilder;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTopPublishersByBilledAmount(Params $params, $limit = 10)
     {
         $params->setGrouped(true);
@@ -35,9 +32,6 @@ class AccountStatistics implements AccountStatisticsInterface
         return $this->topList($allPublishersReports, $sortBy = 'billedAmount', $limit);
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getTopAdNetworksByEstRevenueForPublisher(PublisherInterface $publisher, Params $params, $limit = 10)
     {
         $params->setGrouped(true);

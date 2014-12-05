@@ -1,57 +1,39 @@
 <?php
 
-namespace Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group;
 
 use DateTime;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\ReportResultInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
-class ReportGroup
+class ReportGroup implements ReportDataInterface, ReportResultInterface
 {
-    private $reportType;
-    private $reports;
-    private $name;
-    private $startDate;
-    private $endDate;
-    private $fillRate;
+    protected $reportType;
+    protected $reports;
+    protected $name;
+    protected $startDate;
+    protected $endDate;
+    protected $fillRate;
+    protected $totalOpportunities;
+    protected $impressions;
+    protected $passbacks;
+    protected $estCpm;
+    protected $estRevenue;
 
-    /**
-     * @var int
-     */
-    private $totalOpportunities;
-    private $impressions;
-    private $passbacks;
-
-    /**
-     * @var float
-     */
-    private $estCpm;
-    /**
-     * @var float
-     */
-    private $estRevenue;
-
-    private $averageTotalOpportunities;
-    private $averageImpressions;
-    private $averagePassbacks;
-
-    /**
-     * @var float
-     */
-    private $averageEstCpm;
-    /**
-     * @var float
-     */
-    private $averageEstRevenue;
-
+    protected $averageTotalOpportunities;
+    protected $averageImpressions;
+    protected $averagePassbacks;
+    protected $averageEstCpm;
+    protected $averageEstRevenue;
     protected $averageFillRate;
+
     /**
-     * @param ReportTypeInterface $reportType
-     * @param ReportInterface[] $reports
-     * @param string $name
+     * @param ReportTypeInterface|ReportTypeInterface[] $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param ReportDataInterface[] $reports
+     * @param string $name
      * @param int $totalOpportunities
      * @param int $impressions
      * @param int $passbacks
@@ -65,16 +47,16 @@ class ReportGroup
      * @param float $averageEstRevenue
      * @param float $averageFillRate
      */
-    public function __construct(ReportTypeInterface $reportType, array $reports, $name, DateTime $startDate, DateTime $endDate,
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
         $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
     )
     {
         $this->reportType = $reportType;
-        $this->reports = $reports;
-        $this->name = $name;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->reports = $reports;
+        $this->name = $name;
         $this->totalOpportunities = $totalOpportunities;
         $this->impressions = $impressions;
         $this->passbacks = $passbacks;
@@ -91,7 +73,7 @@ class ReportGroup
     }
 
     /**
-     * @inheritdoc
+     * @return ReportTypeInterface|ReportTypeInterface[]
      */
     public function getReportType()
     {
@@ -99,15 +81,7 @@ class ReportGroup
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @inheritdoc
+     * @return DateTime
      */
     public function getStartDate()
     {
@@ -115,7 +89,7 @@ class ReportGroup
     }
 
     /**
-     * @inheritdoc
+     * @return DateTime
      */
     public function getEndDate()
     {
@@ -123,11 +97,19 @@ class ReportGroup
     }
 
     /**
-     * @inheritdoc
+     * @return ReportDataInterface[]
      */
     public function getReports()
     {
         return $this->reports;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -225,6 +207,4 @@ class ReportGroup
     {
         return $this->averageFillRate;
     }
-
-
 }
