@@ -89,7 +89,7 @@ class ReportSelector implements ReportSelectorInterface
         }
 
         if (empty($reports)) {
-            false;
+            return false;
         }
 
         $reportName = null;
@@ -163,7 +163,11 @@ class ReportSelector implements ReportSelectorInterface
         $reports = [];
 
         foreach($reportTypes as $reportType) {
-            $reports[] = $this->getReports($reportType, $params);
+            if ($reportResult = $this->getReports($reportType, $params)) {
+                $reports[] = $reportResult;
+            }
+
+            unset($reportResult);
         }
 
         if (empty($reports)) {
