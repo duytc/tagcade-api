@@ -45,7 +45,7 @@ class PublisherDashboard
     {
         $this->accountStatistics = $accountStatistics;
         $this->todaySummary = $todaySummary;
-        $this->yesterdaySummary = $todaySummary;
+        $this->yesterdaySummary = $yesterdaySummary;
 
         $this->topSites = $topSites;
         $this->topAdNetworks = $topAdNetworks;
