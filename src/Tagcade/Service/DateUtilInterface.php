@@ -27,6 +27,11 @@ interface DateUtilInterface
 
     public function getFirstDateOfMonth();
 
+    /**
+     * @return bool
+     */
+    public function isFirstDateOfMonth();
+
     public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate);
 
     public function getLastDateOfMonth();

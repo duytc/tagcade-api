@@ -5,10 +5,10 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\UnexpectedValueException;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AbstractCalculatedReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\RootReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\DateUtilInterface;
@@ -17,6 +17,8 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelectorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
 
 
 class BilledAmountEditor implements BilledAmountEditorInterface
@@ -69,84 +71,81 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     public function updateBilledAmountForPublisher(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate)
     {
+        $params = new Params($startDate, $endDate);
         /**
          * @var AdSlotReportInterface $reportRow
          */
-        $this->doUpdateBilledAmountForPublisher($publisher, $billingRate, $startDate, $endDate);
+        $this->doUpdateBilledAmountForPublisher($publisher, $billingRate, $params);
         $publisher->getUser()->setBillingRate($billingRate); // set custom rate for publisher
 
         return $this;
     }
 
-
     public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher)
     {
-        $param = new Params($this->dateUtil->getFirstDateOfMonth(), new DateTime('today'));
-        $param->setGrouped(true);
-        /**
-         * @var CalculatedReportGroup $reportGroup
-         */
-        $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $param);
-        $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $reportGroup->getSlotOpportunities());
-        $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
-
-        if ($lastRate != $newBilledRate) {
-            // TODO set last rate for publisher then do update billedAmount
-            $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $param->getStartDate(), $param->getEndDate());
-
-            return 1; // 1 publisher updated
+        if ($this->dateUtil->isFirstDateOfMonth()) {
+            return false; // nothing updated for first day of month, because update can only be done with yesterday of the same month
         }
 
-        return 0; // none is updated
+        $params = new Params($this->dateUtil->getFirstDateOfMonth(), new DateTime('yesterday'));
+        $params->setGrouped(true);
+
+        try {
+            /**
+             * @var BilledReportGroup $reportGroup
+             */
+            $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $params);
+            $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $reportGroup->getSlotOpportunities());
+            $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
+
+            if ($lastRate !== $newBilledRate) {
+                // TODO set last rate for publisher then do update billedAmount
+                $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $params);
+
+                return true; // 1 publisher updated
+            }
+        }
+        catch(UnexpectedValueException $ex) {
+            // TODO print warning data of no content causing unexpected value in report grouper
+        }
+
+        return false; // none is updated
     }
 
     public function updateBilledAmountToCurrentDateForAllPublishers()
     {
-        $publishers = $this->userManager->allPublishers();
+        $publishers = $this->userManager->allPublisherRoles();
+        $updatedPublisherCount = 0;
 
-        $updatedPublisher = 0;
         foreach ($publishers as $publisher) {
-            $updatedPublisher += $this->updateBilledAmountToCurrentDateForPublisher($publisher);
+            $updatedPublisherCount += $this->updateBilledAmountToCurrentDateForPublisher($publisher);
         }
 
-        return $updatedPublisher;
+        return $updatedPublisherCount;
     }
 
 
-    protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, $billedRate, $startDate, $endDate)
+    protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, $billedRate, Params $param)
     {
         if( !is_numeric($billedRate) || $billedRate < 0) {
             throw new InvalidArgumentException('billing rate must be a float and positive number');
         }
 
-        if(!$endDate) {
-            $endDate = $startDate;
-        }
-
-        if ($startDate > $endDate) {
-            throw new InvalidArgumentException('Start date should be less than or equal end date');
-        }
-
-        $today = new DateTime('today');
-
-        if ($startDate >= $today || $endDate >= $today ) {
-            throw new InvalidArgumentException('Can only update billed amount information for reports older than today');
-        }
-
-        $param = new Params($startDate, $endDate);
-        $reports = $this->reportBuilder->getPublisherAdSlotsReport($publisher, $param);
+        $reportResult = $this->reportBuilder->getPublisherAdSlotsReport($publisher, $param);
 
         $rootReports = [];
 
         /**
-         * @var CalculatedReportInterface $reportRow
+         * @var AbstractCalculatedReport $reportRow
+         * @var ReportCollection $report
          */
-        foreach($reports as $report) {
+        foreach($reportResult->getReports() as $report) {
             foreach ($report->getReports() as $reportRow) {
                 $billedAmount = $this->billingCalculator->calculateBilledAmount($billedRate, $reportRow->getSlotOpportunities());
                 $reportRow->setBilledAmount($billedAmount);
                 $reportRow->setBilledRate($billedRate);
                 $root = $this->getRootReport($reportRow);
+                
                 if (!in_array($root, $rootReports, true)) {
                     $rootReports[] = $root;
                 }

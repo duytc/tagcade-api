@@ -87,5 +87,13 @@ class DateUtil implements DateUtilInterface
         return $today->diff($this->getFirstDateOfMonth())->days;
     }
 
+    /**
+     * @return bool
+     */
+    public function isFirstDateOfMonth()
+    {
+        return $this->getNumberOfDatesPassedOfMonth() === 0;
+    }
+
 
 }

@@ -34,6 +34,31 @@ class StatisticsController extends FOSRestController
      */
     public function getAccountAction($publisherId)
     {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->get('tagcade.service.statistics')
+            ->getPublisherDashboard($publisher);
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/projectedbill", requirements={"publisherId" = "\d+"})
+     *
+     * @param $publisherId
+     * @return string
+     */
+    public function getAccountProjectedBillAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->get('tagcade.service.statistics')->getProjectedBilledAmountForPublisher($publisher);
+    }
+
+    /**
+     * @param int $publisherId
+     * @return \Tagcade\Model\User\Role\Publisher
+     */
+    protected function getPublisher($publisherId)
+    {
         $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
 
         if (!$publisher) {
@@ -44,7 +69,6 @@ class StatisticsController extends FOSRestController
             throw new AccessDeniedException('You do not have permission to view this');
         }
 
-        return $this->get('tagcade.service.statistics')
-            ->getPublisherDashboard($publisher);
+        return $publisher;
     }
 }

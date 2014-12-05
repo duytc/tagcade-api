@@ -18,7 +18,7 @@ interface BilledAmountEditorInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @return int 1 if there is update, 0 otherwise
+     * @return bool true if there is update, false otherwise
      */
     public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher);
 

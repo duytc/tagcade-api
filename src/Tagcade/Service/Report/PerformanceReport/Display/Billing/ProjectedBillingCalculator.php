@@ -3,14 +3,13 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as ReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\DateUtil;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 
 class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 {
@@ -43,7 +42,7 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
     {
         $params  = $this->_createProjectedParam();
         /**
-         * @var CalculatedReportGroup $reportGroup
+         * @var BilledReportGroup $reportGroup
          */
         $reportGroups = $this->reportBuilder->getAllPublishersReport($params);
         $rateAmounts = [];
@@ -58,7 +57,7 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
     public function calculateProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
         /**
-         * @var CalculatedReportGroup $reportGroup
+         * @var BilledReportGroup $reportGroup
          */
         $params = $this->_createProjectedParam();
         $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $params);
@@ -66,7 +65,7 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
         return $this->getProjectedBilledAmount($reportGroup);
     }
 
-    protected function getProjectedBilledAmount(CalculatedReportGroup $reportGroup)
+    protected function getProjectedBilledAmount(BilledReportGroup $reportGroup)
     {
         $reportType = $reportGroup->getReportType();
 

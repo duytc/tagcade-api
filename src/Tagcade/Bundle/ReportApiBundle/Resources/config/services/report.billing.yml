@@ -32,10 +32,10 @@ services:
             - @tagcade_user.domain_manager.user
             - @tagcade.service.date_util
 
-
     tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator
         arguments:
-            - %tc.billing.defaultCpmRate%
-            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config
+            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
             - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.service.date_util

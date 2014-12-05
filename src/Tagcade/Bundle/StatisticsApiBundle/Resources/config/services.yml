@@ -5,7 +5,7 @@ services:
         class: Tagcade\Service\Statistics\Provider\AccountStatistics
         arguments:
             - @tagcade.server.report.performance_report.display.selector.report_builder
-
+            - @tagcade.service.report.performance_report.display.billing.projected_billing_calculator
     tagcade.service.statistics.site:
         class: Tagcade\Service\Statistics\Provider\SiteStatistics
         arguments:

@@ -113,6 +113,12 @@ class Statistics implements StatisticsInterface
         );
     }
 
+    public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher)
+    {
+        return round($this->accountStatistics->getProjectedBilledAmount($publisher), 4);
+    }
+
+
     /**
      * @return Params
      */

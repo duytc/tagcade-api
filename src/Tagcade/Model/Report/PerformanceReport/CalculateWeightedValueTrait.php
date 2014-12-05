@@ -2,9 +2,11 @@
 
 namespace Tagcade\Model\Report\PerformanceReport;
 
+use Doctrine\Common\Util\ClassUtils;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 trait CalculateWeightedValueTrait
@@ -25,11 +27,13 @@ trait CalculateWeightedValueTrait
             return null;
         }
 
-        $reportClass = get_class(current($reports));
+        $reportClass = ClassUtils::getRealClass(get_class(current($reports)));
 
         try {
+
             $getterFrequencyMethod = new \ReflectionMethod($reportClass, 'get' . ucfirst($frequencyField));
             $getterWeightMethod = new \ReflectionMethod($reportClass, 'get' . ucfirst($weightField));
+
         } catch (\Exception $e) {
             throw new InvalidArgumentException('frequency and weight field should have public getter methods');
         }
@@ -41,10 +45,15 @@ trait CalculateWeightedValueTrait
         $totalWeight = 0;
 
         foreach($reports as $report) {
-            $number = $getterFrequencyMethod->invoke($report);
-            $weight = $getterWeightMethod->invoke($report);
-            $total += $number * $weight;
-            $totalWeight += $weight;
+            try {
+                $number = $getterFrequencyMethod->invoke($report);
+                $weight = $getterWeightMethod->invoke($report);
+                $total += $number * $weight;
+                $totalWeight += $weight;
+            }
+            catch (\Exception $e) {
+                $i = 0;
+            }
         }
 
         return $this->getRatio($total, $totalWeight);

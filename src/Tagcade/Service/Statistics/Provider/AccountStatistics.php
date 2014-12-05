@@ -4,6 +4,7 @@ namespace Tagcade\Service\Statistics\Provider;
 
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Statistics\Provider\Behaviors\TopListFilterTrait;
@@ -18,10 +19,15 @@ class AccountStatistics implements AccountStatisticsInterface
      * @var ReportBuilderInterface
      */
     protected $reportBuilder;
+    /**
+     * @var ProjectedBillingCalculatorInterface
+     */
+    protected $projectedBillingCalculator;
 
-    public function __construct(ReportBuilderInterface $reportBuilder)
+    public function __construct(ReportBuilderInterface $reportBuilder, ProjectedBillingCalculatorInterface $projectedBillingCalculator)
     {
         $this->reportBuilder = $reportBuilder;
+        $this->projectedBillingCalculator = $projectedBillingCalculator;
     }
 
     public function getTopPublishersByBilledAmount(Params $params, $limit = 10)
@@ -39,4 +45,11 @@ class AccountStatistics implements AccountStatisticsInterface
 
         return $this->topList($adNetworksReports, $sortBy = 'estRevenue', $limit);
     }
+
+    public function getProjectedBilledAmount(PublisherInterface $publisher)
+    {
+        return $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher)->getAmount();
+    }
+
+
 }

@@ -9,7 +9,7 @@ interface ProjectedBillingCalculatorInterface
 {
 
     /**
-     * This will do calculation of projected billed amount for entire month
+     * This will do calculation of projected billed amount for current month
      * @param PublisherInterface $publisher
      * @return RateAmount
      */
