@@ -24,4 +24,25 @@ interface DateUtilInterface
     public function isDateBeforeToday(DateTime $date);
 
     public function formatDate(DateTime $date);
+
+    public function getFirstDateOfMonth();
+
+    /**
+     * @return bool
+     */
+    public function isFirstDateOfMonth();
+
+    public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate);
+
+    public function getLastDateOfMonth();
+
+    /**
+     * @return int
+     */
+    public function getNumberOfRemainingDatesOfMonth();
+
+    /**
+     * @return int
+     */
+    public function getNumberOfDatesPassedOfMonth();
 }

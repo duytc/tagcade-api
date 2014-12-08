@@ -52,4 +52,48 @@ class DateUtil implements DateUtilInterface
     {
         return $date->format(self::DATE_FORMAT);
     }
+
+    public function getFirstDateOfMonth()
+    {
+        return new DateTime(date('01-m-Y'));
+    }
+
+    public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate)
+    {
+        return $endDate->diff($startDate)->days + 1;
+    }
+
+    public function getLastDateOfMonth()
+    {
+        return new DateTime(date('t-m-Y'));
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfRemainingDatesOfMonth()
+    {
+        $lastDate = $this->getLastDateOfMonth();
+
+        return $lastDate->diff(new DateTime('today'))->days;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfDatesPassedOfMonth()
+    {
+        $today =  new DateTime('today');
+        return $today->diff($this->getFirstDateOfMonth())->days;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFirstDateOfMonth()
+    {
+        return $this->getNumberOfDatesPassedOfMonth() === 0;
+    }
+
+
 }

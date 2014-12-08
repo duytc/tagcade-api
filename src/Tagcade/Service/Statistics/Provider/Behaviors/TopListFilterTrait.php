@@ -2,34 +2,30 @@
 
 namespace Tagcade\Service\Statistics\Provider\Behaviors;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 trait TopListFilterTrait
 {
     /**
-     * @param CalculatedReportGroup[] $statisticsList
+     * @param ReportResultInterface $reportCollection
      * @param $sortBy
      * @param int $limit
      * @param string $order
      * @return array
      */
-    protected function topList(array $statisticsList, $sortBy, $limit = 10, $order = 'DESC')
+    protected function topList(ReportResultInterface $reportCollection, $sortBy, $limit = 10, $order = 'DESC')
     {
-        if ($statisticsList === null || !is_array($statisticsList)) {
-            throw new InvalidArgumentException('statistic list array required');
-        }
-
         if (null === $sortBy) {
             throw new InvalidArgumentException('sort field must be defined');
         }
+        
+        $reports = $reportCollection->getReports();
 
-        if (count($statisticsList) < 2) {
-            return $statisticsList;
+        if (count($reports) < 2) {
+            return $reports;
         }
-
-
-        $reportClass = get_class(current($statisticsList));
+        $reportClass = get_class(current($reports));
 
         try {
             $getterMethod = new \ReflectionMethod($reportClass, 'get' . ucfirst($sortBy));
@@ -38,7 +34,7 @@ trait TopListFilterTrait
         }
 
         usort(
-            $statisticsList,
+            $reports,
             function ($a, $b) use ($getterMethod, $order) {
                 $valA = $getterMethod->invoke($a);
                 $valB = $getterMethod->invoke($b);
@@ -52,9 +48,9 @@ trait TopListFilterTrait
         );
 
         if (is_int($limit) && $limit > 0) {
-            array_splice($statisticsList, $limit);
+            array_splice($reports, $limit);
         }
 
-        return $statisticsList;
+        return $reports;
     }
 } 

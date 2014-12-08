@@ -1,44 +1,28 @@
 <?php
 
-namespace Tagcade\Domain\DTO\Report\PerformanceReport\Display;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result;
 
+use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use DateTime;
 
-class ReportCollection
+class ReportCollection implements ReportResultInterface
 {
-    /**
-     * @var ReportTypeInterface
-     */
     protected $reportType;
-    /**
-     * @var DateTime
-     */
     protected $startDate;
-    /**
-     * @var DateTime
-     */
     protected $endDate;
-
-    /**
-     * @var ReportInterface[]
-     */
     protected $reports;
-
-    /**
-     * @var string
-     */
     protected $name;
 
     /**
-     * @param ReportTypeInterface $reportType
+     * @param ReportTypeInterface|ReportTypeInterface[] $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param ReportDataInterface[]|BilledReportDataInterface[] $reports
      * @param string $name
-     * @param ReportInterface[] $reports
      */
-    public function __construct(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, $name, array $reports)
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name = null)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
@@ -48,7 +32,7 @@ class ReportCollection
     }
 
     /**
-     * @return ReportTypeInterface
+     * @return ReportTypeInterface|ReportTypeInterface[]
      */
     public function getReportType()
     {
@@ -72,18 +56,18 @@ class ReportCollection
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return ReportInterface[]
+     * @return ReportDataInterface[]
      */
     public function getReports()
     {
         return $this->reports;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

@@ -21,4 +21,10 @@ interface StatisticsInterface
      */
     public function getPublisherDashboard(PublisherInterface $publisher);
 
+    /**
+     * @param PublisherInterface $publisher
+     * @return float
+     */
+    public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher);
+
 }

@@ -2,11 +2,9 @@
 
 namespace Tagcade\Service\Statistics;
 
-use Tagcade\Domain\DTO\Report\PerformanceReport\Display\Group\Hierarchy\Platform\CalculatedReportGroup;
 use Tagcade\Domain\DTO\Statistics\DaySummary;
 use Tagcade\Domain\DTO\Statistics\Dashboard\AdminDashboard;
 use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
-use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\Overview;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics as PlatformStatisticsDTO;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
 
@@ -14,6 +12,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 use Tagcade\Service\Statistics\Provider\AccountStatisticsInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformTypes;
 use DateTime;
@@ -63,6 +62,9 @@ class Statistics implements StatisticsInterface
     {
         $params = $this->_getDashboardParams();
 
+        /**
+         * @var BilledReportGroup $platformReports
+         */
         $platformReports    = $this->reportBuilder->getPlatformReport($params);
         $platformStatistics = new PlatformStatisticsDTO($platformReports);
 
@@ -78,8 +80,7 @@ class Statistics implements StatisticsInterface
             new DaySummary($todayReport),
             new DaySummary($yesterdayReport),
             $topPublishers,
-            $topSites,
-            $reports
+            $topSites
         );
     }
 
@@ -91,7 +92,7 @@ class Statistics implements StatisticsInterface
         $params = $this->_getDashboardParams();
 
         /**
-         * @var CalculatedReportGroup $accountReports
+         * @var BilledReportGroup $accountReports
          */
         $accountReports     = $this->reportBuilder->getPublisherReport($publisher, $params);
         $accountStatistics  = new AccountStatisticsDTO($accountReports);
@@ -108,10 +109,15 @@ class Statistics implements StatisticsInterface
             new DaySummary($todayReport),
             new DaySummary($yesterdayReport),
             $topSites,
-            $topAdNetworks,
-            $reports
+            $topAdNetworks
         );
     }
+
+    public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher)
+    {
+        return round($this->accountStatistics->getProjectedBilledAmount($publisher), 4);
+    }
+
 
     /**
      * @return Params
