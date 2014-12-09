@@ -4,10 +4,12 @@ parameters:
 services:
 
     tagcade.legacy.cache.tag_cache:
-        class: Tagcade\Legacy\TagCache
+        class: Tagcade\Legacy\Cache\TagCache
 
     tagcade_app.event_listener.adslot_change_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\AdSlotChangeListener
+        arguments:
+            - @event_dispatcher
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postUpdate }

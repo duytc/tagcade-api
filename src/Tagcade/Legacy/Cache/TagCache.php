@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Legacy;
+namespace Tagcade\Legacy\Cache;
 
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
