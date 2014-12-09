@@ -1,3 +1,6 @@
+parameters:
+    tagcade_app.event.update_cache: tagcade_app.event.update_cache
+
 services:
 
     tagcade.legacy.cache.tag_cache:
@@ -15,4 +18,4 @@ services:
         arguments:
             - @tagcade.legacy.cache.tag_cache
         tags:
-            - { name: doctrine.event_listener, event: postPersist }
+            - { name: kernel.event_listener, event: tagcade_app.event.update_cache, method: onUpdateCache }
