@@ -34,12 +34,12 @@ interface DateUtilInterface
 
     public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate);
 
-    public function getLastDateOfMonth();
+    public function getLastDateInMonth();
 
     /**
      * @return int
      */
-    public function getNumberOfRemainingDatesOfMonth();
+    public function getNumberOfRemainingDatesInMonth();
 
     /**
      * @return int
