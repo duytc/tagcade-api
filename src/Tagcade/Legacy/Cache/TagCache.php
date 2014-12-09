@@ -22,12 +22,12 @@ class TagCache implements TagCacheInterface
      */
     private $cache;
 
-    function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, RedisArrayCache $cache)
-    {
-        $this->adSlotManager = $adSlotManager;
-        $this->adTagManager = $adTagManager;
-        $this->cache = $cache;
-    }
+//    function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, RedisArrayCache $cache)
+//    {
+//        $this->adSlotManager = $adSlotManager;
+//        $this->adTagManager = $adTagManager;
+//        $this->cache = $cache;
+//    }
 
     public function renewCacheForAdSlot(AdSlotInterface $adSlotId)
     {

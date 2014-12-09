@@ -1,0 +1,18 @@
+services:
+
+    tagcade.legacy.cache.tag_cache:
+        class: Tagcade\Legacy\TagCache
+
+    tagcade_app.event_listener.adslot_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\AdSlotChangeListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postRemove }
+
+    tagcade_app.event_listener.update_cache_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\UpdateCacheListener
+        arguments:
+            - @tagcade.legacy.cache.tag_cache
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
