@@ -81,7 +81,7 @@ class DateUtil implements DateUtilInterface
     /**
      * @return int
      */
-    public function getNumberOfDatesPassedOfMonth()
+    public function getNumberOfDatesPassedInMonth()
     {
         $today =  new DateTime('today');
         return $today->diff($this->getFirstDateOfMonth())->days;
@@ -92,7 +92,7 @@ class DateUtil implements DateUtilInterface
      */
     public function isFirstDateOfMonth()
     {
-        return $this->getNumberOfDatesPassedOfMonth() === 0;
+        return $this->getNumberOfDatesPassedInMonth() === 0;
     }
 
 

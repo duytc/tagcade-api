@@ -44,5 +44,5 @@ interface DateUtilInterface
     /**
      * @return int
      */
-    public function getNumberOfDatesPassedOfMonth();
+    public function getNumberOfDatesPassedInMonth();
 }

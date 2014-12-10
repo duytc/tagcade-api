@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as ReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\DateUtilInterface;
@@ -74,16 +75,20 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
         }
 
         $cpmRate = $this->rateGetter->getBilledRateForPublisher($reportType->getPublisher(), $reportGroup->getSlotOpportunities());
-        $billedAmountUpToToday  = $this->billingCalculator->calculateBilledAmount($cpmRate, $reportGroup->getSlotOpportunities());
-        $dayAverageBilledAmount = $billedAmountUpToToday / $this->dateUtil->getNumberOfDatesPassedOfMonth();
-        $projectedBilledAmount  = $billedAmountUpToToday + ($dayAverageBilledAmount * ($this->dateUtil->getNumberOfRemainingDatesInMonth() + 1)) ; // +1 to include today
+        $billedAmountUpToYesterday  = $this->billingCalculator->calculateBilledAmount($cpmRate, $reportGroup->getSlotOpportunities());
+        $dayAverageBilledAmount = $billedAmountUpToYesterday / $this->dateUtil->getNumberOfDatesPassedInMonth();
+        $projectedBilledAmount  = $billedAmountUpToYesterday + ($dayAverageBilledAmount * ($this->dateUtil->getNumberOfRemainingDatesInMonth() + 1)) ; // +1 to include today
 
         return new RateAmount($cpmRate, $projectedBilledAmount);
     }
 
     private function _createProjectedParam()
     {
-        $params     = new Params($this->dateUtil->getFirstDateOfMonth(), new DateTime('today'));
+        if ($this->dateUtil->isFirstDateOfMonth()) {
+            throw new RuntimeException('Projected billed amount cannot be calculated on the first day of month'); // projected billed amount can only be computed if we have yesterday data.
+        }
+
+        $params     = new Params($this->dateUtil->getFirstDateOfMonth(), new DateTime('yesterday'));
         $params->setGrouped(true);
 
         return $params;
