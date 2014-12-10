@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 /**
  * Provides a command-line interface for renewing cache using cli
  */
-class RenewAdSlotCacheCommand extends ContainerAwareCommand
+class RefreshCacheCommand extends ContainerAwareCommand
 {
 
     /**
@@ -20,7 +20,7 @@ class RenewAdSlotCacheCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('tagcade:cache:renew-adslot')
+            ->setName('tc:cache:refresh-all')
             ->setDescription('Create initial ad slot cache if needed to avoid slams');
         ;
     }
@@ -34,10 +34,10 @@ class RenewAdSlotCacheCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tagCache = $this->getContainer()->get('tagcade.legacy.cache.tag_cache');
+        $tagCache = $this->getContainer()->get('tagcade.legacy.tag_cache');
 
-        $tagCache->renewCache();
+        $tagCache->refreshCache();
 
-        $output->writeln('Ad slot cache created');
+        $output->writeln('Ad slot cache refreshed');
     }
 }
