@@ -24,10 +24,10 @@ class AdSlotChangeListener
         $this->dispatchUpdateCacheEventDueToAdSlot($args);
     }
 
-    public function postRemove(LifecycleEventArgs $args)
-    {
-        $this->dispatchUpdateCacheEventDueToAdSlot($args);
-    }
+//    public function postRemove(LifecycleEventArgs $args)
+//    {
+//        $this->dispatchUpdateCacheEventDueToAdSlot($args);
+//    }
 
     protected function dispatchUpdateCacheEventDueToAdSlot(LifecycleEventArgs $args)
     {

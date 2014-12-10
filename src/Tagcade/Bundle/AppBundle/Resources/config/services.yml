@@ -30,13 +30,12 @@ services:
             - @event_dispatcher
         tags:
             - { name: doctrine.event_listener, event: postPersist }
-            - { name: doctrine.event_listener, event: postRemove }
+#            - { name: doctrine.event_listener, event: postRemove }
 
     tagcade_app.event_listener.adnetwork_change_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\AdNetworkChangeListener
         arguments:
             - @event_dispatcher
-#            - @tagcade.legacy.tag_cache
         tags:
             - { name: doctrine.event_listener, event: postRemove }
             - { name: doctrine.event_listener, event: postUpdate }
