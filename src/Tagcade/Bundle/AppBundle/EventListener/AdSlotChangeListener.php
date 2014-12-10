@@ -37,6 +37,6 @@ class AdSlotChangeListener
             return;
         }
 
-        $this->eventDispatcher->dispatch(new UpdateCacheEvent($entity));
+        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($entity));
     }
 } 

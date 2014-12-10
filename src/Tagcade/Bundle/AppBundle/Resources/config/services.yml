@@ -36,6 +36,7 @@ services:
         class: Tagcade\Bundle\AppBundle\EventListener\AdNetworkChangeListener
         arguments:
             - @event_dispatcher
+#            - @tagcade.legacy.tag_cache
         tags:
             - { name: doctrine.event_listener, event: postRemove }
             - { name: doctrine.event_listener, event: postUpdate }

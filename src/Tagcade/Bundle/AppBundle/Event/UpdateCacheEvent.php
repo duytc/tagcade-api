@@ -9,6 +9,7 @@ use Tagcade\Model\ModelInterface;
 class UpdateCacheEvent extends Event
 {
 
+    const NAME = 'tagcade_app.event.update_cache';
     /**
      * @var ModelInterface
      */
