@@ -39,17 +39,16 @@ class ReportCreator implements ReportCreatorInterface
         $this->setDate(new DateTime('today'));
     }
 
-    /**
-     * @inheritdoc
-     */
+    public function getEventCounter()
+    {
+        return $this->eventCounter;
+    }
+
     public function addCreator(CreatorInterface $creator)
     {
         $this->creators[] = $creator;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function setDate(DateTime $date)
     {
         $this->date = $date;
@@ -58,17 +57,11 @@ class ReportCreator implements ReportCreatorInterface
         return $this;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getDate()
     {
         return $this->date;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getReport(ReportTypeInterface $reportType)
     {
         $creator = $this->getCreatorFor($reportType);

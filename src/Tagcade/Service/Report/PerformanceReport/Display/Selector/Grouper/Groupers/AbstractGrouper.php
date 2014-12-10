@@ -3,7 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
@@ -50,20 +50,20 @@ abstract class AbstractGrouper implements GrouperInterface
     private $totalFillRate;
 
     /**
-     * @param ReportCollection $reportCollection
+     * @param ReportResultInterface $reportResult
      */
-    public function __construct(ReportCollection $reportCollection)
+    public function __construct(ReportResultInterface $reportResult)
     {
-        $reports = $reportCollection->getReports();
+        $reports = $reportResult->getReports();
 
         if (empty($reports)) {
             throw new InvalidArgumentException('Expected a non-empty array of reports');
         }
 
-        $this->reportType = $reportCollection->getReportType();
-        $this->reportName = $reportCollection->getName();
-        $this->startDate = $reportCollection->getStartDate();
-        $this->endDate = $reportCollection->getEndDate();
+        $this->reportType = $reportResult->getReportType();
+        $this->reportName = $reportResult->getName();
+        $this->startDate = $reportResult->getStartDate();
+        $this->endDate = $reportResult->getEndDate();
         $this->reports = $reports;
 
         $this->groupReports($reports);

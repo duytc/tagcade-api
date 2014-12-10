@@ -180,11 +180,7 @@ nelmio_cors:
         allow_headers:  ['authorization', 'content-type']
         max_age:        3600
     paths:
-        '^/user/getToken$':
-            allow_methods: ['POST']
         '^/api/':
-            allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']
-        '^/admin/api/':
             allow_methods: ['POST', 'PUT', 'PATCH', 'GET', 'DELETE']
 
 stof_doctrine_extensions:

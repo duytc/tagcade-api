@@ -26,31 +26,50 @@ class PerformanceReportController extends FOSRestController
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
-     *
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)*
      * @return array
      */
     public function getPlatformAction()
     {
-        return $this->getReportBuilder()->getPlatformReport($this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getPlatformReport($this->getParams())
+        );
     }
 
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @Rest\Get("/accounts", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/platform/accounts")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @return array
      */
-    public function getPublishersAction()
+    public function getPlatformPublishersAction()
     {
-        return $this->getReportBuilder()->getAllPublishersReport($this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAllPublishersReport($this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @Rest\Get("/platform/sites")
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @return array
+     */
+    public function getPlatformSitesAction()
+    {
+        return $this->getResult(
+            $this->getReportBuilder()->getAllSitesReport($this->getParams())
+        );
     }
 
     /**
@@ -59,7 +78,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $publisherId
      *
@@ -69,7 +87,9 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams())
+        );
     }
 
     /**
@@ -78,7 +98,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $publisherId
      * @return array
@@ -87,7 +106,9 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams())
+        );
     }
 
     /**
@@ -96,7 +117,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $adNetworkId
      * @return array
@@ -105,7 +125,9 @@ class PerformanceReportController extends FOSRestController
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
 
-        return $this->getReportBuilder()->getAdNetworkReport($adNetwork, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdNetworkReport($adNetwork, $this->getParams())
+        );
     }
 
     /**
@@ -114,7 +136,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $adNetworkId
      * @return array
@@ -123,7 +144,9 @@ class PerformanceReportController extends FOSRestController
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
 
-        return $this->getReportBuilder()->getAdNetworkSitesReport($adNetwork, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdNetworkSitesReport($adNetwork, $this->getParams())
+        );
     }
 
     /**
@@ -132,7 +155,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $adNetworkId
      * @param int $siteId ID
@@ -144,7 +166,9 @@ class PerformanceReportController extends FOSRestController
         $adNetwork = $this->getAdNetwork($adNetworkId);
         $site = $this->getSite($siteId);
 
-        return $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams())
+        );
     }
 
     /**
@@ -162,7 +186,9 @@ class PerformanceReportController extends FOSRestController
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
 
-        return $this->getReportBuilder()->getAdNetworkAdTagsReport($adNetwork, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdNetworkAdTagsReport($adNetwork, $this->getParams())
+        );
     }
 
     /**
@@ -182,24 +208,9 @@ class PerformanceReportController extends FOSRestController
         $adNetwork = $this->getAdNetwork($adNetworkId);
         $site = $this->getSite($siteId);
 
-        return $this->getReportBuilder()->getAdNetworkSiteAdTagsReport($adNetwork, $site, $this->getParams());
-    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @Rest\Get("/sites")
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
-     *
-     * @return array
-     */
-    public function getSitesAction()
-    {
-        return $this->getReportBuilder()->getAllSitesReport($this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdNetworkSiteAdTagsReport($adNetwork, $site, $this->getParams())
+        );
     }
 
     /**
@@ -208,7 +219,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $publisherId
      * @return array
@@ -217,7 +227,9 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams())
+        );
     }
 
     /**
@@ -226,7 +238,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $siteId ID of the site you want the report for
      *
@@ -236,7 +247,9 @@ class PerformanceReportController extends FOSRestController
     {
         $site = $this->getSite($siteId);
 
-        return $this->getReportBuilder()->getSiteReport($site, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getSiteReport($site, $this->getParams())
+        );
     }
 
     /**
@@ -245,7 +258,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $siteId
      *
@@ -255,7 +267,29 @@ class PerformanceReportController extends FOSRestController
     {
         $site = $this->getSite($siteId);
 
-        return $this->getReportBuilder()->getSiteAdSlotsReport($site, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getSiteAdSlotsReport($site, $this->getParams())
+        );
+    }
+
+    /**
+     * @Rest\Get("/sites/{siteId}/adtags", requirements={"siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $siteId
+     *
+     * @return array
+     */
+    public function getSiteAdTagsAction($siteId)
+    {
+        $site = $this->getSite($siteId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getSiteAdTagsReport($site, $this->getParams())
+        );
     }
 
     /**
@@ -264,7 +298,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @param int $adSlotId
      *
@@ -280,7 +313,9 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adSlot);
 
-        return $this->getReportBuilder()->getAdSlotReport($adSlot, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdSlotReport($adSlot, $this->getParams())
+        );
     }
 
     /**
@@ -304,7 +339,9 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adSlot);
 
-        return $this->getReportBuilder()->getAdSlotAdTagsReport($adSlot, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdSlotAdTagsReport($adSlot, $this->getParams())
+        );
     }
 
     /**
@@ -328,7 +365,9 @@ class PerformanceReportController extends FOSRestController
 
         $this->checkUserPermission($adTag);
 
-        return $this->getReportBuilder()->getAdTagReport($adTag, $this->getParams());
+        return $this->getResult(
+            $this->getReportBuilder()->getAdTagReport($adTag, $this->getParams())
+        );
     }
 
     /**
@@ -423,6 +462,15 @@ class PerformanceReportController extends FOSRestController
     {
         $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
         return $this->_createParams($params);
+    }
+
+    protected function getResult($result)
+    {
+        if ($result === false) {
+            throw new NotFoundHttpException('No reports found for that query');
+        }
+
+        return $result;
     }
 
     /**
