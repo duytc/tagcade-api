@@ -20,6 +20,14 @@ interface AdTagRepositoryInterface extends ObjectRepository
     public function getAdTagsForAdSlot(AdSlotInterface $adSlot, $limit = null, $offset = null);
 
     /**
+     * @param SiteInterface $site
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null);
+
+    /**
      * @param PublisherInterface $publisher
      * @param int|null $limit
      * @param int|null $offset

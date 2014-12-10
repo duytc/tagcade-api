@@ -30,55 +30,43 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
      */
     protected $cache;
 
+    protected $useLocalCache = true;
+    private $localCache = array();
+
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getCache()
     {
         return $this->cache;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getSlotOpportunityCount($slotId)
     {
-        return $this->cache->fetch(
+        return $this->fetchFromCache(
             $this->getCacheKey(static::SLOT_OPPORTUNITY, $slotId)
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getOpportunityCount($tagId)
     {
-        return $this->cache->fetch(
+        return $this->fetchFromCache(
             $this->getCacheKey(static::OPPORTUNITY, $tagId)
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getImpressionCount($tagId)
     {
-        return $this->cache->fetch(
+        return $this->fetchFromCache(
             $this->getCacheKey(static::IMPRESSION, $tagId)
         );
     }
 
-    /**
-     * @inheritdoc
-     */
     public function getPassbackCount($tagId)
     {
-        return $this->cache->fetch(
+        return $this->fetchFromCache(
             $this->getCacheKey(static::FALLBACK, $tagId)
         );
     }
@@ -111,5 +99,34 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $entity = sprintf($entity, $id);
 
         return sprintf($keyFormat, $bucket, $entity, $this->getDate()->format(self::KEY_DATE_FORMAT));
+    }
+
+    public function useLocalCache($bool)
+    {
+        $this->useLocalCache = (bool) $bool;
+    }
+
+    public function resetLocalCache()
+    {
+        $this->localCache = array();
+    }
+
+    /**
+     * @param string $key
+     * @return mixed
+     */
+    protected function fetchFromCache($key)
+    {
+        if ($this->useLocalCache && array_key_exists($key, $this->localCache)) {
+            return $this->localCache[$key];
+        }
+
+        $value = $this->cache->fetch($key);
+
+        if ($this->useLocalCache && $value !== false) {
+            $this->localCache[$key] = $value;
+        }
+
+        return $value;
     }
 }

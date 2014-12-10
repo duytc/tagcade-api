@@ -34,6 +34,25 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.adSlot', 'sl')
+            ->where('sl.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+        ;
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @inheritdoc
      */

@@ -132,7 +132,7 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $adTags = $this->adTagManager->getAdTagsForAdNetwork($adNetwork);
 
-        $reportTypes = array_map(function($adTag) use($adNetwork) {
+        $reportTypes = array_map(function($adTag) {
             return new AdNetworkReportTypes\AdTag($adTag);
         }, $adTags);
 
@@ -143,7 +143,7 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
 
-        $reportTypes = array_map(function($adTag) use($adNetwork) {
+        $reportTypes = array_map(function($adTag) {
             return new AdNetworkReportTypes\AdTag($adTag);
         }, $adTags);
 
@@ -184,6 +184,17 @@ class ReportBuilder implements ReportBuilderInterface
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
         }, $adSlots);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSiteAdTagsReport(SiteInterface $site, Params $params)
+    {
+        $adTags = $this->adTagManager->getAdTagsForSite($site);
+
+        $reportTypes = array_map(function($adTag) {
+            return new PlatformReportTypes\AdTag($adTag);
+        }, $adTags);
 
         return $this->getReports($reportTypes, $params);
     }
