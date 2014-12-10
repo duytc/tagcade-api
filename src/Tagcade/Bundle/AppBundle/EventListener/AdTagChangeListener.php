@@ -5,9 +5,9 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdTagInterface;
 
-class AdSlotChangeListener
+class AdTagChangeListener
 {
     /**
      * @var EventDispatcherInterface
@@ -21,22 +21,27 @@ class AdSlotChangeListener
 
     public function postPersist(LifecycleEventArgs $args)
     {
-        $this->dispatchUpdateCacheEventDueToAdSlot($args);
+        $this->dispatchUpdateCacheEventDueToAdTag($args);
+    }
+
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $this->dispatchUpdateCacheEventDueToAdTag($args);
     }
 
     public function postRemove(LifecycleEventArgs $args)
     {
-        $this->dispatchUpdateCacheEventDueToAdSlot($args);
+        $this->dispatchUpdateCacheEventDueToAdTag($args);
     }
 
-    protected function dispatchUpdateCacheEventDueToAdSlot(LifecycleEventArgs $args)
+    protected function dispatchUpdateCacheEventDueToAdTag(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof AdSlotInterface) {
+        if (!$entity instanceof AdTagInterface) {
             return;
         }
 
-        $this->eventDispatcher->dispatch(new UpdateCacheEvent($entity));
+        $this->eventDispatcher->dispatch(new UpdateCacheEvent($entity->getAdSlot()));
     }
 } 

@@ -4,26 +4,27 @@ namespace Tagcade\Bundle\AppBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\ModelInterface;
 
 class UpdateCacheEvent extends Event
 {
 
     /**
-     * @var AdSlotInterface
+     * @var ModelInterface
      */
-    private $adSlot;
+    private $entity;
 
-    function __construct(AdSlotInterface $adSlot)
+    function __construct(ModelInterface $entity)
     {
-        $this->adSlot = $adSlot;
+        $this->entity = $entity;
     }
 
     /**
-     * @return AdSlotInterface
+     * @return ModelInterface
      */
-    public function getAdSlot()
+    public function getEntity()
     {
-        return $this->adSlot;
+        return $this->entity;
     }
 
 

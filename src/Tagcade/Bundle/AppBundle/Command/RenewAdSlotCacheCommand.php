@@ -7,7 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 /**
- * Provides a command-line interface for viewing cache client stats
+ * Provides a command-line interface for renewing cache using cli
  */
 class RenewAdSlotCacheCommand extends ContainerAwareCommand
 {
