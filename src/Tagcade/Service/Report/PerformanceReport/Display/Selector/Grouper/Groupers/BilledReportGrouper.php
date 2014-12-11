@@ -13,6 +13,7 @@ class BilledReportGrouper extends AbstractGrouper
     private $billedAmount;
 
     private $averageSlotOpportunities;
+    private $averageBilledAmount;
 
     public function getGroupedReport()
     {
@@ -37,7 +38,8 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageEstCpm(),
             $this->getAverageEstRevenue(),
             $this->getAverageFillRate(),
-            $this->getAverageSlotOpportunities()
+            $this->getAverageSlotOpportunities(),
+            $this->getAverageBilledAmount()
         );
     }
 
@@ -46,7 +48,9 @@ class BilledReportGrouper extends AbstractGrouper
         parent::groupReports($reports);
 
         $reportCount = count($this->getReports());
+
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
+        $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -99,4 +103,14 @@ class BilledReportGrouper extends AbstractGrouper
     {
         return $this->averageSlotOpportunities;
     }
+
+    /**
+     * @return float
+     */
+    public function getAverageBilledAmount()
+    {
+        return $this->averageBilledAmount;
+    }
+
+
 }

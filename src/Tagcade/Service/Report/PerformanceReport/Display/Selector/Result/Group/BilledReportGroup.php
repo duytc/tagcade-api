@@ -12,6 +12,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     protected $slotOpportunities;
     protected $billedAmount;
     protected $averageSlotOpportunities;
+    protected $averageBilledAmount;
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
@@ -37,7 +38,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
@@ -48,6 +49,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         $this->slotOpportunities = $slotOpportunities;
         $this->billedAmount = round($billedAmount, 4);
         $this->averageSlotOpportunities = round($averageSlotOpportunities);
+        $this->averageBilledAmount = round($averageBilledAmount, 4);
     }
 
     /**
@@ -73,4 +75,14 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     {
         return $this->averageSlotOpportunities;
     }
+
+    /**
+     * @return float
+     */
+    public function getAverageBilledAmount()
+    {
+        return $this->averageBilledAmount;
+    }
+
+
 }
