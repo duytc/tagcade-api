@@ -96,23 +96,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
         $params->setGrouped(true);
 
-
-        /**
-         * @var BilledReportGroup $reportGroup
-         */
-        $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $params);
-        if(false === $reportGroup) {
-            return false; // nothing get updated
-        }
-
-        $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $reportGroup->getSlotOpportunities(), $date);
+        $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $date);
         $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
 
         if ($lastRate !== $newBilledRate) {
             // TODO set last rate for publisher then do update billedAmount
-            $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $params);
-
-            return true; // 1 publisher updated
+            return $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $params);
         }
 
         return false; // none is updated
@@ -140,7 +129,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         return $updatedPublisherCount;
     }
 
-
+    /**
+     * @param PublisherInterface $publisher
+     * @param $billedRate
+     * @param Params $param
+     * @return bool false on failure
+     */
     protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, $billedRate, Params $param)
     {
         if( !is_numeric($billedRate) || $billedRate < 0) {
@@ -148,6 +142,10 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         }
 
         $reportResult = $this->reportBuilder->getPublisherAdSlotsReport($publisher, $param);
+
+        if (false === $reportResult) {
+            return false;
+        }
 
         $rootReports = [];
 
@@ -184,5 +182,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         // Step 3. Update database
         $this->om->flush();
+
+        return true;
     }
 }
