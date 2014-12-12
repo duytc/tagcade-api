@@ -14,10 +14,9 @@ interface CpmRateGetterInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @param int $slotOpportunities
      * @return float
      */
-    public function getBilledRateForPublisher(PublisherInterface $publisher, $slotOpportunities);
+    public function getBilledRateForPublisher(PublisherInterface $publisher);
 
     /**
      * @param PublisherInterface $publisher

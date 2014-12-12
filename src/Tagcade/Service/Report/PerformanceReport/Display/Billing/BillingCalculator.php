@@ -26,21 +26,9 @@ class BillingCalculator implements BillingCalculatorInterface
             throw new InvalidArgumentException('Slot opportunities must be a number');
         }
 
-        $cpmRate = $this->getCustomCpmRateForPublisher($publisher);
-
-        if (null !== $cpmRate) {
-            return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $slotOpportunities));
-        }
-
-        $cpmRate = $this->defaultRateGetter->getDefaultCpmRate($slotOpportunities);
+        $cpmRate = $this->defaultRateGetter->getBilledRateForPublisher($publisher);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $slotOpportunities));
-    }
-
-    protected function getCustomCpmRateForPublisher(PublisherInterface $publisher)
-    {
-        // TODO: finish when multi-user integrated.
-        return $publisher->getUser()->getBillingRate();
     }
 
     /**

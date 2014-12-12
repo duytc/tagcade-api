@@ -25,7 +25,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         $qb = $this->createQueryBuilder('r');
 
         $result = $qb
-            ->select('SUM(r.totalOpportunities) as total')
+            ->select('SUM(r.slotOpportunities) as total')
             ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->andWhere('r.publisher = :publisher')
             ->setParameter('start_date', $startDate, Type::DATE)

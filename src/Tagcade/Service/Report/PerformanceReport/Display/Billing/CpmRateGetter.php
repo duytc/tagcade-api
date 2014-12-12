@@ -2,9 +2,11 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
-
+use DateTime;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
+use Tagcade\Service\DateUtilInterface;
 
 class CpmRateGetter implements CpmRateGetterInterface
 {
@@ -14,6 +16,14 @@ class CpmRateGetter implements CpmRateGetterInterface
      * @var BillingRateThreshold[]
      */
     protected $defaultBillingThresholds;
+    /**
+     * @var AccountReportRepositoryInterface
+     */
+    private $accountReportRepository;
+    /**
+     * @var DateUtilInterface
+     */
+    private $dateUtil;
 
     public static function createConfig(array $thresholds)
     {
@@ -34,8 +44,10 @@ class CpmRateGetter implements CpmRateGetterInterface
     /**
      * @param float $defaultCpmRate
      * @param BillingRateThreshold[] $defaultBilledThresholds
+     * @param AccountReportRepositoryInterface $accountReportRepository
+     * @param DateUtilInterface $dateUtil
      */
-    public function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [])
+    public function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [], AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil)
     {
         if (!is_numeric($defaultCpmRate)) {
             throw new InvalidArgumentException('Invalid default cpm rate');
@@ -60,6 +72,8 @@ class CpmRateGetter implements CpmRateGetterInterface
 
         $this->defaultCpmRate = (float) $defaultCpmRate;
         $this->defaultBillingThresholds = $defaultBilledThresholds;
+        $this->accountReportRepository = $accountReportRepository;
+        $this->dateUtil = $dateUtil;
     }
 
     public function getDefaultCpmRate($slotOpportunities)
@@ -73,13 +87,15 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->defaultCpmRate;
     }
 
-    public function getBilledRateForPublisher(PublisherInterface $publisher, $slotOpportunities)
+    public function getBilledRateForPublisher(PublisherInterface $publisher)
     {
         if ( null !== $publisher->getUser()->getBillingRate()) {
             return $publisher->getUser()->getBillingRate();
         }
 
-        return $this->getDefaultCpmRate($slotOpportunities);
+        $monthSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities($publisher, $this->dateUtil->getFirstDateOfMonth(), new DateTime('yesterday'));
+
+        return $this->getDefaultCpmRate($monthSlotOpportunities);
     }
 
     public function getLastRateForPublisher(PublisherInterface $publisher)
