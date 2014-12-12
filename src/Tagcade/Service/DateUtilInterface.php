@@ -25,7 +25,14 @@ interface DateUtilInterface
 
     public function formatDate(DateTime $date);
 
-    public function getFirstDateOfMonth();
+    public function getFirstDateOfMonth(DateTime $date = null);
+
+    /**
+     * @param DateTime $date
+     * @param bool $forceEndOfMonth
+     * @return DateTime end date of month this $date in when $forceEndOfMonth = true; otherwise return current $date
+     */
+    public function getLastDateOfMonth(DateTime $date = null, $forceEndOfMonth = false);
 
     /**
      * @return bool

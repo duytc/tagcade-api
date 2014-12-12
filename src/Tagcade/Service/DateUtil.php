@@ -53,9 +53,13 @@ class DateUtil implements DateUtilInterface
         return $date->format(self::DATE_FORMAT);
     }
 
-    public function getFirstDateOfMonth()
+    public function getFirstDateOfMonth(DateTime $date = null)
     {
-        return new DateTime(date('01-m-Y'));
+        if (null === $date) {
+            $date = new DateTime('today');
+        }
+
+        return new DateTime($date->format('1-m-Y'));
     }
 
     public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate)
@@ -67,6 +71,26 @@ class DateUtil implements DateUtilInterface
     {
         return new DateTime(date('t-m-Y'));
     }
+
+    /**
+     * @param DateTime $date
+     * @param bool $forceEndOfMonth
+     * @return DateTime end date of month this $date in when $forceEndOfMonth = true; otherwise return current $date
+     */
+    public function getLastDateOfMonth(DateTime $date = null, $forceEndOfMonth = false)
+    {
+        if (null === $date) {
+            $date = new DateTime('today');
+        }
+
+        $today = new DateTime('today');
+        if ($today->format('m') === $date->format('m') && $forceEndOfMonth === false) {
+            return $date;
+        }
+
+        return new DateTime($date->format('t-m-Y'));
+    }
+
 
     /**
      * @return int

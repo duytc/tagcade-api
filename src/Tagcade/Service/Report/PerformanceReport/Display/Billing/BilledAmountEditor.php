@@ -81,13 +81,19 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         return $this;
     }
 
-    public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher)
+    public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher, DateTime $date = null)
     {
-        if ($this->dateUtil->isFirstDateOfMonth()) {
+        if (null === $date) {
+            $date = new DateTime('yesterday');
+        }
+
+        $today = new DateTime('today');
+
+        if ($date >= $today) {
             return false; // nothing updated for first day of month, because update can only be done with yesterday of the same month
         }
 
-        $params = new Params($this->dateUtil->getFirstDateOfMonth(), new DateTime('yesterday'));
+        $params = new Params($this->dateUtil->getFirstDateOfMonth($date), $this->dateUtil->getLastDateOfMonth($date));
         $params->setGrouped(true);
 
         try {

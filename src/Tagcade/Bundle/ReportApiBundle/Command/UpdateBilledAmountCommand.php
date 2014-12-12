@@ -20,15 +20,25 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
             ->addArgument(
                 'id',
                 InputArgument::OPTIONAL,
-                'Id of publisher to be updated'
+                'Id of publisher to be updated. Otherwise all publishers get updated'
             )
-
+            ->addArgument(
+                'month',
+                InputArgument::OPTIONAL,
+                'Month that the billed amount needs to be recalculated. Default is current month'
+            )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $publisherId   = $input->getArgument('id');
+        $month = $input->getArgument('month');
+
+        if (null === $month) {
+            $month = new DateTime('yesterday');
+        }
+
         $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
 
         $output->writeln('start updating billed amount for publisher');
@@ -46,7 +56,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
                 throw new RuntimeException('that publisher is not existed');
             }
 
-            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForPublisher($publisher);
+            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForPublisher($publisher, $month);
         }
         
         $output->writeln( sprintf('finish updating billed amount. Total %d publisher(s) gets updated.', $updatedCount));
