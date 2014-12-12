@@ -89,6 +89,7 @@ class CpmRateGetter implements CpmRateGetterInterface
 
     public function getBilledRateForPublisher(PublisherInterface $publisher, DateTime $date = null)
     {
+        // NOTE: take the priority to custom rate. If the $date at the time custom rate is NOT set, we still take current custom rate to generate billed amount
         if ( null !== $publisher->getUser()->getBillingRate()) {
             return $publisher->getUser()->getBillingRate();
         }
