@@ -15,7 +15,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('tc:report:billing:update')
+            ->setName('tc:billing:update-threshold')
             ->setDescription('Update billed amount corresponding to total slot opportunities up to current day and pre-configured thresholds')
             ->addArgument(
                 'id',
@@ -25,7 +25,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
             ->addArgument(
                 'month',
                 InputArgument::OPTIONAL,
-                'Month(mm-yyyy) that the billed amount needs to be recalculated. Default is current month'
+                'Month(YYYY-mm) that the billed amount needs to be recalculated. Default is current month'
             )
         ;
     }
@@ -35,7 +35,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
         $publisherId   = $input->getArgument('id');
         $month = $input->getArgument('month');
 
-        $month = null === $month ? new DateTime('yesterday') : DateTime::createFromFormat('m-Y', $month);
+        $month = null === $month ? new DateTime('yesterday') : DateTime::createFromFormat('Y-m', $month);
 
         if (false === $month ) {
             throw new InvalidArgumentException('Invalid month input');
@@ -47,7 +47,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
         if (null === $publisherId) {
-            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForAllPublishers($month);
+            $updatedCount = $billingEditor->updateBilledAmountThresholdForAllPublishers($month);
         }
         else {
 
@@ -57,7 +57,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
                 throw new RuntimeException('that publisher is not existed');
             }
 
-            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForPublisher($publisher, $month);
+            $updatedCount = $billingEditor->updateBilledAmountThresholdForPublisher($publisher, $month);
         }
         
         $output->writeln( sprintf('finish updating billed amount. Total %d publisher(s) gets updated.', $updatedCount));

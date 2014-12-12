@@ -71,17 +71,14 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     public function updateBilledAmountForPublisher(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate)
     {
-        $params = new Params($startDate, $endDate);
-        /**
-         * @var AdSlotReportInterface $reportRow
-         */
-        $this->doUpdateBilledAmountForPublisher($publisher, $billingRate, $params);
-        $publisher->getUser()->setBillingRate($billingRate); // set custom rate for publisher
+        if( !is_numeric($billingRate) || $billingRate < 0) {
+            throw new InvalidArgumentException('billing rate must be a float and positive number');
+        }
 
-        return $this;
+        return $this->doUpdateBilledAmountForPublisher($publisher,  new Params($startDate, $endDate), $billingRate);
     }
 
-    public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher, DateTime $date = null)
+    public function updateBilledAmountThresholdForPublisher(PublisherInterface $publisher, DateTime $date = null)
     {
         if (null === $date) {
             $date = new DateTime('yesterday');
@@ -96,18 +93,10 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
         $params->setGrouped(true);
 
-        $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $date);
-        $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
-
-        if ($lastRate !== $newBilledRate) {
-            // TODO set last rate for publisher then do update billedAmount
-            return $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $params);
-        }
-
-        return false; // none is updated
+        return $this->doUpdateBilledAmountForPublisher($publisher, $params);
     }
 
-    public function updateBilledAmountToCurrentDateForAllPublishers(DateTime $date = null)
+    public function updateBilledAmountThresholdForAllPublishers(DateTime $date = null)
     {
         if (null === $date) {
             $date = new DateTime('yesterday');
@@ -123,7 +112,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $publishers = $this->userManager->allPublisherRoles();
 
         foreach ($publishers as $publisher) {
-            $updatedPublisherCount += $this->updateBilledAmountToCurrentDateForPublisher($publisher);
+            $updatedPublisherCount += $this->updateBilledAmountThresholdForPublisher($publisher, $date);
         }
 
         return $updatedPublisherCount;
@@ -131,16 +120,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @param $billedRate
      * @param Params $param
+     * @param string $billedRate If not set then we calculate rate base on publisher threshold
      * @return bool false on failure
      */
-    protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, $billedRate, Params $param)
+    protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, Params $param, $billedRate = null)
     {
-        if( !is_numeric($billedRate) || $billedRate < 0) {
-            throw new InvalidArgumentException('billing rate must be a float and positive number');
-        }
-
         $reportResult = $this->reportBuilder->getPublisherAdSlotsReport($publisher, $param);
 
         if (false === $reportResult) {
@@ -155,11 +140,19 @@ class BilledAmountEditor implements BilledAmountEditorInterface
          */
         foreach($reportResult->getReports() as $report) {
             foreach ($report->getReports() as $reportRow) {
+
+                if (!$this->shouldUpdateReport($reportRow, $billedRate)) {
+                    continue;
+                }
+
+                $cpmRate = $billedRate !== null ? $billedRate : $this->rateGetter->getThresholdRateForPublisher($publisher, $reportRow->getDate());
                 $billedAmount = $this->billingCalculator->calculateBilledAmount($billedRate, $reportRow->getSlotOpportunities());
-                $reportRow->setBilledAmount($billedAmount);
-                $reportRow->setBilledRate($billedRate);
+                $reportRow->setBilledAmount($billedAmount)
+                          ->setBilledRate($cpmRate)
+                ;
+
                 $root = $this->getRootReport($reportRow);
-                
+
                 if (!in_array($root, $rootReports, true)) {
                     $rootReports[] = $root;
                 }
@@ -184,5 +177,16 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $this->om->flush();
 
         return true;
+    }
+
+    protected function shouldUpdateReport(AbstractCalculatedReport $reportRow, $newRate = null) {
+        if (null !== $newRate && $newRate !== $reportRow->getBilledRate()) { // wanna recalculate report with new rate
+            return true;
+        }
+        else if (null === $newRate && $reportRow->getCustomRate() === null) { // should recalculate billed amount base on new threshold
+            return true;
+        }
+
+        return false;
     }
 }

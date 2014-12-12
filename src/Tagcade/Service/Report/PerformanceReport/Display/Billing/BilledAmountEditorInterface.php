@@ -18,14 +18,14 @@ interface BilledAmountEditorInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @param DateTime $date month that the update should happens. Default is yesterday
+     * @param DateTime $date month that the update should happens. Default is current month
      * @return bool true if there is update, false otherwise
      */
-    public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher, DateTime $date = null);
+    public function updateBilledAmountThresholdForPublisher(PublisherInterface $publisher, DateTime $date = null);
 
     /**
      * @param DateTime $date month that the update should happens. Default is yesterday
      * @return int number of updated publishers.
      */
-    public function updateBilledAmountToCurrentDateForAllPublishers(DateTime $date = null);
+    public function updateBilledAmountThresholdForAllPublishers(DateTime $date = null);
 }

@@ -87,17 +87,18 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->defaultCpmRate;
     }
 
-    public function getBilledRateForPublisher(PublisherInterface $publisher, DateTime $date = null)
+    public function getTodayCpmRateForPublisher(PublisherInterface $publisher)
     {
-        // NOTE: take the priority to custom rate. If the $date at the time custom rate is NOT set, we still take current custom rate to generate billed amount
-        if ( null !== $publisher->getUser()->getBillingRate()) {
+        if (null !== $publisher->getUser()->getBillingRate()) {
             return $publisher->getUser()->getBillingRate();
         }
 
-        if (null === $date) {
-            $date = new DateTime('yesterday');
-        }
+        return $this->getThresholdRateForPublisher($publisher, new DateTime('yesterday'));
+    }
 
+
+    public function getThresholdRateForPublisher(PublisherInterface $publisher, DateTime $date = null)
+    {
         $monthSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities(
             $publisher,
             $this->dateUtil->getFirstDateInMonth($date),
@@ -107,10 +108,5 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->getDefaultCpmRate($monthSlotOpportunities);
     }
 
-    public function getLastRateForPublisher(PublisherInterface $publisher)
-    {
-        // TODO return current rate of publisher
 
-        return $publisher->getUser()->getBillingRate();
-    }
 }

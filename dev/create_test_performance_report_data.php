@@ -29,7 +29,7 @@ $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\Te
 $eventCounter->refreshTestData();
 
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
-$reportCreator->setDate(new DateTime('2 days ago'));
+$reportCreator->setDate(new DateTime('4 days ago'));
 
 
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);

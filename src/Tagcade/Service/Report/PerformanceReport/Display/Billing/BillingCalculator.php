@@ -10,26 +10,24 @@ class BillingCalculator implements BillingCalculatorInterface
     /**
      * @var CpmRateGetterInterface
      */
-    private $defaultRateGetter;
+    private $cpmRateGetter;
 
     function __construct(CpmRateGetterInterface $defaultRateGetter)
     {
-        $this->defaultRateGetter = $defaultRateGetter;
+        $this->cpmRateGetter = $defaultRateGetter;
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function calculateBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities)
+    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities)
     {
         if (!is_int($slotOpportunities)) {
             throw new InvalidArgumentException('Slot opportunities must be a number');
         }
 
-        $cpmRate = $this->defaultRateGetter->getBilledRateForPublisher($publisher);
+        $cpmRate = $this->cpmRateGetter->getTodayCpmRateForPublisher($publisher);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $slotOpportunities));
     }
+
 
     /**
      * @param float $cpmRate

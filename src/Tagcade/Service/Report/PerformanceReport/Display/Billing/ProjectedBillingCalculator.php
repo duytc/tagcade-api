@@ -57,7 +57,8 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
             throw new InvalidArgumentException('Expected calculated report of type account');
         }
 
-        $billedAmountUpToYesterday  = $this->billingCalculator->calculateBilledAmountForPublisher($reportType->getPublisher(), $reportGroup->getSlotOpportunities())->getAmount();
+        //$billedAmountUpToYesterday  = $this->billingCalculator->calculateBilledAmountForPublisher($reportType->getPublisher(), $reportGroup->getSlotOpportunities())->getAmount();
+        $billedAmountUpToYesterday  = 1111; // sum from database
         $dayAverageBilledAmount = $billedAmountUpToYesterday / $this->dateUtil->getNumberOfDatesPassedInMonth();
         $projectedBilledAmount  = $billedAmountUpToYesterday + ($dayAverageBilledAmount * ($this->dateUtil->getNumberOfRemainingDatesInMonth() + 1)) ; // +1 to include today
 

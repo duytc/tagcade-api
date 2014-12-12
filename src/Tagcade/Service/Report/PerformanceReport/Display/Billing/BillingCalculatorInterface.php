@@ -11,7 +11,7 @@ interface BillingCalculatorInterface
      * @param int $slotOpportunities
      * @return RateAmount
      */
-    public function calculateBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities);
+    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities);
 
     /**
      * @param float $cpmRate
