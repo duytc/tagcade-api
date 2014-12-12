@@ -11,12 +11,8 @@ interface ProjectedBillingCalculatorInterface
     /**
      * This will do calculation of projected billed amount for current month
      * @param PublisherInterface $publisher
-     * @return RateAmount
+     * @return float|bool projected billed amount or false on failure
      */
     public function calculateProjectedBilledAmountForPublisher(PublisherInterface $publisher);
 
-    /**
-     * @return RateAmount[]
-     */
-    public function calculateProjectedBilledAmountForAllPublishers();
 }

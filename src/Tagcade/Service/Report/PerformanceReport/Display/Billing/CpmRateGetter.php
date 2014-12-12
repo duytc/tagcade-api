@@ -87,13 +87,21 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->defaultCpmRate;
     }
 
-    public function getBilledRateForPublisher(PublisherInterface $publisher)
+    public function getBilledRateForPublisher(PublisherInterface $publisher, DateTime $date = null)
     {
         if ( null !== $publisher->getUser()->getBillingRate()) {
             return $publisher->getUser()->getBillingRate();
         }
 
-        $monthSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities($publisher, $this->dateUtil->getFirstDateOfMonth(), new DateTime('yesterday'));
+        if (null === $date) {
+            $date = new DateTime('yesterday');
+        }
+
+        $monthSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities(
+            $publisher,
+            $this->dateUtil->getFirstDateInMonth($date),
+            $this->dateUtil->getLastDateInMonth($date, true)
+        );
 
         return $this->getDefaultCpmRate($monthSlotOpportunities);
     }

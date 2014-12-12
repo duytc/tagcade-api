@@ -25,7 +25,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
             ->addArgument(
                 'month',
                 InputArgument::OPTIONAL,
-                'Month that the billed amount needs to be recalculated. Default is current month'
+                'Month(mm-yyyy) that the billed amount needs to be recalculated. Default is current month'
             )
         ;
     }
@@ -35,18 +35,19 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
         $publisherId   = $input->getArgument('id');
         $month = $input->getArgument('month');
 
-        if (null === $month) {
-            $month = new DateTime('yesterday');
-        }
+        $month = null === $month ? new DateTime('yesterday') : DateTime::createFromFormat('m-Y', $month);
 
-        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
+        if (false === $month ) {
+            throw new InvalidArgumentException('Invalid month input');
+        }
 
         $output->writeln('start updating billed amount for publisher');
 
+        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
         if (null === $publisherId) {
-            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForAllPublishers();
+            $updatedCount = $billingEditor->updateBilledAmountToCurrentDateForAllPublishers($month);
         }
         else {
 

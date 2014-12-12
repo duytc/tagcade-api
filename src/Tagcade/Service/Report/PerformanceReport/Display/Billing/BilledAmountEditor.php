@@ -93,35 +93,45 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             return false; // nothing updated for first day of month, because update can only be done with yesterday of the same month
         }
 
-        $params = new Params($this->dateUtil->getFirstDateOfMonth($date), $this->dateUtil->getLastDateOfMonth($date));
+        $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
         $params->setGrouped(true);
 
-        try {
-            /**
-             * @var BilledReportGroup $reportGroup
-             */
-            $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $params);
-            $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $reportGroup->getSlotOpportunities());
-            $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
 
-            if ($lastRate !== $newBilledRate) {
-                // TODO set last rate for publisher then do update billedAmount
-                $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $params);
-
-                return true; // 1 publisher updated
-            }
+        /**
+         * @var BilledReportGroup $reportGroup
+         */
+        $reportGroup = $this->reportBuilder->getPublisherReport($publisher, $params);
+        if(false === $reportGroup) {
+            return false; // nothing get updated
         }
-        catch(UnexpectedValueException $ex) {
-            // TODO print warning data of no content causing unexpected value in report grouper
+
+        $newBilledRate = $this->rateGetter->getBilledRateForPublisher($publisher, $reportGroup->getSlotOpportunities(), $date);
+        $lastRate = $this->rateGetter->getLastRateForPublisher($publisher);
+
+        if ($lastRate !== $newBilledRate) {
+            // TODO set last rate for publisher then do update billedAmount
+            $this->doUpdateBilledAmountForPublisher($publisher, $newBilledRate, $params);
+
+            return true; // 1 publisher updated
         }
 
         return false; // none is updated
     }
 
-    public function updateBilledAmountToCurrentDateForAllPublishers()
+    public function updateBilledAmountToCurrentDateForAllPublishers(DateTime $date = null)
     {
-        $publishers = $this->userManager->allPublisherRoles();
+        if (null === $date) {
+            $date = new DateTime('yesterday');
+        }
+
+        $today = new DateTime('today');
         $updatedPublisherCount = 0;
+
+        if ($date >= $today) {
+            return $updatedPublisherCount; // nothing updated for first day of month, because update can only be done with yesterday of the same month
+        }
+
+        $publishers = $this->userManager->allPublisherRoles();
 
         foreach ($publishers as $publisher) {
             $updatedPublisherCount += $this->updateBilledAmountToCurrentDateForPublisher($publisher);
@@ -175,5 +185,4 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         // Step 3. Update database
         $this->om->flush();
     }
-
-} 
+}

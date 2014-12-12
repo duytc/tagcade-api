@@ -25,23 +25,19 @@ interface DateUtilInterface
 
     public function formatDate(DateTime $date);
 
-    public function getFirstDateOfMonth(DateTime $date = null);
+    public function getFirstDateInMonth(DateTime $date = null);
 
     /**
      * @param DateTime $date
      * @param bool $forceEndOfMonth
      * @return DateTime end date of month this $date in when $forceEndOfMonth = true; otherwise return current $date
      */
-    public function getLastDateOfMonth(DateTime $date = null, $forceEndOfMonth = false);
+    public function getLastDateInMonth(DateTime $date = null, $forceEndOfMonth = false);
 
     /**
      * @return bool
      */
     public function isFirstDateOfMonth();
-
-    public function dateDiffIncludeStartDate(DateTime $startDate, DateTime $endDate);
-
-    public function getLastDateInMonth();
 
     /**
      * @return int

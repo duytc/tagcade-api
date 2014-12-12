@@ -48,7 +48,7 @@ class AccountStatistics implements AccountStatisticsInterface
 
     public function getProjectedBilledAmount(PublisherInterface $publisher)
     {
-        return $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher)->getAmount();
+        return $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher);
     }
 
 

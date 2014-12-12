@@ -12,7 +12,7 @@ interface BilledAmountEditorInterface
      * @param $billingRate
      * @param DateTime $startDate
      * @param DateTime $endDate
-     * @return $this
+     * @return bool true if there is update false otherwise
      */
     public function updateBilledAmountForPublisher(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate);
 
@@ -24,7 +24,8 @@ interface BilledAmountEditorInterface
     public function updateBilledAmountToCurrentDateForPublisher(PublisherInterface $publisher, DateTime $date = null);
 
     /**
-     * @return int number of updated publishers
+     * @param DateTime $date month that the update should happens. Default is yesterday
+     * @return int number of updated publishers.
      */
-    public function updateBilledAmountToCurrentDateForAllPublishers();
+    public function updateBilledAmountToCurrentDateForAllPublishers(DateTime $date = null);
 }
