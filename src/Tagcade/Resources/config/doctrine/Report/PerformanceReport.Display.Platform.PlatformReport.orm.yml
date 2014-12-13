@@ -36,6 +36,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             type: decimal
             scale: 4
             nullable: true
+        customRate:
+            type: decimal
+            scale: 4
+            nullable: true
         billedAmount:
             type: decimal
             scale: 4

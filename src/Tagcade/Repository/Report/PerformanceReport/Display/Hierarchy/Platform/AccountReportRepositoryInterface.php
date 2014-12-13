@@ -16,4 +16,6 @@ interface AccountReportRepositoryInterface
      * @return int
      */
     public function getSumSlotOpportunities(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    public function getSumBilledAmountForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 }

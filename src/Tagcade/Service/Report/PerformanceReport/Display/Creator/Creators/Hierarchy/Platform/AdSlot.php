@@ -45,7 +45,11 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
         $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher(new Publisher($adSlot->getSite()->getPublisher()), $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
-        $report->setBilledRate($rateAmount->getRate());
+        $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+
+        if ($rateAmount->getRate()->isCustom()) {
+            $report->setCustomRate($rateAmount->getRate()->getCpmRate());
+        }
 
         foreach ($adSlot->getAdTags() as $adTag) {
             $report->addSubReport(

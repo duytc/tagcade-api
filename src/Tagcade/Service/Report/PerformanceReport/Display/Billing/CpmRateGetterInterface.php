@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
 interface CpmRateGetterInterface
 {
@@ -22,7 +23,7 @@ interface CpmRateGetterInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @return float
+     * @return CpmRate
      */
     public function getTodayCpmRateForPublisher(PublisherInterface $publisher);
 

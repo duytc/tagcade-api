@@ -10,11 +10,12 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
 class RateAmount
 {
     /**
-     * @var float $rate
+     * @var CpmRate $rate
      */
     private $rate;
 
@@ -23,10 +24,10 @@ class RateAmount
      */
     private $amount;
 
-    function __construct($rate, $amount)
+    function __construct(CpmRate $rate, $amount)
     {
-        if (!is_numeric($rate) || $rate < 0 || !is_numeric($amount) || $amount < 0) {
-            throw new InvalidArgumentException('rate and amount must be numeric and non-negative');
+        if (!is_numeric($amount) || $amount < 0) {
+            throw new InvalidArgumentException('amount must be numeric and non-negative');
         }
 
         $this->rate = $rate;
@@ -34,7 +35,7 @@ class RateAmount
     }
 
     /**
-     * @return float
+     * @return CpmRate
      */
     public function getRate()
     {

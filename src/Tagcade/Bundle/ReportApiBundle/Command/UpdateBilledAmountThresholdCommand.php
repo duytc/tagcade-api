@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 
-class UpdateBilledAmountCommand extends ContainerAwareCommand
+class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
@@ -25,7 +25,7 @@ class UpdateBilledAmountCommand extends ContainerAwareCommand
             ->addArgument(
                 'month',
                 InputArgument::OPTIONAL,
-                'Month(YYYY-mm) that the billed amount needs to be recalculated. Default is current month'
+                'Month(YYYY-MM) that the billed amount needs to be recalculated. Default is current month'
             )
         ;
     }

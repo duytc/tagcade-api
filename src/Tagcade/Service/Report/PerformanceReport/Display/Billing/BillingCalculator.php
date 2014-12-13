@@ -25,7 +25,7 @@ class BillingCalculator implements BillingCalculatorInterface
 
         $cpmRate = $this->cpmRateGetter->getTodayCpmRateForPublisher($publisher);
 
-        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate, $slotOpportunities));
+        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $slotOpportunities));
     }
 
 

@@ -7,6 +7,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
 class CpmRateGetter implements CpmRateGetterInterface
 {
@@ -68,7 +69,8 @@ class CpmRateGetter implements CpmRateGetterInterface
                 }
 
                 return ($a->getThreshold() > $b->getThreshold()) ? -1 : 1;
-            });
+            }
+        );
 
         $this->defaultCpmRate = (float) $defaultCpmRate;
         $this->defaultBillingThresholds = $defaultBilledThresholds;
@@ -90,10 +92,10 @@ class CpmRateGetter implements CpmRateGetterInterface
     public function getTodayCpmRateForPublisher(PublisherInterface $publisher)
     {
         if (null !== $publisher->getUser()->getBillingRate()) {
-            return $publisher->getUser()->getBillingRate();
+            return new CpmRate($publisher->getUser()->getBillingRate(), true);
         }
 
-        return $this->getThresholdRateForPublisher($publisher, new DateTime('yesterday'));
+        return new CpmRate($this->getThresholdRateForPublisher($publisher, new DateTime('yesterday')));
     }
 
 
