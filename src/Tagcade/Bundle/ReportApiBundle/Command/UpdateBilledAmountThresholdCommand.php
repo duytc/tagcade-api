@@ -6,6 +6,7 @@ use DateTime;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
@@ -17,14 +18,16 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         $this
             ->setName('tc:billing:update-threshold')
             ->setDescription('Update billed amount corresponding to total slot opportunities up to current day and pre-configured thresholds')
-            ->addArgument(
+            ->addOption(
                 'id',
-                InputArgument::OPTIONAL,
+                null,
+                InputOption::VALUE_OPTIONAL,
                 'Id of publisher to be updated. Otherwise all publishers get updated'
             )
-            ->addArgument(
+            ->addOption(
                 'month',
-                InputArgument::OPTIONAL,
+                null,
+                InputOption::VALUE_OPTIONAL,
                 'Month(YYYY-MM) that the billed amount needs to be recalculated. Default is current month'
             )
         ;
@@ -32,8 +35,8 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $publisherId   = $input->getArgument('id');
-        $month = $input->getArgument('month');
+        $publisherId   = $input->getOption('id');
+        $month = $input->getOption('month');
 
         $month = null === $month ? new DateTime('yesterday') : DateTime::createFromFormat('Y-m', $month);
 
