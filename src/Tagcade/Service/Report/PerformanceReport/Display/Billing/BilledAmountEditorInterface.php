@@ -14,7 +14,7 @@ interface BilledAmountEditorInterface
      * @param DateTime $endDate
      * @return bool true if there is update false otherwise
      */
-    public function updateBilledAmountForPublisher(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate);
+    public function updateHistoricalBilledAmount(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate);
 
     /**
      * @param PublisherInterface $publisher

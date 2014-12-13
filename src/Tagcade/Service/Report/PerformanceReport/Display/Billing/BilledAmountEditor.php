@@ -71,7 +71,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
     /**
      * @inheritdoc
      */
-    public function updateBilledAmountForPublisher(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate)
+    public function updateHistoricalBilledAmount(PublisherInterface $publisher, $billingRate, DateTime $startDate, DateTime $endDate)
     {
         if( !is_numeric($billingRate) || $billingRate < 0) {
             throw new InvalidArgumentException('billing rate must be a float and positive number');

@@ -23,9 +23,10 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
                 InputArgument::REQUIRED,
                 'Id of publisher to be updated. Otherwise all publishers get updated'
             )
-            ->addArgument(
+            ->addOption(
                 'rate',
-                InputArgument::REQUIRED,
+                null,
+                InputOption::VALUE_REQUIRED,
                 'Cpm rate that newly defines for this publisher'
             )
             ->addOption(
@@ -46,7 +47,7 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $publisherId   = $input->getArgument('id');
-        $cpmRate = $input->getArgument('rate');
+        $cpmRate = $input->getOption('rate');
         $startDate = $input->getOption('startDate');
         $endDate = $input->getOption('endDate');
 
@@ -71,7 +72,7 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
         $output->writeln('start updating billing historical report');
 
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
-        $billingEditor->updateBilledAmountForPublisher($publisher, (float)$cpmRate, $startDate, $endDate);
+        $billingEditor->updateHistoricalBilledAmount($publisher, (float)$cpmRate, $startDate, $endDate);
 
         $output->writeln('finish updating billing historical report');
     }

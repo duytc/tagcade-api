@@ -56,7 +56,7 @@ class BillingEditorController extends FOSRestController
         $startDate  = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
         $endDate    = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
 
-        $this->getBillingEditor()->updateBilledAmountForPublisher($publisher, $billedRate, $startDate, $endDate);
+        $this->getBillingEditor()->updateHistoricalBilledAmount($publisher, $billedRate, $startDate, $endDate);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
