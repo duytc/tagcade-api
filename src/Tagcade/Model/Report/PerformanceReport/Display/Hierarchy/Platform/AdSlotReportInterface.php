@@ -6,4 +6,14 @@ use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 
 interface AdSlotReportInterface extends BillableInterface, CalculatedReportInterface, SuperReportInterface, SubReportInterface
-{}
+{
+    /**
+     * @return float
+     */
+    public function getCustomRate();
+
+    /**
+     * @param float $customRate
+     */
+    public function setCustomRate($customRate);
+}

@@ -6,8 +6,10 @@ use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Exception\UnexpectedValueException;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AbstractCalculatedReport;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\RootReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -135,20 +137,29 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $rootReports = [];
 
         /**
-         * @var AbstractCalculatedReport $reportRow
-         * @var ReportCollection $report
+         * @var AdSlotReportInterface $reportRow
+         * @var BilledReportGroup $report
          */
         foreach($reportResult->getReports() as $report) {
             foreach ($report->getReports() as $reportRow) {
 
-                if (!$this->shouldUpdateReport($reportRow, $billedRate)) {
+                if (!$reportRow instanceof AdSlotReportInterface) {
+                    throw new LogicException('expect AdSlotReportInterface');
+                }
+
+                if (!$this->shouldGetNewRate($reportRow, $billedRate)) {
                     continue;
                 }
 
-                $cpmRate = $billedRate !== null ? $billedRate : $this->rateGetter->getThresholdRateForPublisher($publisher, $reportRow->getDate());
-                $billedAmount = $this->billingCalculator->calculateBilledAmount($billedRate, $reportRow->getSlotOpportunities());
+                $newCpmRate = $billedRate !== null ? $billedRate : $this->rateGetter->getThresholdRateForPublisher($publisher, $reportRow->getDate());
+
+                if (round($reportRow->getBilledRate(), 4) === round($newCpmRate, 4)) { // not update if new rate is the same as current rate
+                    continue;
+                }
+
+                $billedAmount = $this->billingCalculator->calculateBilledAmount($newCpmRate, $reportRow->getSlotOpportunities());
                 $reportRow->setBilledAmount($billedAmount)
-                          ->setBilledRate($cpmRate)
+                          ->setBilledRate($newCpmRate)
                 ;
 
                 $root = $this->getRootReport($reportRow);
@@ -179,7 +190,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         return true;
     }
 
-    protected function shouldUpdateReport(AbstractCalculatedReport $reportRow, $newRate = null) {
+    protected function shouldGetNewRate(AdSlotReportInterface $reportRow, $newRate = null) {
         if (null !== $newRate && $newRate !== $reportRow->getBilledRate()) { // wanna recalculate report with new rate
             return true;
         }
