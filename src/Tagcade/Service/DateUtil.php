@@ -108,7 +108,4 @@ class DateUtil implements DateUtilInterface
     {
         return $this->getNumberOfDatesPassedInMonth() === 0;
     }
-
-
-
 }
