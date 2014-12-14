@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result;
 
+use ArrayIterator;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
@@ -61,6 +62,11 @@ class ReportCollection implements ReportResultInterface
     public function getReports()
     {
         return $this->reports;
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->reports);
     }
 
     /**

@@ -7,9 +7,6 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Exception\UnexpectedValueException;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AbstractCalculatedReport;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\RootReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -19,8 +16,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelectorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 
 class BilledAmountEditor implements BilledAmountEditorInterface
@@ -93,7 +89,6 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         }
 
         $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
-        $params->setGrouped(true);
 
         return $this->doUpdateBilledAmountForPublisher($publisher, $params);
     }
@@ -138,10 +133,10 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         /**
          * @var AdSlotReportInterface $reportRow
-         * @var BilledReportGroup $report
+         * @var ReportResultInterface $report
          */
-        foreach($reportResult->getReports() as $report) {
-            foreach ($report->getReports() as $reportRow) {
+        foreach($reportResult as $report) {
+            foreach ($report as $reportRow) {
 
                 if (!$reportRow instanceof AdSlotReportInterface) {
                     throw new LogicException('expect AdSlotReportInterface');

@@ -3,10 +3,11 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result;
 
 use DateTime;
+use IteratorAggregate;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 
-interface ReportResultInterface
+interface ReportResultInterface extends IteratorAggregate
 {
     /**
      * @return ReportTypeInterface|ReportTypeInterface[]

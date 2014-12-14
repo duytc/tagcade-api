@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group;
 
+use ArrayIterator;
 use DateTime;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -102,6 +103,11 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     public function getReports()
     {
         return $this->reports;
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->reports);
     }
 
     /**
