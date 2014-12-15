@@ -9,6 +9,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\BaseAdTagReportInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelectorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork;
@@ -62,10 +63,11 @@ class RevenueEditor implements RevenueEditorInterface
         ];
 
         $rootReports = [];
+        $params = new Params($startDate, $endDate);
 
         // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
-            $reports = $this->reportSelector->getReports($reportType, $startDate, $endDate);
+            $reports = $this->reportSelector->getReports($reportType, $params);
 
             foreach($reports as $report) {
                 if (!$report instanceof BaseAdTagReportInterface) {
