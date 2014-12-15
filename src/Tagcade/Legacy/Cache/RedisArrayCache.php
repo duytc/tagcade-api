@@ -2,6 +2,8 @@
 
 namespace Tagcade\Legacy\Cache;
 
+// Used for live report data only
+
 use Doctrine\Common\Cache\Cache;
 use RedisArray;
 

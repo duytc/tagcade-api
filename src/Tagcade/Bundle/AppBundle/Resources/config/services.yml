@@ -1,0 +1,48 @@
+parameters:
+    tagcade_app.event.update_cache: tagcade_app.event.update_cache
+
+services:
+
+    tagcade.legacy.cache.tag.redis_namespace_cache:
+        class: Tagcade\Legacy\Cache\Tag\RedisNamespacedCache
+        arguments:
+            - %tc.legacy.tag_cache.redis_host%
+            - %tc.legacy.tag_cache.redis_port%
+
+    tagcade.legacy.tag_cache:
+        class: Tagcade\Legacy\TagCache
+        arguments:
+            - @tagcade.legacy.cache.tag.redis_namespace_cache
+            - @tagcade.domain_manager.ad_slot
+
+    tagcade_app.event_listener.adtag_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\AdTagChangeListener
+        arguments:
+            - @event_dispatcher
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postRemove }
+
+    tagcade_app.event_listener.adslot_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\AdSlotChangeListener
+        arguments:
+            - @event_dispatcher
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+#            - { name: doctrine.event_listener, event: postRemove }
+
+    tagcade_app.event_listener.adnetwork_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\AdNetworkChangeListener
+        arguments:
+            - @event_dispatcher
+        tags:
+            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: postUpdate }
+
+    tagcade_app.event_listener.update_cache_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\UpdateCacheListener
+        arguments:
+            - @tagcade.legacy.tag_cache
+        tags:
+            - { name: kernel.event_listener, event: tagcade_app.event.update_cache, method: onUpdateCache }
