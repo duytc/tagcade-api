@@ -6,18 +6,34 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Repor
 
 class AccountStatistics
 {
-    protected $report;
+    protected $reportGroup;
 
-    function __construct(ReportGroup $report)
+    protected $reports;
+
+    function __construct(ReportGroup $reportGroup)
     {
-        $this->report = $report;
+        $this->reportGroup = $reportGroup;
+
+        $historicalReports = $reportGroup->getReports();
+        array_shift($historicalReports); // Ignore today statistics
+        $this->reports = $historicalReports;
     }
 
     /**
      * @return ReportGroup
      */
-    public function getReport()
+    public function getReportGroup()
     {
-        return $this->report;
+        return $this->reportGroup;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getReports()
+    {
+        return $this->reports;
+    }
+
+
 }
