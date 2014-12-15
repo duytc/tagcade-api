@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -49,4 +50,25 @@ class DailyReportCreator
 
         $this->om->flush();
     }
+
+    /**
+     * @return DateTime
+     */
+    public function getReportDate()
+    {
+        return $this->reportCreator->getDate();
+    }
+
+    /**
+     * @param DateTime $reportDate
+     * @return $this
+     */
+    public function setReportDate(DateTime $reportDate)
+    {
+        $this->reportCreator->setDate($reportDate);
+
+        return $this;
+    }
+
+
 }
