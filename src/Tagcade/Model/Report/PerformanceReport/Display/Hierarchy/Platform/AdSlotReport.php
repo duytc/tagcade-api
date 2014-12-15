@@ -26,6 +26,11 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     protected $adSlot;
 
     /**
+     * @var float
+     */
+    protected $customRate;
+
+    /**
      * @return AdSlotInterface|null
      */
     public function getAdSlot()
@@ -44,6 +49,26 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
 
         return null;
     }
+
+    /**
+     * @return float
+     */
+    public function getCustomRate()
+    {
+        return $this->customRate;
+    }
+
+    /**
+     * @param float $customRate
+     * @return $this
+     */
+    public function setCustomRate($customRate)
+    {
+        $this->customRate = $customRate;
+
+        return $this;
+    }
+
 
     /**
      * @param AdSlotInterface $adSlot

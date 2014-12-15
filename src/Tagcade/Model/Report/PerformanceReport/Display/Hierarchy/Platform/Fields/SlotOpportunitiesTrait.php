@@ -20,10 +20,6 @@ trait SlotOpportunitiesTrait
      * @var float
      */
     protected $billedRate;
-    /**
-     * @var float
-     */
-    protected $customRate;
 
     /**
      * @inheritdoc
@@ -76,22 +72,6 @@ trait SlotOpportunitiesTrait
     public function setBilledRate($billedRate)
     {
         $this->billedRate = $billedRate;
-    }
-
-    /**
-     * @return float
-     */
-    public function getCustomRate()
-    {
-        return $this->customRate;
-    }
-
-    /**
-     * @param float $customRate
-     */
-    public function setCustomRate($customRate)
-    {
-        $this->customRate = $customRate;
     }
 
     /**
