@@ -26,15 +26,22 @@ $reportTypes = [
 ];
 
 $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->all());
-$eventCounter->refreshTestData();
-
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
-$reportCreator->setDate(new DateTime('11 days ago'));
-
-
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
-$dailyReportCreator->createAndSave(
-    $userManager->allPublisherRoles(),
-    $adNetworkManager->all()
-);
+$begin = new DateTime('2014-12-01');
+$end = new DateTime('2014-12-14');
+$end = $end->modify('+1 day');
+
+$interval = new DateInterval('P1D');
+$dateRange = new DatePeriod($begin, $interval ,$end);
+
+foreach($dateRange as $date){
+    $eventCounter->refreshTestData();
+    $reportCreator->setDate($date);
+
+    $dailyReportCreator->createAndSave(
+        $userManager->allPublisherRoles(),
+        $adNetworkManager->all()
+    );
+}

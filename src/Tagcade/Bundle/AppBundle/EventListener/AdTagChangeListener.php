@@ -42,6 +42,6 @@ class AdTagChangeListener
             return;
         }
 
-        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($entity));
+        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($entity->getAdSlot()));
     }
 } 

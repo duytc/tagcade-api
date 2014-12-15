@@ -28,5 +28,6 @@ Tagcade\Entity\Core\AdSlot:
     oneToMany:
         adTags:
             targetEntity: AdTag
+            orderBy: { 'position': 'ASC' }
             mappedBy: adSlot
             cascade: ["persist", "remove", "detach"]
