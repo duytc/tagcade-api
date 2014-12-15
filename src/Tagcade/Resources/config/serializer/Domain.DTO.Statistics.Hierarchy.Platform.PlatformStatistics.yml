@@ -1,5 +1,5 @@
 Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics:
     exclusion_policy: NONE
     properties:
-        report:
+        reportGroup:
             inline: true

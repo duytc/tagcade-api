@@ -6,15 +6,26 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Repor
 
 class PlatformStatistics
 {
-    protected $report;
+    protected $reportGroup;
 
-    function __construct(ReportGroup $report)
+    protected $reports;
+
+    function __construct(ReportGroup $reportGroup)
     {
-        $this->report = $report;
+        $this->reportGroup = $reportGroup;
+
+        $historicalReports = $reportGroup->getReports();
+        array_shift($historicalReports); // Ignore today statistics
+        $this->reports = $historicalReports;
     }
 
-    public function getReport()
+    public function getReportGroup()
     {
-        return $this->report;
+        return $this->reportGroup;
+    }
+
+    public function getReports()
+    {
+        return $this->reports;
     }
 }
