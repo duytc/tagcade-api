@@ -68,8 +68,11 @@ class RevenueEditor implements RevenueEditorInterface
         // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
             $reports = $this->reportSelector->getReports($reportType, $params);
+            if (false === $reports) {
+                continue; // not found reports
+            }
 
-            foreach($reports as $report) {
+            foreach($reports->getReports() as $report) {
                 if (!$report instanceof BaseAdTagReportInterface) {
                     throw new LogicException('Expected an AdTagReport');
                 }
