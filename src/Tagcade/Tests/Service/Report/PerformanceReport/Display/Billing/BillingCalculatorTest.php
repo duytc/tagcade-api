@@ -25,7 +25,22 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $thresholds = [ ['threshold' => 100000, 'cpmRate' => 0.5], ['threshold' => 200000, 'cpmRate' => 0.2], ['threshold' => 150000, 'cpmRate' => 0.3] ];
         $billingConfigs = CpmRateGetter::createConfig($thresholds);
 
-        $cpmRate = new CpmRateGetter(30, $billingConfigs);
+        $accountReportRepositoryMock = $this->getMockBuilder('Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface')->getMock();
+        $accountReportRepositoryMock->expects($this->any())
+            ->method('getSumSlotOpportunities')
+            ->will($this->returnValue(160000))
+        ;
+
+        $dateUtilMock = $this->getMock('Tagcade\Service\DateUtilInterface');
+        $dateUtilMock->expects($this->any())
+            ->method('getFirstDateInMonth')
+            ->will($this->returnValue( new \DateTime('2014-12-01')));
+
+        $dateUtilMock->expects($this->any())
+            ->method('getLastDateInMonth')
+            ->will($this->returnValue( new \DateTime('2014-12-31')));
+
+        $cpmRate = new CpmRateGetter(30, $billingConfigs, $accountReportRepositoryMock, $dateUtilMock);
         $billingCalculator = new BillingCalculator($cpmRate);
 
         $this->cpmRateGetter = $cpmRate;
@@ -40,8 +55,8 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $user->addRole('ROLE_PUBLISHER');
         $publisher = new Publisher($user);
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000);
-        $this->assertEquals(0.01, $rateAmount->getRate());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, 160000);
+        $this->assertEquals(0.01, $rateAmount->getRate()->getCpmRate());
         $this->assertEquals(1.6000, round($rateAmount->getAmount(), 4));
     }
 
@@ -51,8 +66,8 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $user->addRole('ROLE_PUBLISHER');
         $publisher = new Publisher($user);
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 160000);
-        $this->assertEquals(0.3, $rateAmount->getRate());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, 160000);
+        $this->assertEquals(0.3, $rateAmount->getRate()->getCpmRate());
         $this->assertEquals(48, $rateAmount->getAmount());
     }
 
@@ -62,8 +77,9 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
         $user->addRole('ROLE_PUBLISHER');
         $publisher = new Publisher($user);
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($publisher, 100);
-        $this->assertEquals(30, $rateAmount->getRate());
-        $this->assertEquals(3, $rateAmount->getAmount());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, 100);
+        $this->assertEquals(0.3, $rateAmount->getRate()->getCpmRate());
+        $this->assertEquals(0.03, $rateAmount->getAmount());
     }
+
 }

@@ -19,7 +19,7 @@ class BillingCalculator implements BillingCalculatorInterface
 
     public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities)
     {
-        if (!is_int($slotOpportunities)) {
+        if (!is_int($slotOpportunities) || $slotOpportunities < 0) {
             throw new InvalidArgumentException('Slot opportunities must be a number');
         }
 
