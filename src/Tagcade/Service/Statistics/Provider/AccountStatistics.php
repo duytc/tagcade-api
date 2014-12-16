@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Statistics\Provider;
 
+use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculatorInterface;
@@ -23,11 +24,16 @@ class AccountStatistics implements AccountStatisticsInterface
      * @var ProjectedBillingCalculatorInterface
      */
     protected $projectedBillingCalculator;
+    /**
+     * @var UserManagerInterface
+     */
+    protected $userManager;
 
-    public function __construct(ReportBuilderInterface $reportBuilder, ProjectedBillingCalculatorInterface $projectedBillingCalculator)
+    public function __construct(ReportBuilderInterface $reportBuilder, ProjectedBillingCalculatorInterface $projectedBillingCalculator, UserManagerInterface $userManager)
     {
         $this->reportBuilder = $reportBuilder;
         $this->projectedBillingCalculator = $projectedBillingCalculator;
+        $this->userManager = $userManager;
     }
 
     public function getTopPublishersByBilledAmount(Params $params, $limit = 10)
@@ -49,6 +55,19 @@ class AccountStatistics implements AccountStatisticsInterface
     public function getProjectedBilledAmount(PublisherInterface $publisher)
     {
         return $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher);
+    }
+
+    public function getAllPublishersProjectedBilledAmount()
+    {
+        $publishers = $this->userManager->allPublisherRoles();
+
+        $sumProjectedBilledAmount = 0;
+
+        foreach($publishers as $publisher) {
+            $sumProjectedBilledAmount += $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher);
+        }
+
+        return $sumProjectedBilledAmount;
     }
 
 
