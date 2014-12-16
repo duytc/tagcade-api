@@ -5,7 +5,8 @@ namespace Tagcade\Bundle\AdminApiBundle\Repository;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
 
-class ActionLogRepository extends EntityRepository implements ActionLogRepositoryInterface{
+class ActionLogRepository extends EntityRepository implements ActionLogRepositoryInterface
+{
 
     /**
      * @inheritdoc
