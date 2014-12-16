@@ -35,12 +35,15 @@ class ActionLogRepository extends EntityRepository implements ActionLogRepositor
     public function getTotalRecords(DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('l')
+            ->select('count(l)')
             ->where('l.createdAt BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
         ;
 
-        return $qb->getQuery()->getResult();
+        $result = $qb->getQuery()->getSingleScalarResult();
+
+        return $result !== null ? $result : 0;
     }
 
 } 
