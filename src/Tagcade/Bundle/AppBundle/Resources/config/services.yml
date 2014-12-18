@@ -20,9 +20,8 @@ services:
         arguments:
             - @event_dispatcher
         tags:
-            - { name: doctrine.event_listener, event: postPersist }
-            - { name: doctrine.event_listener, event: postUpdate }
-            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
 
     tagcade_app.event_listener.adslot_change_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\AdSlotChangeListener
@@ -46,3 +45,4 @@ services:
             - @tagcade.legacy.tag_cache
         tags:
             - { name: kernel.event_listener, event: tagcade_app.event.update_cache, method: onUpdateCache }
+

@@ -141,6 +141,8 @@ class AdTagManager implements AdTagManagerInterface
             $position++;
         }
 
+        $this->om->flush();
+
         unset($adTag);
 
         return array_values($orderedAdTags);

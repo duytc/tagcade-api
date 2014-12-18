@@ -3,6 +3,8 @@
 namespace Tagcade\Bundle\AppBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\Serializer\Tests\Model;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
@@ -10,23 +12,36 @@ class UpdateCacheEvent extends Event
 {
 
     const NAME = 'tagcade_app.event.update_cache';
-    /**
-     * @var ModelInterface
-     */
-    private $entity;
 
-    function __construct(ModelInterface $entity)
+    private $entities = [];
+
+    function __construct($entities = null)
     {
-        $this->entity = $entity;
+        if (null !== $entities) {
+
+            if (!is_array($entities)) {
+                $entities = array($entities);
+            }
+
+            foreach($entities as $entity) {
+                if ($entity instanceof AdNetworkInterface || $entity instanceof AdSlotInterface) {
+                    $this->addEntity($entity);
+                }
+            }
+        }
     }
 
-    /**
-     * @return ModelInterface
-     */
-    public function getEntity()
+    public function addEntity(ModelInterface $entity)
     {
-        return $this->entity;
+        if (!in_array($entity, $this->entities)) {
+            $this->entities[] = $entity;
+        }
+
+        return $this;
     }
 
-
+    public function getEntities()
+    {
+        return $this->entities;
+    }
 }
