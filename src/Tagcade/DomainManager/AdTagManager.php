@@ -103,6 +103,11 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdNetworkAndSite($adNetwork, $site, $limit, $offset);
     }
 
+    public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagsForAdNetworkAndSites($adNetwork, $sites, $limit, $offset);
+    }
+
     /**
      * @inheritdoc
      */
