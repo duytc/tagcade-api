@@ -55,7 +55,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
             throw new InvalidArgumentException('Expect site interface');
         }
 
-        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSites($adNetwork, $sites);
+        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSites($adNetwork, $filterSites);
 
         return $this->updatePosition($adTags, $position);
 

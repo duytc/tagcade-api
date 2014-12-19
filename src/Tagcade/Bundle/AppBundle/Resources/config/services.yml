@@ -46,3 +46,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: tagcade_app.event.update_cache, method: onUpdateCache }
 
+    tagcade_app.service.ad_tag.ad_tag_position_editor:
+        class: Tagcade\Service\AdTag\AdTagPositionEditor
+        arguments:
+            - @tagcade.domain_manager.ad_tag
+            - @doctrine.orm.default_entity_manager
