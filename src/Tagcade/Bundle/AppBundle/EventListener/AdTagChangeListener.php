@@ -48,64 +48,15 @@ class AdTagChangeListener
 
         unset($this->changedEntities);
 
-        // filter all adNetworks refresh cache for adNetworks
-        $adNetworks = array_filter($changedEntities,
-            function($entity)
-            {
-                if (!$entity instanceof AdNetworkInterface)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        );
-
-
-        // filter all adSlots and not in $adNetworks
-        $adSlots = array_filter($changedEntities,
-            function($entity) use ($adNetworks)
-            {
-                if (!$entity instanceof AdSlotInterface)
-                {
-                    return false;
-                }
-
-                /**
-                 * @var AdNetworkInterface $adNetwork
-                 */
-                foreach ($adNetworks as $adNetwork) {
-                    $adTags = $adNetwork->getAdTags();
-                    /**
-                     * @var AdTagInterface $adTag
-                     */
-                    foreach ($adTags as $adTag) {
-                        if ($entity->getId() === $adTag->getAdSlot()->getId()) {
-                            return false;
-                        }
-                    }
-                }
-
-                return true;
-            }
-        );
+       $adSlots = [];
 
         // filter all adTags and not (in $adSlots and in $adNetworks)
-        array_filter($changedEntities,
-            function($entity) use ($adNetworks, &$adSlots)
+        array_walk($changedEntities,
+            function($entity) use (&$adSlots)
             {
                 if (!$entity instanceof AdTagInterface)
                 {
                     return false;
-                }
-
-                /**
-                 * @var AdNetworkInterface $adNetwork
-                 */
-                foreach ($adNetworks as $adNetwork) {
-                    if(in_array($entity, $adNetwork->getAdTags())) {
-                        return false;
-                    }
                 }
 
                 // ignore the ad tag in adSlot has been counted
@@ -119,11 +70,8 @@ class AdTagChangeListener
             }
         );
 
-
-        $updateList = array_merge($adNetworks, $adSlots);
-
-        if (count($updateList) > 0) {
-            $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($updateList));
+        if (count($adSlots) > 0) {
+            $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($adSlots));
         }
 
     }
