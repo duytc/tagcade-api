@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 /**
  * @Rest\RouteResource("Adnetwork")
@@ -55,6 +56,33 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     public function getAction($id)
     {
         return $this->one($id);
+    }
+
+    /**
+     * Get all sites that have ad tag belonging to this ad network
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return SiteInterface[]
+     *
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getSitesAction($id)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        return $this->get('tagcade.domain_manager.site')->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
     }
 
     /**
@@ -183,6 +211,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
         if (!$site) {
             throw new NotFoundHttpException('That site does not exist');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $adNetwork) || false === $this->get('security.context')->isGranted('edit', $site)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
         }
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
