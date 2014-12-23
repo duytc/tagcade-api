@@ -165,7 +165,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *  }
      * )
      *
-     * @Rest\QueryParam(name="active", requirements="\b", description="active status of site")
+     * @Rest\QueryParam(name="active", requirements="\d+", description="active status of site")
      *
      * @param $id
      * @param $siteId
@@ -185,7 +185,8 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new NotFoundHttpException('That site does not exist');
         }
 
-        $active = $paramFetcher->get('active');
+        $active = $paramFetcher->get('active', true) != 0 ? true : false;
+
 
         //TODO convert to true boolean type
 
