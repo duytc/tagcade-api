@@ -38,9 +38,10 @@ $dateRange = new DatePeriod($begin, $interval ,$end);
 
 foreach($dateRange as $date){
     $eventCounter->refreshTestData();
-    $reportCreator->setDate($date);
 
-    $dailyReportCreator->createAndSave(
+    $dailyReportCreator
+        ->setReportDate($date)
+        ->createAndSave(
         $userManager->allPublisherRoles(),
         $adNetworkManager->all()
     );
