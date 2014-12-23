@@ -172,7 +172,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *
      * @return View
      */
-    public function putSiteActiveAction($id, $siteId)
+    public function putSiteStatusAction($id, $siteId)
     {
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
