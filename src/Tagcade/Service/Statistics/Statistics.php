@@ -8,6 +8,7 @@ use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics as PlatformStatisticsDTO;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
 
+use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
@@ -113,9 +114,32 @@ class Statistics implements StatisticsInterface
         );
     }
 
+    public function getProjectedBillingForAllPublishers()
+    {
+        $params = $this->_getDashboardParams();
+
+        /**
+         * @var BilledReportGroup $platformReports
+         */
+        $platformReports    = $this->reportBuilder->getPlatformReport($params);
+
+        $projectedBilledAmount = $this->accountStatistics->getAllPublishersProjectedBilledAmount();
+
+        return new ProjectedBilling($platformReports, $projectedBilledAmount);
+    }
+
     public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
-        return round($this->accountStatistics->getProjectedBilledAmount($publisher), 4);
+        $params = $this->_getDashboardParams();
+
+        /**
+         * @var BilledReportGroup $publisherReports
+         */
+        $publisherReports    = $this->reportBuilder->getPublisherReport($publisher, $params);
+
+        $projectedBilledAmount = $this->accountStatistics->getProjectedBilledAmount($publisher);
+
+        return new ProjectedBilling($publisherReports, $projectedBilledAmount);
     }
 
 

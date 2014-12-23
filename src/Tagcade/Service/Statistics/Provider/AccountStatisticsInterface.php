@@ -30,4 +30,11 @@ interface AccountStatisticsInterface
      * @return float
      */
     public function getProjectedBilledAmount(PublisherInterface $publisher);
+
+    /**
+     * return projected billed amount of all publishers
+     * @return float
+     */
+    public function getAllPublishersProjectedBilledAmount();
+
 }
