@@ -83,6 +83,16 @@ interface AdTagManagerInterface
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
     /**
+     * @param AdNetworkInterface $adNetwork
+     * @param array $sites
+     * @param null $limit
+     * @param null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null);
+
+
+    /**
      * @param adTagInterface[] $adTags
      * @param array $newAdTagOrderIds
      * @return adTagInterface[]

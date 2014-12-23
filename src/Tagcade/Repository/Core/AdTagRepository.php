@@ -121,6 +121,25 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->andWhere('sl.site IN (:sites)')
+            ->join('t.adSlot', 'sl')
+            ->setParameter('sites', $sites)
+        ;
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * @inheritdoc
      */

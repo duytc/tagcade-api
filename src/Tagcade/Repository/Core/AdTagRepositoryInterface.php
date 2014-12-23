@@ -47,6 +47,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
+    public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null);
+
     /**
      * Saves the ad tag position bypassing doctrine flush and events (useful for bulk updates)
      *
