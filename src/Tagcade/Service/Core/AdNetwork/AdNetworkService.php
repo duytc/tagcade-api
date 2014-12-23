@@ -68,7 +68,8 @@ class AdNetworkService implements AdNetworkServiceInterface
         return $siteStatus;
     }
 
-    private function _isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site) {
+    private function _isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site)
+    {
 
         $activeTags = array_filter(
 
