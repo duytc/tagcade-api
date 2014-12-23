@@ -87,3 +87,9 @@ services:
                 - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_network
             - @tagcade.service.report.performance_report.display.counter.cache_event_counter
 
+
+    tagcade.service.report.performance_report.display.creator.daily_report_creator:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.service.report.performance_report.display.creator.report_creator
