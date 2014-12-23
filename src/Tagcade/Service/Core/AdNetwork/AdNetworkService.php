@@ -29,26 +29,15 @@ class AdNetworkService implements AdNetworkServiceInterface
         $this->em->flush();
     }
 
-    public function pauseAdNetworkBySites(array $sites)
+    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
     {
-        foreach ($sites as $site) {
 
-            if (!$site instanceof SiteInterface) {
-                throw new InvalidArgumentException('Expect SiteInterface');
-            }
-
-            foreach ($site->getAdSlots() as $adSlot) {
-                /**
-                 * @var AdSlotInterface $adSlot
-                 */
-                foreach ($adSlot->getAdTags() as $adTag) {
-                    /**
-                     * @var AdTagInterface $adTag
-                     */
-                    if (true === $adTag->isActive()) {
-                        $adTag->setActive(false);
-                    }
-                }
+        foreach ($adNetwork->getAdTags() as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
+                $adTag->setActive($active);
             }
         }
 

@@ -14,9 +14,11 @@ interface AdNetworkServiceInterface
     public function pauseAdNetwork(AdNetworkInterface $adNetwork);
 
     /**
-     * @param SiteInterface[] $sites
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param bool $active
      * @return $this
      */
-    public function pauseAdNetworkBySites(array $sites);
+    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false);
 
 }

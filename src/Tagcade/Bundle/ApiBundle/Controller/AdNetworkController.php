@@ -110,7 +110,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *  section = "adNetworks",
      *  resource = true,
      *  statusCodes = {
-     *      200 = "Returned when successful"
+     *      204 = "Returned when successful"
      *  }
      * )
      *
@@ -150,6 +150,46 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             $startDate,
             $endDate
         );
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Update active state of all at tags belonging to adNetwork $id and $siteId
+     *
+     * @ApiDoc(
+     *  section = "adNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="active", requirements="\b", description="active status of site")
+     *
+     * @param $id
+     * @param $siteId
+     *
+     * @return View
+     */
+    public function putSiteActiveAction($id, $siteId)
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+        $active = $paramFetcher->get('active');
+
+        //TODO convert to true boolean type
+
+        $this->get('tagcade_app.service.core.ad_network.ad_network_service')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
