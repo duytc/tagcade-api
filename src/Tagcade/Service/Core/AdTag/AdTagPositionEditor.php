@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Service\AdTag;
+namespace Tagcade\Service\Core\AdTag;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;

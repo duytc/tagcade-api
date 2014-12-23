@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Service\AdTag;
+namespace Tagcade\Service\Core\AdTag;
 
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
