@@ -82,7 +82,9 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
-        return $this->get('tagcade.domain_manager.site')->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
+//        return $this->get('tagcade.domain_manager.site')->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
+
+        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetwork($adNetwork);
     }
 
     /**

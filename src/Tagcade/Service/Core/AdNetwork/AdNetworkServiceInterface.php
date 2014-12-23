@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Core\AdNetwork;
 
+use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -20,5 +21,12 @@ interface AdNetworkServiceInterface
      * @return $this
      */
     public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false);
+
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @return SiteStatus[]
+     */
+    public function getSitesForAdNetwork(AdNetworkInterface $adNetwork);
 
 }

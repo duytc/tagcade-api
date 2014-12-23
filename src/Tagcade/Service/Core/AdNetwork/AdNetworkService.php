@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Core\AdNetwork;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
@@ -43,4 +44,44 @@ class AdNetworkService implements AdNetworkServiceInterface
 
         $this->em->flush();
     }
+
+    public function getSitesForAdNetwork(AdNetworkInterface $adNetwork)
+    {
+        $sites = [];
+
+        $siteStatus = [];
+
+        foreach ($adNetwork->getAdTags() as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            $site = $adTag->getAdSlot()->getSite();
+
+            if (!in_array($site, $sites)) {
+                $sites[] = $site;
+                $siteStatus[] = new SiteStatus($site, $this->_isSiteActiveForAdNetwork($adNetwork, $site));
+            }
+
+            unset($site);
+        }
+
+        return $siteStatus;
+    }
+
+    private function _isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site) {
+
+        $activeTags = array_filter(
+
+            $adNetwork->getAdTags()->toArray(),
+
+            function(AdTagInterface $adTag) use ($site)
+            {
+                return $adTag->getAdSlot()->getSite() == $site && $adTag->isActive();
+            }
+        );
+
+        return count($activeTags) > 0;
+    }
+
+
 }

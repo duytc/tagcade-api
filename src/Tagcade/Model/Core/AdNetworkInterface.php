@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -69,7 +70,7 @@ interface AdNetworkInterface extends ModelInterface
     public function setDefaultCpmRate($defaultCpmRate);
 
     /**
-     * @return array
+     * @return PersistentCollection
      */
     public function getAdTags();
 }
