@@ -187,9 +187,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
 
-
-        //TODO convert to true boolean type
-
         $this->get('tagcade_app.service.core.ad_network.ad_network_service')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
