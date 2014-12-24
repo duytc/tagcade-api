@@ -27,6 +27,8 @@ class DefaultGrouperTest extends \PHPUnit_Framework_TestCase
             ->setTotalOpportunities(1000000)
             ->setPassbacks(100)
             ->setEstRevenue(150)
+            ->setImpressions(1000000)
+            ->setEstCpm(0.3)
         ;
 
         $platform2 = new PlatformReport();
@@ -37,6 +39,8 @@ class DefaultGrouperTest extends \PHPUnit_Framework_TestCase
             ->setTotalOpportunities(1100000)
             ->setPassbacks(10)
             ->setEstRevenue(500)
+            ->setImpressions(1100000)
+            ->setEstCpm(0.5)
         ;
 
         $platform3 = new PlatformReport();
@@ -47,6 +51,8 @@ class DefaultGrouperTest extends \PHPUnit_Framework_TestCase
             ->setTotalOpportunities(1300000)
             ->setPassbacks(1000)
             ->setEstRevenue(900)
+            ->setImpressions(1250000)
+            ->setEstCpm(1)
         ;
 
         $reports = [
@@ -61,6 +67,12 @@ class DefaultGrouperTest extends \PHPUnit_Framework_TestCase
 
         $reportGroup = $defaultGrouper->getGroupedReport();
 
+        $this->assertEquals($reportGroup->getFillRate(), 0.9853);
+        $this->assertEquals($reportGroup->getEstCpm(), 0.771);
+
+        $this->assertEquals($reportGroup->getAveragePassbacks(), 370);
+        $this->assertEquals($reportGroup->getAverageEstCpm(), 0.6);
+        $this->assertEquals($reportGroup->getAverageImpressions(), 1116667);
         $this->assertEquals($reportGroup->getAverageTotalOpportunities(), 1133333);
         $this->assertEquals($reportGroup->getAverageEstRevenue(), 516.6667);
     }
