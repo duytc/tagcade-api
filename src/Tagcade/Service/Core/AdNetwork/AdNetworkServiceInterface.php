@@ -5,6 +5,7 @@ namespace Tagcade\Service\Core\AdNetwork;
 use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface AdNetworkServiceInterface
 {
@@ -25,8 +26,9 @@ interface AdNetworkServiceInterface
 
     /**
      * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface $publisher null if not filter by any publisher
      * @return SiteStatus[]
      */
-    public function getSitesForAdNetwork(AdNetworkInterface $adNetwork);
+    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null);
 
 }

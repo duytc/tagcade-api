@@ -12,8 +12,14 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\Publisher;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Tagcade\Model\User\Role\PublisherInterface;
+
 
 /**
  * @Rest\RouteResource("Adnetwork")
@@ -82,9 +88,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
-//        return $this->get('tagcade.domain_manager.site')->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
+        $role = $this->get('tagcade.user_role');
 
-        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetwork($adNetwork);
+        if ($role instanceof AdminInterface) {
+            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork);
+        }
+
+        /**
+         * @var PublisherInterface $role
+         */
+        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $role);
     }
 
     /**

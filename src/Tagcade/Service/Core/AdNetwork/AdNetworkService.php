@@ -9,6 +9,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdNetworkService implements AdNetworkServiceInterface
 {
@@ -45,7 +46,7 @@ class AdNetworkService implements AdNetworkServiceInterface
         $this->em->flush();
     }
 
-    public function getSitesForAdNetwork(AdNetworkInterface $adNetwork)
+    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
     {
         $sites = [];
 
@@ -56,6 +57,10 @@ class AdNetworkService implements AdNetworkServiceInterface
              * @var AdTagInterface $adTag
              */
             $site = $adTag->getAdSlot()->getSite();
+
+            if ($publisher != null && $site->getPublisher() != $publisher) {
+                continue;
+            }
 
             if (!in_array($site, $sites)) {
                 $sites[] = $site;
