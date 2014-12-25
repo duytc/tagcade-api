@@ -58,7 +58,7 @@ class AdNetworkService implements AdNetworkServiceInterface
              */
             $site = $adTag->getAdSlot()->getSite();
 
-            if ($publisher != null && $site->getPublisher() != $publisher) {
+            if ($publisher != null && $site->getPublisher()->getId() != $publisher->getId()) {
                 continue;
             }
 
