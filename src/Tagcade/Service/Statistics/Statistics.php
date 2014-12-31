@@ -114,7 +114,7 @@ class Statistics implements StatisticsInterface
         );
     }
 
-    public function getProjectedBillingForAllPublishers()
+    public function getProjectedBilledAmountForAllPublishers()
     {
         $params = $this->_getDashboardParams();
 

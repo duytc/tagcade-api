@@ -31,7 +31,7 @@ interface StatisticsInterface
     /**
      * @return ProjectedBilling
      */
-    public function getProjectedBillingForAllPublishers();
+    public function getProjectedBilledAmountForAllPublishers();
 
 
 }
