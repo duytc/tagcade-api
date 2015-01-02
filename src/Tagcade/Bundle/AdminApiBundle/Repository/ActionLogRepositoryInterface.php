@@ -14,4 +14,11 @@ interface ActionLogRepositoryInterface {
      */
     public function getLogsForDateRange(DateTime $startDate, DateTime $endDate, $offset, $limit );
 
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return int
+     */
+    public function getTotalRecords(DateTime $startDate, DateTime $endDate);
+
 }

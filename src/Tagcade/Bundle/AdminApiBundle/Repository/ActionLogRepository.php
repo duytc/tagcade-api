@@ -5,7 +5,8 @@ namespace Tagcade\Bundle\AdminApiBundle\Repository;
 use DateTime;
 use Doctrine\ORM\EntityRepository;
 
-class ActionLogRepository extends EntityRepository implements ActionLogRepositoryInterface{
+class ActionLogRepository extends EntityRepository implements ActionLogRepositoryInterface
+{
 
     /**
      * @inheritdoc
@@ -27,6 +28,23 @@ class ActionLogRepository extends EntityRepository implements ActionLogRepositor
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTotalRecords(DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this->createQueryBuilder('l')
+            ->select('count(l)')
+            ->where('l.createdAt BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+        ;
+
+        $result = $qb->getQuery()->getSingleScalarResult();
+
+        return $result !== null ? $result : 0;
     }
 
 } 
