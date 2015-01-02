@@ -11,7 +11,7 @@ class ActionLogRepository extends EntityRepository implements ActionLogRepositor
     /**
      * @inheritdoc
      */
-    public function getLogsForDateRange(DateTime $startDate, DateTime $endDate, $offset, $limit)
+    public function getLogsForDateRange(DateTime $startDate, DateTime $endDate, $offset=0, $limit=10)
     {
         $qb = $this->createQueryBuilder('l')
             ->where('l.createdAt BETWEEN :startDate AND :endDate')
@@ -33,7 +33,7 @@ class ActionLogRepository extends EntityRepository implements ActionLogRepositor
     /**
      * @inheritdoc
      */
-    public function getTotalRecords(DateTime $startDate, DateTime $endDate)
+    public function getTotalRows(DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('l')
             ->select('count(l)')

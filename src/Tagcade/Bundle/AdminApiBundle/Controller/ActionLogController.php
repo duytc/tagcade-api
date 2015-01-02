@@ -2,15 +2,14 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
+use DateTime;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Bundle\AdminApiBundle\Repository\ActionLogRepositoryInterface;
 use Tagcade\Exception\Report\InvalidDateException;
-use DateTime;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Tagcade\Domain\DTO\ActionLogs;
+use Tagcade\Domain\DTO\ActionLog;
 
 /**
  * @Rest\RouteResource("Logs")
@@ -79,10 +78,10 @@ class ActionLogController extends FOSRestController
          */
         $actionLogRepository = $this->getDoctrine()->getRepository('TagcadeAdminApiBundle:ActionLog');
 
-        $totalRecords = $actionLogRepository->getTotalRecords($startDate, $endDate);
+        $numRows = $actionLogRepository->getTotalRows($startDate, $endDate);
         $logsList = $actionLogRepository->getLogsForDateRange($startDate, $endDate, $rowOffset, $rowLimit);
 
-        return new ActionLogs($totalRecords, $logsList);
+        return new ActionLog($numRows, $logsList);
 
     }
 

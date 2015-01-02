@@ -2,23 +2,21 @@
 
 namespace Tagcade\Domain\DTO;
 
-use Tagcade\Bundle\AdminApiBundle\Entity\ActionLog;
-
-class ActionLogs
+class ActionLog
 {
     /**
      * @var int
      */
-    protected $totalRecord;
+    protected $numRows;
 
     /**
      * @var ActionLog[]
      */
     protected $logsList;
 
-    function __construct($totalRecord, array $logsList)
+    function __construct($numRows, array $logsList)
     {
-        $this->totalRecord = $totalRecord;
+        $this->numRows = $numRows;
         $this->logsList = $logsList;
     }
 
@@ -27,7 +25,7 @@ class ActionLogs
      */
     public function getTotalRecord()
     {
-        return $this->totalRecord;
+        return $this->numRows;
     }
 
     /**
@@ -37,6 +35,5 @@ class ActionLogs
     {
         return $this->logsList;
     }
-
 
 }
