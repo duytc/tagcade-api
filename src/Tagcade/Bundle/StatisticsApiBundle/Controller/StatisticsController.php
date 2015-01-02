@@ -16,17 +16,29 @@ class StatisticsController extends FOSRestController
      *
      * Get statistics for the platform with optional date range.
      *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     *
      * @return array
      */
     public function getPlatformAction()
     {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'));
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'));
+
         return $this->get('tagcade.service.statistics')
-            ->getAdminDashboard();
+            ->getAdminDashboard($startDate, $endDate);
     }
 
     /**
      *
      * Get statistics for a publisher with optional date range.
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      *
      * @param int $publisherId
      *
@@ -36,8 +48,14 @@ class StatisticsController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'));
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'));
+
         return $this->get('tagcade.service.statistics')
-            ->getPublisherDashboard($publisher);
+            ->getPublisherDashboard($publisher, $startDate, $endDate);
     }
 
     /**

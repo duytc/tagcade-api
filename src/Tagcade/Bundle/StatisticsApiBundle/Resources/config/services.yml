@@ -20,4 +20,5 @@ services:
             - @tagcade.server.report.performance_report.display.selector.report_builder
             - @tagcade.service.statistics.account
             - @tagcade.service.statistics.site
+            - @tagcade.service.date_util
             - %tc.statistics.number_previous_days_to_include%

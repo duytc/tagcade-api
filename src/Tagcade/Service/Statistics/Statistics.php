@@ -11,6 +11,7 @@ use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as Accoun
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
@@ -35,15 +36,29 @@ class Statistics implements StatisticsInterface
      */
     protected $siteStatistics;
 
+
+    /**
+     * @var DateUtilInterface
+     */
+    protected $dateUtil;
+
     protected $numberOfPreviousDays;
+
 
     /**
      * @param ReportBuilderInterface $reportBuilder
      * @param AccountStatisticsInterface $accountStatistics
      * @param SiteStatisticsInterface $siteStatistics
+     * @param DateUtilInterface $dateUtil
      * @param int $numberOfPreviousDays The number of days to include in the report range
      */
-    public function __construct(ReportBuilderInterface $reportBuilder, AccountStatisticsInterface $accountStatistics, SiteStatisticsInterface $siteStatistics, $numberOfPreviousDays = 7)
+    public function __construct(
+        ReportBuilderInterface $reportBuilder,
+        AccountStatisticsInterface $accountStatistics,
+        SiteStatisticsInterface $siteStatistics,
+        DateUtilInterface $dateUtil,
+        $numberOfPreviousDays
+    )
     {
         if (!is_int($numberOfPreviousDays) || $numberOfPreviousDays < 0) {
             throw new InvalidArgumentException('Invalid number of previous days. It should be an integer and not negative');
@@ -52,17 +67,18 @@ class Statistics implements StatisticsInterface
         $this->reportBuilder = $reportBuilder;
         $this->accountStatistics = $accountStatistics;
         $this->siteStatistics = $siteStatistics;
+        $this->dateUtil = $dateUtil;
 
         $this->numberOfPreviousDays = $numberOfPreviousDays;
+
     }
 
     /**
      * @inheritdoc
      */
-    public function getAdminDashboard()
+    public function getAdminDashboard(DateTime $startDate = null, DateTime $endDate = null)
     {
-        $params = $this->_getDashboardParams();
-
+        $params = $this->_getDashboardParams($startDate, $endDate);
         /**
          * @var BilledReportGroup $platformReports
          */
@@ -88,9 +104,9 @@ class Statistics implements StatisticsInterface
     /**
      * @inheritdoc
      */
-    public function getPublisherDashboard(PublisherInterface $publisher)
+    public function getPublisherDashboard(PublisherInterface $publisher, DateTime $startDate = null, DateTime $endDate = null)
     {
-        $params = $this->_getDashboardParams();
+        $params = $this->_getDashboardParams($startDate, $endDate);
 
         /**
          * @var BilledReportGroup $accountReports
@@ -116,7 +132,7 @@ class Statistics implements StatisticsInterface
 
     public function getProjectedBilledAmountForAllPublishers()
     {
-        $params = $this->_getDashboardParams();
+        $params = $this->_getDashboardParams($this->dateUtil->getFirstDateInMonth(), new DateTime('yesterday'));
 
         /**
          * @var BilledReportGroup $platformReports
@@ -130,7 +146,7 @@ class Statistics implements StatisticsInterface
 
     public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
-        $params = $this->_getDashboardParams();
+        $params = $this->_getDashboardParams($this->dateUtil->getFirstDateInMonth(), new DateTime('yesterday'));
 
         /**
          * @var BilledReportGroup $publisherReports
@@ -144,12 +160,19 @@ class Statistics implements StatisticsInterface
 
 
     /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
      * @return Params
      */
-    private function _getDashboardParams()
+    private function _getDashboardParams(DateTime $startDate = null, DateTime $endDate = null)
     {
-        $startDate = new DateTime($this->numberOfPreviousDays . ' days ago');
-        $endDate = new DateTime('today');
+        if (null === $endDate) {
+            $endDate = new DateTime('today');
+        }
+
+        if (null === $startDate) {
+            $startDate = $endDate->modify(sprintf('-%d days', $this->numberOfPreviousDays));
+        }
 
         return (new Params($startDate, $endDate))->setGrouped(true);
     }

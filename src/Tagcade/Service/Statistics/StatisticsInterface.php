@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Statistics;
 
+use DateTime;
 use Tagcade\Domain\DTO\Statistics\Dashboard\AdminDashboard;
 use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
@@ -12,15 +13,19 @@ interface StatisticsInterface
 {
 
     /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
      * @return AdminDashboard
      */
-    public function getAdminDashboard();
+    public function getAdminDashboard(DateTime $startDate = null, DateTime $endDate = null);
 
     /**
      * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
      * @return PublisherDashboard
      */
-    public function getPublisherDashboard(PublisherInterface $publisher);
+    public function getPublisherDashboard(PublisherInterface $publisher, DateTime $startDate = null, DateTime $endDate = null);
 
     /**
      * @param PublisherInterface $publisher
