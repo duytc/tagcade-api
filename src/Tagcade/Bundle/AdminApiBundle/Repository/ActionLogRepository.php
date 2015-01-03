@@ -17,6 +17,7 @@ class ActionLogRepository extends EntityRepository implements ActionLogRepositor
             ->where('l.createdAt BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
+            ->addOrderBy('l.id', 'desc')
         ;
 
         if (is_int($offset)) {
