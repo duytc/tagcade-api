@@ -79,18 +79,23 @@ class Statistics implements StatisticsInterface
     public function getAdminDashboard(DateTime $startDate = null, DateTime $endDate = null)
     {
         $params = $this->_getDashboardParams($startDate, $endDate);
+        $isTodayInRange = $this->dateUtil->isTodayInRange($params->getStartDate(), $params->getEndDate());
         /**
          * @var BilledReportGroup $platformReports
          */
         $platformReports    = $this->reportBuilder->getPlatformReport($params);
-        $platformStatistics = new PlatformStatisticsDTO($platformReports);
+        $platformStatistics = new PlatformStatisticsDTO($platformReports, $isTodayInRange);
 
         $topPublishers      = $this->accountStatistics->getTopPublishersByBilledAmount($params);
         $topSites           = $this->siteStatistics->getTopSitesByBilledAmount($params);
 
-        $reports            = $platformReports->getReports();
-        $todayReport        = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;
-        $yesterdayReport    = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
+        $todayReport = null;
+        $yesterdayReport = null;
+        if ($isTodayInRange) {
+            $reports            = $platformReports->getReports();
+            $todayReport        = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;
+            $yesterdayReport    = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
+        }
 
         return new AdminDashboard(
             $platformStatistics,
@@ -107,16 +112,21 @@ class Statistics implements StatisticsInterface
     public function getPublisherDashboard(PublisherInterface $publisher, DateTime $startDate = null, DateTime $endDate = null)
     {
         $params = $this->_getDashboardParams($startDate, $endDate);
+        $isTodayInRange = $this->dateUtil->isTodayInRange($params->getStartDate(), $params->getEndDate());
 
         /**
          * @var BilledReportGroup $accountReports
          */
         $accountReports     = $this->reportBuilder->getPublisherReport($publisher, $params);
-        $accountStatistics  = new AccountStatisticsDTO($accountReports);
+        $accountStatistics  = new AccountStatisticsDTO($accountReports, $isTodayInRange);
 
-        $reports            = $accountReports->getReports();
-        $todayReport        = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;
-        $yesterdayReport    = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
+        $todayReport = null;
+        $yesterdayReport = null;
+        if ($isTodayInRange) {
+            $reports = $accountReports->getReports();
+            $todayReport = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;
+            $yesterdayReport = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
+        }
 
         $topSites           = $this->siteStatistics->getTopSitesForPublisherByEstRevenue($publisher, $params);
         $topAdNetworks      = $this->accountStatistics->getTopAdNetworksByEstRevenueForPublisher($publisher, $params);
