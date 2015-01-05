@@ -45,6 +45,10 @@ class UserManager implements UserManagerInterface
 
         $this->currentUserSystem = $this->FOSUserManager->getUserDiscriminator()->getCurrentUser();
 
+        if (null === $this->currentUserSystem) {
+            $this->currentUserSystem = $userPublisherSystem;
+        }
+
         if (!in_array($this->currentUserSystem, $this->allUserSystems)) {
             throw new LogicException( sprintf('current user system %s is not configured yet', $this->currentUserSystem));
         }

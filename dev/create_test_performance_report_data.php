@@ -30,7 +30,7 @@ $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\R
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
 $begin = new DateTime('2014-12-01');
-$end = new DateTime('2014-12-14');
+$end = new DateTime('2015-01-04');
 $end = $end->modify('+1 day');
 
 $interval = new DateInterval('P1D');
@@ -42,7 +42,7 @@ foreach($dateRange as $date){
     $dailyReportCreator
         ->setReportDate($date)
         ->createAndSave(
-        $userManager->allPublisherRoles(),
+        $userManager->allPublishers(),
         $adNetworkManager->all()
     );
 }

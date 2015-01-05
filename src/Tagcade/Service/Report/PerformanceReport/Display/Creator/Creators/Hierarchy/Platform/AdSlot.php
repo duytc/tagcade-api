@@ -42,7 +42,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             ->setDate($this->getDate())
             ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()));
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($adSlot->getSite()->getPublisher(), $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());
