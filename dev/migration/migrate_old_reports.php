@@ -45,7 +45,7 @@ foreach($dateRange as $date){
     $reportCreator->setDate($date);
 
     $dailyReportCreator->createAndSave(
-        $userManager->allPublisherRoles(),
+        $userManager->allPublishers(),
         $adNetworkManager->all()
     );
 

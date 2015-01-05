@@ -1,0 +1,4 @@
+services:
+#    tagcade_user_system_publisher.example:
+#        class: Tagcade\Bundle\UserSystem\PublisherBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

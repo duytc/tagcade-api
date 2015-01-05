@@ -2,11 +2,11 @@
 
 namespace Tagcade\Bundle\UserBundle\Entity;
 
-use FOS\UserBundle\Entity\User as BaseUser;
+use FOS\UserBundle\Model\User as BaseUser;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\UserEntityInterface;
 
-class User extends BaseUser implements UserEntityInterface
+abstract class User extends BaseUser implements UserEntityInterface
 {
     const USER_ROLE_PREFIX = 'ROLE_';
     const MODULE_PREFIX = 'MODULE_';
@@ -25,7 +25,8 @@ class User extends BaseUser implements UserEntityInterface
     protected $lastLogin;
     protected $roles;
     protected $joinDate;
-    protected $billingRate;
+
+    protected $type;
 
     /**
      * @inheritdoc
@@ -162,18 +163,20 @@ class User extends BaseUser implements UserEntityInterface
     }
 
     /**
-     * @inheritdoc
+     * @return mixed
      */
-    public function getBillingRate()
+    public function getType()
     {
-        return $this->billingRate;
+        return $this->type;
     }
 
     /**
-     * @inheritdoc
+     * @param mixed $type
      */
-    public function setBillingRate($billingRate)
+    public function setType($type)
     {
-        $this->billingRate = $billingRate;
+        $this->type = $type;
     }
+
+
 }

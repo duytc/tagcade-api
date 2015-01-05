@@ -5,23 +5,62 @@ namespace Tagcade\Tests\Fixtures;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Bundle\UserBundle\Entity\User;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User as Admin;
+use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User as Publisher;
 
-class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
+class LoadUserData extends AbstractFixture implements OrderedFixtureInterface, ContainerAwareInterface
 {
+    protected $container;
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     public function load(ObjectManager $manager)
     {
-        $super_admin = $this->createUser('superadmin', 'superadmin@tagcade.com', '12345', ['ROLE_SUPER_ADMIN']);
-        $admin = $this->createUser('admin', 'admin@tagcade.com', '12345', ['ROLE_ADMIN']);
-        $publisher = $this->createUser('pub', 'pub@tagcade.com', '12345', ['ROLE_PUBLISHER']);
-        $publisher2 = $this->createUser('pub2', 'pub2@tagcade.com', '12345', ['ROLE_PUBLISHER']);
+        /** @var \Rollerworks\Bundle\MultiUserBundle\Model\DelegatingUserManager $userManager */
+        $userManager = $this->container->get('fos_user.user_manager');
+        $userManager->getUserDiscriminator()->setCurrentUser('tagcade_user_system_admin');
 
-        $manager->persist($super_admin);
-        $manager->persist($admin);
-        $manager->persist($publisher);
-        $manager->persist($publisher2);
+        $super_admin = $userManager->createUser()
+            ->setUsername('superadmin')
+            ->setEmail('superadmin@tagcade.com')
+            ->setPlainPassword('12345')
+            ->setEnabled(true)
+            ->setRoles(['ROLE_ADMIN'])
+        ;
+        $userManager->updateUser($super_admin);
 
-        $manager->flush();
+        $admin = $userManager->createUser()
+            ->setUsername('admin')
+            ->setEmail('admin@tagcade.com')
+            ->setPlainPassword('12345')
+            ->setEnabled(true)
+            ->setRoles(['ROLE_ADMIN'])
+        ;
+        $userManager->updateUser($admin);
+
+        $userManager->getUserDiscriminator()->setCurrentUser('tagcade_user_system_publisher');
+        $publisher = $userManager->createUser()
+            ->setUsername('pub')
+            ->setEmail('pub@tagcade.com')
+            ->setPlainPassword('12345')
+            ->setEnabled(true)
+            ->setRoles(['ROLE_PUBLISHER'])
+        ;
+        $userManager->updateUser($publisher);
+
+        $publisher2 = $userManager->createUser()
+            ->setUsername('pub2')
+            ->setEmail('pub2@tagcade.com')
+            ->setPlainPassword('12345')
+            ->setEnabled(true)
+            ->setRoles(['ROLE_PUBLISHER'])
+        ;
+        $userManager->updateUser($publisher2);
 
         $this->addReference('test-user-super-admin', $super_admin);
         $this->addReference('test-user-admin', $admin);
@@ -34,10 +73,24 @@ class LoadUserData extends AbstractFixture implements OrderedFixtureInterface
         return 1;
     }
 
-    private function createUser($username, $email, $password, array $roles)
+    private function createPublisher($username, $email, $password, array $roles)
     {
-        $user = new User();
+        $user = new Publisher();
         $user->setUsername($username);
+        $user->setUsernameCanonical($username);
+        $user->setEmail($email);
+        $user->setPlainPassword($password);
+        $user->setRoles($roles);
+        $user->setEnabled(true);
+
+        return $user;
+    }
+
+    private function createAdmin($username, $email, $password, array $roles)
+    {
+        $user = new Admin();
+        $user->setUsername($username);
+        $user->setUsernameCanonical($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->setRoles($roles);

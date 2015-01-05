@@ -50,10 +50,9 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 
     public function testCustomRate()
     {
-        $user = new User();
-        $user->setBillingRate(0.01);
-        $user->addRole('ROLE_PUBLISHER');
-        $publisher = new Publisher($user);
+        $publisher = new \Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User();
+        $publisher->setBillingRate(0.01);
+        $publisher->addRole('ROLE_PUBLISHER');
 
         $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, 160000);
         $this->assertEquals(0.01, $rateAmount->getRate()->getCpmRate());
@@ -62,9 +61,8 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 
     public function testRateInRange()
     {
-        $user = new User();
-        $user->addRole('ROLE_PUBLISHER');
-        $publisher = new Publisher($user);
+        $publisher = new \Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User();
+        $publisher->addRole('ROLE_PUBLISHER');
 
         $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, 160000);
         $this->assertEquals(0.3, $rateAmount->getRate()->getCpmRate());
@@ -73,9 +71,8 @@ class BillingCalculatorTest extends \PHPUnit_Framework_TestCase
 
     public function testRateOutOfRange()
     {
-        $user = new User();
-        $user->addRole('ROLE_PUBLISHER');
-        $publisher = new Publisher($user);
+        $publisher = new \Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User();
+        $publisher->addRole('ROLE_PUBLISHER');
 
         $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, 100);
         $this->assertEquals(0.3, $rateAmount->getRate()->getCpmRate());

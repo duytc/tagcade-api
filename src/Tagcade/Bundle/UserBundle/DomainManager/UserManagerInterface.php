@@ -30,6 +30,7 @@ interface UserManagerInterface
     public function delete(FOSUserInterface $user);
 
     /**
+     * Create new Publisher only
      * @return FOSUserInterface
      */
     public function createNew();
@@ -52,12 +53,6 @@ interface UserManagerInterface
      */
     public function allPublishers();
 
-    /**
-     * @return array
-     */
-    public function allPublisherRoles();
-
-    public function getUserRole(UserEntityInterface $user);
 
     /**
      * @param int $id

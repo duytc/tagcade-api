@@ -74,6 +74,8 @@ doctrine:
                     FOSUserBundle:      ~
                     TagcadeUserBundle:  ~
                     TagcadeAdminApiBundle:  ~
+                    TagcadeUserSystemAdminBundle:  ~
+                    TagcadeUserSystemPublisherBundle:  ~
                     # custom
                     CoreEntities:
                         type:       yml
@@ -120,10 +122,31 @@ gfreeau_custom_validation_path:
             type:       yml
             recursive:  true
 
-fos_user:
-    db_driver:      orm
-    firewall_name:  api
-    user_class:     Tagcade\Bundle\UserBundle\Entity\User
+#fos_user:
+#    db_driver:      orm
+#    firewall_name:  api
+#    user_class:     Tagcade\Bundle\UserBundle\Entity\User
+
+
+######################################################
+
+# User system configuration
+
+tagcade_user_system_admin:
+    # we don't want to do any request matching to our user types, so we use a request matcher that never
+    # matches any requests. The bundle doesn't have an option to disable request matching.
+    request_matcher: tagcade_user.request.user_system.request_matcher
+    # firewall_name isn't really used. FosUserBundle uses it to automatically login a user after registration
+    # however our application is a stateless api so it doesn't apply
+    # just doing this here for completeness
+    firewall_name: api
+
+tagcade_user_system_publisher:
+    request_matcher: tagcade_user.request.user_system.request_matcher
+    firewall_name: api
+
+######################################################
+
 
 sensio_framework_extra:
     view:

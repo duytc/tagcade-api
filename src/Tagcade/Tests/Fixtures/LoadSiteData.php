@@ -6,19 +6,15 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Model\User\Role\Publisher;
 
 class LoadSiteData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        /** @var \Tagcade\Bundle\UserBundle\Entity\User $user1 */
-        $user1 = $this->getReference('test-user-publisher1');
-        /** @var \Tagcade\Bundle\UserBundle\Entity\User $user2 */
-        $user2 = $this->getReference('test-user-publisher2');
-
-        $publisher1 = new Publisher($user1);
-        $publisher2 = new Publisher($user2);
+        /** @var \Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User $publisher1 */
+        $publisher1 = $this->getReference('test-user-publisher1');
+        /** @var \Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User $publisher2 */
+        $publisher2 = $this->getReference('test-user-publisher2');
 
         $site1 = new Site();
         $site1->setName('my test');

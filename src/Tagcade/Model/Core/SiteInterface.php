@@ -32,7 +32,7 @@ interface SiteInterface extends ModelInterface
     public function getDomain();
 
     /**
-     * @return UserEntityInterface|null
+     * @return PublisherInterface|null
      */
     public function getPublisher();
 

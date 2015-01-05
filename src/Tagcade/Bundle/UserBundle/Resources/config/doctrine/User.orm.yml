@@ -18,7 +18,12 @@ Tagcade\Bundle\UserBundle\Entity\User:
             gedmo:
                 timestampable:
                     on: create
-        billingRate:
-            type: decimal
-            scale: 4
-            nullable: true
+
+    inheritanceType: JOINED
+
+    discriminatorColumn:
+        name: type
+        type: string
+    discriminatorMap:
+        admin: Tagcade\Bundle\UserSystem\AdminBundle\Entity\User
+        publisher: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

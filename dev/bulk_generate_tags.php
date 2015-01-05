@@ -10,8 +10,8 @@ $container = $kernel->getContainer();
 
 $em = $container->get('doctrine.orm.entity_manager');
 
-use Tagcade\Factory\UserRoleFactory;
 use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 $userManager = $container->get('tagcade_user.domain_manager.user');
 $siteManager = $container->get('tagcade.domain_manager.site');
@@ -20,9 +20,12 @@ $tagGenerator = new \Tagcade\Service\TagGenerator('http://tags.tagcade.com');
 
 /** @var UserEntityInterface $user */
 $user = $userManager->find(7);
-$userRole = UserRoleFactory::getRole($user);
+if (!$user instanceof PublisherInterface) {
+     throw new \Tagcade\Exception\InvalidArgumentException('Expect publisher');
+}
 
-$sites = $siteManager->getSitesForPublisher($userRole);
+
+$sites = $siteManager->getSitesForPublisher($user);
 
 function getDiv($sep = '=', $spacing = 1)
 {

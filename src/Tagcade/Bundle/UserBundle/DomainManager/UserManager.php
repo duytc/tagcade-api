@@ -4,9 +4,11 @@ namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserManagerInterface as FOSUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use Rollerworks\Bundle\MultiUserBundle\Model\DelegatingUserManager;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Factory\UserRoleFactory;
 
 /**
  * Most of the other handlers talk to doctrine directly
@@ -18,11 +20,35 @@ class UserManager implements UserManagerInterface
     const ROLE_PUBLISHER = 'ROLE_PUBLISHER';
     const ROLE_ADMIN = 'ROLE_ADMIN';
 
+    /**
+     * @var DelegatingUserManager
+     */
     protected $FOSUserManager;
 
-    public function __construct(FOSUserManagerInterface $userManager)
+    protected $userPublisherSystem;
+
+    protected $userAdminSystem;
+
+    protected $allUserSystems;
+
+    protected $currentUserSystem;
+
+    public function __construct(FOSUserManagerInterface $userManager, $userPublisherSystem, $userAdminSystem)
     {
         $this->FOSUserManager = $userManager;
+
+        $this->userPublisherSystem = $userPublisherSystem;
+        $this->userAdminSystem = $userAdminSystem;
+
+        $this->allUserSystems[] = $this->userAdminSystem;
+        $this->allUserSystems[] = $this->userPublisherSystem;
+
+        $this->currentUserSystem = $this->FOSUserManager->getUserDiscriminator()->getCurrentUser();
+
+        if (!in_array($this->currentUserSystem, $this->allUserSystems)) {
+            throw new LogicException( sprintf('current user system %s is not configured yet', $this->currentUserSystem));
+        }
+
     }
 
     /**
@@ -54,7 +80,11 @@ class UserManager implements UserManagerInterface
      */
     public function createNew()
     {
-        return $this->FOSUserManager->createUser();
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->userPublisherSystem);
+        $entity = $this->FOSUserManager->createUser();
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->currentUserSystem);
+
+        return $entity;
     }
 
     /**
@@ -62,7 +92,20 @@ class UserManager implements UserManagerInterface
      */
     public function find($id)
     {
-        return $this->FOSUserManager->findUserBy(['id' => $id]);
+        $user = null;
+
+        foreach ($this->allUserSystems as $userSystem) {
+            $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($userSystem);
+            $user = $this->FOSUserManager->findUserBy(['id' => $id]);
+
+            if (null !== $user) {
+                break;
+            }
+        }
+
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->currentUserSystem);
+
+        return $user;
     }
 
     /**
@@ -70,7 +113,20 @@ class UserManager implements UserManagerInterface
      */
     public function all($limit = null, $offset = null)
     {
-        return $this->FOSUserManager->findUsers();
+        $users = array();
+
+        array_walk(
+            $this->allUserSystems,
+            function($userSystem) use (&$users)
+            {
+                $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($userSystem);
+                $users = array_merge($users, $this->FOSUserManager->findUsers());
+            }
+        );
+
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->currentUserSystem);
+
+        return $users;
     }
 
     /**
@@ -88,21 +144,6 @@ class UserManager implements UserManagerInterface
     /**
      * @inheritdoc
      */
-    public function allPublisherRoles()
-    {
-        return array_map(function(UserEntityInterface $user) {
-            return $this->getUserRole($user);
-        }, $this->allPublishers());
-    }
-
-    public function getUserRole(UserEntityInterface $user)
-    {
-        return UserRoleFactory::getRole($user);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function findPublisher($id)
     {
         $publisher = $this->find($id);
@@ -111,17 +152,10 @@ class UserManager implements UserManagerInterface
             return false;
         }
 
-        try {
-            $userRole = $this->getUserRole($publisher);
-        }
-        catch (\Exception $e) {
+        if (!$publisher instanceof PublisherInterface) {
             return false;
         }
 
-        if (!$userRole instanceof PublisherInterface) {
-            return false;
-        }
-
-        return $userRole;
+        return $publisher;
     }
 }

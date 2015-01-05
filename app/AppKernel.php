@@ -18,6 +18,7 @@ class AppKernel extends Kernel
 
             new FOS\UserBundle\FOSUserBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new Rollerworks\Bundle\MultiUserBundle\RollerworksMultiUserBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle(),
@@ -32,6 +33,8 @@ class AppKernel extends Kernel
             new Tagcade\Bundle\AdminApiBundle\TagcadeAdminApiBundle(),
             new Tagcade\Bundle\StatisticsApiBundle\TagcadeStatisticsApiBundle(),
             new Tagcade\Bundle\AppBundle\TagcadeAppBundle(),
+            new Tagcade\Bundle\UserSystem\PublisherBundle\TagcadeUserSystemPublisherBundle(),
+            new Tagcade\Bundle\UserSystem\AdminBundle\TagcadeUserSystemAdminBundle(),
         );
 
         if ($this->getEnvironment() == 'test') {

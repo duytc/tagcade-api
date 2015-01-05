@@ -1,0 +1,9 @@
+Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
+    type:  entity
+    table: core_user_publisher
+
+    fields:
+        billingRate:
+            type: decimal
+            scale: 4
+            nullable: true
