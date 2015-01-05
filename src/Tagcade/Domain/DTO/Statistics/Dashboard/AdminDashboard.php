@@ -35,7 +35,7 @@ class AdminDashboard
     protected $topSites;
 
     function __construct(
-        PlatformStatistics $platformStatistics,
+        PlatformStatistics $platformStatistics = null,
         DaySummary $todaySummary = null,
         DaySummary $yesterdaySummary = null,
         array $topPublishers = null,

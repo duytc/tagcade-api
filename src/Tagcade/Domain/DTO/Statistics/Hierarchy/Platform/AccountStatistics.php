@@ -10,11 +10,11 @@ class AccountStatistics
 
     protected $reports;
 
-    function __construct(ReportGroup $reportGroup, $includedToday = false)
+    function __construct(ReportGroup $reportGroup = null, $includedToday = false)
     {
         $this->reportGroup = $reportGroup;
 
-        $historicalReports = $reportGroup->getReports();
+        $historicalReports = $reportGroup != null ? $reportGroup->getReports() : array();
         if ($includedToday) {
             array_shift($historicalReports); // Ignore today statistics
         }

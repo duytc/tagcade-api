@@ -84,6 +84,10 @@ class Statistics implements StatisticsInterface
          * @var BilledReportGroup $platformReports
          */
         $platformReports    = $this->reportBuilder->getPlatformReport($params);
+        if (false === $platformReports) {
+            return new AdminDashboard();
+        }
+
         $platformStatistics = new PlatformStatisticsDTO($platformReports, $isTodayInRange);
 
         $topPublishers      = $this->accountStatistics->getTopPublishersByBilledAmount($params);
