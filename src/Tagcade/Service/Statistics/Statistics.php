@@ -122,6 +122,9 @@ class Statistics implements StatisticsInterface
          * @var BilledReportGroup $accountReports
          */
         $accountReports     = $this->reportBuilder->getPublisherReport($publisher, $params);
+        if (false === $accountReports) {
+            return new PublisherDashboard();
+        }
         $accountStatistics  = new AccountStatisticsDTO($accountReports, $isTodayInRange);
 
         $todayReport = null;

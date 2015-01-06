@@ -36,7 +36,7 @@ class PublisherDashboard
     protected $topAdNetworks;
 
     function __construct(
-        AccountStatistics $accountStatistics,
+        AccountStatistics $accountStatistics = null,
         DaySummary $todaySummary = null,
         DaySummary $yesterdaySummary = null,
         array $topSites = null,
