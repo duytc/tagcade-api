@@ -22,15 +22,15 @@ class UserFormType extends AbstractType
             // custom fields
             // even though in the system, roles and modules are simply just symfony2 roles
             // we separate the collection of them
-            ->add('userRoles', 'choice', [
-                'mapped' => false,
-                'empty_data' => null,
-                'multiple' => true,
-                'choices' => [
-                    'ROLE_PUBLISHER' => 'Publisher',
-                    'ROLE_ADMIN'     => 'Admin'
-                ],
-            ])
+//            ->add('userRoles', 'choice', [
+//                'mapped' => false,
+//                'empty_data' => null,
+//                'multiple' => true,
+//                'choices' => [
+//                    'ROLE_PUBLISHER' => 'Publisher',
+//                    'ROLE_ADMIN'     => 'Admin'
+//                ],
+//            ])
             ->add('enabledModules', 'choice', [
                 'mapped' => false,
                 'empty_data' => null,
@@ -42,6 +42,8 @@ class UserFormType extends AbstractType
                     'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
                 ],
             ])
+            ->add('billingRate')
+
         ;
 
         $builder->addEventListener(
@@ -51,12 +53,12 @@ class UserFormType extends AbstractType
                 $user = $event->getData();
                 $form = $event->getForm();
 
-                $mainUserRole = $form->get('userRoles')->getData();
+//                $mainUserRole = $form->get('userRoles')->getData();
                 $modules = $form->get('enabledModules')->getData();
 
-                if (null !== $mainUserRole) {
-                    $user->setUserRoles((array) $mainUserRole);
-                }
+//                if (null !== $mainUserRole) {
+//                    $user->setUserRoles((array) $mainUserRole);
+//                }
 
                 if (null !== $modules && is_array($modules)) {
                     $user->setEnabledModules($modules);

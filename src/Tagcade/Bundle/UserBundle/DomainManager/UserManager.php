@@ -68,7 +68,9 @@ class UserManager implements UserManagerInterface
      */
     public function save(FOSUserInterface $user)
     {
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->userPublisherSystem);
         $this->FOSUserManager->updateUser($user);
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->currentUserSystem);
     }
 
     /**
@@ -76,7 +78,9 @@ class UserManager implements UserManagerInterface
      */
     public function delete(FOSUserInterface $user)
     {
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->userPublisherSystem);
         $this->FOSUserManager->deleteUser($user);
+        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($this->currentUserSystem);
     }
 
     /**

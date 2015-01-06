@@ -10,13 +10,12 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all users
+     * Get all publisher
      *
      * @ApiDoc(
      *  section = "admin",
@@ -26,24 +25,15 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      *  }
      * )
      *
-     * @Rest\QueryParam(name="filter", requirements="[a-z]+", nullable=true, description="Limit the users returned to a defined role")
-     *
-     * @param ParamFetcherInterface $paramFetcher
      * @return \Tagcade\Bundle\UserBundle\Entity\User[]
      */
-    public function cgetAction(ParamFetcherInterface $paramFetcher)
+    public function cgetAction()
     {
-        $filter = $paramFetcher->get('filter');
-
-        if ($filter == 'publisher') {
-            return $this->getHandler()->allPublishers();
-        }
-
-        return $this->all();
+        return $this->getHandler()->allPublishers();
     }
 
     /**
-     * Get a single user for the given id
+     * Get a single publisher for the given id
      *
      * @ApiDoc(
      *  section = "admin",
@@ -61,6 +51,8 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function getAction($id)
     {
+        $this->checkPermission($id);
+
         return $this->one($id);
     }
 
@@ -94,7 +86,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
-     * Update an existing user from the submitted data or create a new user
+     * Update an existing user from the submitted data or create a new publisher
      *
      * @ApiDoc(
      *  section = "admin",
@@ -115,11 +107,13 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function putAction(Request $request, $id)
     {
+        $this->checkPermission($id);
+
         return $this->put($request, $id);
     }
 
     /**
-     * Update an existing user from the submitted data or create a new user at a specific location
+     * Update an existing user from the submitted data or create a new publisher at a specific location
      *
      * @ApiDoc(
      *  section = "admin",
@@ -139,11 +133,13 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function patchAction(Request $request, $id)
     {
+        $this->checkPermission($id);
+
         return $this->patch($request, $id);
     }
 
     /**
-     * Delete an existing user
+     * Delete an existing publisher
      *
      * @ApiDoc(
      *  section = "admin",
@@ -162,6 +158,8 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function deleteAction($id)
     {
+        $this->checkPermission($id);
+
         return $this->delete($id);
     }
 
@@ -187,5 +185,20 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     protected function getHandler()
     {
         return $this->container->get('tagcade_admin_api.handler.user');
+    }
+
+    /**
+     * @param $publisherId
+     * @return bool
+     */
+    protected function checkPermission($publisherId)
+    {
+        $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
+
+        if ($publisher === false) {
+            throw new NotFoundHttpException('Publisher does not exist');
+        }
+
+        return true;
     }
 }

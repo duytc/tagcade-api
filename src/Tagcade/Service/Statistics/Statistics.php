@@ -188,6 +188,8 @@ class Statistics implements StatisticsInterface
             $startDate = $endDate->modify(sprintf('-%d days', $this->numberOfPreviousDays));
         }
 
+        $endDate->setTime(23, 59, 59);
+
         return (new Params($startDate, $endDate))->setGrouped(true);
     }
 

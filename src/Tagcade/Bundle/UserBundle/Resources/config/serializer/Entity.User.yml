@@ -11,7 +11,7 @@ Tagcade\Bundle\UserBundle\Entity\User:
         - last_login
         - enabled
     virtual_properties:
-        getUserRoles: ~
+#        getUserRoles: ~
         getEnabledModules: ~
     properties:
         id:
