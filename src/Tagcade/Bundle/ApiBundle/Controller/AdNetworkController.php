@@ -305,7 +305,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         }
 
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $position = $paramFetcher->get('position', true);
+        $position = (int)$paramFetcher->get('position', true);
         $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
 
         $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position);
