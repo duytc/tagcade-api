@@ -1,8 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
-        "This file is @generated automatically"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
     "hash": "d65e19b2114f652aa637e1bacf49353f",
     "packages": [
@@ -198,7 +197,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -274,7 +273,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1179,9 +1178,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1282,9 +1281,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1836,9 +1835,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1886,9 +1885,9 @@
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2066,17 +2065,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v3.0.14",
+            "version": "v3.0.15",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "dc20d5ab3251587b047859ca2fc06c1b88a38d00"
+                "reference": "0692cd6a8fcf645abce8ea45f7cbbd1942e2b23c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/dc20d5ab3251587b047859ca2fc06c1b88a38d00",
-                "reference": "dc20d5ab3251587b047859ca2fc06c1b88a38d00",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/0692cd6a8fcf645abce8ea45f7cbbd1942e2b23c",
+                "reference": "0692cd6a8fcf645abce8ea45f7cbbd1942e2b23c",
                 "shasum": ""
             },
             "require": {
@@ -2115,7 +2114,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2014-12-30 08:41:47"
+            "time": "2015-01-07 07:13:43"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -2448,23 +2447,23 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.5.8",
+            "version": "v2.5.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "00da57005c9c76773670f4d958dd95e9f4ae72f6"
+                "reference": "e082a9f28edfd5a081b60e009889b30c04979924"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/00da57005c9c76773670f4d958dd95e9f4ae72f6",
-                "reference": "00da57005c9c76773670f4d958dd95e9f4ae72f6",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/e082a9f28edfd5a081b60e009889b30c04979924",
+                "reference": "e082a9f28edfd5a081b60e009889b30c04979924",
                 "shasum": ""
             },
             "require": {
-                "doctrine/common": "~2.2",
+                "doctrine/common": "~2.3",
                 "php": ">=5.3.3",
                 "psr/log": "~1.0",
-                "twig/twig": "~1.12"
+                "twig/twig": "~1.12,>=1.12.3"
             },
             "replace": {
                 "symfony/browser-kit": "self.version",
@@ -2517,7 +2516,7 @@
                 "egulias/email-validator": "~1.2",
                 "ircmaxell/password-compat": "~1.0",
                 "monolog/monolog": "~1.3",
-                "ocramius/proxy-manager": ">=0.3.1,<0.6-dev",
+                "ocramius/proxy-manager": "~0.4|~1.0",
                 "propel/propel1": "~1.6"
             },
             "type": "library",
@@ -2557,7 +2556,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-12-03 14:18:17"
+            "time": "2015-01-07 12:32:08"
         },
         {
             "name": "twig/twig",
@@ -2648,7 +2647,7 @@
             ],
             "authors": [
                 {
-                    "name": "William Durand",
+                    "name": "William DURAND",
                     "email": "william.durand1@gmail.com",
                     "homepage": "http://www.willdurand.fr"
                 }
@@ -3716,16 +3715,16 @@
         },
         {
             "name": "webfactory/exceptions-bundle",
-            "version": "4.0.4",
+            "version": "4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webfactory/exceptions-bundle.git",
-                "reference": "68b4bd4812ba139b81ab1e69483a14287716441d"
+                "reference": "f896cdf60b299edd34c02ddd20c1ef3bbb628e76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webfactory/exceptions-bundle/zipball/68b4bd4812ba139b81ab1e69483a14287716441d",
-                "reference": "68b4bd4812ba139b81ab1e69483a14287716441d",
+                "url": "https://api.github.com/repos/webfactory/exceptions-bundle/zipball/f896cdf60b299edd34c02ddd20c1ef3bbb628e76",
+                "reference": "f896cdf60b299edd34c02ddd20c1ef3bbb628e76",
                 "shasum": ""
             },
             "require": {
@@ -3733,7 +3732,6 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.0",
-                "sensio/framework-extra-bundle": "~2.2",
                 "symfony/framework-bundle": "~2.2"
             },
             "type": "symfony-bundle",
@@ -3761,10 +3759,12 @@
             ],
             "description": "A simple controller to display error pages during development plus some building blocks for more user-friendly error pages.",
             "homepage": "http://inside.webfactory.de/de/blog/symfony2-exception-handling-and-custom-error-pages-explained.html",
-            "time": "2014-11-19 09:55:45"
+            "time": "2015-01-07 13:54:55"
         }
     ],
-    "aliases": [],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/user-bundle": 20,
@@ -3777,9 +3777,10 @@
         "liip/functional-test-bundle": 20,
         "webfactory/exceptions-bundle": 0
     },
-    "prefer-stable": false,
     "platform": {
         "php": "~5.5.0"
     },
-    "platform-dev": []
+    "platform-dev": [
+
+    ]
 }
