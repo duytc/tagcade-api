@@ -65,7 +65,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
-     * Get all sites that have ad tag belonging to this ad network
+     * Get all sites belonging to this ad network
      *
      * @ApiDoc(
      *  resource = true,
@@ -98,6 +98,43 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
          * @var PublisherInterface $role
          */
         return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $role);
+    }
+
+    /**
+     * Get all active sites belonging to this ad network
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return SiteInterface[]
+     *
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getSitesActiveAction($id)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        $role = $this->get('tagcade.user_role');
+
+        if ($role instanceof AdminInterface) {
+            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork);
+        }
+
+        /**
+         * @var PublisherInterface $role
+         */
+        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
+
     }
 
     /**
