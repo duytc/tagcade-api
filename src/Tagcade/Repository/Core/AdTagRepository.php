@@ -139,21 +139,4 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
 
         return $qb->getQuery()->getResult();
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function saveAdTagPosition(AdTagInterface $adTag)
-    {
-        $this->getEntityManager()
-            ->createQueryBuilder()
-            ->update($this->getEntityName(), 't')
-            ->set('t.position', ':position')
-            ->where('t.id = :tag_id')
-            ->setParameter('position', $adTag->getPosition(), Type::INTEGER)
-            ->setParameter('tag_id', $adTag->getId(), Type::INTEGER)
-            ->getQuery()
-            ->execute()
-        ;
-    }
 }

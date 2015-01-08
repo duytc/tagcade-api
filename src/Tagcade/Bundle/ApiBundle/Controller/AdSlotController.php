@@ -171,10 +171,10 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
             throw new BadRequestHttpException("Ad tagIds parameter is required");
         }
 
-        $adTags = $adSlot->getAdTags()->toArray();
-
-        return $this->get('tagcade.domain_manager.ad_tag')
-            ->reorderAdTags($adTags, $newAdTagOrderIds);
+        return array_values(
+            $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
+            ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
+        );
     }
 
     /**

@@ -91,11 +91,4 @@ interface AdTagManagerInterface
      */
     public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null);
 
-
-    /**
-     * @param adTagInterface[] $adTags
-     * @param array $newAdTagOrderIds
-     * @return adTagInterface[]
-     */
-    public function reorderAdTags(array $adTags, array $newAdTagOrderIds);
 }

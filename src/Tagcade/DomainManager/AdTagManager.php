@@ -3,6 +3,8 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Gedmo\Sortable\SortableListener;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -14,12 +16,12 @@ use ReflectionClass;
 
 class AdTagManager implements AdTagManagerInterface
 {
-    protected $om;
+    protected $em;
     protected $repository;
 
-    public function __construct(ObjectManager $om, AdTagRepositoryInterface $repository)
+    public function __construct(EntityManagerInterface $em, AdTagRepositoryInterface $repository)
     {
-        $this->om = $om;
+        $this->em = $em;
         $this->repository = $repository;
     }
 
@@ -36,8 +38,8 @@ class AdTagManager implements AdTagManagerInterface
      */
     public function save(AdTagInterface $adTag)
     {
-        $this->om->persist($adTag);
-        $this->om->flush();
+        $this->em->persist($adTag);
+        $this->em->flush();
     }
 
     /**
@@ -45,8 +47,8 @@ class AdTagManager implements AdTagManagerInterface
      */
     public function delete(AdTagInterface $adTag)
     {
-        $this->om->remove($adTag);
-        $this->om->flush();
+        $this->em->remove($adTag);
+        $this->em->flush();
     }
 
     /**
@@ -111,50 +113,5 @@ class AdTagManager implements AdTagManagerInterface
     public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagsForAdNetworkAndSites($adNetwork, $sites, $limit, $offset);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function reorderAdTags(array $adTags, array $newAdTagOrderIds)
-    {
-        if (empty($adTags)) {
-            return [];
-        }
-
-        $adTagIds = array_map(function(AdTagInterface $adTag) {
-            return $adTag->getId();
-        }, $adTags);
-
-        $adTags = array_combine($adTagIds, $adTags);
-
-        if (count($newAdTagOrderIds) !== count(array_unique($newAdTagOrderIds))) {
-            throw new InvalidArgumentException("Every ad tag id must be unique");
-        }
-
-        if (count(array_diff($newAdTagOrderIds, $adTagIds)) !== 0) {
-            throw new InvalidArgumentException("There must be a matching new ad tag id order for every ad tag");
-        }
-
-        $orderedAdTags = array_map(function($id) use ($adTags) {
-            return $adTags[$id];
-        }, $newAdTagOrderIds);
-
-        $position = 1;
-
-        foreach($orderedAdTags as $adTag) {
-            /** @var AdTagInterface $adTag */
-            $adTag->setPosition($position);
-
-            $this->repository->saveAdTagPosition($adTag);
-
-            $position++;
-        }
-
-        $this->om->flush();
-
-        unset($adTag);
-
-        return array_values($orderedAdTags);
     }
 }
