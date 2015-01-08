@@ -59,7 +59,7 @@ class AccountStatistics implements AccountStatisticsInterface
 
     public function getAllPublishersProjectedBilledAmount()
     {
-        $publishers = $this->userManager->allPublisherRoles();
+        $publishers = $this->userManager->allPublishers();
 
         $sumProjectedBilledAmount = 0;
 

@@ -39,7 +39,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         $dailyReportCreator->setReportDate($reportDate);
 
         $dailyReportCreator->createAndSave(
-            $userManager->allPublisherRoles(),
+            $userManager->allPublishers(),
             $adNetworkManager->all()
         );
 
