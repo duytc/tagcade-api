@@ -16,7 +16,7 @@ interface AdTagPositionEditorInterface
      * @param SiteInterface[] $sites
      * @return int number of ad tags get updated
      */
-    public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites);
+    public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null);
 
     /**
      * @param AdSlotInterface $adSlot

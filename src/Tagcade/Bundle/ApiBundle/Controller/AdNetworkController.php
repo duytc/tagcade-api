@@ -240,6 +240,86 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * Update position of of all ad tags belonging to adNetwork
+     *
+     * @ApiDoc(
+     *  section = "adNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="position", requirements="\d+", description="new position of all ad tags belonging to this ad network")
+     *
+     * @param $id
+     *
+     * @return View
+     */
+    public function putPositionAction($id)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $adNetwork)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
+        }
+
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $position = $paramFetcher->get('position', true);
+        $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
+
+        $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position);
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Update position of of all ad tags belonging to adNetwork and filtered by site
+     *
+     * @ApiDoc(
+     *  section = "adNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="position", requirements="\d+", description="new position of all ad tags belonging to this ad network and filtered by siteId")
+     *
+     * @param $id
+     *
+     * @return View
+     */
+    public function putSitePositionAction($id, $siteId)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $adNetwork) || false === $this->get('security.context')->isGranted('edit', $site)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
+        }
+
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $position = $paramFetcher->get('position', true);
+        $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
+
+        $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position, $site);
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+
+    }
+
+    /**
      * Update an existing ad network from the submitted data or create a new ad network at a specific location
      *
      * @ApiDoc(

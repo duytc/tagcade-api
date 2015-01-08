@@ -28,12 +28,6 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
         $this->em = $em;
     }
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param $position
-     * @param SiteInterface[] $sites
-     * @return int number of ad tags get updated
-     */
     public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null)
     {
         if (!is_int($position) || $position < 1) {
