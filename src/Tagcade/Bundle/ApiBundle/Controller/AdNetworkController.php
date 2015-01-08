@@ -306,6 +306,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $position = (int)$paramFetcher->get('position', true);
+        if ($position < 1) {
+            throw new InvalidArgumentException('position should be greater than zero');
+        }
+
         $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
 
         $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position);
@@ -349,6 +353,11 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $position = (int)$paramFetcher->get('position', true);
+
+        if ($position < 1) {
+            throw new InvalidArgumentException('position should be greater than zero');
+        }
+
         $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
 
         $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position, $site);
