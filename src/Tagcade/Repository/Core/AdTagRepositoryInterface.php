@@ -49,4 +49,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
 
     public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null);
 
+    public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, PublisherInterface $publisher, $limit = null, $offset = null);
+
 }
