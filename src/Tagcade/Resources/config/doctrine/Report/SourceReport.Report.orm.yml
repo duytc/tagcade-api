@@ -16,6 +16,69 @@ Tagcade\Entity\Report\SourceReport\Report:
     fields:
         date:
             type: date
+        displayOpportunities:
+            type: integer
+            nullable: true
+        displayImpressions:
+            type: integer
+            nullable: true
+        displayFillRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        displayClicks:
+            type: integer
+            nullable: true
+        displayCTR:
+            type: decimal
+            scale: 4
+            nullable: true
+        displayIPV:
+            type: decimal
+            scale: 4
+            nullable: true
+        videoPlayerReady:
+            type: integer
+            nullable: true
+        videoAdPlays:
+            type: integer
+            nullable: true
+        videoAdImpressions:
+            type: integer
+            nullable: true
+        videoAdCompletions:
+            type: integer
+            nullable: true
+        videoAdCompletionRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        videoIPV:
+            type: decimal
+            scale: 4
+            nullable: true
+        videoAdClicks:
+            type: integer
+            nullable: true
+        videoStarts:
+            type: integer
+            nullable: true
+        videoEnds:
+            type: integer
+            nullable: true
+        visits:
+            type: integer
+            nullable: true
+        pageViews:
+            type: integer
+            nullable: true
+        qtos:
+            type: integer
+            nullable: true
+        qtosPercentage:
+            type: decimal
+            scale: 4
+            nullable: true
     oneToMany:
         records:
             targetEntity: Tagcade\Entity\Report\SourceReport\Record
@@ -28,3 +91,5 @@ Tagcade\Entity\Report\SourceReport\Report:
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site
+    lifecycleCallbacks:
+        prePersist: [ setCalculatedFields ]
