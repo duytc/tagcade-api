@@ -183,8 +183,10 @@ class Statistics implements StatisticsInterface
      */
     private function _getDashboardParams(DateTime $startDate = null, DateTime $endDate = null)
     {
-        if (null === $endDate) {
-            $endDate = new DateTime('today');
+        $today = new DateTime('today');
+
+        if (null === $endDate || $endDate >= $today) {
+            $endDate = new DateTime('yesterday');
         }
 
         if (null === $startDate) {

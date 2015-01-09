@@ -11,7 +11,7 @@ $container = $kernel->getContainer();
 $em = $container->get('doctrine.orm.entity_manager');
 $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
 $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
-$userManager = $container->get('tagcade_user.domain_manager.user');
+$userManager = $container->get('tagcade_user.domain_manager.publisher');
 
 $reportTypes = [
     $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag'),
@@ -29,9 +29,8 @@ $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\Te
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
-$begin = new DateTime('2014-12-01');
-$end = new DateTime('2015-01-04');
-$end = $end->modify('+1 day');
+$begin = new DateTime('2015-01-08');
+$end = new DateTime('2015-01-09');
 
 $interval = new DateInterval('P1D');
 $dateRange = new DatePeriod($begin, $interval ,$end);
