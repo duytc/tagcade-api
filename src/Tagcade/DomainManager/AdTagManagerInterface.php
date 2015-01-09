@@ -58,11 +58,12 @@ interface AdTagManagerInterface
 
     /**
      * @param SiteInterface $site
+     * @param bool $filterActive
      * @param int|null $limit
      * @param int|null $offset
      * @return AdTagInterface[]
      */
-    public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null);
+    public function getAdTagsForSite(SiteInterface $site, $filterActive = false, $limit = null, $offset = null);
 
     /**
      * @param PublisherInterface $publisher

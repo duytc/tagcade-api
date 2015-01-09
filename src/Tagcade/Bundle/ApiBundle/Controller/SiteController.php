@@ -159,6 +159,21 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
+     * Retrieve a list of active ad tags for this site
+     *
+     * @param int $id
+     * @return \Tagcade\Model\Core\AdTagInterface[]
+     */
+    public function getAdtagsActiveAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        return $this->get('tagcade.domain_manager.ad_tag')
+            ->getAdTagsForSite($site, true);
+    }
+
+    /**
      * Get the javascript display ad tags for this site
      *
      * @param int $id

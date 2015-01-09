@@ -84,9 +84,21 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdSlot($adSlot, $limit, $offset);
     }
 
-    public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null)
+    public function getAdTagsForSite(SiteInterface $site, $filterActive = false, $limit = null, $offset = null)
     {
-        return $this->repository->getAdTagsForSite($site, $limit, $offset);
+        $adTags = $this->repository->getAdTagsForSite($site, $limit, $offset);
+
+        if (true === $filterActive) {
+            return array_filter(
+                $adTags,
+                function(AdTagInterface $adTag)
+                {
+                    return $adTag->isActive();
+                }
+            );
+        }
+
+        return $adTags;
     }
 
     /**
