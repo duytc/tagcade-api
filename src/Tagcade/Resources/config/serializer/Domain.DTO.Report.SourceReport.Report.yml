@@ -1,0 +1,5 @@
+Tagcade\Domain\DTO\Report\SourceReport\Report:
+    exclusion_policy: NONE
+    properties:
+        report:
+            inline: true

@@ -56,12 +56,7 @@ class ReportSelector implements ReportSelectorInterface
         $reports = $this->repository->getReports($site, $startDate, $endDate);
 
         foreach($reports as $report) {
-            $reportSubset[] = new ReportDTO(
-                $report->getId(),
-                $report->getDate(),
-                $report->getSite()->getId(),
-                $report->getRecords()->slice($rowOffset, $rowLimit)
-            );
+            $reportSubset[] = new ReportDTO($report, $report->getRecords()->slice($rowOffset, $rowLimit));
         }
 
         return $reportSubset;

@@ -169,6 +169,18 @@ class Report
 
         return $this;
     }
+    /**
+     * @return int|null
+     */
+    public function getSiteId()
+    {
+        if ($this->site instanceof SiteInterface) {
+            return $this->site->getId();
+        }
+
+        return null;
+    }
+
 
     public function getRecords()
     {

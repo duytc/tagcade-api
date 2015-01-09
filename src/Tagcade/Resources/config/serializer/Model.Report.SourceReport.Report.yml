@@ -1,9 +1,12 @@
 Tagcade\Model\Report\SourceReport\Report:
-    exclusion_policy: ALL
+    exclusion_policy: NONE
+    virtual_properties:
+        getSiteId:
+            type: integer
     properties:
-        date:
-            expose: true
+        id:
+            exclude: true
         site:
-            expose: true
+            exclude: true
         records:
-            expose: true
+            exclude: true

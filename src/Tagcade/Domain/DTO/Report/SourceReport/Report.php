@@ -2,48 +2,25 @@
 
 namespace Tagcade\Domain\DTO\Report\SourceReport;
 
-use DateTime;
+use Tagcade\Model\Report\SourceReport\Report as ReportModel;
 
 class Report
 {
-    private $id;
-    private $date;
-    private $siteId;
+    private $report;
     private $records;
 
-    /**
-     * @param int $id
-     * @param DateTime $date
-     * @param int $siteId
-     * @param array $records
-     */
-    public function __construct($id, DateTime $date, $siteId, array $records)
+    public function __construct(ReportModel $report, array $records)
     {
-        $this->id = $id;
-        $this->date = $date;
-        $this->siteId = $siteId;
+        $this->report = $report;
         $this->records = $records;
     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
     /**
-     * @return DateTime
+     * @return ReportModel
      */
-    public function getDate()
+    public function getReport()
     {
-        return $this->date;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSiteId()
-    {
-        return $this->siteId;
+        return $this->report;
     }
 
     /**
