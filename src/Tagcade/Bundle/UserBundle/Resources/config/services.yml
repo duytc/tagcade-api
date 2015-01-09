@@ -20,12 +20,11 @@ services:
         factory_service: tagcade.token
         factory_method: getUser
 
-    tagcade_user.domain_manager.user:
-        class: Tagcade\Bundle\UserBundle\DomainManager\UserManager
+    tagcade_user.domain_manager.publisher:
+        class: Tagcade\Bundle\UserBundle\DomainManager\PublisherManager
         arguments:
             - @fos_user.user_manager
             - %tagcade.user_system.publisher%
-            - %tagcade.user_system.admin%
 
     tagcade_user.handler.authentication_success:
         class: Tagcade\Bundle\UserBundle\Handler\AuthenticationSuccessHandler

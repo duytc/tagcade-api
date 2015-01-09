@@ -4,7 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
@@ -39,7 +39,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected $rateGetter;
     /**
-     * @var UserManagerInterface
+     * @var PublisherManagerInterface
      */
     protected $userManager;
     /**
@@ -52,7 +52,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         BillingCalculatorInterface $billingCalculator,
         ObjectManager $om,
         CpmRateGetterInterface $rateGetter,
-        UserManagerInterface $userManager,
+        PublisherManagerInterface $userManager,
         DateUtilInterface $dateUtil
     )
     {

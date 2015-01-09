@@ -48,7 +48,7 @@ class BillingEditorController extends FOSRestController
             throw new InvalidArgumentException('billedRate should be numeric and non negative value');
         }
 
-        $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($id);
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($id);
         if (!$publisher) {
             throw new NotFoundHttpException('That publisher does not exist');
         }

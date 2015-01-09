@@ -73,11 +73,11 @@ class StatisticsController extends FOSRestController
 
     /**
      * @param int $publisherId
-     * @return \Tagcade\Model\User\Role\Publisher
+     * @return \Tagcade\Model\User\Role\PublisherInterface
      */
     protected function getPublisher($publisherId)
     {
-        $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId);
 
         if (!$publisher) {
             throw new NotFoundHttpException('That publisher does not exist');

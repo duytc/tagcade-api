@@ -137,7 +137,7 @@ services:
         arguments:
             - @tagcade.service.report.performance_report.display.selector.report_selector
             - @tagcade.service.date_util
-            - @tagcade_user.domain_manager.user
+            - @tagcade_user.domain_manager.publisher
             - @tagcade.domain_manager.ad_network
             - @tagcade.domain_manager.site
             - @tagcade.domain_manager.ad_slot

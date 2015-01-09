@@ -46,7 +46,7 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
 
         $output->writeln('start updating billed amount for publisher');
 
-        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
+        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
         if (null === $publisherId) {

@@ -2,7 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
-use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
@@ -34,7 +34,7 @@ class ReportBuilder implements ReportBuilderInterface
      */
     protected $dateUtil;
     /**
-     * @var UserManagerInterface
+     * @var PublisherManagerInterface
      */
     protected $userManager;
     /**
@@ -57,7 +57,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function __construct(
         ReportSelectorInterface $reportSelector,
         DateUtilInterface $dateUtil,
-        UserManagerInterface $userManager,
+        PublisherManagerInterface $userManager,
         AdNetworkManagerInterface $adNetworkManager,
         SiteManagerInterface $siteManager,
         AdSlotManagerInterface $adSlotManager,

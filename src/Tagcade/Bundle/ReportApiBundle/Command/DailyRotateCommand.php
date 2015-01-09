@@ -26,7 +26,7 @@ class DailyRotateCommand extends ContainerAwareCommand
     {
         $output->writeln('start rotating...');
 
-        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
+        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 

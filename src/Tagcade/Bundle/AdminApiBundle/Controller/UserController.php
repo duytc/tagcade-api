@@ -193,7 +193,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     protected function checkPermission($publisherId)
     {
-        $publisher = $this->get('tagcade_user.domain_manager.user')->findPublisher($publisherId);
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId);
 
         if ($publisher === false) {
             throw new NotFoundHttpException('Publisher does not exist');

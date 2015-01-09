@@ -7,7 +7,7 @@ use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Exception\InvalidUserRoleException;
 
-interface UserManagerInterface
+interface PublisherManagerInterface
 {
     /**
      * @see \Tagcade\DomainManager\ManagerInterface

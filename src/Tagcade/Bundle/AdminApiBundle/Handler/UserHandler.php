@@ -5,7 +5,7 @@ namespace Tagcade\Bundle\AdminApiBundle\Handler;
 use Tagcade\Handler\HandlerAbstract;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 
 /**
  * Not using a RoleHandlerInterface because this Handler is local
@@ -13,7 +13,7 @@ use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
  */
 class UserHandler extends HandlerAbstract implements UserHandlerInterface
 {
-    public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, UserManagerInterface $domainManager)
+    public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, PublisherManagerInterface $domainManager)
     {
         parent::__construct($formFactory, $formType, $domainManager);
     }
@@ -23,7 +23,7 @@ class UserHandler extends HandlerAbstract implements UserHandlerInterface
      *
      * Auto complete helper method
      *
-     * @return UserManagerInterface
+     * @return PublisherManagerInterface
      */
     protected function getDomainManager()
     {

@@ -2,7 +2,7 @@
 
 namespace Tagcade\Service\Statistics\Provider;
 
-use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculatorInterface;
@@ -25,11 +25,11 @@ class AccountStatistics implements AccountStatisticsInterface
      */
     protected $projectedBillingCalculator;
     /**
-     * @var UserManagerInterface
+     * @var PublisherManagerInterface
      */
     protected $userManager;
 
-    public function __construct(ReportBuilderInterface $reportBuilder, ProjectedBillingCalculatorInterface $projectedBillingCalculator, UserManagerInterface $userManager)
+    public function __construct(ReportBuilderInterface $reportBuilder, ProjectedBillingCalculatorInterface $projectedBillingCalculator, PublisherManagerInterface $userManager)
     {
         $this->reportBuilder = $reportBuilder;
         $this->projectedBillingCalculator = $projectedBillingCalculator;

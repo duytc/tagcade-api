@@ -62,7 +62,7 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
             throw new InvalidArgumentException('Cpm rate must be numeric and non-negative');
         }
 
-        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.user');
+        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         $publisher = $userManager->findPublisher($publisherId);
 
         if ($publisher === false) {

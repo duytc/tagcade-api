@@ -31,7 +31,7 @@ services:
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @doctrine.orm.entity_manager
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
-            - @tagcade_user.domain_manager.user
+            - @tagcade_user.domain_manager.publisher
             - @tagcade.service.date_util
 
     tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
