@@ -10,6 +10,15 @@ truncate table report_performance_display_hierarchy_ad_network;
 truncate table report_performance_display_hierarchy_ad_network_site;
 truncate table report_performance_display_hierarchy_ad_network_ad_tag;
 --
+
+set foreign_key_checks = 0;
+
+truncate table report_source_report;
+truncate table report_source_report_record;
+truncate table report_source_report_record_x_tracking_key;
+truncate table report_source_tracking_key;
+truncate table report_source_tracking_term;
+
 -- drop table report_performance_display_platform;
 -- drop table report_performance_display_account;
 -- drop table report_performance_display_site;
