@@ -117,6 +117,12 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdNetwork($adNetwork, $limit, $offset);
     }
 
+    public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagsForAdNetworkFilterPublisher($adNetwork, $limit, $offset);
+    }
+
+
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagsForAdNetworkAndSite($adNetwork, $site, $limit, $offset);
@@ -127,10 +133,8 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdNetworkAndSites($adNetwork, $sites, $limit, $offset);
     }
 
-    public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, PublisherInterface $publisher, $limit = null, $offset = null)
+    public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {
-
-        return $this->repository->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site, $publisher, $limit, $offset);
-
+        return $this->repository->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site, $limit, $offset);
     }
 }

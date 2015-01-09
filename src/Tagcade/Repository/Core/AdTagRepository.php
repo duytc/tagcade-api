@@ -102,6 +102,25 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork,$limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->join('t.adSlot', 'sl')
+            ->join('sl.site', 'st')
+            ->andwhere('st.publisher = :publisher_id')
+            ->setParameter('publisher_id', $adNetwork->getPublisherId(), Type::INTEGER);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
@@ -140,7 +159,7 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
-    public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, PublisherInterface $publisher, $limit = null, $offset = null)
+    public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
             ->andWhere('sl.site = :site_id')
@@ -148,7 +167,7 @@ class AdTagRepository extends SortableRepository implements AdTagRepositoryInter
             ->join('t.adSlot', 'sl')
             ->join('sl.site', 'st')
             ->setParameter('site_id', $site->getId(), Type::INTEGER)
-            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+            ->setParameter('publisher_id', $adNetwork->getPublisherId(), Type::INTEGER)
         ;
 
         if (is_int($limit)) {

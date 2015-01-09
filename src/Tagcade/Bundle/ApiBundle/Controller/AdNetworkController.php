@@ -101,6 +101,37 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $role);
     }
 
+
+    /**
+     * Get all active ad tags belonging to this ad network and publisher
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return AdTagInterface[]
+     *
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getAdtagsActiveAction($id)
+    {
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        if (false === $this->get('security.context')->isGranted('edit', $adNetwork)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
+        }
+
+        return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdNetworkFilterPublisher($adNetwork);
+    }
+
     /**
      * Get all active sites belonging to this ad network
      *
@@ -139,7 +170,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
-     * Get all active ad tags belonging to this ad network and site
+     * Get all active ad tags belonging to this ad network and site filter publisher
      *
      * @ApiDoc(
      *  resource = true,
@@ -171,7 +202,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new AccessDeniedException('You do not have permission to edit this');
         }
 
-        return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdNetworkAndSite($adNetwork, $site);
+        return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site);
     }
 
     /**
