@@ -34,6 +34,19 @@ class StatisticsController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * Get projected bill for the platform with optional date range.
+     *
+     * @return array
+     */
+    public function getPlatformProjectedbillAction()
+    {
+        return $this->get('tagcade.service.statistics')
+            ->getProjectedBilledAmountForAllPublishers();
+    }
+
+    /**
      *
      * Get statistics for a publisher with optional date range.
      *
