@@ -168,7 +168,10 @@ class Statistics implements StatisticsInterface
         /**
          * @var BilledReportGroup $publisherReports
          */
-        $publisherReports    = $this->reportBuilder->getPublisherReport($publisher, $params);
+        $publisherReports = $this->reportBuilder->getPublisherReport($publisher, $params);
+        if (false === $publisherReports) {
+            return new ProjectedBilling();
+        }
 
         $projectedBilledAmount = $this->accountStatistics->getProjectedBilledAmount($publisher);
 

@@ -15,7 +15,7 @@ class ProjectedBilling
      */
     private $projectedBilledAmount;
 
-    function __construct(ReportGroup $reportGroup, $projectedBilledAmount)
+    function __construct(ReportGroup $reportGroup = null, $projectedBilledAmount = 0)
     {
         $this->reportGroup = $reportGroup;
         $this->projectedBilledAmount = round($projectedBilledAmount, 4);
