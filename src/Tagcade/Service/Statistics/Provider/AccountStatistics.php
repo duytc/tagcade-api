@@ -12,6 +12,8 @@ use Tagcade\Domain\DTO\Statistics\MonthBilledAmount;
 use Tagcade\Domain\DTO\Statistics\MonthRevenue;
 use Tagcade\Domain\DTO\Statistics\PublisherBilledAmount;
 use Tagcade\Domain\DTO\Statistics\PublisherRevenue;
+use Tagcade\Domain\DTO\Statistics\Summary\AccountSummary;
+use Tagcade\Domain\DTO\Statistics\Summary\Summary;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
@@ -141,6 +143,40 @@ class AccountStatistics implements AccountStatisticsInterface
         }
 
         return $revenueByMonth;
+    }
+
+    public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)
+    {
+        $this->validateMonthRange($startMonth, $endMonth);
+
+        $interval = new DateInterval('P1M');
+        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
+
+        $summaryByMonth = [];
+
+        foreach($monthRange as $month) {
+            $summaryByMonth[] = $this->getAccountSummaryForMonth($publisher, $month);
+        }
+
+        return $summaryByMonth;
+    }
+
+    protected function getAccountSummaryForMonth(PublisherInterface $publisher, DateTime $month = null)
+    {
+        if (null === $month) {
+            $month = new DateTime('today');
+            $month = $month->modify('-1 month');
+        }
+
+        $this->validateMonth($month);
+
+        $summary = $this->accountReportRepository->getStatsSummaryForPublisher($publisher, $this->dateUtil->getFirstDateInMonth($month), $this->dateUtil->getLastDateInMonth($month));
+
+        return new AccountSummary(
+            $publisher,
+            $month,
+            new Summary($summary['slotOpportunities'], $summary['totalOpportunities'], $summary['totalBilledAmount'], $summary['totalEstRevenue'])
+        );
     }
 
     protected function getAccountRevenueForMonth(PublisherInterface $publisher, DateTime $month = null)

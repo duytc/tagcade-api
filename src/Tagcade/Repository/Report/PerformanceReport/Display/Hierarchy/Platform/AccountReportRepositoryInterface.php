@@ -20,4 +20,6 @@ interface AccountReportRepositoryInterface
     public function getSumBilledAmountForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 
     public function getSumRevenueForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    public function getStatsSummaryForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 }

@@ -60,4 +60,8 @@ interface StatisticsInterface
      * @return array
      */
     public function getAccountRevenueByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
+
+    public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
+
+    public function getPlatformSummaryByMonth(DateTime $startMonth, DateTime $endMonth = null);
 }

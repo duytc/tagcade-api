@@ -14,6 +14,8 @@ use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as Accoun
 
 use Tagcade\Domain\DTO\Statistics\MonthBilledAmount;
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
+use Tagcade\Domain\DTO\Statistics\Summary\PlatformSummary;
+use Tagcade\Domain\DTO\Statistics\Summary\Summary;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportRepositoryInterface;
@@ -222,6 +224,54 @@ class Statistics implements StatisticsInterface
         return $this->accountStatistics->getAccountRevenueByMonth($publisher, $startMonth, $endMonth);
     }
 
+    public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)
+    {
+        return $this->accountStatistics->getAccountSummaryByMonth($publisher, $startMonth, $endMonth);
+    }
+
+    public function getPlatformSummaryByMonth(DateTime $startMonth, DateTime $endMonth = null)
+    {
+        if (null === $endMonth) {
+            $endMonth = new DateTime('today');
+            $endMonth = $endMonth->modify('-1 month');
+        }
+
+        if ($startMonth > $endMonth) {
+            throw new InvalidArgumentException('Start month must not exceed end month');
+        }
+
+        $interval = new DateInterval('P1M');
+        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
+
+        $summaries = [];
+        foreach ($monthRange as $month) {
+            $summaries[] = $this->getPlatformSummaryForMonth($month);
+        }
+
+        return $summaries;
+    }
+
+    protected function getPlatformSummaryForMonth(DateTime $month)
+    {
+        if (null === $month) {
+            $month = new DateTime('today');
+            $month = $month->modify('-1 month');
+        }
+
+        $month = $this->dateUtil->getFirstDateInMonth($month);
+        $thisMonth = $this->dateUtil->getFirstDateInMonth(new DateTime('today'));
+
+        if ($month >= $thisMonth) {
+            throw new InvalidArgumentException('Expect last month or further in the past');
+        }
+
+        $summary = $this->platformReportRepository->getStatsSummaryForDateRange($month, $this->dateUtil->getLastDateInMonth($month));
+        return new PlatformSummary(
+            $month,
+            new Summary($summary['slotOpportunities'], $summary['totalOpportunities'], $summary['totalBilledAmount'], $summary['totalEstRevenue'])
+        );
+    }
+
     protected function getPlatformBilledAmountForMonth(DateTime $month)
     {
         if (null === $month) {
@@ -238,7 +288,6 @@ class Statistics implements StatisticsInterface
 
         return new MonthBilledAmount($month, $this->platformReportRepository->getSumBilledAmountForDateRange($month, $this->dateUtil->getLastDateInMonth($month)));
     }
-
 
     /**
      * @param DateTime $startDate

@@ -135,6 +135,54 @@ class StatisticsController extends FOSRestController
 
     /**
      *
+     * Get summary stats for a publisher with month range (month format YYYY-MM).
+     *
+     * @Rest\Get("/accounts/{publisherId}/summary", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startMonth", requirements="\d{4}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}")
+     *
+     * @param int $publisherId
+     *
+     * @return array
+     */
+    public function getAccountSummaryAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+
+        $startMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('startMonth'));
+        $endMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('endMonth'));
+
+        return $this->get('tagcade.service.statistics')->getAccountSummaryByMonth($publisher, $startMonth, $endMonth);
+    }
+
+    /**
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * Get summary stats for a platform with month range (month format YYYY-MM).
+     *
+     * @Rest\Get("/platform/summary")
+     *
+     * @Rest\QueryParam(name="startMonth", requirements="\d{4}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}")
+     *
+     *
+     * @return array
+     */
+    public function getPlatformSummaryAction()
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+
+        $startMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('startMonth'));
+        $endMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('endMonth'));
+
+        return $this->get('tagcade.service.statistics')->getPlatformSummaryByMonth($startMonth, $endMonth);
+    }
+
+    /**
+     *
      * @Security("has_role('ROLE_ADMIN')")
      *
      * Get platform billed amount with month range (month format YYYY-MM).
