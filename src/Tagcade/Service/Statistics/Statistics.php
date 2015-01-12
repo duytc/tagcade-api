@@ -2,22 +2,27 @@
 
 namespace Tagcade\Service\Statistics;
 
+use DateInterval;
+use DatePeriod;
+use DateTime;
+
 use Tagcade\Domain\DTO\Statistics\DaySummary;
 use Tagcade\Domain\DTO\Statistics\Dashboard\AdminDashboard;
 use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics as PlatformStatisticsDTO;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
 
+use Tagcade\Domain\DTO\Statistics\MonthBilledAmount;
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 use Tagcade\Service\Statistics\Provider\AccountStatisticsInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformTypes;
-use DateTime;
 use Tagcade\Service\Statistics\Provider\SiteStatisticsInterface;
 
 class Statistics implements StatisticsInterface
@@ -36,6 +41,7 @@ class Statistics implements StatisticsInterface
      */
     protected $siteStatistics;
 
+    protected $platformReportRepository;
 
     /**
      * @var DateUtilInterface
@@ -49,6 +55,7 @@ class Statistics implements StatisticsInterface
      * @param ReportBuilderInterface $reportBuilder
      * @param AccountStatisticsInterface $accountStatistics
      * @param SiteStatisticsInterface $siteStatistics
+     * @param PlatformReportRepositoryInterface $platformReportRepository
      * @param DateUtilInterface $dateUtil
      * @param int $numberOfPreviousDays The number of days to include in the report range
      */
@@ -56,6 +63,7 @@ class Statistics implements StatisticsInterface
         ReportBuilderInterface $reportBuilder,
         AccountStatisticsInterface $accountStatistics,
         SiteStatisticsInterface $siteStatistics,
+        PlatformReportRepositoryInterface $platformReportRepository,
         DateUtilInterface $dateUtil,
         $numberOfPreviousDays
     )
@@ -67,6 +75,7 @@ class Statistics implements StatisticsInterface
         $this->reportBuilder = $reportBuilder;
         $this->accountStatistics = $accountStatistics;
         $this->siteStatistics = $siteStatistics;
+        $this->platformReportRepository =$platformReportRepository;
         $this->dateUtil = $dateUtil;
 
         $this->numberOfPreviousDays = $numberOfPreviousDays;
@@ -176,6 +185,58 @@ class Statistics implements StatisticsInterface
         $projectedBilledAmount = $this->accountStatistics->getProjectedBilledAmount($publisher);
 
         return new ProjectedBilling($publisherReports, $projectedBilledAmount);
+    }
+
+    public function getAccountBilledAmountByMonth(
+        PublisherInterface $publisher,
+        DateTime $startMonth,
+        DateTime $endMonth = null
+    ) {
+        return $this->accountStatistics->getAccountBilledAmountByMonth($publisher, $startMonth, $endMonth);
+    }
+
+    public function getPlatformBilledAmountByMonth(DateTime $startMonth, DateTime $endMonth = null)
+    {
+        if (null === $endMonth) {
+            $endMonth = new DateTime('today');
+            $endMonth = $endMonth->modify('-1 month');
+        }
+
+        if ($startMonth > $endMonth) {
+            throw new InvalidArgumentException('Start month must not exceed end month');
+        }
+
+        $interval = new DateInterval('P1M');
+        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
+
+        $billedAmount = [];
+        foreach ($monthRange as $month) {
+            $billedAmount[] = $this->getPlatformBilledAmountForMonth($month);
+        }
+
+        return $billedAmount;
+    }
+
+    public function getAccountRevenueByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)
+    {
+        return $this->accountStatistics->getAccountRevenueByMonth($publisher, $startMonth, $endMonth);
+    }
+
+    protected function getPlatformBilledAmountForMonth(DateTime $month)
+    {
+        if (null === $month) {
+            $month = new DateTime('today');
+            $month = $month->modify('-1 month');
+        }
+
+        $month = $this->dateUtil->getFirstDateInMonth($month);
+        $thisMonth = $this->dateUtil->getFirstDateInMonth(new DateTime('today'));
+
+        if ($month >= $thisMonth) {
+            throw new InvalidArgumentException('Expect last month or further in the past');
+        }
+
+        return new MonthBilledAmount($month, $this->platformReportRepository->getSumBilledAmountForDateRange($month, $this->dateUtil->getLastDateInMonth($month)));
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Statistics\Provider;
 
+use DateTime;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -37,4 +38,14 @@ interface AccountStatisticsInterface
      */
     public function getAllPublishersProjectedBilledAmount();
 
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startMonth
+     * @param DateTime $endMonth
+     * @return array
+     */
+    public function getAccountBilledAmountByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
+
+
+    public function getAccountRevenueByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
 }
