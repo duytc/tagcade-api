@@ -6,8 +6,8 @@ use Tagcade\Model\Report\SourceReport\Report as ReportModel;
 
 class Report
 {
-    private $report;
-    private $records;
+    protected $report;
+    protected $records;
 
     public function __construct(ReportModel $report, array $records)
     {

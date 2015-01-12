@@ -3,12 +3,12 @@
 namespace Tagcade\Service\Report\SourceReport;
 
 use DateTime;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Service\DateUtil;
 use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Domain\DTO\Report\SourceReport\Report as ReportDTO;
+use Tagcade\Domain\DTO\Report\SourceReport\ReportCollection;
 
 class ReportSelector implements ReportSelectorInterface
 {
@@ -59,7 +59,10 @@ class ReportSelector implements ReportSelectorInterface
             $reportSubset[] = new ReportDTO($report, $report->getRecords()->slice($rowOffset, $rowLimit));
         }
 
-        return $reportSubset;
-    }
+        $reportGrouper = new ReportGrouper($reports);
 
+        $reportCollection = new ReportCollection($startDate, $endDate, $site->getId(), $reportSubset, $reportGrouper->getGroupedReport());
+
+        return $reportCollection;
+    }
 } 
