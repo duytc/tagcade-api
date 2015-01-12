@@ -95,7 +95,7 @@ abstract class AbstractGrouper implements GrouperInterface
     /**
      * @param ReportDataInterface[] $reports
      */
-    protected  function groupReports(array $reports)
+    protected function groupReports(array $reports)
     {
         foreach($reports as $report) {
             $this->doGroupReport($report);

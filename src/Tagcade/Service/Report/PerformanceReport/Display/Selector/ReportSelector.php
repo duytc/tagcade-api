@@ -39,9 +39,9 @@ class ReportSelector implements ReportSelectorInterface
      * @param SelectorInterface[] $selectors
      * @param DateUtilInterface $dateUtil
      * @param ReportCreatorInterface $reportCreator
-     * @param ReportGrouperInterface $reportAggregator
+     * @param ReportGrouperInterface $reportGrouper
      */
-    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportCreatorInterface $reportCreator, ReportGrouperInterface $reportAggregator)
+    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportCreatorInterface $reportCreator, ReportGrouperInterface $reportGrouper)
     {
         foreach($selectors as $selector) {
             $this->addSelector($selector);
@@ -49,7 +49,7 @@ class ReportSelector implements ReportSelectorInterface
 
         $this->reportCreator = $reportCreator;
         $this->dateUtil = $dateUtil;
-        $this->reportGrouper = $reportAggregator;
+        $this->reportGrouper = $reportGrouper;
     }
 
     public function addSelector(SelectorInterface $selector)
