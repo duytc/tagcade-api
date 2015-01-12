@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -69,6 +70,29 @@ class PerformanceReportController extends FOSRestController
     {
         return $this->getResult(
             $this->getReportBuilder()->getAllSitesReport($this->getParams())
+        );
+    }
+
+    /**
+     * Get stats for current publisher
+     * @Rest\Get("/accounts")
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @return array
+     */
+    public function getAccountsAction()
+    {
+        $publisher = $this->getUser();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new InvalidArgumentException('Expect publisher role');
+        }
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams())
         );
     }
 
