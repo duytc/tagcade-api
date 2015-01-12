@@ -190,7 +190,7 @@ class StatisticsController extends FOSRestController
      * @Rest\Get("/platform/billedAmount")
      *
      * @Rest\QueryParam(name="startMonth", requirements="\d{4}-\d{2}", nullable=false)
-     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}")
+     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}", nullable=true)
      *
      *
      * @return array
