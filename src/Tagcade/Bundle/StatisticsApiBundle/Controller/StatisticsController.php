@@ -87,54 +87,6 @@ class StatisticsController extends FOSRestController
 
     /**
      *
-     * Get billed amount for a publisher with month range (month format YYYY-MM).
-     *
-     * @Rest\Get("/accounts/{publisherId}/billedAmount", requirements={"publisherId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startMonth", requirements="\d{4}-\d{2}", nullable=false)
-     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}")
-     *
-     * @param int $publisherId
-     *
-     * @return array
-     */
-    public function getAccountBillAmountAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-
-        $startMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('startMonth'));
-        $endMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('endMonth'));
-
-        return $this->get('tagcade.service.statistics')->getAccountBilledAmountByMonth($publisher, $startMonth, $endMonth);
-    }
-
-    /**
-     *
-     * Get est. revenue for a publisher with month range (month format YYYY-MM).
-     *
-     * @Rest\Get("/accounts/{publisherId}/revenue", requirements={"publisherId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startMonth", requirements="\d{4}-\d{2}", nullable=false)
-     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}")
-     *
-     * @param int $publisherId
-     *
-     * @return array
-     */
-    public function getAccountRevenueAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-
-        $startMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('startMonth'));
-        $endMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('endMonth'));
-
-        return $this->get('tagcade.service.statistics')->getAccountRevenueByMonth($publisher, $startMonth, $endMonth);
-    }
-
-    /**
-     *
      * Get summary stats for a publisher with month range (month format YYYY-MM).
      *
      * @Rest\Get("/accounts/{publisherId}/summary", requirements={"publisherId" = "\d+"})
@@ -179,30 +131,6 @@ class StatisticsController extends FOSRestController
         $endMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('endMonth'));
 
         return $this->get('tagcade.service.statistics')->getPlatformSummaryByMonth($startMonth, $endMonth);
-    }
-
-    /**
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * Get platform billed amount with month range (month format YYYY-MM).
-     *
-     * @Rest\Get("/platform/billedAmount")
-     *
-     * @Rest\QueryParam(name="startMonth", requirements="\d{4}-\d{2}", nullable=false)
-     * @Rest\QueryParam(name="endMonth", requirements="\d{4}-\d{2}", nullable=true)
-     *
-     *
-     * @return array
-     */
-    public function getPlatformBillAmountAction()
-    {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-
-        $startMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('startMonth'));
-        $endMonth = DateTime::createFromFormat('Y-m', $paramFetcher->get('endMonth'));
-
-        return $this->get('tagcade.service.statistics')->getPlatformBilledAmountByMonth($startMonth, $endMonth);
     }
 
     /**

@@ -38,28 +38,6 @@ interface StatisticsInterface
      */
     public function getProjectedBilledAmountForAllPublishers();
 
-    /**
-     * @param PublisherInterface $publisher
-     * @param DateTime $startMonth
-     * @param DateTime $endMonth
-     * @return array
-     */
-    public function getAccountBilledAmountByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
-
-    /**
-     * @param DateTime $startMonth
-     * @param DateTime $endMonth
-     * @return array
-     */
-    public function getPlatformBilledAmountByMonth(DateTime $startMonth, DateTime $endMonth = null);
-
-    /**
-     * @param PublisherInterface $publisher
-     * @param DateTime $startMonth
-     * @param DateTime $endMonth
-     * @return array
-     */
-    public function getAccountRevenueByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
 
     public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
 

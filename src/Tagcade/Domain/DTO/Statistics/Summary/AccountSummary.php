@@ -25,7 +25,7 @@ class AccountSummary
     function __construct(PublisherInterface $publisher, DateTime $month, Summary $summary)
     {
         $this->publisher = $publisher;
-        $this->month = $month;
+        $this->month = $month->format('Y-m');
         $this->summary = $summary;
     }
 

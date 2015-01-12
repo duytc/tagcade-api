@@ -189,41 +189,6 @@ class Statistics implements StatisticsInterface
         return new ProjectedBilling($publisherReports, $projectedBilledAmount);
     }
 
-    public function getAccountBilledAmountByMonth(
-        PublisherInterface $publisher,
-        DateTime $startMonth,
-        DateTime $endMonth = null
-    ) {
-        return $this->accountStatistics->getAccountBilledAmountByMonth($publisher, $startMonth, $endMonth);
-    }
-
-    public function getPlatformBilledAmountByMonth(DateTime $startMonth, DateTime $endMonth = null)
-    {
-        if (null === $endMonth) {
-            $endMonth = new DateTime('today');
-            $endMonth = $endMonth->modify('-1 month');
-        }
-
-        if ($startMonth > $endMonth) {
-            throw new InvalidArgumentException('Start month must not exceed end month');
-        }
-
-        $interval = new DateInterval('P1M');
-        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
-
-        $billedAmount = [];
-        foreach ($monthRange as $month) {
-            $billedAmount[] = $this->getPlatformBilledAmountForMonth($month);
-        }
-
-        return $billedAmount;
-    }
-
-    public function getAccountRevenueByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)
-    {
-        return $this->accountStatistics->getAccountRevenueByMonth($publisher, $startMonth, $endMonth);
-    }
-
     public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)
     {
         return $this->accountStatistics->getAccountSummaryByMonth($publisher, $startMonth, $endMonth);
@@ -270,23 +235,6 @@ class Statistics implements StatisticsInterface
             $month,
             new Summary($summary['slotOpportunities'], $summary['totalOpportunities'], $summary['totalBilledAmount'], $summary['totalEstRevenue'])
         );
-    }
-
-    protected function getPlatformBilledAmountForMonth(DateTime $month)
-    {
-        if (null === $month) {
-            $month = new DateTime('today');
-            $month = $month->modify('-1 month');
-        }
-
-        $month = $this->dateUtil->getFirstDateInMonth($month);
-        $thisMonth = $this->dateUtil->getFirstDateInMonth(new DateTime('today'));
-
-        if ($month >= $thisMonth) {
-            throw new InvalidArgumentException('Expect last month or further in the past');
-        }
-
-        return new MonthBilledAmount($month, $this->platformReportRepository->getSumBilledAmountForDateRange($month, $this->dateUtil->getLastDateInMonth($month)));
     }
 
     /**

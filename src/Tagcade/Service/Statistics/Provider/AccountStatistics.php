@@ -99,52 +99,6 @@ class AccountStatistics implements AccountStatisticsInterface
         return $sumProjectedBilledAmount;
     }
 
-    /**
-     * @param PublisherInterface $publisher
-     * @param DateTime $startMonth
-     * @param DateTime $endMonth
-     * @return array
-     */
-    public function getAccountBilledAmountByMonth(
-        PublisherInterface $publisher,
-        DateTime $startMonth,
-        DateTime $endMonth = null
-    ) {
-
-        $this->validateMonthRange($startMonth, $endMonth);
-
-        $interval = new DateInterval('P1M');
-        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
-
-        $billedAmounts = [];
-
-        foreach($monthRange as $month) {
-            $billedAmounts[] = $this->getAccountBilledAmountForMonth($publisher, $month);
-        }
-
-        return $billedAmounts;
-    }
-
-    public function getAccountRevenueByMonth(
-        PublisherInterface $publisher,
-        DateTime $startMonth,
-        DateTime $endMonth = null
-    ) {
-
-        $this->validateMonthRange($startMonth, $endMonth);
-
-        $interval = new DateInterval('P1M');
-        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
-
-        $revenueByMonth = [];
-
-        foreach($monthRange as $month) {
-            $revenueByMonth[] = $this->getAccountRevenueForMonth($publisher, $month);
-        }
-
-        return $revenueByMonth;
-    }
-
     public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)
     {
         $this->validateMonthRange($startMonth, $endMonth);
@@ -179,33 +133,7 @@ class AccountStatistics implements AccountStatisticsInterface
         );
     }
 
-    protected function getAccountRevenueForMonth(PublisherInterface $publisher, DateTime $month = null)
-    {
-        if (null === $month) {
-            $month = new DateTime('today');
-            $month = $month->modify('-1 month');
-        }
 
-        $this->validateMonth($month);
-
-        $revenue = $this->accountReportRepository->getSumRevenueForPublisher($publisher, $this->dateUtil->getFirstDateInMonth($month), $this->dateUtil->getLastDateInMonth($month));
-
-        return new PublisherRevenue($publisher, new MonthRevenue($month, $revenue));
-    }
-
-    protected function getAccountBilledAmountForMonth(PublisherInterface $publisher, DateTime $month = null)
-    {
-        if (null === $month) {
-            $month = new DateTime('today');
-            $month = $month->modify('-1 month');
-        }
-
-        $this->validateMonth($month);
-
-        $billedAmount = $this->accountReportRepository->getSumBilledAmountForPublisher($publisher, $this->dateUtil->getFirstDateInMonth($month), $this->dateUtil->getLastDateInMonth($month));
-
-        return new PublisherBilledAmount($publisher, new MonthBilledAmount($month, $billedAmount));
-    }
 
     protected function validateMonth(DateTime $month)
     {

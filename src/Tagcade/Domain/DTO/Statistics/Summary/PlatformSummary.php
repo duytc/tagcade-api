@@ -17,7 +17,7 @@ class PlatformSummary {
 
     function __construct(DateTime $month, Summary $summary)
     {
-        $this->month = $month;
+        $this->month = $month->format('Y-m');
         $this->summary = $summary;
     }
 
