@@ -233,7 +233,7 @@ class Statistics implements StatisticsInterface
         $summary = $this->platformReportRepository->getStatsSummaryForDateRange($month, $this->dateUtil->getLastDateInMonth($month));
         return new PlatformSummary(
             $month,
-            new Summary($summary['slotOpportunities'], $summary['totalOpportunities'], $summary['totalBilledAmount'], $summary['totalEstRevenue'])
+            new Summary((int)$summary['slotOpportunities'], (int)$summary['totalOpportunities'], (int)$summary['impressions'], (float)$summary['totalBilledAmount'], (float)$summary['totalEstRevenue'])
         );
     }
 

@@ -9,11 +9,13 @@ class Summary {
     private $totalOpportunities;
     private $billedAmount;
     private $revenue;
+    private $impressions;
 
-    function __construct($totalSlotOpportunities, $totalOpportunities, $billedAmount, $revenue)
+    function __construct($totalSlotOpportunities, $totalOpportunities, $impressions, $billedAmount, $revenue)
     {
         $this->totalSlotOpportunities = $totalSlotOpportunities;
         $this->totalOpportunities = $totalOpportunities;
+        $this->impressions = $impressions;
         $this->billedAmount = $billedAmount;
         $this->revenue = $revenue;
     }
@@ -33,6 +35,15 @@ class Summary {
     {
         return $this->totalOpportunities;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getImpressions()
+    {
+        return $this->impressions;
+    }
+
 
     /**
      * @return mixed
