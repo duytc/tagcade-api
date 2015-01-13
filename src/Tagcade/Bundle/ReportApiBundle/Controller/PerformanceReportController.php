@@ -74,29 +74,6 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * Get stats for current publisher
-     * @Rest\Get("/accounts")
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @return array
-     */
-    public function getAccountsAction()
-    {
-        $publisher = $this->getUser();
-
-        if (!$publisher instanceof PublisherInterface) {
-            throw new InvalidArgumentException('Expect publisher role');
-        }
-
-        return $this->getResult(
-            $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams())
-        );
-    }
-
-    /**
      * @Rest\Get("/accounts/{publisherId}", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
