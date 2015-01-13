@@ -15,8 +15,17 @@ class UserFormType extends AbstractType
     {
         $builder
             ->add('username')
-            ->add('email')
             ->add('plainPassword')
+            ->add('firstName')
+            ->add('lastName')
+            ->add('company')
+            ->add('email')
+            ->add('phone')
+            ->add('city')
+            ->add('state')
+            ->add('address')
+            ->add('postalCode')
+            ->add('country')
             ->add('enabled')
 
             // custom fields
