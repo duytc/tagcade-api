@@ -87,18 +87,30 @@ class TagCache implements TagCacheInterface
     {
         $data = [];
 
-        $adTags = $adSlot->getAdTags();
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adSlot->getAdTags()->toArray();
 
         if (empty($adTags)) {
             return $data;
         }
 
-        $data = array_map(function(AdTagInterface $adTag) {
-            return [
+        usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
+            if ($a->getPosition() == $b->getPosition()) {
+                return 0;
+            }
+            return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+        });
+
+        foreach($adTags as $adTag) {
+            if (!$adTag->isActive()) {
+                continue;
+            }
+
+            $data[] = [
                 'id'  => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
             ];
-        }, $adTags->toArray());
+        }
 
         return $data;
     }
