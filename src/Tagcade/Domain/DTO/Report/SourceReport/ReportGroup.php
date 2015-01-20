@@ -109,10 +109,12 @@ class ReportGroup
      */
     protected $averagePageViews;
 
+    protected $viewsPerVisit;
+
     public function __construct(
         $displayOpportunities, $displayImpressions, $displayFillRate, $displayClicks, $displayCTR, $displayIPV, $videoPlayerReady,
         $videoAdPlays, $videoAdImpressions, $videoAdCompletions, $videoAdCompletionRate, $videoIPV, $videoAdClicks, $videoStarts,
-        $videoEnds, $visits, $pageViews, $qtos, $qtosPercentage, $averageVisits, $averagePageViews) {
+        $videoEnds, $visits, $pageViews, $qtos, $qtosPercentage, $averageVisits, $averagePageViews, $viewsPerVisit) {
 
         $this->displayOpportunities = $displayOpportunities;
         $this->displayImpressions = $displayImpressions;
@@ -135,6 +137,7 @@ class ReportGroup
         $this->qtosPercentage = $qtosPercentage;
         $this->averageVisits = $averageVisits;
         $this->averagePageViews = $averagePageViews;
+        $this->viewsPerVisit = $viewsPerVisit;
     }
 
     /**
@@ -304,4 +307,14 @@ class ReportGroup
     {
         return $this->averagePageViews;
     }
+
+    /**
+     * @return float
+     */
+    public function getViewsPerVisit()
+    {
+        return $this->viewsPerVisit;
+    }
+
+
 }

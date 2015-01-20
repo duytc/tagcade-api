@@ -149,7 +149,8 @@ class ReportGrouper
             $this->qtos,
             $this->qtosPercentage,
             $this->averageVisits,
-            $this->averagePageViews
+            $this->averagePageViews,
+            $this->getRatio($this->pageViews, $this->visits)
         );
     }
 
