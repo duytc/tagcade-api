@@ -133,6 +133,20 @@ class StatisticsController extends FOSRestController
         return $this->get('tagcade.service.statistics')->getPlatformSummaryByMonth($startMonth, $endMonth);
     }
 
+
+    /**
+     * @Rest\Get("/sites/{siteId}/projectedbill", requirements={"siteId" = "\d+"})
+     *
+     * @param $siteId
+     * @return string
+     */
+    public function getSiteProjectedBillAction($siteId)
+    {
+        $site = $this->getSite($siteId);
+
+        return $this->get('tagcade.service.statistics.site')->getProjectedBilledAmount($site);
+    }
+
     /**
      * @param int $publisherId
      * @return \Tagcade\Model\User\Role\PublisherInterface
@@ -151,4 +165,26 @@ class StatisticsController extends FOSRestController
 
         return $publisher;
     }
+
+    /**
+     * @param int $siteId
+     * @return \Tagcade\Model\Core\SiteInterface
+     */
+    protected function getSite($siteId)
+    {
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+        // check voters
+        if (false === $this->get('security.context')->isGranted('view', $site)) {
+            throw new AccessDeniedException(sprintf('You do not have permission to view this'));
+        }
+
+        return $site;
+    }
+
+
 }

@@ -38,4 +38,5 @@ services:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator
         arguments:
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.site
             - @tagcade.service.date_util

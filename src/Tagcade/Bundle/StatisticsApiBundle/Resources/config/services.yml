@@ -13,6 +13,7 @@ services:
         class: Tagcade\Service\Statistics\Provider\SiteStatistics
         arguments:
             - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.billing.projected_billing_calculator
             - @tagcade.domain_manager.site
 
     ## statistics provider service

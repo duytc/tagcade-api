@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface ProjectedBillingCalculatorInterface
@@ -14,5 +15,12 @@ interface ProjectedBillingCalculatorInterface
      * @return float|bool projected billed amount or false on failure
      */
     public function calculateProjectedBilledAmountForPublisher(PublisherInterface $publisher);
+
+    /**
+     * This will do calculation of projected billed amount for site in current month
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function calculateProjectedBilledAmountForSite(SiteInterface $site);
 
 }
