@@ -6,6 +6,7 @@ use DateTime;
 use Tagcade\Domain\DTO\Statistics\Dashboard\AdminDashboard;
 use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -42,4 +43,7 @@ interface StatisticsInterface
     public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
 
     public function getPlatformSummaryByMonth(DateTime $startMonth, DateTime $endMonth = null);
+
+    public function getProjectedBilledAmountForSite(SiteInterface $site);
+
 }

@@ -17,6 +17,7 @@ use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
 use Tagcade\Domain\DTO\Statistics\Summary\PlatformSummary;
 use Tagcade\Domain\DTO\Statistics\Summary\Summary;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
@@ -187,6 +188,23 @@ class Statistics implements StatisticsInterface
         $projectedBilledAmount = $this->accountStatistics->getProjectedBilledAmount($publisher);
 
         return new ProjectedBilling($publisherReports, $projectedBilledAmount);
+    }
+
+    public function getProjectedBilledAmountForSite(SiteInterface $site)
+    {
+        $params = $this->_getDashboardParams($this->dateUtil->getFirstDateInMonth(), new DateTime('yesterday'));
+
+        /**
+         * @var BilledReportGroup $siteReports
+         */
+        $siteReports = $this->reportBuilder->getSiteReport($site, $params);
+        if (false === $siteReports) {
+            return new ProjectedBilling();
+        }
+
+        $projectedBilledAmount = $this->siteStatistics->getProjectedBilledAmount($site);
+
+        return new ProjectedBilling($siteReports, $projectedBilledAmount);
     }
 
     public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null)

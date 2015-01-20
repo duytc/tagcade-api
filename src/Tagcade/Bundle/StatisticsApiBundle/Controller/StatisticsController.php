@@ -144,7 +144,7 @@ class StatisticsController extends FOSRestController
     {
         $site = $this->getSite($siteId);
 
-        return $this->get('tagcade.service.statistics.site')->getProjectedBilledAmount($site);
+        return $this->get('tagcade.service.statistics')->getProjectedBilledAmountForSite($site);
     }
 
     /**
