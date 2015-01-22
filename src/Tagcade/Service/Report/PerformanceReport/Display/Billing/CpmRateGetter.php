@@ -91,8 +91,8 @@ class CpmRateGetter implements CpmRateGetterInterface
 
     public function getTodayCpmRateForPublisher(PublisherInterface $publisher)
     {
-        if (null !== $publisher->getUser()->getBillingRate()) {
-            return new CpmRate($publisher->getUser()->getBillingRate(), true);
+        if (null !== $publisher->getBillingRate()) {
+            return new CpmRate($publisher->getBillingRate(), true);
         }
 
         return new CpmRate($this->getThresholdRateForPublisher($publisher, new DateTime('yesterday')));
