@@ -89,13 +89,23 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->defaultCpmRate;
     }
 
-    public function getTodayCpmRateForPublisher(PublisherInterface $publisher)
+    public function getTodayCpmRateForPublisher(PublisherInterface $publisher, $todaySlotOpportunities = 0)
     {
         if (null !== $publisher->getBillingRate()) {
             return new CpmRate($publisher->getBillingRate(), true);
         }
 
-        return new CpmRate($this->getThresholdRateForPublisher($publisher, new DateTime('yesterday')));
+        $date = new DateTime('yesterday');
+        $currentSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities(
+            $publisher,
+            $this->dateUtil->getFirstDateInMonth($date),
+            $this->dateUtil->getLastDateInMonth($date)
+        );
+
+        $totalSlotOpportunities = $currentSlotOpportunities + $todaySlotOpportunities;
+        $cpmRate = $this->getDefaultCpmRate($totalSlotOpportunities);
+
+        return new CpmRate($cpmRate);
     }
 
 

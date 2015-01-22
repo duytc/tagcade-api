@@ -23,8 +23,9 @@ interface CpmRateGetterInterface
 
     /**
      * @param PublisherInterface $publisher
+     * @param int $slotOpportunities - new additional slot opportunities
      * @return CpmRate
      */
-    public function getTodayCpmRateForPublisher(PublisherInterface $publisher);
+    public function getTodayCpmRateForPublisher(PublisherInterface $publisher, $slotOpportunities = 0);
 
 }

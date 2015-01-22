@@ -10,9 +10,12 @@ use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\Behaviors\CalculateBilledAmountTrait;
 
 class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 {
+    use CalculateBilledAmountTrait;
+
     /**
      * @var AccountReportRepositoryInterface
      */
@@ -25,44 +28,78 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
      * @var SiteRepositoryInterface
      */
     protected $siteReportRepository;
+    /**
+     * @var CpmRateGetterInterface
+     */
+    private $cpmRateGetter;
 
 
-    function __construct(AccountReportRepositoryInterface $accountReportRepository, SiteReportRepositoryInterface $siteReportRepository, DateUtilInterface $dateUtil)
+    function __construct(AccountReportRepositoryInterface $accountReportRepository, SiteReportRepositoryInterface $siteReportRepository, CpmRateGetterInterface $cpmRateGetter, DateUtilInterface $dateUtil)
     {
         $this->accountReportRepository = $accountReportRepository;
         $this->siteReportRepository = $siteReportRepository;
         $this->dateUtil = $dateUtil;
+        $this->cpmRateGetter = $cpmRateGetter;
     }
 
     public function calculateProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
-        $billedAmountUpToYesterday = $this->accountReportRepository->getSumBilledAmountForPublisher(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth(),
-            new DateTime('yesterday')
-        );
+        $projectedSlotOpportunities = $this->calculatePublisherProjectedSlotOpportunities($publisher);
 
-        $dayAverageBilledAmount = $billedAmountUpToYesterday / $this->dateUtil->getNumberOfDatesPassedInMonth();
-        $projectedBilledAmount = $billedAmountUpToYesterday +
-            ($dayAverageBilledAmount * ($this->dateUtil->getNumberOfRemainingDatesInMonth() + 1)); // +1 to include today
+        $publisherCpmRate = null === $publisher->getBillingRate() ? $this->cpmRateGetter->getDefaultCpmRate($projectedSlotOpportunities) : $publisher->getBillingRate();
 
-        return $projectedBilledAmount;
-    }
+        return $this->calculateBilledAmount($publisherCpmRate, $projectedSlotOpportunities);
+;    }
 
     public function calculateProjectedBilledAmountForSite(SiteInterface $site)
     {
-        $billedAmountUpToYesterday = $this->siteReportRepository->getSumBilledAmountForSite(
+        $siteProjectedSlotOpportunities = $this->calculateSiteProjectedSlotOpportunities($site);
+
+        $publisher = $site->getPublisher();
+
+        $publisherCpmRate = null === $publisher->getBillingRate() ? $this->cpmRateGetter->getDefaultCpmRate($siteProjectedSlotOpportunities) : $publisher->getBillingRate();
+
+        return $this->calculateBilledAmount($publisherCpmRate, $siteProjectedSlotOpportunities);
+    }
+
+    protected function calculateSiteProjectedSlotOpportunities(SiteInterface $site)
+    {
+        // Step 1. Get SlotOpportunities up to today
+        $date = new DateTime('yesterday');
+        $currentSlotOpportunities = (int)$this->siteReportRepository->getSumSlotOpportunities(
             $site,
-            $this->dateUtil->getFirstDateInMonth(),
-            new DateTime('yesterday')
+            $this->dateUtil->getFirstDateInMonth($date),
+            $this->dateUtil->getLastDateInMonth($date, true)
         );
 
-        $dayAverageBilledAmount = $billedAmountUpToYesterday / $this->dateUtil->getNumberOfDatesPassedInMonth();
-        $projectedBilledAmount = $billedAmountUpToYesterday +
-            ($dayAverageBilledAmount * ($this->dateUtil->getNumberOfRemainingDatesInMonth() + 1)); // +1 to include today
-
-        return $projectedBilledAmount;
+        return $this->calculateProjectedSlotOpportunities($currentSlotOpportunities);
     }
+
+    protected function calculatePublisherProjectedSlotOpportunities(PublisherInterface $publisher)
+    {
+        // Step 1. Get SlotOpportunities up to today
+        $date = new DateTime('yesterday');
+        $currentSlotOpportunities = (int)$this->accountReportRepository->getSumSlotOpportunities(
+            $publisher,
+            $this->dateUtil->getFirstDateInMonth($date),
+            $this->dateUtil->getLastDateInMonth($date, true)
+        );
+
+        return $this->calculateProjectedSlotOpportunities($currentSlotOpportunities);
+    }
+
+    protected function calculateProjectedSlotOpportunities($currentSlotOpportunities)
+    {
+        // Step 1. Calculate daily average
+        $dayAverageSlotOpportunities = $currentSlotOpportunities / $this->dateUtil->getNumberOfDatesPassedInMonth();
+
+        // Step 2. Projected SlotOpportunities equals to sum of estimated slotOpportunities and current SlotOpportunities
+        $projectedSlotOpportunities = $currentSlotOpportunities +
+            ($dayAverageSlotOpportunities * ($this->dateUtil->getNumberOfRemainingDatesInMonth() + 1)); // +1 to include today
+
+        return $projectedSlotOpportunities;
+    }
+
 
 
 }

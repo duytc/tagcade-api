@@ -39,4 +39,5 @@ services:
         arguments:
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.site
+            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
             - @tagcade.service.date_util

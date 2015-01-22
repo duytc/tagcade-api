@@ -3,10 +3,13 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Billing\Behaviors\CalculateBilledAmountTrait;
 
 class BillingCalculator implements BillingCalculatorInterface
 {
+    use CalculateBilledAmountTrait;
     /**
      * @var CpmRateGetterInterface
      */
@@ -26,20 +29,5 @@ class BillingCalculator implements BillingCalculatorInterface
         $cpmRate = $this->cpmRateGetter->getTodayCpmRateForPublisher($publisher);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $slotOpportunities));
-    }
-
-
-    /**
-     * @param float $cpmRate
-     * @param int $slotOpportunities
-     * @return float
-     */
-    public function calculateBilledAmount($cpmRate, $slotOpportunities)
-    {
-        if (!is_numeric($cpmRate)) {
-            throw new InvalidArgumentException('cpmRate must be a number');
-        }
-
-        return (float) ($cpmRate * $slotOpportunities) / 1000;
     }
 }

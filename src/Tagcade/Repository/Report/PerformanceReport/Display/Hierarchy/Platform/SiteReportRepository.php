@@ -41,4 +41,26 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
 
         return $result;
     }
+
+    public function getSumSlotOpportunities(SiteInterface $site, DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $result = $qb
+            ->select('SUM(r.slotOpportunities) as total')
+            ->where('r.site = :site')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('site', $site)
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+
+        if (null === $result) {
+            return 0;
+        }
+
+        return $result;
+    }
 }
