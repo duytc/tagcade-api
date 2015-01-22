@@ -19,6 +19,7 @@ class AdTag implements AdTagInterface
     protected $html;
     protected $position;
     protected $active;
+    protected $frequencyCap;
 
     /**
      * @param string $name
@@ -168,4 +169,25 @@ class AdTag implements AdTagInterface
         $this->active = (Boolean) $boolean;
         return $this;
     }
+
+    /**
+     * @param int $frequencyCap
+     * @return $this
+     */
+    public function setFrequencyCap($frequencyCap)
+    {
+        $this->frequencyCap = (int)$frequencyCap;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFrequencyCap()
+    {
+        return $this->frequencyCap;
+    }
+
+
 }

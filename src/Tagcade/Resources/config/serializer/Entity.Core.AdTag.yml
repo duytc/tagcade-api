@@ -19,6 +19,9 @@ Tagcade\Entity\Core\AdTag:
         position:
             expose: true
             groups: [adtag.detail]
+        frequencyCap:
+            expose: true
+            groups: [adtag.detail]
         active:
             expose: true
             groups: [adtag.detail]

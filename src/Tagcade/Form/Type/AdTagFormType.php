@@ -53,6 +53,7 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('html')
             ->add('position')
+            ->add('frequencyCap')
             ->add('active')
         ;
     }

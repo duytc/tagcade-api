@@ -18,6 +18,7 @@ class AdTag extends AdTagModel
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;
+    protected $frequencyCap;
 
     public function __construct()
     {}

@@ -36,7 +36,7 @@ class TagCache implements TagCacheInterface
 
         // create the new version of the cache first
         $this->cache->setNamespaceVersion($newVersion);
-        $this->cache->save(static::CACHE_KEY_AD_SLOT, $this->getAdSlotCacheData($adSlot));
+        $this->cache->save(static::CACHE_KEY_AD_SLOT, $this->createAdSlotCacheData($adSlot));
 
         // delete the old version of the cache
         $this->cache->setNamespaceVersion($oldVersion);
@@ -83,7 +83,7 @@ class TagCache implements TagCacheInterface
         return $this;
     }
 
-    protected function getAdSlotCacheData(AdSlotInterface $adSlot)
+    protected function createAdSlotCacheData(AdSlotInterface $adSlot)
     {
         $data = [];
 
@@ -106,10 +106,16 @@ class TagCache implements TagCacheInterface
                 continue;
             }
 
-            $data[] = [
+            $dataItem = [
                 'id'  => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
             ];
+
+            if (null !== $adTag->getFrequencyCap()) {
+                $dataItem['cap'] = $adTag->getFrequencyCap();
+            }
+
+            $data[] = $dataItem;
         }
 
         return $data;

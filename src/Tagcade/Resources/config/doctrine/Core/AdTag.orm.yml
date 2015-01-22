@@ -38,6 +38,10 @@ Tagcade\Entity\Core\AdTag:
         deletedAt:
             type: date
             nullable: true
+
+        frequencyCap:
+            type: integer
+            nullable: true
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlot

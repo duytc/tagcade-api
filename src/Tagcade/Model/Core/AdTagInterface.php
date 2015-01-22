@@ -81,4 +81,15 @@ interface AdTagInterface extends ModelInterface
      * @return $this
      */
     public function setActive($boolean);
+
+    /**
+     * @param int $frequencyCap
+     * @return $this
+     */
+    public function setFrequencyCap($frequencyCap);
+
+    /**
+     * @return int|null
+     */
+    public function getFrequencyCap();
 }
