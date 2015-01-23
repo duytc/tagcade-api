@@ -1,5 +1,8 @@
 Tagcade\Model\Report\SourceReport\Record:
     exclusion_policy: ALL
+    virtual_properties:
+        getViewsPerVisit:
+            type: float
     properties:
         trackingKeys:
             expose: false

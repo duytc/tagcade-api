@@ -536,6 +536,11 @@ class Record
         return array_keys($this->embeddedTrackingKeys);
     }
 
+    public function getViewsPerVisit()
+    {
+        return $this->getRatio($this->getPageViews(), $this->getVisits());
+    }
+
     public function setCalculatedFields()
     {
         $this->setEmbeddedTrackingKeys();
