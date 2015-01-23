@@ -118,6 +118,12 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         return $this->name;
     }
 
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
     /**
      * @return int
      */

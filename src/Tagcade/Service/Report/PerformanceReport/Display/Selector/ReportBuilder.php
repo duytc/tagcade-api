@@ -104,7 +104,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new AdNetworkReportTypes\AdNetwork($adNetwork);
         }, $adNetworks);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'account.' . $publisher->getUser()->getUsername());
     }
 
     public function getAdNetworkReport(AdNetworkInterface $adNetwork, Params $params)
@@ -120,7 +120,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new AdNetworkReportTypes\Site($site, $adNetwork);
         }, $sites);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'adNetwork.' . $adNetwork->getName());
     }
 
     public function getAdNetworkSiteReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
@@ -136,7 +136,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new AdNetworkReportTypes\AdTag($adTag);
         }, $adTags);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'adNetwork.' . $adNetwork->getName());
     }
 
     public function getAdNetworkSiteAdTagsReport(AdNetworkInterface $adNetwork, Siteinterface $site, Params $params)
@@ -147,7 +147,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new AdNetworkReportTypes\AdTag($adTag);
         }, $adTags);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'adNetwork.site.' . $adNetwork->getName() . '-' . $site->getName());
     }
 
     public function getAllSitesReport(Params $params)
@@ -169,7 +169,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new PlatformReportTypes\Site($site);
         }, $sites);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'account.' . $publisher->getUser()->getUsername());
     }
 
     public function getSiteReport(SiteInterface $site, Params $params)
@@ -185,7 +185,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new PlatformReportTypes\AdSlot($adSlot);
         }, $adSlots);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'site.' . $site->getName());
     }
 
     public function getSiteAdTagsReport(SiteInterface $site, Params $params)
@@ -196,7 +196,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new PlatformReportTypes\AdTag($adTag);
         }, $adTags);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'site.' . $site->getName());
     }
 
     public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params)
@@ -207,7 +207,7 @@ class ReportBuilder implements ReportBuilderInterface
                 return new PlatformReportTypes\AdSlot($adSlot);
             }, $adSlots);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'account.' . $publisher->getUser()->getUsername());
     }
 
     public function getAdSlotReport(AdSlotInterface $adSlot, Params $params)
@@ -223,7 +223,7 @@ class ReportBuilder implements ReportBuilderInterface
             return new PlatformReportTypes\AdTag($adTag);
         }, $adTags);
 
-        return $this->getReports($reportTypes, $params);
+        return $this->getReports($reportTypes, $params, 'adSlot.' . $adSlot->getName());
     }
 
     public function getAdTagReport(AdTagInterface $adTag, Params $params)
@@ -234,12 +234,20 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
      * @param Params $params
+     * @param string $name
      * @return ReportResultInterface|false
      */
-    protected function getReports($reportType, Params $params)
+    protected function getReports($reportType, Params $params, $name = null)
     {
         if (is_array($reportType)) {
-            return $this->reportSelector->getMultipleReports($reportType, $params);
+
+            $result = $this->reportSelector->getMultipleReports($reportType, $params);
+
+            if (null !== $name) {
+                $result->setName($name);
+            }
+
+            return $result;
         }
 
         return $this->reportSelector->getReports($reportType, $params);
