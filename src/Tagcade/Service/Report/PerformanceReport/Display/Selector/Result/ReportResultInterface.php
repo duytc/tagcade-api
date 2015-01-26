@@ -33,6 +33,4 @@ interface ReportResultInterface extends IteratorAggregate
      * @return string|null
      */
     public function getName();
-
-    public function setName($name);
 }
