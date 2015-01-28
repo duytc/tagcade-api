@@ -116,7 +116,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      *  }
      * )
      *
-     * @Rest\QueryParam(name="estCpm", requirements="\d+", description="Cpm rate of adTag")
+     * @Rest\QueryParam(name="estCpm", description="Cpm rate of adTag")
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the cpm in format YYYY-MM-DD, defaults to the today")
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want setting in a range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
      *
