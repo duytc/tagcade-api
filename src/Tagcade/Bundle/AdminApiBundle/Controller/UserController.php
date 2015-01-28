@@ -51,8 +51,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function getAction($id)
     {
-        $this->checkPermission($id);
-
         return $this->one($id);
     }
 
@@ -107,8 +105,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function putAction(Request $request, $id)
     {
-        $this->checkPermission($id);
-
         return $this->put($request, $id);
     }
 
@@ -133,8 +129,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function patchAction(Request $request, $id)
     {
-        $this->checkPermission($id);
-
         return $this->patch($request, $id);
     }
 
@@ -158,8 +152,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function deleteAction($id)
     {
-        $this->checkPermission($id);
-
         return $this->delete($id);
     }
 
@@ -185,20 +177,5 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     protected function getHandler()
     {
         return $this->container->get('tagcade_admin_api.handler.user');
-    }
-
-    /**
-     * @param $publisherId
-     * @return bool
-     */
-    protected function checkPermission($publisherId)
-    {
-        $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId);
-
-        if ($publisher === false) {
-            throw new NotFoundHttpException('Publisher does not exist');
-        }
-
-        return true;
     }
 }
