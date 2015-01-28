@@ -2,6 +2,8 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result;
 
+use ArrayIterator;
+
 class ExpandedReportCollection implements ReportResultInterface
 {
     protected $expandedResult;
@@ -27,7 +29,7 @@ class ExpandedReportCollection implements ReportResultInterface
 
     public function getExpandedReports()
     {
-        return $this->expandedResult->getReports();
+        return $this->expandedReports;
     }
 
     public function getOriginalResult()
@@ -57,7 +59,7 @@ class ExpandedReportCollection implements ReportResultInterface
 
     public function getIterator()
     {
-        return $this->originalResult->getIterator();
+        return new ArrayIterator($this->expandedReports);
     }
 
     public function getName()
