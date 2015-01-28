@@ -9,4 +9,5 @@ services:
             - @tagcade.service.report.performance_report.display.selector.report_selector
             - @tagcade.service.report.performance_report.est_cpm_calculator
             - @doctrine.orm.entity_manager
+            - @tagcade.repository.ad_tag
 

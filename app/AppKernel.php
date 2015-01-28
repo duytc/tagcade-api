@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new Gfreeau\Bundle\CustomValidationPathBundle\GfreeauCustomValidationPathBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new Leezy\PheanstalkBundle\LeezyPheanstalkBundle(),
 
             new Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
             new Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),

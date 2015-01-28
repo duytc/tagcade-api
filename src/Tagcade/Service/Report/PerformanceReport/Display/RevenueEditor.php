@@ -8,7 +8,9 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\BaseAdTagReportInterface;
+use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelectorInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
@@ -30,12 +32,17 @@ class RevenueEditor implements RevenueEditorInterface
      * @var ObjectManager
      */
     private $om;
+    /**
+     * @var AdTagRepositoryInterface
+     */
+    private $adTagRepository;
 
-    public function __construct(ReportSelectorInterface $reportSelector, EstCpmCalculatorInterface $revenueCalculator, ObjectManager $om)
+    public function __construct(ReportSelectorInterface $reportSelector, EstCpmCalculatorInterface $revenueCalculator, ObjectManager $om, AdTagRepositoryInterface $adTagRepository)
     {
         $this->reportSelector = $reportSelector;
         $this->revenueCalculator = $revenueCalculator;
         $this->om = $om;
+        $this->adTagRepository = $adTagRepository;
     }
 
     /**
@@ -118,4 +125,16 @@ class RevenueEditor implements RevenueEditorInterface
 
         return $this;
     }
+
+    public function updateRevenueForAdNetworkSite(AdNetworkInterface $adNetwork, SiteInterface $site, $cpmRate, DateTime $startDate, DateTime $endDate = null)
+    {
+        $adTags = $this->adTagRepository->getAdTagsForAdNetworkAndSite($adNetwork, $site);
+
+        foreach($adTags as $adTag) {
+            $this->updateRevenueForAdTag($adTag, $cpmRate, $startDate, $endDate);
+        }
+
+        return $this;
+    }
+
 } 

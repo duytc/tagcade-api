@@ -289,12 +289,95 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
 
-        $this->get('tagcade.service.revenue_editor')->updateRevenueForAdNetwork(
-            $adNetwork,
-            $estCpm,
-            $startDate,
-            $endDate
-        );
+        // @todo Instead of creating a StdClass every time and manually calling serialize, we should create a new class for this
+        $params = new \StdClass;
+        $params->startDate   = $startDate;
+        $params->endDate     = $endDate;
+        $params->adNetworkId = $adNetwork->getId();
+        $params->estCpm      = $estCpm;
+
+        $payload = new \StdClass;
+
+        $payload->task  = 'updateRevenueForAdNetwork';
+        $payload->params = $params;
+
+        $this->get("leezy.pheanstalk")
+            ->useTube('tagcade-api-worker')
+            ->put(serialize($payload))
+        ;
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+
+    /**
+     *
+     *
+     * Update revenue for ad network and site.
+     *
+     * @ApiDoc(
+     *  section = "adNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="estCpm", description="Cpm rate of ad network")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the cpm in format YYYY-MM-DD, defaults to the today")
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want setting in a range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
+     *
+     * @param $id
+     * @param $siteId
+     *
+     * @return View
+     */
+    public function putSitesEstcpmAction($id, $siteId)
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $estCpm = (float)$paramFetcher->get('estCpm');
+        if ($estCpm < 0) {
+            throw new InvalidArgumentException('estCpm should be positive value');
+        }
+
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
+        }
+
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+        if (!$site) {
+            throw new NotFoundHttpException('That site does not exist');
+        }
+
+
+        if (false === $this->get('security.context')->isGranted('edit', $adNetwork) || false === $this->get('security.context')->isGranted('edit', $site)) {
+            throw new AccessDeniedException('You do not have permission to edit this');
+        }
+
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
+
+        // @todo Instead of creating a StdClass every time and manually calling serialize, we should create a new class for this
+        $params = new \StdClass;
+        $params->startDate   = $startDate;
+        $params->endDate     = $endDate;
+        $params->adNetworkId = $adNetwork->getId();
+        $params->siteId      = $site->getId();
+        $params->estCpm      = $estCpm;
+
+        $payload = new \StdClass;
+
+        $payload->task  = 'updateRevenueForAdNetworkAndSite';
+        $payload->params = $params;
+
+        $this->get("leezy.pheanstalk")
+            ->useTube('tagcade-api-worker')
+            ->put(serialize($payload))
+        ;
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }

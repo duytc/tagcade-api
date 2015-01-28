@@ -146,7 +146,22 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
 
-        $this->get('tagcade.service.revenue_editor')->updateRevenueForAdTag($adTag, $estCpm, $startDate, $endDate);
+        // @todo Instead of creating a StdClass every time and manually calling serialize, we should create a new class for this
+        $params = new \StdClass;
+        $params->startDate = $startDate;
+        $params->endDate   = $endDate;
+        $params->adTagId   = $adTag->getId();
+        $params->estCpm    = $estCpm;
+
+        $payload = new \StdClass;
+
+        $payload->task  = 'updateRevenueForAdTag';
+        $payload->params = $params;
+
+        $this->get("leezy.pheanstalk")
+            ->useTube('tagcade-api-worker')
+            ->put(serialize($payload))
+        ;
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }

@@ -54,6 +54,19 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         return $this->one($id);
     }
 
+    public function getAdnetworksAction($publisherId)
+    {
+        $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
+        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+
+        $publisher = $publisherManager->findPublisher($publisherId);
+        if (!$publisher) {
+            throw new NotFoundHttpException('That publisher does not exist');
+        }
+
+        return $adNetworkManager->getAdNetworksForPublisher($publisher);
+    }
+
     /**
      * Create a user from the submitted data
      *
