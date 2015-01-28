@@ -22,6 +22,7 @@ class Params implements ParamsInterface
 
     /**
      * @var bool
+     * @todo remove this property, it is no longer used
      */
     protected $expanded = false;
 

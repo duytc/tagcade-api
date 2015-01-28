@@ -16,6 +16,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwor
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\DateUtilInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ExpandedReportCollection;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 class ReportBuilder implements ReportBuilderInterface
@@ -190,13 +191,25 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getSiteAdTagsReport(SiteInterface $site, Params $params)
     {
+        $siteReport = $this->getSiteReport($site, $params);
+
+        if (!$siteReport) {
+            return false;
+        }
+
         $adTags = $this->adTagManager->getAdTagsForSite($site);
 
         $reportTypes = array_map(function($adTag) {
             return new PlatformReportTypes\AdTag($adTag);
         }, $adTags);
 
-        return $this->getReports($reportTypes, $params);
+        $adTagReports = $this->getReports($reportTypes, $params);
+
+        if (!$adTagReports) {
+            return false;
+        }
+
+        return new ExpandedReportCollection($adTagReports, $siteReport);
     }
 
     public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params)
@@ -204,8 +217,8 @@ class ReportBuilder implements ReportBuilderInterface
         $adSlots = $this->adSlotManager->getAdSlotsForPublisher($publisher);
 
         $reportTypes = array_map(function($adSlot) {
-                return new PlatformReportTypes\AdSlot($adSlot);
-            }, $adSlots);
+            return new PlatformReportTypes\AdSlot($adSlot);
+        }, $adSlots);
 
         return $this->getReports($reportTypes, $params);
     }
@@ -217,13 +230,25 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, Params $params)
     {
+        $adSlotReport = $this->getAdSlotReport($adSlot, $params);
+
+        if (!$adSlotReport) {
+            return false;
+        }
+
         $adTags = $adSlot->getAdTags()->toArray();
 
         $reportTypes = array_map(function($adTag) {
             return new PlatformReportTypes\AdTag($adTag);
         }, $adTags);
 
-        return $this->getReports($reportTypes, $params);
+        $adTagReports = $this->getReports($reportTypes, $params);
+
+        if (!$adTagReports) {
+            return false;
+        }
+
+        return new ExpandedReportCollection($adTagReports, $adSlotReport);
     }
 
     public function getAdTagReport(AdTagInterface $adTag, Params $params)

@@ -108,26 +108,6 @@ class ReportSelector implements ReportSelectorInterface
             unset($report);
         }
 
-//        if ($params->getExpanded() && $reportType instanceof CalculatedReportTypeInterface) {
-//            $expandedReports = array_map(function(SuperReportInterface $report) {
-//                return $report->getSubReports();
-//            }, $reports);
-//
-//            foreach($expandedReports as $subReports) {
-//                foreach($subReports as $subReport) {
-//                    /** @var ReportInterface $subReport */
-//
-//                    if (!$reportType->isValidSubReport($subReport)) {
-//                        throw new LogicException('The sub reports were not valid for this report type');
-//                    }
-//                }
-//            }
-//
-//            unset($subReports, $subReport);
-//
-//            $reportCollection = new ExpandedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reportName, $reports, $expandedReports);
-//        }
-
         $dates = array_map(function(ReportInterface $report) {
             return $report->getDate();
         }, $reports);
