@@ -15,3 +15,4 @@ Tagcade\Entity\Report\SourceReport\TrackingKey:
             targetEntity: Tagcade\Entity\Report\SourceReport\TrackingTerm
             cascade:
                 - persist
+                - detach

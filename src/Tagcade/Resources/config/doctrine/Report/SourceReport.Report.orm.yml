@@ -86,6 +86,7 @@ Tagcade\Entity\Report\SourceReport\Report:
             cascade:
                 - remove
                 - persist
+                - detach
             mappedBy: sourceReport
     manyToOne:
         site:

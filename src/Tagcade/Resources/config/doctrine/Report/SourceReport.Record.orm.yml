@@ -84,6 +84,7 @@ Tagcade\Entity\Report\SourceReport\Record:
             cascade:
                 - remove
                 - persist
+                - detach
             joinTable:
                 name: report_source_report_record_x_tracking_key
                 joinColumns:
