@@ -34,11 +34,14 @@ class DailyReportCreator
      */
     public function createAndSave(array $publishers, array $adNetworks)
     {
+        $createdReports = [];
+
         $platformReport = $this->reportCreator->getReport(
             new PlatformReportType($publishers)
         );
 
         $this->om->persist($platformReport);
+        $createdReports[] = $platformReport;
 
         foreach($adNetworks as $adNetwork) {
             $adNetworkReport = $this->reportCreator->getReport(
@@ -46,9 +49,17 @@ class DailyReportCreator
             );
 
             $this->om->persist($adNetworkReport);
+            $createdReports[] = $adNetworkReport;
         }
 
         $this->om->flush();
+
+        foreach($createdReports as &$temp) {
+            $this->om->detach($temp);
+            $temp = null; // free memory
+        }
+
+        $createdReports = null;
     }
 
     /**

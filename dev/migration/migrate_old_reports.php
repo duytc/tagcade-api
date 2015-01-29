@@ -1,16 +1,16 @@
 <?php
 
-$loader = require_once __DIR__ . '/../app/autoload.php';
-require_once __DIR__ . '/../app/AppKernel.php';
+$loader = require_once __DIR__ . '/../../app/autoload.php';
+require_once __DIR__ . '/../../app/AppKernel.php';
 
-$kernel = new AppKernel('dev', true);
+$kernel = new AppKernel('dev', $debug = false);
 $kernel->boot();
 
 $container = $kernel->getContainer();
 
 $em = $container->get('doctrine.orm.entity_manager');
 $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
-$userManager = $container->get('tagcade_user.domain_manager.user');
+$userManager = $container->get('tagcade_user.domain_manager.publisher');
 
 $reportTypes = [
     $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag'),
@@ -34,14 +34,20 @@ $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\R
 
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
-$begin = new DateTime('2014-10-29');
-$end = new DateTime('2014-11-03');
-$end = $end->modify('+1 day');
+$begin = new DateTime('2015-01-01');
+$end = new DateTime('2015-01-31');
 
+$end = $end->modify('+1 day');
 $interval = new DateInterval('P1D');
 $dateRange = new DatePeriod($begin, $interval ,$end);
 
+$em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+gc_enable();
+
 foreach($dateRange as $date){
+    echo sprintf("%s processing... @ %s\n", $date->format('Y-m-d'), date('c'));
+
     $reportCreator->setDate($date);
 
     $dailyReportCreator->createAndSave(
@@ -49,5 +55,7 @@ foreach($dateRange as $date){
         $adNetworkManager->all()
     );
 
-    echo $date->format('Y-m-d') . " created\n";
+    echo sprintf("%s created @ %s\n", $date->format('Y-m-d'), date('c'));
+
+    gc_collect_cycles();
 }

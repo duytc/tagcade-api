@@ -3,7 +3,7 @@
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
 
-$kernel = new AppKernel('dev', true);
+$kernel = new AppKernel('dev', $debug = false);
 $kernel->boot();
 
 $container = $kernel->getContainer();
@@ -29,13 +29,20 @@ $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\Te
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
-$begin = new DateTime('2015-01-08');
-$end = new DateTime('2015-01-09');
+$begin = new DateTime('2015-01-19');
+$end = new DateTime('2015-01-20');
 
+$end = $end->modify('+1 day');
 $interval = new DateInterval('P1D');
 $dateRange = new DatePeriod($begin, $interval ,$end);
 
+$em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+gc_enable();
+
 foreach($dateRange as $date){
+    echo sprintf("%s processing... @ %s\n", $date->format('Y-m-d'), date('c'));
+
     $eventCounter->refreshTestData();
 
     $dailyReportCreator
@@ -44,4 +51,8 @@ foreach($dateRange as $date){
         $userManager->allPublishers(),
         $adNetworkManager->all()
     );
+
+    echo sprintf("%s created @ %s\n", $date->format('Y-m-d'), date('c'));
+
+    gc_collect_cycles();
 }
