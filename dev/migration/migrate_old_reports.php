@@ -43,8 +43,6 @@ $dateRange = new DatePeriod($begin, $interval ,$end);
 
 $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
-gc_enable();
-
 foreach($dateRange as $date){
     echo sprintf("%s processing... @ %s\n", $date->format('Y-m-d'), date('c'));
 
