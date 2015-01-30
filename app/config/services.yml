@@ -73,3 +73,18 @@ services:
 
     tagcade.service.date_util:
         class: Tagcade\Service\DateUtil
+
+    tagcade.worker.manager:
+        class: Tagcade\Worker\Manager
+        arguments:
+            - @tagcade.service.date_util
+            - @leezy.pheanstalk
+
+    tagcade.worker.workers.update_revenue_worker:
+        class: Tagcade\Worker\Workers\UpdateRevenueWorker
+        arguments:
+            - @tagcade.service.date_util
+            - @tagcade.service.revenue_editor
+            - @tagcade.domain_manager.ad_tag
+            - @tagcade.domain_manager.ad_network
+            - @tagcade.domain_manager.site

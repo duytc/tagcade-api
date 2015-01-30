@@ -10,18 +10,18 @@ $startTime = time();
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
 
-$kernel = new AppKernel('dev', $debug = true);
+$kernel = new AppKernel('prod', $debug = false);
 $kernel->boot();
 
 $container = $kernel->getContainer();
 $queue = $container->get("leezy.pheanstalk");
 
 // only tasks listed here are able to run
-$availableTasks = [
-    'updateRevenueForAdTag',
-    'updateRevenueForAdNetwork',
-    'updateRevenueForAdNetworkAndSite'
+$availableWorkers = [
+    $container->get('tagcade.worker.workers.update_revenue_worker')
 ];
+
+$workerPool = new \Tagcade\Worker\Pool($availableWorkers);
 
 function stdErr($text) {
     file_put_contents('php://stderr', trim($text) . "\n", FILE_APPEND);
@@ -29,48 +29,6 @@ function stdErr($text) {
 
 function stdOut($text) {
     file_put_contents('php://stdout', trim($text) . "\n", FILE_APPEND);
-}
-
-function updateRevenueForAdTag(StdClass $params) {
-    global $container;
-
-    $adTag = $container->get('tagcade.domain_manager.ad_tag')->find($params->adTagId);
-
-    if (!$adTag) {
-        throw new Exception('That ad tag does not exist');
-    }
-
-    $container->get('tagcade.service.revenue_editor')->updateRevenueForAdTag($adTag, $params->estCpm, $params->startDate, $params->endDate);
-}
-
-function updateRevenueForAdNetwork(StdClass $params) {
-    global $container;
-
-    $adNetwork = $container->get('tagcade.domain_manager.ad_network')->find($params->adNetworkId);
-
-    if (!$adNetwork) {
-        throw new Exception('That ad network does not exist');
-    }
-
-    $container->get('tagcade.service.revenue_editor')->updateRevenueForAdNetwork($adNetwork, $params->estCpm, $params->startDate, $params->endDate);
-}
-
-function updateRevenueForAdNetworkAndSite(StdClass $params) {
-    global $container;
-
-    $adNetwork = $container->get('tagcade.domain_manager.ad_network')->find($params->adNetworkId);
-
-    if (!$adNetwork) {
-        throw new Exception('That ad network does not exist');
-    }
-
-    $site = $container->get('tagcade.domain_manager.site')->find($params->siteId);
-
-    if (!$site) {
-        throw new Exception('That site does not exist');
-    }
-
-    $container->get('tagcade.service.revenue_editor')->updateRevenueForAdNetworkSite($adNetwork, $site, $params->estCpm, $params->startDate, $params->endDate);
 }
 
 while (true) {
@@ -83,10 +41,12 @@ while (true) {
         ->ignore('default')
         ->reserve();
 
-    $payload = unserialize($job->getData());
+    $worker = null; // important to reset the worker every loop
+    $rawPayload = $job->getData();
+    $payload = json_decode($rawPayload);
 
     if (!$payload) {
-        stdErr(sprintf('Received an invalid payload'));
+        stdErr(sprintf('Received an invalid payload %s', $rawPayload));
         $queue->bury($job);
         continue;
     }
@@ -94,7 +54,9 @@ while (true) {
     $task = $payload->task;
     $params = $payload->params;
 
-    if (!is_string($task) || !in_array($task, $availableTasks, true) || !function_exists($task)) {
+    $worker = $workerPool->findWorker($task);
+
+    if (!$worker) {
         stdErr(sprintf('The task "%s" is unknown', $task));
         $queue->bury($job);
         continue;
@@ -106,16 +68,15 @@ while (true) {
         continue;
     }
 
-    stdOut(sprintf('Received job %s', $job->getId()));
+    stdOut(sprintf('Received job %s (ID: %s) with payload %s', $task, $job->getId(), $rawPayload));
 
     try {
-//        $task($params); // run the task function
-        call_user_func($task, $params);
-        stdOut(sprintf('Job %s has been completed', $job->getId()));
+        $worker->$task($params); // dynamic method call
+        stdOut(sprintf('Job %s (ID: %s) with payload %s has been completed', $task, $job->getId(), $rawPayload));
         $queue->delete($job);
         // task finished successfully
     } catch (Exception $e) {
-        stdOut(sprintf('Job %s failed with an exception: %s', $job->getId(), $e->getMessage()));
+        stdOut(sprintf('Job %s (ID: %s) with payload %s failed with an exception: %s', $task, $job->getId(), $rawPayload, $e->getMessage()));
         $queue->bury($job);
     }
 }

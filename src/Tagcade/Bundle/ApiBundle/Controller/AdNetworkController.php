@@ -289,26 +289,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
 
-        // @todo Instead of creating a StdClass every time and manually calling serialize, we should create a new class for this
-        $params = new \StdClass;
-        $params->startDate   = $startDate;
-        $params->endDate     = $endDate;
-        $params->adNetworkId = $adNetwork->getId();
-        $params->estCpm      = $estCpm;
-
-        $payload = new \StdClass;
-
-        $payload->task  = 'updateRevenueForAdNetwork';
-        $payload->params = $params;
-
-        $this->get("leezy.pheanstalk")
-            ->useTube('tagcade-api-worker')
-            ->put(serialize($payload))
-        ;
+        $this->get('tagcade.worker.manager')->updateRevenueForAdNetwork($adNetwork, $estCpm, $startDate, $endDate);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
-
 
     /**
      *
@@ -361,23 +345,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate'), true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
 
-        // @todo Instead of creating a StdClass every time and manually calling serialize, we should create a new class for this
-        $params = new \StdClass;
-        $params->startDate   = $startDate;
-        $params->endDate     = $endDate;
-        $params->adNetworkId = $adNetwork->getId();
-        $params->siteId      = $site->getId();
-        $params->estCpm      = $estCpm;
-
-        $payload = new \StdClass;
-
-        $payload->task  = 'updateRevenueForAdNetworkAndSite';
-        $payload->params = $params;
-
-        $this->get("leezy.pheanstalk")
-            ->useTube('tagcade-api-worker')
-            ->put(serialize($payload))
-        ;
+        $this->get('tagcade.worker.manager')->updateRevenueForAdNetworkAndSite($adNetwork, $site, $estCpm, $startDate, $endDate);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
