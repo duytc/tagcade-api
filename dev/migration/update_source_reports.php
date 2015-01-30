@@ -18,7 +18,8 @@ $reportRepository = $em->getRepository('Tagcade\Entity\Report\SourceReport\Repor
 
 $nextId = MIN_ID;
 
-gc_enable();
+gc_collect_cycles();
+gc_disable(); // turn off manual garbage collection
 
 while ($nextId <= MAX_ID) {
     $currentId = $nextId;
@@ -43,5 +44,13 @@ while ($nextId <= MAX_ID) {
 
     echo sprintf("%d finished @ %s\n", $currentId, date('c'));
 
-    gc_collect_cycles();
+    // manually free memory
+    $collected = gc_collect_cycles();
+
+    echo sprintf("%d items collected @ %s\n", $collected, date('c'));
 }
+
+gc_enable(); // good practice to re-enable GC again
+
+// if other php code here, GC is enabled again
+
