@@ -54,9 +54,9 @@ class DailyReportCreator
 
         $this->om->flush();
 
-        foreach($createdReports as &$temp) {
-            $this->om->detach($temp);
-            $temp = null; // free memory
+        foreach($createdReports as $index => &$tempReport) {
+            $this->om->detach($tempReport);
+            $createdReports[$index] = null;
         }
 
         $createdReports = null;
