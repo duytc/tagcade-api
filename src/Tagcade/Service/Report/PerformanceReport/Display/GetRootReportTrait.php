@@ -24,7 +24,12 @@ trait GetRootReportTrait {
 
         // Loop 10 times to prevent infinite loop due to programming mistake
         for($i = 0; $i < 10; $i ++) {
+            if (!$current instanceof SubReportInterface) {
+                throw new LogicException('Expected SubReportInterface');
+            }
+
             $current = $current->getSuperReport();
+
             if($current instanceof RootReportInterface) {
                 break;
             }
