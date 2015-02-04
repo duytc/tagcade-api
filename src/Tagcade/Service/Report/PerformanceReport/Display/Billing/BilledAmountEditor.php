@@ -73,6 +73,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             throw new InvalidArgumentException('billing rate must be a float and positive number');
         }
 
+        $yesterday = new DateTime('yesterday');
+
+        if ($endDate > $yesterday) {
+            $endDate = $yesterday;
+        }
+
         return $this->doUpdateBilledAmountForPublisher($publisher,  new Params($startDate, $endDate), $billingRate);
     }
 
