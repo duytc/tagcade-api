@@ -3,12 +3,11 @@
 namespace Tagcade\Legacy;
 
 use Tagcade\DomainManager\AdSlotManagerInterface;
-use Tagcade\DomainManager\AdTagManagerInterface;
-use Tagcade\Legacy\Cache\RedisArrayCache;
 use Tagcade\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Doctrine\Common\Collections\Collection;
 
 class TagCache implements TagCacheInterface
 {
@@ -87,8 +86,12 @@ class TagCache implements TagCacheInterface
     {
         $data = [];
 
-        /** @var AdTagInterface[] $adTags */
-        $adTags = $adSlot->getAdTags()->toArray();
+        /** @var AdTagInterface[]|Collection $adTags */
+        $adTags = $adSlot->getAdTags();
+
+        if ($adTags instanceof Collection) {
+            $adTags = $adTags->toArray();
+        }
 
         if (empty($adTags)) {
             return $data;
