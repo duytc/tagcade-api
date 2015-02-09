@@ -8,9 +8,18 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
+use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Model\User\Role\AdminInterface;
 
 class UserFormType extends AbstractType
 {
+    private $userRole;
+
+    public function __construct(UserEntityInterface $userRole)
+    {
+        $this->userRole = $userRole;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -26,7 +35,6 @@ class UserFormType extends AbstractType
             ->add('address')
             ->add('postalCode')
             ->add('country')
-            ->add('enabled')
 
             // custom fields
             // even though in the system, roles and modules are simply just symfony2 roles
@@ -40,40 +48,45 @@ class UserFormType extends AbstractType
 //                    'ROLE_ADMIN'     => 'Admin'
 //                ],
 //            ])
-            ->add('enabledModules', 'choice', [
-                'mapped' => false,
-                'empty_data' => null,
-                'multiple' => true,
-                'choices' => [
-                    'MODULE_DISPLAY'         => 'Display',
-                    'MODULE_VIDEO'           => 'Video',
-                    'MODULE_ANALYTICS'       => 'Analytics',
-                    'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
-                ],
-            ])
-            ->add('billingRate')
-
         ;
 
-        $builder->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function (FormEvent $event) {
-                /** @var User $user */
-                $user = $event->getData();
-                $form = $event->getForm();
+        if($this->userRole instanceof AdminInterface){
+            $builder
+                ->add('enabled')
+                ->add('enabledModules', 'choice', [
+                    'mapped' => false,
+                    'empty_data' => null,
+                    'multiple' => true,
+                    'choices' => [
+                        'MODULE_DISPLAY'         => 'Display',
+                        'MODULE_VIDEO'           => 'Video',
+                        'MODULE_ANALYTICS'       => 'Analytics',
+                        'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
+                    ],
+                ])
+                ->add('billingRate')
+
+                ->addEventListener(
+                FormEvents::POST_SUBMIT,
+                function (FormEvent $event) {
+                    /** @var User $user */
+                    $user = $event->getData();
+                    $form = $event->getForm();
 
 //                $mainUserRole = $form->get('userRoles')->getData();
-                $modules = $form->get('enabledModules')->getData();
+                    $modules = $form->get('enabledModules')->getData();
 
 //                if (null !== $mainUserRole) {
 //                    $user->setUserRoles((array) $mainUserRole);
 //                }
 
-                if (null !== $modules && is_array($modules)) {
-                    $user->setEnabledModules($modules);
+                    if (null !== $modules && is_array($modules)) {
+                        $user->setEnabledModules($modules);
+                    }
                 }
-            }
-        );
+            );
+
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
