@@ -254,6 +254,24 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Rest\Get("/sites/{siteId}/adnetworks", requirements={"siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $siteId
+     * @return array
+     */
+    public function getSiteAdNetworksAction($siteId)
+    {
+        $site = $this->getSite($siteId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getSiteAdNetworksReport($site, $this->getParams())
+        );
+    }
+    /**
      * @Rest\Get("/sites/{siteId}/adslots", requirements={"siteId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)

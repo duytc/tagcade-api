@@ -178,6 +178,21 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new PlatformReportTypes\Site($site), $params);
     }
 
+    public function getSiteAdNetworksReport(SiteInterface $site, Params $params)
+    {
+        $adNetworks = $this->getAdNetworksFromSite($site);
+
+        $reportTypes = array_map(
+            function ($adNetwork) {
+                return new AdNetworkReportTypes\AdNetwork($adNetwork);
+            },
+            $adNetworks
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+
     public function getSiteAdSlotsReport(SiteInterface $site, Params $params)
     {
         $adSlots = $site->getAdSlots()->toArray();
@@ -268,5 +283,33 @@ class ReportBuilder implements ReportBuilderInterface
         }
 
         return $this->reportSelector->getReports($reportType, $params);
+    }
+
+    /**
+     * @param SiteInterface $site
+     * @return AdNetworkInterface[]
+     */
+    protected function getAdNetworksFromSite(SiteInterface $site)
+    {
+        $adNetworks = [];
+
+        $adSlots = $site->getAdSlots()->toArray();
+
+        array_walk(
+            $adSlots,
+            function(AdSlotInterface $adSlot) use (&$adNetworks){
+                $adTags = $adSlot->getAdTags();
+                foreach ($adTags as $adTag) {
+                    /**
+                     * @var AdTagInterface $adTag
+                     */
+                    if (!in_array($adTag->getAdNetwork(), $adNetworks)) {
+                        $adNetworks[] = $adTag->getAdNetwork();
+                    }
+                }
+            }
+        );
+
+        return $adNetworks;
     }
 }

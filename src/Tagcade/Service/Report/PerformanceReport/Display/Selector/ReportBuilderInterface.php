@@ -99,6 +99,13 @@ interface ReportBuilderInterface
      * @param Params $params
      * @return ReportResultInterface|false
      */
+    public function getSiteAdNetworksReport(SiteInterface $site, Params $params);
+
+    /**
+     * @param SiteInterface $site
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
     public function getSiteAdSlotsReport(SiteInterface $site, Params $params);
 
     /**
