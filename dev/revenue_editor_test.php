@@ -25,13 +25,14 @@ $em = $container->get('doctrine.orm.entity_manager');
 //$revenueEditor->updateRevenueForAdTag($adTag, 100, new DateTime('yesterday'));
 
 $dateUtil = $container->get('tagcade.service.date_util');
-$remainingDays = $dateUtil->getNumberOfRemainingDatesOfMonth();
+//$remainingDays = $dateUtil->getNumberOfRemainingDatesOfMonth();
+//
+//$numDaysPasswd = $dateUtil->getNumberOfDatesPassedOfMonth();
 
-$numDaysPasswd = $dateUtil->getNumberOfDatesPassedOfMonth();
-
-$userManager = $container->get('tagcade_user.domain_manager.user');
+$userManager = $container->get('tagcade_user.domain_manager.publisher');
 $publisher = $userManager->findPublisher(2);
 $billingEditor = $container->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
-$billingEditor->updateBilledAmountForPublisher($publisher, 1.5, new DateTime('20 days ago'), new DateTime('1 day ago'));
+// historical update
+$billingEditor->updateHistoricalBilledAmount($publisher, 1.5, new DateTime('20 days ago'), new DateTime('1 day ago'));
 

@@ -2,9 +2,7 @@
 
 // exit successfully after this time, supervisord will then restart
 // this is to prevent any memory leaks from running PHP for a long time
-const WORKER_TIME_LIMIT = 10800; // 3 hours
-const TUBE_NAME = 'tagcade-api-worker';
-const RESERVE_TIMEOUT = 3600;
+const WORKER_TIME_LIMIT = 3600; // 1 hour
 
 // Set the start time
 $startTime = time();
@@ -16,7 +14,6 @@ $kernel = new AppKernel('prod', $debug = false);
 $kernel->boot();
 
 $container = $kernel->getContainer();
-$entityManager = $container->get('doctrine.orm.entity_manager');
 $queue = $container->get("leezy.pheanstalk");
 
 // only tasks listed here are able to run
@@ -40,13 +37,9 @@ while (true) {
         break;
     }
 
-    $job = $queue->watch(TUBE_NAME)
+    $job = $queue->watch('tagcade-api-worker')
         ->ignore('default')
-        ->reserve(RESERVE_TIMEOUT);
-
-    if (!$job) {
-        continue;
-    }
+        ->reserve();
 
     $worker = null; // important to reset the worker every loop
     $rawPayload = $job->getData();
@@ -86,7 +79,4 @@ while (true) {
         stdOut(sprintf('Job %s (ID: %s) with payload %s failed with an exception: %s', $task, $job->getId(), $rawPayload, $e->getMessage()));
         $queue->bury($job);
     }
-
-    $entityManager->clear();
-    gc_collect_cycles();
 }

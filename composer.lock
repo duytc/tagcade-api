@@ -3966,7 +3966,6 @@
         "webfactory/exceptions-bundle": 0
     },
     "prefer-stable": false,
-    "prefer-lowest": false,
     "platform": {
         "php": "~5.5.0"
     },

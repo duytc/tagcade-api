@@ -95,8 +95,15 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         }
 
         $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
+        echo sprintf("%d START updating billed amount for publisher '%s' from Date %s to Date %s\n",
+            date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d'));
 
-        return $this->doUpdateBilledAmountForPublisher($publisher, $params);
+        $result = $this->doUpdateBilledAmountForPublisher($publisher, $params);
+
+        echo sprintf("%d FINISH updating billed amount for publisher '%s' from Date %s to Date %s\n",
+            date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d'));
+
+        return $result;
     }
 
     public function updateBilledAmountThresholdForAllPublishers(DateTime $date = null)
@@ -137,12 +144,14 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         $rootReports = [];
 
+        gc_enable();
+
         /**
          * @var AdSlotReportInterface $reportRow
          * @var ReportResultInterface $report
          */
-        foreach($reportResult as $report) {
-            foreach ($report as $reportRow) {
+        foreach($reportResult->getReports() as $report) {
+            foreach ($report->getReports() as $reportRow) {
 
                 if (!$reportRow instanceof AdSlotReportInterface) {
                     throw new LogicException('expect AdSlotReportInterface');
@@ -169,6 +178,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
                     $rootReports[] = $root;
                 }
 
+                unset($reportRow);
                 unset($root);
             }
         }
@@ -178,15 +188,29 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         // Step 2. update calculated fields from top level (Platform) to sub level (Account, Site, AdSlot,)
         foreach ($rootReports as $report) {
+            /**
+             * @var RootReportInterface $report
+             */
             // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
+            echo sprintf("%s updating billed amount for report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d'));
+
             /**
              * @var RootReportInterface $report
              */
             $report->setCalculatedFields();
+            // Step 3. Update database
+            $this->om->flush();
+
+            $this->om->detach($report);
+
+            echo sprintf("%s finish updating billed amount for report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d'));
+
+            unset($report);
+
+            gc_collect_cycles();
+
         }
 
-        // Step 3. Update database
-        $this->om->flush();
 
         return true;
     }

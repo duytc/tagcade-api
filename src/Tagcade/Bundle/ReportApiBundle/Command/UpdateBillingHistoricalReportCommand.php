@@ -51,11 +51,17 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
         $startDate = $input->getOption('startDate');
         $endDate = $input->getOption('endDate');
 
+        $today = (new DateTime('today'))->setTime(0,0,0);
+
         $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
         $endDate = null === $endDate ? new DateTime('yesterday') : DateTime::createFromFormat('Y-m-d', $endDate);
 
         if (false === $startDate || false === $endDate || $startDate > $endDate) {
             throw new InvalidArgumentException('Date range is not valid');
+        }
+
+        if ($endDate >= $today) {
+            throw new InvalidArgumentException('End date should not exceed yesterday');
         }
 
         if (!is_numeric($cpmRate) || $cpmRate < 0) {

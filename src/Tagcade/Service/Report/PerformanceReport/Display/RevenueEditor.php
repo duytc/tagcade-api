@@ -72,9 +72,15 @@ class RevenueEditor implements RevenueEditorInterface
         $rootReports = [];
         $params = new Params($startDate, $endDate);
 
+        gc_enable();
+
+        echo sprintf("%s START updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
+            date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
+
         // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
             $reports = $this->reportSelector->getReports($reportType, $params);
+
             if (false === $reports) {
                 continue; // not found reports
             }
@@ -92,6 +98,7 @@ class RevenueEditor implements RevenueEditorInterface
                 }
 
                 unset($root);
+                unset($report);
             }
         }
 
@@ -99,15 +106,30 @@ class RevenueEditor implements RevenueEditorInterface
 
         // Step 2. update calculated fields from top level (Platform) to sub level (Account, Site, AdSlot, Site)
         foreach ($rootReports as $report) {
+            /**
+             * @var RootReportInterface $report
+             */
+            echo sprintf("%s updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d'));
             // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
             /**
              * @var RootReportInterface $report
              */
             $report->setCalculatedFields();
+
+            // Step 3. Update database
+            $this->om->flush();
+            $this->om->detach($report);
+
+            echo sprintf("%s finish updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d'));
+
+            unset($report);
+
+            gc_collect_cycles();
+
         }
 
-        // Step 3. Update database
-        $this->om->flush();
+        echo sprintf("%s FINISH updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
+            date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
 
         return $this;
     }
