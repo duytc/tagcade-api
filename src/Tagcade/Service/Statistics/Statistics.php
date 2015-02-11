@@ -170,7 +170,7 @@ class Statistics implements StatisticsInterface
 
         $projectedBilledAmount = $this->accountStatistics->getAllPublishersProjectedBilledAmount();
 
-        return new ProjectedBilling($platformReports, $projectedBilledAmount);
+        return new ProjectedBilling($platformReports === false ? null : $platformReports, $projectedBilledAmount);
     }
 
     public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher)
