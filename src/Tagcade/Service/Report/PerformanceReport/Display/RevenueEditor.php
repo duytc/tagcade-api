@@ -80,10 +80,8 @@ class RevenueEditor implements RevenueEditorInterface
 
         gc_enable();
 
-        if ($this->hasOutput()) {
-            $this->output->writeln(sprintf("%s START updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
+        $this->writeln(sprintf("%s START updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
                     date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d')));
-        }
 
         // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
@@ -117,9 +115,8 @@ class RevenueEditor implements RevenueEditorInterface
             /**
              * @var RootReportInterface $report
              */
-            if ($this->hasOutput()) {
-                $this->output->writeln(sprintf("%s updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d')));
-            }
+
+            $this->writeln(sprintf("%s updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d')));
 
             // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
             /**
@@ -131,9 +128,7 @@ class RevenueEditor implements RevenueEditorInterface
             $this->om->flush();
             $this->om->detach($report);
 
-            if ($this->hasOutput()) {
-                $this->output->writeln(sprintf("%s finish updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d')));
-            }
+            $this->writeln(sprintf("%s finish updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d')));
 
             unset($report);
 
@@ -141,10 +136,8 @@ class RevenueEditor implements RevenueEditorInterface
 
         }
 
-        if ($this->hasOutput()) {
-            $this->output->writeln(sprintf("%s FINISH updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
+        $this->writeln(sprintf("%s FINISH updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
                     date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d')));
-        }
 
         return $this;
     }
@@ -182,5 +175,12 @@ class RevenueEditor implements RevenueEditorInterface
     protected function hasOutput()
     {
         return null !== $this->output;
+    }
+
+    protected function writeln($line)
+    {
+        if ($this->hasOutput()) {
+            $this->output->writeln($line);
+        }
     }
 } 

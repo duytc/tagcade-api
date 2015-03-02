@@ -102,17 +102,15 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
 
-        if ($this->hasOutput()) {
-            $this->output->writeln(sprintf("%s start updating billed amount for publisher '%s' from %s to %s\n",
+
+        $this->writeln(sprintf("%s start updating billed amount for publisher '%s' from %s to %s\n",
                     date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d')));
-        }
 
         $result = $this->doUpdateBilledAmountForPublisher($publisher, $params);
 
-        if ($this->hasOutput()) {
-            $this->output->writeln(sprintf("%s finish updating billed amount for publisher '%s' from %s to %s\n",
+        $this->writeln(sprintf("%s finish updating billed amount for publisher '%s' from %s to %s\n",
                     date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d')));
-        }
+
 
         return $result;
     }
@@ -203,9 +201,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
              * @var RootReportInterface $report
              */
             // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
-            if ($this->hasOutput()) {
-                $this->output->writeln(sprintf("%s start updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d')));
-            }
+            $this->writeln(sprintf("%s start updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d')));
             /**
              * @var RootReportInterface $report
              */
@@ -215,9 +211,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
             $this->om->detach($report);
 
-            if ($this->hasOutput()) {
-                $this->output->writeln(sprintf("%s finish updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d')));
-            }
+            $this->writeln(sprintf("%s finish updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d')));
 
             unset($report);
 
@@ -234,6 +228,13 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $this->output = $output;
 
         return $this;
+    }
+
+    protected function writeln($line)
+    {
+        if ($this->hasOutput()) {
+            $this->output->writeln($line);
+        }
     }
 
     private function hasOutput()
