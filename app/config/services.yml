@@ -50,6 +50,9 @@ services:
         arguments:
             - %tc.base_tag_url%
 
+    tagcade.service.console_output:
+        class: Symfony\Component\Console\Output\ConsoleOutput
+
     tagcade.handler.handler_abstract:
         class: Tagcade\Handler\HandlerAbstract
         abstract: true

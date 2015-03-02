@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display;
 
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -36,6 +37,11 @@ class RevenueEditor implements RevenueEditorInterface
      * @var AdTagRepositoryInterface
      */
     private $adTagRepository;
+
+    /**
+     * @var OutputInterface
+     */
+    private $output;
 
     public function __construct(ReportSelectorInterface $reportSelector, EstCpmCalculatorInterface $revenueCalculator, ObjectManager $om, AdTagRepositoryInterface $adTagRepository)
     {
@@ -74,8 +80,10 @@ class RevenueEditor implements RevenueEditorInterface
 
         gc_enable();
 
-        echo sprintf("%s START updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
-            date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
+        if ($this->hasOutput()) {
+            $this->output->writeln(sprintf("%s START updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
+                    date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d')));
+        }
 
         // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
@@ -109,7 +117,10 @@ class RevenueEditor implements RevenueEditorInterface
             /**
              * @var RootReportInterface $report
              */
-            echo sprintf("%s updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d'));
+            if ($this->hasOutput()) {
+                $this->output->writeln(sprintf("%s updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d')));
+            }
+
             // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
             /**
              * @var RootReportInterface $report
@@ -120,7 +131,9 @@ class RevenueEditor implements RevenueEditorInterface
             $this->om->flush();
             $this->om->detach($report);
 
-            echo sprintf("%s finish updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d'));
+            if ($this->hasOutput()) {
+                $this->output->writeln(sprintf("%s finish updating report '%s' on Date %s\n", date('c'), $report->getName(), $report->getDate()->format('Y-m-d')));
+            }
 
             unset($report);
 
@@ -128,8 +141,10 @@ class RevenueEditor implements RevenueEditorInterface
 
         }
 
-        echo sprintf("%s FINISH updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
-            date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d'));
+        if ($this->hasOutput()) {
+            $this->output->writeln(sprintf("%s FINISH updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
+                    date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d')));
+        }
 
         return $this;
     }
@@ -159,4 +174,13 @@ class RevenueEditor implements RevenueEditorInterface
         return $this;
     }
 
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+    }
+
+    protected function hasOutput()
+    {
+        return null !== $this->output;
+    }
 } 

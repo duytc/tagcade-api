@@ -10,4 +10,6 @@ services:
             - @tagcade.service.report.performance_report.est_cpm_calculator
             - @doctrine.orm.entity_manager
             - @tagcade.repository.ad_tag
+        calls:
+            - [setOutput, [@tagcade.service.console_output]]
 

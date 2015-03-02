@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display;
 
 use DateTime;
+use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -35,4 +36,7 @@ interface RevenueEditorInterface {
      * @return self
      */
     public function updateRevenueForAdNetworkSite(AdNetworkInterface $adNetwork, SiteInterface $site, $cpmRate, DateTime $startDate, DateTime $endDate = null);
+
+    public function setOutput(OutputInterface $output);
+
 }
