@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use DateTime;
 
@@ -28,4 +29,7 @@ interface BilledAmountEditorInterface
      * @return int number of updated publishers.
      */
     public function updateBilledAmountThresholdForAllPublishers(DateTime $date = null);
+
+    public function setOutput(OutputInterface $output);
+
 }

@@ -33,6 +33,8 @@ services:
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
             - @tagcade_user.domain_manager.publisher
             - @tagcade.service.date_util
+        calls:
+            - [setOutput, [@tagcade.service.console_output]]
 
     tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator

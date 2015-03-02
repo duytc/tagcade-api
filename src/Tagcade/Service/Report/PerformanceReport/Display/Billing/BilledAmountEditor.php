@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
@@ -46,6 +47,11 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      * @var DateUtilInterface
      */
     protected $dateUtil;
+
+    /**
+     * @var OutputInterface
+     */
+    protected $output;
 
     function __construct(
         ReportBuilderInterface $reportBuilder,
@@ -95,13 +101,18 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         }
 
         $params = new Params($this->dateUtil->getFirstDateInMonth($date), $this->dateUtil->getLastDateInMonth($date));
-        echo sprintf("%s start updating billed amount for publisher '%s' from %s to %s\n",
-            date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d'));
+
+        if ($this->hasOutput()) {
+            $this->output->writeln(sprintf("%s start updating billed amount for publisher '%s' from %s to %s\n",
+                    date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d')));
+        }
 
         $result = $this->doUpdateBilledAmountForPublisher($publisher, $params);
 
-        echo sprintf("%s finish updating billed amount for publisher '%s' from %s to %s\n",
-            date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d'));
+        if ($this->hasOutput()) {
+            $this->output->writeln(sprintf("%s finish updating billed amount for publisher '%s' from %s to %s\n",
+                    date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d')));
+        }
 
         return $result;
     }
@@ -192,8 +203,9 @@ class BilledAmountEditor implements BilledAmountEditorInterface
              * @var RootReportInterface $report
              */
             // very important, must be called manually because doctrine preUpdate listener doesn't work if changes happen in associated entities.
-            echo sprintf("%s start updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d'));
-
+            if ($this->hasOutput()) {
+                $this->output->writeln(sprintf("%s start updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d')));
+            }
             /**
              * @var RootReportInterface $report
              */
@@ -203,7 +215,9 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
             $this->om->detach($report);
 
-            echo sprintf("%s finish updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d'));
+            if ($this->hasOutput()) {
+                $this->output->writeln(sprintf("%s finish updating billed amount for report on %s\n", date('c'), $report->getDate()->format('Y-m-d')));
+            }
 
             unset($report);
 
@@ -214,6 +228,19 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
         return true;
     }
+
+    public function setOutput(OutputInterface $output)
+    {
+        $this->output = $output;
+
+        return $this;
+    }
+
+    private function hasOutput()
+    {
+        return null !== $this->output;
+    }
+
 
     protected function shouldGetNewRate(AdSlotReportInterface $reportRow, $newRate = null) {
         if (null !== $newRate && $newRate !== $reportRow->getBilledRate()) { // wanna recalculate report with new rate
