@@ -8,16 +8,24 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResul
 trait TopListFilterTrait
 {
     /**
-     * @param ReportResultInterface $reportCollection
+     * @param ReportResultInterface|boolean $reportCollection
      * @param $sortBy
      * @param int $limit
      * @param string $order
      * @return array
      */
-    protected function topList(ReportResultInterface $reportCollection, $sortBy, $limit = 10, $order = 'DESC')
+    protected function topList($reportCollection, $sortBy, $limit = 10, $order = 'DESC')
     {
         if (null === $sortBy) {
             throw new InvalidArgumentException('sort field must be defined');
+        }
+
+        if (!$reportCollection) {
+            return []; // return empty array
+        }
+
+        if (!$reportCollection instanceof ReportResultInterface) {
+            throw new InvalidArgumentException('Expect ReportResultInterface');
         }
         
         $reports = $reportCollection->getReports();
