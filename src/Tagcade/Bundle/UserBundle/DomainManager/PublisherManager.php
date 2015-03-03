@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserManagerInterface as FOSUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use FOS\UserBundle\Model\UserManagerInterface;
 use Rollerworks\Bundle\MultiUserBundle\Model\DelegatingUserManager;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
@@ -21,16 +22,13 @@ class PublisherManager implements PublisherManagerInterface
     const ROLE_ADMIN = 'ROLE_ADMIN';
 
     /**
-     * @var DelegatingUserManager
+     * @var UserManagerInterface
      */
     protected $FOSUserManager;
 
-    protected $userPublisherSystem;
-
-    public function __construct(FOSUserManagerInterface $userManager, $userPublisherSystem)
+    public function __construct(UserManagerInterface $userManager)
     {
         $this->FOSUserManager = $userManager;
-        $this->FOSUserManager->getUserDiscriminator()->setCurrentUser($userPublisherSystem);
     }
 
     /**

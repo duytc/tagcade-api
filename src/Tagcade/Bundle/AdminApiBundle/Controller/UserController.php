@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
@@ -76,10 +77,10 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     public function getTokenAction($publisherId)
     {
         /**
-         * @var UserManagerInterface $publisherManager
+         * @var PublisherManagerInterface $publisherManager
          */
-        $publisherManager = $this->get('tagcade_user_system_publisher.user_manager');
-        $publisher = $publisherManager->findUserBy(['id'=>$publisherId]);
+        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+        $publisher = $publisherManager->findPublisher($publisherId);
 
         if (!$publisher) {
             throw new NotFoundHttpException('That publisher does not exist');

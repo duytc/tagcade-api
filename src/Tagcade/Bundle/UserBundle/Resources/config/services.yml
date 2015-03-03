@@ -23,8 +23,7 @@ services:
     tagcade_user.domain_manager.publisher:
         class: Tagcade\Bundle\UserBundle\DomainManager\PublisherManager
         arguments:
-            - @fos_user.user_manager
-            - %tagcade.user_system.publisher%
+            - @tagcade_user_system_publisher.user_manager
 
     tagcade_user.handler.authentication_success:
         class: Tagcade\Bundle\UserBundle\Handler\AuthenticationSuccessHandler
