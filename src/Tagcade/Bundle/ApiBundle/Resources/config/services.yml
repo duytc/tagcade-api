@@ -14,7 +14,7 @@ parameters:
     tagcade.form.type.ad_network.class: Tagcade\Form\Type\AdNetworkFormType
 
     # jwt
-    tagcade_admin.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
+    tagcade_api.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
     tagcade.event.authentication_success_listener.class: Tagcade\Bundle\ApiBundle\EventListener\AuthenticationSuccessListener
     tagcade.event.jwt_created_listener.class: Tagcade\Bundle\ApiBundle\EventListener\JWTCreatedListener
 
@@ -282,12 +282,12 @@ services:
 
 
     # authentication
-    tagcade_admin.service.jwt_response_transformer:
-        class: %tagcade_admin.service.jwt_response_transformer.class%
+    tagcade_api.service.jwt_response_transformer:
+        class: %tagcade_api.service.jwt_response_transformer.class%
 
     tagcade.event.authentication_success_listener:
         class: %tagcade.event.authentication_success_listener.class%
-        arguments: [@tagcade_admin.service.jwt_response_transformer, @fos_user.user_manager]
+        arguments: [@tagcade_api.service.jwt_response_transformer, @fos_user.user_manager]
         tags:
             -
                name: kernel.event_listener
