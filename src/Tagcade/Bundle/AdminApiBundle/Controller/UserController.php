@@ -67,6 +67,23 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         return $adNetworkManager->getAdNetworksForPublisher($publisher);
     }
 
+    public function getTokenAction($publisherId)
+    {
+        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+        $publisher = $publisherManager->findPublisher($publisherId);
+
+        if (!$publisher) {
+            throw new NotFoundHttpException('That publisher does not exist');
+        }
+
+        $jwtManager = $this->get('lexik_jwt_authentication.jwt_manager');
+        $jwtTransformer = $this->get('tagcade_api.service.jwt_response_transformer');
+
+        $tokenString = $jwtManager->create($publisher);
+
+        return $jwtTransformer->transform(['token' => $tokenString], $publisher);
+    }
+
     /**
      * Create a user from the submitted data
      *
