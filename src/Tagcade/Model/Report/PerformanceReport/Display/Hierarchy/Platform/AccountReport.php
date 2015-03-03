@@ -59,8 +59,9 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
 
     protected function setDefaultName()
     {
-        if ($this->publisher instanceof UserEntityInterface) {
-            $this->setName($this->publisher->getUsername());
+        if ($this->publisher instanceof PublisherInterface) {
+            $name = null !== $this->publisher->getCompany() ? $this->publisher->getCompany() : $this->publisher->getUsername();
+            $this->setName($name);
         }
     }
 }
