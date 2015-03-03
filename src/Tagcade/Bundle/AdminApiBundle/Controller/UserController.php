@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
+use FOS\UserBundle\Model\UserManagerInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -67,10 +68,18 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         return $adNetworkManager->getAdNetworksForPublisher($publisher);
     }
 
+    /**
+     * Get token for publisher only
+     * @param $publisherId
+     * @return array
+     */
     public function getTokenAction($publisherId)
     {
-        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
-        $publisher = $publisherManager->findPublisher($publisherId);
+        /**
+         * @var UserManagerInterface $publisherManager
+         */
+        $publisherManager = $this->get('tagcade_user_system_publisher.user_manager');
+        $publisher = $publisherManager->findUserBy(['id'=>$publisherId]);
 
         if (!$publisher) {
             throw new NotFoundHttpException('That publisher does not exist');
