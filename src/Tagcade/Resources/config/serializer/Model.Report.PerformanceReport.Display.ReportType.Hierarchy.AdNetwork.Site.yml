@@ -5,6 +5,10 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Si
             type: integer
         getAdNetworkId:
             type: integer
+        getSiteName:
+            type: string
+        getAdNetworkName:
+            type: string
     properties:
         site:
             exclude: true
