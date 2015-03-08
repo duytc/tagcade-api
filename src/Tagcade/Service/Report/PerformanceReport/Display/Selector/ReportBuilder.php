@@ -180,11 +180,11 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getSiteAdNetworksReport(SiteInterface $site, Params $params)
     {
-        $adNetworks = $this->getAdNetworksFromSite($site);
+        $adNetworks = $this->getAdNetworksForSite($site);
 
         $reportTypes = array_map(
-            function ($adNetwork) {
-                return new AdNetworkReportTypes\AdNetwork($adNetwork);
+            function ($adNetwork) use($site) {
+                return new AdNetworkReportTypes\Site($site, $adNetwork);
             },
             $adNetworks
         );
@@ -288,27 +288,19 @@ class ReportBuilder implements ReportBuilderInterface
     /**
      * @param SiteInterface $site
      * @return AdNetworkInterface[]
+     * @todo this should be a method of the AdNetworkManager
      */
-    protected function getAdNetworksFromSite(SiteInterface $site)
+    protected function getAdNetworksForSite(SiteInterface $site)
     {
         $adNetworks = [];
 
-        $adSlots = $site->getAdSlots()->toArray();
+        $adTags = $this->adTagManager->getAdTagsForSite($site);
 
-        array_walk(
-            $adSlots,
-            function(AdSlotInterface $adSlot) use (&$adNetworks){
-                $adTags = $adSlot->getAdTags();
-                foreach ($adTags as $adTag) {
-                    /**
-                     * @var AdTagInterface $adTag
-                     */
-                    if (!in_array($adTag->getAdNetwork(), $adNetworks)) {
-                        $adNetworks[] = $adTag->getAdNetwork();
-                    }
-                }
+        foreach ($adTags as $adTag) {
+            if (!in_array($adTag->getAdNetwork(), $adNetworks, $strict = true)) {
+                $adNetworks[] = $adTag->getAdNetwork();
             }
-        );
+        }
 
         return $adNetworks;
     }
