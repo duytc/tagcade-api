@@ -62,6 +62,22 @@ class Site extends AbstractCalculatedReportType
     }
 
     /**
+     * @return null|string
+     */
+    public function getSiteName()
+    {
+        return $this->site->getName();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getAdNetworkName()
+    {
+        return $this->adNetwork->getName();
+    }
+
+    /**
      * @inheritdoc
      */
     public function matchesReport(ReportInterface $report)
