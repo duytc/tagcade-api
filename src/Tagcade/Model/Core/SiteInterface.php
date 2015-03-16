@@ -51,4 +51,16 @@ interface SiteInterface extends ModelInterface
      * @return ArrayCollection
      */
     public function getAdSlots();
+
+    /**
+     * @return boolean|null
+     */
+    public function getEnableSourceReport();
+
+    /**
+     * @param boolean $enableSourceReport
+     */
+    public function setEnableSourceReport($enableSourceReport);
+
+    public function getSourceReportSiteConfigs();
 }

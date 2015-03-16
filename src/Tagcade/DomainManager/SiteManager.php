@@ -83,4 +83,20 @@ class SiteManager implements SiteManagerInterface
     {
         return $this->repository->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
     }
+
+    public function getSitesThatHaveSourceReportConfigForPublisher(PublisherInterface $publisher, $hasSourceReportConfig = true)
+    {
+        return $this->repository->getSitesThatHastConfigSourceReportForPublisher($publisher, $hasSourceReportConfig);
+    }
+
+    public function getSitesThatEnableSourceReportForPublisher(PublisherInterface $publisher, $enableSourceReport = true) {
+        return $this->repository->getSitesThatEnableSourceReportForPublisher($publisher, $enableSourceReport);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesThatEnableSourceReport($enableSourceReport = true) {
+        return $this->repository->getAllSitesThatEnableSourceReport($enableSourceReport);
+    }
 }

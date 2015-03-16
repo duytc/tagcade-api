@@ -9,11 +9,10 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Bundle\AdminApiBundle\Repository\ActionLogRepositoryInterface;
-use Tagcade\Exception\LogicException;
 use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Domain\DTO\ActionLog;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
+
 
 /**
  * @Rest\RouteResource("Logs")

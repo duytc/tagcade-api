@@ -1,0 +1,34 @@
+Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig:
+    type: entity
+    table: source_report_email_config
+    repositoryClass: Tagcade\Bundle\AdminApiBundle\Repository\SourceReportEmailConfigRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        email:
+            type: string
+            length: 255
+            unique: true
+
+        includedAll:
+            type: boolean
+#            nullable: false
+            options:
+                default: false
+
+        active:
+            type: boolean
+#            nullable: false
+            options:
+                default: true
+
+    oneToMany:
+        sourceReportSiteConfigs:
+            targetEntity: Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig
+            mappedBy: sourceReportEmailConfig
+            cascade:
+                - persist
+                - remove

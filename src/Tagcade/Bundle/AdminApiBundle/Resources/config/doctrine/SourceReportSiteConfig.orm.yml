@@ -1,0 +1,19 @@
+Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig:
+    type: entity
+    table: source_report_site_config
+    repositoryClass: Tagcade\Bundle\AdminApiBundle\Repository\SourceReportSiteConfigRepository
+    uniqueConstraints:
+        unique_source_report_site_config_idx:
+            columns:
+                - source_report_email_config_id #column
+                - site_id # underscore column name
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        site:
+            targetEntity: Tagcade\Entity\Core\Site
+        sourceReportEmailConfig:
+            targetEntity: Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig

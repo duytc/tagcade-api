@@ -7,3 +7,13 @@ admin_api_log:
     type: rest
     resource: Tagcade\Bundle\AdminApiBundle\Controller\ActionLogController
     name_prefix: admin_api_1_
+
+admin_api_source_report_email_config:
+    type: rest
+    resource: Tagcade\Bundle\AdminApiBundle\Controller\SourceReportEmailConfigController
+    name_prefix: admin_api_1_
+
+admin_api_source_report_site_config:
+    type: rest
+    resource: Tagcade\Bundle\AdminApiBundle\Controller\SourceReportSiteConfigController
+    name_prefix: admin_api_1_

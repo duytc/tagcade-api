@@ -55,4 +55,17 @@ interface SiteManagerInterface
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    public function getSitesThatHaveSourceReportConfigForPublisher(PublisherInterface $publisher, $hasSourceReportConfig = true);
+
+    public function getSitesThatEnableSourceReportForPublisher(PublisherInterface $publisher);
+
+    /**
+     * get all sites that enable sourceReportConfig
+     *
+     * @param bool $enableSourceReport
+     *
+     * @return SiteInterface[]
+     */
+    public function getAllSitesThatEnableSourceReport($enableSourceReport = true);
 }

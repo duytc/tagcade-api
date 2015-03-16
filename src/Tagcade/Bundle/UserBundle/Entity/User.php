@@ -39,6 +39,14 @@ abstract class User extends BaseUser implements UserEntityInterface
     /**
      * @inheritdoc
      */
+    public function hasAnalyticsModule()
+    {
+        return in_array(static::MODULE_ANALYTICS, $this->getEnabledModules());
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function setEnabledModules(array $modules)
     {
         $this->replaceRoles(

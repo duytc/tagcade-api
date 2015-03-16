@@ -11,6 +11,8 @@ class Site extends SiteModel
     protected $name;
     protected $domain;
     protected $deletedAt;
+    protected $enableSourceReport;
+    protected $sourceReportSiteConfigs;
 
     public function __construct()
     {}

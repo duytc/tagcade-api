@@ -21,6 +21,10 @@ Tagcade\Entity\Core\Site:
         deletedAt:
             type: date
             nullable: true
+        enableSourceReport:
+            type: boolean
+            options:
+                default: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
@@ -29,3 +33,7 @@ Tagcade\Entity\Core\Site:
             targetEntity: AdSlot
             mappedBy: site
             cascade: ["persist", "remove", "detach"]
+        sourceReportSiteConfigs:
+            targetEntity: Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig
+            mappedBy: site
+            cascade: ["remove"]

@@ -100,4 +100,16 @@ interface PublisherInterface extends UserRoleInterface
      * @param mixed $country
      */
     public function setCountry($country);
+
+    /**
+     * @return bool $enableSourceReport
+     */
+    public function getEnabledModules();
+
+    /**
+     * @return bool
+     */
+    public function hasAnalyticsModule();
+
+    public function getEmail();
 }

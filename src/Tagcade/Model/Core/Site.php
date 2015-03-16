@@ -2,6 +2,8 @@
 
 namespace Tagcade\Model\Core;
 
+use Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig;
+use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,7 +19,11 @@ class Site implements SiteInterface
     protected $name;
     protected $domain;
     protected $adSlots;
-
+    protected $enableSourceReport;
+    /**
+     * @var SourceReportSiteConfigInterface[]
+     */
+    protected $sourceReportSiteConfigs;
     /**
      * @param string $name
      * @param string $domain
@@ -108,4 +114,26 @@ class Site implements SiteInterface
     {
         return $this->name;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEnableSourceReport()
+    {
+        return $this->enableSourceReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEnableSourceReport($enableSourceReport)
+    {
+        $this->enableSourceReport = $enableSourceReport;
+    }
+
+    public function getSourceReportSiteConfigs()
+    {
+        return $this->sourceReportSiteConfigs;
+    }
+
 }

@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
@@ -67,6 +68,44 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         }
 
         return $adNetworkManager->getAdNetworksForPublisher($publisher);
+    }
+
+    /**
+     * Get sites with option enable source report for publisher
+     *
+     * @param $publisherId
+     *
+     * @Rest\QueryParam(name="enableSourceReport", requirements="(true|false)", nullable=true)
+     *
+     * @return SiteInterface[]
+     * @throws NotFoundHttpException
+     */
+    public function getSitesAction($publisherId)
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $enableSourceReport = $paramFetcher->get('enableSourceReport');
+
+        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+        $publisher = $publisherManager->findPublisher((int)$publisherId);
+
+        if (!$publisher) {
+            throw new NotFoundHttpException('That publisher does not exist');
+        }
+
+        $siteManager = $this->get('tagcade.domain_manager.site');
+
+        if (null !== $enableSourceReport) {
+
+            if (!$publisher->hasAnalyticsModule()) {
+                throw new NotFoundHttpException('That publisher does not have analytics module enabled');
+            }
+
+            $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
+
+            return $siteManager->getSitesThatEnableSourceReportForPublisher($publisher, $enableSourceReport);
+        }
+
+        return $siteManager->getSitesForPublisher($publisher);
     }
 
     /**

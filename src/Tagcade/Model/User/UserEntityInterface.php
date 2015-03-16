@@ -58,6 +58,11 @@ interface UserEntityInterface extends ModelInterface
     public function hasDisplayModule();
 
     /**
+     * @return bool
+     */
+    public function hasAnalyticsModule();
+
+    /**
      * @return array
      */
     public function getUserRoles();
