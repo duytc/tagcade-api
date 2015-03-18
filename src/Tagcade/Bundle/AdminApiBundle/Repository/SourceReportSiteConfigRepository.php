@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\AdminApiBundle\Repository;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class SourceReportSiteConfigRepository extends EntityRepository implements SourceReportSiteConfigRepositoryInterface
@@ -29,6 +30,10 @@ class SourceReportSiteConfigRepository extends EntityRepository implements Sourc
      */
     public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, $emailConfigId)
     {
+        if (!is_int($emailConfigId)) {
+            throw new InvalidArgumentException('expect integer for email config id');
+        }
+
         $qb = $this->createQueryBuilder('cf')
             ->join('cf.site', 'st')
             ->where('st.publisher = :publisher_id')
