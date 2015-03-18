@@ -49,14 +49,4 @@ interface SourceReportSiteConfigManagerInterface
      *
      */
     public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, $emailConfigId);
-
-    /**
-     * Get source report site config for and emailConfig
-     *
-     * @param int $emailConfigId
-     *
-     * @return SourceReportSiteConfigInterface[]
-     *
-     */
-    public function getSourceReportSiteConfigForEmailConfig($emailConfigId);
 }

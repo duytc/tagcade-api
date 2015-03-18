@@ -17,13 +17,11 @@ class SourceReportSiteConfigManager implements SourceReportSiteConfigManagerInte
 {
     protected $om;
     protected $repository;
-    protected $sourceReportEmailConfigManager;
 
-    public function __construct(ObjectManager $om, SourceReportSiteConfigRepositoryInterface $repository, SourceReportEmailConfigManagerInterface $sourceReportEmailConfigManager)
+    public function __construct(ObjectManager $om, SourceReportSiteConfigRepositoryInterface $repository)
     {
         $this->om = $om;
         $this->repository = $repository;
-        $this->sourceReportEmailConfigManager = $sourceReportEmailConfigManager;
     }
 
     /**
@@ -130,22 +128,6 @@ class SourceReportSiteConfigManager implements SourceReportSiteConfigManagerInte
      */
     public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, $emailConfigId)
     {
-        if(!$emailConfig = $this->sourceReportEmailConfigManager->find($emailConfigId)){
-            throw new NotFoundHttpException('That EmailConfig does not exist');
-        }
-
-        return $this->repository->getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfig);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSourceReportSiteConfigForEmailConfig($emailConfigId)
-    {
-        if(!$emailConfig = $this->sourceReportEmailConfigManager->find($emailConfigId)){
-            throw new NotFoundHttpException('That EmailConfig does not exist');
-        }
-
-        return $this->repository->getSourceReportSiteConfigForEmailConfig($emailConfig);
+        return $this->repository->getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfigId);
     }
 }

@@ -50,13 +50,13 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
     {
         $publisher = $this->getPublisher($publisherId);
 
-        $sourceReportSiteConfigManager = $this -> get('tagcade_admin_api.domain_manager.source_report_site_config');
+        $sourceReportSiteConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_site_config');
 
-        return $sourceReportSiteConfigManager -> getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfigId);
+        return $sourceReportSiteConfigManager->getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfigId);
     }
 
     /**
-     * Get source report site configs for and emailConfig
+     * Get source report site configs for emailConfig
      *
      * @Rest\Get("/sourcereportsiteconfigs/emailConfigs/{emailConfigId}", requirements={"emailConfigId" = "\d+"})
      *
@@ -68,9 +68,16 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      */
     public function getSourceReportSiteConfigForEmailConfigAction($emailConfigId)
     {
-        $sourceReportSiteConfigManager = $this -> get('tagcade_admin_api.domain_manager.source_report_site_config');
+        $sourceReportEmailConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_email_config');
 
-        return $sourceReportSiteConfigManager -> getSourceReportSiteConfigForEmailConfig($emailConfigId);
+        $emailConfig = $sourceReportEmailConfigManager->find($emailConfigId);
+
+        if (!$emailConfig instanceof SourceReportEmailConfigInterface) {
+            return $this->view(null, Codes::HTTP_NOT_FOUND);
+
+        }
+
+        return $emailConfig->getSourceReportSiteConfigs();
     }
 
     /**
@@ -190,6 +197,6 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      */
     protected function getHandler()
     {
-        return $this -> container -> get('tagcade_admin_api.handler.source_report_site_config');
+        return $this->container->get('tagcade_admin_api.handler.source_report_site_config');
     }
 }

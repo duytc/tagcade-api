@@ -27,20 +27,10 @@ interface SourceReportSiteConfigRepositoryInterface extends ObjectRepository
      *
      * @param PublisherInterface $publisher
      *
-     * @param SourceReportEmailConfigInterface $emailConfig
+     * @param int $emailConfigId
      *
      * @return SourceReportSiteConfigInterface[]
      *
      */
-    public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, SourceReportEmailConfigInterface $emailConfig);
-
-    /**
-     * Get source report site config for emailConfig
-     *
-     * @param SourceReportEmailConfigInterface $emailConfig
-     *
-     * @return SourceReportSiteConfigInterface[]
-     *
-     */
-    public function getSourceReportSiteConfigForEmailConfig(SourceReportEmailConfigInterface $emailConfig);
-} 
+    public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, $emailConfigId);
+}

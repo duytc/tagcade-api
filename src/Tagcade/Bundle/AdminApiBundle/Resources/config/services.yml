@@ -115,4 +115,3 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade_admin_api.repository.source_report_site_config
-            - @tagcade_admin_api.domain_manager.source_report_email_config
