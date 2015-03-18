@@ -13,6 +13,7 @@ use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SourceReportSiteConfigManagerInterface
 {
@@ -37,4 +38,25 @@ interface SourceReportSiteConfigManagerInterface
      */
     public function saveSourceReportConfig(SourceReportEmailConfigInterface $emailConfig, array $sites);
 
+    /**
+     * Get source report site config for publisher and emailConfig
+     *
+     * @param PublisherInterface $publisher
+     *
+     * @param int $emailConfigId
+     *
+     * @return SourceReportSiteConfigInterface[]
+     *
+     */
+    public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, $emailConfigId);
+
+    /**
+     * Get source report site config for and emailConfig
+     *
+     * @param int $emailConfigId
+     *
+     * @return SourceReportSiteConfigInterface[]
+     *
+     */
+    public function getSourceReportSiteConfigForEmailConfig($emailConfigId);
 }

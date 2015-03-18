@@ -85,7 +85,6 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
         return $this->repository->getSourceReportEmailConfigForPublisher($publisher);
     }
 
-
     /**
      * Save SourceReportConfig
      *

@@ -4,22 +4,26 @@ namespace Tagcade\Bundle\AdminApiBundle\DomainManager;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Bundle\AdminApiBundle\Repository\SourceReportSiteConfigRepositoryInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class SourceReportSiteConfigManager implements SourceReportSiteConfigManagerInterface
 {
     protected $om;
     protected $repository;
+    protected $sourceReportEmailConfigManager;
 
-    public function __construct(ObjectManager $om, SourceReportSiteConfigRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, SourceReportSiteConfigRepositoryInterface $repository, SourceReportEmailConfigManagerInterface $sourceReportEmailConfigManager)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->sourceReportEmailConfigManager = $sourceReportEmailConfigManager;
     }
 
     /**
@@ -112,5 +116,36 @@ class SourceReportSiteConfigManager implements SourceReportSiteConfigManagerInte
         }
 
         $this->om->flush();
+    }
+
+    /**
+     * Get source report site config for publisher and email
+     *
+     * @param PublisherInterface $publisher
+     *
+     * @param int $emailConfigId
+     *
+     * @return SourceReportSiteConfigInterface[]
+     *
+     */
+    public function getSourceReportSiteConfigForPublisherAndEmailConfig(PublisherInterface $publisher, $emailConfigId)
+    {
+        if(!$emailConfig = $this->sourceReportEmailConfigManager->find($emailConfigId)){
+            throw new NotFoundHttpException('That EmailConfig does not exist');
+        }
+
+        return $this->repository->getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfig);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSourceReportSiteConfigForEmailConfig($emailConfigId)
+    {
+        if(!$emailConfig = $this->sourceReportEmailConfigManager->find($emailConfigId)){
+            throw new NotFoundHttpException('That EmailConfig does not exist');
+        }
+
+        return $this->repository->getSourceReportSiteConfigForEmailConfig($emailConfig);
     }
 }

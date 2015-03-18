@@ -4,11 +4,14 @@ namespace Tagcade\Bundle\AdminApiBundle\Controller;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
+use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * Class SourceReportSiteConfigController
@@ -28,6 +31,46 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
     public function getAction($siteConfigId)
     {
         return $this -> one($siteConfigId);
+    }
+
+    /**
+     * Get source report site configs for publisher and email
+     *
+     * @Rest\Get("/sourcereportsiteconfigs/accounts/{publisherId}/emailConfigs/{emailConfigId}", requirements={"publisherId" = "\d+", "emailConfigId" = "\d+"})
+     *
+     * @param int $publisherId
+     *
+     * @param int $emailConfigId
+     *
+     * @return SourceReportSiteConfigInterface[]
+     *
+     * @throws NotFoundHttpException if publisher|emailConfig not existed
+     */
+    public function getSourceReportSiteConfigForPublisherAndEmailConfigAction($publisherId, $emailConfigId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        $sourceReportSiteConfigManager = $this -> get('tagcade_admin_api.domain_manager.source_report_site_config');
+
+        return $sourceReportSiteConfigManager -> getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfigId);
+    }
+
+    /**
+     * Get source report site configs for and emailConfig
+     *
+     * @Rest\Get("/sourcereportsiteconfigs/emailConfigs/{emailConfigId}", requirements={"emailConfigId" = "\d+"})
+     *
+     * @param int $emailConfigId
+     *
+     * @return SourceReportSiteConfigInterface[]
+     *
+     * @throws NotFoundHttpException if emailConfig not existed
+     */
+    public function getSourceReportSiteConfigForEmailConfigAction($emailConfigId)
+    {
+        $sourceReportSiteConfigManager = $this -> get('tagcade_admin_api.domain_manager.source_report_site_config');
+
+        return $sourceReportSiteConfigManager -> getSourceReportSiteConfigForEmailConfig($emailConfigId);
     }
 
     /**
@@ -97,16 +140,6 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
     }
 
     /**
-     * Create new SourceReportSiteConfig with all emailConfigIds and siteIds in $request as {"emails": array emcfIds, "sites": array siteIds}
-     *
-     * @param Request $request
-     */
-    public function postAction(Request $request)
-    {
-        //not yet implemented
-    }
-
-    /**
      * Delete a SourceReportSiteConfig
      *
      * @param $siteConfigId
@@ -114,7 +147,26 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      */
     public function deleteAction($siteConfigId)
     {
-        return $this->delete($siteConfigId);
+       return $this->delete($siteConfigId);
+    }
+
+    /**
+     * @param $publisherId
+     * @return PublisherInterface
+     *
+     * @throws NotFoundHttpException
+     */
+    protected function getPublisher($publisherId)
+    {
+        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+
+        $publisher = $publisherManager->findPublisher((int)$publisherId);
+
+        if (!$publisher) {
+            throw new NotFoundHttpException('That publisher does not exist');
+        }
+
+        return $publisher;
     }
 
     /**

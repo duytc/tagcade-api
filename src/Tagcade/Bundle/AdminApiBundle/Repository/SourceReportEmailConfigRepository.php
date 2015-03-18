@@ -4,13 +4,18 @@ namespace Tagcade\Bundle\AdminApiBundle\Repository;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class SourceReportEmailConfigRepository extends EntityRepository implements SourceReportEmailConfigRepositoryInterface
 {
 
+    /**
+     * @inheritdoc
+     */
     public function getSourceReportEmailConfigForPublisher(PublisherInterface $publisher)
     {
+        //step 1. query all SourceReportEmailConfig by PublisherId
         $qb = $this->createQueryBuilder('emCf')
             ->join('emCf.sourceReportSiteConfigs', 'stCf')
             ->join('stCf.site', 'st')
@@ -18,7 +23,21 @@ class SourceReportEmailConfigRepository extends EntityRepository implements Sour
             ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
         ;
 
-        return $qb->getQuery()->getResult();
-    }
+        /**
+         * @var SourceReportEmailConfigInterface[] $result
+         */
+        $result = $qb->getQuery()->getResult();
 
-} 
+        //step 2. remove all Sites which belong to other Publishers
+        foreach($result as $emailConfig){
+            $siteConfigs = $emailConfig->getSourceReportSiteConfigs();
+            foreach($siteConfigs as $idx => $siteConfig){
+                if($publisher->getId() !== $siteConfig->getSite()->getPublisherId()){
+                    unset($siteConfigs[$idx]);
+                }
+            }
+        }
+
+        return $result;
+    }
+}

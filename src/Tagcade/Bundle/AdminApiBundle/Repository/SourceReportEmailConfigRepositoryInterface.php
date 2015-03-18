@@ -19,4 +19,4 @@ interface SourceReportEmailConfigRepositoryInterface extends ObjectRepository
      *
      */
     public function getSourceReportEmailConfigForPublisher(PublisherInterface $publisher);
-} 
+}
