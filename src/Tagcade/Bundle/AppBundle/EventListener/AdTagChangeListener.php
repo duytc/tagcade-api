@@ -40,7 +40,7 @@ class AdTagChangeListener
     // Truly refresh cache invocation
     public function postFlush(PostFlushEventArgs $args)
     {
-        if (isset($this->changedEntities) || !is_array($this->changedEntities) || count($this->changedEntities) < 1) {
+        if (!isset($this->changedEntities) || !is_array($this->changedEntities) || count($this->changedEntities) < 1) {
             return;
         }
 
