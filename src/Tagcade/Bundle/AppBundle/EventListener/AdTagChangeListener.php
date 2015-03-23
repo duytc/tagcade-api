@@ -32,15 +32,15 @@ class AdTagChangeListener
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $changedEntities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions());
+        $tmp = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions());
 
-        $this->changedEntities = $changedEntities;
+        $this->changedEntities = $tmp;
     }
 
     // Truly refresh cache invocation
     public function postFlush(PostFlushEventArgs $args)
     {
-        if (null === $this->changedEntities || count($this->changedEntities) < 1) {
+        if (isset($this->changedEntities) || !is_array($this->changedEntities) || count($this->changedEntities) < 1) {
             return;
         }
 
