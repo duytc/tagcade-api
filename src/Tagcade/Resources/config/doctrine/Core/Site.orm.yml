@@ -24,7 +24,7 @@ Tagcade\Entity\Core\Site:
         enableSourceReport:
             type: boolean
             options:
-                default: true
+                default: false
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
