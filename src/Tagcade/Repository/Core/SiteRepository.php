@@ -60,4 +60,41 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getSitesThatHastConfigSourceReportForPublisher(PublisherInterface $publisher, $hasSourceReportConfig = true)
+    {
+        $qb = $this->createQueryBuilder('st')
+            ->where('st.publisher = :publisher_id')
+            ->leftJoin('st.sourceReportSiteConfigs', 'cf')
+            ->andWhere($hasSourceReportConfig ? 'cf.site IS NOT NULL' : 'cf.site IS NULL')
+            ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getSitesThatEnableSourceReportForPublisher(PublisherInterface $publisher, $enableSourceReport = true)
+    {
+        $qb = $this->createQueryBuilder('st')
+            ->where('st.enableSourceReport = :enableSourceReport')
+            ->andWhere('st.publisher = :publisher_id')
+            ->setParameter('enableSourceReport', $enableSourceReport, Type::BOOLEAN)
+            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAllSitesThatEnableSourceReport($enableSourceReport = true)
+    {
+        $qb = $this->createQueryBuilder('st')
+            ->where('st.enableSourceReport = :enableSourceReport')
+            ->setParameter('enableSourceReport', $enableSourceReport, Type::BOOLEAN)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+
 }

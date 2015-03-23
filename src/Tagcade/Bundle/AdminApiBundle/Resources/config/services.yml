@@ -29,3 +29,89 @@ services:
             - { name: kernel.event_listener, event: tagcade.events.handler_event, method: onHandlerEvent }
             - { name: kernel.event_listener, event: tagcade_user.events.login_success, method: onHandlerEvent }
 
+
+    # source_report_email_config_repository, input: em=Entity\SourceReportEmailConfig
+    tagcade_admin_api.repository.source_report_email_config:
+        class: Tagcade\Bundle\AdminApiBundle\Repository\SourceReportEmailConfigRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig
+
+    # using for generate sourceReportConfig JSON
+    tagcade_admin_api.service.source_report_config:
+        class: Tagcade\Bundle\AdminApiBundle\Service\SourceReportConfigService
+        public: true
+        arguments:
+            - @tagcade_admin_api.domain_manager.source_report_email_config
+            - @tagcade.domain_manager.site
+
+    # site change-event listener, auto add/remove from SourceReportSiteConfig and SourceReportEmailConfig
+    tagcade_admin_api.event_listener.site_change_listener:
+        class: Tagcade\Bundle\AdminApiBundle\EventListener\SiteChangeListener
+        arguments:
+            - @event_dispatcher
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    # update source report config event listener
+    tagcade_admin_api.event_listener.update_source_report_config_listener:
+        class: Tagcade\Bundle\AdminApiBundle\EventListener\UpdateSourceReportConfigListener
+        arguments:
+            - @tagcade_admin_api.domain_manager.source_report_email_config
+            - @tagcade_admin_api.domain_manager.source_report_site_config
+        tags:
+            - { name: kernel.event_listener, event: tagcade_admin_api.event.new_source_config, method: onNewSiteThatEnableSourceReportInserted }
+            - { name: kernel.event_listener, event: tagcade_admin_api.event.update_source_config, method: onSiteThatEnableSourceReportUpdated }
+
+    # source_report_email_config_form_type, no input
+    tagcade_admin_api.form.type.source_report_email_config:
+        class: Tagcade\Bundle\AdminApiBundle\Form\Type\SourceReportEmailConfigFormType
+        tags:
+            - { name: form.type, alias: tagcade_form_admin_api_source_report_email_config }
+
+    # source_report_email_config_handler: input: formFactory=form.factory, formType=form.type.source_report_email_config, domainManager=domain_manager.source_report_email_config
+    tagcade_admin_api.handler.source_report_email_config:
+        class: Tagcade\Bundle\AdminApiBundle\Handler\SourceReportEmailConfigHandler
+        arguments:
+            - @form.factory
+            - @tagcade_admin_api.form.type.source_report_email_config
+            - @tagcade_admin_api.domain_manager.source_report_email_config
+
+    # source_report_email_config_manager (DomainManager), input: om=entity_manager, repository=repository.source_report_email_config
+    tagcade_admin_api.domain_manager.source_report_email_config:
+        class: Tagcade\Bundle\AdminApiBundle\DomainManager\SourceReportEmailConfigManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade_admin_api.repository.source_report_email_config
+
+    # source_report_site_config_repository, input: em=Entity\SourceReportSiteConfig
+    tagcade_admin_api.repository.source_report_site_config:
+        class: Tagcade\Bundle\AdminApiBundle\Repository\SourceReportSiteConfigRepository
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig
+
+    # source_report_site_config_form_type, no input
+    tagcade_admin_api.form.type.source_report_site_config:
+        class: Tagcade\Bundle\AdminApiBundle\Form\Type\SourceReportSiteConfigFormType
+        tags:
+            - { name: form.type, alias: tagcade_form_admin_api_source_report_site_config }
+
+    # source_report_site_config_handler, input: formFactory=form.factory, formType=form.type.source_report_site_config, domainManager=domain_manager.source_report_site_config
+    tagcade_admin_api.handler.source_report_site_config:
+        class: Tagcade\Bundle\AdminApiBundle\Handler\SourceReportSiteConfigHandler
+        arguments:
+            - @form.factory
+            - @tagcade_admin_api.form.type.source_report_site_config
+            - @tagcade_admin_api.domain_manager.source_report_site_config
+
+    # source_report_site_config_manager (DomainManager), input: om=entity_manager, repository=repository.source_report_site_config
+    tagcade_admin_api.domain_manager.source_report_site_config:
+        class: Tagcade\Bundle\AdminApiBundle\DomainManager\SourceReportSiteConfigManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade_admin_api.repository.source_report_site_config

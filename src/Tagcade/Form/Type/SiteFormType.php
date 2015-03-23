@@ -3,10 +3,14 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class SiteFormType extends AbstractRoleSpecificFormType
 {
@@ -15,6 +19,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('name')
             ->add('domain')
+            ->add('enableSourceReport')
         ;
 
         if ($this->userRole instanceof AdminInterface) {
@@ -25,6 +30,20 @@ class SiteFormType extends AbstractRoleSpecificFormType
                     )
             );
         }
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                /**
+                 * @var SiteInterface $site
+                 */
+                $site = $event->getData();
+
+                if(!$site->getPublisher()->hasAnalyticsModule()) {
+                    $site->setEnableSourceReport(false);
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -38,6 +57,6 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
     public function getName()
     {
-        return 'tagcade_form_site';
+        return 'tagcade_form_site'; 
     }
 }

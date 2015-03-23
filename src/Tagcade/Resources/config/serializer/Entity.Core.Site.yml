@@ -13,3 +13,6 @@ Tagcade\Entity\Core\Site:
         domain:
             expose: true
             groups: [site.detail]
+        enableSourceReport:
+            expose: true
+            groups: [site.detail, site.summary]
