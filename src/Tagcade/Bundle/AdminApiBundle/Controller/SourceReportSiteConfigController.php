@@ -95,7 +95,7 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
     /**
      * Add Sites for emailConfigId with sites[id1, id2, ...]
      *
-     * @Rest\Post("sourcereportsiteconfigs/emails/{emailConfigId}", requirements={"emailConfigId" = "\d+"})
+     * @Rest\Post("sourcereportsiteconfigs/emailConfigs/{emailConfigId}", requirements={"emailConfigId" = "\d+"})
      *
      * @param Request $request
      * @param int $emailConfigId
