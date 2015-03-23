@@ -37,7 +37,7 @@ class SourceReportSiteConfigRepository extends EntityRepository implements Sourc
         $qb = $this->createQueryBuilder('cf')
             ->join('cf.site', 'st')
             ->where('st.publisher = :publisher_id')
-            ->andWhere('cf.sourceReportEmailConfig = :emailConfig')
+            ->andWhere('cf.sourceReportEmailConfig = :emailConfig_id')
             ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
             ->setParameter('emailConfig_id', $emailConfigId, TYPE::INTEGER)
         ;

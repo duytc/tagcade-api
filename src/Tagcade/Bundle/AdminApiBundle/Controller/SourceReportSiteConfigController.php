@@ -52,7 +52,7 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
 
         $sourceReportSiteConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_site_config');
 
-        return $sourceReportSiteConfigManager->getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, $emailConfigId);
+        return $sourceReportSiteConfigManager->getSourceReportSiteConfigForPublisherAndEmailConfig($publisher, (int)$emailConfigId);
     }
 
     /**
