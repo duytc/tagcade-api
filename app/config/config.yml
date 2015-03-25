@@ -39,6 +39,9 @@ swiftmailer:
     host:       "%mailer_host%"
     username:   "%mailer_user%"
     password:   "%mailer_password%"
+    port :      "%mailer_port%"
+    #encryption: ssl
+    #auth_mode:  login
     spool:      { type: memory }
 
 # Doctrine Configuration
@@ -144,6 +147,15 @@ tagcade_user_system_admin:
 tagcade_user_system_publisher:
     request_matcher: tagcade_user.request.user_system.request_matcher
     firewall_name: api
+    resetting:
+        token_ttl: 86400
+        email:
+            from_email:
+                address:        "%mailer_sender%"
+                sender_name:    "%mailer_sender_name%"
+        template:
+            email: TagcadeApiBundle:Resetting:email.txt.twig
+
 
 ######################################################
 

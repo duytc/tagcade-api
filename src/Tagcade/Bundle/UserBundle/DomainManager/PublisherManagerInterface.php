@@ -3,6 +3,7 @@
 namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use FOS\UserBundle\Model\UserInterface;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Exception\InvalidUserRoleException;
@@ -60,4 +61,31 @@ interface PublisherManagerInterface
      * @throws InvalidUserRoleException
      */
     public function findPublisher($id);
+
+    /**
+     * Finds a user by its username or email.
+     *
+     * @param string $usernameOrEmail
+     *
+     * @return UserInterface or null if user does not exist
+     */
+    public function findUserByUsernameOrEmail($usernameOrEmail);
+
+    /**
+     * Updates a user.
+     *
+     * @param UserInterface $token
+     *
+     * @return void
+     */
+    public function updateUser(UserInterface $token);
+
+    /**
+     * Finds a user by its confirmationToken.
+     *
+     * @param string $token
+     *
+     * @return UserInterface or null if user does not exist
+     */
+    public function findUserByConfirmationToken($token);
 }

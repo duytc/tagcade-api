@@ -19,6 +19,11 @@ security:
         tagcade_user:
             chain:
                 providers: [tagcade_user_publisher, tagcade_user_admin]
+        #
+        fos_userbundle:
+            id: fos_user.user_manager
+#            id: fos_user.user_provider.username
+#            id: fos_user.user_provider.username_email
 
     firewalls:
         dev:
@@ -39,6 +44,13 @@ security:
                 success_handler:    tagcade_user.handler.authentication_success
                 failure_handler:    lexik_jwt_authentication.handler.authentication_failure
             provider: tagcade_user
+
+        resetting:
+            pattern: ^/api/v1/resetting/
+            stateless: true
+            security: false
+            anonymous: ~
+            provider:  tagcade_user_publisher
 
         api:
             pattern:    ^/api/

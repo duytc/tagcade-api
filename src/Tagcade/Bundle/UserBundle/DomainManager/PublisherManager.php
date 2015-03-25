@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\UserBundle\DomainManager;
 
+use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface as FOSUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
@@ -107,5 +108,29 @@ class PublisherManager implements PublisherManagerInterface
         }
 
         return $publisher;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findUserByUsernameOrEmail($usernameOrEmail)
+    {
+        return $this->FOSUserManager->findUserByUsernameOrEmail($usernameOrEmail);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateUser(UserInterface $token)
+    {
+        return $this->FOSUserManager->updateUser($token);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findUserByConfirmationToken($token)
+    {
+        return $this->FOSUserManager->findUserByConfirmationToken($token);
     }
 }

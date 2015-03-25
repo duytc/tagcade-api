@@ -27,3 +27,21 @@ api_ad_network:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\AdNetworkController
     name_prefix:  api_1_
+
+#for reset password
+#fos_user_resetting:
+#    type: rest
+#    resource: @FOSUserBundle/Resources/config/routing/resetting.xml
+#    prefix: /resetting
+#
+#fos_user_resetting_send_email:
+tagcade_user_system_publisher_send_email:
+    path: /resetting/sendEmail
+    defaults: { _controller: TagcadeApiBundle:Resetting:sendEmail }
+    methods: [POST]
+#
+#fos_user_resetting_reset:
+tagcade_user_system_publisher_resetting_reset:
+    path: /resetting/reset/{token}
+    defaults: { _controller: TagcadeApiBundle:Resetting:reset }
+    methods: [GET|POST]
