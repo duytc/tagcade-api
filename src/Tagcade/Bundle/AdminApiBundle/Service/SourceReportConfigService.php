@@ -39,7 +39,7 @@ class SourceReportConfigService implements SourceReportConfigServiceInterface
         //step 1. build all "reports" for output
         $reports = [];
 
-        foreach($sites as $site) {
+        foreach ($sites as $site) {
             $itemObject = [
                 'domain' => $site->getDomain(),
                 'username' => $site->getPublisher()->getUser()->getUsername(),
@@ -53,25 +53,28 @@ class SourceReportConfigService implements SourceReportConfigServiceInterface
         //step 2. build all recipients for output
         $recipients = [];
 
-        foreach($emailConfigs as $emailConfig) {
+        foreach ($emailConfigs as $emailConfig) {
             /**
              * @var SourceReportEmailConfigInterface $emailConfig
              */
-            $siteConfigs = $emailConfig->getSourceReportSiteConfigs();
-            $sitesForThisEmailConfig = array_map(function (SourceReportSiteConfigInterface $siteConfig){
-                    return $siteConfig->getSite()->getDomain();
+            $siteConfigs = $emailConfig->getSourceReportSiteConfigs()->toArray();
+            $sitesForThisEmailConfig = array_map(function (SourceReportSiteConfigInterface $siteConfig) {
+                    return $this->formatSiteUrl($siteConfig->getSite()->getDomain());
                 },
-                (null === $siteConfigs || !is_array($siteConfigs))  ? [] : $siteConfigs
+                (null === $siteConfigs || !is_array($siteConfigs)) ? [] : $siteConfigs
             );
 
             $reportsForThisEmailConfig = $emailConfig->getIncludedAll() ? ["*"] : $sitesForThisEmailConfig;
 
-            $recipientItem = [
-                'email' => $emailConfig->getEmail(),
-                'reports' => $reportsForThisEmailConfig
-            ];
+            // only add reports for email if $reportsForThisEmailConfig is not null
+            if (null !== $reportsForThisEmailConfig && sizeof($reportsForThisEmailConfig) > 0) {
+                $recipientItem = [
+                    'email' => $emailConfig->getEmail(),
+                    'reports' => $reportsForThisEmailConfig
+                ];
 
-            $recipients[] = $recipientItem;
+                $recipients[] = $recipientItem;
+            }
         }
 
         //step 3. return json result
