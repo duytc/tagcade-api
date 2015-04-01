@@ -88,4 +88,7 @@ interface PublisherManagerInterface
      * @return UserInterface or null if user does not exist
      */
     public function findUserByConfirmationToken($token);
+
+    public function updateCanonicalFields(UserInterface $user);
+
 }

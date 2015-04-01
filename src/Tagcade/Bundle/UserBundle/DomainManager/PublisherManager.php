@@ -123,7 +123,7 @@ class PublisherManager implements PublisherManagerInterface
      */
     public function updateUser(UserInterface $token)
     {
-        return $this->FOSUserManager->updateUser($token);
+        $this->FOSUserManager->updateUser($token);
     }
 
     /**
@@ -133,4 +133,11 @@ class PublisherManager implements PublisherManagerInterface
     {
         return $this->FOSUserManager->findUserByConfirmationToken($token);
     }
+
+    public function updateCanonicalFields(UserInterface $user)
+    {
+        $this->FOSUserManager->updateCanonicalFields($user);
+    }
+
+
 }

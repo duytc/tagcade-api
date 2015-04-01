@@ -302,10 +302,7 @@ services:
                 event: 'lexik_jwt_authentication.on_jwt_created'
                 method: 'onJWTCreated'
 
-    tagcade_api.service.resetting_password:
-        class: Tagcade\Bundle\ApiBundle\Controller\ResettingController
-
-    tagcade_user_system_publisher.resetting.mailer:
+    tagcade_api.mailer.mailer:
         class: Tagcade\Bundle\ApiBundle\Mailer\Mailer
         arguments:
             - '@mailer'
@@ -316,9 +313,3 @@ services:
                 from_email:
                     resetting: %tagcade_user_system_publisher.resetting.email.from_email%
                 password_resetting_link: %password_resetting_link%
-
-    tagcade_user_system_publisher.listener.password_resetting:
-            class: Tagcade\Bundle\ApiBundle\EventListener\PasswordResettingListener
-            arguments: [@router, %fos_user.resetting.token_ttl%]
-            tags:
-                - { name: kernel.event_subscriber }

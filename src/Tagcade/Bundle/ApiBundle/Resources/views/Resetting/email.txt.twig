@@ -8,7 +8,7 @@
     {% autoescape false %}
     {#{{ 'resetting.email.message'|trans({'%username%': user.username, '%confirmationUrl%': confirmationUrl}) }}#}
     {% endautoescape %}
-    Dear {{ user.firstName }},
+    Dear {{ user.company }},
 
     Please click following link to reset your password:
     {{ confirmationUrl }}
