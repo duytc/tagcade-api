@@ -40,14 +40,16 @@ class SourceReportConfigService implements SourceReportConfigServiceInterface
         $reports = [];
 
         foreach ($sites as $site) {
+
+            $filteredDomain = $this->formatSiteUrl($site->getDomain());
             $itemObject = [
-                'domain' => $site->getDomain(),
+                'domain' => $filteredDomain,
                 'username' => $site->getPublisher()->getUser()->getUsername(),
                 'pub_id' => $site->getPublisherId(),
                 'site_id' => $site->getId(),
             ];
 
-            $reports[$this->formatSiteUrl($site->getDomain())] = $itemObject;
+            $reports[$filteredDomain] = $itemObject;
         }
 
         //step 2. build all recipients for output
