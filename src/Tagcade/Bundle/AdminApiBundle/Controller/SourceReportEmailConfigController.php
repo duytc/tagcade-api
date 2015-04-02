@@ -83,9 +83,11 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
     /**
      * Get JSON for all source report config
      *
+     * @Rest\Get("/sourcereportemailconfig/creatorconfig")
+     *
      * @return array
      */
-    public function getCreatorconfigAction()
+    public function getCreatorConfigAction()
     {
         //call service SourceReportConfigService to build JSON
         $sourceReportConfig = $this->get('tagcade_admin_api.service.source_report_config');
