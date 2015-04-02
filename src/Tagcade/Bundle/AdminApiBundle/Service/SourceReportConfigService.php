@@ -28,7 +28,7 @@ class SourceReportConfigService implements SourceReportConfigServiceInterface
     /**
      * @inheritdoc
      */
-    public function getAllSourceConfigAsJSON()
+    public function getAllSourceReportConfig()
     {
         //step 1. get all sites that has "enableSourceReport = true"
         $sites = $this->siteManager->getAllSitesThatEnableSourceReport();

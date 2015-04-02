@@ -49,5 +49,5 @@ interface SourceReportConfigServiceInterface
      *     ]
      * }
      */
-    public function getAllSourceConfigAsJSON();
+    public function getAllSourceReportConfig();
 } 
