@@ -1,8 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
-        "This file is @generated automatically"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
     "hash": "4c70430b0cf63e667d8505088fc86d45",
     "packages": [
@@ -1464,21 +1463,21 @@
         },
         {
             "name": "lexik/jwt-authentication-bundle",
-            "version": "v1.0.5",
+            "version": "v1.0.7",
             "target-dir": "Lexik/Bundle/JWTAuthenticationBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "b804d942be94d61a8fbd2f4b926ce4f6de99352f"
+                "reference": "c2503a085f600e995d9153f1664d2470d0647b6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/b804d942be94d61a8fbd2f4b926ce4f6de99352f",
-                "reference": "b804d942be94d61a8fbd2f4b926ce4f6de99352f",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/c2503a085f600e995d9153f1664d2470d0647b6b",
+                "reference": "c2503a085f600e995d9153f1664d2470d0647b6b",
                 "shasum": ""
             },
             "require": {
-                "namshi/jose": "~1.1",
+                "namshi/jose": "~2.2",
                 "php": ">=5.3.3",
                 "symfony/framework-bundle": "~2.3",
                 "symfony/symfony": "~2.3"
@@ -1530,7 +1529,7 @@
                 "jwt",
                 "rest"
             ],
-            "time": "2014-09-16 18:49:21"
+            "time": "2015-04-04 09:31:49"
         },
         {
             "name": "michelf/php-markdown",
@@ -1657,24 +1656,25 @@
         },
         {
             "name": "namshi/jose",
-            "version": "1.2.1",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/namshi/jose.git",
-                "reference": "cc2160c746bc2feb30de4723fc8c8dbfe72b1df7"
+                "reference": "886b20f54bc51639221a34f2a1be9a4a1fb80eca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/namshi/jose/zipball/cc2160c746bc2feb30de4723fc8c8dbfe72b1df7",
-                "reference": "cc2160c746bc2feb30de4723fc8c8dbfe72b1df7",
+                "url": "https://api.github.com/repos/namshi/jose/zipball/886b20f54bc51639221a34f2a1be9a4a1fb80eca",
+                "reference": "886b20f54bc51639221a34f2a1be9a4a1fb80eca",
                 "shasum": ""
             },
             "require": {
                 "lib-openssl": "*",
-                "php": ">=5.3.3"
+                "php": ">=5.3.3",
+                "phpseclib/phpseclib": "~0.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.*",
+                "phpunit/phpunit": "~4.5",
                 "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
@@ -1702,7 +1702,7 @@
                 "jwt",
                 "token"
             ],
-            "time": "2014-09-27 19:22:54"
+            "time": "2015-03-10 08:41:53"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -2037,6 +2037,104 @@
                 "type"
             ],
             "time": "2014-01-09 22:37:17"
+        },
+        {
+            "name": "phpseclib/phpseclib",
+            "version": "0.3.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpseclib/phpseclib.git",
+                "reference": "d15bba1edcc7c89e09cc74c5d961317a8b947bf4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d15bba1edcc7c89e09cc74c5d961317a8b947bf4",
+                "reference": "d15bba1edcc7c89e09cc74c5d961317a8b947bf4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "require-dev": {
+                "phing/phing": "~2.7",
+                "phpunit/phpunit": "~4.0",
+                "sami/sami": "~2.0",
+                "squizlabs/php_codesniffer": "~1.5"
+            },
+            "suggest": {
+                "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
+                "ext-mcrypt": "Install the Mcrypt extension in order to speed up a wide variety of cryptographic operations.",
+                "pear-pear/PHP_Compat": "Install PHP_Compat to get phpseclib working on PHP < 4.3.3."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Crypt": "phpseclib/",
+                    "File": "phpseclib/",
+                    "Math": "phpseclib/",
+                    "Net": "phpseclib/",
+                    "System": "phpseclib/"
+                },
+                "files": [
+                    "phpseclib/Crypt/Random.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                "phpseclib/"
+            ],
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jim Wigginton",
+                    "email": "terrafrost@php.net",
+                    "role": "Lead Developer"
+                },
+                {
+                    "name": "Patrick Monnerat",
+                    "email": "pm@datasphere.ch",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Andreas Fischer",
+                    "email": "bantu@phpbb.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Hans-Jürgen Petrich",
+                    "email": "petrich@tronic-media.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
+            "homepage": "http://phpseclib.sourceforge.net",
+            "keywords": [
+                "BigInteger",
+                "aes",
+                "asn.1",
+                "asn1",
+                "blowfish",
+                "crypto",
+                "cryptography",
+                "encryption",
+                "rsa",
+                "security",
+                "sftp",
+                "signature",
+                "signing",
+                "ssh",
+                "twofish",
+                "x.509",
+                "x509"
+            ],
+            "time": "2015-01-28 21:50:33"
         },
         {
             "name": "psr/log",
@@ -3953,7 +4051,9 @@
             "time": "2015-01-07 13:54:55"
         }
     ],
-    "aliases": [],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/user-bundle": 20,
@@ -3965,9 +4065,10 @@
         "liip/functional-test-bundle": 20,
         "webfactory/exceptions-bundle": 0
     },
-    "prefer-stable": false,
     "platform": {
         "php": "~5.5.0"
     },
-    "platform-dev": []
+    "platform-dev": [
+
+    ]
 }
