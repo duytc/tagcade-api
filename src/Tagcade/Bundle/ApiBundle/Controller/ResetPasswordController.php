@@ -89,7 +89,7 @@ class ResetPasswordController extends FOSRestController
         //using an event FOSUserEvents::SECURITY_IMPLICIT_LOGIN for RollerWorks auto setting user system as user_system_publisher (userDiscriminator->setCurrentUser(...))
         /** @var $dispatcher \Symfony\Component\EventDispatcher\EventDispatcherInterface */
         $dispatcher = $this->get('event_dispatcher');
-        $dispatcher ->dispatch(FOSUserEvents::SECURITY_IMPLICIT_LOGIN, new UserEvent($publisher, $request));
+        $dispatcher->dispatch(FOSUserEvents::SECURITY_IMPLICIT_LOGIN, new UserEvent($publisher, $request));
 
         //create form factory, set user discriminator as tagcade_user_system_publisher
         $formFactory = $this->get('rollerworks_multi_user.resetting.form.factory');
