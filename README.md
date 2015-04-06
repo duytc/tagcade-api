@@ -72,3 +72,24 @@ If there is something wrong with the token, you will see a response code of 401 
 
 In the Tagcade user interface, this complexity will be handled by AngularJS, however our customers will be able to use a provided PHP Library to also query our API.
 
+2) Running API Tests (codeception tests)
+---------------------------------
+
+Get codeception phar file and store in root folder
+
+```
+wget http://codeception.com/codecept.phar
+```
+
+run command for publisher:
+
+```
+codecept run api --group publisher --steps
+```
+
+
+run command for admin:
+
+```
+codecept run api --group admin --steps
+```
