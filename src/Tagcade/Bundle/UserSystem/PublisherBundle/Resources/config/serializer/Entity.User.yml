@@ -1,0 +1,41 @@
+Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
+    exclusion_policy: ALL
+    accessor_order: custom
+    custom_accessor_order:
+        - id
+        #- username, email, roles, enabledModules, userRoles, last_login, enabled: inherited from Tagcade\Bundle\UserBundle\Entity\User
+        - billingRate
+        - firstName
+        - lastName
+        - company
+        - phone
+        - city
+        - state
+        - address
+        - postalCode
+        - country
+    properties:
+        id:
+            expose: true
+            groups: [user.summary]
+        billingRate:
+            expose: true
+        firstName:
+            expose: true
+        lastName:
+            expose: true
+        company:
+            expose: true
+            groups: [user.summary]
+        phone:
+            expose: true
+        city:
+            expose: true
+        state:
+            expose: true
+        address:
+            expose: true
+        postalCode:
+            expose: true
+        country:
+            expose: true
