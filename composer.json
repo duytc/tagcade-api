@@ -38,7 +38,8 @@
         "phpunit/phpunit": "4.1.*",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "liip/functional-test-bundle":"dev-master",
-        "webfactory/exceptions-bundle": "@stable"
+        "webfactory/exceptions-bundle": "@stable",
+        "codeception/codeception": "*"
     },
     "scripts": {
         "post-install-cmd": [
