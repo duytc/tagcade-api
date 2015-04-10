@@ -21,16 +21,25 @@ class Site
         $I->seeResponseIsJson();
     }
 
-    public function deleteAdSlot(ApiTester $I) {
+    /**
+     * @depends addSite
+     */
+    public function patchSite(ApiTester $I) {
+        $I->sendGet(URL_API.'/sites');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API.'/sites/'.$item['id'], ['name' => 'Dtag.dev1']);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addSite
+     */
+    public function deleteSite(ApiTester $I) {
         $I->sendGet(URL_API.'/sites');
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendDELETE(URL_API.'/sites/'.$item['id']);
-        $I->seeResponseCodeIs(204);
-    }
-
-    public function patchSite(ApiTester $I) {
-        $I->sendPATCH(URL_API.'/sites/'.PARAMS_SITE, ['name' => 'Dtag.dev1']);
         $I->seeResponseCodeIs(204);
     }
 

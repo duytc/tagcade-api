@@ -19,9 +19,3 @@ define('END_DATE', $endDate->format('Y-m-d'));
 
 define('START_MONTH', $startMonth->format('Y-m'));
 define('END_MONTH', $endMonth->format('Y-m'));
-
-define('PARAMS_PUBLISHER', 2);
-define('PARAMS_SITE', 22);
-define('PARAMS_AD_NETWORK', 1);
-define('PARAMS_AD_SLOT', 6);
-define('PARAMS_AD_TAG', 7);

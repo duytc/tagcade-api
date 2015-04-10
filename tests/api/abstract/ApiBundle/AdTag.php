@@ -26,6 +26,31 @@ class AdTag
         $I->seeResponseCodeIs(201);
     }
 
+    /**
+     * @depends addAdTag
+     */
+    public function editAdTag(ApiTester $I) {
+        $I->sendGet(URL_API.'/adtags');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API.'/adtags/'.$item['id'], ['adSlot' => PARAMS_AD_SLOT, 'adNetwork' => PARAMS_AD_NETWORK, 'name' => 'adTag-test', 'html' => 'oki', 'frequencyCap' => 300, 'position' => 6, 'active' => true]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdTag
+     */
+    public function patchAdTag(ApiTester $I) {
+        $I->sendGet(URL_API.'/adtags');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API.'/adtags/'.$item['id'], ['adSlot' => PARAMS_AD_SLOT, 'html' => 'oki', 'frequencyCap' => 300]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdTag
+     */
     public function deleteAdTag(ApiTester $I) {
         $I->sendGet(URL_API.'/adtags');
         $item = array_pop($I->grabDataFromJsonResponse());
@@ -34,18 +59,8 @@ class AdTag
         $I->seeResponseCodeIs(204);
     }
 
-    public function editAdTag(ApiTester $I) {
-        $I->sendPUT(URL_API.'/adtags/'.PARAMS_AD_TAG, ['adSlot' => PARAMS_AD_SLOT, 'adNetwork' => PARAMS_AD_NETWORK, 'name' => 'adTag-test', 'html' => 'oki', 'frequencyCap' => 300, 'position' => 6, 'active' => true]);
-        $I->seeResponseCodeIs(204);
-    }
-
     public function editEstCpmAdTag(ApiTester $I) {
         $I->sendPUT(URL_API.'/adtags/'.PARAMS_AD_TAG.'/estcpm', ['estcpm' => 1]);
-        $I->seeResponseCodeIs(204);
-    }
-
-    public function patchAdTag(ApiTester $I) {
-        $I->sendPATCH(URL_API.'/adtags/'.PARAMS_AD_TAG, ['adSlot' => PARAMS_AD_SLOT, 'html' => 'oki', 'frequencyCap' => 300]);
         $I->seeResponseCodeIs(204);
     }
 }

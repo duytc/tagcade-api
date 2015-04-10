@@ -12,6 +12,8 @@ class ApiHelper extends \Codeception\Module
 
     public function _beforeSuite($settings = array())
     {
+        $this->_initParams($settings);
+
         $url = $settings['modules']['config']['REST']['url'] . URL_API . '/getToken';
 
         if ($this->adminToken === null) {
@@ -26,6 +28,29 @@ class ApiHelper extends \Codeception\Module
             $userPassword = $settings['modules']['login']['publisher']['password'];
 
             $this->token = $this->_getToken($url, $user, $userPassword);
+        }
+    }
+
+    private function _initParams($settings = array())
+    {
+        if (!defined('PARAMS_PUBLISHER')) {
+            define('PARAMS_PUBLISHER', $settings['modules']['params']['publisher']);
+        }
+
+        if (!defined('PARAMS_AD_NETWORK')) {
+            define('PARAMS_AD_NETWORK', $settings['modules']['params']['adNetwork']);
+        }
+
+        if (!defined('PARAMS_SITE')) {
+            define('PARAMS_SITE', $settings['modules']['params']['site']);
+        }
+
+        if (!defined('PARAMS_AD_SLOT')) {
+            define('PARAMS_AD_SLOT', $settings['modules']['params']['adSlot']);
+        }
+
+        if (!defined('PARAMS_AD_TAG')) {
+            define('PARAMS_AD_TAG', $settings['modules']['params']['adTag']);
         }
     }
 

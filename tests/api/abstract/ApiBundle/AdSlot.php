@@ -26,21 +26,36 @@ class AdSlot
         $I->seeResponseCodeIs(201);
     }
 
+    /**
+     * @depends addAdSlot
+     */
+    public function editAdSlot(ApiTester $I) {
+        $I->sendGet(URL_API.'/adslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API.'/adslots/'.$item['id'], ['site' => PARAMS_SITE, 'name' => 'dtag.test.adslot', 'height' => 200, 'width' => 300]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdSlot
+     */
+    public function patchAdSlot(ApiTester $I) {
+        $I->sendGet(URL_API.'/adslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API.'/adslots/'.$item['id'], ['site' => PARAMS_SITE, 'height' => 250]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdSlot
+     */
     public function deleteAdSlot(ApiTester $I) {
         $I->sendGet(URL_API.'/adslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendDELETE(URL_API.'/adslots/'.$item['id']);
-        $I->seeResponseCodeIs(204);
-    }
-
-    public function editAdSlot(ApiTester $I) {
-        $I->sendPUT(URL_API.'/adslots/'.PARAMS_AD_SLOT, ['site' => PARAMS_SITE, 'name' => 'dtag.test.adslot', 'height' => 200, 'width' => 300]);
-        $I->seeResponseCodeIs(204);
-    }
-
-    public function patchAdSlot(ApiTester $I) {
-        $I->sendPATCH(URL_API.'/adslots/'.PARAMS_AD_SLOT, ['site' => PARAMS_SITE, 'height' => 250]);
         $I->seeResponseCodeIs(204);
     }
 

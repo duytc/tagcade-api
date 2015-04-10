@@ -45,7 +45,27 @@ class AdNetwork
         $I->seeResponseIsJson();
     }
 
+    /**
+     * @depends addAdNetwork
+     */
+    public function patchAdNetwork(ApiTester $I) {
+        $I->sendGet(URL_API.'/adnetworks');
+        $items = $I->grabDataFromJsonResponse();
 
+        $id = 0;
+        foreach($items as $item) {
+            if($item['id'] > $id) {
+                $id = $item['id'];
+            }
+        };
+
+        $I->sendPATCH(URL_API.'/adnetworks/'.$id, ['defaultCpmRate' => 12]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdNetwork
+     */
     public function deleteAdNetwork(ApiTester $I) {
         $I->sendGet(URL_API.'/adnetworks');
         $items = $I->grabDataFromJsonResponse();
@@ -74,11 +94,6 @@ class AdNetwork
 
     public function editStatusBySiteAndByAdNetwork(ApiTester $I) {
         $I->sendPUt(URL_API.'/adnetworks/'.PARAMS_AD_NETWORK.'/sites/'.PARAMS_SITE.'/status?active=0');
-        $I->seeResponseCodeIs(204);
-    }
-
-    public function patchAdNetwork(ApiTester $I) {
-        $I->sendPATCH(URL_API.'/adnetworks/'.PARAMS_AD_NETWORK, ['defaultCpmRate' => 12]);
         $I->seeResponseCodeIs(204);
     }
 

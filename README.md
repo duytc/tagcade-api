@@ -80,6 +80,16 @@ Get codeception phar file and store in root folder
 ```
 wget http://codeception.com/codecept.phar
 ```
+Do setting params (id of entity) for test in global config file codeception.yml
+Make sure there is entity relationship among adtag, adslot, site, publisher and ad network.
+```
+params:
+        publisher: 2
+        adNetwork: 1
+        site: 22
+        adSlot: 6
+        adTag: 7
+```
 
 run command for publisher:
 

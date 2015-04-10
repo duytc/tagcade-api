@@ -48,7 +48,7 @@ class User
             "city" => "Ha Noi",
             "company" => "D-TAG Vietnam",
             "country" => "Viet Nam",
-            "email" => "api-test@test.com",
+            "email" => "api-test-dtag@test.com",
             "enabled" => true,
             "enabledModules" => ["MODULE_DISPLAY", "MODULE_ANALYTICS"],
             "firstName" => "D-TAG",
@@ -61,24 +61,22 @@ class User
         $I->seeResponseIsJson();
     }
 
-    public function deleteAdSlot(ApiTester $I) {
+    /**
+     * @depends addUser
+     */
+    public function editUser(ApiTester $I) {
         $I->sendGet(URL_ADMIN_API.'/users');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendDELETE(URL_ADMIN_API.'/users/'.$item['id']);
-        $I->seeResponseCodeIs(204);
-    }
-
-    public function editUser(ApiTester $I) {
-        $I->sendPut(URL_ADMIN_API.'/users/'.PARAMS_PUBLISHER, [
-            "username" => "mypub",
-            "plainPassword" => '123455',
+        $I->sendPut(URL_ADMIN_API.'/users/'.$item['id'], [
+            "username" => "test-put".rand(0, 99),
+            "plainPassword" => 'test-put',
             "address" => null,
             "billingRate" => 1,
             "city" => "Ha Noi",
             "company" => "D-TAG Vietnam",
             "country" => "Viet Nam",
-            "email" => "dtag-test@test.com",
+            "email" => "test-put@test.com",
             "enabled" => true,
             "enabledModules" => ["MODULE_DISPLAY", "MODULE_ANALYTICS"],
             "firstName" => "D-TAG",
@@ -89,6 +87,17 @@ class User
         ]);
         $I->seeResponseCodeIs(204);
         $I->seeResponseIsJson();
+    }
+
+    /**
+     * @depends addUser
+     */
+    public function deleteUser(ApiTester $I) {
+        $I->sendGet(URL_ADMIN_API.'/users');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendDELETE(URL_ADMIN_API.'/users/'.$item['id']);
+        $I->seeResponseCodeIs(204);
     }
 
     public function patchUser(ApiTester $I) {
