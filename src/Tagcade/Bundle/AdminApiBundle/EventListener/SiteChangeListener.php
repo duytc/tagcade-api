@@ -38,17 +38,14 @@ class SiteChangeListener
     /**
      * handle event postPersist one site, this auto add site to SourceReportSiteConfig & SourceReportEmailConfig.
      *
-     * Flow: from site => get publisher => get user => get email => using sourceReportEmailConfigManager to saveSourceReportConfig
-     *
      * @param LifecycleEventArgs $args
      */
     public function postPersist(LifecycleEventArgs $args)
     {
-        $entity = $args -> getEntity();
+        $entity = $args->getEntity();
 
-        if($entity instanceof SiteInterface && $this->enableSourceReportUpdated && true === $entity->getEnableSourceReport()){
+        if($entity instanceof SiteInterface && true === $entity->getEnableSourceReport()){
             $defaultEMail = $entity->getPublisher()->getEmail();
-            //dispatch
             $this->eventDispatcher->dispatch(NewSourceConfigEvent::NAME, new NewSourceConfigEvent(array($defaultEMail), array($entity)));
         }
 
