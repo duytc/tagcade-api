@@ -2,15 +2,17 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdTagInterface;
 
 /**
  * @Rest\RouteResource("Adslot")
@@ -165,16 +167,53 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         /** @var AdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
+        // backup for old adTags
+        /** @var AdTagInterface[] $oldAdTags */
+        $oldAdTags = $adSlot->getAdTags()->toArray();
+
         $newAdTagOrderIds = $request->request->get('ids');
 
         if (!$newAdTagOrderIds) {
             throw new BadRequestHttpException("Ad tagIds parameter is required");
         }
 
-        return array_values(
+        $result = array_values(
             $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
-            ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
+                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
         );
+
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('POST', $adSlot);
+
+        //// calculate old and new AdTagOrderNames for add changedFields
+        usort($oldAdTags, function (AdTagInterface $adTag_1, AdTagInterface $adTag_2) {
+            return $adTag_1->getPosition() < $adTag_2->getPosition() ? -1 : $adTag_1->getPosition() > $adTag_2->getPosition() ? 1 : 0;
+        });
+        /** @var AdTagInterface[] $adTags */
+        $adTagsMap = [];
+        foreach ($oldAdTags as $oldAdTag) {
+            $adTagsMap[$oldAdTag->getId()] = $oldAdTag->getName();
+        }
+
+        $oldAdTagOrderNames = [];
+        $newAdTagOrderNames = [];
+        for ($i = 0; $i < sizeof($oldAdTags); $i++) {
+            $oldAdTagOrderNames[] = $adTagsMap[$oldAdTags[$i]->getId()];
+            $newAdTagOrderNames[] = $adTagsMap[$newAdTagOrderIds[$i]];
+        }
+
+        $event->addChangedFields('position', implode(', ', $oldAdTagOrderNames), implode(', ', $newAdTagOrderNames));
+
+        //// add affectedEntities
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adSlot->getAdTags();
+        foreach ($adTags as $adTag) {
+            $event->addAffectedEntity('AdTag', $adTag->getId(), $adTag->getName());
+        }
+
+        $this->getHandler()->dispatchEvent($event);
+
+        return $result;
     }
 
     /**
@@ -202,5 +241,17 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.ad_slot');
+    }
+
+    /**
+     * compare AdTag By Position
+     *
+     * @param AdTagInterface $adTag_1
+     * @param AdTagInterface $adTag_2
+     * @return int -1 if  0 1
+     */
+    protected function compareAdTagByPosition(AdTagInterface $adTag_1, AdTagInterface $adTag_2)
+    {
+        return $adTag_1->getPosition() < $adTag_2->getPosition() ? -1 : $adTag_1->getPosition() > $adTag_2->getPosition() ? 1 : 0;
     }
 }

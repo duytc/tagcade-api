@@ -2,15 +2,16 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
 
@@ -147,6 +148,11 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate'), true);
 
         $this->get('tagcade.worker.manager')->updateRevenueForAdTag($adTag, $estCpm, $startDate, $endDate);
+
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adTag);
+        $event->addChangedFields('estCpm', '', $estCpm, $startDate, $endDate);
+        $this->getHandler()->dispatchEvent($event);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }

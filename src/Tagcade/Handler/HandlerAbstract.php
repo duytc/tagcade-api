@@ -2,18 +2,17 @@
 
 namespace Tagcade\Handler;
 
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormTypeInterface;
-use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\Model\ModelInterface;
-use Tagcade\Exception\LogicException;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\InvalidFormException;
-
-use Tagcade\DomainManager\ManagerInterface as DummyManagerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormTypeInterface;
+use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\DomainManager\ManagerInterface as DummyManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\InvalidFormException;
+use Tagcade\Exception\LogicException;
+use Tagcade\Model\ModelInterface;
 
 abstract class HandlerAbstract implements HandlerInterface
 {
@@ -84,6 +83,14 @@ abstract class HandlerAbstract implements HandlerInterface
     /**
      * @inheritdoc
      */
+    public function getHandlerEvent()
+    {
+        return $this->handlerEvent;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function get($id)
     {
         return $this->domainManager->find($id);
@@ -95,6 +102,12 @@ abstract class HandlerAbstract implements HandlerInterface
     public function delete(ModelInterface $entity)
     {
         $this->domainManager->delete($entity);
+
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        if ($this->eventDispatcher !== null && $this->handlerEvent != null) {
+            $event = new HandlerEventLog('DELETE', $entity);
+            $this->dispatchEvent($event);
+        }
     }
 
     /**
@@ -152,6 +165,9 @@ abstract class HandlerAbstract implements HandlerInterface
             'method' => $method,
         ];
 
+        // backup entity as oldEntity before submit form
+        $oldEntity = clone $entity;
+
         $form = $this->formFactory->create($this->getFormType(), $entity, $formOptions);
 
         $formConfig = $form->getConfig();
@@ -171,9 +187,10 @@ abstract class HandlerAbstract implements HandlerInterface
 
             $this->domainManager->save($entity);
 
+            // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
             if ($this->eventDispatcher !== null && $this->handlerEvent != null) {
-                $event = new HandlerEventLog($entity, $method);
-                $this->eventDispatcher->dispatch($this->handlerEvent, $event);
+                $event = new HandlerEventLog($method, $oldEntity, $entity);
+                $this->dispatchEvent($event);
             }
 
             return $entity;
@@ -208,12 +225,12 @@ abstract class HandlerAbstract implements HandlerInterface
             throw new InvalidArgumentException('domainManager should be an object instance');
         }
 
-        $getMethods = function($class) {
+        $getMethods = function ($class) {
             // an array of objects of type ReflectionMethod
             $methods = (new ReflectionClass($class))->getMethods();
 
             // filter the ReflectionMethod to just the method name string
-            $callback = function(ReflectionMethod $method) {
+            $callback = function (ReflectionMethod $method) {
                 return $method->name;
             };
 
@@ -234,5 +251,13 @@ abstract class HandlerAbstract implements HandlerInterface
         }
 
         $this->domainManager = $domainManager;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dispatchEvent($event)
+    {
+        $this->eventDispatcher->dispatch($this->handlerEvent, $event);
     }
 }

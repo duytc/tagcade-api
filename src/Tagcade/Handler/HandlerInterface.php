@@ -2,6 +2,7 @@
 
 namespace Tagcade\Handler;
 
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Model\ModelInterface;
 
@@ -24,6 +25,11 @@ interface HandlerInterface
      * @return $this
      */
     public function setEvent($handlerEvent);
+
+    /**
+     * @return string return handlerEvent (string)
+     */
+    public function getHandlerEvent();
 
     /**
      * Should take an object instance or string class name
@@ -90,4 +96,9 @@ interface HandlerInterface
      * @return ModelInterface
      */
     public function patch(ModelInterface $entity, array $parameters);
+
+    /**
+     * @param Event $event
+     */
+    public function dispatchEvent($event);
 }

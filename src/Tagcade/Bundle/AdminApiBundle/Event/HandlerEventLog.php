@@ -2,66 +2,31 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Event;
 
-use Symfony\Component\EventDispatcher\Event;
-use Tagcade\Bundle\UserBundle\Event\LogEventInterface;
-use Tagcade\Exception\InvalidArgumentException;
+use ReflectionClass;
+use Tagcade\Model\Core as Model;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
-class HandlerEventLog extends Event implements LogEventInterface
+class HandlerEventLog extends HandlerEventLogAbstract implements HandlerEventLogInterface
 {
     protected $action;
-    protected $entity;
-
-    const HTTP_GET = 'GET';
-    const HTTP_POST = 'POST';
-    const HTTP_PUT = 'PUT';
-    const HTTP_PATCH = 'PATCH';
-    const HTTP_DELETE = 'DELETE';
-
-    const CREATE = 'CREATE';
-    const UPDATE = 'UPDATE';
-    const DELETE = 'DELETE';
-
-    protected $allowedHttpMethods = [
-        self::HTTP_POST,
-        self::HTTP_PUT,
-        self::HTTP_PATCH,
-        self::HTTP_DELETE,
-    ];
+    protected $oldEntity;
+    protected $newEntity;
 
     /**
-     * Maps http methods to user actions such as 'adding' or 'deleting'
-     *
-     * @var array
+     * @param string $httpMethod method GET/PUT/POST/PATCH/DELETE
+     * @param ModelInterface $oldEntity the old entity before changing
+     * @param ModelInterface $newEntity the new entity after changing. $oldEntity & $newEntity are used for tracking all changed fields.
+     * If already known changing reasons, set $newEntity = null &  $changedFields = your-known-changing-reasons
      */
-    protected $actionMap = [
-        self::HTTP_POST => self::CREATE,
-        self::HTTP_PUT => self::CREATE,
-        self::HTTP_PATCH => self::UPDATE,
-        self::HTTP_DELETE => self::DELETE,
-    ];
-
-    public function __construct(ModelInterface $entity, $httpMethod)
+    public function __construct($httpMethod, ModelInterface $oldEntity, ModelInterface $newEntity = null)
     {
-        $this->entity = $entity;
+        parent::__construct($httpMethod);
 
-        if (!in_array($httpMethod, $this->allowedHttpMethods)) {
-            throw new InvalidArgumentException('that method is not defined');
-        }
-
-        if (!array_key_exists($httpMethod, $this->actionMap)) {
-            throw new InvalidArgumentException('that method is not supported');
-        }
-
-        $this->action = $this->actionMap[$httpMethod];
-    }
-
-    /**
-     * @return ModelInterface
-     */
-    public function getEntity()
-    {
-        return $this->entity;
+        $this->oldEntity = $oldEntity;
+        $this->newEntity = $newEntity;
     }
 
     /**
@@ -69,7 +34,7 @@ class HandlerEventLog extends Event implements LogEventInterface
      */
     public function getAction()
     {
-       return $this->action;
+        return $this->action;
     }
 
     /**
@@ -77,9 +42,101 @@ class HandlerEventLog extends Event implements LogEventInterface
      */
     public function getData()
     {
-      return [
-            'entity' => get_class($this->getEntity()),
-            'id' => $this->getEntity()->getId()
+        //set className
+        $this->setEntityClassName($this->getClassNameForEntity($this->oldEntity));
+
+        //set id
+        $this->setEntityId($this->getOldEntity()->getId());
+
+        //set name
+        $name = $this->getNameForEntity($this->oldEntity);
+        if(null === $name || 1 > sizeof($name)){
+            //in case of create-delete entity: oldEntity has had no value yet
+            $name = $this->getNameForEntity($this->newEntity);
+        }
+        $this->setEntityName($name);
+
+        return parent::getData();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOldEntity()
+    {
+        return $this->oldEntity;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getNewEntity()
+    {
+        return $this->newEntity;
+    }
+
+    /**
+     * get ClassName For Entity
+     *
+     * @param object $entity
+     * @return string className className of $entity, if not object => return null
+     */
+    public function getClassNameForEntity($entity)
+    {
+        if (!is_object($entity)) {
+            return null;
+        }
+
+        //detect manually because multi user
+        if ($entity instanceof PublisherInterface) {
+            return 'Publisher';
+        } elseif ($entity instanceof AdminInterface) {
+            return 'Admin';
+        } else {
+            return (new ReflectionClass($entity))->getShortName();
+        }
+    }
+
+    /**
+     * get name of Entity. If User => return getUserName(), else return getName(), etc...
+     *
+     * @param object $entity
+     * @return null|string name of entity
+     */
+    public function getNameForEntity($entity)
+    {
+        if(null === $entity || !is_object($entity)){
+            return null;
+        }
+
+        if ($entity instanceof UserEntityInterface) {
+            return $entity->getUsername();
+        }
+
+        if ($entity instanceof Model\SiteInterface
+            || $entity instanceof Model\AdTagInterface
+            || $entity instanceof Model\AdSlotInterface
+            || $entity instanceof Model\AdNetworkInterface
+        ) {
+            return $entity->getName();
+        }
+
+        //else: unknown entity's name
+        return null;
+    }
+
+    /**
+     * add an AffectedEntity by entity
+     *
+     * @param ModelInterface $entity
+     */
+    public function addAffectedEntityByObject($entity)
+    {
+        $affectedEntities = [
+            self::AFFECTEDENTITY_CLASSNAME => $this->getClassNameForEntity($entity),
+            self::AFFECTEDENTITY_ID => $entity->getId(),
+            self::AFFECTEDENTITY_NAME => $this->getNameForEntity($entity)
         ];
+        $this->affectedEntities[] = $affectedEntities;
     }
 }

@@ -13,11 +13,6 @@ use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
  */
 class UserHandler extends HandlerAbstract implements UserHandlerInterface
 {
-    public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, PublisherManagerInterface $domainManager)
-    {
-        parent::__construct($formFactory, $formType, $domainManager);
-    }
-
     /**
      * @inheritdoc
      *

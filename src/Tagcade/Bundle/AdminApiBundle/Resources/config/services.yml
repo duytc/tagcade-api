@@ -26,8 +26,8 @@ services:
             - @doctrine.orm.entity_manager
             - @request_stack
         tags:
-            - { name: kernel.event_listener, event: tagcade.events.handler_event, method: onHandlerEvent }
-            - { name: kernel.event_listener, event: tagcade_user.events.login_success, method: onHandlerEvent }
+            - { name: kernel.event_listener, event: %tagcade.events.handler_event%, method: onHandlerEvent }
+            - { name: kernel.event_listener, event: tagcade_user.events.login_success, method: onHandlerEventLogin }
 
 
     # source_report_email_config_repository, input: em=Entity\SourceReportEmailConfig
@@ -79,6 +79,9 @@ services:
             - @form.factory
             - @tagcade_admin_api.form.type.source_report_email_config
             - @tagcade_admin_api.domain_manager.source_report_email_config
+        calls:
+            - [setEventDispatcher, ["@event_dispatcher"]]
+            - [setEvent, [%tagcade.events.handler_event%]]
 
     # source_report_email_config_manager (DomainManager), input: om=entity_manager, repository=repository.source_report_email_config
     tagcade_admin_api.domain_manager.source_report_email_config:
@@ -108,6 +111,9 @@ services:
             - @form.factory
             - @tagcade_admin_api.form.type.source_report_site_config
             - @tagcade_admin_api.domain_manager.source_report_site_config
+        calls:
+            - [setEventDispatcher, ["@event_dispatcher"]]
+            - [setEvent, [%tagcade.events.handler_event%]]
 
     # source_report_site_config_manager (DomainManager), input: om=entity_manager, repository=repository.source_report_site_config
     tagcade_admin_api.domain_manager.source_report_site_config:

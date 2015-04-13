@@ -11,6 +11,9 @@ Tagcade\Bundle\AdminApiBundle\Entity\ActionLog:
         ip:
             type: string
             length: 45
+        serverIp:
+            type: string
+            length: 45
         action:
             type: string
         data:
