@@ -92,4 +92,40 @@ interface AdTagInterface extends ModelInterface
      * @return int|null
      */
     public function getFrequencyCap();
+
+    /**
+     * set rotation
+     * @param int $rotation
+     */
+    public function setRotation($rotation);
+
+    /**
+     * get current rotation
+     * @return int
+     */
+    public function getRotation();
+
+    /**
+     * get AdType
+     * @return int
+     */
+    public function getAdType();
+
+    /**
+     * set AdType
+     * @param int $adType
+     */
+    public function setAdType($adType);
+
+    /**
+     * get Descriptor as json_array
+     * @return array
+     */
+    public function getDescriptor();
+
+    /**
+     * set Descriptor formatted as json_array
+     * @param array $descriptor
+     */
+    public function setDescriptor($descriptor);
 }

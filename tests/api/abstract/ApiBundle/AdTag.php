@@ -22,7 +22,21 @@ class AdTag
     }
 
     public function addAdTag(ApiTester $I) {
-        $I->sendPOST(URL_API.'/adtags', ['adSlot' => PARAMS_AD_SLOT, 'adNetwork' => PARAMS_AD_NETWORK, 'name' => 'adTag-test', 'html' => 'oki', 'frequencyCap' => 300, 'position' => 6, 'active' => true]);
+        $I->sendPOST(URL_API.'/adtags', [
+            'adSlot' => PARAMS_AD_SLOT,
+            'adNetwork' => PARAMS_AD_NETWORK,
+            'name' => 'adTag-test',
+            'html' => 'oki',
+            'frequencyCap' => 300,
+            'position' => 6,
+            'active' => true,
+            "rotation" => 50,
+            "adType" => 1,
+            "descriptor" => [
+                "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                "targetUrl" => "http://www.adTag-test.com"
+            ]
+        ]);
         $I->seeResponseCodeIs(201);
     }
 

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
@@ -166,11 +167,6 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     {
         /** @var AdSlotInterface $adSlot */
         $adSlot = $this->one($id);
-
-        // backup for old adTags
-        /** @var AdTagInterface[] $oldAdTags */
-        $oldAdTags = $adSlot->getAdTags()->toArray();
-
         $newAdTagOrderIds = $request->request->get('ids');
 
         if (!$newAdTagOrderIds) {
@@ -182,25 +178,49 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
                 ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
         );
 
+        $event = $this->createUpdatePositionEventLog($adSlot, $newAdTagOrderIds);
+        $this->getHandler()->dispatchEvent($event);
+
+        return $result;
+    }
+
+    /**
+     * @param AdSlotInterface $adSlot
+     * @param array $newAdTagOrderIds
+     *
+     * @return HandlerEventLog
+     */
+    private function createUpdatePositionEventLog(AdSlotInterface $adSlot, array $newAdTagOrderIds)
+    {
+        $newAdTagFlattenList = [];
+        array_walk_recursive($newAdTagOrderIds, function($adTagId) use (&$newAdTagFlattenList) { $newAdTagFlattenList[] = $adTagId; });
+
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('POST', $adSlot);
+        // backup for old adTags
+        /** @var AdTagInterface[] $oldAdTags */
+        $oldAdTags = $adSlot->getAdTags()->toArray(); // this is sorted already according to doctrine yml setting
 
         //// calculate old and new AdTagOrderNames for add changedFields
-        usort($oldAdTags, function (AdTagInterface $adTag_1, AdTagInterface $adTag_2) {
-            return $adTag_1->getPosition() < $adTag_2->getPosition() ? -1 : $adTag_1->getPosition() > $adTag_2->getPosition() ? 1 : 0;
-        });
         /** @var AdTagInterface[] $adTags */
         $adTagsMap = [];
         foreach ($oldAdTags as $oldAdTag) {
             $adTagsMap[$oldAdTag->getId()] = $oldAdTag->getName();
         }
 
-        $oldAdTagOrderNames = [];
-        $newAdTagOrderNames = [];
-        for ($i = 0; $i < sizeof($oldAdTags); $i++) {
-            $oldAdTagOrderNames[] = $adTagsMap[$oldAdTags[$i]->getId()];
-            $newAdTagOrderNames[] = $adTagsMap[$newAdTagOrderIds[$i]];
-        }
+        $oldAdTagOrderNames = array_map(
+            function(AdTagInterface $adTag) {
+                return $adTag->getName();
+            },
+            $oldAdTags
+        );
+
+        $newAdTagOrderNames = array_map(
+            function($adTagId) use(&$adTagsMap){
+                return $adTagsMap[$adTagId];
+            },
+            $newAdTagFlattenList
+        );
 
         $event->addChangedFields('position', implode(', ', $oldAdTagOrderNames), implode(', ', $newAdTagOrderNames));
 
@@ -211,9 +231,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
             $event->addAffectedEntity('AdTag', $adTag->getId(), $adTag->getName());
         }
 
-        $this->getHandler()->dispatchEvent($event);
-
-        return $result;
+        return $event;
     }
 
     /**

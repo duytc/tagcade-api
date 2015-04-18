@@ -104,6 +104,8 @@ class TagCache implements TagCacheInterface
             return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
         });
 
+        $groups = array();
+
         foreach($adTags as $adTag) {
             if (!$adTag->isActive()) {
                 continue;
@@ -118,8 +120,19 @@ class TagCache implements TagCacheInterface
                 $dataItem['cap'] = $adTag->getFrequencyCap();
             }
 
-            $data[] = $dataItem;
+            if (null !== $adTag->getRotation()) {
+                $dataItem['rot'] = $adTag->getRotation();
+            }
+
+            // grouping same position into array
+            $groups[$adTag->getPosition()][] = $dataItem;
         }
+
+        $data = array_map(function ($groupData) {
+                return count($groupData) > 1 ? $groupData : $groupData[0];
+            },
+            $groups
+        );
 
         return $data;
     }

@@ -21,6 +21,13 @@ class AdTag implements AdTagInterface
     protected $active;
     protected $frequencyCap;
 
+    /** int - for rotation display AdTags */
+    protected $rotation;
+    /** int - type of AdTags*/
+    protected $adType = 0;
+    /** array - json_array, descriptor of AdTag*/
+    protected $descriptor;
+
     /**
      * @param string $name
      * @param string $html
@@ -166,7 +173,7 @@ class AdTag implements AdTagInterface
      */
     public function setActive($boolean)
     {
-        $this->active = (Boolean) $boolean;
+        $this->active = (Boolean)$boolean;
         return $this;
     }
 
@@ -189,5 +196,51 @@ class AdTag implements AdTagInterface
         return $this->frequencyCap;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function setRotation($rotation)
+    {
+        $this->rotation = $rotation;
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function getRotation()
+    {
+        return $this->rotation;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdType()
+    {
+        return $this->adType;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAdType($adType)
+    {
+        $this->adType = $adType;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDescriptor()
+    {
+        return $this->descriptor;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDescriptor($descriptor)
+    {
+        $this->descriptor = $descriptor;
+    }
 }

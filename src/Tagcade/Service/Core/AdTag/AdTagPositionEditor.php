@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Sortable\SortableListener;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -57,6 +58,11 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
 
     }
 
+    /**
+     * @param AdSlotInterface $adSlot
+     * @param array $newAdTagOrderIds array of array [[adtag1_pos_1, adtag2_pos_1], [adtag3_pos2]]
+     * @return \Tagcade\Model\Core\AdTagInterface[]
+     */
     public function setAdTagPositionForAdSlot(AdSlotInterface $adSlot, array $newAdTagOrderIds) {
 
         $adTags = $adSlot->getAdTags()->toArray();
@@ -65,50 +71,41 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
             return [];
         }
 
-        $adTagIds = array_map(function(AdTagInterface $adTag) {
-                return $adTag->getId();
-            }, $adTags);
-
-        $adTags = array_combine($adTagIds, $adTags);
-
-        if (count($newAdTagOrderIds) !== count(array_unique($newAdTagOrderIds))) {
-            throw new InvalidArgumentException("Every ad tag id must be unique");
+        $adTagMap = array();
+        foreach ($adTags as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            $adTagMap[$adTag->getId()] = $adTag;
         }
 
-        if (count(array_diff($newAdTagOrderIds, $adTagIds)) !== 0) {
-            throw new InvalidArgumentException("There must be a matching new ad tag id order for every ad tag");
-        }
+        $pos = 1;
+        $orderedAdTags = [];
+        $processedAdTags = [];
 
-        $orderedAdTags = array_map(function($id) use ($adTags) {
-                return $adTags[$id];
-            }, $newAdTagOrderIds);
+        foreach ($newAdTagOrderIds as $adTagIds) {
+            foreach ($adTagIds as $adTagId) {
+                if (!array_key_exists($adTagId, $adTagMap)) {
+                    throw new RuntimeException('One of ids not existed in ad tag list of current ad slot');
+                }
 
-        $position = 1;
+                if (in_array((int)$adTagId, $processedAdTags)) {
+                    throw new RuntimeException('There is duplication of ad tag');
+                }
 
-        // remove SortableListener - Gedmo
-        $sortableListener = null;
-        foreach ($this->em->getEventManager()->getListeners('onFlush') as $listener) {
-            if ($listener instanceof SortableListener) {
-                $sortableListener = &$listener;
-                $this->em->getEventManager()->removeEventSubscriber($listener);
-                break;
+                $adTag = $adTagMap[$adTagId];
+                if ($pos != $adTag->getPosition()) {
+                    $adTag->setPosition($pos);
+                }
+
+                $processedAdTags[] = $adTag->getId();
+                $orderedAdTags[] = $adTag;
             }
-        }
 
-        foreach($orderedAdTags as $adTag) {
-            /** @var AdTagInterface $adTag */
-            $adTag->setPosition($position);
-            $position++;
+            $pos ++;
         }
 
         $this->em->flush();
-
-        if (null !== $sortableListener) {
-            $this->em->getEventManager()->addEventSubscriber($sortableListener);
-        }
-
-
-        unset($adTag);
 
         return $orderedAdTags;
     }

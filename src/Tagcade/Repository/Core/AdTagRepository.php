@@ -3,14 +3,13 @@
 namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
-use Gedmo\Sortable\Entity\Repository\SortableRepository;
+use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\AdSlotInterface;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-class AdTagRepository extends SortableRepository implements AdTagRepositoryInterface
+class AdTagRepository extends EntityRepository implements AdTagRepositoryInterface
 {
     /**
      * @inheritdoc
