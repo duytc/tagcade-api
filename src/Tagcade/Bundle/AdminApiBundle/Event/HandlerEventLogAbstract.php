@@ -116,7 +116,17 @@ abstract class HandlerEventLogAbstract extends LogEventAbstract
      */
     public function setChangedFields(array $changedFields)
     {
-        $this->changedFields = $changedFields;
+        $this->changedFields = array_map(
+            function (array $field) {
+                $myField = array();
+                foreach ($field as $fieldName => $fieldVal) {
+                    $myField[$fieldName] = $this->getStringMessage($fieldVal);
+                }
+
+                return $myField;
+            },
+            $changedFields
+        );
     }
 
     /**
@@ -147,13 +157,27 @@ abstract class HandlerEventLogAbstract extends LogEventAbstract
      */
     public function addChangedFields($name, $oldVal, $newVal, $startDate = null, $endDate = null)
     {
+
+
         $changedField = [
             self::CHANGEDFIELD_NAME => $name,
-            self::CHANGEDFIELD_OLDVAL => $oldVal,
-            self::CHANGEDFIELD_NEWVAL => $newVal,
+            self::CHANGEDFIELD_OLDVAL => $this->getStringMessage($oldVal),
+            self::CHANGEDFIELD_NEWVAL => $this->getStringMessage($newVal),
             self::CHANGEDFIELD_STARTDATE => $startDate,
             self::CHANGEDFIELD_ENDDATE => $endDate
         ];
         $this->changedFields[] = $changedField;
+    }
+
+    protected function getStringMessage($object) {
+        if (null === $object || is_string($object) || is_numeric($object) ) {
+            return $object;
+        }
+
+        if ($object instanceof DateTime) {
+            return $object->format('Y-m-d h:i:s');
+        }
+
+        return serialize($object);
     }
 }
