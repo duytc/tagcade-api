@@ -178,6 +178,10 @@ abstract class HandlerEventLogAbstract extends LogEventAbstract
             return $object->format('Y-m-d h:i:s');
         }
 
+        if (is_bool($object)) {
+            return $object ? "true" : "false";
+        }
+
         return serialize($object);
     }
 }
