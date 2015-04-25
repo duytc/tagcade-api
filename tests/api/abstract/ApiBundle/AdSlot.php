@@ -22,7 +22,51 @@ class AdSlot
     }
 
     public function addAdSlot(ApiTester $I) {
-        $I->sendPOST(URL_API.'/adslots', ['site' => PARAMS_SITE, 'name' => 'dtag.test.adslot', 'height' => 200, 'width' => 300]);
+        $I->sendPOST(URL_API . '/adslots',
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'height' => 200, 'width' => 300,
+                'enableVariable' => true,
+                'variableDescriptor' => [
+                    'expressions' => [
+                        [
+                            'expression' => [
+                                'groupType' => 'AND',
+                                'groupVal' => [
+                                    [
+                                        'var' => 'checkLength',
+                                        'cmp' => 'length >=',
+                                        'val' => 10
+                                    ],
+                                    [
+                                        'groupType' => 'OR',
+                                        'groupVal' => [
+                                            [
+                                                'var' => 'checkMath',
+                                                'cmp' => '<=',
+                                                'val' => 2
+                                            ],
+                                            [
+                                                'var' => 'checkBoolean',
+                                                'cmp' => '==',
+                                                'val' => true
+                                            ]
+                                        ]
+                                    ],
+                                    [
+                                        'var' => 'checkString',
+                                        'cmp' => '!=',
+                                        'val' => 'abc'
+                                    ]
+                                ]
+                            ],
+                            'expectAdSlot' => 23
+                        ]
+                    ]
+                ]
+            ]
+        );
         $I->seeResponseCodeIs(201);
     }
 
@@ -33,7 +77,50 @@ class AdSlot
         $I->sendGet(URL_API.'/adslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API.'/adslots/'.$item['id'], ['site' => PARAMS_SITE, 'name' => 'dtag.test.adslot', 'height' => 200, 'width' => 300]);
+        $I->sendPUT(URL_API.'/adslots/'.$item['id'],
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'height' => 200, 'width' => 300,
+                'variableDescriptor' => [
+                    'expressions' => [
+                        [
+                            'expression' => [
+                                'groupType' => 'AND',
+                                'groupVal' => [
+                                    [
+                                        'var' => 'checkLength',
+                                        'cmp' => 'length >=',
+                                        'val' => 10
+                                    ],
+                                    [
+                                        'groupType' => 'OR',
+                                        'groupVal' => [
+                                            [
+                                                'var' => 'checkMath',
+                                                'cmp' => '<=',
+                                                'val' => 2
+                                            ],
+                                            [
+                                                'var' => 'checkBoolean',
+                                                'cmp' => '==',
+                                                'val' => true
+                                            ]
+                                        ]
+                                    ],
+                                    [
+                                        'var' => 'checkString',
+                                        'cmp' => '!=',
+                                        'val' => 'abc'
+                                    ]
+                                ]
+                            ],
+                            'expectAdSlot' => 23
+                        ]
+                    ]
+                ]
+            ]
+        );
         $I->seeResponseCodeIs(204);
     }
 

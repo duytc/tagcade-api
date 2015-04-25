@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
@@ -11,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\Exception\RuntimeException;
+use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
@@ -59,6 +60,46 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     }
 
     /**
+     * @param int $id
+     * @return View
+     */
+    public function getJstagAction($id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($adSlot);
+    }
+
+    /**
+     * @Rest\Get("/variableDescriptor/{id}", requirements={"id" = "\d+"})
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function getVariableDescriptorAction(Request $request, $id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        return $this->getHandler()->getAdSlotVariableDescriptor($adSlot);
+    }
+
+    /**
+     * @Rest\Get("/configExpression/{id}", requirements={"id" = "\d+"})
+     * @param Request $request
+     * @param $id
+     * @return View
+     */
+    public function getConfigExpressionAction(Request $request, $id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        return $this->getHandler()->getAdSlotConfigExpression($adSlot);
+    }
+
+    /**
      * Create a adSlot from the submitted data
      *
      * @ApiDoc(
@@ -76,6 +117,34 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     public function postAction(Request $request)
     {
         return $this->post($request);
+    }
+
+    /**
+     * Update the position of all ad tags in an ad slot
+     *
+     * @param Request $request
+     * @param int $id
+     * @return View
+     */
+    public function postAdtagsPositionsAction(Request $request, $id)
+    {
+        /** @var AdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+        $newAdTagOrderIds = $request->request->get('ids');
+
+        if (!$newAdTagOrderIds) {
+            throw new BadRequestHttpException("Ad tagIds parameter is required");
+        }
+
+        $result = array_values(
+            $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
+                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
+        );
+
+        $event = $this->createUpdatePositionEventLog($adSlot, $newAdTagOrderIds);
+        $this->getHandler()->dispatchEvent($event);
+
+        return $result;
     }
 
     /**
@@ -157,34 +226,6 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
-     *
-     * @param Request $request
-     * @param int $id
-     * @return View
-     */
-    public function postAdtagsPositionsAction(Request $request, $id)
-    {
-        /** @var AdSlotInterface $adSlot */
-        $adSlot = $this->one($id);
-        $newAdTagOrderIds = $request->request->get('ids');
-
-        if (!$newAdTagOrderIds) {
-            throw new BadRequestHttpException("Ad tagIds parameter is required");
-        }
-
-        $result = array_values(
-            $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
-                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
-        );
-
-        $event = $this->createUpdatePositionEventLog($adSlot, $newAdTagOrderIds);
-        $this->getHandler()->dispatchEvent($event);
-
-        return $result;
-    }
-
-    /**
      * @param AdSlotInterface $adSlot
      * @param array $newAdTagOrderIds
      *
@@ -193,7 +234,9 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     private function createUpdatePositionEventLog(AdSlotInterface $adSlot, array $newAdTagOrderIds)
     {
         $newAdTagFlattenList = [];
-        array_walk_recursive($newAdTagOrderIds, function($adTagId) use (&$newAdTagFlattenList) { $newAdTagFlattenList[] = $adTagId; });
+        array_walk_recursive($newAdTagOrderIds, function ($adTagId) use (&$newAdTagFlattenList) {
+            $newAdTagFlattenList[] = $adTagId;
+        });
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('POST', $adSlot);
@@ -209,14 +252,14 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         }
 
         $oldAdTagOrderNames = array_map(
-            function(AdTagInterface $adTag) {
+            function (AdTagInterface $adTag) {
                 return $adTag->getName();
             },
             $oldAdTags
         );
 
         $newAdTagOrderNames = array_map(
-            function($adTagId) use(&$adTagsMap){
+            function ($adTagId) use (&$adTagsMap) {
                 return $adTagsMap[$adTagId];
             },
             $newAdTagFlattenList
@@ -234,18 +277,6 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         return $event;
     }
 
-    /**
-     * @param int $id
-     * @return View
-     */
-    public function getJstagAction($id)
-    {
-        /** @var AdSlotInterface $adSlot */
-        $adSlot = $this->one($id);
-
-        return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($adSlot);
-    }
-
     protected function getResourceName()
     {
         return 'adslot';
@@ -256,6 +287,9 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         return 'api_1_get_adslot';
     }
 
+    /**
+     * @return AdSlotHandlerAbstract
+     */
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.ad_slot');

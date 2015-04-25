@@ -22,6 +22,17 @@ Tagcade\Entity\Core\AdSlot:
         deletedAt:
             type: date
             nullable: true
+
+        enableVariable:
+            type: boolean
+            options:
+                default: false
+        variableDescriptor:
+            type: json_array
+            nullable: true
+        expressions:
+            type: json_array
+            nullable: true
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site

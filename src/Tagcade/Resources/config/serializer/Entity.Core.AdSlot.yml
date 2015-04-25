@@ -16,3 +16,12 @@ Tagcade\Entity\Core\AdSlot:
         height:
             expose: true
             groups: [adslot.detail, adslot.summary]
+        enableVariable:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+        variableDescriptor:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+#        expressions:
+#            expose: true
+#            groups: [adslot.detail, adslot.summary]

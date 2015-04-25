@@ -13,6 +13,10 @@ class AdSlot extends AdSlotModel
     protected $height;
     protected $deletedAt;
 
+    protected $enableVariable;
+    protected $variableDescriptor;
+    protected $expressions;
+
     public function __construct()
     {}
 }

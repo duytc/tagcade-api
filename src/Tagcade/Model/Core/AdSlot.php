@@ -17,7 +17,9 @@ class AdSlot implements AdSlotInterface
     protected $width;
     protected $height;
     protected $adTags;
-
+    protected $enableVariable;
+    protected $variableDescriptor;
+    protected $expressions;
     /**
      * @param string $name
      * @param int $width
@@ -119,6 +121,54 @@ class AdSlot implements AdSlotInterface
     public function getAdTags()
     {
         return $this->adTags;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEnableVariable()
+    {
+        return $this->enableVariable;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEnableVariable($enableVariable)
+    {
+        $this->enableVariable = $enableVariable;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExpressions()
+    {
+        return $this->expressions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setExpressions($expressions)
+    {
+        $this->expressions = $expressions;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getVariableDescriptor()
+    {
+        return $this->variableDescriptor;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setVariableDescriptor($variableDescriptor)
+    {
+        $this->variableDescriptor = $variableDescriptor;
     }
 
     public function __toString()

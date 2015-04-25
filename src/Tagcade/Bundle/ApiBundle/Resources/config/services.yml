@@ -125,6 +125,8 @@ services:
 
     tagcade.form.type.ad_slot:
         class: %tagcade.form.type.ad_slot.class%
+        arguments:
+            - @tagcade.repository.ad_slot
         tags:
             - { name: form.type, alias: tagcade_form_ad_slot }
 
