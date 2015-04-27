@@ -175,9 +175,9 @@ class TagCache implements TagCacheInterface
      * @param AdSlotInterface $adSlot
      * @return array
      */
-    private function createAdSlotCacheDataStatic($adSlot)
+    private function createAdSlotCacheDataStatic(AdSlotInterface $adSlot)
     {
-        $data = [];
+        $data = ['id'=>$adSlot->getId(), 'type'=>'static', 'tags'=>[]];
 
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
@@ -191,9 +191,6 @@ class TagCache implements TagCacheInterface
             return $data;
         }
 
-        //step 2. set 'id' & 'type' for data
-        $data['id'] = $adSlot->getId();
-        $data['type'] = 'static';
 
         //step 3. build 'tags' for data
         ////sort all adTags by position
@@ -260,7 +257,7 @@ class TagCache implements TagCacheInterface
      * @param AdSlotInterface $adSlot
      * @return array
      */
-    private function createAdSlotCacheDataDynamic($adSlot)
+    private function createAdSlotCacheDataDynamic(AdSlotInterface $adSlot)
     {
         $data = [];
 
