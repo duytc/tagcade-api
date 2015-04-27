@@ -37,7 +37,7 @@ class AdSlotChangeListener
 
         $changeSet = $uow->getEntityChangeSet($entity);
 
-        if (true === array_key_exists('variableDescriptor', $changeSet)) {
+        if (true === array_key_exists('variableDescriptor', $changeSet) || true === array_key_exists('enableVariable', $changeSet)) {
             $this->dispatchUpdateCacheEventDueToAdSlot($args);
         }
     }
