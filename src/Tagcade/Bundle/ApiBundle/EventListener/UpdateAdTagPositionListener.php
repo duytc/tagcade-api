@@ -55,11 +55,12 @@ class UpdateAdTagPositionListener
             }, $adTags
         );
 
-        $max = max($positions) + 1;
+        $max = empty($positions) ? 1 : max($positions) + 1;;
 
         $targetPosition = $updatingAdTag->getPosition();
         // Current updating ad tag will have position $max + 1 if the position is out of bound [1, max]
-        if ($targetPosition > $max) {
+        // or 1 if position is null
+        if ($targetPosition == null || $targetPosition > $max) {
             $updatingAdTag->setPosition($max);
         }
 
