@@ -483,7 +483,6 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
                 }
                 break;
             case 'boolean':
-                $val = true;
                 if (is_bool($val)) {
                     break;
                 }
