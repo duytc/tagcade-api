@@ -283,7 +283,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         switch ($type) {
             case 'string':
                 //validate as escape syntax
-                if (!preg_match('/^[a-zA-Z0-9_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $val)) {
+                if (!preg_match('/^[a-zA-Z0-9_\x7f-\xff\s][a-zA-Z0-9_\x7f-\xff\s]*$/', $val)) {
                     throw new InvalidFormException('not allow special characters (js injection) in \'' . $val . '\' of condition');
                 }
 
