@@ -252,10 +252,20 @@ class UpdateExpressionInJsListener {
         }
 
         //return '$var.func($val) . $real-cmp . -1; e.g: 'a.startsWith(3) > -1'
-        if ($cmp === 'startsWith'
-            || $cmp === 'endsWith'
-            || $cmp === 'contains'
-        ) {
+        if ($cmp === 'startsWith') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === 0' .
+            ')';
+        }
+
+        if ($cmp === 'endsWith') {
+
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') == (window.' . $var . 'length - window.' . $val . 'length)' .
+            ')';
+        }
+
+        if ($cmp === 'contains') {
             return '(window.' .
             $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') > -1' .
             ')';
