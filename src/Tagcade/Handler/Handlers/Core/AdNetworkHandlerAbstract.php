@@ -2,8 +2,8 @@
 
 namespace Tagcade\Handler\Handlers\Core;
 
-use Tagcade\Handler\RoleHandlerAbstract;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
+use Tagcade\Handler\RoleHandlerAbstract;
 
 abstract class AdNetworkHandlerAbstract extends RoleHandlerAbstract
 {

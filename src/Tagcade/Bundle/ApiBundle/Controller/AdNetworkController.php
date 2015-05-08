@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -291,6 +292,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $this->get('tagcade.worker.manager')->updateRevenueForAdNetwork($adNetwork, $estCpm, $startDate, $endDate);
 
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adNetwork);
+        $event->addChangedFields('estCpm', '', $estCpm, $startDate, $endDate);
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adNetwork->getAdTags();
+        foreach($adTags as $adTag){
+            $event->addAffectedEntityByObject($adTag);
+        }
+        $this->getHandler()->dispatchEvent($event);
+
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
 
@@ -347,6 +358,17 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $this->get('tagcade.worker.manager')->updateRevenueForAdNetworkAndSite($adNetwork, $site, $estCpm, $startDate, $endDate);
 
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adNetwork);
+        $event->addChangedFields('estCpm', '', $estCpm, $startDate, $endDate);
+        $event->addAffectedEntityByObject($site);
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adNetwork->getAdTags();
+        foreach($adTags as $adTag){
+            $event->addAffectedEntityByObject($adTag);
+        }
+        $this->getHandler()->dispatchEvent($event);
+
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
 
@@ -389,6 +411,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $this->get('tagcade_app.service.core.ad_network.ad_network_service')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
 
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adNetwork);
+        $event->addAffectedEntityByObject($site);
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adNetwork->getAdTags();
+        foreach($adTags as $adTag){
+            $event->addAffectedEntityByObject($adTag);
+        }
+        $this->getHandler()->dispatchEvent($event);
+
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
 
@@ -429,6 +461,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
 
         $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position);
+
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adNetwork);
+        $event->addChangedFields('position', '', $position);
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adNetwork->getAdTags();
+        foreach($adTags as $adTag){
+            $event->addAffectedEntityByObject($adTag);
+        }
+        $this->getHandler()->dispatchEvent($event);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
@@ -478,8 +520,17 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position, $site);
 
-        return $this->view(null, Codes::HTTP_NO_CONTENT);
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adNetwork);
+        $event->addChangedFields('position', '', $position);
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adNetwork->getAdTags();
+        foreach($adTags as $adTag){
+            $event->addAffectedEntityByObject($adTag);
+        }
+        $this->getHandler()->dispatchEvent($event);
 
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
 
     /**

@@ -10,7 +10,6 @@ use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 class SiteFormType extends AbstractRoleSpecificFormType
 {

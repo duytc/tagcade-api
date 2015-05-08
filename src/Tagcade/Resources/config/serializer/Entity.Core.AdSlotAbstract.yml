@@ -1,0 +1,9 @@
+Tagcade\Entity\Core\AdSlotAbstract:
+    exclusion_policy: ALL
+    discriminator:
+        field_name: type
+        map:
+            static_model: Tagcade\Model\Core\AdSlot
+            static: Tagcade\Entity\Core\AdSlot
+            dynamic_mode: Tagcade\Model\Core\DynamicAdSlot
+            dynamic: Tagcade\Entity\Core\DynamicAdSlot

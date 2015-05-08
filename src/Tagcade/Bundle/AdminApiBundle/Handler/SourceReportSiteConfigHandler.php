@@ -11,6 +11,6 @@ class SourceReportSiteConfigHandler extends HandlerAbstract implements HandlerIn
 {
     public function __construct(FormFactoryInterface $formFactory, FormTypeInterface $formType, SourceReportSiteConfigManagerInterface $domainManager)
     {
-        parent::__construct($formFactory, $formType, $domainManager);
+        parent::__construct($formFactory, $formType, $domainManager, 'SourceReportSiteConfigHandler');
     }
 }

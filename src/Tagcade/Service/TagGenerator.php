@@ -2,7 +2,10 @@
 
 namespace Tagcade\Service;
 
+use Tagcade\Exception\LogicException;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 class TagGenerator
@@ -61,7 +64,25 @@ class TagGenerator
      * @param AdSlotInterface $adSlot
      * @return string
      */
-    public function createDisplayAdTag(AdSlotInterface $adSlot)
+    public function createDisplayAdTag($adSlot)
+    {
+        if ($adSlot instanceof DynamicAdSlotInterface) {
+            return $this->createDisplayAdTagForDynamicAdSlot($adSlot);
+        }
+
+        if ($adSlot instanceof AdSlotInterface) {
+            return $this->createDisplayAdTagForAdSlot($adSlot);
+        }
+
+        throw new RuntimeException(sprintf('Generate ad tag for %s is not supported', get_class($adSlot)));
+
+    }
+
+    /**
+     * @param AdSlotInterface $adSlot
+     * @return string
+     */
+    public function createDisplayAdTagForAdSlot(AdSlotInterface $adSlot)
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
 
@@ -69,6 +90,19 @@ class TagGenerator
         $tag .= '<script type="text/javascript">' . "\n";
         $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
         $tag .= sprintf("var tc_size = '%dx%d';\n", $adSlot->getWidth(), $adSlot->getHeight());
+        $tag .= "</script>\n";
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
+
+        return $tag;
+    }
+
+    public function createDisplayAdTagForDynamicAdSlot(DynamicAdSlotInterface $adSlot)
+    {
+        $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
+
+        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $adSlot->getSite()->getDomain());
+        $tag .= '<script type="text/javascript">' . "\n";
+        $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
         $tag .= "</script>\n";
         $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
 

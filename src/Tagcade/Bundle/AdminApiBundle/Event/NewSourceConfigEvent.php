@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dunght163
- * Date: 12/03/2015
- * Time: 16:12
- */
 
 namespace Tagcade\Bundle\AdminApiBundle\Event;
 

@@ -3,8 +3,8 @@
 namespace Tagcade\Bundle\UserBundle\Event;
 
 
-interface LogEventInterface {
-
+interface LogEventInterface
+{
     /**
      * User action
      * @return string
@@ -16,4 +16,4 @@ interface LogEventInterface {
      * @return array
      */
     public function getData();
-} 
+}

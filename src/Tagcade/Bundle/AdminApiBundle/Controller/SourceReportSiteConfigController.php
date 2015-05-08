@@ -5,6 +5,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Bundle\AdminApiBundle\Event\UpdateSourceReportSiteConfigEventLog;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
@@ -135,6 +136,12 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
             //calling repository to persis new SourceReportEmailConfig
             $sourceReportSiteConfigManager = $this -> get('tagcade_admin_api.domain_manager.source_report_site_config');
             $sourceReportSiteConfigManager -> saveSourceReportConfig($emailConfig, $availableSites);
+
+            // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+            $event = new UpdateSourceReportSiteConfigEventLog('POST');
+            $event->addChangedFields('sites', '', ('[' . implode(', ', $availableSites) . ']'));
+            $event->addChangedFields('emails', '', ('[' . $emailConfig->getEmail() . ']'));
+            $this->getHandler()->dispatchEvent($event);
         }
         catch(InvalidArgumentException $invalidArgs) {
             return $this->view(null, Codes::HTTP_BAD_REQUEST);

@@ -3,16 +3,30 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdSlot;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\SiteRepositoryInterface;
+use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class AdSlotFormType extends AbstractRoleSpecificFormType
 {
+    /** @var AdSlotRepositoryInterface */
+    private $adSlotRepository;
+
+    function __construct(AdSlotRepositoryInterface $adSlotRepository)
+    {
+        $this->adSlotRepository = $adSlotRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->userRole instanceof AdminInterface) {
@@ -26,14 +40,13 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
             $builder
                 ->add('site', 'entity', [
                     'class' => Site::class,
-                    'query_builder' => function(SiteRepositoryInterface $repository) {
+                    'query_builder' => function (SiteRepositoryInterface $repository) {
                         /** @var PublisherInterface $publisher */
                         $publisher = $this->userRole;
 
                         return $repository->getSitesForPublisherQuery($publisher);
                     }
-                ])
-            ;
+                ]);
 
         } else {
             throw new LogicException('A valid user role is required by AdSlotFormType');
@@ -51,8 +64,7 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => AdSlot::class,
-            ])
-        ;
+            ]);
     }
 
     public function getName()

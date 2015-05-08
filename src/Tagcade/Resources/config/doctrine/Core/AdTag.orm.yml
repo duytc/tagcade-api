@@ -17,10 +17,12 @@ Tagcade\Entity\Core\AdTag:
             length: 100
         html:
             type: text
+            nullable: true
+
         position:
             type: integer
-            gedmo:
-                - sortablePosition
+            options:
+                default: 1
         active:
             type: boolean
             options:
@@ -42,10 +44,21 @@ Tagcade\Entity\Core\AdTag:
         frequencyCap:
             type: integer
             nullable: true
+
+        rotation:
+            type: integer
+            nullable: true
+
+        adType:
+            type: integer
+            options:
+                default: 0
+
+        descriptor:
+            type: json_array
+            nullable: true
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlot
-            gedmo:
-                - sortableGroup
         adNetwork:
             targetEntity: Tagcade\Entity\Core\AdNetwork

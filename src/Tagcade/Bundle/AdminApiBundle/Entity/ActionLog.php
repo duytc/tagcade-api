@@ -14,6 +14,8 @@ class ActionLog
 
     protected $ip;
 
+    protected $serverIp;
+
     protected $action;
 
     protected $data;
@@ -80,6 +82,24 @@ class ActionLog
     public function setIp($ip)
     {
         $this->ip = $ip;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getServerIp()
+    {
+        return $this->serverIp;
+    }
+
+    /**
+     * @param string $serverIp
+     * @return $this
+     */
+    public function setServerIp($serverIp)
+    {
+        $this->serverIp = $serverIp;
         return $this;
     }
 

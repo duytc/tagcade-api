@@ -29,8 +29,8 @@ $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\Te
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
-$begin = new DateTime('2015-01-21');
-$end = new DateTime('2015-02-09');
+$begin = new DateTime('2015-03-30');
+$end = new DateTime('2015-04-29');
 
 $end = $end->modify('+1 day');
 $interval = new DateInterval('P1D');

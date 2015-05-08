@@ -60,7 +60,7 @@ services:
             - %tc.legacy.live_performance_report.redis_hosts%
 
     tagcade.legacy.cache.performance_report_data:
-        class: Tagcade\Legacy\Cache\RedisArrayCache
+        class: Tagcade\Cache\Legacy\Cache\RedisArrayCache
         calls:
             - [setRedis, [@redis_array.performance_report_data]]
 

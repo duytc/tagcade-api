@@ -1,0 +1,10 @@
+Tagcade\Entity\Core\Expression:
+    properties:
+        expressionDescriptor:
+            - NotBlank: ~
+        dynamicAdSlot:
+            - NotBlank: ~
+            - Valid: ~
+        expectAdSlot:
+            - NotBlank: ~
+            - Valid: ~

@@ -25,3 +25,12 @@ Tagcade\Entity\Core\AdTag:
         active:
             expose: true
             groups: [adtag.detail]
+        rotation:
+            expose: true
+            groups: [adtag.detail]
+        adType:
+            expose: true
+            groups: [adtag.detail]
+        descriptor:
+            expose: true
+            groups: [adtag.detail]

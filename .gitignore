@@ -15,3 +15,5 @@ phpunit*
 app/SymfonyRequirements.php
 app/check.php
 dev/custom
+codeception.yml
+tests/_output

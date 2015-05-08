@@ -81,6 +81,9 @@ class ActionLogController extends FOSRestController
             throw new InvalidDateException('start date must be before the end date');
         }
 
+        //for query, endDate must be after one day
+        $endDate->add(new \DateInterval('P1D'));
+
         $publisher = $publisherId ? $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId) : null;
 
         /**

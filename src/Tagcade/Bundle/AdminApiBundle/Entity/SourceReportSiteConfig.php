@@ -19,7 +19,7 @@ class SourceReportSiteConfig implements SourceReportSiteConfigInterface
      * @var SiteInterface
      */
     protected $site;
-
+    protected $deletedAt;
     /**
      * @return mixed
      */

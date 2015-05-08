@@ -5,9 +5,8 @@ namespace Tagcade\Bundle\UserBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class LoginEventLog extends Event implements LogEventInterface
+class LoginEventLog extends Event implements LoginEventLogInterface
 {
-
     /**
      *  Default action name. No other name for this event.
      */
@@ -15,7 +14,6 @@ class LoginEventLog extends Event implements LogEventInterface
 
     public function __construct()
     {
-
     }
 
     /**
@@ -33,5 +31,4 @@ class LoginEventLog extends Event implements LogEventInterface
     {
         return null;
     }
-
-} 
+}

@@ -2,8 +2,9 @@
 
 namespace Tagcade\Handler\Handlers\Core;
 
-use Tagcade\Handler\RoleHandlerAbstract;
 use Tagcade\DomainManager\AdSlotManagerInterface;
+use Tagcade\Handler\RoleHandlerAbstract;
+use Tagcade\Model\Core\AdSlotInterface;
 
 abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
 {
@@ -18,4 +19,5 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
     {
         return parent::getDomainManager();
     }
+
 }

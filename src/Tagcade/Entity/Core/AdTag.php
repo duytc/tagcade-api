@@ -2,8 +2,8 @@
 
 namespace Tagcade\Entity\Core;
 
-use Tagcade\Model\Core\AdTag as AdTagModel;
 use DateTime;
+use Tagcade\Model\Core\AdTag as AdTagModel;
 
 class AdTag extends AdTagModel
 {
@@ -20,8 +20,16 @@ class AdTag extends AdTagModel
     protected $deletedAt;
     protected $frequencyCap;
 
+    /** int - for rotation display AdTags */
+    protected $rotation;
+    /** int - type of AdTags*/
+    protected $adType;
+    /** array - json_array, descriptor of AdTag*/
+    protected $descriptor;
+
     public function __construct()
-    {}
+    {
+    }
 
     /**
      * @return null|DateTime

@@ -5,8 +5,6 @@ Tagcade\Entity\Core\AdTag:
             - Length:
                 min: 2
                 minMessage: "Ad slot name must be at least {{ limit }} characters in length"
-        html:
-            - NotBlank: ~
         position:
             - Type:
                 type: integer
@@ -24,4 +22,16 @@ Tagcade\Entity\Core\AdTag:
                 type: integer
                 message: "The value {{ value }} is not a valid number."
             - GreaterThan:
+                value: 0
+        rotation:
+            - Type:
+                type: integer
+                message: "The value {{ value }} is not a valid number."
+            - GreaterThan:
+                value: 0
+        adType:
+            - Type:
+                type: integer
+                message: "The value {{ value }} is not a valid number."
+            - GreaterThanOrEqual:
                 value: 0

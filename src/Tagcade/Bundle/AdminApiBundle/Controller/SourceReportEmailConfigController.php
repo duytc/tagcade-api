@@ -2,18 +2,16 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
-use FOS\RestBundle\Util\Codes;
-use Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig;
+use Tagcade\Bundle\AdminApiBundle\Event\UpdateSourceReportEmailConfigEventLog;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
-use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\HandlerInterface;
@@ -129,6 +127,11 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
         try {
             $sourceReportEmailConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_email_config');
             $sourceReportEmailConfigManager->saveSourceReportConfigIncludedAll($emails);
+
+            // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+            $event = new UpdateSourceReportEmailConfigEventLog('PUT');
+            $event->addChangedFields('includedAll', 'false', 'true');
+            $this->getHandler()->dispatchEvent($event);
         }
         catch (InvalidArgumentException $e) {
             return $this->view(null, Codes::HTTP_BAD_REQUEST);
@@ -180,6 +183,15 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
             $sourceReportEmailConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_email_config');
 
             $sourceReportEmailConfigManager->saveSourceReportConfig($emails, $availableSites);
+
+            // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+            $event = new UpdateSourceReportEmailConfigEventLog('POST');
+            $event->addChangedFields('emails', '', ('[' . implode(', ', $emails) . ']'));
+            foreach($availableSites as $site_i){
+                /** @var SiteInterface $site_i */
+                $event->addAffectedEntity('Site', '', $site_i->getDomain());
+            }
+            $this->getHandler()->dispatchEvent($event);
         }
         catch(InvalidArgumentException $invalidArgs) {
             return $this->view(null, Codes::HTTP_BAD_REQUEST);

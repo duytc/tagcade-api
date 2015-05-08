@@ -1,0 +1,33 @@
+actor: Tester
+paths:
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    helpers: tests/_support
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
+modules:
+    login:
+        admin:
+            username: admin
+            password: admin
+
+        publisher:
+            username: mypub
+            password: 123455
+
+    params:  # these are ids of entity involve in the test: publisher owns site, site owns ad slot and ad slot owns ad tag. Ad tag is for ad network.
+        publisher: 2
+        adNetwork: 1
+        site: 22
+        adSlot: 6
+        adTag: 7
+
+    config:
+        Db:
+            dsn: ''
+            user: ''
+            password: ''
+            dump: tests/_data/dump.sql
