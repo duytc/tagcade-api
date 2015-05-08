@@ -3,9 +3,10 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Model\Core\SiteInterface;
 
-class AdSlot implements AdSlotInterface
+class AdSlot extends AdSlotAbstract implements AdSlotInterface
 {
     protected $id;
 
@@ -17,9 +18,11 @@ class AdSlot implements AdSlotInterface
     protected $width;
     protected $height;
     protected $adTags;
-    protected $enableVariable;
-    protected $variableDescriptor;
-    protected $expressions;
+
+    /**
+     * @var DynamicAdSlotInterface[]
+     */
+    protected $dynamicAdSlots;
     /**
      * @param string $name
      * @param int $width
@@ -124,51 +127,11 @@ class AdSlot implements AdSlotInterface
     }
 
     /**
-     * @inheritdoc
+     * @return DynamicAdSlotInterface[]
      */
-    public function getEnableVariable()
+    public function getDynamicAdSlots()
     {
-        return $this->enableVariable;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setEnableVariable($enableVariable)
-    {
-        $this->enableVariable = $enableVariable;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getExpressions()
-    {
-        return $this->expressions;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setExpressions($expressions)
-    {
-        $this->expressions = $expressions;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getVariableDescriptor()
-    {
-        return $this->variableDescriptor;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setVariableDescriptor($variableDescriptor)
-    {
-        $this->variableDescriptor = $variableDescriptor;
+        return $this->dynamicAdSlots;
     }
 
     public function __toString()

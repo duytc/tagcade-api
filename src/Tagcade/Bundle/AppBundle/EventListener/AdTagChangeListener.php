@@ -64,7 +64,12 @@ class AdTagChangeListener
                     return false;
                 }
 
-                $adSlots[] = $entity->getAdSlot();
+                $updatingAdSlot = $entity->getAdSlot();
+                if (!$updatingAdSlot->getAdTags()->contains($entity)) {
+                    $updatingAdSlot->getAdTags()->add($entity);
+                }
+                
+                $adSlots[] = $updatingAdSlot;
 
                 return true;
             }

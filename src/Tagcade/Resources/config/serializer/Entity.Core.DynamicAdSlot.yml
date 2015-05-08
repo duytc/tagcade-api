@@ -1,0 +1,18 @@
+Tagcade\Entity\Core\DynamicAdSlot:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+        site:
+            expose: true
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+        name:
+            expose: true
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+        defaultAdSlot:
+            expose: true
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+        expressions:
+            expose: true
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]

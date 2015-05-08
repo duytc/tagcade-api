@@ -3,7 +3,7 @@
  * Based on doctrine cache
  */
 
-namespace Tagcade\Legacy\Cache\Tag;
+namespace Tagcade\Cache\Legacy\Cache\Tag;
 
 interface NamespaceCacheInterface
 {

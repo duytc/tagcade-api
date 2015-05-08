@@ -1,0 +1,10 @@
+Tagcade\Entity\Core\Expression:
+    exclusion_policy: ALL
+    properties:
+        expectAdSlot:
+            expose: true
+            groups: [expression.detail, expression.summary]
+        expressionDescriptor:
+            expose: true
+            groups: [expression.detail, expression.summary]
+       

@@ -63,57 +63,8 @@ interface AdSlotInterface extends ModelInterface
     public function getAdTags();
 
     /**
-     * @return boolean
+     * @return ArrayCollection
      */
-    public function getEnableVariable();
+    public function getDynamicAdSlots();
 
-    /**
-     * @param boolean $enableVariable
-     */
-    public function setEnableVariable($enableVariable);
-
-    /**
-     * @return array, formatted as array of pair {expression [], expectVal}
-     *
-     */
-    public function getExpressions();
-
-    /**
-     * @param array $expressions
-     */
-    public function setExpressions($expressions);
-
-    /**
-     *{
-     * defaultVal: 500,
-     * expressions: [
-     * {
-     *   expression: {AND: [],
-     *               },
-     *   expectVal: 100
-     * },
-     * {
-     *   expression: {OR: [],
-     *               },
-     *   expectVal: 150
-     * },
-     * {
-     *    expression: {
-     *                  var: username,
-     *                  cmp: =,
-     *                  val: test
-     *                 },
-     *    expectVal: 200
-     * }
-     * }
-     * ]
-     *
-     * @return array
-     */
-    public function getVariableDescriptor();
-
-    /**
-     * @param array $variableDescriptor
-     */
-    public function setVariableDescriptor($variableDescriptor);
 }

@@ -4,19 +4,31 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\AdTagInterface;
 
 class UpdateAdTagPositionListener
 {
-    public function preUpdate(PreUpdateEventArgs $args)
+    public function onFlush(OnFlushEventArgs $args)
     {
-        $entity = $args->getEntity();
-        if(!$entity instanceof AdTagInterface) {
-            return;
-        }
+        $em = $args->getEntityManager();
+        $uow = $em->getUnitOfWork();
 
-        $this->updateTagPosition($entity);
+        $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions());
+        $md = $em->getClassMetadata('Tagcade\Entity\Core\AdTag');
+
+        foreach ($entities as $entity) {
+            if (!$entity instanceof AdTagInterface) {
+                continue;
+            }
+
+            $affectedAdTags = $this->updateTagPosition($entity);
+
+            foreach ($affectedAdTags as $adTag) {
+                $uow->recomputeSingleEntityChangeSet($md, $adTag);
+            }
+        }
     }
     /**
      * @param LifecycleEventArgs $args
@@ -35,6 +47,7 @@ class UpdateAdTagPositionListener
      * Update AdTag position. It should be continues according to current list of ad tag in the same ad slot
      *
      * @param AdTagInterface $updatingAdTag
+     * @return array
      */
     protected function updateTagPosition(AdTagInterface $updatingAdTag)
     {
@@ -75,10 +88,12 @@ class UpdateAdTagPositionListener
 
         // truly update position
         $pos = 1;
+        $updatedAdTags = [];
         foreach ($groups as $adTagList) {
             foreach ($adTagList as $adTag) {
                 if ($adTag->getPosition() != $pos) {
                     $adTag->setPosition($pos);
+                    $updatedAdTags[] = $adTag;
                 }
 
                 continue;
@@ -86,6 +101,8 @@ class UpdateAdTagPositionListener
 
             $pos ++;
         }
+
+        return $updatedAdTags;
 
     }
 

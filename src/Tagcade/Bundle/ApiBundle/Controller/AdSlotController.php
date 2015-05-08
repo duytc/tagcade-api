@@ -15,6 +15,7 @@ use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\ExpressionInterface;
 
 /**
  * @Rest\RouteResource("Adslot")
@@ -70,34 +71,34 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
 
         return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($adSlot);
     }
+//
+//    /**
+//     * @Rest\Get("/variableDescriptor/{id}", requirements={"id" = "\d+"})
+//     * @param Request $request
+//     * @param $id
+//     * @return View
+//     */
+//    public function getVariableDescriptorAction(Request $request, $id)
+//    {
+//        /** @var AdSlotInterface $adSlot */
+//        $adSlot = $this->one($id);
+//
+//        return $this->getHandler()->getAdSlotVariableDescriptor($adSlot);
+//    }
 
-    /**
-     * @Rest\Get("/variableDescriptor/{id}", requirements={"id" = "\d+"})
-     * @param Request $request
-     * @param $id
-     * @return View
-     */
-    public function getVariableDescriptorAction(Request $request, $id)
-    {
-        /** @var AdSlotInterface $adSlot */
-        $adSlot = $this->one($id);
-
-        return $this->getHandler()->getAdSlotVariableDescriptor($adSlot);
-    }
-
-    /**
-     * @Rest\Get("/configExpression/{id}", requirements={"id" = "\d+"})
-     * @param Request $request
-     * @param $id
-     * @return View
-     */
-    public function getConfigExpressionAction(Request $request, $id)
-    {
-        /** @var AdSlotInterface $adSlot */
-        $adSlot = $this->one($id);
-
-        return $this->getHandler()->getAdSlotConfigExpression($adSlot);
-    }
+//    /**
+//     * @Rest\Get("/configExpression/{id}", requirements={"id" = "\d+"})
+//     * @param Request $request
+//     * @param $id
+//     * @return View
+//     */
+//    public function getConfigExpressionAction(Request $request, $id)
+//    {
+//        /** @var AdSlotInterface $adSlot */
+//        $adSlot = $this->one($id);
+//
+//        return $this->getHandler()->getAdSlotConfigExpression($adSlot);
+//    }
 
     /**
      * Create a adSlot from the submitted data
@@ -213,7 +214,37 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
      */
     public function deleteAction($id)
     {
-        return $this->delete($id);
+        /**
+         * @var AdSlotInterface $entity
+         */
+        $entity = $this->getOr404($id);
+        $this->checkUserPermission($entity, 'edit');
+
+        // dynamic ad slots that its expressions refer to this ad slot
+
+        $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
+        $referencingDynamicAdSlots = array_map(
+            function(ExpressionInterface $expression) {
+                return $expression->getDynamicAdSlot();
+            },
+            $expressions
+        );
+
+        // dynamic ad slots that have default ad slot is this one.
+        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->getDynamicAdSlots()->toArray());
+        $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
+
+        if (count($referencingDynamicAdSlots) > 0) {
+            $view = $this->view(null, Codes::HTTP_BAD_REQUEST);
+        }
+        else {
+            $this->getHandler()->delete($entity);
+            $view = $this->view(null, Codes::HTTP_NO_CONTENT);
+        }
+
+
+
+        return $this->handleView($view);
     }
 
     public function getAdtagsAction($id)

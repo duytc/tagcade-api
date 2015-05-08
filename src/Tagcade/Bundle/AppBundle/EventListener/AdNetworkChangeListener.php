@@ -5,7 +5,6 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
-use Tagcade\Legacy\TagCacheInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 
 class AdNetworkChangeListener

@@ -12,11 +12,19 @@ services:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagPositionListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: onFlush }
 
-    ## Update ad slot variableDescriptor, make sure auto update for expressions field
-    tagcade_api.event_listener.UpdateAdSlotExpressionListener:
-        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotExpressionListener
+#    ## Update ad slot variableDescriptor, make sure auto update for expressions field
+#    tagcade_api.event_listener.UpdateAdSlotExpressionListener:
+#        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotExpressionListener
+#        tags:
+#            - { name: doctrine.event_listener, event: prePersist }
+#            - { name: doctrine.event_listener, event: preUpdate }
+
+    ## Update expression in js, for tagcache latter
+    tagcade_api.event_listener.UpdateExpressionInJstListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate }
+#            - { name: doctrine.event_listener, event: preUpdate }
+

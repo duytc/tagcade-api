@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Legacy\Cache;
+namespace Tagcade\Cache\Legacy\Cache;
 
 // Used for live report data only
 

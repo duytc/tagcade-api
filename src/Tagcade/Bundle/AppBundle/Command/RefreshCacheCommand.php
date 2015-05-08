@@ -34,9 +34,9 @@ class RefreshCacheCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $tagCache = $this->getContainer()->get('tagcade.legacy.tag_cache');
+        $tagCacheManager = $this->getContainer()->get('tagcade.cache.tag_cache_manager');
 
-        $tagCache->refreshCache();
+        $tagCacheManager->refreshCache();
 
         $output->writeln('Ad slot cache refreshed');
     }

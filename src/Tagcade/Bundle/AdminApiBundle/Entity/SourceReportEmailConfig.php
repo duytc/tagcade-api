@@ -32,6 +32,8 @@ class SourceReportEmailConfig implements SourceReportEmailConfigInterface
      */
     protected $sourceReportSiteConfigs;
 
+    protected $deletedAt;
+
     /**
      * @return int
      */

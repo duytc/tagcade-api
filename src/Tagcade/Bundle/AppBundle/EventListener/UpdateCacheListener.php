@@ -3,26 +3,27 @@
 namespace Tagcade\Bundle\AppBundle\EventListener;
 
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
-use Tagcade\Legacy\TagCacheInterface;
+use Tagcade\Cache\TagCacheManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
 class UpdateCacheListener
 {
     /**
-     * @var TagCacheInterface
+     * @var TagCacheManagerInterface
      */
-    protected  $tagCache;
+    protected $tagCacheManager;
 
     /**
      * @var array
      */
     protected $changedEntities;
 
-    function __construct(TagCacheInterface $tagCache)
+    function __construct(TagCacheManagerInterface $tagCacheManager)
     {
-        $this->tagCache = $tagCache;
+        $this->tagCacheManager = $tagCacheManager;
     }
 
     /**
@@ -34,10 +35,13 @@ class UpdateCacheListener
 
         array_walk($entities, function(ModelInterface $entity) {
                 if ($entity instanceof AdSlotInterface) {
-                    $this->tagCache->refreshCacheForAdSlot($entity);
+                    $this->tagCacheManager->refreshCacheForAdSlot($entity);
                 }
                 else if ($entity instanceof AdNetworkInterface) {
-                    $this->tagCache->refreshCacheForAdNetwork($entity);
+                    $this->tagCacheManager->refreshCacheForAdNetwork($entity);
+                }
+                else if ($entity instanceof DynamicAdSlotInterface) {
+                    $this->tagCacheManager->refreshCacheForDynamicAdSlot($entity);
                 }
             }
         );

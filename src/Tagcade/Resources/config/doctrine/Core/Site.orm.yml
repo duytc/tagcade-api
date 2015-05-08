@@ -29,6 +29,10 @@ Tagcade\Entity\Core\Site:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
     oneToMany:
+        dynamicAdSlots:
+            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+            mappedBy: site
+            cascade: ["remove"]
         adSlots:
             targetEntity: AdSlot
             mappedBy: site

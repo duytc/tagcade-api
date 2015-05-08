@@ -2,6 +2,10 @@ Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig:
     type: entity
     table: source_report_email_config
     repositoryClass: Tagcade\Bundle\AdminApiBundle\Repository\SourceReportEmailConfigRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
     id:
         id:
             type: integer
@@ -15,16 +19,15 @@ Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig:
 
         includedAll:
             type: boolean
-#            nullable: false
             options:
                 default: false
-
         active:
             type: boolean
-#            nullable: false
             options:
                 default: true
-
+        deletedAt:
+            type: date
+            nullable: true
     oneToMany:
         sourceReportSiteConfigs:
             targetEntity: Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig

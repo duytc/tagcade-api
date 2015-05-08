@@ -24,6 +24,11 @@ class Site implements SiteInterface
      * @var SourceReportSiteConfigInterface[]
      */
     protected $sourceReportSiteConfigs;
+
+    /**
+     * @var DynamicAdSlotInterface[]
+     */
+    protected $dynamicAdSlots;
     /**
      * @param string $name
      * @param string $domain

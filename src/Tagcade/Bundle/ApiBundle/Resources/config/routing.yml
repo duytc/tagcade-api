@@ -18,6 +18,11 @@ api_ad_slot:
     resource: Tagcade\Bundle\ApiBundle\Controller\AdSlotController
     name_prefix:  api_1_
 
+api_dynamic_ad_slot:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\DynamicAdSlotController
+    name_prefix:  api_1_
+
 api_ad_tag:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\AdTagController

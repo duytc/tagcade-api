@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Legacy\Cache\Tag;
+namespace Tagcade\Cache\Legacy\Cache\Tag;
 
 use \Redis;
 

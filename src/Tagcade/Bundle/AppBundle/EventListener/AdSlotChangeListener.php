@@ -24,23 +24,23 @@ class AdSlotChangeListener
         $this->dispatchUpdateCacheEventDueToAdSlot($args);
     }
 
-    public function postUpdate(LifecycleEventArgs $args)
-    {
-        $entity = $args->getEntity();
-
-        if (!$entity instanceof AdSlotInterface) {
-            return;
-        }
-
-        $em = $args->getEntityManager();
-        $uow = $em->getUnitOfWork();
-
-        $changeSet = $uow->getEntityChangeSet($entity);
-
-        if (true === array_key_exists('variableDescriptor', $changeSet) || true === array_key_exists('enableVariable', $changeSet)) {
-            $this->dispatchUpdateCacheEventDueToAdSlot($args);
-        }
-    }
+//    public function postUpdate(LifecycleEventArgs $args)
+//    {
+//        $entity = $args->getEntity();
+//
+//        if (!$entity instanceof AdSlotInterface) {
+//            return;
+//        }
+//
+//        $em = $args->getEntityManager();
+//        $uow = $em->getUnitOfWork();
+//
+//        $changeSet = $uow->getEntityChangeSet($entity);
+//
+//        if (true === array_key_exists('variableDescriptor', $changeSet) || true === array_key_exists('enableVariable', $changeSet)) {
+//            $this->dispatchUpdateCacheEventDueToAdSlot($args);
+//        }
+//    }
 
 //    public function postRemove(LifecycleEventArgs $args)
 //    {

@@ -156,8 +156,23 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
-        return $this->get('tagcade.domain_manager.ad_slot')
+        return  $this->get('tagcade.domain_manager.ad_slot')
             ->getAdSlotsForSite($site);
+    }
+
+    /**
+     * Retrieve a list of dynamic ad slots for this site
+     *
+     * @param int $id
+     * @return \Tagcade\Model\Core\DynamicAdSlotInterface[]
+     */
+    public function getDynamicadslotsAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        return $this->get('tagcade.domain_manager.dynamic_ad_slot')
+            ->getDynamicAdSlotsForSite($site);
     }
 
     /**

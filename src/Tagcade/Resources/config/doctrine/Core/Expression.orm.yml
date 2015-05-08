@@ -1,0 +1,29 @@
+Tagcade\Entity\Core\Expression:
+    type: entity
+    table: core_expression
+    repositoryClass: Tagcade\Repository\Core\ExpressionRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        expressionDescriptor:
+            type: json_array
+            nullable: false
+        expressionInJs:
+            type: json_array
+            nullable: false
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        dynamicAdSlot:
+            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+            inversedBy: expressions
+        expectAdSlot:
+            targetEntity: Tagcade\Entity\Core\AdSlot

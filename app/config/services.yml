@@ -7,6 +7,7 @@ parameters:
 
     tagcade.security.auth.voter.site.class: Tagcade\Security\Authorization\Voter\SiteVoter
     tagcade.security.auth.voter.ad_slot.class: Tagcade\Security\Authorization\Voter\AdSlotVoter
+    tagcade.security.auth.voter.dynamic_ad_slot.class: Tagcade\Security\Authorization\Voter\DynamicAdSlotVoter
     tagcade.security.auth.voter.ad_tag.class: Tagcade\Security\Authorization\Voter\AdTagVoter
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
     tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
@@ -23,6 +24,12 @@ services:
 
     tagcade.security.auth.voter.ad_slot:
         class:  %tagcade.security.auth.voter.ad_slot.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.dynamic_ad_slot:
+        class:  %tagcade.security.auth.voter.dynamic_ad_slot.class%
         public: false
         tags:
             - { name: security.voter }

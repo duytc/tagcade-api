@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Legacy;
+namespace Tagcade\Cache;
 
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
@@ -23,4 +23,6 @@ interface TagCacheInterface
      * @return $this
      */
     public function refreshCache();
+
+    public function supportVersion($version);
 }

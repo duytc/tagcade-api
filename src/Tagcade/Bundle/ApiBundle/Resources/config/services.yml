@@ -6,13 +6,16 @@ parameters:
 
     tagcade.entity.core.site.class: Tagcade\Entity\Core\Site
     tagcade.entity.core.ad_slot.class: Tagcade\Entity\Core\AdSlot
+    tagcade.entity.core.dynamic_ad_slot.class: Tagcade\Entity\Core\DynamicAdSlot
     tagcade.entity.core.ad_tag.class: Tagcade\Entity\Core\AdTag
     tagcade.entity.core.ad_network.class: Tagcade\Entity\Core\AdNetwork
+    tagcade.entity.core.expression.class: Tagcade\Entity\Core\Expression
 
     #form classes
 
     tagcade.form.type.site.class: Tagcade\Form\Type\SiteFormType
     tagcade.form.type.ad_slot.class: Tagcade\Form\Type\AdSlotFormType
+    tagcade.form.type.dynamic_ad_slot.class: Tagcade\Form\Type\DynamicAdSlotFormType
     tagcade.form.type.ad_tag.class: Tagcade\Form\Type\AdTagFormType
     tagcade.form.type.ad_network.class: Tagcade\Form\Type\AdNetworkFormType
 
@@ -161,7 +164,65 @@ services:
 
 
 
+    # dynamic ad slot ######################################################
 
+    tagcade_api.handler.dynamic_ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.dynamic_ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for dynamic ad slot handler #######
+
+    tagcade.repository.dynamic_ad_slot:
+        class: Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\DynamicAdSlot
+
+    tagcade.domain_manager.dynamic_ad_slot:
+        class: Tagcade\DomainManager\DynamicAdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.dynamic_ad_slot
+
+    tagcade.form.type.dynamic_ad_slot:
+        class: %tagcade.form.type.dynamic_ad_slot.class%
+        arguments:
+            - @tagcade.repository.ad_slot
+        tags:
+            - { name: form.type, alias: tagcade_form_dynamic_ad_slot }
+
+    tagcade.handler.handlers.dynamic_ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\DynamicAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.dynamic_ad_slot
+            - @tagcade.domain_manager.dynamic_ad_slot
+
+    tagcade.handler.handlers.dynamic_ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\DynamicAdSlotHandler
+        parent: tagcade.handler.handlers.dynamic_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.dynamic_ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\DynamicAdSlotHandler
+        parent: tagcade.handler.handlers.dynamic_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.dynamic_ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.dynamic_ad_slot.class%
+            -
+                - @tagcade.handler.handlers.dynamic_ad_slot.admin
+                - @tagcade.handler.handlers.dynamic_ad_slot.publisher
+
+    # end dynamic ad slot #####################################################
 
 
     # ad tag ######################################################
@@ -284,6 +345,14 @@ services:
 
     # end ad network #####################################################
 
+
+    ## expression
+    tagcade.repository.expression:
+        class: Tagcade\Repository\Core\ExpressionRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.expression.class%
 
     # authentication
     tagcade_api.service.jwt_response_transformer:

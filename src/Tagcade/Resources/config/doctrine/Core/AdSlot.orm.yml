@@ -1,38 +1,27 @@
 Tagcade\Entity\Core\AdSlot:
     type: entity
-    table: core_ad_slot
+    table: core_static_ad_slot
     repositoryClass: Tagcade\Repository\Core\AdSlotRepository
-    gedmo:
-        soft_deleteable:
-            field_name: deletedAt
-            time_aware: false
-    id:
-        id:
-            type: integer
-            generator:
-                strategy: AUTO
+#    gedmo:
+#        soft_deleteable:
+#            field_name: deletedAt
+#            time_aware: false
+#    id:
+#        id:
+#            type: integer
+#            generator:
+#                strategy: AUTO
     fields:
-        name:
-            type: string
-            length: 100
+#        name:
+#            type: string
+#            length: 100
         width:
             type: integer
         height:
             type: integer
-        deletedAt:
-            type: date
-            nullable: true
-
-        enableVariable:
-            type: boolean
-            options:
-                default: false
-        variableDescriptor:
-            type: json_array
-            nullable: true
-        expressions:
-            type: json_array
-            nullable: true
+#        deletedAt:
+#            type: date
+#            nullable: true
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site
@@ -42,3 +31,6 @@ Tagcade\Entity\Core\AdSlot:
             orderBy: { 'position': 'ASC' }
             mappedBy: adSlot
             cascade: ["persist", "remove", "detach"]
+        dynamicAdSlots:
+            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+            mappedBy: defaultAdSlot
