@@ -261,7 +261,7 @@ class UpdateExpressionInJsListener {
         if ($cmp === 'endsWith') {
 
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') == (window.' . $var . 'length - window.' . $val . 'length)' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === (window.' . $var . '.length - ' . $val . '.length)' .
             ')';
         }
 
