@@ -151,6 +151,9 @@ class UpdateExpressionInJsListener {
         )
         . ')';
 
+        // filter unique
+        $vars = array_unique($vars, SORT_REGULAR);
+
         return ['vars'=>$vars, 'expression'=>$expString];
 
 
