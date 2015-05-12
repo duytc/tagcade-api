@@ -8,6 +8,6 @@ Tagcade\Entity\Core\DynamicAdSlot:
         site:
             - NotBlank: ~
             - Valid: ~
-        defaultAdSlot:
-            - NotBlank: ~
-            - Valid: ~
+#        defaultAdSlot:
+#            - NotBlank: ~
+#            - Valid: ~
