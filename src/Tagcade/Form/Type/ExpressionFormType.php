@@ -84,9 +84,9 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
     ];
 
     static $EXPRESSION_CMP_VALUES_FOR_STRING = [
-        'contains'     => ['func' => 'indexOf',    'cmp' => ''],
-        'startsWith'   => ['func' => 'indexOf', 'cmp' => ''],
-        'endsWith'     => ['func' => 'lastIndexOf',   'cmp' => ''],
+        'contains'     => ['func' => 'search',    'cmp' => ''],
+        'startsWith'   => ['func' => 'search', 'cmp' => ''],
+        'endsWith'     => ['func' => 'search',   'cmp' => ''],
         'length >'     => ['func' => 'length',     'cmp' => '>'],
         'length <'     => ['func' => 'length',     'cmp' => '<'],
         'length =='    => ['func' => 'length',     'cmp' => '=='],

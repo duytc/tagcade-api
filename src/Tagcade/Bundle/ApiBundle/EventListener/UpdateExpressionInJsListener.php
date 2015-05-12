@@ -254,23 +254,26 @@ class UpdateExpressionInJsListener {
             ')';
         }
 
+        // Below functions use regex, hence we have to remove the quotes from json
+        $val = str_replace('"','', $val);
+
         //return '$var.func($val) . $real-cmp . -1; e.g: 'a.startsWith(3) > -1'
         if ($cmp === 'startsWith') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === 0' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
 
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === (window.' . $var . '.length - ' . $val . '.length)' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
         if ($cmp === 'contains') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') > -1' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
             ')';
         }
 
