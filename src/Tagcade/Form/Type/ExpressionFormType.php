@@ -110,7 +110,13 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
                      */
                     $expression = $event->getData();
                     if (null === $expression->getExpectAdSlot()) {
-                        throw new InvalidFormException('AdSlot does not exist');
+                        throw new InvalidFormException('expectedAdSlot does not exist');
+                    }
+
+                    if (null === $expression->getExpressionDescriptor()
+                        || !is_array($expression->getExpressionDescriptor())
+                    ) {
+                        throw new InvalidFormException('expressionDescriptor null or not is array');
                     }
 
                     $this->validateExpressionDescriptor($expression->getExpressionDescriptor());

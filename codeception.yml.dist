@@ -23,7 +23,11 @@ modules:
         adNetwork: 1
         site: 22
         adSlot: 6
-        adTag: 7
+        dynamicAdSlot: 26
+        defaultAdSlot: 29
+        expectedAdSlot: 27
+        expectedAdSlot_2: 28
+        adTag: 1
 
     config:
         Db:
