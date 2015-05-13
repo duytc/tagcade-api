@@ -151,6 +151,9 @@ class UpdateExpressionInJsListener {
         )
         . ')';
 
+        // filter unique
+        $vars = array_unique($vars, SORT_REGULAR);
+
         return ['vars'=>$vars, 'expression'=>$expString];
 
 
@@ -251,23 +254,44 @@ class UpdateExpressionInJsListener {
             ')';
         }
 
-        //return '$var.func($val) . $real-cmp . -1; e.g: 'a.startsWith(3) > -1'
+        // Below functions use regex, hence we have to remove the quotes from json
+        $val = str_replace('"','', $val);
+
+        if ($cmp === 'contains') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
+            ')';
+        }
+
+        if ($cmp === 'not_contains') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
+            ')';
+        }
+
         if ($cmp === 'startsWith') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === 0' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
+            ')';
+        }
+
+        if ($cmp === 'not_startsWith') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
 
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === (window.' . $var . '.length - ' . $val . '.length)' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
-        if ($cmp === 'contains') {
+        if ($cmp === 'not_endsWith') {
+
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') > -1' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 

@@ -77,11 +77,33 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                  * @var DynamicAdSlotInterface $dynamicAdSlot
                  */
                 $dynamicAdSlot = $event->getForm()->getData();
+
+//                if (null === $event->getForm()->get('expressions')
+//                ) {
+//                    $form = $event->getForm();
+//
+//                    $form->get(ExpressionFormType::KEY_EXPRESSIONS)->addError(new FormError('Expressions is null! Expect not null && is array'));
+//
+//                    return;
+//                }
+
                 $expressions = $event->getForm()->get('expressions')->getData();
+//                if (null === $expressions
+//                    || !is_array($expressions)
+//                    || count($expressions) < 1
+//                ) {
+//                    $form = $event->getForm();
+//
+//                    $form->get(ExpressionFormType::KEY_EXPRESSIONS)->addError(new FormError('Expressions not is array! Expect not null && is array'));
+//
+//                    return;
+//                }
+
 
                 try {
-//                    $this->validateExpressions($expressions);
-                    $this->updateDynamicAdSlotForExpression($dynamicAdSlot, $expressions);
+                    if (null != $expressions && is_array($expressions) ) {
+                        $this->updateDynamicAdSlotForExpression($dynamicAdSlot, $expressions);
+                    }
 
                 } catch (InvalidFormException $ex) {
                     $form = $event->getForm();

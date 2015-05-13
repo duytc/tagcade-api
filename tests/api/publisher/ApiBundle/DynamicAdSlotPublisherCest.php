@@ -3,6 +3,6 @@
 /**
  * @group publisher
  */
-class DynamicAdSlotPublisherCest extends AdSlot
+class DynamicAdSlotPublisherCest extends DynamicAdSlot
 {
 }

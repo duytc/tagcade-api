@@ -3,6 +3,7 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -72,14 +73,20 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             function (FormEvent $event) {
                 /** @var AdTagInterface $data */
                 $data = $event->getData();
-                switch ($data->getAdType()) {
-                    case self::AD_TYPE_IMAGE:
-                        $this->validateImageAd($data);
-                        break;
-                    default:
-                        $this->validateCustomAd($data);
-                }
 
+                try {
+                    switch ($data->getAdType()) {
+                        case self::AD_TYPE_IMAGE:
+                            $this->validateImageAd($data);
+                            break;
+                        default:
+                            $this->validateCustomAd($data);
+                    }
+                } catch (InvalidFormException $ex) {
+                    $form = $event->getForm();
+
+                    $form->get('descriptor')->addError(new FormError($ex->getMessage()));
+                }
             }
         );
     }
@@ -92,6 +99,10 @@ class AdTagFormType extends AbstractRoleSpecificFormType
         {
             throw new InvalidFormException('The descriptor "%descriptor%" for AD_TYPE_IMAGE invalid: must contain keys \'imageUrl\' and \'targetUrl\'.', $this);
         }
+
+        $this->validateImageUrl($descriptor['imageUrl']);
+
+        $this->validateTargetUrl($descriptor['targetUrl']);
     }
 
     protected function validateCustomAd(AdTagInterface $adTag)
@@ -99,6 +110,69 @@ class AdTagFormType extends AbstractRoleSpecificFormType
          if (null === $adTag->getHtml()) {
              throw new InvalidFormException('expect html of ad tag');
          }
+    }
+
+    /**
+     * validate ImageUrl.
+     * @param $imageUrl
+     */
+    protected function validateImageUrl($imageUrl)
+    {
+        if (null === $imageUrl || sizeof($imageUrl) < 0
+            || (
+                !$this->endsWith($imageUrl, '.jpg')
+                && !$this->endsWith($imageUrl, '.jpeg')
+                && !$this->endsWith($imageUrl, '.png')
+                && !$this->endsWith($imageUrl, '.gif')
+                && !$this->endsWith($imageUrl, '.bmp')
+            )
+        ) {
+            throw new InvalidFormException('The descriptor for AD_TYPE_IMAGE invalid: \'imageUrl\' must not null and not empty and end with ".jpg, .jpeg, .png, .gif, .bmp"', $this);
+        }
+
+        $this->validateUrl($imageUrl);
+    }
+
+    /**
+     * validate TargetUrl
+     * @param $targetUrl
+     */
+    protected function validateTargetUrl($targetUrl)
+    {
+        $this->validateUrl($targetUrl);
+    }
+
+    /**
+     * validate Url format
+     * @param $url
+     */
+    protected function validateUrl($url)
+    {
+        if(!filter_var($url, FILTER_VALIDATE_URL)){
+            throw new InvalidFormException('The format of url "%url%" is invalid.', $this);
+        }
+    }
+
+    /**
+     * check if string $haystack start with $needle
+     * @param $haystack
+     * @param $needle
+     * @return boolean
+     */
+    function startsWith($haystack, $needle) {
+        // search backwards starting from haystack length characters from the end
+        return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
+    }
+
+    /**
+     * check if string $haystack end with $needle
+     * @param $haystack
+     * @param $needle
+     * @return bool
+     */
+    function endsWith($haystack, $needle) {
+        // search forward starting from end minus needle length characters
+        return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

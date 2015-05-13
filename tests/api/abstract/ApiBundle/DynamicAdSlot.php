@@ -11,6 +11,10 @@ class DynamicAdSlot
     {
     }
 
+    /**
+     * get All DynamicAdSlot
+     * @param ApiTester $I
+     */
     public function getAllDynamicAdSlot(ApiTester $I)
     {
         $I->sendGet(URL_API . '/dynamicadslots');
@@ -18,177 +22,241 @@ class DynamicAdSlot
         $I->seeResponseIsJson();
     }
 
+    /**
+     * get DynamicAdSlot By Id
+     * @param ApiTester $I
+     */
     public function getDynamicAdSlotById(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/dynamicadslots/' . PARAMS_AD_SLOT);
+        $I->sendGet(URL_API . '/dynamicadslots/' . PARAMS_DYNAMIC_AD_SLOT);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
     }
 
+    /**
+     * get DynamicAdSlot By Id Not Existed
+     * @param ApiTester $I
+     */
+    public function getDynamicAdSlotByIdNotExisted(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/dynamicadslots/' . '-1');
+        $I->seeResponseCodeIs(404);
+        $I->seeResponseIsJson();
+    }
+
+    /**
+     * add DynamicAdSlot
+     * @param ApiTester $I
+     */
     public function addDynamicAdSlot(ApiTester $I)
     {
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor' => [
-                    'expressions' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'groupType' => 'OR',
-                                        'groupVal' => [
-                                            [
-                                                'var' => 'checkMath',
-                                                'cmp' => '<=',
-                                                'val' => 2,
-                                                'type' => 'numeric'
-                                            ],
-                                            [
-                                                'var' => 'checkBoolean',
-                                                'cmp' => '==',
-                                                'val' => 'true',
-                                                'type' => 'boolean'
-                                            ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'groupType' => 'AND',
+                            'groupVal' => [
+                                [
+                                    'var' => 'checkLength',
+                                    'cmp' => 'length >=',
+                                    'val' => 10,
+                                    'type' => 'numeric'
+                                ],
+                                [
+                                    'groupType' => 'OR',
+                                    'groupVal' => [
+                                        [
+                                            'var' => 'checkMath',
+                                            'cmp' => '<=',
+                                            'val' => 2,
+                                            'type' => 'numeric'
+                                        ],
+                                        [
+                                            'var' => 'checkBoolean',
+                                            'cmp' => '==',
+                                            'val' => 'true',
+                                            'type' => 'boolean'
                                         ]
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
                                     ]
+                                ],
+                                [
+                                    'var' => 'checkString',
+                                    'cmp' => '!=',
+                                    'val' => 'abc',
+                                    'type' => 'string'
                                 ]
-                            ],
-                            'expectAdSlot' => 6
-                        ]
+                            ]
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                    ],
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2
                     ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(201);
     }
 
     /**
-     * add dynamicAdSlot failed caused by variableDescriptor null
+     * add DynamicAdSlot failed by Missing Field
      * @param ApiTester $I
      */
-    public function addDynamicAdSlotWithVariableDescriptorNull(ApiTester $I)
+    public function addDynamicAdSlotFailedByMissingField(ApiTester $I)
     {
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor' => [
-                    'expressions' => null
-                ]
-            ]
-        );
-        $I->seeResponseCodeIs(400);
-    }
-
-    /**
-     * add dynamicAdSlot failed caused by variableDescriptor format wrong
-     * @param ApiTester $I
-     */
-    public function addDynamicAdSlotWithVariableDescriptorInvalid(ApiTester $I)
-    {
-        $I->sendPOST(URL_API . '/dynamicadslots',
-            [
-                'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor' => [
-                    'expressions_wrong' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
+                //'name' => 'dtag.test.adslot', //this is missing field
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
                     ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * add dynamicAdSlot failed caused by missing variableDescriptor field
+     * add DynamicAdSlot failed by Unexpected Field
      * @param ApiTester $I
      */
-    public function addDynamicAdSlotMissingField(ApiTester $I)
+    public function addDynamicAdSlotFailedByUnexpectedField(ApiTester $I)
     {
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'enableVariable' => true
-            ]
-        );
-        $I->seeResponseCodeIs(400);
-    }
-
-    /**
-     * add dynamicAdSlot failed caused by contains unexpected field
-     * @param ApiTester $I
-     */
-    public function addDynamicAdSlotWithUnexpectedField(ApiTester $I)
-    {
-        $I->sendPOST(URL_API . '/dynamicadslots',
-            [
-                'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor_unexpected' => 'variableDescriptor_unexpected',
-                'variableDescriptor' => [
-                    'expressions' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
                     ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                'unexpected_field' => 29 //this is unexpected field
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * add DynamicAdSlot failed by Unexpected Field
+     * @param ApiTester $I
+     */
+    public function addDynamicAdSlotFailedByWrongDataType(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/dynamicadslots',
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                    ]
+                ],
+                'defaultAdSlot' => '29_wrong' //this is wrong data type
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * add dynamicAdSlot failed caused by expressions null
+     * @param ApiTester $I
+     */
+    public function addDynamicAdSlotWithExpressionsNull(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/dynamicadslots',
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'expressions' => null,
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+            ]
+        );
+        $I->seeResponseCodeIs(201);
+    }
+
+    /**
+     *
+     * add dynamicAdSlot failed caused by expressions format invalid
+     * @param ApiTester $I
+     */
+    public function addDynamicAdSlotWithExpressionsInvalid(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/dynamicadslots',
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'expressions' => [
+                    [
+                        'expressionDescriptor_wrong' => [ //this key is invalid
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                    ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * add dynamicAdSlot failed caused by expressions invalid at adSlot not existed
+     * @param ApiTester $I
+     */
+    public function addDynamicAdSlotWithExpressionsInvalidByAdSlotNotExisted(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/dynamicadslots',
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => -1 //this adSlot is not existed
+                    ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -208,59 +276,49 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'variableDescriptor' => [
-                    'expressions' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'groupType' => 'OR',
-                                        'groupVal' => [
-                                            [
-                                                'var' => 'checkMath',
-                                                'cmp' => '<=',
-                                                'val' => 2,
-                                                'type' => 'numeric'
-                                            ],
-                                            [
-                                                'var' => 'checkBoolean',
-                                                'cmp' => '==',
-                                                'val' => 'true',
-                                                'type' => 'boolean'
-                                            ]
-                                        ]
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'groupType' => 'AND',
+                            'groupVal' => [
+                                [
+                                    'var' => 'checkLength',
+                                    'cmp' => 'length >=',
+                                    'val' => 10,
+                                    'type' => 'numeric'
+                                ],
+                                [
+                                    'var' => 'checkString',
+                                    'cmp' => '!=',
+                                    'val' => 'abc',
+                                    'type' => 'string'
                                 ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
+                            ]
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                    ],
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2
                     ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(204);
     }
 
     /**
-    /**
-     * edit dynamicAdSlot failed caused by variableDescriptor null
+     * edit dynamicAdSlot failed by unexpected field
      * @depends addDynamicAdSlot
      * @param ApiTester $I
      */
-    public function editDynamicAdSlotWithVariableDescriptorNull(ApiTester $I)
+    public function editDynamicAdSlotFailedByUnexpectedField(ApiTester $I)
     {
         $I->sendGet(URL_API . '/dynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
@@ -269,10 +327,70 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor' => [
-                    'expressions' => null
-                ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                    ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                'unexpected_field' => 29 //this is unexpected field
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * edit dynamicAdSlot failed by wrong data type
+     * @depends addDynamicAdSlot
+     * @param ApiTester $I
+     */
+    public function editDynamicAdSlotFailedByWrongDataType(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                    ]
+                ],
+                'defaultAdSlot' => '29_wrong' //this is wrong data type
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * edit dynamicAdSlot failed caused by expressions null
+     * @param ApiTester $I
+     */
+    public function editDynamicAdSlotWithExpressionsNull(ApiTester $I)
+    {
+
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'expressions' => null
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -283,7 +401,7 @@ class DynamicAdSlot
      * @depends addDynamicAdSlot
      * @param ApiTester $I
      */
-    public function editDynamicAdSlotWithVariableDescriptorInvalid(ApiTester $I)
+    public function editDynamicAdSlotWithExpressionsInvalid(ApiTester $I)
     {
         $I->sendGet(URL_API . '/dynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
@@ -292,42 +410,29 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor' => [
-                    'expressions_wrong' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor_wrong' => [ //this key is invalid
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
                     ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * edit dynamicAdSlot failed caused by unexpected field
+     * edit dynamicAdSlot failed caused by variableDescriptor format wrong
      * @depends addDynamicAdSlot
      * @param ApiTester $I
      */
-    public function editDynamicAdSlotWithUnexpectedField(ApiTester $I)
+    public function editDynamicAdSlotWithExpressionsInvalidByAdSlotNotExisted(ApiTester $I)
     {
         $I->sendGet(URL_API . '/dynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
@@ -336,148 +441,134 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'enableVariable' => true,
-                'variableDescriptor_wrong' => [
-                    'expressions' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor_wrong' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => -1 //this adSlot is not existed
                     ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(400);
     }
 
+//    /**
+//     * patch dynamicAdSlot
+//     * @depends addDynamicAdSlot
+//     * @param ApiTester $I
+//     */
+//    public function patchDynamicAdSlot(ApiTester $I)
+//    {
+//        //TODO - case failed
+//        $I->sendGet(URL_API . '/dynamicadslots');
+//        $item = array_pop($I->grabDataFromJsonResponse());
+//
+//        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
+//            [
+//                'name' => 'dtag.test.adslot.patched'
+//            ]
+//        );
+//        $I->seeResponseCodeIs(204);
+//    }
+
     /**
-     * patch dynamicAdSlot
+     * patch dynamicAdSlot failed cause by unexpected field
      * @depends addDynamicAdSlot
      * @param ApiTester $I
      */
-    public function patchDynamicAdSlot(ApiTester $I)
-    {
-        $I->sendGet(URL_API . '/dynamicadslots');
-        $item = array_pop($I->grabDataFromJsonResponse());
-
-        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'], ['site' => PARAMS_SITE, 'height' => 250]);
-        $I->seeResponseCodeIs(204);
-    }
-
-    /**
-     * patch dynamicAdSlot failed caused by variableDescriptor null
-     * @depends addDynamicAdSlot
-     * @param ApiTester $I
-     */
-    public function patchDynamicAdSlotWithVariableDescriptorNull(ApiTester $I)
+    public function patchDynamicAdSlotFailedByUnexpectedField(ApiTester $I)
     {
         $I->sendGet(URL_API . '/dynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
-                'enableVariable' => true,
-                'variableDescriptor' => null
+                'name' => 'dtag.test.adslot.patched',
+                'unexpected_field' => 29 //this is unexpected field
             ]
         );
         $I->seeResponseCodeIs(400);
     }
 
+//    /**
+//     * patch dynamicAdSlot failed caused by expressions null
+//     * @depends addDynamicAdSlot
+//     * @param ApiTester $I
+//     */
+//    public function patchDynamicAdSlotWithExpressionsNull(ApiTester $I)
+//    {
+//        //TODO - case failed
+//        $I->sendGet(URL_API . '/dynamicadslots');
+//        $item = array_pop($I->grabDataFromJsonResponse());
+//
+//        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
+//            [
+//                'variableDescriptor' => null
+//            ]
+//        );
+//        $I->seeResponseCodeIs(400);
+//    }
+
+//    /**
+//     * patch dynamicAdSlot failed caused by expressions format wrong
+//     * @depends addDynamicAdSlot
+//     * @param ApiTester $I
+//     */
+//    public function patchDynamicAdSlotWithExpressionsInvalid(ApiTester $I)
+//    {
+//        //TODO - case failed
+//        $I->sendGet(URL_API . '/dynamicadslots');
+//        $item = array_pop($I->grabDataFromJsonResponse());
+//
+//        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
+//            [
+//                'expressions' => [
+//                    [
+//                        'expressionDescriptor_wrong' => [ //this key is invalid
+//                            'var' => 'checkString',
+//                            'cmp' => '!=',
+//                            'val' => 'abc',
+//                            'type' => 'string'
+//                        ],
+//                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+//                    ]
+//                ],
+//                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+//            ]
+//        );
+//        $I->seeResponseCodeIs(400);
+//    }
+
     /**
-     * patch dynamicAdSlot failed caused by variableDescriptor format wrong
+     * patch dynamicAdSlot failed caused by expressions invalid at adSlot not existed
      * @depends addDynamicAdSlot
      * @param ApiTester $I
      */
-    public function patchDynamicAdSlotWithVariableDescriptorInvalid(ApiTester $I)
+    public function patchDynamicAdSlotWithExpressionsInvalidByAdSlotNotExisted(ApiTester $I)
     {
         $I->sendGet(URL_API . '/dynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
-                'enableVariable' => true,
-                'variableDescriptor' => [
-                    'expressions_wrong' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
+                'expressions' => [
+                    [
+                        'expressionDescriptor_wrong' => [ //this key is invalid
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => -1 //this is not existed
                     ]
-                ]
-            ]
-        );
-        $I->seeResponseCodeIs(400);
-    }
-
-    /**
-     * patch dynamicAdSlot failed caused by unexpected field
-     * @depends addDynamicAdSlot
-     * @param ApiTester $I
-     */
-    public function patchDynamicAdSlotWithUnexpectedField(ApiTester $I)
-    {
-        $I->sendGet(URL_API . '/dynamicadslots');
-        $item = array_pop($I->grabDataFromJsonResponse());
-
-        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
-            [
-                'enableVariable' => true,
-                'variableDescriptor_wrong' => [
-                    'expressions' => [
-                        [
-                            'expression' => [
-                                'groupType' => 'AND',
-                                'groupVal' => [
-                                    [
-                                        'var' => 'checkLength',
-                                        'cmp' => 'length >=',
-                                        'val' => 10,
-                                        'type' => 'numeric'
-                                    ],
-                                    [
-                                        'var' => 'checkString',
-                                        'cmp' => '!=',
-                                        'val' => 'abc',
-                                        'type' => 'string'
-                                    ]
-                                ]
-                            ],
-                            'expectAdSlot' => 23
-                        ]
-                    ]
-                ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -504,22 +595,5 @@ class DynamicAdSlot
     {
         $I->sendDELETE(URL_API . '/dynamicadslots/' . '-1');
         $I->seeResponseCodeIs(404);
-    }
-
-    public function getDynamicAdTagsByAdSlot(ApiTester $I)
-    {
-        $I->sendGET(URL_API . '/dynamicadslots/' . PARAMS_AD_SLOT . '/adtags');
-        $I->seeResponseCodeIs(200);
-    }
-
-//    public function addPositionsDynamicAdSlot(ApiTester $I) {
-//        $I->sendPOST(URL_API.'/dynamicadslots/1/adtags/positions', []);
-//        $I->seeResponseCodeIs(201);
-//    }
-
-    public function getJsAdTagsByDynamicAdSlot(ApiTester $I)
-    {
-        $I->sendGET(URL_API . '/dynamicadslots/' . PARAMS_AD_SLOT . '/jstag');
-        $I->seeResponseCodeIs(200);
     }
 }

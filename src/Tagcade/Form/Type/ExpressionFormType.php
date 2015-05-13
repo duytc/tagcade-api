@@ -84,9 +84,12 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
     ];
 
     static $EXPRESSION_CMP_VALUES_FOR_STRING = [
-        'contains'     => ['func' => 'indexOf',    'cmp' => ''],
-        'startsWith'   => ['func' => 'indexOf', 'cmp' => ''],
-        'endsWith'     => ['func' => 'lastIndexOf',   'cmp' => ''],
+        'contains'     => ['func' => 'search',    'cmp' => ''],
+        'not_contains' => ['func' => 'search',    'cmp' => ''],
+        'startsWith'   => ['func' => 'search', 'cmp' => ''],
+        'not_startsWith' => ['func' => 'search', 'cmp' => ''],
+        'endsWith'     => ['func' => 'search',   'cmp' => ''],
+        'not_endsWith'     => ['func' => 'search',   'cmp' => ''],
         'length >'     => ['func' => 'length',     'cmp' => '>'],
         'length <'     => ['func' => 'length',     'cmp' => '<'],
         'length =='    => ['func' => 'length',     'cmp' => '=='],
@@ -107,7 +110,13 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
                      */
                     $expression = $event->getData();
                     if (null === $expression->getExpectAdSlot()) {
-                        throw new InvalidFormException('AdSlot does not exist');
+                        throw new InvalidFormException('expectedAdSlot does not exist');
+                    }
+
+                    if (null === $expression->getExpressionDescriptor()
+                        || !is_array($expression->getExpressionDescriptor())
+                    ) {
+                        throw new InvalidFormException('expressionDescriptor null or not is array');
                     }
 
                     $this->validateExpressionDescriptor($expression->getExpressionDescriptor());
