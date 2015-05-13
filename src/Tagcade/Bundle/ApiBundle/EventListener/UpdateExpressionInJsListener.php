@@ -10,6 +10,8 @@ use Tagcade\Form\Type\ExpressionFormType;
 use Tagcade\Model\Core\ExpressionInterface;
 
 class UpdateExpressionInJsListener {
+
+    static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href'];
     /**
      * handle event preUpdate one expression, this auto update expressionInJS field.
      * @param PreUpdateEventArgs $args
@@ -247,6 +249,11 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForString($var, $cmp, $val)
     {
+        // Convert local variable to js variable
+        if (isset(self::$INTERNAL_VARIABLE_MAP[$var]) && !empty(self::$INTERNAL_VARIABLE_MAP[$var])) {
+            $var = self::$INTERNAL_VARIABLE_MAP[$var];
+        }
+
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
             return '(window.' .

@@ -238,7 +238,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         }
 
         //validate as javascript variable syntax
-        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
+        if (!preg_match('/\${PAGEURL}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
             throw new InvalidFormException('invalid variable name syntax of \'' . $var . '\' of condition');
         }
     }
