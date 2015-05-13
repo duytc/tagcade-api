@@ -231,3 +231,9 @@ leezy_pheanstalk:
         primary:
             server: 127.0.0.1
             default: true
+
+doctrine_migrations:
+    dir_name: %kernel.root_dir%/migrations
+    namespace: Tagcade\Migration
+    table_name: doctrine_migration_versions
+    name: Tagcade Migrations
