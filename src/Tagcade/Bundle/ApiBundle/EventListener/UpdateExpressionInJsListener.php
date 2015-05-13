@@ -263,7 +263,7 @@ class UpdateExpressionInJsListener {
             ')';
         }
 
-        if ($cmp === 'not_contains') {
+        if ($cmp === 'notContains') {
             return '(window.' .
             $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
             ')';
@@ -275,7 +275,7 @@ class UpdateExpressionInJsListener {
             ')';
         }
 
-        if ($cmp === 'not_startsWith') {
+        if ($cmp === 'notStartsWith') {
             return '(window.' .
             $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
@@ -288,7 +288,7 @@ class UpdateExpressionInJsListener {
             ')';
         }
 
-        if ($cmp === 'not_endsWith') {
+        if ($cmp === 'notEndsWith') {
 
             return '(window.' .
             $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
