@@ -22,6 +22,8 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
     const KEY_EXPRESSION_DESCRIPTOR = 'expressionDescriptor';
     /** key expectAdSlot in expressions */
     const KEY_EXPECT_AD_SLOT = 'expectAdSlot';
+    /** key startingPosition in expressions */
+    const KEY_STARTING_POSITION = 'startingPosition';
 
     /** key groupType in expression */
     const KEY_GROUP_TYPE = 'groupType';
@@ -131,6 +133,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('expressionDescriptor')
             ->add('expectAdSlot', 'entity', ['class' => AdSlot::class])
+            ->add('startingPosition')
         ;
     }
 
