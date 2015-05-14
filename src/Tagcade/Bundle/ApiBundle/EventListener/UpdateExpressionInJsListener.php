@@ -10,6 +10,8 @@ use Tagcade\Form\Type\ExpressionFormType;
 use Tagcade\Model\Core\ExpressionInterface;
 
 class UpdateExpressionInJsListener {
+
+    static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href'];
     /**
      * handle event preUpdate one expression, this auto update expressionInJS field.
      * @param PreUpdateEventArgs $args
@@ -130,8 +132,12 @@ class UpdateExpressionInJsListener {
     protected function createExpressionAsGroupObject($operator, array $expressionAsGroup)
     {
         //not really needed? already verified before in formType?
-        if ($expressionAsGroup == null || count($expressionAsGroup) < ExpressionFormType::GROUP_MIN_ITEM) {
-            throw new RuntimeException('expect at least ' . ExpressionFormType::GROUP_MIN_ITEM . ' elements for AND/OR expression');
+        if ($expressionAsGroup == null || count($expressionAsGroup) < 1) {
+            throw new RuntimeException('expect at least on expression');
+        }
+
+        if (count($expressionAsGroup) == 1) { // condition object
+            return $this->createExpressionAsConditionObject($expressionAsGroup[0]);
         }
 
         $vars = [];
@@ -150,6 +156,9 @@ class UpdateExpressionInJsListener {
             )
         )
         . ')';
+
+        // filter unique
+        $vars = array_unique($vars, SORT_REGULAR);
 
         return ['vars'=>$vars, 'expression'=>$expString];
 
@@ -231,7 +240,19 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForMath($var, $cmp, $val)
     {
+        $var = $this->getConvertedVar($var);
+
         return '(window.' . $var . $cmp . $val . ')';
+    }
+
+    private function getConvertedVar($var)
+    {
+        // Convert local variable to js variable
+        if (isset(self::$INTERNAL_VARIABLE_MAP[$var]) && !empty(self::$INTERNAL_VARIABLE_MAP[$var])) {
+            $var = self::$INTERNAL_VARIABLE_MAP[$var];
+        }
+
+        return $var;
     }
 
     /**
@@ -244,6 +265,9 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForString($var, $cmp, $val)
     {
+        // Convert local variable to js variable
+        $var = $this->getConvertedVar($var);
+
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
             return '(window.' .
@@ -251,23 +275,44 @@ class UpdateExpressionInJsListener {
             ')';
         }
 
-        //return '$var.func($val) . $real-cmp . -1; e.g: 'a.startsWith(3) > -1'
+        // Below functions use regex, hence we have to remove the quotes from json
+        $val = str_replace('"','', $val);
+
+        if ($cmp === 'contains') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
+            ')';
+        }
+
+        if ($cmp === 'notContains') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
+            ')';
+        }
+
         if ($cmp === 'startsWith') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === 0' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
+            ')';
+        }
+
+        if ($cmp === 'notStartsWith') {
+            return '(window.' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
 
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') === (window.' . $var . '.length - ' . $val . '.length)' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
-        if ($cmp === 'contains') {
+        if ($cmp === 'notEndsWith') {
+
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(' . $val . ') > -1' .
+            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 

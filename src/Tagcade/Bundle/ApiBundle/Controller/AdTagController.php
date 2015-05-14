@@ -130,7 +130,13 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $dateUtil = $this->get('tagcade.service.date_util');
 
-        $estCpm = (float)$paramFetcher->get('estCpm');
+        //check param estCpm is number?
+        $estCpmParam = $paramFetcher->get('estCpm');
+        if(!is_numeric($estCpmParam)) {
+            throw new InvalidArgumentException('estCpm should be numeric');
+        }
+
+        $estCpm = (float)$estCpmParam;
         if (!is_numeric($estCpm) || $estCpm < 0) {
             throw new InvalidArgumentException('estCpm should be numeric and positive value');
         }

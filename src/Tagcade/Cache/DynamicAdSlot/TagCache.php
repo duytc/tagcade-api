@@ -192,7 +192,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
             'id' => $dynamicAdSlot->getId(),
             'type' => 'dynamic',
             'expressions' => [],
-            'defaultAdSlot' => $dynamicAdSlot->getDefaultAdSlot()->getId(),
+            'defaultAdSlot' => $dynamicAdSlot->getDefaultAdSlot() instanceof AdSlotInterface ? $dynamicAdSlot->getDefaultAdSlot()->getId() : null,
             'slots' => []
         ];
 
@@ -219,7 +219,10 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
         );
 
         ////adSlot (as defaultAdSlot) from DynamicAdSlot:
-        $adSlotsForSelecting[] = $dynamicAdSlot->getDefaultAdSlot();
+        if ($dynamicAdSlot->getDefaultAdSlot() instanceof AdSlotInterface) {
+            $adSlotsForSelecting[] = $dynamicAdSlot->getDefaultAdSlot();
+        }
+
         $adSlotsForSelecting = array_unique($adSlotsForSelecting);
 
         //step 3. build 'slots' for data

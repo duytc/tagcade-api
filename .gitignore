@@ -17,3 +17,4 @@ app/check.php
 dev/custom
 codeception.yml
 tests/_output
+tests/api/ApiTester.php

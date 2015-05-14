@@ -273,7 +273,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $dateUtil = $this->get('tagcade.service.date_util');
 
-        $estCpm = (float)$paramFetcher->get('estCpm');
+        //check param estCpm is number?
+        $estCpmParam = $paramFetcher->get('estCpm');
+        if(!is_numeric($estCpmParam)) {
+            throw new InvalidArgumentException('estCpm should be numeric');
+        }
+
+        $estCpm = (float)$estCpmParam;
         if ($estCpm < 0) {
             throw new InvalidArgumentException('estCpm should be positive value');
         }
@@ -332,7 +338,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $dateUtil = $this->get('tagcade.service.date_util');
 
-        $estCpm = (float)$paramFetcher->get('estCpm');
+        //check param estCpm is number?
+        $estCpmParam = $paramFetcher->get('estCpm');
+        if(!is_numeric($estCpmParam)) {
+            throw new InvalidArgumentException('estCpm should be numeric');
+        }
+
+        $estCpm = (float)$estCpmParam;
         if ($estCpm < 0) {
             throw new InvalidArgumentException('estCpm should be positive value');
         }
@@ -398,6 +410,14 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
+        //get oldValue for action log bellow. Not clone direct $adNetwork->getAdTags() because lazy load and oldValue then be updated as newValue
+        $adTags = $adNetwork->getAdTags();
+        /** @var AdTagInterface[] $adTagsOld */
+        $adTagsOld = [];
+        foreach ($adTags as $adTag) {
+            $adTagsOld[] = clone $adTag;
+        }
+
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
         if (!$site) {
             throw new NotFoundHttpException('That site does not exist');
@@ -413,13 +433,27 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('PUT', $adNetwork);
+
+        ////add Affected for Site
         $event->addAffectedEntityByObject($site);
-        /** @var AdTagInterface[] $adTags */
-        $adTags = $adNetwork->getAdTags();
-        foreach($adTags as $adTag){
-            $event->addAffectedEntityByObject($adTag);
+
+        ////detect and add Affected for AdTags
+        $hasAdTagAffected = false;
+        foreach($adTagsOld as $adTag){
+            //only add adtag to affected list if really has changing
+            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
+                $event->addAffectedEntityByObject($adTag);
+                $hasAdTagAffected = true;
+            }
         }
-        $this->getHandler()->dispatchEvent($event);
+
+        ////add ChangedFields: if really has changing, 'active' changed from !$active to $active, then dispatch Event Log
+        if ($hasAdTagAffected) {
+            $event->addChangedFields('active', !$active, $active);
+
+            ////dispatch Event Log
+            $this->getHandler()->dispatchEvent($event);
+        }
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
