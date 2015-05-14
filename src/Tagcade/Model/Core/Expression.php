@@ -10,6 +10,7 @@ class Expression implements ExpressionInterface
     protected $id;
 
     protected $expressionDescriptor;
+    protected $startingPosition;
     protected $deletedAt;
     /**
      * @var DynamicAdSlotInterface
@@ -46,6 +47,22 @@ class Expression implements ExpressionInterface
     public function setExpressionDescriptor($expressionDescriptor)
     {
         $this->expressionDescriptor = $expressionDescriptor;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStartingPosition()
+    {
+        return $this->startingPosition;
+    }
+
+    /**
+     * @param int $startingPosition
+     */
+    public function setStartingPosition($startingPosition)
+    {
+        $this->startingPosition = $startingPosition;
     }
 
     /**

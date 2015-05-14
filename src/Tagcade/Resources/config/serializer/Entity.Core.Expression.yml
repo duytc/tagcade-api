@@ -7,4 +7,7 @@ Tagcade\Entity\Core\Expression:
         expressionDescriptor:
             expose: true
             groups: [expression.detail, expression.summary]
-       
+        startingPosition:
+            expose: true
+            groups: [expression.detail, expression.summary]
+

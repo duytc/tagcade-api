@@ -18,6 +18,16 @@ interface ExpressionInterface extends ModelInterface
     public function setExpressionDescriptor($expressionDescriptor);
 
     /**
+     * @return int
+     */
+    public function getStartingPosition();
+
+    /**
+     * @param int $startingPosition
+     */
+    public function setStartingPosition($startingPosition);
+
+    /**
      * @return DynamicAdSlotInterface
      */
     public function getDynamicAdSlot();

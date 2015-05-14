@@ -15,6 +15,10 @@ Tagcade\Entity\Core\Expression:
         expressionDescriptor:
             type: json_array
             nullable: false
+        startingPosition:
+            type: integer
+            options:
+                default: 1
         expressionInJs:
             type: json_array
             nullable: false

@@ -92,7 +92,8 @@ class UpdateExpressionInJsListener {
                 [
                     'vars'=> $convertedExpression['vars'],
                     'expectedAdSlot'=>$expression->getExpectAdSlot()->getId(),
-                    'expression' => $convertedExpression['expression']
+                    'expression' => $convertedExpression['expression'],
+                    'startingPosition'=>$expression->getStartingPosition(),
                 ]
             );
         }
