@@ -240,7 +240,19 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForMath($var, $cmp, $val)
     {
+        $var = $this->getConvertedVar($var);
+
         return '(window.' . $var . $cmp . $val . ')';
+    }
+
+    private function getConvertedVar($var)
+    {
+        // Convert local variable to js variable
+        if (isset(self::$INTERNAL_VARIABLE_MAP[$var]) && !empty(self::$INTERNAL_VARIABLE_MAP[$var])) {
+            $var = self::$INTERNAL_VARIABLE_MAP[$var];
+        }
+
+        return $var;
     }
 
     /**
@@ -254,9 +266,7 @@ class UpdateExpressionInJsListener {
     private function getConditionInJSForString($var, $cmp, $val)
     {
         // Convert local variable to js variable
-        if (isset(self::$INTERNAL_VARIABLE_MAP[$var]) && !empty(self::$INTERNAL_VARIABLE_MAP[$var])) {
-            $var = self::$INTERNAL_VARIABLE_MAP[$var];
-        }
+        $var = $this->getConvertedVar($var);
 
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
