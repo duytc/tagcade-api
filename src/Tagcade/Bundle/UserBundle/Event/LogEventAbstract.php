@@ -13,7 +13,7 @@ abstract class LogEventAbstract extends Event implements LogEventInterface
     const HTTP_PATCH = 'PATCH';
     const HTTP_DELETE = 'DELETE';
 
-    const CREATE = 'CREATE';
+    const CREATE_OR_UPDATE = 'CREATE/UPDATE';
     const UPDATE = 'UPDATE';
     const DELETE = 'DELETE';
 
@@ -30,8 +30,8 @@ abstract class LogEventAbstract extends Event implements LogEventInterface
      * @var array
      */
     protected $actionMap = [
-        self::HTTP_POST => self::CREATE,
-        self::HTTP_PUT => self::CREATE,
+        self::HTTP_POST => self::CREATE_OR_UPDATE,
+        self::HTTP_PUT => self::CREATE_OR_UPDATE,
         self::HTTP_PATCH => self::UPDATE,
         self::HTTP_DELETE => self::DELETE,
     ];

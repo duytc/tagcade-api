@@ -75,7 +75,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         //MATH
         '>', '<', '==', '>=', '<=', '!=', '===', '!==',
         //STRING
-        'contains', 'startsWith', 'endsWith',
+        'contains', 'startsWith', 'endsWith', 'notContains', 'notEndsWith', 'notStartsWith',
         'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !='
     ];
 
@@ -85,11 +85,11 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
 
     static $EXPRESSION_CMP_VALUES_FOR_STRING = [
         'contains'     => ['func' => 'search',    'cmp' => ''],
-        'not_contains' => ['func' => 'search',    'cmp' => ''],
+        'notContains' => ['func' => 'search',    'cmp' => ''],
         'startsWith'   => ['func' => 'search', 'cmp' => ''],
-        'not_startsWith' => ['func' => 'search', 'cmp' => ''],
+        'notStartsWith' => ['func' => 'search', 'cmp' => ''],
         'endsWith'     => ['func' => 'search',   'cmp' => ''],
-        'not_endsWith'     => ['func' => 'search',   'cmp' => ''],
+        'notEndsWith'     => ['func' => 'search',   'cmp' => ''],
         'length >'     => ['func' => 'length',     'cmp' => '>'],
         'length <'     => ['func' => 'length',     'cmp' => '<'],
         'length =='    => ['func' => 'length',     'cmp' => '=='],
@@ -182,9 +182,9 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         //validate number of items in groupVal
         $groupVal = $group[self::KEY_GROUP_VAL];
         if (!is_array($groupVal)
-            || self::GROUP_MIN_ITEM > sizeof($groupVal)
+            || sizeof($groupVal) < 1
         ) {
-            throw new InvalidFormException('expect ' . self::KEY_GROUP_VAL . ' is array and has minimum items are ' . self::GROUP_MIN_ITEM . 'of expression');
+            throw new InvalidFormException('expect ' . self::KEY_GROUP_VAL . ' is array and has at least one expression');
         }
 
         //validate each expression (child) as recursive
@@ -238,7 +238,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         }
 
         //validate as javascript variable syntax
-        if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
+        if (!preg_match('/\${PAGEURL}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
             throw new InvalidFormException('invalid variable name syntax of \'' . $var . '\' of condition');
         }
     }
