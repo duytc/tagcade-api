@@ -70,6 +70,6 @@ class UpdateAdTagHtmlListener {
         $imageUrl = $descriptor['imageUrl'];
         $targetUrl = $descriptor['targetUrl'];
 
-        return '<a href=".' . $targetUrl . '"><img src="' . $imageUrl . '" /></a>';
+        return '<a href="' . $targetUrl . '" target="_blank"><img src="' . $imageUrl . '" /></a>';
     }
-} 
+}
