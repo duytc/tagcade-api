@@ -182,9 +182,9 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         //validate number of items in groupVal
         $groupVal = $group[self::KEY_GROUP_VAL];
         if (!is_array($groupVal)
-            || self::GROUP_MIN_ITEM > sizeof($groupVal)
+            || sizeof($groupVal) < 1
         ) {
-            throw new InvalidFormException('expect ' . self::KEY_GROUP_VAL . ' is array and has minimum items are ' . self::GROUP_MIN_ITEM . 'of expression');
+            throw new InvalidFormException('expect ' . self::KEY_GROUP_VAL . ' is array and has at least one expression');
         }
 
         //validate each expression (child) as recursive

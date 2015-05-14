@@ -116,9 +116,11 @@ class HandlerEventLog extends HandlerEventLogAbstract implements HandlerEventLog
         if ($entity instanceof Model\SiteInterface
             || $entity instanceof Model\AdTagInterface
             || $entity instanceof Model\AdSlotInterface
+            || $entity instanceof Model\DynamicAdSlotInterface
             || $entity instanceof Model\AdNetworkInterface
         ) {
-            return $entity->getName();
+            //if using $entity's Id instead of $entity's Name
+            return $entity->getId();
         }
 
         //else: unknown entity's name

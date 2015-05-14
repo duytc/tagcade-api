@@ -132,8 +132,12 @@ class UpdateExpressionInJsListener {
     protected function createExpressionAsGroupObject($operator, array $expressionAsGroup)
     {
         //not really needed? already verified before in formType?
-        if ($expressionAsGroup == null || count($expressionAsGroup) < ExpressionFormType::GROUP_MIN_ITEM) {
-            throw new RuntimeException('expect at least ' . ExpressionFormType::GROUP_MIN_ITEM . ' elements for AND/OR expression');
+        if ($expressionAsGroup == null || count($expressionAsGroup) < 1) {
+            throw new RuntimeException('expect at least on expression');
+        }
+
+        if (count($expressionAsGroup) == 1) { // condition object
+            return $this->createExpressionAsConditionObject($expressionAsGroup[0]);
         }
 
         $vars = [];
