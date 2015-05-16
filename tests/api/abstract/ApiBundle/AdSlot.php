@@ -125,6 +125,91 @@ class AdSlot
     }
 
     /**
+     * clone adSlot
+     * @param ApiTester $I
+     */
+    public function cloneAdSlot(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+            [
+                'name' => 'dtag.test.adslot-clone',
+            ]
+        );
+        $I->seeResponseCodeIs(201);
+        $I->seeResponseIsJson();
+    }
+
+    /**
+     * clone adSlot failed cause by id not existed
+     * @param ApiTester $I
+     */
+    public function cloneAdSlotNotExisted(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/adslots/' . '-1' . '/clone',
+            [
+                'name' => 'dtag.test.adslot-clone',
+            ]
+        );
+        $I->seeResponseCodeIs(404);
+    }
+
+    /**
+     * clone adSlot failed caused by null field
+     * @param ApiTester $I
+     */
+    public function cloneAdSlotWithNullField(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+            [
+                'name' => null //this is null field
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * clone adSlot failed cause by wrong data
+     * @param ApiTester $I
+     */
+    public function cloneAdSlotWithWrongData(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+            [
+                'name' => "" //this is wrong data type field, must not empty
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+//    /**
+//     * clone adSlot failed cause by wrong data type
+//     * @param ApiTester $I
+//     */
+//    public function cloneAdSlotWithWrongDataType(ApiTester $I)
+//    {
+//        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+//            [
+//                'name' => (int) 123 //this is wrong data type field, must string
+//            ]
+//        );
+//        $I->seeResponseCodeIs(400);
+//    }
+
+    /**
+     * clone adSlot failed cause by missing field
+     * @param ApiTester $I
+     */
+    public function cloneAdSlotWithWithMissingField(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+            [
+                'unexpected_field' => 'unexpected_field' //this is unexpected field, require 'name' field
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
      * @depends addAdSlot
      */
     public function editAdSlot(ApiTester $I)

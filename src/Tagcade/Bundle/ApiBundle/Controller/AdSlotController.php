@@ -149,6 +149,29 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     }
 
     /**
+     * Update the position of all ad tags in an ad slot
+     *
+     * @Rest\POST("/adslots/{id}/clone", requirements={"id" = "\d+"})
+     * @param Request $request
+     * @param int $id
+     * @return View
+     */
+    public function postCloneAction(Request $request, $id)
+    {
+        /** @var AdSlotInterface $originAdSlot */
+        $originAdSlot = $this->one($id);
+        $newName = $request->request->get('name');
+
+        if(null === $newName || empty($newName) || !is_string($newName)){
+            return $this->view(null, Codes::HTTP_BAD_REQUEST);
+        }
+
+        $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+
+        return $this->view(null, Codes::HTTP_CREATED);
+    }
+
+    /**
      * Update an existing adSlot from the submitted data or create a new adSlot
      *
      * @ApiDoc(
