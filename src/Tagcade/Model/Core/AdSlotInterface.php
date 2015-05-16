@@ -8,6 +8,11 @@ use Tagcade\Model\ModelInterface;
 interface AdSlotInterface extends ModelInterface
 {
     /**
+     * @param mixed $id
+     */
+    public function setId($id);
+
+    /**
      * @return SiteInterface|null
      */
     public function getSite();

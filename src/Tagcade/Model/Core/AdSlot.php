@@ -44,6 +44,14 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface
     /**
      * @inheritdoc
      */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSite()
     {
         return $this->site;
