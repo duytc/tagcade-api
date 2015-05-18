@@ -76,12 +76,17 @@ class AdTagFormType extends AbstractRoleSpecificFormType
                 $data = $event->getData();
 
                 try {
-
                     $frequencyCap = $data->getFrequencyCap();
                     if (null !== $frequencyCap && (!is_integer($frequencyCap) || $frequencyCap < 1)) {
                         throw new InvalidArgumentException('Frequency cap must be an positive integer');
                     }
+                }
+                catch (InvalidArgumentException $e) {
+                    $form = $event->getForm();
 
+                    $form->get('frequencyCap')->addError(new FormError($e->getMessage()));
+                }
+                try {
                     switch ($data->getAdType()) {
                         case self::AD_TYPE_IMAGE:
                             $this->validateImageAd($data);
