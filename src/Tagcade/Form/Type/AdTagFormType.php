@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdSlot;
 use Tagcade\Entity\Core\AdTag;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
@@ -75,6 +76,12 @@ class AdTagFormType extends AbstractRoleSpecificFormType
                 $data = $event->getData();
 
                 try {
+
+                    $frequencyCap = $data->getFrequencyCap();
+                    if (null !== $frequencyCap && (!is_integer($frequencyCap) || $frequencyCap < 1)) {
+                        throw new InvalidArgumentException('Frequency cap must be an positive integer');
+                    }
+
                     switch ($data->getAdType()) {
                         case self::AD_TYPE_IMAGE:
                             $this->validateImageAd($data);

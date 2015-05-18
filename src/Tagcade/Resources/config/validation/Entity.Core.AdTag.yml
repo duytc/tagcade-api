@@ -17,12 +17,12 @@ Tagcade\Entity\Core\AdTag:
         adNetwork:
             - NotBlank: ~
             - Valid: ~
-        frequencyCap:
-            - Type:
-                type: integer
-                message: "The value {{ value }} is not a valid number."
-            - GreaterThan:
-                value: 0
+#        frequencyCap:
+#            - Type:
+#                type: integer
+#                message: "The value {{ value }} is not a valid number."
+#            - GreaterThan:
+#                value: 0
         rotation:
             - Type:
                 type: integer
