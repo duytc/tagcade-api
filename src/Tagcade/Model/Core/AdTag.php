@@ -178,12 +178,12 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * @param int $frequencyCap
+     * @param int|null $frequencyCap
      * @return $this
      */
     public function setFrequencyCap($frequencyCap)
     {
-        $this->frequencyCap = (int)$frequencyCap;
+        $this->frequencyCap = $frequencyCap;
 
         return $this;
     }
