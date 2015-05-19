@@ -254,7 +254,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         );
 
         // dynamic ad slots that have default ad slot is this one.
-        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->getDynamicAdSlots()->toArray());
+        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots()->toArray());
         $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
 
         if (count($referencingDynamicAdSlots) > 0) {

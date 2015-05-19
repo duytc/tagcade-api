@@ -68,8 +68,13 @@ interface AdSlotInterface extends ModelInterface
     public function getAdTags();
 
     /**
+     * @param ArrayCollection $adTags
+     */
+    public function setAdTags($adTags);
+
+    /**
      * @return ArrayCollection
      */
-    public function getDynamicAdSlots();
+    public function defaultDynamicAdSlots();
 
 }

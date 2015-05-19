@@ -22,7 +22,7 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface
     /**
      * @var DynamicAdSlotInterface[]
      */
-    protected $dynamicAdSlots;
+    protected $defaultDynamicAdSlots;
     /**
      * @param string $name
      * @param int $width
@@ -131,15 +131,27 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface
      */
     public function getAdTags()
     {
+        if (null === $this->adTags) {
+            $this->adTags = new ArrayCollection();
+        }
+
         return $this->adTags;
+    }
+
+    /**
+     * @param ArrayCollection $adTags
+     */
+    public function setAdTags($adTags)
+    {
+        $this->adTags = $adTags;
     }
 
     /**
      * @return DynamicAdSlotInterface[]
      */
-    public function getDynamicAdSlots()
+    public function defaultDynamicAdSlots()
     {
-        return $this->dynamicAdSlots;
+        return $this->defaultDynamicAdSlots;
     }
 
     public function __toString()

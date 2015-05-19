@@ -7,6 +7,11 @@ use Tagcade\Model\ModelInterface;
 interface AdTagInterface extends ModelInterface
 {
     /**
+     * @param mixed $id
+     */
+    public function setId($id);
+
+    /**
      * @return AdSlotInterface|null
      */
     public function getAdSlot();

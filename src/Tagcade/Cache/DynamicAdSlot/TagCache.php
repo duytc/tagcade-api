@@ -162,8 +162,8 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
             $expressions
         );
 
-        if ($updatingAdSlot->getDynamicAdSlots() != null && $updatingAdSlot->getDynamicAdSlots()->count() > 0) {
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $updatingAdSlot->getDynamicAdSlots()->toArray());
+        if ($updatingAdSlot->defaultDynamicAdSlots() != null && $updatingAdSlot->defaultDynamicAdSlots()->count() > 0) {
+            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $updatingAdSlot->defaultDynamicAdSlots()->toArray());
         }
 
         return array_unique($referencingDynamicAdSlots);

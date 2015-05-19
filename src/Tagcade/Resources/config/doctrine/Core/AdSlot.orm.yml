@@ -31,6 +31,6 @@ Tagcade\Entity\Core\AdSlot:
             orderBy: { 'position': 'ASC' }
             mappedBy: adSlot
             cascade: ["persist", "remove", "detach"]
-        dynamicAdSlots:
+        defaultDynamicAdSlots:
             targetEntity: Tagcade\Entity\Core\DynamicAdSlot
             mappedBy: defaultAdSlot

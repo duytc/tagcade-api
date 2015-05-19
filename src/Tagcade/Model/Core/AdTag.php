@@ -49,6 +49,14 @@ class AdTag implements AdTagInterface
     }
 
     /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getAdSlot()
