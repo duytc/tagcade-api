@@ -62,10 +62,15 @@ class UpdateAdTagPositionListener
                 return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
             });
 
-        $positions = array_map(
-            function (AdTagInterface $adTag) use ($updatingAdTag){
-                return $adTag->getId() == $updatingAdTag->getId() ? 1 : $adTag->getPosition();
-            }, $adTags
+        // list out all positions
+        $positions = array();
+        array_walk(
+            $adTags,
+            function(AdTagInterface $adTag) use(&$positions) {
+               if (!in_array($adTag->getPosition(), $positions)) {
+                   array_push($positions, count($positions) + 1);
+               }
+            }
         );
 
         $max = empty($positions) ? 1 : max($positions) + 1;;

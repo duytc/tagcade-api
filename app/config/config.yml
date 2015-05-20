@@ -221,7 +221,6 @@ nelmio_cors:
 stof_doctrine_extensions:
     orm:
         default:
-            sortable: true
             timestampable: true
             softdeleteable: true
 
