@@ -101,6 +101,8 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
 
                 try {
+                    // remove last expressions
+                    $dynamicAdSlot->getExpressions()->clear();
                     if (null != $expressions && is_array($expressions) ) {
                         $this->updateDynamicAdSlotForExpression($dynamicAdSlot, $expressions);
                     }
