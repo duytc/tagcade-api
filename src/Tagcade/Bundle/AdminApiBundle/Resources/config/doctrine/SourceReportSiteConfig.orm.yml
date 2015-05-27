@@ -7,10 +7,10 @@ Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig:
             columns:
                 - source_report_email_config_id #column
                 - site_id # underscore column name
-    gedmo:
-        soft_deleteable:
-            field_name: deletedAt
-            time_aware: false
+#    gedmo:
+#        soft_deleteable:
+#            field_name: deletedAt
+#            time_aware: false
     id:
         id:
             type: integer

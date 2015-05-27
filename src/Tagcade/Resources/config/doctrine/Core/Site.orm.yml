@@ -41,3 +41,5 @@ Tagcade\Entity\Core\Site:
             targetEntity: Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig
             mappedBy: site
             cascade: ["remove"]
+            orphanRemoval: true
+
