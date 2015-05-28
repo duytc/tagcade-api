@@ -55,8 +55,25 @@ class UpdateDynamicAdSlotCacheListener
         $uow = $em->getUnitOfWork();
 
         $tmp = array_merge($uow->getScheduledEntityInsertions());
+        // update is for Dynamic AdSlot - the default ad slot selection only
+        $updateEntities = array_filter(
+            $uow->getScheduledEntityUpdates(),
+            function($entity) use ($uow)
+            {
+                if (!$entity instanceof DynamicAdSlotInterface) {
+                    return false;
+                }
 
-        $this->changedEntities = $tmp;
+                $changeSet = $uow->getEntityChangeSet($entity);
+                if ( isset($changeSet['defaultAdSlot']) && null !== $changeSet['defaultAdSlot']) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        $this->changedEntities = array_merge($tmp, $updateEntities);
     }
 
     public function postFlush(PostFlushEventArgs $args)

@@ -196,32 +196,35 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
             'slots' => []
         ];
 
-        //check expressions
-        /** @var ExpressionInterface[] $expressions */
-        $expressions = $dynamicAdSlot->getExpressions()->toArray();
-        if (!is_array($expressions) || empty($expressions)) {
-            return $data;
-        }
-
-        //step 1. set 'expressions' for data: get expressionInJS of each expression in expressions
-        array_walk($expressions,
-            function(ExpressionInterface $expression ) use (&$data){
-                array_push($data['expressions'], $expression->getExpressionInJs());
-            }
-        );
-
-        //step 2. get all AdSlots related to DynamicAdSlot and Expressions
-        ////adSlots from expressionInJS of Expressions
-        $adSlotsForSelecting = array_map(function (ExpressionInterface $expression) {
-                return $expression->getExpectAdSlot();
-            },
-            $expressions
-        );
-
         ////adSlot (as defaultAdSlot) from DynamicAdSlot:
+        $adSlotsForSelecting = array();
         if ($dynamicAdSlot->getDefaultAdSlot() instanceof AdSlotInterface) {
             $adSlotsForSelecting[] = $dynamicAdSlot->getDefaultAdSlot();
         }
+
+        //check expressions
+        /** @var ExpressionInterface[] $expressions */
+        $expressions = $dynamicAdSlot->getExpressions()->toArray();
+        if (is_array($expressions) && !empty($expressions)) {
+            //step 1. set 'expressions' for data: get expressionInJS of each expression in expressions
+            array_walk($expressions,
+                function(ExpressionInterface $expression ) use (&$data){
+                    array_push($data['expressions'], $expression->getExpressionInJs());
+                }
+            );
+
+            //step 2. get all AdSlots related to DynamicAdSlot and Expressions
+            ////adSlots from expressionInJS of Expressions
+            $tmpAdSlotsForSelecting = array_map(function (ExpressionInterface $expression) {
+                    return $expression->getExpectAdSlot();
+                },
+                $expressions
+            );
+
+            $adSlotsForSelecting = array_merge($adSlotsForSelecting, $tmpAdSlotsForSelecting);
+        }
+
+
 
         $adSlotsForSelecting = array_unique($adSlotsForSelecting);
 
