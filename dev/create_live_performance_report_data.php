@@ -14,8 +14,7 @@ $testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counte
 $testEventCounter->refreshTestData();
 
 $redis = new RedisArray(['localhost']);
-
-$cache = new Tagcade\Legacy\Cache\RedisArrayCache();
+$cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache);
