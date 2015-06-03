@@ -170,7 +170,13 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         $siteId = $request->request->get('site');
         $site = null != $siteId ? $this->get('tagcade.domain_manager.site')->find($siteId) : null;
 
-        $site instanceof SiteInterface ? $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site) : $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+        if($site instanceof SiteInterface) {
+            $this->checkUserPermission($site, 'edit');
+            $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site);
+        }
+        else {
+            $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+        }
 
         return $this->view(null, Codes::HTTP_CREATED);
     }
