@@ -16,6 +16,7 @@ use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 /**
  * @Rest\RouteResource("Adslot")
@@ -166,7 +167,10 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
             return $this->view(null, Codes::HTTP_BAD_REQUEST);
         }
 
-        $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+        $siteId = $request->request->get('site');
+        $site = null != $siteId ? $this->get('tagcade.domain_manager.site')->find($siteId) : null;
+
+        $site instanceof SiteInterface ? $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site) : $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
 
         return $this->view(null, Codes::HTTP_CREATED);
     }

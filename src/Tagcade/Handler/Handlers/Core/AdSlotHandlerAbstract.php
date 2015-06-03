@@ -9,6 +9,7 @@ use Tagcade\Handler\RoleHandlerAbstract;
 use Tagcade\Model\Core\AdSlot;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
 {
@@ -28,8 +29,9 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
      * clone AdSlot
      * @param AdSlotInterface $originAdSlot
      * @param string $newName
+     * @param SiteInterface $site
      */
-    public function cloneAdSlot(AdSlotInterface $originAdSlot, $newName)
+    public function cloneAdSlot(AdSlotInterface $originAdSlot, $newName, SiteInterface $site = null)
     {
         //clone adSlot
         $newAdSlot = clone $originAdSlot;
@@ -51,6 +53,10 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
                     $newAdSlot->getAdTags()->add($newAdTag);
                 }
             );
+        }
+
+        if ($site instanceof SiteInterface) {
+            $newAdSlot->setSite($site);
         }
 
         //persis cloned adSlot
