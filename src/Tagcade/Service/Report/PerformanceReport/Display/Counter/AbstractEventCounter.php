@@ -22,7 +22,7 @@ abstract class AbstractEventCounter implements EventCounterInterface
     public function getDate()
     {
         if (!$this->date) {
-            return new DateTime('today');
+            $this->date = new DateTime('today');
         }
 
         return $this->date;

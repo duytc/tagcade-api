@@ -2,8 +2,8 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
+use DateTime;
 use Doctrine\Common\Cache\Cache;
-use Tagcade\Exception\InvalidArgumentException;
 
 class CacheEventCounter extends AbstractEventCounter implements CacheEventCounterInterface
 {
@@ -28,12 +28,24 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
      */
     protected $cache;
 
+    protected $formattedDate;
     protected $useLocalCache = true;
     private $localCache = array();
 
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
+        $this->setDate(new DateTime('today'));
+    }
+
+    public function setDate(DateTime $date = null)
+    {
+        if (!$date) {
+            $date = new DateTime('today');
+        }
+
+        $this->date = $date;
+        $this->formattedDate = $date->format(self::KEY_DATE_FORMAT);
     }
 
     public function getCache()
@@ -157,6 +169,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     public function getCacheKey($key, $namespace)
     {
         $keyFormat = '%s:%s:%s';
-        return sprintf($keyFormat, $key, $namespace, $this->date->format(self::KEY_DATE_FORMAT));
+        return sprintf($keyFormat, $key, $namespace, $this->formattedDate);
     }
 }
