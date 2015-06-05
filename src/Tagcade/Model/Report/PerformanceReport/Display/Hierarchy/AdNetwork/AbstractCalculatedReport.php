@@ -2,12 +2,17 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractCalculatedReport as BaseAbstractCalculatedReport;
+use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Exception\RuntimeException;
 
-abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport implements ReportInterface
+abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport implements ReportInterface, ImpressionBreakdownReportDataInterface
 {
+    use ImpressionBreakdownTrait;
+
     /**
      * @inheritdoc
      */
@@ -18,5 +23,49 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         }
 
         return $this->getPercentage($this->getImpressions(), $this->getTotalOpportunities());
+    }
+
+    protected function resetCounts()
+    {
+        parent::resetCounts();
+
+        $this->firstOpportunities = 0;
+        $this->verifiedImpressions = 0;
+        $this->unverifiedImpressions = 0;
+        $this->blankImpressions = 0;
+    }
+
+    protected function aggregateSubReport(ReportInterface $subReport)
+    {
+        parent::aggregateSubReport($subReport);
+
+        if (!$subReport instanceof ImpressionBreakdownReportDataInterface) {
+            throw new LogicException('Expected a ImpressionBreakdownReportDataInterface');
+        }
+
+        $this->addFirstOpportunities($subReport->getFirstOpportunities());
+        $this->addVerifiedImpressions($subReport->getVerifiedImpressions());
+        $this->addUnverifiedImpressions($subReport->getUnverifiedImpressions());
+        $this->addBlankImpressions($subReport->getBlankImpressions());
+    }
+
+    protected function addFirstOpportunities($firstOpportunities)
+    {
+        $this->firstOpportunities += (int)$firstOpportunities;
+    }
+
+    protected function addVerifiedImpressions($verifiedImpressions)
+    {
+        $this->verifiedImpressions += (int)$verifiedImpressions;
+    }
+
+    protected function addUnverifiedImpressions($unverifiedImpressions)
+    {
+        $this->unverifiedImpressions += (int)$unverifiedImpressions;
+    }
+
+    protected function addBlankImpressions($blankImpressions)
+    {
+        $this->blankImpressions += (int)$blankImpressions;
     }
 }

@@ -3,13 +3,10 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
-use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkReportInterface, ImpressionBreakdownReportDataInterface
+class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkReportInterface
 {
-    use ImpressionBreakdownTrait;
     /**
      * @var AdNetworkInterface
      */

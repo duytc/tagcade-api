@@ -43,28 +43,12 @@ class Site extends CreatorAbstract implements SiteInterface
         ;
 
         $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
-        $firstOpportunities = 0;
-        $verifiedImpressions = 0;
-        $unverifiedImpressions = 0;
-        $blankImpressions = 0;
 
         foreach ($adTags as $adTag) {
             $report->addSubReport(
                 $this->subReportCreator->createReport(new AdTagReportType($adTag))
             );
-
-            $firstOpportunities += (int)$this->eventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpressions += (int)$this->eventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpressions += (int)$this->eventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $blankImpressions += (int)$this->eventCounter->getBlankImpressionCount($adTag->getId());
         }
-
-        $report
-            ->setFirstOpportunities($firstOpportunities)
-            ->setVerifiedImpressions($verifiedImpressions)
-            ->setUnverifiedImpressions($unverifiedImpressions)
-            ->setBlankImpressions($blankImpressions)
-        ;
 
         return $report;
     }

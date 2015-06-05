@@ -33,12 +33,17 @@ abstract class AbstractCalculatedReport extends AbstractReport
         // Empty for now since some reports in hierarchy Platform and AdNetwork don't require
     }
 
-    protected function doCalculateFields()
+    protected function resetCounts()
     {
         $this->totalOpportunities = 0;
         $this->impressions = 0;
         $this->passbacks = 0;
         $this->estRevenue = 0;
+    }
+
+    protected function doCalculateFields()
+    {
+        $this->resetCounts();
 
         foreach($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
