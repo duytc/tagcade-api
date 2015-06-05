@@ -39,6 +39,15 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
             type: decimal
             scale: 4
             nullable: true
+        firstOpportunities:
+            type: integer
+        verifiedImpressions:
+            type: integer
+        unverifiedImpressions:
+            type: integer
+        blankImpressions:
+            type: integer
+
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag

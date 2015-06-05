@@ -40,4 +40,28 @@ interface EventCounterInterface
      * @return int|bool
      */
     public function getPassbackCount($tagId);
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getFirstOpportunityCount($tagId);
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getVerifiedImpressionCount($tagId);
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getUnverifiedImpressionCount($tagId);
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getBlankImpressionCount($tagId);
 }

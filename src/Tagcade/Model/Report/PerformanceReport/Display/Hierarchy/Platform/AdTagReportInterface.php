@@ -13,4 +13,43 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
      * @return $this
      */
     public function setRelativeFillRate($totalOpportunities);
+
+
+    /**
+     * @return mixed
+     */
+    public function getBlankImpressions();
+
+
+    public function setBlankImpressions($blankImpressions);
+
+    /**
+     * @return mixed
+     */
+    public function getFirstOpportunities();
+
+    /**
+     * @param mixed $firstOpportunities
+     */
+    public function setFirstOpportunities($firstOpportunities);
+
+    /**
+     * @return mixed
+     */
+    public function getUnverifiedImpressions();
+    /**
+     * @param mixed $unverifiedImpressions
+     */
+    public function setUnverifiedImpressions($unverifiedImpressions);
+
+    /**
+     * @return mixed
+     */
+    public function getVerifiedImpressions();
+
+    /**
+     * @param mixed $verifiedImpressions
+     */
+    public function setVerifiedImpressions($verifiedImpressions);
+
 }

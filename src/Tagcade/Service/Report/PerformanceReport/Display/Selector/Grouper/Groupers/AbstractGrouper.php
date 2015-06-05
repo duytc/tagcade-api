@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Model\Report\CalculateRevenueTrait;

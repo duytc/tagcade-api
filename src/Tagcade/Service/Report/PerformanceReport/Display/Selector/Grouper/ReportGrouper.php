@@ -4,10 +4,12 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper;
 
 use Tagcade\Exception\UnexpectedValueException;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\BilledReportGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\DefaultGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\GrouperInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\ImpressionBreakdownGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 class ReportGrouper implements ReportGrouperInterface
@@ -39,6 +41,11 @@ class ReportGrouper implements ReportGrouperInterface
         if ($firstReport instanceof BilledReportDataInterface) {
             return new BilledReportGrouper($reportCollection);
         }
+
+        if($firstReport instanceof ImpressionBreakdownReportDataInterface) {
+            return new ImpressionBreakdownGrouper($reportCollection);
+        }
+
 
         return new DefaultGrouper($reportCollection);
     }

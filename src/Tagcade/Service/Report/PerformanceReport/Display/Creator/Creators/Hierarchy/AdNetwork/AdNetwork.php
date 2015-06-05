@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork;
 
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
@@ -35,10 +36,30 @@ class AdNetwork extends CreatorAbstract implements AdNetworkInterface
         $report = new AdNetworkReport();
 
         $adNetwork = $reportType->getAdNetwork();
+        $adTags = $adNetwork->getAdTags();
+
+        $firstOpportunities = 0;
+        $verifiedImpressions = 0;
+        $unverifiedImpressions = 0;
+        $blankImpressions = 0;
+
+        foreach ($adTags as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            $firstOpportunities += (int)$this->eventCounter->getFirstOpportunityCount($adTag->getId());
+            $verifiedImpressions += (int)$this->eventCounter->getVerifiedImpressionCount($adTag->getId());
+            $unverifiedImpressions += (int)$this->eventCounter->getUnverifiedImpressionCount($adTag->getId());
+            $blankImpressions += (int)$this->eventCounter->getBlankImpressionCount($adTag->getId());
+        }
 
         $report
             ->setAdNetwork($adNetwork)
             ->setDate($this->getDate())
+            ->setFirstOpportunities($firstOpportunities)
+            ->setVerifiedImpressions($verifiedImpressions)
+            ->setUnverifiedImpressions($unverifiedImpressions)
+            ->setBlankImpressions($blankImpressions)
         ;
 
         $sites = $this->siteManager->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
