@@ -22,9 +22,18 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_IMPRESSION     = 'impressions';
     const CACHE_KEY_FALLBACK       = 'fallbacks';
 
-    const CACHE_KEY_AD_SLOT_FORMAT = 'adslot_%d';
-    const CACHE_KEY_AD_TAG_FORMAT  = 'adtag_%d';
+    // longnh2:
+    const CACHE_KEY_SLOT_OPPORTUNITY       = 'opportunities'; // same "opportunities" key, used with different namespace
+    const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
+    const CACHE_KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
+    const CACHE_KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
+    const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
+    const CACHE_KEY_PASSBACK       = 'passbacks'; // legacy name is fallbacks
+    const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
+
+    const NAMESPACE_AD_SLOT                = 'adslot_%d';
+    const NAMESPACE_AD_TAG                 = 'adtag_%d';
     /**
      * @var Cache
      */
@@ -45,15 +54,19 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     public function getSlotOpportunityCount($slotId)
     {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
         return $this->fetchFromCache(
-            $this->getCacheKey(static::SLOT_OPPORTUNITY, $slotId)
+            $this->getCacheKey(static::CACHE_KEY_SLOT_OPPORTUNITY, $namespace)
         );
     }
 
     public function getOpportunityCount($tagId)
     {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
         return $this->fetchFromCache(
-            $this->getCacheKey(static::OPPORTUNITY, $tagId)
+            $this->getCacheKey(static::OPPORTUNITY, $namespace)
         );
     }
 
@@ -66,39 +79,54 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     public function getPassbackCount($tagId)
     {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
+        $legacyCount = (int)$this->fetchFromCache(
+            $this->getCacheKey(static::FALLBACK, $namespace)
+        );
+
+        $passbackCount = (int)$this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_PASSBACK, $namespace)
+        );
+
+        return ($legacyCount + $passbackCount);
+    }
+
+    public function getFirstOpportunityCount($tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
         return $this->fetchFromCache(
-            $this->getCacheKey(static::FALLBACK, $tagId)
+          $this->getCacheKey(self::CACHE_KEY_FIRST_OPPORTUNITY, $namespace)
+        );
+
+    }
+
+    public function getVerifiedImpressionCount($tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_VERIFIED_IMPRESSION, $namespace)
         );
     }
 
-    public function getCacheKey($type, $id)
+    public function getUnverifiedImpressionCount($tagId)
     {
-        $keyFormat = '%s:%s:%s';
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
 
-        switch($type) {
-            case static::SLOT_OPPORTUNITY:
-                $bucket = self::CACHE_KEY_OPPORTUNITY;
-                $entity = self::CACHE_KEY_AD_SLOT_FORMAT;
-                break;
-            case static::OPPORTUNITY:
-                $bucket = self::CACHE_KEY_OPPORTUNITY;
-                $entity = self::CACHE_KEY_AD_TAG_FORMAT;
-                break;
-            case static::IMPRESSION:
-                $bucket = self::CACHE_KEY_IMPRESSION;
-                $entity = self::CACHE_KEY_AD_TAG_FORMAT;
-                break;
-            case static::FALLBACK:
-                $bucket = self::CACHE_KEY_FALLBACK;
-                $entity = self::CACHE_KEY_AD_TAG_FORMAT;
-                break;
-            default:
-                throw new InvalidArgumentException('invalid event counter cache type');
-        }
+        return $this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_UNVERIFIED_IMPRESSION, $namespace)
+        );
+    }
 
-        $entity = sprintf($entity, $id);
+    public function getBlankImpressionCount($tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
 
-        return sprintf($keyFormat, $bucket, $entity, $this->getDate()->format(self::KEY_DATE_FORMAT));
+        return $this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_BLANK_IMPRESSION, $namespace)
+        );
     }
 
     public function useLocalCache($bool)
@@ -128,5 +156,16 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         }
 
         return $value;
+    }
+
+    private function getNamespace($namespace, $id)
+    {
+        return sprintf($namespace, $id);
+    }
+
+    public function getCacheKey($key, $namespace)
+    {
+        $keyFormat = '%s:%s:%s';
+        return sprintf($keyFormat, $key, $namespace, $this->date->format(self::KEY_DATE_FORMAT));
     }
 }

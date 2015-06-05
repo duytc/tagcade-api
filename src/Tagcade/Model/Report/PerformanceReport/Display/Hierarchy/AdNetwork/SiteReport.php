@@ -3,12 +3,15 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-class SiteReport extends AbstractCalculatedReport implements SiteReportInterface
+class SiteReport extends AbstractCalculatedReport implements SiteReportInterface, ImpressionBreakdownReportDataInterface
 {
     use SuperReportTrait;
+    use ImpressionBreakdownTrait;
 
     /**
      * @var SiteInterface

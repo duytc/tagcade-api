@@ -5,15 +5,17 @@ namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractReport;
+use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
-class AdTagReport extends AbstractReport implements AdTagReportInterface
+class AdTagReport extends AbstractReport implements AdTagReportInterface, ImpressionBreakdownReportDataInterface
 {
     use SuperReportTrait;
     use CalculateRevenueTrait;
-
+    use ImpressionBreakdownTrait;
     /**
      * @var AdTagInterface
      */

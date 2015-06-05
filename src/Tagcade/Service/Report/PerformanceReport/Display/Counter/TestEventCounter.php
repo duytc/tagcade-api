@@ -13,10 +13,14 @@ use Tagcade\Model\Core\AdSlot;
 
 class TestEventCounter extends AbstractEventCounter
 {
-    const SLOT_OPPORTUNITIES = 'slotOpportunities';
-    const OPPORTUNITIES = 'opportunities';
-    const IMPRESSIONS = 'impressions';
-    const PASSBACKS = 'passbacks';
+    const CACHE_KEY_OPPORTUNITY    = 'opportunities';
+    const CACHE_KEY_SLOT_OPPORTUNITY    = 'opportunities';
+    const CACHE_KEY_IMPRESSION     = 'impressions';
+    const CACHE_KEY_PASSBACK       = 'passbacks';
+    const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
+    const CACHE_KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
+    const CACHE_KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
+    const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
 
     protected $adSlots;
     protected $adSlotData = [];
@@ -42,7 +46,7 @@ class TestEventCounter extends AbstractEventCounter
             $opportunitiesRemaining = $slotOpportunities;
 
             $this->adSlotData[$adSlot->getId()] = [
-                static::SLOT_OPPORTUNITIES => $slotOpportunities,
+                static::CACHE_KEY_SLOT_OPPORTUNITY => $slotOpportunities,
             ];
 
             foreach($adSlot->getAdTags() as $adTag) {
@@ -50,19 +54,28 @@ class TestEventCounter extends AbstractEventCounter
 
                 $opportunities = $opportunitiesRemaining;
                 $passbacks = mt_rand(1, $opportunities);
-                $impressions = $opportunities - $passbacks;
+                $impressions = (int)($opportunities - $passbacks);
 
                 if ($impressions < 0) {
                     $impressions = 0;
                 }
 
+                $firstOpportunities = mt_rand(0, round($opportunities/2));
+                $verifiedImpressions = mt_rand(0, $impressions);
+                $unverifiedImpressions = mt_rand(0, ($impressions - $verifiedImpressions));
+                $blankImpressions = (int)(($impressions - $verifiedImpressions) - $unverifiedImpressions);
+
                 // can be used to simulate "missing impressions"
                 //$impressions -= mt_rand(0, $impressions);
 
                 $this->adTagData[$adTag->getId()] = [
-                    static::OPPORTUNITIES => $opportunities,
-                    static::IMPRESSIONS => $impressions,
-                    static::PASSBACKS => $passbacks,
+                    static::CACHE_KEY_OPPORTUNITY => $opportunities,
+                    static::CACHE_KEY_IMPRESSION => abs($impressions),
+                    static::CACHE_KEY_PASSBACK => $passbacks,
+                    static::CACHE_KEY_FIRST_OPPORTUNITY => $firstOpportunities,
+                    static::CACHE_KEY_VERIFIED_IMPRESSION => $verifiedImpressions,
+                    static::CACHE_KEY_UNVERIFIED_IMPRESSION => $unverifiedImpressions,
+                    static::CACHE_KEY_BLANK_IMPRESSION => $blankImpressions,
                 ];
 
                 $opportunitiesRemaining = $passbacks;
@@ -85,11 +98,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getSlotOpportunityCount($slotId)
     {
-        if (!isset($this->adSlotData[$slotId][static::SLOT_OPPORTUNITIES])) {
+        if (!isset($this->adSlotData[$slotId][static::CACHE_KEY_SLOT_OPPORTUNITY])) {
             return false;
         }
 
-        return $this->adSlotData[$slotId][static::SLOT_OPPORTUNITIES];
+        return $this->adSlotData[$slotId][static::CACHE_KEY_SLOT_OPPORTUNITY];
     }
 
     /**
@@ -97,11 +110,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getOpportunityCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::OPPORTUNITIES])) {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_OPPORTUNITY])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::OPPORTUNITIES];
+        return $this->adTagData[$tagId][static::CACHE_KEY_OPPORTUNITY];
     }
 
     /**
@@ -109,11 +122,16 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getImpressionCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::IMPRESSIONS])) {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_IMPRESSION])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::IMPRESSIONS];
+        $impCount = $this->adTagData[$tagId][static::CACHE_KEY_IMPRESSION];
+
+        if ($impCount < 0) {
+            $i = 0;
+        }
+        return $impCount;
     }
 
     /**
@@ -121,12 +139,65 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getPassbackCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::PASSBACKS])) {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_PASSBACK])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::PASSBACKS];
+        return $this->adTagData[$tagId][static::CACHE_KEY_PASSBACK];
     }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getFirstOpportunityCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_FIRST_OPPORTUNITY])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::CACHE_KEY_FIRST_OPPORTUNITY];
+    }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getVerifiedImpressionCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_VERIFIED_IMPRESSION])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::CACHE_KEY_VERIFIED_IMPRESSION];
+    }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getUnverifiedImpressionCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_UNVERIFIED_IMPRESSION])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::CACHE_KEY_UNVERIFIED_IMPRESSION];
+    }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getBlankImpressionCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_BLANK_IMPRESSION])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::CACHE_KEY_BLANK_IMPRESSION];
+    }
+
 
     protected function seedRandomGenerator()
     {
