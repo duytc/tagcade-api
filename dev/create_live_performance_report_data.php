@@ -22,27 +22,52 @@ $cacheEventCounter->setDate(new DateTime('today'));
 
 foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
     $cache->save(
-        $cacheEventCounter->getCacheKey($cacheEventCounter::SLOT_OPPORTUNITY, $slotId),
-        $slotData[$testEventCounter::SLOT_OPPORTUNITIES]
+        $cacheEventCounter->getCacheKey(
+            $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY,
+            $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+        ),
+        $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
     );
 
     unset($slotId, $slotData);
 }
 
 foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
+    $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_TAG, $tagId);
+
     $cache->save(
-        $cacheEventCounter->getCacheKey($cacheEventCounter::OPPORTUNITY, $tagId),
-        $tagData[$testEventCounter::OPPORTUNITIES]
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_OPPORTUNITY, $namespace),
+        $tagData[$testEventCounter::KEY_OPPORTUNITY]
     );
 
     $cache->save(
-        $cacheEventCounter->getCacheKey($cacheEventCounter::IMPRESSION, $tagId),
-        $tagData[$testEventCounter::IMPRESSIONS]
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_FIRST_OPPORTUNITY, $namespace),
+        $tagData[$testEventCounter::KEY_FIRST_OPPORTUNITY]
     );
 
     $cache->save(
-        $cacheEventCounter->getCacheKey($cacheEventCounter::FALLBACK, $tagId),
-        $tagData[$testEventCounter::PASSBACKS]
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_IMPRESSION, $namespace),
+        $tagData[$testEventCounter::KEY_IMPRESSION]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_VERIFIED_IMPRESSION, $namespace),
+        $tagData[$testEventCounter::KEY_VERIFIED_IMPRESSION]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_UNVERIFIED_IMPRESSION, $namespace),
+        $tagData[$testEventCounter::KEY_UNVERIFIED_IMPRESSION]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_BLANK_IMPRESSION, $namespace),
+        $tagData[$testEventCounter::KEY_BLANK_IMPRESSION]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_PASSBACK, $namespace),
+        $tagData[$testEventCounter::KEY_PASSBACK]
     );
 
     unset($tagId, $tagData);
