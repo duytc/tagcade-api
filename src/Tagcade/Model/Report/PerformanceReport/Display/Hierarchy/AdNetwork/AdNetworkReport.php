@@ -9,7 +9,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkReportInterface, ImpressionBreakdownReportDataInterface
 {
-    use ImpressionBreakdownTrait;
     /**
      * @var AdNetworkInterface
      */

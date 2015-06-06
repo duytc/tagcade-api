@@ -11,7 +11,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 class SiteReport extends AbstractCalculatedReport implements SiteReportInterface, ImpressionBreakdownReportDataInterface
 {
     use SuperReportTrait;
-    use ImpressionBreakdownTrait;
 
     /**
      * @var SiteInterface
