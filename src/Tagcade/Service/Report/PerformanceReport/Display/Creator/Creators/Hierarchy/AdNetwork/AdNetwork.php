@@ -2,7 +2,6 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork;
 
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
