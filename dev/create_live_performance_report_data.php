@@ -70,5 +70,14 @@ foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
         $tagData[$testEventCounter::KEY_PASSBACK]
     );
 
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_VOID_IMPRESSION, $namespace),
+        $tagData[$testEventCounter::KEY_VOID_IMPRESSION]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_CLICK, $namespace),
+        $tagData[$testEventCounter::KEY_CLICK]
+    );
     unset($tagId, $tagData);
 }

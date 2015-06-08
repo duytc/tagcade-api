@@ -21,6 +21,8 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
     const KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
     const KEY_BLANK_IMPRESSION       = 'blank_impressions';
+    const KEY_VOID_IMPRESSION        = 'void_impressions';
+    const KEY_CLICK                  = 'clicks';
 
     protected $adSlots;
     protected $adSlotData = [];
@@ -62,8 +64,10 @@ class TestEventCounter extends AbstractEventCounter
 
                 $firstOpportunities = mt_rand(0, round($opportunities/2));
                 $verifiedImpressions = mt_rand(0, $impressions);
-                $unverifiedImpressions = mt_rand(0, ($impressions - $verifiedImpressions));
-                $blankImpressions = (int)(($impressions - $verifiedImpressions) - $unverifiedImpressions);
+                $voidImpressions = mt_rand(0, $verifiedImpressions);
+                $blankImpressions = (int)($verifiedImpressions - $voidImpressions);
+                $unverifiedImpressions = $impressions - $verifiedImpressions;
+                $clicks = mt_rand(0, $verifiedImpressions);
 
                 // can be used to simulate "missing impressions"
                 //$impressions -= mt_rand(0, $impressions);
@@ -76,6 +80,8 @@ class TestEventCounter extends AbstractEventCounter
                     static::KEY_VERIFIED_IMPRESSION => $verifiedImpressions,
                     static::KEY_UNVERIFIED_IMPRESSION => $unverifiedImpressions,
                     static::KEY_BLANK_IMPRESSION => $blankImpressions,
+                    static::KEY_VOID_IMPRESSION => $voidImpressions,
+                    static::KEY_CLICK => $clicks,
                 ];
 
                 $opportunitiesRemaining = $passbacks;
@@ -191,6 +197,32 @@ class TestEventCounter extends AbstractEventCounter
         }
 
         return $this->adTagData[$tagId][static::KEY_BLANK_IMPRESSION];
+    }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getVoidImpressionCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::KEY_VOID_IMPRESSION])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::KEY_VOID_IMPRESSION];
+    }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getClickCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::KEY_CLICK])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::KEY_CLICK];
     }
 
 
