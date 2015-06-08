@@ -18,6 +18,8 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
     const CACHE_KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
+    const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
+    const CACHE_KEY_CLICK                  = 'clicks';
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
@@ -131,6 +133,33 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $this->getCacheKey(self::CACHE_KEY_BLANK_IMPRESSION, $namespace)
         );
     }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getVoidImpressionCount($tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_VOID_IMPRESSION, $namespace)
+        );
+    }
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getClickCount($tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_CLICK, $namespace)
+        );
+    }
+
 
     public function useLocalCache($bool)
     {

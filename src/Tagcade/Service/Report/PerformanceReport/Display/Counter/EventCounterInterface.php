@@ -64,4 +64,16 @@ interface EventCounterInterface
      * @return int|bool
      */
     public function getBlankImpressionCount($tagId);
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getVoidImpressionCount($tagId);
+
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getClickCount($tagId);
 }
