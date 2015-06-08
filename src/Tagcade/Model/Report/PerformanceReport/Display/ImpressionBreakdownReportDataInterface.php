@@ -25,4 +25,14 @@ interface ImpressionBreakdownReportDataInterface extends ReportDataInterface {
      */
     public function getVerifiedImpressions();
 
+    /**
+     * @return mixed
+     */
+    public function getClicks();
+
+    /**
+     * @return mixed
+     */
+    public function getVoidImpressions();
+
 } 

@@ -47,6 +47,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
             type: integer
         blankImpressions:
             type: integer
+        voidImpressions:
+            type: integer
+        clicks:
+            type: integer
 
     manyToOne:
         adTag:

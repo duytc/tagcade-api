@@ -9,6 +9,8 @@ trait ImpressionBreakdownTrait
     protected $verifiedImpressions;
     protected $unverifiedImpressions;
     protected $blankImpressions;
+    protected $voidImpressions;
+    protected $clicks;
 
     /**
      * @return mixed
@@ -70,4 +72,36 @@ trait ImpressionBreakdownTrait
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getClicks()
+    {
+        return $this->clicks;
+    }
+
+    public function setClicks($clicks)
+    {
+        $this->clicks = $clicks;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVoidImpressions()
+    {
+        return $this->voidImpressions;
+    }
+
+    public function setVoidImpressions($voidImpressions)
+    {
+        $this->voidImpressions = $voidImpressions;
+
+        return $this;
+    }
+
+
 } 

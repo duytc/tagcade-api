@@ -42,6 +42,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
             type: integer
         blankImpressions:
             type: integer
+        voidImpressions:
+            type: integer
+        clicks:
+            type: integer
     manyToOne:
         adNetwork:
             targetEntity: Tagcade\Entity\Core\AdNetwork
