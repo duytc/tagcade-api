@@ -2,35 +2,24 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
+use DateTime;
 use Doctrine\Common\Cache\Cache;
-use Tagcade\Exception\InvalidArgumentException;
 
 class CacheEventCounter extends AbstractEventCounter implements CacheEventCounterInterface
 {
-    /**
-     * This is ported from legacy code
-     */
+    const KEY_DATE_FORMAT                  = 'ymd';
 
-    const SLOT_OPPORTUNITY = 0;
-    const OPPORTUNITY      = 1;
-    const IMPRESSION       = 2;
-    const FALLBACK         = 3; // means the same as passback or default
+    const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy
 
-    const KEY_DATE_FORMAT          = 'ymd';
-
-    const CACHE_KEY_OPPORTUNITY    = 'opportunities';
-    const CACHE_KEY_IMPRESSION     = 'impressions';
-    const CACHE_KEY_FALLBACK       = 'fallbacks';
-
-    // longnh2:
     const CACHE_KEY_SLOT_OPPORTUNITY       = 'opportunities'; // same "opportunities" key, used with different namespace
+    const CACHE_KEY_OPPORTUNITY            = 'opportunities';
     const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
+    const CACHE_KEY_IMPRESSION             = 'impressions';
     const CACHE_KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
     const CACHE_KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
-    const CACHE_KEY_PASSBACK       = 'passbacks'; // legacy name is fallbacks
+    const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
-
 
     const NAMESPACE_AD_SLOT                = 'adslot_%d';
     const NAMESPACE_AD_TAG                 = 'adtag_%d';
@@ -39,12 +28,24 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
      */
     protected $cache;
 
+    protected $formattedDate;
     protected $useLocalCache = true;
     private $localCache = array();
 
     public function __construct(Cache $cache)
     {
         $this->cache = $cache;
+        $this->setDate(new DateTime('today'));
+    }
+
+    public function setDate(DateTime $date = null)
+    {
+        if (!$date) {
+            $date = new DateTime('today');
+        }
+
+        $this->date = $date;
+        $this->formattedDate = $date->format(self::KEY_DATE_FORMAT);
     }
 
     public function getCache()
@@ -66,14 +67,16 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
 
         return $this->fetchFromCache(
-            $this->getCacheKey(static::OPPORTUNITY, $namespace)
+            $this->getCacheKey(static::CACHE_KEY_OPPORTUNITY, $namespace)
         );
     }
 
     public function getImpressionCount($tagId)
     {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
         return $this->fetchFromCache(
-            $this->getCacheKey(static::IMPRESSION, $tagId)
+            $this->getCacheKey(static::CACHE_KEY_IMPRESSION, $namespace)
         );
     }
 
@@ -82,7 +85,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
 
         $legacyCount = (int)$this->fetchFromCache(
-            $this->getCacheKey(static::FALLBACK, $namespace)
+            $this->getCacheKey(static::CACHE_KEY_FALLBACK, $namespace)
         );
 
         $passbackCount = (int)$this->fetchFromCache(
@@ -158,7 +161,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $value;
     }
 
-    private function getNamespace($namespace, $id)
+    public function getNamespace($namespace, $id)
     {
         return sprintf($namespace, $id);
     }
@@ -166,6 +169,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     public function getCacheKey($key, $namespace)
     {
         $keyFormat = '%s:%s:%s';
-        return sprintf($keyFormat, $key, $namespace, $this->date->format(self::KEY_DATE_FORMAT));
+        return sprintf($keyFormat, $key, $namespace, $this->formattedDate);
     }
 }

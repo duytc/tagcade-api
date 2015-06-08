@@ -13,14 +13,14 @@ use Tagcade\Model\Core\AdSlot;
 
 class TestEventCounter extends AbstractEventCounter
 {
-    const CACHE_KEY_OPPORTUNITY    = 'opportunities';
-    const CACHE_KEY_SLOT_OPPORTUNITY    = 'opportunities';
-    const CACHE_KEY_IMPRESSION     = 'impressions';
-    const CACHE_KEY_PASSBACK       = 'passbacks';
-    const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
-    const CACHE_KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
-    const CACHE_KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
-    const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
+    const KEY_OPPORTUNITY            = 'opportunities';
+    const KEY_SLOT_OPPORTUNITY       = 'opportunities';
+    const KEY_IMPRESSION             = 'impressions';
+    const KEY_PASSBACK               = 'passbacks';
+    const KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
+    const KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
+    const KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
+    const KEY_BLANK_IMPRESSION       = 'blank_impressions';
 
     protected $adSlots;
     protected $adSlotData = [];
@@ -46,7 +46,7 @@ class TestEventCounter extends AbstractEventCounter
             $opportunitiesRemaining = $slotOpportunities;
 
             $this->adSlotData[$adSlot->getId()] = [
-                static::CACHE_KEY_SLOT_OPPORTUNITY => $slotOpportunities,
+                static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
             ];
 
             foreach($adSlot->getAdTags() as $adTag) {
@@ -69,13 +69,13 @@ class TestEventCounter extends AbstractEventCounter
                 //$impressions -= mt_rand(0, $impressions);
 
                 $this->adTagData[$adTag->getId()] = [
-                    static::CACHE_KEY_OPPORTUNITY => $opportunities,
-                    static::CACHE_KEY_IMPRESSION => abs($impressions),
-                    static::CACHE_KEY_PASSBACK => $passbacks,
-                    static::CACHE_KEY_FIRST_OPPORTUNITY => $firstOpportunities,
-                    static::CACHE_KEY_VERIFIED_IMPRESSION => $verifiedImpressions,
-                    static::CACHE_KEY_UNVERIFIED_IMPRESSION => $unverifiedImpressions,
-                    static::CACHE_KEY_BLANK_IMPRESSION => $blankImpressions,
+                    static::KEY_OPPORTUNITY => $opportunities,
+                    static::KEY_IMPRESSION => $impressions,
+                    static::KEY_PASSBACK => $passbacks,
+                    static::KEY_FIRST_OPPORTUNITY => $firstOpportunities,
+                    static::KEY_VERIFIED_IMPRESSION => $verifiedImpressions,
+                    static::KEY_UNVERIFIED_IMPRESSION => $unverifiedImpressions,
+                    static::KEY_BLANK_IMPRESSION => $blankImpressions,
                 ];
 
                 $opportunitiesRemaining = $passbacks;
@@ -98,11 +98,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getSlotOpportunityCount($slotId)
     {
-        if (!isset($this->adSlotData[$slotId][static::CACHE_KEY_SLOT_OPPORTUNITY])) {
+        if (!isset($this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY])) {
             return false;
         }
 
-        return $this->adSlotData[$slotId][static::CACHE_KEY_SLOT_OPPORTUNITY];
+        return $this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY];
     }
 
     /**
@@ -110,11 +110,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getOpportunityCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_OPPORTUNITY])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_OPPORTUNITY])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::CACHE_KEY_OPPORTUNITY];
+        return $this->adTagData[$tagId][static::KEY_OPPORTUNITY];
     }
 
     /**
@@ -122,16 +122,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getImpressionCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_IMPRESSION])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_IMPRESSION])) {
             return false;
         }
 
-        $impCount = $this->adTagData[$tagId][static::CACHE_KEY_IMPRESSION];
-
-        if ($impCount < 0) {
-            $i = 0;
-        }
-        return $impCount;
+        return $this->adTagData[$tagId][static::KEY_IMPRESSION];
     }
 
     /**
@@ -139,11 +134,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getPassbackCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_PASSBACK])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_PASSBACK])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::CACHE_KEY_PASSBACK];
+        return $this->adTagData[$tagId][static::KEY_PASSBACK];
     }
 
     /**
@@ -152,11 +147,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getFirstOpportunityCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_FIRST_OPPORTUNITY])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_FIRST_OPPORTUNITY])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::CACHE_KEY_FIRST_OPPORTUNITY];
+        return $this->adTagData[$tagId][static::KEY_FIRST_OPPORTUNITY];
     }
 
     /**
@@ -165,11 +160,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getVerifiedImpressionCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_VERIFIED_IMPRESSION])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_VERIFIED_IMPRESSION])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::CACHE_KEY_VERIFIED_IMPRESSION];
+        return $this->adTagData[$tagId][static::KEY_VERIFIED_IMPRESSION];
     }
 
     /**
@@ -178,11 +173,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getUnverifiedImpressionCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_UNVERIFIED_IMPRESSION])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_UNVERIFIED_IMPRESSION])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::CACHE_KEY_UNVERIFIED_IMPRESSION];
+        return $this->adTagData[$tagId][static::KEY_UNVERIFIED_IMPRESSION];
     }
 
     /**
@@ -191,11 +186,11 @@ class TestEventCounter extends AbstractEventCounter
      */
     public function getBlankImpressionCount($tagId)
     {
-        if (!isset($this->adTagData[$tagId][static::CACHE_KEY_BLANK_IMPRESSION])) {
+        if (!isset($this->adTagData[$tagId][static::KEY_BLANK_IMPRESSION])) {
             return false;
         }
 
-        return $this->adTagData[$tagId][static::CACHE_KEY_BLANK_IMPRESSION];
+        return $this->adTagData[$tagId][static::KEY_BLANK_IMPRESSION];
     }
 
 
