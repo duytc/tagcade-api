@@ -12,17 +12,21 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     private $verifiedImpressions;
     private $unverifiedImpressions;
     private $blankImpressions;
+    private $voidImpressions;
+    private $clicks;
 
     private $averageFirstOpportunities;
     private $averageVerifiedImpressions;
     private $averageUnverifiedImpressions;
     private $averageBlankImpressions;
+    private $averageVoidImpressions;
+    private $averageClicks;
 
     public function __construct($reportType, $startDate, $endDate, $reports, $name,
         $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
         $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate,
-        $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions,
-        $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions
+        $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks,
+        $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions, $averageVoidImpressions, $averageClicks
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
@@ -34,11 +38,15 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
         $this->verifiedImpressions = $verifiedImpressions;
         $this->unverifiedImpressions = $unverifiedImpressions;
         $this->blankImpressions = $blankImpressions;
+        $this->voidImpressions = $voidImpressions;
+        $this->clicks = $clicks;
 
         $this->averageFirstOpportunities = $averageFirstOpportunities;
         $this->averageVerifiedImpressions = $averageVerifiedImpressions;
         $this->averageUnverifiedImpressions = $averageUnverifiedImpressions;
         $this->averageBlankImpressions = $averageBlankImpressions;
+        $this->averageVoidImpressions = $averageVoidImpressions;
+        $this->averageClicks = $averageClicks;
     }
 
     /**
@@ -76,6 +84,23 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     /**
      * @return mixed
      */
+    public function getClicks()
+    {
+        return $this->clicks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVoidImpressions()
+    {
+        return $this->voidImpressions;
+    }
+
+
+    /**
+     * @return mixed
+     */
     public function getAverageFirstOpportunities()
     {
         return $this->averageFirstOpportunities;
@@ -104,5 +129,23 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     {
         return $this->averageBlankImpressions;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageVoidImpressions()
+    {
+        return $this->averageVoidImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageClicks()
+    {
+        return $this->averageClicks;
+    }
+
+
 
 }

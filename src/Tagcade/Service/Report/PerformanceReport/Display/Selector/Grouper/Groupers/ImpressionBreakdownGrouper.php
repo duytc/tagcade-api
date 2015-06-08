@@ -14,11 +14,15 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $verifiedImpressions;
     private $unverifiedImpressions;
     private $blankImpressions;
+    private $voidImpressions;
+    private $clicks;
 
     private $averageFirstOpportunities;
     private $averageVerifiedImpressions;
     private $averageUnverifiedImpressions;
     private $averageBlankImpressions;
+    private $averageVoidImpressions;
+    private $averageClicks;
 
     public function getGroupedReport()
     {
@@ -45,11 +49,15 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getVerifiedImpressions(),
             $this->getUnverifiedImpressions(),
             $this->getBlankImpressions(),
+            $this->getVoidImpressions(),
+            $this->getClicks(),
 
             $this->getAverageFirstOpportunities(),
             $this->getAverageVerifiedImpressions(),
             $this->getAverageUnverifiedImpressions(),
-            $this->getAverageBlankImpressions()
+            $this->getAverageBlankImpressions(),
+            $this->getAverageVoidImpressions(),
+            $this->getAverageClicks()
         );
     }
 
@@ -64,6 +72,8 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->averageVerifiedImpressions = $this->getRatio($this->getVerifiedImpressions(), $reportCount);
         $this->averageUnverifiedImpressions = $this->getRatio($this->getUnverifiedImpressions(), $reportCount);
         $this->averageBlankImpressions = $this->getRatio($this->getBlankImpressions(), $reportCount);
+        $this->averageVoidImpressions = $this->getRatio($this->getVoidImpressions(), $reportCount);
+        $this->averageClicks = $this->getRatio($this->getClicks(), $reportCount);
     }
 
 
@@ -79,6 +89,9 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->addVerifiedImpressions($report->getVerifiedImpressions());
         $this->addUnverifiedImpressions($report->getUnverifiedImpressions());
         $this->addBlankImpressions($report->getBlankImpressions());
+        $this->addVoidImpressions($report->getBlankImpressions());
+        $this->addClicks($report->getClicks());
+
     }
 
     protected function addFirstOpportunities($firstOpportunities)
@@ -99,6 +112,16 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     protected function addBlankImpressions($blankImpressions)
     {
         $this->blankImpressions += (int)$blankImpressions;
+    }
+
+    protected function addVoidImpressions($voidImpressions)
+    {
+        $this->voidImpressions += (int)$voidImpressions;
+    }
+
+    protected function addClicks($clicks)
+    {
+        $this->clicks += (int)$clicks;
     }
 
     /**
@@ -136,6 +159,23 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     /**
      * @return mixed
      */
+    public function getVoidImpressions()
+    {
+        return $this->voidImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClicks()
+    {
+        return $this->clicks;
+    }
+
+
+    /**
+     * @return mixed
+     */
     public function getAverageFirstOpportunities()
     {
         return $this->averageFirstOpportunities;
@@ -163,6 +203,22 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     public function getAverageBlankImpressions()
     {
         return $this->averageBlankImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageClicks()
+    {
+        return $this->averageClicks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageVoidImpressions()
+    {
+        return $this->averageVoidImpressions;
     }
 
 
