@@ -33,6 +33,8 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->verifiedImpressions = 0;
         $this->unverifiedImpressions = 0;
         $this->blankImpressions = 0;
+        $this->voidImpressions = 0;
+        $this->clicks = 0;
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)
@@ -47,6 +49,8 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->addVerifiedImpressions($subReport->getVerifiedImpressions());
         $this->addUnverifiedImpressions($subReport->getUnverifiedImpressions());
         $this->addBlankImpressions($subReport->getBlankImpressions());
+        $this->addVoidImpressions($subReport->getVoidImpressions());
+        $this->addClicks($subReport->getClicks());
     }
 
     protected function addFirstOpportunities($firstOpportunities)
@@ -67,5 +71,15 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     protected function addBlankImpressions($blankImpressions)
     {
         $this->blankImpressions += (int)$blankImpressions;
+    }
+
+    protected function addVoidImpressions($voidImpressions)
+    {
+        $this->voidImpressions += (int)$voidImpressions;
+    }
+
+    protected function addClicks($clicks)
+    {
+        $this->clicks += (int)$clicks;
     }
 }

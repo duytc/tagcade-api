@@ -41,6 +41,8 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setVerifiedImpressions($this->eventCounter->getVerifiedImpressionCount($adTag->getId()))
             ->setUnverifiedImpressions($this->eventCounter->getUnverifiedImpressionCount($adTag->getId()))
             ->setBlankImpressions($this->eventCounter->getBlankImpressionCount($adTag->getId()))
+            ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
+            ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
             ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
             ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
         ;
