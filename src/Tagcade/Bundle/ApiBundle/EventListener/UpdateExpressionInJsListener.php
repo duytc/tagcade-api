@@ -138,7 +138,8 @@ class UpdateExpressionInJsListener {
         }
 
         if (count($expressionAsGroup) == 1) { // condition object
-            return $this->createExpressionAsConditionObject($expressionAsGroup[0]);
+            $expression = $expressionAsGroup[0];
+            return $this->createExpressionObject($expression);
         }
 
         $vars = [];
