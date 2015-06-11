@@ -62,5 +62,8 @@ interface SiteInterface extends ModelInterface
      */
     public function setEnableSourceReport($enableSourceReport);
 
+    /**
+     * @return ArrayCollection
+     */
     public function getSourceReportSiteConfigs();
 }

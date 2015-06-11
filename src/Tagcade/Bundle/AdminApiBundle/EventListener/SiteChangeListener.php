@@ -8,6 +8,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AdminApiBundle\DomainManager\SourceReportEmailConfigManagerInterface;
 use Tagcade\Bundle\AdminApiBundle\DomainManager\SourceReportSiteConfigManagerInterface;
 use Tagcade\Bundle\AdminApiBundle\Event\NewSourceConfigEvent;
+use Tagcade\Bundle\AdminApiBundle\Event\RemoveSourceConfigEvent;
 use Tagcade\Bundle\AdminApiBundle\Event\UpdateSourceConfigEvent;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -60,9 +61,25 @@ class SiteChangeListener
     {
         $entity = $args->getEntity();
 
-        if($entity instanceof SiteInterface && $this->enableSourceReportUpdated){
+        if($entity instanceof SiteInterface && true === $this->enableSourceReportUpdated){
             //dispatch
             $this->eventDispatcher->dispatch(UpdateSourceConfigEvent::NAME, new UpdateSourceConfigEvent($entity));
+        }
+    }
+
+    /**
+     * handle event preRemove one site, this auto remove SourceReportSiteConfigs if site's enableSourceReport change from true to false.
+     *
+     * @param LifecycleEventArgs $args
+     */
+    public function preRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if($entity instanceof SiteInterface){
+            if (null !== $entity->getSourceReportSiteConfigs()) {
+                $entity->getSourceReportSiteConfigs()->clear();
+            }
         }
     }
 }
