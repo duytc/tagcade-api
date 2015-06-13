@@ -18,9 +18,6 @@ Tagcade\Entity\Core\AdSlotAbstract:
         deletedAt:
             type: date
             nullable: true
-#    manyToOne:
-#        site:
-#            targetEntity: Tagcade\Entity\Core\Site
 
     inheritanceType: JOINED
 
@@ -28,6 +25,6 @@ Tagcade\Entity\Core\AdSlotAbstract:
         name: type
         type: string
     discriminatorMap:
-        static: Tagcade\Entity\Core\AdSlot
-#        static: Tagcade\Model\Core\AdSlot
+        display: Tagcade\Entity\Core\AdSlot
         dynamic: Tagcade\Entity\Core\DynamicAdSlot
+        native: Tagcade\Entity\Core\NativeAdSlot

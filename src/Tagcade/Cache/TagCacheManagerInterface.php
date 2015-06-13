@@ -6,6 +6,7 @@ use Tagcade\Legacy\TagCacheInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 
 interface TagCacheManagerInterface
 {
@@ -30,5 +31,7 @@ interface TagCacheManagerInterface
     public function refreshCache($version = 'All');
 
     public function refreshCacheForDynamicAdSlot(DynamicAdSlotInterface $dynamicAdSlot);
+
+    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot);
 
 }

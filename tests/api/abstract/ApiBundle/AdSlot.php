@@ -17,7 +17,7 @@ class AdSlot
      */
     public function getAllAdSlot(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
     }
@@ -28,7 +28,7 @@ class AdSlot
      */
     public function getAdSlotById(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots/' . PARAMS_AD_SLOT);
+        $I->sendGet(URL_API . '/displayadslots/' . PARAMS_AD_SLOT);
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
     }
@@ -39,7 +39,7 @@ class AdSlot
      */
     public function getAdSlotByIdNotExisted(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots/' . '-1');
+        $I->sendGet(URL_API . '/displayadslots/' . '-1');
         $I->seeResponseCodeIs(404);
     }
 
@@ -49,7 +49,7 @@ class AdSlot
      */
     public function addAdSlot(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots',
+        $I->sendPOST(URL_API . '/displayadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
@@ -65,7 +65,7 @@ class AdSlot
      */
     public function addAdSlotWithNameNull(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots',
+        $I->sendPOST(URL_API . '/displayadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => null,
@@ -81,7 +81,7 @@ class AdSlot
      */
     public function addAdSlotWithWidthOrHeightInvalid(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots',
+        $I->sendPOST(URL_API . '/displayadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
@@ -97,7 +97,7 @@ class AdSlot
      */
     public function addAdSlotMissingField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots',
+        $I->sendPOST(URL_API . '/displayadslots',
             [
                 'site' => PARAMS_SITE,
                 //'name' => null, //this is missing field
@@ -113,7 +113,7 @@ class AdSlot
      */
     public function addAdSlotWithWithUnexpectedField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots',
+        $I->sendPOST(URL_API . '/displayadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
@@ -130,7 +130,7 @@ class AdSlot
      */
     public function cloneAdSlot(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+        $I->sendPOST(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/clone',
             [
                 'name' => 'dtag.test.adslot-clone',
             ]
@@ -145,7 +145,7 @@ class AdSlot
      */
     public function cloneAdSlotNotExisted(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots/' . '-1' . '/clone',
+        $I->sendPOST(URL_API . '/displayadslots/' . '-1' . '/clone',
             [
                 'name' => 'dtag.test.adslot-clone',
             ]
@@ -159,7 +159,7 @@ class AdSlot
      */
     public function cloneAdSlotWithNullField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+        $I->sendPOST(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/clone',
             [
                 'name' => null //this is null field
             ]
@@ -173,7 +173,7 @@ class AdSlot
      */
     public function cloneAdSlotWithWrongData(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+        $I->sendPOST(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/clone',
             [
                 'name' => "" //this is wrong data type field, must not empty
             ]
@@ -187,7 +187,7 @@ class AdSlot
 //     */
 //    public function cloneAdSlotWithWrongDataType(ApiTester $I)
 //    {
-//        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+//        $I->sendPOST(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/clone',
 //            [
 //                'name' => (int) 123 //this is wrong data type field, must string
 //            ]
@@ -201,7 +201,7 @@ class AdSlot
      */
     public function cloneAdSlotWithWithMissingField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/clone',
+        $I->sendPOST(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/clone',
             [
                 'unexpected_field' => 'unexpected_field' //this is unexpected field, require 'name' field
             ]
@@ -214,10 +214,10 @@ class AdSlot
      */
     public function editAdSlot(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/adslots/' . $item['id'],
+        $I->sendPUT(URL_API . '/displayadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
@@ -233,10 +233,10 @@ class AdSlot
      */
     public function editAdSlotWithNameNull(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/adslots/' . $item['id'],
+        $I->sendPUT(URL_API . '/displayadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
                 'name' => null,
@@ -252,10 +252,10 @@ class AdSlot
      */
     public function editAdSlotWithWidthOrHeightInvalid(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/adslots/' . $item['id'],
+        $I->sendPUT(URL_API . '/displayadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
@@ -271,10 +271,10 @@ class AdSlot
      */
     public function editAdSlotWithUnexpectedField(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/adslots/' . $item['id'],
+        $I->sendPUT(URL_API . '/displayadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
@@ -290,10 +290,10 @@ class AdSlot
      */
     public function patchAdSlot(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/adslots/' . $item['id'], ['site' => PARAMS_SITE, 'height' => 250]);
+        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'], ['site' => PARAMS_SITE, 'height' => 250]);
         $I->seeResponseCodeIs(204);
     }
 
@@ -303,10 +303,10 @@ class AdSlot
      */
     public function patchAdSlotWithNameNull(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/adslots/' . $item['id'],
+        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'],
             [
                 'name' => null
             ]
@@ -320,10 +320,10 @@ class AdSlot
      */
     public function patchAdSlotWithWidthOrHeightInvalid(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/adslots/' . $item['id'],
+        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'],
             [
                 'height' => '250_wrong',
                 'width' => '250_wrong'
@@ -338,10 +338,10 @@ class AdSlot
      */
     public function patchAdSlotWithUnexpectedField(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/adslots/' . $item['id'],
+        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'],
             [
                 'unexpected_field' => 'unexpected_field' //this is unexpected field
             ]
@@ -354,10 +354,10 @@ class AdSlot
      */
     public function deleteAdSlot(ApiTester $I)
     {
-        $I->sendGet(URL_API . '/adslots');
+        $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendDELETE(URL_API . '/adslots/' . $item['id']);
+        $I->sendDELETE(URL_API . '/displayadslots/' . $item['id']);
         $I->seeResponseCodeIs(204);
     }
 
@@ -367,7 +367,7 @@ class AdSlot
      */
     public function deleteAdSlotNotExisted(ApiTester $I)
     {
-        $I->sendDELETE(URL_API . '/adslots/' . '-1');
+        $I->sendDELETE(URL_API . '/displayadslots/' . '-1');
         $I->seeResponseCodeIs(404);
     }
 
@@ -377,7 +377,7 @@ class AdSlot
      */
     public function getAdTagsByAdSlot(ApiTester $I)
     {
-        $I->sendGET(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/adtags');
+        $I->sendGET(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/adtags');
         $I->seeResponseCodeIs(200);
     }
 
@@ -387,12 +387,12 @@ class AdSlot
      */
     public function getAdTagsByAdSlotNotExisted(ApiTester $I)
     {
-        $I->sendGET(URL_API . '/adslots/' . '-1' . '/adtags');
+        $I->sendGET(URL_API . '/displayadslots/' . '-1' . '/adtags');
         $I->seeResponseCodeIs(404);
     }
 
 //    public function addPositionsAdSlot(ApiTester $I) {
-//        $I->sendPOST(URL_API.'/adslots/1/adtags/positions', []);
+//        $I->sendPOST(URL_API.'/displayadslots/1/adtags/positions', []);
 //        $I->seeResponseCodeIs(201);
 //    }
 
@@ -402,7 +402,7 @@ class AdSlot
      */
     public function getJsAdTagsByAdSlot(ApiTester $I)
     {
-        $I->sendGET(URL_API . '/adslots/' . PARAMS_AD_SLOT . '/jstag');
+        $I->sendGET(URL_API . '/displayadslots/' . PARAMS_AD_SLOT . '/jstag');
         $I->seeResponseCodeIs(200);
     }
 
@@ -412,7 +412,7 @@ class AdSlot
      */
     public function getJsAdTagsByAdSlotNotExisted(ApiTester $I)
     {
-        $I->sendGET(URL_API . '/adslots/' . '-1' . '/jstag');
+        $I->sendGET(URL_API . '/displayadslots/' . '-1' . '/jstag');
         $I->seeResponseCodeIs(404);
     }
 }

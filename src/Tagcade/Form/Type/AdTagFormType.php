@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdSlot;
+use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\InvalidFormException;
@@ -18,11 +19,20 @@ use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
 
 class AdTagFormType extends AbstractRoleSpecificFormType
 {
+    protected $adSlotRepository;
+    protected $nativeAdSlotRepository;
+
     const AD_TYPE_HTML = 0;
     const AD_TYPE_IMAGE = 1;
+
+    public function __construct(AdSlotRepositoryInterface $adSlotRepository, NativeAdSlotRepositoryInterface $nativeAdSlotRepository){
+        $this->adSlotRepository = $adSlotRepository;
+        $this->nativeAdSlotRepository = $nativeAdSlotRepository;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -38,12 +48,10 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             $publisher = $this->userRole;
 
             $builder
-                ->add('adSlot', 'entity', [
-                    'class' => AdSlot::class,
-                    'query_builder' => function(AdSlotRepositoryInterface $repository) use($publisher) {
-                        return $repository->getAdSlotsForPublisherQuery($publisher);
-                    }
-                ])
+                ->add('adSlot', 'entity', array(
+                    'class' => AdSlotAbstract::class,
+                    'choices' => $this->getAllAdSlotsForPublisher($publisher)
+                ))
                 ->add('adNetwork', 'entity', [
                     'class' => AdNetwork::class,
                     'query_builder' => function(AdNetworkRepositoryInterface $repository) use ($publisher) {
@@ -103,6 +111,29 @@ class AdTagFormType extends AbstractRoleSpecificFormType
         );
     }
 
+    /**
+     * get all adSlots (include display-adSlots and native-adSlots) for Publisher
+     * @param PublisherInterface $publisher
+     * @return array
+     */
+    protected function getAllAdSlotsForPublisher(PublisherInterface $publisher) {
+        $adSlots = $this->adSlotRepository->getAdSlotsForPublisher($publisher);
+
+        $nativeAdSlots = $this->nativeAdSlotRepository->getNativeAdSlotsForPublisher($publisher);
+
+        $allAdSlots = [];
+
+        if(null !== $adSlots) {
+            $allAdSlots = array_merge($allAdSlots, $adSlots);
+        }
+
+        if(null !== $nativeAdSlots) {
+            $allAdSlots = array_merge($allAdSlots, $nativeAdSlots);
+        }
+
+        return $allAdSlots;
+    }
+
     protected function validateImageAd(AdTagInterface $adTag)
     {
         $descriptor = $adTag->getDescriptor();
@@ -130,16 +161,8 @@ class AdTagFormType extends AbstractRoleSpecificFormType
      */
     protected function validateImageUrl($imageUrl)
     {
-        if (null === $imageUrl || sizeof($imageUrl) < 0
-            || (
-                !$this->endsWith($imageUrl, '.jpg')
-                && !$this->endsWith($imageUrl, '.jpeg')
-                && !$this->endsWith($imageUrl, '.png')
-                && !$this->endsWith($imageUrl, '.gif')
-                && !$this->endsWith($imageUrl, '.bmp')
-            )
-        ) {
-            throw new InvalidFormException('The descriptor for AD_TYPE_IMAGE invalid: \'imageUrl\' must not null and not empty and end with ".jpg, .jpeg, .png, .gif, .bmp"', $this);
+        if (null === $imageUrl || sizeof($imageUrl) < 0) {
+            throw new InvalidFormException('The descriptor for AD_TYPE_IMAGE invalid: \'imageUrl\' must not null"', $this);
         }
 
         $this->validateUrl($imageUrl);

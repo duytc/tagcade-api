@@ -1,0 +1,32 @@
+Tagcade\Entity\Core\NativeAdSlot:
+    type: entity
+    table: core_native_ad_slot
+    repositoryClass: Tagcade\Repository\Core\NativeAdSlotRepository
+#    gedmo:
+#        soft_deleteable:
+#            field_name: deletedAt
+#            time_aware: false
+#    id:
+#        id:
+#            type: integer
+#            generator:
+#                strategy: AUTO
+#    fields:
+#        name:
+#            type: string
+#            length: 100
+#        deletedAt:
+#            type: date
+#            nullable: true
+    manyToOne:
+        site:
+            targetEntity: Tagcade\Entity\Core\Site
+    oneToMany:
+        adTags:
+            targetEntity: AdTag
+            orderBy: { 'position': 'ASC' }
+            mappedBy: adSlot
+            cascade: ["persist", "remove", "detach"]
+        defaultDynamicAdSlots:
+            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+            mappedBy: defaultAdSlot

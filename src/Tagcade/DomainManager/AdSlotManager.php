@@ -3,6 +3,12 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\Behavior\ArrayTrait;
+use Tagcade\Exception\LogicException;
+use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Model\Core\AdSlotInterface;
@@ -11,13 +17,28 @@ use ReflectionClass;
 
 class AdSlotManager implements AdSlotManagerInterface
 {
-    protected $om;
-    protected $repository;
+    use ArrayTrait;
+    /**
+     * @var DisplayAdSlotManagerInterface
+     */
+    private $displayAdSlotManager;
+    /**
+     * @var NativeAdSlotManagerInterface
+     */
+    private $nativeAdSlotManager;
+    /**
+     * @var DynamicAdSlotManagerInterface
+     */
+    private $dynamicAdSlotManager;
 
-    public function __construct(ObjectManager $om, AdSlotRepositoryInterface $repository)
+    public function __construct(DisplayAdSlotManagerInterface $displayAdSlotManager,
+        NativeAdSlotManagerInterface $nativeAdSlotManager,
+        DynamicAdSlotManagerInterface $dynamicAdSlotManager
+    )
     {
-        $this->om = $om;
-        $this->repository = $repository;
+        $this->displayAdSlotManager = $displayAdSlotManager;
+        $this->nativeAdSlotManager = $nativeAdSlotManager;
+        $this->dynamicAdSlotManager = $dynamicAdSlotManager;
     }
 
     /**
@@ -25,25 +46,24 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function supportsEntity($entity)
     {
-        return is_subclass_of($entity, AdSlotInterface::class);
+        return $this->displayAdSlotManager->supportsEntity($entity) || $this->nativeAdSlotManager->supportsEntity($entity) || $this->dynamicAdSlotManager->supportsEntity($entity);
     }
 
     /**
      * @inheritdoc
      */
-    public function save(AdSlotInterface $adSlot)
+    public function save(AdSlotAbstractInterface $adSlot)
     {
-        $this->om->persist($adSlot);
-        $this->om->flush();
+        $this->getManager($adSlot)->save($adSlot);
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(AdSlotInterface $adSlot)
+    public function delete(AdSlotAbstractInterface $adSlot)
     {
-        $this->om->remove($adSlot);
-        $this->om->flush();
+        $this->getManager($adSlot)->delete($adSlot);
+
     }
 
     /**
@@ -51,8 +71,7 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function createNew()
     {
-        $entity = new ReflectionClass($this->repository->getClassName());
-        return $entity->newInstance();
+        throw new RuntimeException('Not support create new instance of ad slot via generic AdSlotManager. Use either DisplayAdSlotManager, NativeAdSlotManager or DynamicAdSlotManager');
     }
 
     /**
@@ -60,7 +79,19 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function find($id)
     {
-        return $this->repository->find($id);
+        $found = $this->displayAdSlotManager->find($id);
+        if (null !== $found) {
+            return $found;
+        }
+
+        $found = $this->nativeAdSlotManager->find($id);
+        if (null !== $found) {
+            return $found;
+        }
+
+        $found = $this->dynamicAdSlotManager->find($id);
+
+        return $found;
     }
 
     /**
@@ -68,15 +99,32 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function all($limit = null, $offset = null)
     {
-        return $this->repository->findBy($criteria = [], $orderBy = null, $limit, $offset);
+        $allDisplayAdSlots = $this->displayAdSlotManager->all();
+        $allNativeAdSlots = $this->nativeAdSlotManager->all();
+        $allDynamicAdSlots = $this->dynamicAdSlotManager->all();
+
+        return $this->sliceArray(array_merge($allDisplayAdSlots, $allNativeAdSlots, $allDynamicAdSlots), $limit, $offset);
     }
+
+    public function allReportableAdSlots($limit = null, $offset = null)
+    {
+        $allDisplayAdSlots = $this->displayAdSlotManager->all();
+        $allNativeAdSlots = $this->nativeAdSlotManager->all();
+
+        return $this->sliceArray(array_merge($allDisplayAdSlots, $allNativeAdSlots), $limit, $offset);
+    }
+
 
     /**
      * @inheritdoc
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
-        return $this->repository->getAdSlotsForSite($site, $limit, $offset);
+        $displayAdSlots = $this->displayAdSlotManager->getAdSlotsForSite($site);
+        $nativeAdSlots = $this->nativeAdSlotManager->getNativeAdSlotsForSite($site);
+        $dynamicAdSlots = $this->dynamicAdSlotManager->getDynamicAdSlotsForSite($site);
+
+        return $this->sliceArray(array_merge($displayAdSlots, $nativeAdSlots, $dynamicAdSlots), $limit, $offset);
     }
 
     /**
@@ -84,6 +132,34 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        return $this->repository->getAdSlotsForPublisher($publisher, $limit, $offset);
+        $displayAdSlots = $this->displayAdSlotManager->getAdSlotsForPublisher($publisher);
+        $nativeAdSlots = $this->nativeAdSlotManager->getNativeAdSlotsForPublisher($publisher);
+        $dynamicAdSlots = $this->dynamicAdSlotManager->getDynamicAdSlotsForPublisher($publisher);
+
+        return $this->sliceArray(array_merge($displayAdSlots, $nativeAdSlots, $dynamicAdSlots), $limit, $offset);
+    }
+
+
+    /**
+     * @param AdSlotAbstractInterface $adSlot
+     * @return DisplayAdSlotManagerInterface|NativeAdSlotManagerInterface
+     */
+    protected function getManager(AdSlotAbstractInterface $adSlot)
+    {
+        if ($adSlot instanceof AdSlotInterface) {
+            return $this->displayAdSlotManager;
+        }
+
+        if ($adSlot instanceof NativeAdSlotInterface) {
+            return $this->nativeAdSlotManager;
+        }
+
+        if ($adSlot instanceof DynamicAdSlotInterface) {
+            return $this->dynamicAdSlotManager;
+        }
+
+        throw new LogicException('Do not support manager for this type of ad slot');
+
+
     }
 }

@@ -7,6 +7,7 @@ use Tagcade\Cache\TagCacheManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
 class UpdateCacheListener
@@ -42,6 +43,9 @@ class UpdateCacheListener
                 }
                 else if ($entity instanceof DynamicAdSlotInterface) {
                     $this->tagCacheManager->refreshCacheForDynamicAdSlot($entity);
+                }
+                else if ($entity instanceof NativeAdSlotInterface) {
+                    $this->tagCacheManager->refreshCacheForNativeAdSlot($entity);
                 }
             }
         );

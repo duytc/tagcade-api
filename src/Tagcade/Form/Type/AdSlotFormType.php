@@ -3,15 +3,10 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdSlot;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;

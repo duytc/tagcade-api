@@ -3,6 +3,9 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\Fields\SlotOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -31,7 +34,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     protected $customRate;
 
     /**
-     * @return AdSlotInterface|null
+     * @return AdSlotInterface|NativeAdSlotInterface|null
      */
     public function getAdSlot()
     {
@@ -43,11 +46,29 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
      */
     public function getAdSlotId()
     {
-        if ($this->adSlot instanceof AdSlotInterface) {
+        if ($this->adSlot instanceof ReportableAdSlotInterface) {
             return $this->adSlot->getId();
         }
 
         return null;
+    }
+
+    protected function resetCounts()
+    {
+        if ($this->adSlot instanceof AdSlotInterface) {
+            parent::resetCounts();
+
+            return;
+        }
+
+        if (!$this->adSlot instanceof NativeAdSlotInterface) {
+            return;
+        }
+        
+        $this->totalOpportunities = 0;
+        $this->impressions = 0;
+        $this->passbacks = null;
+        $this->estRevenue = null;
     }
 
     /**
@@ -71,10 +92,10 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
 
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param AdSlotAbstractInterface $adSlot
      * @return $this
      */
-    public function setAdSlot(AdSlotInterface $adSlot)
+    public function setAdSlot(AdSlotAbstractInterface $adSlot)
     {
         $this->adSlot = $adSlot;
         return $this;
@@ -114,13 +135,18 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
 
         $subReport->setRelativeFillRate($this->getSlotOpportunities());
 
-        parent::aggregateSubReport($subReport);
-
+        if ($this->adSlot instanceof AdSlotInterface) {
+            parent::aggregateSubReport($subReport);
+        }
+        else {
+            $this->addTotalOpportunities($subReport->getTotalOpportunities());
+            $this->addImpressions($subReport->getImpressions());
+        }
     }
 
     protected function setDefaultName()
     {
-        if ($this->adSlot instanceof AdSlotInterface) {
+        if ($this->adSlot instanceof ReportableAdSlotInterface) {
             $this->setName($this->adSlot->getName());
         }
     }

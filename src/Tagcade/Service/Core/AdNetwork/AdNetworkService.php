@@ -4,9 +4,7 @@ namespace Tagcade\Service\Core\AdNetwork;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Domain\DTO\Core\SiteStatus;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;

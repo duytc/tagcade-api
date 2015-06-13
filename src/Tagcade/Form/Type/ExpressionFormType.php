@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tagcade\Entity\Core\AdSlot;
+use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\Expression;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Model\Core\ExpressionInterface;
@@ -106,6 +106,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
+                // Validate expression format
                 try {
                     /**
                      * @var ExpressionInterface $expression
@@ -132,7 +133,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
 
         $builder
             ->add('expressionDescriptor')
-            ->add('expectAdSlot', 'entity', ['class' => AdSlot::class])
+            ->add('expectAdSlot', 'entity', ['class' => AdSlotAbstract::class])
             ->add('startingPosition')
         ;
     }

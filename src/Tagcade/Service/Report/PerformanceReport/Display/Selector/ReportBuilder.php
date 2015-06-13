@@ -8,8 +8,8 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
@@ -195,7 +195,7 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getSiteAdSlotsReport(SiteInterface $site, Params $params)
     {
-        $adSlots = $site->getAdSlots()->toArray();
+        $adSlots = $site->getReportableAdSlots();
 
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
@@ -238,12 +238,12 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports($reportTypes, $params);
     }
 
-    public function getAdSlotReport(AdSlotInterface $adSlot, Params $params)
+    public function getAdSlotReport(ReportableAdSlotInterface $adSlot, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\AdSlot($adSlot), $params);
     }
 
-    public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, Params $params)
+    public function getAdSlotAdTagsReport(ReportableAdSlotInterface $adSlot, Params $params)
     {
         $adSlotReport = $this->getAdSlotReport($adSlot, $params);
 

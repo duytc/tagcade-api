@@ -3,6 +3,8 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdT
     virtual_properties:
         getAdTagId:
             type: integer
+        getAdSlotType:
+            type: string
     properties:
         adTag:
             exclude: true

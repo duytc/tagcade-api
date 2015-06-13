@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Model\Core\SiteInterface;
 
-class AdSlot extends AdSlotAbstract implements AdSlotInterface
+class AdSlot extends AdSlotAbstract implements AdSlotInterface, ReportableAdSlotInterface
 {
     protected $id;
 
@@ -23,6 +23,7 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface
      * @var DynamicAdSlotInterface[]
      */
     protected $defaultDynamicAdSlots;
+
     /**
      * @param string $name
      * @param int $width
@@ -34,62 +35,6 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface
         $this->width = $width;
         $this->height = $height;
         $this->adTags = new ArrayCollection();
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSite()
-    {
-        return $this->site;
-    }
-
-    public function setSite(SiteInterface $site)
-    {
-        $this->site = $site;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSiteId()
-    {
-        if (!$this->site) {
-            return null;
-        }
-
-        return $this->site->getId();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
     }
 
     /**
@@ -154,8 +99,16 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface
         return $this->defaultDynamicAdSlots;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return self::TYPE_DISPLAY;
+    }
+
     public function __toString()
     {
-        return $this->name;
+        return parent::__toString();
     }
 }

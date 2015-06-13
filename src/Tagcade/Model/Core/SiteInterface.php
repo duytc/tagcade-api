@@ -50,8 +50,21 @@ interface SiteInterface extends ModelInterface
     /**
      * @return ArrayCollection
      */
-    public function getAdSlots();
+    public function getDisplayAdSlots();
 
+    public function getReportableAdSlots();
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNativeAdSlots();
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDynamicAdSlots();
+
+    public function getAllAdSlots();
     /**
      * @return boolean|null
      */

@@ -2,9 +2,8 @@
 
 namespace Tagcade\Repository\Core;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
-use Tagcade\Model\Core\AdSlotInterface;
+use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 

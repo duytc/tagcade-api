@@ -11,18 +11,22 @@ Tagcade\Entity\Core\DynamicAdSlot:
 #            type: integer
 #            generator:
 #                strategy: AUTO
-#    fields:
+    fields:
 #        name:
 #            type: string
 #            length: 100
 #        deletedAt:
 #            type: date
 #            nullable: true
+        native:
+            type: boolean
+            options:
+                default: false
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site
         defaultAdSlot:
-            targetEntity: Tagcade\Entity\Core\AdSlot
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
 
     oneToMany:
         expressions:

@@ -2,11 +2,11 @@
 
 namespace Tagcade\Handler\Handlers\Core\Publisher;
 
-use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
-use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Handler\Handlers\Core\NativeAdSlotHandlerAbstract;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
-class AdSlotHandler extends AdSlotHandlerAbstract
+class NativeAdSlotHandler extends NativeAdSlotHandlerAbstract
 {
     /**
      * @inheritdoc
@@ -23,6 +23,6 @@ class AdSlotHandler extends AdSlotHandlerAbstract
     {
         /** @var PublisherInterface $publisher */
         $publisher = $this->getUserRole();
-        return $this->getDomainManager()->getAdSlotsForPublisher($publisher, $limit, $offset);
+        return $this->getDomainManager()->getNativeAdSlotsForPublisher($publisher, $limit, $offset);
     }
 }

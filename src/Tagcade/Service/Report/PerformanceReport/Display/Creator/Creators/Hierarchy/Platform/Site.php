@@ -35,7 +35,9 @@ class Site extends CreatorAbstract implements SiteInterface
             ->setDate($this->getDate())
         ;
 
-        foreach ($site->getAdSlots() as $adSlot) {
+        $allAdSlots = $site->getReportableAdSlots();
+
+        foreach ($allAdSlots as $adSlot) {
             $report->addSubReport(
                 $this->subReportCreator->createReport(new AdSlotReportType($adSlot))
                     ->setSuperReport($report)

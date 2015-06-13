@@ -12,7 +12,7 @@ interface AdTagInterface extends ModelInterface
     public function setId($id);
 
     /**
-     * @return AdSlotInterface|null
+     * @return NativeAdSlotInterface|AdSlotInterface|null
      */
     public function getAdSlot();
 
@@ -22,10 +22,10 @@ interface AdTagInterface extends ModelInterface
     public function getAdSlotId();
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param ReportableAdSlotInterface $adSlot
      * @return self
      */
-    public function setAdSlot(AdSlotInterface $adSlot);
+    public function setAdSlot(ReportableAdSlotInterface $adSlot);
 
     /**
      * @return AdNetworkInterface|null
@@ -111,6 +111,7 @@ interface AdTagInterface extends ModelInterface
     public function getRotation();
 
     /**
+     * This indicate ad tag type: image, custom, etc..
      * get AdType
      * @return int
      */

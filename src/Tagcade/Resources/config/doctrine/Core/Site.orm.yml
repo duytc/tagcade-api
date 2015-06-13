@@ -34,7 +34,11 @@ Tagcade\Entity\Core\Site:
             mappedBy: site
             cascade: ["remove"]
         adSlots:
-            targetEntity: AdSlot
+            targetEntity: Tagcade\Entity\Core\AdSlot
+            mappedBy: site
+            cascade: ["persist", "remove", "detach"]
+        nativeAdSlots:
+            targetEntity: Tagcade\Entity\Core\NativeAdSlot
             mappedBy: site
             cascade: ["persist", "remove", "detach"]
         sourceReportSiteConfigs:

@@ -29,6 +29,11 @@ class Site implements SiteInterface
      * @var DynamicAdSlotInterface[]
      */
     protected $dynamicAdSlots;
+
+    /**
+     * @var NativeAdSlotInterface[]
+     */
+    protected $nativeAdSlots;
     /**
      * @param string $name
      * @param string $domain
@@ -107,18 +112,65 @@ class Site implements SiteInterface
         return $this;
     }
 
+    public function getDisplayAdSlots()
+    {
+        $this->adSlots;
+    }
     /**
      * @inheritdoc
      */
-    public function getAdSlots()
+    public function getReportableAdSlots()
     {
-        return $this->adSlots;
+        if (null === $this->nativeAdSlots) {
+            $this->nativeAdSlots = new ArrayCollection();
+        }
+
+        if (null === $this->adSlots ) {
+            $this->adSlots = new ArrayCollection();
+        }
+
+        return array_merge($this->adSlots->toArray(), $this->nativeAdSlots->toArray());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getNativeAdSlots()
+    {
+        return $this->nativeAdSlots;
+    }
+
+    /**
+     * @return DynamicAdSlotInterface[]
+     */
+    public function getDynamicAdSlots()
+    {
+        return $this->dynamicAdSlots;
+    }
+
+    public function getAllAdSlots()
+    {
+        if (null === $this->adSlots ) {
+            $this->adSlots = new ArrayCollection();
+        }
+
+        if (null === $this->nativeAdSlots) {
+            $this->nativeAdSlots = new ArrayCollection();
+        }
+
+        if (null === $this->dynamicAdSlots){
+            $this->dynamicAdSlots = new ArrayCollection();
+        }
+
+        return array_merge($this->adSlots->toArray(), $this->nativeAdSlots->toArray(), $this->dynamicAdSlots->toArray());
     }
 
     public function __toString()
     {
         return $this->name;
     }
+
+
 
     /**
      * @inheritdoc

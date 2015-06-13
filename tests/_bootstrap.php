@@ -7,6 +7,7 @@ require_once 'api/abstract/AdminApiBundle/ActionLog.php';
 require_once 'api/abstract/AdminApiBundle/User.php';
 require_once 'api/abstract/ApiBundle/AdNetwork.php';
 require_once 'api/abstract/ApiBundle/AdSlot.php';
+require_once 'api/abstract/ApiBundle/NativeAdSlot.php';
 require_once 'api/abstract/ApiBundle/DynamicAdSlot.php';
 require_once 'api/abstract/ApiBundle/AdTag.php';
 require_once 'api/abstract/ApiBundle/Site.php';

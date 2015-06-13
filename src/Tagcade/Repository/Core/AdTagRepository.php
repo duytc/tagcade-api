@@ -4,17 +4,19 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Behavior\ArrayTrait;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdTagRepository extends EntityRepository implements AdTagRepositoryInterface
 {
+    use ArrayTrait;
     /**
      * @inheritdoc
      */
-    public function getAdTagsForAdSlot(AdSlotInterface $adSlot, $limit = null, $offset = null)
+    public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
             ->where('t.adSlot = :ad_slot_id')
@@ -36,20 +38,22 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
-            ->leftJoin('t.adSlot', 'sl')
-            ->where('sl.site = :site_id')
+            ->leftJoin('Tagcade\\Entity\Core\\AdSlot', 'dAdSlot', 'WITH', 't.adSlot = dAdSlot.id')
+            ->where('dAdSlot.site = :site_id')
             ->setParameter('site_id', $site->getId(), Type::INTEGER)
         ;
+        $adTagsForDisplayAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('Tagcade\\Entity\Core\\NativeAdSlot', 'nAdSlot', 'WITH', 't.adSlot = nAdSlot.id')
+            ->where('nAdSlot.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+        ;
+        $adTagsForNativeAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
+        $allAdTags = array_merge($adTagsForDisplayAdSlot, $adTagsForNativeAdSlot);
 
-        return $qb->getQuery()->getResult();
+        return $this->sliceArray(array_unique($allAdTags), $offset, $limit);
     }
 
     /**
@@ -58,22 +62,26 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
-            ->leftJoin('t.adSlot', 'sl')
-            ->leftJoin('sl.site', 'st')
+            ->leftJoin('Tagcade\\Entity\Core\\AdSlot', 'dAdSlot', 'WITH', 't.adSlot = dAdSlot.id')
+            ->leftJoin('dAdSlot.site', 'st')
             ->where('st.publisher = :publisher_id')
             ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
             ->orderBy('t.id', 'asc')
         ;
+        $adTagsForDisplayAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('Tagcade\\Entity\Core\\NativeAdSlot', 'nAdSlot', 'WITH', 't.adSlot = nAdSlot.id')
+            ->leftJoin('nAdSlot.site', 'st')
+            ->where('st.publisher = :publisher_id')
+            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+            ->orderBy('t.id', 'asc')
+        ;
+        $adTagsForNativeAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
+        $allAdTags = array_merge($adTagsForDisplayAdSlot, $adTagsForNativeAdSlot);
 
-        return $qb->getQuery()->getResult();
+        return $this->sliceArray(array_unique($allAdTags), $offset, $limit);
     }
 
     public function getAdTagsForAdNetworkQuery(AdNetworkInterface $adNetwork)
@@ -104,80 +112,96 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork,$limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
-            ->join('t.adSlot', 'sl')
-            ->join('sl.site', 'st')
+            ->join('Tagcade\\Entity\Core\\AdSlot', 'dAdSlot', 'WITH', 't.adSlot = dAdSlot.id')
+            ->join('dAdSlot.site', 'st')
             ->andwhere('st.publisher = :publisher_id')
             ->setParameter('publisher_id', $adNetwork->getPublisherId(), Type::INTEGER);
+        ;
 
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
+        $adTagsForDisplayAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->join('Tagcade\\Entity\Core\\NativeAdSlot', 'nAdSlot', 'WITH', 't.adSlot = nAdSlot.id')
+            ->join('nAdSlot.site', 'st')
+            ->andwhere('st.publisher = :publisher_id')
+            ->setParameter('publisher_id', $adNetwork->getPublisherId(), Type::INTEGER);
+        ;
 
-        return $qb->getQuery()->getResult();
+        $adTagsForNativeAdSlot = $qb->getQuery()->getResult();
+
+        return $this->sliceArray(array_merge($adTagsForDisplayAdSlot, $adTagsForNativeAdSlot), $offset, $limit);
     }
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
-            ->andWhere('sl.site = :site_id')
-            ->join('t.adSlot', 'sl')
+            ->join('Tagcade\\Entity\Core\\AdSlot', 'dAdSlot', 'WITH', 't.adSlot = dAdSlot.id')
+            ->andWhere('dAdSlot.site = :site_id')
             ->setParameter('site_id', $site->getId(), Type::INTEGER)
         ;
 
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
+        $adTagsForDisplayAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->join('Tagcade\\Entity\Core\\NativeAdSlot', 'nAdSlot', 'WITH', 't.adSlot = nAdSlot.id')
+            ->andWhere('nAdSlot.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+        ;
 
-        return $qb->getQuery()->getResult();
+        $adTagsForNativeAdSlot = $qb->getQuery()->getResult();
+
+        $allFoundAdTags = array_merge($adTagsForDisplayAdSlot, $adTagsForNativeAdSlot);
+
+        return $this->sliceArray($allFoundAdTags, $offset, $limit);
     }
 
     public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
-            ->andWhere('sl.site IN (:sites)')
-            ->join('t.adSlot', 'sl')
+            ->join('Tagcade\\Entity\Core\\AdSlot', 'dAdSlot', 'WITH', 't.adSlot = dAdSlot.id')
+            ->andWhere('dAdSlot.site IN (:sites)')
             ->setParameter('sites', $sites)
         ;
 
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
+        $adTagsForDisplayAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->join('Tagcade\\Entity\Core\\NativeAdSlot', 'nAdSlot', 'WITH', 't.adSlot = nAdSlot.id')
+            ->andWhere('nAdSlot.site IN (:sites)')
+            ->setParameter('sites', $sites)
+        ;
 
-        return $qb->getQuery()->getResult();
+        $adTagsForNativeAdSlot = $qb->getQuery()->getResult();
+
+        $allFoundAdTags = array_merge($adTagsForDisplayAdSlot, $adTagsForNativeAdSlot);
+
+        return $this->sliceArray($allFoundAdTags, $offset, $limit);
     }
 
     public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
-            ->andWhere('sl.site = :site_id')
+            ->join('Tagcade\\Entity\Core\\AdSlot', 'dAdSlot', 'WITH', 't.adSlot = dAdSlot.id')
+            ->join('dAdSlot.site', 'st')
+            ->andWhere('dAdSlot.site = :site_id')
             ->andwhere('st.publisher = :publisher_id')
-            ->join('t.adSlot', 'sl')
-            ->join('sl.site', 'st')
             ->setParameter('site_id', $site->getId(), Type::INTEGER)
             ->setParameter('publisher_id', $adNetwork->getPublisherId(), Type::INTEGER)
         ;
 
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
+        $adTagsForDisplayAdSlot = $qb->getQuery()->getResult();
 
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork)
+            ->join('Tagcade\\Entity\Core\\NativeAdSlot', 'nAdSlot', 'WITH', 't.adSlot = nAdSlot.id')
+            ->join('nAdSlot.site', 'st')
+            ->andWhere('nAdSlot.site = :site_id')
+            ->andwhere('st.publisher = :publisher_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+            ->setParameter('publisher_id', $adNetwork->getPublisherId(), Type::INTEGER)
+        ;
 
-        return $qb->getQuery()->getResult();
+        $adTagsForNativeAdSlot = $qb->getQuery()->getResult();
+
+        return $this->sliceArray(array_merge($adTagsForDisplayAdSlot, $adTagsForNativeAdSlot), $offset, $limit);
     }
-
 }

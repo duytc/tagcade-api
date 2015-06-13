@@ -8,7 +8,6 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
-use Tagcade\Cache\DynamicAdSlot\TagCache;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 

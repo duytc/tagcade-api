@@ -37,13 +37,13 @@ interface ExpressionInterface extends ModelInterface
      */
     public function setDynamicAdSlot($dynamicAdSlot);
     /**
-     * @return AdSlotInterface
+     * @return AdSlotAbstractInterface
      */
     public function getExpectAdSlot();
     /**
-     * @param AdSlotInterface $expectAdSlot
+     * @param ReportableAdSlotInterface $expectAdSlot
      */
-    public function setExpectAdSlot(AdSlotInterface $expectAdSlot);
+    public function setExpectAdSlot(ReportableAdSlotInterface $expectAdSlot);
 
     /**
      * @return mixed

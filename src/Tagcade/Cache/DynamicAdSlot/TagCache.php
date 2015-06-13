@@ -2,19 +2,23 @@
 
 namespace Tagcade\Cache\DynamicAdSlot;
 
+use Tagcade\Cache\DynamicAdSlot\Behavior\CreateAdSlotDataTrait;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
-use Tagcade\Form\Type\DynamicAdSlotFormType;
-use Tagcade\Form\Type\ExpressionFormType;
+use Tagcade\DomainManager\NativeAdSlotManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
 
-class TagCache extends TagCacheAbstract implements TagCacheInterface
+class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2Interface
 {
     use CreateAdSlotDataTrait;
     const VERSION = 2;
@@ -33,12 +37,21 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
      * @var DynamicAdSlotManagerInterface
      */
     private $dynamicAdSlotManager;
+    /**
+     * @var NativeAdSlotManagerInterface
+     */
+    private $nativeAdSlotManager;
 
-    public function __construct(NamespaceCacheInterface $cache, AdSlotManagerInterface $adSlotManager, DynamicAdSlotManagerInterface $dynamicAdSlotManager, ExpressionRepositoryInterface $expressionRepository)
+    public function __construct(NamespaceCacheInterface $cache,
+        AdSlotManagerInterface $adSlotManager,
+        DynamicAdSlotManagerInterface $dynamicAdSlotManager,
+        NativeAdSlotManagerInterface $nativeAdSlotManager,
+        ExpressionRepositoryInterface $expressionRepository)
     {
         parent::__construct($cache, $adSlotManager);
         $this->expressionRepository = $expressionRepository;
         $this->dynamicAdSlotManager = $dynamicAdSlotManager;
+        $this->nativeAdSlotManager = $nativeAdSlotManager;
     }
 
     /**
@@ -48,9 +61,13 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
     public function refreshCache()
     {
         $adSlots = $this->adSlotManager->all();
-
         foreach ($adSlots as $adSlot) {
             $this->refreshCacheForAdSlot($adSlot, false);
+        }
+
+        $nativeAdSlots = $this->nativeAdSlotManager->all();
+        foreach ($nativeAdSlots as $nativeAdSlot) {
+            $this->refreshCacheForNativeAdSlot($nativeAdSlot);
         }
 
         $dynamicAdSlots = $this->dynamicAdSlotManager->all();
@@ -73,12 +90,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
         }
 
         //step 2. refresh cache for all affected DynamicAdSlots
-        $affectedDynamicAdSlots = $this->getAffectedDynamicAdSlot($adSlot);
-        foreach ($affectedDynamicAdSlots as $dynamicAdSlot) {
-            $this->refreshCacheForDynamicAdSlot($dynamicAdSlot);
-        }
-
-        return $this;
+        return $this->refreshCacheForReferencingDynamicAdSlot($adSlot);
     }
 
     /**
@@ -88,14 +100,48 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
      */
     public function refreshCacheForDynamicAdSlot(DynamicAdSlotInterface $dynamicAdSlot)
     {
-        $this->cache->setNamespace($this->getNamespace($dynamicAdSlot->getId()));
+        return $this->refreshForCacheKey(self::CACHE_KEY_AD_SLOT, $dynamicAdSlot);
+    }
+
+
+    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot,  $alsoRefreshRelatedDynamicAdSlot = true)
+    {
+        $this->refreshForCacheKey(self::CACHE_KEY_AD_SLOT, $nativeAdSlot);
+
+        if (!$alsoRefreshRelatedDynamicAdSlot) {
+            return $this;
+        }
+
+        //step 2. refresh cache for all affected DynamicAdSlots
+        return $this->refreshCacheForReferencingDynamicAdSlot($nativeAdSlot);
+    }
+
+    protected function refreshCacheForReferencingDynamicAdSlot(ReportableAdSlotInterface $adSlot)
+    {
+        //step 2. refresh cache for all affected DynamicAdSlots
+        $affectedDynamicAdSlots = $this->getAffectedDynamicAdSlot($adSlot);
+        foreach ($affectedDynamicAdSlots as $dynamicAdSlot) {
+            $this->refreshCacheForDynamicAdSlot($dynamicAdSlot);
+        }
+
+        return $this;
+    }
+
+    protected function refreshForCacheKey($cacheKey, ModelInterface $model)
+    {
+        if ($cacheKey !== self::CACHE_KEY_AD_SLOT) {
+            throw new InvalidArgumentException( sprintf('expect cache key %s', self::CACHE_KEY_AD_SLOT));
+        }
+
+        $this->cache->setNamespace($this->getNamespace($model->getId()));
 
         $oldVersion = (int)$this->cache->getNamespaceVersion();
         $newVersion = $oldVersion + 1;
 
         // create the new version of the cache first
         $this->cache->setNamespaceVersion($newVersion);
-        $this->cache->save(self::CACHE_KEY_AD_SLOT, $this->createAdSlotCacheDataDynamic($dynamicAdSlot));
+
+        $this->cache->save(self::CACHE_KEY_AD_SLOT, $this->createCacheDataForEntity($model));
 
         // delete the old version of the cache
         $this->cache->setNamespaceVersion($oldVersion);
@@ -108,10 +154,10 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
     /**
      * create AdSlot Cache Data.
      *
-     * In case of 'enableVariable == false' => formatted as 'static':
+     * In case of 'enableVariable == false' => formatted as 'display':
      * {
      *     "id": "1",
-     *     "type": "static",
+     *     "type": "display",
      *     "tags": [ {...}, [{...}, ...], ...]
      * }
      *
@@ -130,7 +176,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
      *     ],
      *     "slots":
      *     [
-     *         //array of 'static' format as above.
+     *         //array of 'display' format as above.
      *     ]
      * }
      *
@@ -139,7 +185,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
      */
     protected function createAdSlotCacheData(AdSlotInterface $adSlot)
     {
-        return $this->createAdSlotCacheDataStatic($adSlot);
+        return $this->createDisplayAdSlotCacheData($adSlot);
     }
 
     /**
@@ -148,10 +194,10 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
      *
      * referencing include: expectedAdSlot and defaultAdSlot
      *
-     * @param AdSlotInterface $updatingAdSlot
+     * @param ReportableAdSlotInterface $updatingAdSlot
      * @return DynamicAdSlotInterface[]
      */
-    private function getAffectedDynamicAdSlot(AdSlotInterface $updatingAdSlot)
+    private function getAffectedDynamicAdSlot(ReportableAdSlotInterface $updatingAdSlot)
     {
         $expressions = $this->expressionRepository->findBy(array('expectAdSlot' => $updatingAdSlot));
 
@@ -167,75 +213,6 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
         }
 
         return array_unique($referencingDynamicAdSlots);
-    }
-
-
-    /**
-     * create as dynamic, format as:
-     *
-     * [
-     *     'id' => $adSlot->getId(),
-     *     'type' => 'static',
-     *     'expressions' => [
-     *          'expressions' => [... expression, expectAdSlot ...],
-     *          'defaultAdSlot'
-     *     ],
-     *     'slots' => [... array of static-adSlot-cache ...]
-     * ]
-     *
-     * @param DynamicAdSlotInterface $dynamicAdSlot
-     * @return array
-     */
-    private function createAdSlotCacheDataDynamic(DynamicAdSlotInterface $dynamicAdSlot)
-    {
-        $data = [
-            'id' => $dynamicAdSlot->getId(),
-            'type' => 'dynamic',
-            'expressions' => [],
-            'defaultAdSlot' => $dynamicAdSlot->getDefaultAdSlot() instanceof AdSlotInterface ? $dynamicAdSlot->getDefaultAdSlot()->getId() : null,
-            'slots' => []
-        ];
-
-        ////adSlot (as defaultAdSlot) from DynamicAdSlot:
-        $adSlotsForSelecting = array();
-        if ($dynamicAdSlot->getDefaultAdSlot() instanceof AdSlotInterface) {
-            $adSlotsForSelecting[] = $dynamicAdSlot->getDefaultAdSlot();
-        }
-
-        //check expressions
-        /** @var ExpressionInterface[] $expressions */
-        $expressions = $dynamicAdSlot->getExpressions()->toArray();
-        if (is_array($expressions) && !empty($expressions)) {
-            //step 1. set 'expressions' for data: get expressionInJS of each expression in expressions
-            array_walk($expressions,
-                function(ExpressionInterface $expression ) use (&$data){
-                    array_push($data['expressions'], $expression->getExpressionInJs());
-                }
-            );
-
-            //step 2. get all AdSlots related to DynamicAdSlot and Expressions
-            ////adSlots from expressionInJS of Expressions
-            $tmpAdSlotsForSelecting = array_map(function (ExpressionInterface $expression) {
-                    return $expression->getExpectAdSlot();
-                },
-                $expressions
-            );
-
-            $adSlotsForSelecting = array_merge($adSlotsForSelecting, $tmpAdSlotsForSelecting);
-        }
-
-
-
-        $adSlotsForSelecting = array_unique($adSlotsForSelecting);
-
-        //step 3. build 'slots' for data
-        array_walk($adSlotsForSelecting, function(AdSlotInterface $adSlot) use (&$data){
-                $data['slots'][$adSlot->getId()] =  $this->createAdSlotCacheDataStatic($adSlot);
-            }
-        );
-
-        //step 5. return data
-        return $data;
     }
 
     protected function getNamespace($slotId)

@@ -18,6 +18,7 @@ services:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.dynamic_ad_slot
+            - @tagcade.domain_manager.native_ad_slot
             - @tagcade.repository.expression
 
     tagcade.cache.tag_cache_manager:

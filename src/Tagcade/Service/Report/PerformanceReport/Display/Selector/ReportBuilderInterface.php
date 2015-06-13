@@ -2,9 +2,9 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -123,18 +123,18 @@ interface ReportBuilderInterface
     public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param ReportableAdSlotInterface $adSlot
      * @param Params $params
      * @return ReportResultInterface|false
      */
-    public function getAdSlotReport(AdSlotInterface $adSlot, Params $params);
+    public function getAdSlotReport(ReportableAdSlotInterface $adSlot, Params $params);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param ReportableAdSlotInterface $adSlot
      * @param Params $params
      * @return ReportResultInterface|false
      */
-    public function getAdSlotAdTagsReport(AdSlotInterface $adSlot, Params $params);
+    public function getAdSlotAdTagsReport(ReportableAdSlotInterface $adSlot, Params $params);
 
     /**
      * @param AdTagInterface $adTag

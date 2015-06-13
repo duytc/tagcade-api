@@ -10,7 +10,7 @@ $container = $kernel->getContainer();
 
 $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
 
-$testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->all());
+$testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->allReportableAdSlots());
 $testEventCounter->refreshTestData();
 
 $redis = new RedisArray(['localhost']);

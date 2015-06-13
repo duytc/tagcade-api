@@ -6,8 +6,6 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
-use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
 class AdTagChangeListener

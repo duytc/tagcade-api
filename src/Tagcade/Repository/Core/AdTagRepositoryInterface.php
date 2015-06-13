@@ -5,19 +5,20 @@ namespace Tagcade\Repository\Core;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 interface AdTagRepositoryInterface extends ObjectRepository
 {
     /**
-     * @param AdSlotInterface $adSlot
+     * @param ReportableAdSlotInterface $adSlot
      * @param int|null $limit
      * @param int|null $offset
      * @return AdTagInterface[]
      */
-    public function getAdTagsForAdSlot(AdSlotInterface $adSlot, $limit = null, $offset = null);
+    public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
 
     /**
      * @param SiteInterface $site

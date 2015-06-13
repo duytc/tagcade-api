@@ -5,10 +5,11 @@ namespace Tagcade\DomainManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Gedmo\Sortable\SortableListener;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdSlotAbstractInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Exception\InvalidArgumentException;
@@ -79,7 +80,7 @@ class AdTagManager implements AdTagManagerInterface
     /**
      * @inheritdoc
      */
-    public function getAdTagsForAdSlot(AdSlotInterface $adSlot, $limit = null, $offset = null)
+    public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagsForAdSlot($adSlot, $limit, $offset);
     }

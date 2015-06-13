@@ -8,17 +8,15 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DynamicAdSlot;
-use Tagcade\Entity\Core\Expression;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Model\Core\NativeAdSlot;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
-use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
@@ -66,39 +64,32 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     'allow_add' => true,
                     'allow_delete' => true
                 )
-
             )
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                /** @var null|DynamicAdSlotInterface $dynamicAdSlot */
+                $dynamicAdSlot = $event->getData();
+                $form = $event->getForm();
+
+                // check if the DynamicAdSlot object is "new"
+                // If no data is passed to the form, the data is "null".
+                // This should be considered a new "DynamicAdSlot"
+                if (!$dynamicAdSlot || null === $dynamicAdSlot->getId()) {
+                    $form->add('native');
+                }
+        });
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
-                /**
-                 * @var DynamicAdSlotInterface $dynamicAdSlot
-                 */
+                // Validate expressions and update for dynamic adSlot
+                /** @var DynamicAdSlotInterface $dynamicAdSlot */
                 $dynamicAdSlot = $event->getForm()->getData();
 
-//                if (null === $event->getForm()->get('expressions')
-//                ) {
-//                    $form = $event->getForm();
-//
-//                    $form->get(ExpressionFormType::KEY_EXPRESSIONS)->addError(new FormError('Expressions is null! Expect not null && is array'));
-//
-//                    return;
-//                }
-
+                /** @var null|ExpressionInterface[] $expressions */
                 $expressions = $event->getForm()->get('expressions')->getData();
-//                if (null === $expressions
-//                    || !is_array($expressions)
-//                    || count($expressions) < 1
-//                ) {
-//                    $form = $event->getForm();
-//
-//                    $form->get(ExpressionFormType::KEY_EXPRESSIONS)->addError(new FormError('Expressions not is array! Expect not null && is array'));
-//
-//                    return;
-//                }
-
 
                 try {
                     // remove last expressions
@@ -110,7 +101,30 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 } catch (InvalidFormException $ex) {
                     $form = $event->getForm();
 
-                    $form->get(ExpressionFormType::KEY_EXPRESSION_DESCRIPTOR)->addError(new FormError($ex->getMessage()));
+                    $form->get('expressions')->addError(new FormError($ex->getMessage()));
+                }
+
+                // Validate defaultAdSlot and expectedAdSlot for native selected
+                if(!($dynamicAdSlot->isSupportedNative())) {
+                    // Validate defaultAdSlot for native selected
+                    if($dynamicAdSlot->getDefaultAdSlot() instanceof NativeAdSlot) {
+                        $form = $event->getForm();
+
+                        $form->get('defaultAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native is false!'));
+
+                        return;
+                    }
+
+                    // Validate expectedAdSlot for native selected
+                    foreach ($expressions as $idx => $expression) {
+                        if($expression->getExpectAdSlot() instanceof NativeAdSlot) {
+                            $form = $event->getForm();
+
+                            $form->get('expressions')[$idx]->get('expectAdSlot')->addError(new FormError('ExpectedAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native is false!'));
+
+                            return;
+                        }
+                    }
                 }
             }
         );
@@ -150,6 +164,7 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
     public function getName()
     {
-        return 'tagcade_form_ad_slot';
+        //return 'tagcade_form_ad_slot';
+        return 'tagcade_form_dynamic_ad_slot';
     }
 }

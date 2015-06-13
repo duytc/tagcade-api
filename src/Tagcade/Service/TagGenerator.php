@@ -2,10 +2,11 @@
 
 namespace Tagcade\Service;
 
-use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdSlotAbstractInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 class TagGenerator
@@ -40,8 +41,9 @@ class TagGenerator
 
             $adSlots = &$tags['display']['ad_slots'];
 
-            foreach($site->getAdSlots() as $adSlot) {
-                /** @var AdSlotInterface $adSlot */
+            $allAdSlots = $site->getReportableAdSlots();
+            foreach($allAdSlots as $adSlot) {
+                /** @var AdSlotInterface|NativeAdSlotInterface $adSlot */
                 $adSlots[$adSlot->getName()] = $this->createDisplayAdTag($adSlot);
             }
         }
@@ -61,7 +63,7 @@ class TagGenerator
     }
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param AdSlotAbstractInterface $adSlot
      * @return string
      */
     public function createDisplayAdTag($adSlot)
@@ -72,6 +74,10 @@ class TagGenerator
 
         if ($adSlot instanceof AdSlotInterface) {
             return $this->createDisplayAdTagForAdSlot($adSlot);
+        }
+
+        if ($adSlot instanceof NativeAdSlotInterface) {
+            return $this->createDisplayAdTagForNativeAdSlot($adSlot);
         }
 
         throw new RuntimeException(sprintf('Generate ad tag for %s is not supported', get_class($adSlot)));
@@ -96,6 +102,10 @@ class TagGenerator
         return $tag;
     }
 
+    /**
+     * @param DynamicAdSlotInterface $adSlot
+     * @return string
+     */
     public function createDisplayAdTagForDynamicAdSlot(DynamicAdSlotInterface $adSlot)
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
@@ -105,6 +115,24 @@ class TagGenerator
         $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
         $tag .= "</script>\n";
         $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
+
+        return $tag;
+    }
+
+    /**
+     * @param NativeAdSlotInterface $nativeAdSlot
+     * @return string
+     */
+    public function createDisplayAdTagForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot)
+    {
+        $adSlotName = htmlspecialchars($nativeAdSlot->getName(), ENT_QUOTES);
+
+        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $nativeAdSlot->getSite()->getDomain());
+        $tag .= '<script type="text/javascript">' . "\n";
+        $tag .= sprintf("var tc_slot = %d;\n", $nativeAdSlot->getId());
+        $tag .= sprintf("var tc_native = true;\n");
+        $tag .= "</script>\n";
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSiteId());
 
         return $tag;
     }

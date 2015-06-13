@@ -3,6 +3,8 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 
 use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
@@ -17,13 +19,13 @@ class AdSlot extends AbstractCalculatedReportType implements CalculatedReportTyp
      */
     private $adSlot;
 
-    public function __construct(AdSlotInterface $adSlot)
+    public function __construct(ReportableAdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
     }
 
     /**
-     * @return AdSlotInterface
+     * @return AdSlotInterface|NativeAdSlotInterface
      */
     public function getAdSlot()
     {
@@ -36,6 +38,11 @@ class AdSlot extends AbstractCalculatedReportType implements CalculatedReportTyp
     public function getAdSlotId()
     {
         return $this->adSlot->getId();
+    }
+
+    public function getAdSlotType()
+    {
+        return $this->adSlot->getType();
     }
 
     /**

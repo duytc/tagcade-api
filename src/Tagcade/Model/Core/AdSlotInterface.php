@@ -3,43 +3,9 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\ModelInterface;
 
-interface AdSlotInterface extends ModelInterface
+interface AdSlotInterface extends AdSlotAbstractInterface
 {
-    /**
-     * @param mixed $id
-     */
-    public function setId($id);
-
-    /**
-     * @return SiteInterface|null
-     */
-    public function getSite();
-
-    /**
-     * @param SiteInterface $site
-     * @return self
-     */
-    public function setSite(SiteInterface $site);
-
-    /**
-     * @return int|null
-     */
-    public function getSiteId();
-
-
-    /**
-     * @return string|null
-     */
-    public function getName();
-
-    /**
-     * @param string $name
-     * @return self
-     */
-    public function setName($name);
-
     /**
      * @return int|null
      */
@@ -76,5 +42,4 @@ interface AdSlotInterface extends ModelInterface
      * @return ArrayCollection
      */
     public function defaultDynamicAdSlots();
-
 }

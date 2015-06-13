@@ -49,6 +49,10 @@ class ApiHelper extends \Codeception\Module
             define('PARAMS_AD_SLOT', $settings['modules']['params']['adSlot']);
         }
 
+        if (!defined('PARAMS_NATIVE_AD_SLOT')) {
+            define('PARAMS_NATIVE_AD_SLOT', $settings['modules']['params']['nativeAdSlot']);
+        }
+
         if (!defined('PARAMS_DYNAMIC_AD_SLOT')) {
             define('PARAMS_DYNAMIC_AD_SLOT', $settings['modules']['params']['dynamicAdSlot']);
         }

@@ -1,5 +1,9 @@
 Tagcade\Entity\Core\AdSlot:
     exclusion_policy: ALL
+    virtual_properties:
+        getAdSlotType:
+            type: string
+            groups: [adslot.detail, adslot.summary]
     properties:
         id:
             expose: true
@@ -16,3 +20,6 @@ Tagcade\Entity\Core\AdSlot:
         height:
             expose: true
             groups: [adslot.detail, adslot.summary]
+#        type:
+#            expose: true
+#            groups: [adslot.detail, adslot.summary]

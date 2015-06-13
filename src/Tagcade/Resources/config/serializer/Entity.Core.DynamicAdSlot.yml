@@ -1,5 +1,9 @@
 Tagcade\Entity\Core\DynamicAdSlot:
     exclusion_policy: ALL
+    virtual_properties:
+        getAdSlotType:
+            type: string
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
     properties:
         id:
             expose: true
@@ -14,5 +18,8 @@ Tagcade\Entity\Core\DynamicAdSlot:
             expose: true
             groups: [dynamicadSlot.detail, dynamicadSlot.summary]
         expressions:
+            expose: true
+            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+        native:
             expose: true
             groups: [dynamicadSlot.detail, dynamicadSlot.summary]

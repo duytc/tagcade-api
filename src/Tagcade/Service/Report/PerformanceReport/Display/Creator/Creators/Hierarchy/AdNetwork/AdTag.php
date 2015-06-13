@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork;
 
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
@@ -31,21 +32,32 @@ class AdTag extends CreatorAbstract implements AdTagInterface
 
         $adTag = $reportType->getAdTag();
         $totalOpportunities = $this->eventCounter->getOpportunityCount($adTag->getId());
+        $impressions = $this->eventCounter->getImpressionCount($adTag->getId());
+
+        $isNativeAdSlot = $reportType->getAdTag()->getAdSlot() instanceof NativeAdSlotInterface;
+        $firstOpportunities = $isNativeAdSlot ? $totalOpportunities : $this->eventCounter->getFirstOpportunityCount($adTag->getId());
+        $verifiedImpressions = $isNativeAdSlot ? $impressions : $this->eventCounter->getVerifiedImpressionCount($adTag->getId());
 
         $report
             ->setAdTag($adTag)
             ->setDate($this->getDate())
             ->setTotalOpportunities($totalOpportunities)
             ->setImpressions($this->eventCounter->getImpressionCount($adTag->getId()))
-            ->setFirstOpportunities($this->eventCounter->getFirstOpportunityCount($adTag->getId()))
-            ->setVerifiedImpressions($this->eventCounter->getVerifiedImpressionCount($adTag->getId()))
-            ->setUnverifiedImpressions($this->eventCounter->getUnverifiedImpressionCount($adTag->getId()))
-            ->setBlankImpressions($this->eventCounter->getBlankImpressionCount($adTag->getId()))
-            ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
-            ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
-            ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
+            ->setFirstOpportunities($firstOpportunities)
+            ->setVerifiedImpressions($verifiedImpressions)
             ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
         ;
+
+        if (!$isNativeAdSlot) {
+            $report
+                ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
+                ->setUnverifiedImpressions($this->eventCounter->getUnverifiedImpressionCount($adTag->getId()))
+                ->setBlankImpressions($this->eventCounter->getBlankImpressionCount($adTag->getId()))
+                ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
+                ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
+            ;
+        }
+
 
         return $report;
     }

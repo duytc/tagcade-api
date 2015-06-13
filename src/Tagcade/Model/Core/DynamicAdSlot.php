@@ -14,73 +14,30 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      * @var SiteInterface
      */
     protected $site;
+
     protected $name;
+
     /**
-     * @var AdSlotInterface
+     * @var AdSlotAbstractInterface
      */
     protected $defaultAdSlot;
+
     protected $deletedAt;
     /**
      * @var ExpressionInterface[]
      */
     protected $expressions;
 
+    /** @var $native */
+    protected $native;
+
     public function __construct()
     {
         $this->expressions = new ArrayCollection();
     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
     /**
-     * @inheritdoc
-     */
-    public function getSite()
-    {
-        return $this->site;
-    }
-
-    public function setSite(SiteInterface $site)
-    {
-        $this->site = $site;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSiteId()
-    {
-        if (!$this->site) {
-            return null;
-        }
-
-        return $this->site->getId();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-
-    /**
-     * @return AdSlotInterface
+     * @return AdSlotAbstractInterface
      */
     public function getDefaultAdSlot()
     {
@@ -88,7 +45,7 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
     }
 
     /**
-     * @param AdSlotInterface $defaultAdSlot
+     * @param AdSlotAbstractInterface $defaultAdSlot
      */
     public function setDefaultAdSlot($defaultAdSlot)
     {
@@ -115,8 +72,41 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
         $this->expressions = $expressions;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isSupportedNative()
+    {
+        return $this->native;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNative()
+    {
+        return $this->native;
+    }
+
+    /**
+     * @param mixed $native
+     */
+    public function setNative($native)
+    {
+        $this->native = $native;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return self::TYPE_DYNAMIC;
+    }
+
+
     public function __toString()
     {
-        return $this->name;
+        return parent::__toString();
     }
 }

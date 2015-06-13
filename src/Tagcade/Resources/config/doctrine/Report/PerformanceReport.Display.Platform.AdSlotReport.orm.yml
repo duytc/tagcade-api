@@ -23,11 +23,14 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
             type: integer
         impressions:
             type: integer
+            nullable: true
         passbacks:
             type: integer
+            nullable: true
         fillRate:
             type: decimal
             scale: 4
+            nullable: true
         estRevenue:
             type: decimal
             scale: 4
@@ -50,7 +53,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
             nullable: true
     manyToOne:
         adSlot:
-            targetEntity: Tagcade\Entity\Core\AdSlot
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
         superReport:
             targetEntity: SiteReport
             inversedBy: subReports

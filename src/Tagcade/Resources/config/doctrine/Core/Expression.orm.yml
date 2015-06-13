@@ -30,4 +30,4 @@ Tagcade\Entity\Core\Expression:
             targetEntity: Tagcade\Entity\Core\DynamicAdSlot
             inversedBy: expressions
         expectAdSlot:
-            targetEntity: Tagcade\Entity\Core\AdSlot
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract

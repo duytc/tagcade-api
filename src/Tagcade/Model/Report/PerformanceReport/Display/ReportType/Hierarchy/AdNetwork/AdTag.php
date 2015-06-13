@@ -38,6 +38,11 @@ class AdTag extends AbstractReportType implements ReportTypeInterface
         return $this->adTag->getId();
     }
 
+    public function getAdSlotType()
+    {
+        return $this->adTag->getAdSlot()->getType();
+    }
+    
     /**
      * @inheritdoc
      */

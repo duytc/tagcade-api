@@ -2,6 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
+use Tagcade\Model\Core\AdSlotAbstractInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -11,22 +12,22 @@ interface AdSlotManagerInterface
     /**
      * @see \Tagcade\DomainManager\ManagerInterface
      *
-     * @param AdSlotInterface|string $entity
+     * @param AdSlotAbstractInterface|string $entity
      * @return bool
      */
     public function supportsEntity($entity);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param AdSlotAbstractInterface $adSlot
      * @return void
      */
-    public function save(AdSlotInterface $adSlot);
+    public function save(AdSlotAbstractInterface $adSlot);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param AdSlotAbstractInterface $adSlot
      * @return void
      */
-    public function delete(AdSlotInterface $adSlot);
+    public function delete(AdSlotAbstractInterface $adSlot);
 
     /**
      * @return AdSlotInterface
@@ -45,6 +46,9 @@ interface AdSlotManagerInterface
      * @return AdSlotInterface[]
      */
     public function all($limit = null, $offset = null);
+
+    public function allReportableAdSlots($limit = null, $offset = null);
+
 
     /**
      * @param SiteInterface $site

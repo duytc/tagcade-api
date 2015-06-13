@@ -6,6 +6,10 @@ use Tagcade\Model\Core\SiteInterface;
 
 abstract class AdSlotAbstract
 {
+    const TYPE_DISPLAY = 'display';
+    const TYPE_NATIVE = 'native';
+    const TYPE_DYNAMIC = 'dynamic';
+
     protected $id;
     /**
      * @var SiteInterface
@@ -67,6 +71,18 @@ abstract class AdSlotAbstract
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getSiteId()
+    {
+        if (!$this->site) {
+            return null;
+        }
+
+        return $this->site->getId();
+    }
+
+    /**
      * @return mixed
      */
     public function getDeletedAt()
@@ -98,5 +114,14 @@ abstract class AdSlotAbstract
         $this->type = $type;
     }
 
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+    public function getAdSlotType()
+    {
+        return $this->getType();
+    }
 
 }

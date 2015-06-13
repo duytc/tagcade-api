@@ -7,7 +7,7 @@ class AdTag implements AdTagInterface
     protected $id;
 
     /**
-     * @var AdSlotInterface
+     * @var AdSlotAbstractInterface
      */
     protected $adSlot;
 
@@ -76,7 +76,7 @@ class AdTag implements AdTagInterface
         return $this->adSlot->getId();
     }
 
-    public function setAdSlot(AdSlotInterface $adSlot)
+    public function setAdSlot(ReportableAdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
         return $this;

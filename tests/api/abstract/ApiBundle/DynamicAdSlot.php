@@ -90,7 +90,8 @@ class DynamicAdSlot
                                 ]
                             ]
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ],
                     [
                         'expressionDescriptor' => [
@@ -99,7 +100,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2,
+                        'startingPosition' => 1
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -126,7 +128,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -153,7 +156,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
@@ -181,7 +185,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => '29_wrong' //this is wrong data type
@@ -226,7 +231,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -253,7 +259,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => -1 //this adSlot is not existed
+                        'expectAdSlot' => -1, //this adSlot is not existed
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -261,6 +268,35 @@ class DynamicAdSlot
         );
         $I->seeResponseCodeIs(400);
     }
+
+//    /**
+//     * add DynamicAdSlot failed by UnCompatible Native AdSlot
+//     * @param ApiTester $I
+//     */
+//    public function addDynamicAdSlotFailedByUnCompatibleNativeAdSlot(ApiTester $I)
+//    {
+//        $I->sendPOST(URL_API . '/dynamicadslots',
+//            [
+//                'site' => PARAMS_SITE,
+//                'name' => 'dtag.test.adslot',
+//                'native' => false, //not support native
+//                'expressions' => [
+//                    [
+//                        'expressionDescriptor' => [
+//                            'var' => 'checkString',
+//                            'cmp' => '!=',
+//                            'val' => 'abc',
+//                            'type' => 'string'
+//                        ],
+//                        'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
+//                        'startingPosition' => 0
+//                    ]
+//                ],
+//                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+//            ]
+//        );
+//        $I->seeResponseCodeIs(400);
+//    }
 
     /**
      * edit dynamicAdSlot
@@ -295,7 +331,8 @@ class DynamicAdSlot
                                 ]
                             ]
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ],
                     [
                         'expressionDescriptor' => [
@@ -304,7 +341,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2,
+                        'startingPosition' => 1
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -335,7 +373,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
@@ -367,7 +406,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => '29_wrong' //this is wrong data type
@@ -418,7 +458,8 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
+                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -449,7 +490,41 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => -1 //this adSlot is not existed
+                        'expectAdSlot' => -1, //this adSlot is not existed
+                        'startingPosition' => 0
+                    ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * edit dynamicAdSlot failed by UnCompatible Native AdSlot
+     * @depends addDynamicAdSlot
+     * @param ApiTester $I
+     */
+    public function editDynamicAdSlotFailedByUnCompatibleNativeAdSlot(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'site' => PARAMS_SITE,
+                'name' => 'dtag.test.adslot',
+                'native' => false, //not support native
+                'expressions' => [
+                    [
+                        'expressionDescriptor' => [
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
@@ -565,7 +640,39 @@ class DynamicAdSlot
                             'val' => 'abc',
                             'type' => 'string'
                         ],
-                        'expectAdSlot' => -1 //this is not existed
+                        'expectAdSlot' => -1, //this is not existed
+                        'startingPosition' => 0
+                    ]
+                ],
+                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * patch dynamicAdSlot failed caused by UnCompatible Native AdSlot
+     * @depends addDynamicAdSlot
+     * @param ApiTester $I
+     */
+    public function patchDynamicAdSlotFailedByUnCompatibleNativeAdSlot(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'native' => false, //not support native
+                'expressions' => [
+                    [
+                        'expressionDescriptor_wrong' => [ //this key is invalid
+                            'var' => 'checkString',
+                            'cmp' => '!=',
+                            'val' => 'abc',
+                            'type' => 'string'
+                        ],
+                        'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
+                        'startingPosition' => 0
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT

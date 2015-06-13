@@ -23,6 +23,7 @@ modules:
         adNetwork: 1
         site: 22
         adSlot: 6
+        nativeAdSlot: 125
         dynamicAdSlot: 26
         defaultAdSlot: 29
         expectedAdSlot: 27

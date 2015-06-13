@@ -59,6 +59,6 @@ Tagcade\Entity\Core\AdTag:
             nullable: true
     manyToOne:
         adSlot:
-            targetEntity: Tagcade\Entity\Core\AdSlot
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
         adNetwork:
             targetEntity: Tagcade\Entity\Core\AdNetwork

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -156,7 +157,15 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
-        return  $this->get('tagcade.domain_manager.ad_slot')
+        return $site->getAllAdSlots();
+    }
+
+    public function getDisplayadslotsAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        return $this->get('tagcade.domain_manager.display_ad_slot')
             ->getAdSlotsForSite($site);
     }
 
@@ -173,6 +182,21 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
         return $this->get('tagcade.domain_manager.dynamic_ad_slot')
             ->getDynamicAdSlotsForSite($site);
+    }
+
+    /**
+     * Retrieve a list of native ad slots for this site
+     *
+     * @param int $id
+     * @return \Tagcade\Model\Core\NativeAdSlotInterface[]
+     */
+    public function getNativeadslotsAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        return $this->get('tagcade.domain_manager.native_ad_slot')
+            ->getNativeAdSlotsForSite($site);
     }
 
     /**

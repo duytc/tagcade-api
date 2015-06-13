@@ -134,6 +134,9 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                 /**
                  * @var AdTagInterface $adTag
                  */
+                if (!$adTag->getAdSlot() instanceof AdSlotInterface) {
+                    return; // not updating position for other types of ad slot like native ad slot
+                }
                 if ($adTag->getPosition() != $position ) {
 
                     $adTag->setPosition($position);

@@ -25,7 +25,8 @@ $reportTypes = [
     $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site'),
 ];
 
-$eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->all());
+
+$eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->allReportableAdSlots());
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator);
 
