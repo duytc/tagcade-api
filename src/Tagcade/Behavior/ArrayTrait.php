@@ -14,6 +14,10 @@ trait ArrayTrait {
             return array_slice($array, $offset);
         }
 
+        if(is_int($limit)) {
+            return array_slice($array, 0, $limit);
+        }
+
         return $array;
     }
 } 
