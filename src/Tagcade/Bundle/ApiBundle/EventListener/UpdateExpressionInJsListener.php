@@ -88,19 +88,24 @@ class UpdateExpressionInJsListener {
         $convertedExpression = $this->simplifyExpression($expressionDescriptor);
 
         if (null !== $convertedExpression) {
-            $expression->setExpressionInJs(
-                [
-                    'vars'=> $convertedExpression['vars'],
-                    'expectedAdSlot'=>$expression->getExpectAdSlot()->getId(),
-                    'expression' => $convertedExpression['expression'],
-                    'startingPosition'=>$expression->getStartingPosition(),
-                ]
-            );
+
+            $expInJs = [
+                'vars'=> $convertedExpression['vars'],
+                'expectedAdSlot'=>$expression->getExpectAdSlot()->getId(),
+                'expression' => $convertedExpression['expression']
+            ];
+
+            if (is_int($expression->getStartingPosition())) {
+                $expInJs['startingPosition'] = $expression->getStartingPosition();
+            }
+
+            $expression->setExpressionInJs($expInJs);
         }
     }
 
     /**
-     * simplify Expression, make array of pair {expression, expectedAdSlot}
+     * simplify Expression, converting from descriptor structure with groupType, etc. into object containing string expression and all available variables
+     *
      * @param array $expression
      * @return array('vars'=>[ [name:'', type: '], [name:'', type: ']] , 'expression'=>'')
      */

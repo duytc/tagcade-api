@@ -17,6 +17,7 @@ Tagcade\Entity\Core\Expression:
             nullable: false
         startingPosition:
             type: integer
+            nullable: true
             options:
                 default: 1
         expressionInJs:
