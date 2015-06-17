@@ -70,7 +70,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         /** @var NativeAdSlotInterface $nativeAdSlot */
         $nativeAdSlot = $this->one($id);
 
-        return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($nativeAdSlot);
+        return $this->get('tagcade.service.tag_generator')->createJsTags($nativeAdSlot);
     }
 //
 //    /**

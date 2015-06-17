@@ -3,6 +3,7 @@
 namespace Tagcade\Service;
 
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdSlot;
 use Tagcade\Model\Core\AdSlotAbstractInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
@@ -34,17 +35,30 @@ class TagGenerator
         $tags['header'] = $this->createHeaderTag($site);
 
         if ($publisher->hasDisplayModule()) {
-            $tags['display'] = [
-                'passback' => $this->createDisplayPassbackTag($site),
-                'ad_slots' => [],
+            $tags = [
+                'display' => [
+                    'passback' => $this->createDisplayPassbackTag($site),
+                    'ad_slots' => [],
+                ],
+
+                'native' => [
+                    'ad_slots' => [],
+                ],
+
+                'dynamic' => [
+                    'ad_slots' => [],
+                ]
             ];
 
-            $adSlots = &$tags['display']['ad_slots'];
-
-            $allAdSlots = $site->getReportableAdSlots();
+            $allAdSlots = $site->getAllAdSlots();
             foreach($allAdSlots as $adSlot) {
                 /** @var AdSlotInterface|NativeAdSlotInterface $adSlot */
-                $adSlots[$adSlot->getName()] = $this->createDisplayAdTag($adSlot);
+                if (!array_key_exists($adSlot->getType(), $tags)) {
+                    continue; // not support generating tags for this ad slot type
+                }
+
+                $adSlots = &$tags[$adSlot->getType()]['ad_slots'];
+                $adSlots[$adSlot->getName()] = $this->createJsTags($adSlot);
             }
         }
 
@@ -66,7 +80,7 @@ class TagGenerator
      * @param AdSlotAbstractInterface $adSlot
      * @return string
      */
-    public function createDisplayAdTag($adSlot)
+    public function createJsTags($adSlot)
     {
         if ($adSlot instanceof DynamicAdSlotInterface) {
             return $this->createDisplayAdTagForDynamicAdSlot($adSlot);

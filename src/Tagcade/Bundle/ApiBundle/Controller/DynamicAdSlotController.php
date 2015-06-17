@@ -70,7 +70,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
         /** @var AdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        return $this->get('tagcade.service.tag_generator')->createDisplayAdTag($adSlot);
+        return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
     }
 
     /**
