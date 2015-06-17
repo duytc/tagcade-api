@@ -173,14 +173,15 @@ trait CreateAdSlotDataTrait {
         $data = [
             'id' => $dynamicAdSlot->getId(),
             'type' => 'dynamic',
+            'native' =>  $dynamicAdSlot->isSupportedNative(),
             'expressions' => [],
             'defaultAdSlot' => $dynamicAdSlot->getDefaultAdSlot() instanceof ReportableAdSlotInterface ? $dynamicAdSlot->getDefaultAdSlot()->getId() : null,
             'slots' => []
         ];
 
-        // add native key if it is set
-        if ($dynamicAdSlot->isSupportedNative()) {
-            $data['native'] = true;
+        // remove native key if it is not native dynamic ad slot
+        if (!$dynamicAdSlot->isSupportedNative()) {
+            unset($data['native']);
         }
 
         ////adSlot (as defaultAdSlot) from DynamicAdSlot:
