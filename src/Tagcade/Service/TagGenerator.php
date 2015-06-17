@@ -35,7 +35,7 @@ class TagGenerator
         $tags['header'] = $this->createHeaderTag($site);
 
         if ($publisher->hasDisplayModule()) {
-            $tags = [
+            $tags = array_merge($tags, [
                 'display' => [
                     'passback' => $this->createDisplayPassbackTag($site),
                     'ad_slots' => [],
@@ -48,7 +48,7 @@ class TagGenerator
                 'dynamic' => [
                     'ad_slots' => [],
                 ]
-            ];
+            ]);
 
             $allAdSlots = $site->getAllAdSlots();
             foreach($allAdSlots as $adSlot) {
