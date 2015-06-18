@@ -89,7 +89,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->addVerifiedImpressions($report->getVerifiedImpressions());
         $this->addUnverifiedImpressions($report->getUnverifiedImpressions());
         $this->addBlankImpressions($report->getBlankImpressions());
-        $this->addVoidImpressions($report->getBlankImpressions());
+        $this->addVoidImpressions($report->getVoidImpressions());
         $this->addClicks($report->getClicks());
 
     }
