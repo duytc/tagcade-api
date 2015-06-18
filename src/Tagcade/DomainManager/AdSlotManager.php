@@ -142,7 +142,7 @@ class AdSlotManager implements AdSlotManagerInterface
 
     /**
      * @param AdSlotAbstractInterface $adSlot
-     * @return DisplayAdSlotManagerInterface|NativeAdSlotManagerInterface
+     * @return DisplayAdSlotManagerInterface|NativeAdSlotManagerInterface|DynamicAdSlotManagerInterface
      */
     protected function getManager(AdSlotAbstractInterface $adSlot)
     {

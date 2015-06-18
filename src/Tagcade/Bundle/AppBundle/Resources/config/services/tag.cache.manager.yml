@@ -10,13 +10,13 @@ services:
         class: Tagcade\Cache\Legacy\TagCache
         arguments:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
-            - @tagcade.domain_manager.ad_slot
+            - @tagcade.domain_manager.display_ad_slot
 
     tagcade.cache.dynamic_ad_slot.tag_cache:
         class: Tagcade\Cache\DynamicAdSlot\TagCache
         arguments:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
-            - @tagcade.domain_manager.ad_slot
+            - @tagcade.domain_manager.display_ad_slot
             - @tagcade.domain_manager.dynamic_ad_slot
             - @tagcade.domain_manager.native_ad_slot
             - @tagcade.repository.expression

@@ -15,7 +15,7 @@ interface TagCacheManagerInterface
      * @param $version
      * @return $this
      */
-    public function refreshCacheForAdSlot(AdSlotInterface $adSlot, $version = 'All');
+    public function refreshCacheForDisplayAdSlot(AdSlotInterface $adSlot, $version = 'All');
 
     /**
      * @param AdNetworkInterface $adNetwork

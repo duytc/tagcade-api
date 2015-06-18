@@ -37,12 +37,12 @@ class TagCacheManager implements TagCacheManagerInterface {
      * @param $version
      * @return $this
      */
-    public function refreshCacheForAdSlot(AdSlotInterface $adSlot, $version = 'All')
+    public function refreshCacheForDisplayAdSlot(AdSlotInterface $adSlot, $version = 'All')
     {
         $refreshTagCaches = $this->getTagCachesForVersion($version);
 
         foreach($refreshTagCaches as $tagCache) {
-            $tagCache->refreshCacheForAdSlot($adSlot);
+            $tagCache->refreshCacheForDisplayAdSlot($adSlot);
         }
 
     }

@@ -15,15 +15,10 @@ abstract class TagCacheAbstract {
     const CACHE_KEY_AD_SLOT = 'all_tags_array';
 
     protected $cache;
-    /**
-     * @var AdSlotManagerInterface
-     */
-    protected $adSlotManager;
 
-    public function __construct(NamespaceCacheInterface $cache, AdSlotManagerInterface $adSlotManager)
+    public function __construct(NamespaceCacheInterface $cache)
     {
         $this->cache = $cache;
-        $this->adSlotManager = $adSlotManager;
     }
 
     /**
@@ -31,7 +26,7 @@ abstract class TagCacheAbstract {
      * @param AdSlotInterface $adSlot
      * @return $this
      */
-    public function refreshCacheForAdSlot(AdSlotInterface $adSlot)
+    public function refreshCacheForDisplayAdSlot(AdSlotInterface $adSlot)
     {
         $this->cache->setNamespace($this->getNamespace($adSlot->getId()));
 
@@ -69,7 +64,7 @@ abstract class TagCacheAbstract {
             if (!in_array($adSlot, $refreshedAdSlots, $strict = true)) {
                 $refreshedAdSlots[] = $adSlot;
 
-                $this->refreshCacheForAdSlot($adSlot);
+                $this->refreshCacheForDisplayAdSlot($adSlot);
             }
 
             unset($adSlot, $adTag);
@@ -80,16 +75,7 @@ abstract class TagCacheAbstract {
      * refresh Cache
      * @return $this
      */
-    public function refreshCache()
-    {
-        $adSlots = $this->adSlotManager->all();
-
-        foreach ($adSlots as $adSlot) {
-            $this->refreshCacheForAdSlot($adSlot);
-        }
-
-        return $this;
-    }
+    public abstract function refreshCache();
 
     public abstract function supportVersion($version);
 

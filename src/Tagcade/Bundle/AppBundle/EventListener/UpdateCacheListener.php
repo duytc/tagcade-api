@@ -36,7 +36,7 @@ class UpdateCacheListener
 
         array_walk($entities, function(ModelInterface $entity) {
                 if ($entity instanceof AdSlotInterface) {
-                    $this->tagCacheManager->refreshCacheForAdSlot($entity);
+                    $this->tagCacheManager->refreshCacheForDisplayAdSlot($entity);
                 }
                 else if ($entity instanceof AdNetworkInterface) {
                     $this->tagCacheManager->refreshCacheForAdNetwork($entity);

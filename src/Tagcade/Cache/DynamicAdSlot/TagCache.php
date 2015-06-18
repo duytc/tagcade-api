@@ -7,6 +7,7 @@ use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
+use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
 use Tagcade\DomainManager\NativeAdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
@@ -41,17 +42,22 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
      * @var NativeAdSlotManagerInterface
      */
     private $nativeAdSlotManager;
+    /**
+     * @var DisplayAdSlotManagerInterface
+     */
+    private $displayAdSlotManager;
 
     public function __construct(NamespaceCacheInterface $cache,
-        AdSlotManagerInterface $adSlotManager,
+        DisplayAdSlotManagerInterface $displayAdSlotManager,
         DynamicAdSlotManagerInterface $dynamicAdSlotManager,
         NativeAdSlotManagerInterface $nativeAdSlotManager,
         ExpressionRepositoryInterface $expressionRepository)
     {
-        parent::__construct($cache, $adSlotManager);
+        parent::__construct($cache);
         $this->expressionRepository = $expressionRepository;
         $this->dynamicAdSlotManager = $dynamicAdSlotManager;
         $this->nativeAdSlotManager = $nativeAdSlotManager;
+        $this->displayAdSlotManager = $displayAdSlotManager;
     }
 
     /**
@@ -60,14 +66,14 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
      */
     public function refreshCache()
     {
-        $adSlots = $this->adSlotManager->all();
+        $adSlots = $this->displayAdSlotManager->all();
         foreach ($adSlots as $adSlot) {
-            $this->refreshCacheForAdSlot($adSlot, false);
+            $this->refreshCacheForDisplayAdSlot($adSlot, false);
         }
 
         $nativeAdSlots = $this->nativeAdSlotManager->all();
         foreach ($nativeAdSlots as $nativeAdSlot) {
-            $this->refreshCacheForNativeAdSlot($nativeAdSlot);
+            $this->refreshCacheForNativeAdSlot($nativeAdSlot, false);
         }
 
         $dynamicAdSlots = $this->dynamicAdSlotManager->all();
@@ -80,10 +86,10 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     /**
      * @inheritdoc
      */
-    public function refreshCacheForAdSlot(AdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
+    public function refreshCacheForDisplayAdSlot(AdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
         //step 1. refresh cache for AdSlot
-        parent::refreshCacheForAdSlot($adSlot);
+        parent::refreshCacheForDisplayAdSlot($adSlot);
 
         if (!$alsoRefreshRelatedDynamicAdSlot) {
             return $this;
