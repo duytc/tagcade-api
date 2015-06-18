@@ -60,6 +60,14 @@ class TagGenerator
                 $adSlots = &$tags[$adSlot->getType()]['ad_slots'];
                 $adSlots[$adSlot->getName()] = $this->createJsTags($adSlot);
             }
+
+            array_walk($tags,
+                function ($tagItem, $key) use(&$tags) {
+                    if (is_array($tagItem) && count($tagItem['ad_slots']) < 1) {
+                        unset($tags[$key]);
+                    }
+                }
+            );
         }
 
         return $tags;
