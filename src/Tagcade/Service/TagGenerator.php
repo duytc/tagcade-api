@@ -143,6 +143,11 @@ class TagGenerator
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $adSlot->getSite()->getDomain());
         $tag .= '<script type="text/javascript">' . "\n";
         $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
+
+        if ($adSlot->isSupportedNative()) {
+            $tag .= "var tc_native = true;\n";
+        }
+
         $tag .= "</script>\n";
         $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
 
@@ -160,7 +165,7 @@ class TagGenerator
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $nativeAdSlot->getSite()->getDomain());
         $tag .= '<script type="text/javascript">' . "\n";
         $tag .= sprintf("var tc_slot = %d;\n", $nativeAdSlot->getId());
-        $tag .= sprintf("var tc_native = true;\n");
+        $tag .= "var tc_native = true;\n";
         $tag .= "</script>\n";
         $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSiteId());
 
