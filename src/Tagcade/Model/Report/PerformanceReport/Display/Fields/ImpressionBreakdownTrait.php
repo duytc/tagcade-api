@@ -23,7 +23,7 @@ trait ImpressionBreakdownTrait
 
     public function setBlankImpressions($blankImpressions)
     {
-        $this->blankImpressions = $blankImpressions;
+        $this->blankImpressions = (int) $blankImpressions;
 
         return $this;
     }
@@ -38,7 +38,7 @@ trait ImpressionBreakdownTrait
 
     public function setFirstOpportunities($firstOpportunities)
     {
-        $this->firstOpportunities = $firstOpportunities;
+        $this->firstOpportunities = (int) $firstOpportunities;
 
         return $this;
     }
@@ -53,7 +53,7 @@ trait ImpressionBreakdownTrait
 
     public function setUnverifiedImpressions($unverifiedImpressions)
     {
-        $this->unverifiedImpressions = $unverifiedImpressions;
+        $this->unverifiedImpressions = (int) $unverifiedImpressions;
 
         return $this;
     }
@@ -68,7 +68,7 @@ trait ImpressionBreakdownTrait
 
     public function setVerifiedImpressions($verifiedImpressions)
     {
-        $this->verifiedImpressions = $verifiedImpressions;
+        $this->verifiedImpressions = (int) $verifiedImpressions;
 
         return $this;
     }
@@ -83,7 +83,7 @@ trait ImpressionBreakdownTrait
 
     public function setClicks($clicks)
     {
-        $this->clicks = $clicks;
+        $this->clicks = (int) $clicks;
 
         return $this;
     }
@@ -98,7 +98,7 @@ trait ImpressionBreakdownTrait
 
     public function setVoidImpressions($voidImpressions)
     {
-        $this->voidImpressions = $voidImpressions;
+        $this->voidImpressions = (int) $voidImpressions;
 
         return $this;
     }
