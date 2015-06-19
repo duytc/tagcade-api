@@ -1,6 +1,6 @@
 Tagcade\Entity\Core\AdSlot:
     type: entity
-    table: core_static_ad_slot
+    table: core_display_ad_slot
     repositoryClass: Tagcade\Repository\Core\AdSlotRepository
 #    gedmo:
 #        soft_deleteable:
