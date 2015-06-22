@@ -8,6 +8,7 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\AdSlotAbstractInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -230,6 +231,10 @@ class ReportBuilder implements ReportBuilderInterface
     public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params)
     {
         $adSlots = $this->adSlotManager->getAdSlotsForPublisher($publisher);
+
+        $adSlots = array_filter($adSlots, function(AdSlotAbstractInterface $a) {
+            return $a instanceof ReportableAdSlotInterface;
+        });
 
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
