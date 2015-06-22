@@ -3,9 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
 use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Model\User\Role\Publisher;
 use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
