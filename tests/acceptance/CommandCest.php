@@ -56,16 +56,11 @@ class CommandCest
 
     public function updateBillingHistoricalReportCommandTest(AcceptanceTester $I)
     {
-        $publisherId = 2;
+        $publisherId = $I->getPublisherId();
         $cpmRate = 0.001;
 
         $endDate = new DateTime('yesterday');
         $startDate = new DateTime('20 days ago');
-
-//        $startDate = DateTime::createFromFormat('Y-m-d', $startDate);
-//        $endDate = null === $endDate ? new DateTime('yesterday') : DateTime::createFromFormat('Y-m-d', $endDate);
-
-
 
         $userManager = $I->grabServiceFromContainer('tagcade_user.domain_manager.publisher');
         $publisher = $userManager->findPublisher($publisherId);
