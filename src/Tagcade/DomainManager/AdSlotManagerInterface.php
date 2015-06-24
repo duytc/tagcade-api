@@ -65,4 +65,6 @@ interface AdSlotManagerInterface
      * @return AdSlotInterface[]
      */
     public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 }

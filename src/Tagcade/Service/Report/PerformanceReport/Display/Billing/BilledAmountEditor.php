@@ -104,12 +104,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
 
         $this->writeln(sprintf("%s start updating billed amount for publisher '%s' from %s to %s\n",
-                    date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d')));
+                    date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getEndDate()->format('Y-m-d')));
 
         $result = $this->doUpdateBilledAmountForPublisher($publisher, $params);
 
         $this->writeln(sprintf("%s finish updating billed amount for publisher '%s' from %s to %s\n",
-                    date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getStartDate()->format('Y-m-d')));
+                    date('c'), $publisher->getUser()->getUsername(), $params->getStartDate()->format('Y-m-d'), $params->getEndDate()->format('Y-m-d')));
 
 
         return $result;
@@ -152,8 +152,6 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         }
 
         $rootReports = [];
-
-        gc_enable();
 
         /**
          * @var AdSlotReportInterface $reportRow

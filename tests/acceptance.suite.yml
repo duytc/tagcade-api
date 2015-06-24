@@ -1,0 +1,6 @@
+class_name: AcceptanceTester
+modules:
+    enabled: [Symfony2, Doctrine2, AcceptanceHelper, Asserts]
+    config:
+        Symfony2:
+            environment: 'dev'

@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
 {
@@ -56,7 +57,7 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
 
             $publisher = $userManager->findPublisher($publisherId);
 
-            if ($publisher === false) {
+            if (!$publisher instanceof PublisherInterface) {
                 throw new RuntimeException('that publisher is not existed');
             }
 

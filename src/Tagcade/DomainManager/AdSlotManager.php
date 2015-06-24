@@ -139,6 +139,16 @@ class AdSlotManager implements AdSlotManagerInterface
         return $this->sliceArray(array_merge($displayAdSlots, $nativeAdSlots, $dynamicAdSlots), $limit, $offset);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $displayAdSlots = $this->displayAdSlotManager->getAdSlotsForPublisher($publisher);
+        $nativeAdSlots = $this->nativeAdSlotManager->getNativeAdSlotsForPublisher($publisher);
+
+        return $this->sliceArray(array_merge($displayAdSlots, $nativeAdSlots), $limit, $offset);
+    }
 
     /**
      * @param AdSlotAbstractInterface $adSlot

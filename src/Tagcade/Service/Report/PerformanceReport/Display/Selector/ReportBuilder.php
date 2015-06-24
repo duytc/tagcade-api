@@ -230,11 +230,7 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params)
     {
-        $adSlots = $this->adSlotManager->getAdSlotsForPublisher($publisher);
-
-        $adSlots = array_filter($adSlots, function(AdSlotAbstractInterface $a) {
-            return $a instanceof ReportableAdSlotInterface;
-        });
+        $adSlots = $this->adSlotManager->getReportableAdSlotsForPublisher($publisher);
 
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
