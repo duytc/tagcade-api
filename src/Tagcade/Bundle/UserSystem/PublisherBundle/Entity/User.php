@@ -21,7 +21,7 @@ class User extends BaseUser implements PublisherInterface
     protected $address;
     protected $postalCode;
     protected $country;
-
+    protected $settings; //json string represent setting for report bundle
     /**
      * @inheritdoc
      */
@@ -191,5 +191,20 @@ class User extends BaseUser implements PublisherInterface
         $this->country = $country;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @param mixed $settings
+     */
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
+    }
 
 }
