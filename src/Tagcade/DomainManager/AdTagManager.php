@@ -9,7 +9,7 @@ use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Exception\InvalidArgumentException;

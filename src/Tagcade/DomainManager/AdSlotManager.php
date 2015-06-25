@@ -2,15 +2,13 @@
 
 namespace Tagcade\DomainManager;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\Behavior\ArrayTrait;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use ReflectionClass;
@@ -52,7 +50,7 @@ class AdSlotManager implements AdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(AdSlotAbstractInterface $adSlot)
+    public function save(BaseAdSlotInterface $adSlot)
     {
         $this->getManager($adSlot)->save($adSlot);
     }
@@ -60,7 +58,7 @@ class AdSlotManager implements AdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(AdSlotAbstractInterface $adSlot)
+    public function delete(BaseAdSlotInterface $adSlot)
     {
         $this->getManager($adSlot)->delete($adSlot);
 
@@ -151,10 +149,10 @@ class AdSlotManager implements AdSlotManagerInterface
     }
 
     /**
-     * @param AdSlotAbstractInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return DisplayAdSlotManagerInterface|NativeAdSlotManagerInterface|DynamicAdSlotManagerInterface
      */
-    protected function getManager(AdSlotAbstractInterface $adSlot)
+    protected function getManager(BaseAdSlotInterface $adSlot)
     {
         if ($adSlot instanceof AdSlotInterface) {
             return $this->displayAdSlotManager;

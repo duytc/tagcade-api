@@ -2,7 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -12,22 +12,22 @@ interface AdSlotManagerInterface
     /**
      * @see \Tagcade\DomainManager\ManagerInterface
      *
-     * @param AdSlotAbstractInterface|string $entity
+     * @param BaseAdSlotInterface|string $entity
      * @return bool
      */
     public function supportsEntity($entity);
 
     /**
-     * @param AdSlotAbstractInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return void
      */
-    public function save(AdSlotAbstractInterface $adSlot);
+    public function save(BaseAdSlotInterface $adSlot);
 
     /**
-     * @param AdSlotAbstractInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return void
      */
-    public function delete(AdSlotAbstractInterface $adSlot);
+    public function delete(BaseAdSlotInterface $adSlot);
 
     /**
      * @return AdSlotInterface

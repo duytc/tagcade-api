@@ -5,7 +5,7 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 
-interface AdSlotAbstractInterface extends ModelInterface
+interface BaseAdSlotInterface extends ModelInterface
 {
     /**
      * @param mixed $id

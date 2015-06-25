@@ -3,7 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
@@ -92,10 +92,10 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
 
 
     /**
-     * @param AdSlotAbstractInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return $this
      */
-    public function setAdSlot(AdSlotAbstractInterface $adSlot)
+    public function setAdSlot(BaseAdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
         return $this;

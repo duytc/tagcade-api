@@ -4,7 +4,7 @@ namespace Tagcade\Service;
 
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdSlot;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
@@ -93,7 +93,7 @@ class TagGenerator
     }
 
     /**
-     * @param AdSlotAbstractInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return string
      */
     public function createJsTags($adSlot)

@@ -5,7 +5,7 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 
-interface DynamicAdSlotInterface extends AdSlotAbstractInterface
+interface DynamicAdSlotInterface extends BaseAdSlotInterface
 {
     /**
      * @param string $name
@@ -14,12 +14,12 @@ interface DynamicAdSlotInterface extends AdSlotAbstractInterface
     public function setName($name);
 
     /**
-     * @return AdSlotAbstractInterface
+     * @return BaseAdSlotInterface
      */
     public function getDefaultAdSlot();
 
     /**
-     * @param AdSlotAbstractInterface $defaultAdSlot
+     * @param BaseAdSlotInterface $defaultAdSlot
      */
     public function setDefaultAdSlot($defaultAdSlot);
 

@@ -8,7 +8,7 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;

@@ -5,7 +5,6 @@ namespace Tagcade\Cache\DynamicAdSlot\Behavior;
 
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
 use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
