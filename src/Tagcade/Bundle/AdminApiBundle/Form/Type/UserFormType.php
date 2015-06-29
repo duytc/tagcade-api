@@ -17,6 +17,19 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class UserFormType extends AbstractRoleSpecificFormType
 {
+    static $REPORT_SETTINGS_ADTAG_KEY_VALUES = [
+        'totalOpportunities',
+        'firstOpportunities',
+        'impressions',
+        'verifiedImpressions',
+        'unverifiedImpressions',
+        'blankImpressions',
+        'voidImpressions',
+        'clicks',
+        'passbacks',
+        'fillRate',
+    ];
+
 //    private $userRole;
 
     public function __construct(UserEntityInterface $userRole)
@@ -105,18 +118,33 @@ class UserFormType extends AbstractRoleSpecificFormType
 
                     if (!isset($settings['view']['report']['performance']['adTag'])) {
                         $form->addError(new FormError("either 'view' or 'report' or 'performance' or 'adTag' field is missing!"));
+                        return;
                     }
 
-                    $adTag = $settings['view']['report']['performance']['adTag'];
+                    $adTagConfigs = $settings['view']['report']['performance']['adTag'];
 
-                    if(!isset($adTag['networkOpportunities'])) $form->addError(new FormError("'Network Opportunities' field is missing!"));
-                    if(!isset($adTag['firstOpportunities'])) $form->addError(new FormError("'First Opportunities' field is missing!"));
-                    if(!isset($adTag['impressions'])) $form->addError(new FormError("'Impression' field is missing!"));
-                    if(!isset($adTag['verifiedImpressions'])) $form->addError(new FormError("'Verified Impression' field is missing!"));
-                    if(!isset($adTag['unverifiedImpressions'])) $form->addError(new FormError("'Unverified Impression' field is missing!"));
-                    if(!isset($adTag['clicks'])) $form->addError(new FormError("'Clicks' field is missing!"));
-                    if(!isset($adTag['passbacks'])) $form->addError(new FormError("'Passbacks' field is missing!"));
-                    if(!isset($adTag['fillRate'])) $form->addError(new FormError("'Fill Rate' field is missing!"));
+                    foreach ($adTagConfigs as $adTagConfig) {
+                        // keys 'key', 'label, 'show' are required
+                        if (!isset($adTagConfig['key'])
+                            || !isset($adTagConfig['label'])
+                            || !isset($adTagConfig['show'])
+                        ) {
+                            $form->addError(new FormError("'key or label or show' field is missing!"));
+                            break;
+                        }
+
+                        // all values of 'key' need to be supported
+                        if (!in_array($adTagConfig['key'], self::$REPORT_SETTINGS_ADTAG_KEY_VALUES)) {
+                            $form->addError(new FormError("key '" . $adTagConfig['key'] . "' is not supported yet!"));
+                            break;
+                        }
+
+                        // value 'show' need to be boolean
+                        if (!is_bool($adTagConfig['show'])) {
+                            $form->addError(new FormError("value of show for '" . $adTagConfig['key'] . "' must be boolean!"));
+                            break;
+                        }
+                    }
                 }
             );
         }
