@@ -6,7 +6,6 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform
 use DateTime;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
-use Tagcade\Model\Core\AdSlotInterface;
 
 class AdSlotReportRepository extends AbstractReportRepository implements AdSlotReportRepositoryInterface
 {

@@ -18,15 +18,7 @@ Tagcade\Entity\Core\NativeAdSlot:
 #        deletedAt:
 #            type: date
 #            nullable: true
-    manyToOne:
-        site:
-            targetEntity: Tagcade\Entity\Core\Site
     oneToMany:
-        adTags:
-            targetEntity: AdTag
-            orderBy: { 'position': 'ASC' }
-            mappedBy: adSlot
-            cascade: ["persist", "remove", "detach"]
         defaultDynamicAdSlots:
             targetEntity: Tagcade\Entity\Core\DynamicAdSlot
             mappedBy: defaultAdSlot

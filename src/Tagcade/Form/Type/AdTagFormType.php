@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdNetwork;
-use Tagcade\Entity\Core\AdSlot;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Exception\InvalidArgumentException;
@@ -19,19 +18,19 @@ use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
 
 class AdTagFormType extends AbstractRoleSpecificFormType
 {
     protected $adSlotRepository;
-    protected $nativeAdSlotRepository;
 
     const AD_TYPE_HTML = 0;
     const AD_TYPE_IMAGE = 1;
 
-    public function __construct(AdSlotRepositoryInterface $adSlotRepository, NativeAdSlotRepositoryInterface $nativeAdSlotRepository){
+    public function __construct(AdSlotRepositoryInterface $adSlotRepository){
         $this->adSlotRepository = $adSlotRepository;
-        $this->nativeAdSlotRepository = $nativeAdSlotRepository;
+
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -50,7 +49,7 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             $builder
                 ->add('adSlot', 'entity', array(
                     'class' => AdSlotAbstract::class,
-                    'choices' => $this->getAllAdSlotsForPublisher($publisher)
+                    'choices' => $this->getReportableAdSlotsForPublisher($publisher)
                 ))
                 ->add('adNetwork', 'entity', [
                     'class' => AdNetwork::class,
@@ -116,22 +115,9 @@ class AdTagFormType extends AbstractRoleSpecificFormType
      * @param PublisherInterface $publisher
      * @return array
      */
-    protected function getAllAdSlotsForPublisher(PublisherInterface $publisher) {
-        $adSlots = $this->adSlotRepository->getAdSlotsForPublisher($publisher);
+    protected function getReportableAdSlotsForPublisher(PublisherInterface $publisher) {
 
-        $nativeAdSlots = $this->nativeAdSlotRepository->getNativeAdSlotsForPublisher($publisher);
-
-        $allAdSlots = [];
-
-        if(null !== $adSlots) {
-            $allAdSlots = array_merge($allAdSlots, $adSlots);
-        }
-
-        if(null !== $nativeAdSlots) {
-            $allAdSlots = array_merge($allAdSlots, $nativeAdSlots);
-        }
-
-        return $allAdSlots;
+        return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher);
     }
 
     protected function validateImageAd(AdTagInterface $adTag)

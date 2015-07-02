@@ -4,18 +4,13 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Handler\Handlers\Core\DynamicAdSlotHandlerAbstract;
-use Tagcade\Model\Core\AdSlotInterface;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 
 /**
@@ -67,7 +62,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function getJstagAction($id)
     {
-        /** @var AdSlotInterface $adSlot */
+        /** @var DynamicAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);

@@ -3,23 +3,28 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\AdSlotRepositoryInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use ReflectionClass;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 
 class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
 {
     protected $om;
     protected $repository;
+    /**
+     * @var AdSlotRepositoryInterface
+     */
+    private $adSlotRepository;
 
-    public function __construct(ObjectManager $om, DynamicAdSlotRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, DynamicAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->adSlotRepository = $adSlotRepository;
     }
 
     /**
@@ -78,7 +83,7 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
      */
     public function getDynamicAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
-        return $this->repository->getDynamicAdSlotsForSite($site, $limit, $offset);
+        return $this->adSlotRepository->getDynamicAdSlotsForSite($site, $limit, $offset);
     }
 
     /**
@@ -86,14 +91,14 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
      */
     public function getDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        return $this->repository->getDynamicAdSlotsForPublisher($publisher, $limit, $offset);
+        return $this->adSlotRepository->getDynamicAdSlotsForPublisher($publisher, $limit, $offset);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getDynamicAdSlotsForAdSlot(AdSlotInterface $adSlot, $limit = null, $offset = null)
-    {
-        return $this->repository->getDynamicAdSlotsForAdSlot($adSlot, $limit, $offset);
-    }
+//    /**
+//     * @inheritdoc
+//     */
+//    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null)
+//    {
+//        return $this->repository->getDynamicAdSlotsForAdSlot($adSlot, $limit, $offset);
+//    }
 }

@@ -150,14 +150,15 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Retrieve a list of ad slots for this site
      *
      * @param int $id
-     * @return \Tagcade\Model\Core\AdSlotInterface[]
+     * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
      */
     public function getAdslotsAction($id)
     {
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
-        return $site->getAllAdSlots();
+        return $this->get('tagcade.domain_manager.ad_slot')
+            ->getAdSlotsForSite($site);
     }
 
     public function getDisplayadslotsAction($id)

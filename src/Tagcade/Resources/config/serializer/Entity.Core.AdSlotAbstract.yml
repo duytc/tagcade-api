@@ -3,8 +3,8 @@ Tagcade\Entity\Core\AdSlotAbstract:
     discriminator:
         field_name: type
         map:
-            display_model: Tagcade\Model\Core\AdSlot
-            display: Tagcade\Entity\Core\AdSlot
+            display_model: Tagcade\Model\Core\DisplayAdSlot
+            display: Tagcade\Entity\Core\DisplayAdSlot
             dynamic_mode: Tagcade\Model\Core\DynamicAdSlot
             dynamic: Tagcade\Entity\Core\DynamicAdSlot
             native_model: Tagcade\Model\Core\NativeAdSlot

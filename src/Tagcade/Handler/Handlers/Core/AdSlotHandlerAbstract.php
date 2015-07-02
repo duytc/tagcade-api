@@ -2,12 +2,10 @@
 
 namespace Tagcade\Handler\Handlers\Core;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Handler\RoleHandlerAbstract;
-use Tagcade\Model\Core\AdSlot;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -27,11 +25,11 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
 
     /**
      * clone AdSlot
-     * @param AdSlotInterface $originAdSlot
+     * @param DisplayAdSlotInterface $originAdSlot
      * @param string $newName
      * @param SiteInterface $site
      */
-    public function cloneAdSlot(AdSlotInterface $originAdSlot, $newName, SiteInterface $site = null)
+    public function cloneAdSlot(DisplayAdSlotInterface $originAdSlot, $newName, SiteInterface $site = null)
     {
         //clone adSlot
         $newAdSlot = clone $originAdSlot;
@@ -68,12 +66,12 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
     }
 
     /**
-     * @param AdSlotInterface $originAdSlot
-     * @param AdSlotInterface $newAdSlot
+     * @param DisplayAdSlotInterface $originAdSlot
+     * @param DisplayAdSlotInterface $newAdSlot
      * @param string $newName
      * @return HandlerEventLog
      */
-    private function createCloneAdSlotEventLog(AdSlotInterface $originAdSlot, AdSlotInterface $newAdSlot, $newName)
+    private function createCloneAdSlotEventLog(DisplayAdSlotInterface $originAdSlot, DisplayAdSlotInterface $newAdSlot, $newName)
     {
         $event = new HandlerEventLog('POST', $newAdSlot);
 

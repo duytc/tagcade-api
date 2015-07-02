@@ -4,7 +4,6 @@ namespace Tagcade\Security\Authorization\Voter;
 
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 
 class DynamicAdSlotVoter extends EntityVoterAbstract
 {

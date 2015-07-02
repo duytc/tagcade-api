@@ -10,11 +10,6 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
     protected $id;
 
-    /**
-     * @var SiteInterface
-     */
-    protected $site;
-
     protected $name;
 
     /**

@@ -29,16 +29,8 @@ Tagcade\Entity\Core\Site:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
     oneToMany:
-        dynamicAdSlots:
-            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
-            mappedBy: site
-            cascade: ["remove"]
         adSlots:
-            targetEntity: Tagcade\Entity\Core\AdSlot
-            mappedBy: site
-            cascade: ["persist", "remove", "detach"]
-        nativeAdSlots:
-            targetEntity: Tagcade\Entity\Core\NativeAdSlot
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
             mappedBy: site
             cascade: ["persist", "remove", "detach"]
         sourceReportSiteConfigs:

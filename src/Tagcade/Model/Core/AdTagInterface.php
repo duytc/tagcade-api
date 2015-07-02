@@ -12,7 +12,7 @@ interface AdTagInterface extends ModelInterface
     public function setId($id);
 
     /**
-     * @return NativeAdSlotInterface|AdSlotInterface|null
+     * @return NativeAdSlotInterface|DisplayAdSlotInterface|null
      */
     public function getAdSlot();
 

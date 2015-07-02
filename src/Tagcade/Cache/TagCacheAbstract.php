@@ -4,11 +4,9 @@ namespace Tagcade\Cache;
 
 
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
-use Tagcade\DomainManager\AdSlotManagerInterface;
-use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 
 abstract class TagCacheAbstract {
 
@@ -23,10 +21,10 @@ abstract class TagCacheAbstract {
 
     /**
      * refresh Cache For AdSlot
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @return $this
      */
-    public function refreshCacheForDisplayAdSlot(AdSlotInterface $adSlot)
+    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot)
     {
         $this->cache->setNamespace($this->getNamespace($adSlot->getId()));
 
@@ -49,27 +47,7 @@ abstract class TagCacheAbstract {
      * @param AdNetworkInterface $adNetwork
      * @return $this
      */
-    public function refreshCacheForAdNetwork(AdNetworkInterface $adNetwork)
-    {
-        $adTags = $adNetwork->getAdTags();
-
-        $refreshedAdSlots = [];
-
-        foreach ($adTags as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
-            $adSlot = $adTag->getAdSlot();
-
-            if (!in_array($adSlot, $refreshedAdSlots, $strict = true)) {
-                $refreshedAdSlots[] = $adSlot;
-
-                $this->refreshCacheForDisplayAdSlot($adSlot);
-            }
-
-            unset($adSlot, $adTag);
-        }
-    }
+    abstract public function refreshCacheForAdNetwork(AdNetworkInterface $adNetwork);
 
     /**
      * refresh Cache
@@ -79,7 +57,7 @@ abstract class TagCacheAbstract {
 
     public abstract function supportVersion($version);
 
-    protected abstract function createAdSlotCacheData(AdSlotInterface $adSlot);
+    protected abstract function createAdSlotCacheData(DisplayAdSlotInterface $adSlot);
 
     protected abstract function getNamespace($slotId);
 }

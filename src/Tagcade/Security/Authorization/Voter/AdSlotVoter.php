@@ -2,20 +2,20 @@
 
 namespace Tagcade\Security\Authorization\Voter;
 
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 
 class AdSlotVoter extends EntityVoterAbstract
 {
     public function supportsClass($class)
     {
-        $supportedClass = AdSlotInterface::class;
+        $supportedClass = BaseAdSlotInterface::class;
 
         return $supportedClass === $class || is_subclass_of($class, $supportedClass);
     }
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @param UserEntityInterface $user
      * @param $action
      * @return bool

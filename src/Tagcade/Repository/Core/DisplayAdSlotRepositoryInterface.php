@@ -7,8 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface DynamicAdSlotRepositoryInterface extends ObjectRepository
+interface DisplayAdSlotRepositoryInterface extends ObjectRepository
 {
-
 
 }

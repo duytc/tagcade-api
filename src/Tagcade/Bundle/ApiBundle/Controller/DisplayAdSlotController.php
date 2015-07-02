@@ -13,8 +13,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -33,7 +33,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      *  }
      * )
      *
-     * @return AdSlotInterface[]
+     * @return DisplayAdSlotInterface[]
      */
     public function cgetAction()
     {
@@ -53,7 +53,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      *
      * @param int $id the resource id
      *
-     * @return AdSlotInterface
+     * @return DisplayAdSlotInterface
      * @throws NotFoundHttpException when the resource does not exist
      */
     public function getAction($id)
@@ -67,7 +67,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function getJstagAction($id)
     {
-        /** @var AdSlotInterface $adSlot */
+        /** @var DisplayAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
@@ -130,7 +130,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function postAdtagsPositionsAction(Request $request, $id)
     {
-        /** @var AdSlotInterface $adSlot */
+        /** @var DisplayAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
         $newAdTagOrderIds = $request->request->get('ids');
 
@@ -248,7 +248,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     public function deleteAction($id)
     {
         /**
-         * @var AdSlotInterface $entity
+         * @var DisplayAdSlotInterface $entity
          */
         $entity = $this->getOr404($id);
         $this->checkUserPermission($entity, 'edit');
@@ -282,7 +282,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
     public function getAdtagsAction($id)
     {
-        /** @var AdSlotInterface $adSlot */
+        /** @var DisplayAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.domain_manager.ad_tag')
@@ -290,12 +290,12 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @param array $newAdTagOrderIds
      *
      * @return HandlerEventLog
      */
-    private function createUpdatePositionEventLog(AdSlotInterface $adSlot, array $newAdTagOrderIds)
+    private function createUpdatePositionEventLog(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds)
     {
         $newAdTagFlattenList = [];
         array_walk_recursive($newAdTagOrderIds, function ($adTagId) use (&$newAdTagFlattenList) {

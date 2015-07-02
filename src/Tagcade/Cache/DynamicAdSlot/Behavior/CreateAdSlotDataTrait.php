@@ -5,8 +5,8 @@ namespace Tagcade\Cache\DynamicAdSlot\Behavior;
 
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
@@ -77,10 +77,10 @@ trait CreateAdSlotDataTrait {
      *     ]
      * }
      *
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @return array
      */
-    protected function createDisplayAdSlotCacheData(AdSlotInterface $adSlot)
+    protected function createDisplayAdSlotCacheData(DisplayAdSlotInterface $adSlot)
     {
         $data = [
             'id' => $adSlot->getId(),
@@ -217,7 +217,7 @@ trait CreateAdSlotDataTrait {
 
         //step 3. build 'slots' for data
         array_walk($adSlotsForSelecting, function(ReportableAdSlotInterface $adSlot) use (&$data){
-                if ($adSlot instanceof AdSlotInterface) {
+                if ($adSlot instanceof DisplayAdSlotInterface) {
                     $data['slots'][$adSlot->getId()] =  $this->createDisplayAdSlotCacheData($adSlot);
                 }else if ($adSlot instanceof NativeAdSlotInterface) {
                     $data['slots'][$adSlot->getId()] =  $this->createNativeAdSlotCacheData($adSlot);

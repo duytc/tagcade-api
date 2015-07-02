@@ -23,8 +23,6 @@ Tagcade\Entity\Core\DynamicAdSlot:
             options:
                 default: false
     manyToOne:
-        site:
-            targetEntity: Tagcade\Entity\Core\Site
         defaultAdSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
 

@@ -3,9 +3,10 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
 use Tagcade\Model\Core\SiteInterface;
 use ReflectionClass;
 
@@ -13,11 +14,16 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
 {
     protected $om;
     protected $repository;
+    /**
+     * @var AdSlotRepositoryInterface
+     */
+    private $adSlotRepository;
 
-    public function __construct(ObjectManager $om, AdSlotRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, DisplayAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->adSlotRepository = $adSlotRepository;
     }
 
     /**
@@ -25,13 +31,13 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
      */
     public function supportsEntity($entity)
     {
-        return is_subclass_of($entity, AdSlotInterface::class);
+        return is_subclass_of($entity, DisplayAdSlotInterface::class);
     }
 
     /**
      * @inheritdoc
      */
-    public function save(AdSlotInterface $adSlot)
+    public function save(DisplayAdSlotInterface $adSlot)
     {
         $this->om->persist($adSlot);
         $this->om->flush();
@@ -40,7 +46,7 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(AdSlotInterface $adSlot)
+    public function delete(DisplayAdSlotInterface $adSlot)
     {
         $this->om->remove($adSlot);
         $this->om->flush();
@@ -76,7 +82,7 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
-        return $this->repository->getAdSlotsForSite($site, $limit, $offset);
+        return $this->adSlotRepository->getDisplayAdSlotsForSite($site, $limit, $offset);
     }
 
     /**
@@ -84,6 +90,6 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
      */
     public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        return $this->repository->getAdSlotsForPublisher($publisher, $limit, $offset);
+        return $this->adSlotRepository->getDisplayAdSlotsForPublisher($publisher, $limit, $offset);
     }
 } 

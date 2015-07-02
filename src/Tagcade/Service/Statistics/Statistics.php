@@ -161,7 +161,13 @@ class Statistics implements StatisticsInterface
 
     public function getProjectedBilledAmountForAllPublishers()
     {
-        $params = $this->_getDashboardParams($this->dateUtil->getFirstDateInMonth(), new DateTime('yesterday'));
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth();
+        $yesterday = new DateTime('yesterday');
+        if ($yesterday < $firstDateInMonth) {
+            return new ProjectedBilling(); // no projected bill on first day of month
+        }
+
+        $params = $this->_getDashboardParams($firstDateInMonth, $yesterday);
 
         /**
          * @var BilledReportGroup $platformReports
@@ -175,7 +181,13 @@ class Statistics implements StatisticsInterface
 
     public function getProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
-        $params = $this->_getDashboardParams($this->dateUtil->getFirstDateInMonth(), new DateTime('yesterday'));
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth();
+        $yesterday = new DateTime('yesterday');
+        if ($yesterday < $firstDateInMonth) {
+            return new ProjectedBilling(); // no projected bill on first day of month
+        }
+
+        $params = $this->_getDashboardParams($firstDateInMonth, $yesterday);
 
         /**
          * @var BilledReportGroup $publisherReports
@@ -192,8 +204,13 @@ class Statistics implements StatisticsInterface
 
     public function getProjectedBilledAmountForSite(SiteInterface $site)
     {
-        $params = $this->_getDashboardParams($this->dateUtil->getFirstDateInMonth(), new DateTime('yesterday'));
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth();
+        $yesterday = new DateTime('yesterday');
+        if ($yesterday < $firstDateInMonth) {
+            return new ProjectedBilling(); // no projected bill on first day of month
+        }
 
+        $params = $this->_getDashboardParams($firstDateInMonth, $yesterday);
         /**
          * @var BilledReportGroup $siteReports
          */

@@ -3,15 +3,15 @@
 namespace Tagcade\Cache;
 
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 
 interface TagCacheInterface
 {
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @return $this
      */
-    public function refreshCacheForDisplayAdSlot(AdSlotInterface $adSlot);
+    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot);
 
     /**
      * @param AdNetworkInterface $adNetwork

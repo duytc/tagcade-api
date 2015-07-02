@@ -10,12 +10,7 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 {
     protected $id;
 
-    /**
-     * @var SiteInterface
-     */
-    protected $site;
     protected $name;
-    protected $adTags;
 
     /**
      * @var DynamicAdSlotInterface[]
@@ -26,8 +21,9 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
      */
     public function __construct($name)
     {
+        parent::__construct();
+
         $this->name = $name;
-        $this->adTags = new ArrayCollection();
     }
 
     /**

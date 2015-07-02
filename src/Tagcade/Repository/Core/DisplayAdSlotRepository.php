@@ -2,14 +2,12 @@
 
 namespace Tagcade\Repository\Core;
 
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\DBAL\Types\Type;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-class DynamicAdSlotRepository extends EntityRepository implements DynamicAdSlotRepositoryInterface
+class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotRepositoryInterface
 {
-
-
 
 }

@@ -2,7 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -63,11 +63,11 @@ interface DynamicAdSlotManagerInterface
      */
     public function getDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
-    /**
-     * @param AdSlotInterface $adSlot
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return DynamicAdSlotInterface[]
-     */
-    public function getDynamicAdSlotsForAdSlot(AdSlotInterface $adSlot, $limit = null, $offset = null);
+//    /**
+//     * @param DisplayAdSlotInterface $adSlot
+//     * @param int|null $limit
+//     * @param int|null $offset
+//     * @return DynamicAdSlotInterface[]
+//     */
+//    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null);
 }

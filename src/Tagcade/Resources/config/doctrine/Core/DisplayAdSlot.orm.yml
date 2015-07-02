@@ -1,7 +1,7 @@
-Tagcade\Entity\Core\AdSlot:
+Tagcade\Entity\Core\DisplayAdSlot:
     type: entity
     table: core_display_ad_slot
-    repositoryClass: Tagcade\Repository\Core\AdSlotRepository
+    repositoryClass: Tagcade\Repository\Core\DisplayAdSlotRepository
 #    gedmo:
 #        soft_deleteable:
 #            field_name: deletedAt
@@ -22,15 +22,7 @@ Tagcade\Entity\Core\AdSlot:
 #        deletedAt:
 #            type: date
 #            nullable: true
-    manyToOne:
-        site:
-            targetEntity: Tagcade\Entity\Core\Site
     oneToMany:
-        adTags:
-            targetEntity: AdTag
-            orderBy: { 'position': 'ASC' }
-            mappedBy: adSlot
-            cascade: ["persist", "remove", "detach"]
         defaultDynamicAdSlots:
             targetEntity: Tagcade\Entity\Core\DynamicAdSlot
             mappedBy: defaultAdSlot
