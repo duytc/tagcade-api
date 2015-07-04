@@ -4,7 +4,7 @@ namespace Tagcade\Bundle\AppBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
 class UpdateCacheEvent extends Event
@@ -23,7 +23,7 @@ class UpdateCacheEvent extends Event
             }
 
             foreach($entities as $entity) {
-                if ($entity instanceof AdNetworkInterface || $entity instanceof AdSlotAbstractInterface) {
+                if ($entity instanceof AdNetworkInterface || $entity instanceof BaseAdSlotInterface) {
                     $this->addEntity($entity);
                 }
             }

@@ -112,4 +112,15 @@ interface PublisherInterface extends UserRoleInterface
     public function hasAnalyticsModule();
 
     public function getEmail();
+
+    /**
+     * @return mixed
+     */
+    public function getSettings();
+
+    /**
+     * @param mixed $settings
+     */
+    public function setSettings($settings);
+
 }

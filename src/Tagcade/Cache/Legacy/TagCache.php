@@ -3,13 +3,13 @@
 namespace Tagcade\Cache\Legacy;
 
 use Doctrine\Common\Collections\Collection;
-use Tagcade\Cache\CreateAdSlotDataTrait;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
 class TagCache extends TagCacheAbstract implements TagCacheInterface
@@ -45,9 +45,39 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
     }
 
     /**
+     * @param AdNetworkInterface $adNetwork
+     * @return $this
+     */
+    public function refreshCacheForAdNetwork(AdNetworkInterface $adNetwork)
+    {
+        $adTags = $adNetwork->getAdTags();
+
+        $refreshedAdSlots = [];
+
+        foreach ($adTags as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            $adSlot = $adTag->getAdSlot();
+
+            if (!$adSlot instanceof DisplayAdSlotInterface) {
+                continue;
+            }
+
+            if (!in_array($adSlot, $refreshedAdSlots, $strict = true)) {
+                $refreshedAdSlots[] = $adSlot;
+
+                $this->refreshCacheForDisplayAdSlot($adSlot);
+            }
+
+            unset($adSlot, $adTag);
+        }
+    }
+
+    /**
      * @inheritdoc
      */
-    protected function createAdSlotCacheData(AdSlotInterface $adSlot)
+    protected function createAdSlotCacheData(DisplayAdSlotInterface $adSlot)
     {
         $data = [];
 

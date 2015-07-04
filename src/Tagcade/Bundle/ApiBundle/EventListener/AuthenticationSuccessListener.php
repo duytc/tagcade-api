@@ -7,6 +7,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManager;
 
 class AuthenticationSuccessListener
 {

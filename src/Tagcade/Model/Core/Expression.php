@@ -17,7 +17,7 @@ class Expression implements ExpressionInterface
      */
     protected $dynamicAdSlot;
     /**
-     * @var AdSlotAbstractInterface
+     * @var BaseAdSlotInterface
      */
     protected $expectAdSlot;
 
@@ -82,7 +82,7 @@ class Expression implements ExpressionInterface
     }
 
     /**
-     * @return AdSlotAbstractInterface
+     * @return BaseAdSlotInterface
      */
     public function getExpectAdSlot()
     {

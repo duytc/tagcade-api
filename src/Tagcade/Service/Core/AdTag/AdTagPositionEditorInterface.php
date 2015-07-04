@@ -3,8 +3,8 @@
 namespace Tagcade\Service\Core\AdTag;
 
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 interface AdTagPositionEditorInterface
@@ -19,11 +19,11 @@ interface AdTagPositionEditorInterface
     public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @param array $newAdTagOrderIds
      * @return AdTagInterface[]
      */
-    public function setAdTagPositionForAdSlot(AdSlotInterface $adSlot, array $newAdTagOrderIds);
+    public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds);
 
 
 } 

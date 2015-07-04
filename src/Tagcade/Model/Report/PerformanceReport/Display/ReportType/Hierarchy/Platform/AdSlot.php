@@ -2,7 +2,6 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform;
 
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
@@ -15,7 +14,7 @@ class AdSlot extends AbstractCalculatedReportType implements CalculatedReportTyp
     const REPORT_TYPE = 'platform.adSlot';
 
     /**
-     * @var AdSlotInterface
+     * @var ReportableAdSlotInterface
      */
     private $adSlot;
 
@@ -25,7 +24,7 @@ class AdSlot extends AbstractCalculatedReportType implements CalculatedReportTyp
     }
 
     /**
-     * @return AdSlotInterface|NativeAdSlotInterface
+     * @return ReportableAdSlotInterface|NativeAdSlotInterface
      */
     public function getAdSlot()
     {

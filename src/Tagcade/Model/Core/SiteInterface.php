@@ -47,22 +47,8 @@ interface SiteInterface extends ModelInterface
      */
     public function setPublisher(PublisherInterface $publisher);
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getDisplayAdSlots();
-
     public function getReportableAdSlots();
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getNativeAdSlots();
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getDynamicAdSlots();
 
     public function getAllAdSlots();
     /**

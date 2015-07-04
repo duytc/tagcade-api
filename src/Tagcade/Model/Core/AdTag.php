@@ -7,7 +7,7 @@ class AdTag implements AdTagInterface
     protected $id;
 
     /**
-     * @var AdSlotAbstractInterface
+     * @var BaseAdSlotInterface
      */
     protected $adSlot;
 

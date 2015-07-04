@@ -4,7 +4,7 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-interface AdSlotInterface extends AdSlotAbstractInterface
+interface DisplayAdSlotInterface extends BaseAdSlotInterface
 {
     /**
      * @return int|null

@@ -4,9 +4,8 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
-use Tagcade\Model\Core\SiteInterface;
 
-class AdSlot extends AdSlotAbstract implements AdSlotInterface, ReportableAdSlotInterface
+class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, ReportableAdSlotInterface
 {
     protected $id;
 
@@ -17,7 +16,6 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface, ReportableAdSlot
     protected $name;
     protected $width;
     protected $height;
-    protected $adTags;
 
     /**
      * @var DynamicAdSlotInterface[]
@@ -31,10 +29,11 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface, ReportableAdSlot
      */
     public function __construct($name, $width, $height)
     {
+        parent::__construct();
+
         $this->name = $name;
         $this->width = $width;
         $this->height = $height;
-        $this->adTags = new ArrayCollection();
     }
 
     /**
@@ -69,26 +68,6 @@ class AdSlot extends AdSlotAbstract implements AdSlotInterface, ReportableAdSlot
     {
         $this->height = $height;
         return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdTags()
-    {
-        if (null === $this->adTags) {
-            $this->adTags = new ArrayCollection();
-        }
-
-        return $this->adTags;
-    }
-
-    /**
-     * @param ArrayCollection $adTags
-     */
-    public function setAdTags($adTags)
-    {
-        $this->adTags = $adTags;
     }
 
     /**

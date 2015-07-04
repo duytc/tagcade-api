@@ -5,20 +5,14 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\ExpressionInterface;
-use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
@@ -64,7 +58,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *
      * @param int $id the resource id
      *
-     * @return AdSlotInterface
+     * @return BaseAdSlotInterface
      * @throws NotFoundHttpException when the resource does not exist
      */
     public function getAction($id)

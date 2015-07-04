@@ -4,20 +4,20 @@ namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tagcade\Entity\Core\AdSlot;
+use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class AdSlotFormType extends AbstractRoleSpecificFormType
 {
-    /** @var AdSlotRepositoryInterface */
+    /** @var DisplayAdSlotRepositoryInterface */
     private $adSlotRepository;
 
-    function __construct(AdSlotRepositoryInterface $adSlotRepository)
+    function __construct(DisplayAdSlotRepositoryInterface $adSlotRepository)
     {
         $this->adSlotRepository = $adSlotRepository;
     }
@@ -58,7 +58,7 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
-                'data_class' => AdSlot::class,
+                'data_class' => DisplayAdSlot::class,
             ]);
     }
 

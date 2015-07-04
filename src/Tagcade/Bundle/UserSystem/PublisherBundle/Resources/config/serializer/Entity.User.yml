@@ -14,6 +14,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         - address
         - postalCode
         - country
+        - settings
     properties:
         id:
             expose: true
@@ -38,4 +39,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         postalCode:
             expose: true
         country:
+            expose: true
+        settings:
             expose: true

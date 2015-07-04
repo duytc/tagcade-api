@@ -2,9 +2,9 @@
 
 namespace Tagcade\Entity\Core;
 
-use Tagcade\Model\Core\AdSlot as AdSlotModel;
+use Tagcade\Model\Core\DisplayAdSlot as DisplayAdSlotModel;
 
-class AdSlot extends AdSlotModel
+class DisplayAdSlot extends DisplayAdSlotModel
 {
     protected $id;
     protected $site;

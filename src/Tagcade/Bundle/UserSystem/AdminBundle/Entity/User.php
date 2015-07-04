@@ -9,6 +9,7 @@ use Tagcade\Model\User\UserEntityInterface;
 class User extends BaseUser implements AdminInterface
 {
     protected $id;
+    protected $settings;
 
     /**
      * @return UserEntityInterface
@@ -17,6 +18,4 @@ class User extends BaseUser implements AdminInterface
     {
         return $this;
     }
-
-
 }

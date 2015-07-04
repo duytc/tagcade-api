@@ -10,15 +10,10 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
     protected $id;
 
-    /**
-     * @var SiteInterface
-     */
-    protected $site;
-
     protected $name;
 
     /**
-     * @var AdSlotAbstractInterface
+     * @var BaseAdSlotInterface
      */
     protected $defaultAdSlot;
 
@@ -37,7 +32,7 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
     }
 
     /**
-     * @return AdSlotAbstractInterface
+     * @return BaseAdSlotInterface
      */
     public function getDefaultAdSlot()
     {
@@ -45,7 +40,7 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
     }
 
     /**
-     * @param AdSlotAbstractInterface $defaultAdSlot
+     * @param BaseAdSlotInterface $defaultAdSlot
      */
     public function setDefaultAdSlot($defaultAdSlot)
     {

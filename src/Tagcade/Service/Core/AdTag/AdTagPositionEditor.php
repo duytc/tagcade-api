@@ -3,13 +3,12 @@
 namespace Tagcade\Service\Core\AdTag;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Gedmo\Sortable\SortableListener;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 class AdTagPositionEditor implements AdTagPositionEditorInterface
@@ -59,11 +58,11 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     }
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @param array $newAdTagOrderIds array of array [[adtag1_pos_1, adtag2_pos_1], [adtag3_pos2]]
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
-    public function setAdTagPositionForAdSlot(AdSlotInterface $adSlot, array $newAdTagOrderIds) {
+    public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
 
         $adTags = $adSlot->getAdTags()->toArray();
 
@@ -134,7 +133,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                 /**
                  * @var AdTagInterface $adTag
                  */
-                if (!$adTag->getAdSlot() instanceof AdSlotInterface) {
+                if (!$adTag->getAdSlot() instanceof DisplayAdSlotInterface) {
                     return; // not updating position for other types of ad slot like native ad slot
                 }
                 if ($adTag->getPosition() != $position ) {

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Entity\Core;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Core\SiteInterface;
 
 abstract class AdSlotAbstract
@@ -11,6 +12,8 @@ abstract class AdSlotAbstract
     const TYPE_DYNAMIC = 'dynamic';
 
     protected $id;
+    protected $adTags;
+
     /**
      * @var SiteInterface
      */
@@ -20,7 +23,9 @@ abstract class AdSlotAbstract
     protected $deletedAt;
 
     public function __construct()
-    {}
+    {
+        $this->adTags = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -54,6 +59,25 @@ abstract class AdSlotAbstract
         $this->name = $name;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getAdTags()
+    {
+        if (null === $this->adTags) {
+            $this->adTags = new ArrayCollection();
+        }
+
+        return $this->adTags;
+    }
+
+    /**
+     * @param ArrayCollection $adTags
+     */
+    public function setAdTags($adTags)
+    {
+        $this->adTags = $adTags;
+    }
     /**
      * @return mixed
      */

@@ -3,7 +3,7 @@
 namespace Tagcade\DomainManager;
 
 
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -11,38 +11,38 @@ interface DisplayAdSlotManagerInterface {
     /**
      * @see \Tagcade\DomainManager\ManagerInterface
      *
-     * @param AdSlotInterface|string $entity
+     * @param DisplayAdSlotInterface|string $entity
      * @return bool
      */
     public function supportsEntity($entity);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @return void
      */
-    public function save(AdSlotInterface $adSlot);
+    public function save(DisplayAdSlotInterface $adSlot);
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @return void
      */
-    public function delete(AdSlotInterface $adSlot);
+    public function delete(DisplayAdSlotInterface $adSlot);
 
     /**
-     * @return AdSlotInterface
+     * @return DisplayAdSlotInterface
      */
     public function createNew();
 
     /**
      * @param int $id
-     * @return AdSlotInterface|null
+     * @return DisplayAdSlotInterface|null
      */
     public function find($id);
 
     /**
      * @param int|null $limit
      * @param int|null $offset
-     * @return AdSlotInterface[]
+     * @return DisplayAdSlotInterface[]
      */
     public function all($limit = null, $offset = null);
 
@@ -50,7 +50,7 @@ interface DisplayAdSlotManagerInterface {
      * @param SiteInterface $site
      * @param int|null $limit
      * @param int|null $offset
-     * @return AdSlotInterface[]
+     * @return DisplayAdSlotInterface[]
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 
@@ -58,7 +58,7 @@ interface DisplayAdSlotManagerInterface {
      * @param PublisherInterface $publisher
      * @param int|null $limit
      * @param int|null $offset
-     * @return AdSlotInterface[]
+     * @return DisplayAdSlotInterface[]
      */
     public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 } 

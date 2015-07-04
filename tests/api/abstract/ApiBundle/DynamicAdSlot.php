@@ -430,6 +430,7 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
+                'defaultAdSlot' => null,
                 'expressions' => null
             ]
         );

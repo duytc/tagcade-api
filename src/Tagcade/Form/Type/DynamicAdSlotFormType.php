@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -16,19 +17,10 @@ use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlot;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 {
-
-    /** @var AdSlotRepositoryInterface */
-    private $repository;
-
-    function __construct(AdSlotRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
-    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -98,10 +90,15 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                         $this->updateDynamicAdSlotForExpression($dynamicAdSlot, $expressions);
                     }
 
+                    if ($dynamicAdSlot->getExpressions()->isEmpty() && null === $dynamicAdSlot->getDefaultAdSlot()) {
+                        throw new InvalidFormException('expect expression or default ad slot');
+                    }
+
                 } catch (InvalidFormException $ex) {
                     $form = $event->getForm();
-
                     $form->get('expressions')->addError(new FormError($ex->getMessage()));
+
+                    return;
                 }
 
                 // Validate defaultAdSlot and expectedAdSlot for native selected
@@ -115,6 +112,9 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                         return;
                     }
 
+                    if (null === $expressions) {
+                        return; // ignore if expression is null
+                    }
                     // Validate expectedAdSlot for native selected
                     foreach ($expressions as $idx => $expression) {
                         if($expression->getExpectAdSlot() instanceof NativeAdSlot) {

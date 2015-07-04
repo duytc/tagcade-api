@@ -34,3 +34,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         country:
             type: string
             nullable: true
+        settings:
+            type: json_array
+            nullable: true

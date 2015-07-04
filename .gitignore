@@ -18,3 +18,5 @@ dev/custom
 codeception.yml
 tests/_output
 tests/api/ApiTester.php
+tests/unit/UnitTester.php
+tests/acceptance/AcceptanceTester.php

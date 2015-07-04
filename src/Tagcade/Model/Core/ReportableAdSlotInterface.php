@@ -3,6 +3,6 @@
 namespace Tagcade\Model\Core;
 
 
-interface ReportableAdSlotInterface extends AdSlotAbstractInterface {
+interface ReportableAdSlotInterface extends BaseAdSlotInterface {
 
 } 

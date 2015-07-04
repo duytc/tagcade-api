@@ -7,17 +7,23 @@ use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use ReflectionClass;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
 
 class NativeAdSlotManager implements NativeAdSlotManagerInterface
 {
     protected $om;
     protected $repository;
+    /**
+     * @var AdSlotRepositoryInterface
+     */
+    private $adSlotRepository;
 
-    public function __construct(ObjectManager $om, NativeAdSlotRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, NativeAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->adSlotRepository = $adSlotRepository;
     }
 
     /**
@@ -76,7 +82,7 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
      */
     public function getNativeAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
-        return $this->repository->getNativeAdSlotsForSite($site, $limit, $offset);
+        return $this->adSlotRepository->getNativeAdSlotsForSite($site, $limit, $offset);
     }
 
     /**
@@ -84,6 +90,6 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
      */
     public function getNativeAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        return $this->repository->getNativeAdSlotsForPublisher($publisher, $limit, $offset);
+        return $this->adSlotRepository->getNativeAdSlotsForPublisher($publisher, $limit, $offset);
     }
 }

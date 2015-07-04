@@ -5,7 +5,7 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 
 class AdSlotChangeListener
 {
@@ -51,7 +51,7 @@ class AdSlotChangeListener
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof AdSlotInterface) {
+        if (!$entity instanceof DisplayAdSlotInterface) {
             return;
         }
 

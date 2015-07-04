@@ -3,9 +3,8 @@
 namespace Tagcade\Service;
 
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Core\AdSlot;
-use Tagcade\Model\Core\AdSlotAbstractInterface;
-use Tagcade\Model\Core\AdSlotInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -52,7 +51,7 @@ class TagGenerator
 
             $allAdSlots = $site->getAllAdSlots();
             foreach($allAdSlots as $adSlot) {
-                /** @var AdSlotInterface|NativeAdSlotInterface $adSlot */
+                /** @var DisplayAdSlotInterface|NativeAdSlotInterface $adSlot */
                 if (!array_key_exists($adSlot->getType(), $tags)) {
                     continue; // not support generating tags for this ad slot type
                 }
@@ -93,7 +92,7 @@ class TagGenerator
     }
 
     /**
-     * @param AdSlotAbstractInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return string
      */
     public function createJsTags($adSlot)
@@ -102,7 +101,7 @@ class TagGenerator
             return $this->createDisplayAdTagForDynamicAdSlot($adSlot);
         }
 
-        if ($adSlot instanceof AdSlotInterface) {
+        if ($adSlot instanceof DisplayAdSlotInterface) {
             return $this->createDisplayAdTagForAdSlot($adSlot);
         }
 
@@ -115,10 +114,10 @@ class TagGenerator
     }
 
     /**
-     * @param AdSlotInterface $adSlot
+     * @param DisplayAdSlotInterface $adSlot
      * @return string
      */
-    public function createDisplayAdTagForAdSlot(AdSlotInterface $adSlot)
+    public function createDisplayAdTagForAdSlot(DisplayAdSlotInterface $adSlot)
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
 
