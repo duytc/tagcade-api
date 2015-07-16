@@ -169,11 +169,12 @@ class AdTag implements AdTagInterface
      */
     public function isActive()
     {
-        if ($this->adNetwork instanceof AdNetworkInterface) {
-            return $this->getAdNetwork()->isActive() && $this->active;
-        }
-
-        return false;
+        return $this->active;
+//        if ($this->adNetwork instanceof AdNetworkInterface) {
+//            return $this->getAdNetwork()->isActive() && $this->active;
+//        }
+//
+//        return false;
     }
 
     /**

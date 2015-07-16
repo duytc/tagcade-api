@@ -97,4 +97,7 @@ interface AdTagManagerInterface
 
     public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
+    public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true);
+
+
 }

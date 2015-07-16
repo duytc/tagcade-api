@@ -284,19 +284,12 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
      */
     private function validateVal($val, $type ='string')
     {
-//        if (!isset($val)
-//            || null == $val
-//            || 1 > sizeof($val)
-//        ) {
-//            throw new InvalidFormException('expect \'' . self::KEY_EXPRESSION_VAL . '\' of condition');
-//        }
-
         $type = strtolower($type);
 
         switch ($type) {
             case 'string':
                 //validate as escape syntax
-                if (trim($val) != '' && !preg_match('/^[a-zA-Z0-9_\x7f-\xff\s][a-zA-Z0-9_\x7f-\xff\s]*$/', $val)) {
+                if (trim($val) != '' && preg_match("/[^a-zA-Z0-9_=&\-\/\?\s]/", $val)) {
                     throw new InvalidFormException('not allow special characters (js injection) in \'' . $val . '\' of condition');
                 }
 

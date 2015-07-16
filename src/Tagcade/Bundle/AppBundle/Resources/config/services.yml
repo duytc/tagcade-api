@@ -29,14 +29,6 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
 
-    tagcade_app.event_listener.adnetwork_change_listener:
-        class: Tagcade\Bundle\AppBundle\EventListener\AdNetworkChangeListener
-        arguments:
-            - @event_dispatcher
-        tags:
-            - { name: doctrine.event_listener, event: postRemove }
-            - { name: doctrine.event_listener, event: postUpdate }
-
     tagcade_app.event_listener.update_cache_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\UpdateCacheListener
         arguments:

@@ -11,12 +11,6 @@ interface AdNetworkServiceInterface
 {
     /**
      * @param AdNetworkInterface $adNetwork
-     * @return $this
-     */
-    public function pauseAdNetwork(AdNetworkInterface $adNetwork);
-
-    /**
-     * @param AdNetworkInterface $adNetwork
      * @param SiteInterface $site
      * @param bool $active
      * @return $this

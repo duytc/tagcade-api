@@ -24,10 +24,6 @@ Tagcade\Entity\Core\AdTag:
             groups: [adtag.detail]
         active:
             expose: true
-            access_type: public_method
-            accessor:
-                getter: isActive
-                setter: setActive
             groups: [adtag.detail]
         rotation:
             expose: true

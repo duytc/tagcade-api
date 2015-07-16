@@ -138,4 +138,21 @@ class AdTagManager implements AdTagManagerInterface
     {
         return $this->repository->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site, $limit, $offset);
     }
+
+    public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true)
+    {
+        $adTags = $this->getAdTagsForAdNetwork($adNetwork);
+
+        /**
+         * @var AdTagInterface $adTag
+         */
+        foreach($adTags as $adTag) {
+            if ($adTag->isActive() !== $active) {
+                $adTag->setActive($active);
+                $this->em->persist($adTag);
+            }
+        }
+
+        $this->em->flush();
+    }
 }

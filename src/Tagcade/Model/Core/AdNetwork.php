@@ -16,7 +16,6 @@ class AdNetwork implements AdNetworkInterface
     protected $publisher;
     protected $name;
     protected $url;
-    protected $active;
     protected $adTags;
 
     /**
@@ -102,23 +101,6 @@ class AdNetwork implements AdNetworkInterface
     /**
      * @inheritdoc
      */
-    public function isActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setActive($boolean)
-    {
-        $this->active = (Boolean) $boolean;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getDefaultCpmRate()
     {
         return $this->defaultCpmRate;
@@ -132,6 +114,16 @@ class AdNetwork implements AdNetworkInterface
         $this->defaultCpmRate = $defaultCpmRate;
 
         return $this;
+    }
+
+    public function getActiveAdTagsCount()
+    {
+        return count(array_filter($this->adTags->toArray(), function (AdTagInterface $adTag) { return $adTag->isActive() === true; }));
+    }
+
+    public function getPausedAdTagsCount()
+    {
+        return count(array_filter($this->adTags->toArray(), function (AdTagInterface $adTag) { return $adTag->isActive() === false; }));
     }
 
     /**
