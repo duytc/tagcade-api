@@ -170,11 +170,6 @@ class AdTag implements AdTagInterface
     public function isActive()
     {
         return $this->active;
-//        if ($this->adNetwork instanceof AdNetworkInterface) {
-//            return $this->getAdNetwork()->isActive() && $this->active;
-//        }
-//
-//        return false;
     }
 
     /**
