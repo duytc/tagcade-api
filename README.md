@@ -103,3 +103,8 @@ run command for admin:
 ```
 codecept run api --group admin --steps
 ```
+
+run single test with debug
+```
+codecept run tests/api/publisher/ApiBundle/DynamicAdSlotPublisherCest.php:addDynamicAdSlot --debug
+```

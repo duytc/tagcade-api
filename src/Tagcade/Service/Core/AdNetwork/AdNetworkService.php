@@ -22,13 +22,6 @@ class AdNetworkService implements AdNetworkServiceInterface
         $this->em = $em;
     }
 
-    public function pauseAdNetwork(AdNetworkInterface $adNetwork)
-    {
-        $adNetwork->setActive(false);
-
-        $this->em->flush();
-    }
-
     public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
     {
 
@@ -62,7 +55,7 @@ class AdNetworkService implements AdNetworkServiceInterface
 
             if (!in_array($site, $sites)) {
                 $sites[] = $site;
-                $siteStatus[] = new SiteStatus($site, $this->_isSiteActiveForAdNetwork($adNetwork, $site));
+                $siteStatus[] = new SiteStatus($site, $adNetwork);
             }
 
             unset($site);

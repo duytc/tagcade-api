@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
@@ -28,6 +29,9 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all ad networks
      *
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary"})
+     * @Rest\View(serializerEnableMaxDepthChecks=false)
+     *
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -44,6 +48,8 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
     /**
      * Get a single ad network for the given id
+     *
+     * @Rest\View(serializerGroups={"adnetwork.detail", "user.summary", "adtag.summary"})
      *
      * @ApiDoc(
      *  resource = true,
@@ -203,6 +209,14 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site);
     }
 
+    public function getAdtagsAction($id)
+    {
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->one($id);
+
+        return $this->get('tagcade.domain_manager.ad_tag')
+            ->getAdTagsForAdNetwork($adNetwork);
+    }
     /**
      * Create a ad network from the submitted data
      *
@@ -223,6 +237,29 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         return $this->post($request);
     }
 
+    /**
+     * @Rest\QueryParam(name="active", requirements="(true|false)", nullable=true)
+     *
+     * @param Request $request
+     * @param $id
+     * @return View|FormTypeInterface
+     */
+    public function putStatusAction(Request $request, $id)
+    {
+        $adNetwork = $this->getOr404($id);
+        $this->checkUserPermission($adNetwork, 'edit');
+        /**
+         * @var ParamFetcherInterface $paramFetcher
+         */
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $active = $paramFetcher->get('active');
+        $active = filter_var($active, FILTER_VALIDATE_BOOLEAN);
+
+        $adTagManager = $this->get('tagcade.domain_manager.ad_tag');
+        $adTagManager->updateAdTagStatusForAdNetwork($adNetwork, $active);
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
     /**
      * Update an existing ad network from the submitted data or create a new ad network
      *

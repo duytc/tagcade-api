@@ -14,10 +14,6 @@ Tagcade\Entity\Core\AdNetwork:
         url:
             type: string
             nullable: true
-        active:
-            type: boolean
-            options:
-                default: true
         defaultCpmRate:
             type: decimal
             scale: 4

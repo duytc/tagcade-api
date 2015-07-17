@@ -48,17 +48,6 @@ interface AdNetworkInterface extends ModelInterface
     public function setUrl($url);
 
     /**
-     * @return bool
-     */
-    public function isActive();
-
-    /**
-     * @param $boolean
-     * @return $this
-     */
-    public function setActive($boolean);
-
-    /**
      * @return float
      */
     public function getDefaultCpmRate();
@@ -73,4 +62,8 @@ interface AdNetworkInterface extends ModelInterface
      * @return PersistentCollection
      */
     public function getAdTags();
+
+    public function getActiveAdTagsCount();
+
+    public function getPausedAdTagsCount();
 }

@@ -4,6 +4,7 @@ namespace Tagcade\Domain\DTO\Core;
 
 
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 class SiteStatus
@@ -13,12 +14,35 @@ class SiteStatus
      */
     private $site;
 
-    private $active;
+    private $activeAdTagsCount;
 
-    function __construct(SiteInterface $site, $active)
+    private $pausedAdTagsCount;
+
+    function __construct(SiteInterface $site, AdNetworkInterface $adNetwork)
     {
         $this->site = $site;
-        $this->active = $active;
+
+        $adTags = $adNetwork->getAdTags()->toArray();
+        $this->pausedAdTagsCount = count(
+            array_filter(
+                $adTags,
+                function(AdTagInterface $adTag) use ($site)
+                {
+                    return $adTag->getAdSlot()->getSite()->getId() === $site->getId() && $adTag->isActive() === false;
+                }
+            )
+        );
+
+        $this->activeAdTagsCount = count(
+            array_filter(
+                $adTags,
+                function(AdTagInterface $adTag) use ($site)
+                {
+                    return $adTag->getAdSlot()->getSite()->getId() === $site->getId() && $adTag->isActive() === true;
+                }
+            )
+        );
+
     }
 
     /**
@@ -32,9 +56,16 @@ class SiteStatus
     /**
      * @return mixed
      */
-    public function getActive()
+    public function getActiveAdTagsCount()
     {
-        return $this->active;
+        return $this->activeAdTagsCount;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPausedAdTagsCount()
+    {
+        return $this->pausedAdTagsCount;
+    }
 }

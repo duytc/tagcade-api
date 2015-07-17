@@ -14,8 +14,8 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('name')
+
             ->add('url')
-            ->add('active')
             ->add('defaultCpmRate')
         ;
 

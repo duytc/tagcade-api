@@ -9,8 +9,7 @@ class AdNetworkPublisherCest extends AdNetwork
         $I->sendPOST(URL_API.'/adnetworks', [
             'defaultCpmRate' => 10,
             'name' => 'adNetwork-test',
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(201);
     }
@@ -80,8 +79,7 @@ class AdNetworkPublisherCest extends AdNetwork
         $I->sendPUT(URL_API.'/adnetworks/'.PARAMS_AD_NETWORK, [
             'defaultCpmRate' => 10,
             'name' => 'adNetwork-test',
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(204);
     }
