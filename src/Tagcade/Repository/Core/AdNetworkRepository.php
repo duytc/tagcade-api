@@ -2,8 +2,8 @@
 
 namespace Tagcade\Repository\Core;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdNetworkRepository extends EntityRepository implements AdNetworkRepositoryInterface
@@ -14,6 +14,7 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
     public function getAdNetworksForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->getAdNetworksForPublisherQuery($publisher, $limit, $offset);
+
         return $qb->getQuery()->getResult();
     }
 

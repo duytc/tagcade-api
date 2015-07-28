@@ -22,7 +22,7 @@ class SiteStatus
     {
         $this->site = $site;
 
-        $adTags = $adNetwork->getAdTags()->toArray();
+        $adTags = $adNetwork->getAdTags();
         $this->pausedAdTagsCount = count(
             array_filter(
                 $adTags,

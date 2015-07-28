@@ -100,13 +100,18 @@ class UpdateDynamicAdSlotCacheListener
                     return false;
                 }
 
-                $updatingDynamicAdSlot = $entity->getDynamicAdSlot();
-                // ignore the ad tag in adSlot has been counted
-                if (in_array($updatingDynamicAdSlot, $dynamicAdSlots)) {
-                    return false;
-                }
+                $updatingDynamicAdSlots = $entity->getLibraryDynamicAdSlot()->getDynamicAdSlots();
 
-                $dynamicAdSlots[] = $updatingDynamicAdSlot;
+                if(null === $updatingDynamicAdSlots) return true;
+
+                foreach ($updatingDynamicAdSlots as $dSlot) {
+                    // ignore the ad tag in adSlot has been counted
+                    if (in_array($dSlot, $dynamicAdSlots)) {
+                        continue;
+                    }
+
+                    $dynamicAdSlots[] = $dSlot;
+                }
 
                 return true;
             }

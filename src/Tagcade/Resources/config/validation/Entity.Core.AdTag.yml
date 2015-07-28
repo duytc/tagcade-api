@@ -14,24 +14,18 @@ Tagcade\Entity\Core\AdTag:
         adSlot:
             - NotBlank: ~
             - Valid: ~
-        adNetwork:
-            - NotBlank: ~
-            - Valid: ~
-#        frequencyCap:
-#            - Type:
-#                type: integer
-#                message: "The value {{ value }} is not a valid number."
-#            - GreaterThan:
-#                value: 0
-        rotation:
+#        adNetwork:
+#            - NotBlank: ~
+#            - Valid: ~
+        frequencyCap:
             - Type:
                 type: integer
                 message: "The value {{ value }} is not a valid number."
             - GreaterThan:
                 value: 0
-        adType:
+        rotation:
             - Type:
                 type: integer
                 message: "The value {{ value }} is not a valid number."
-            - GreaterThanOrEqual:
+            - GreaterThan:
                 value: 0

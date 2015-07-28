@@ -15,8 +15,10 @@ use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
 /**
  * @Rest\RouteResource("DisplayAdslot")
@@ -24,6 +26,9 @@ use Tagcade\Model\Core\SiteInterface;
 class DisplayAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "site.summary", "displayadslotlib.detail"}
+     * )
      * Get all ad slots
      *
      * @ApiDoc(
@@ -41,6 +46,10 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "site.summary", "displayadslotlib.ref"}
+     * )
+     * @Rest\View(serializerEnableMaxDepthChecks=false)
      * Get a single adSlot for the given id
      *
      * @ApiDoc(
@@ -256,15 +265,19 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         // dynamic ad slots that its expressions refer to this ad slot
 
         $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
-        $referencingDynamicAdSlots = array_map(
-            function(ExpressionInterface $expression) {
-                return $expression->getDynamicAdSlot();
-            },
-            $expressions
-        );
+        $referencingDynamicAdSlots = [];
+
+        /** @var ExpressionInterface $expression */
+        foreach($expressions as $expression){
+            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getDynamicAdSlots();
+
+            if($dynamicAdSlots->count() < 1) continue;
+
+            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $dynamicAdSlots->toArray());
+        }
 
         // dynamic ad slots that have default ad slot is this one.
-        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots()->toArray());
+        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots());
         $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
 
         if (count($referencingDynamicAdSlots) > 0) {
@@ -280,6 +293,14 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         return $this->handleView($view);
     }
 
+    /**
+     * @Rest\View(
+     *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslotlib.summary", "nativeadslot.summary", "nativeadslotlib.summary", "site.summary", "user.summary", "adtaglibrary.ref", "adnetwork.summary"}
+     * )
+     * @Rest\View(serializerEnableMaxDepthChecks=false)
+     * @param $id
+     * @return \Tagcade\Model\Core\AdTagInterface[]
+     */
     public function getAdtagsAction($id)
     {
         /** @var DisplayAdSlotInterface $adSlot */

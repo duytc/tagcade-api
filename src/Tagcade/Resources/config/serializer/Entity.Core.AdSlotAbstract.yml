@@ -5,7 +5,7 @@ Tagcade\Entity\Core\AdSlotAbstract:
         map:
             display_model: Tagcade\Model\Core\DisplayAdSlot
             display: Tagcade\Entity\Core\DisplayAdSlot
-            dynamic_mode: Tagcade\Model\Core\DynamicAdSlot
+            dynamic_model: Tagcade\Model\Core\DynamicAdSlot
             dynamic: Tagcade\Entity\Core\DynamicAdSlot
             native_model: Tagcade\Model\Core\NativeAdSlot
             native: Tagcade\Entity\Core\NativeAdSlot

@@ -7,6 +7,7 @@ use Doctrine\ORM\Event\PostFlushEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 
 class AdTagChangeListener
 {
@@ -52,22 +53,30 @@ class AdTagChangeListener
         array_walk($changedEntities,
             function($entity) use (&$adSlots)
             {
-                if (!$entity instanceof AdTagInterface)
+                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface)
                 {
                     return false;
                 }
 
-                // ignore the ad tag in adSlot has been counted
-                if (in_array($entity->getAdSlot(), $adSlots)) {
+                $adTags = $entity instanceof LibraryAdTagInterface ? $entity->getAdTags(): [$entity];
+                if (is_null($adTags)) { // ignore when update library with no tag reference
                     return false;
                 }
 
-                $updatingAdSlot = $entity->getAdSlot();
-                if (!$updatingAdSlot->getAdTags()->contains($entity)) {
-                    $updatingAdSlot->getAdTags()->add($entity);
+                foreach($adTags as $tag) {
+                    // ignore the ad tag in adSlot has been counted
+                    if (in_array($tag->getAdSlot(), $adSlots)) {
+                        continue;
+                    }
+
+                    $updatingAdSlot = $tag->getAdSlot();
+                    if (!$updatingAdSlot->getAdTags()->contains($tag)) { // include the entity being inserted
+                        $updatingAdSlot->getAdTags()->add($tag);
+                    }
+
+                    $adSlots[] = $updatingAdSlot;
                 }
-                
-                $adSlots[] = $updatingAdSlot;
+
 
                 return true;
             }

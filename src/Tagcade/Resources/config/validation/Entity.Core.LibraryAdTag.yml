@@ -1,0 +1,17 @@
+Tagcade\Entity\Core\LibraryAdTag:
+    properties:
+        adNetwork:
+            - NotBlank: ~
+            - Valid: ~
+        adType:
+            - NotBlank: ~
+            - Type:
+                type: integer
+                message: "The value {{ value }} is not a valid number."
+            - GreaterThan:
+                value: -1
+        referenceName:
+            - NotBlank: ~
+            - Length:
+                min: 2
+                minMessage: "Ad slot name must be at least {{ limit }} characters in length"

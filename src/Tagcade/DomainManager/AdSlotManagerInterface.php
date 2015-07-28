@@ -66,4 +66,6 @@ interface AdSlotManagerInterface
     public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function persistAndFlush(BaseAdSlotInterface $adSlot);
 }

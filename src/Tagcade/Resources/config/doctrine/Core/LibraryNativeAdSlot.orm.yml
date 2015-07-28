@@ -1,0 +1,10 @@
+Tagcade\Entity\Core\LibraryNativeAdSlot:
+    type: entity
+    table: library_native_ad_slot
+    repositoryClass: Tagcade\Repository\Core\LibraryNativeAdSlotRepository
+
+    oneToMany:
+        nativeAdSlots:
+            targetEntity: Tagcade\Entity\Core\NativeAdSlot
+            mappedBy: libraryNativeAdSlot
+            cascade: ['remove']

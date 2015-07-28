@@ -22,10 +22,11 @@ interface AdTagInterface extends ModelInterface
     public function getAdSlotId();
 
     /**
-     * @param ReportableAdSlotInterface $adSlot
+     * @param BaseAdSlotInterface $adSlot
      * @return self
      */
-    public function setAdSlot(ReportableAdSlotInterface $adSlot);
+    public function setAdSlot(BaseAdSlotInterface $adSlot);
+
 
     /**
      * @return AdNetworkInterface|null
@@ -111,27 +112,34 @@ interface AdTagInterface extends ModelInterface
     public function getRotation();
 
     /**
-     * This indicate ad tag type: image, custom, etc..
-     * get AdType
-     * @return int
+     * @return LibraryAdTagInterface
      */
-    public function getAdType();
+    public function getLibraryAdTag();
 
     /**
-     * set AdType
-     * @param int $adType
+     * @param LibraryAdTagInterface $libraryAdTag
+     * @return mixed
      */
-    public function setAdType($adType);
+    public function setLibraryAdTag(LibraryAdTagInterface $libraryAdTag);
+
 
     /**
-     * get Descriptor as json_array
-     * @return array
+     * @return AdTagInterface[]
      */
-    public function getDescriptor();
+    public function getCoReferencedAdTags();
 
     /**
-     * set Descriptor formatted as json_array
-     * @param array $descriptor
+     * @return string
      */
-    public function setDescriptor($descriptor);
+    public function getRefId();
+
+    /**
+     * @param string $refId
+     */
+    public function setRefId($refId);
+
+    /**
+     * @return string
+     */
+    public function checkSum();
 }

@@ -22,6 +22,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
 {
 
     /**
+     *
      * Get all ad tags
      *
      * @ApiDoc(
@@ -31,7 +32,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *  }
      * )
      *
-     * @return AdTagInterface[]
+     * @return BaseAdSlotInterface[]
      */
     public function cgetAction()
     {
@@ -39,13 +40,20 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
         $adSlotManager = $this->get('tagcade.domain_manager.ad_slot');
 
         if ($role instanceof PublisherInterface) {
-            return $adSlotManager->getAdSlotsForPublisher($role);
+            $adSlots = $adSlotManager->getAdSlotsForPublisher($role);
+            return $adSlots;
         }
 
-        return $adSlotManager->all();
+        $adSlots =  $adSlotManager->all();
+
+        return $adSlots;
     }
 
     /**
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "nativeadslot.detail", "site.summary", "nativeadslotlib.ref", "displayadslotlib.ref", "publisher.summary"}
+     * )
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      * Get a single adSlot for the given id
      *
      * @ApiDoc(

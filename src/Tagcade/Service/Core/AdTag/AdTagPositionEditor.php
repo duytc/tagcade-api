@@ -8,8 +8,10 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
 class AdTagPositionEditor implements AdTagPositionEditorInterface
 {
@@ -63,7 +65,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
     public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
-
+        $coReferencedAdSlots = $adSlot->getCoReferencedAdSlots()->toArray();
         $adTags = $adSlot->getAdTags()->toArray();
 
         if (empty($adTags)) {
@@ -94,7 +96,13 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
 
                 $adTag = $adTagMap[$adTagId];
                 if ($pos != $adTag->getPosition()) {
-                    $adTag->setPosition($pos);
+                    //update all sibling AdTag
+                    array_walk($coReferencedAdSlots, function(DisplayAdSlotInterface $d) use($adTag, $pos){
+                        $siblingAdTags = $this->adTagManager->getAdTagsByAdSlotAndRefId($d, $adTag->getRefId());
+                        array_map(function(AdTagInterface $sib) use($pos){
+                            $sib->setPosition($pos);
+                        },$siblingAdTags);
+                    });
                 }
 
                 $processedAdTags[] = $adTag->getId();
@@ -124,10 +132,52 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
 
     protected function updatePosition(array $adTags, $position)
     {
-        $updateCount = 0;
+        $allTagsToBeUpdated = $adTags;
+        $processedSlots = [];
+        foreach($adTags as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            $adSlot = $adTag->getAdSlot();
+            if (!$adSlot instanceof DisplayAdSlotInterface) {
+                continue;
+            }
 
+            $updatingSlots = $adSlot->getCoReferencedAdSlots()->toArray();
+            if (count($updatingSlots) < 2) { // only one slot then there is no shared 
+                continue;
+            }
+
+            $updatingSlots = array_filter(
+                $updatingSlots,
+                function (DisplayAdSlotInterface $adSlot) use(&$processedSlots){
+                    if (!in_array($adSlot, $processedSlots)) {
+                        $processedSlots[] = $adSlot;
+
+                        return true;
+                    }
+
+                    return false;
+                }
+            );
+
+            foreach ($updatingSlots as $adSlot) {
+                $foundAdTags = $this->adTagManager->getAdTagsByAdSlotAndRefId($adSlot, $adTag->getRefId());
+
+                array_walk(
+                    $foundAdTags,
+                    function(AdTagInterface $t) use(&$allTagsToBeUpdated) {
+                        if (!in_array($t, $allTagsToBeUpdated)) {
+                            $allTagsToBeUpdated[] = $t;
+                        }
+                    }
+                );
+            }
+        }
+
+        $updateCount = 0;
         array_walk(
-            $adTags,
+            $allTagsToBeUpdated,
             function($adTag) use ($position, &$updateCount)
             {
                 /**

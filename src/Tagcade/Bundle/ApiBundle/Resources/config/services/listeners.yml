@@ -28,3 +28,7 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
 #            - { name: doctrine.event_listener, event: preUpdate }
 
+    tagcade_api.event_listener.MoveAdTagToLibraryListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\MoveAdTagToLibraryListener
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }

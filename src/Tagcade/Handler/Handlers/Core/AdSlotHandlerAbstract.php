@@ -2,6 +2,8 @@
 
 namespace Tagcade\Handler\Handlers\Core;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Handler\RoleHandlerAbstract;
@@ -11,6 +13,10 @@ use Tagcade\Model\Core\SiteInterface;
 
 abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
 {
+    /**
+     * @var EntityManagerInterface
+     */
+    protected $em;
     /**
      * @inheritdoc
      *
@@ -34,19 +40,38 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
         //clone adSlot
         $newAdSlot = clone $originAdSlot;
         $newAdSlot->setId(null);
+        $libraryVisible = $originAdSlot->getLibraryDisplayAdSlot()->isVisible();
+        if(!$libraryVisible){
+            $newLibraryAdSlot = clone $originAdSlot->getLibraryDisplayAdSlot();
+            $newLibraryAdSlot->setId(null);
+            $newLibraryAdSlot->setReferenceName($newName);
+            $newAdSlot->setLibraryDisplayAdSlot($newLibraryAdSlot);
+        }
+
         $newAdSlot->setName($newName);
 
-        $newAdSlot->setAdTags(null); // remove referencing ad tags dues to current ad slot clone
+        $newAdSlot->setAdTags(new ArrayCollection()); // remove referencing ad tags dues to current ad slot clone
         //now clone adTags
         if (null !== $originAdSlot->getAdTags() && count($originAdSlot->getAdTags()) > 0) {
             $oldAdTags = $originAdSlot->getAdTags()->toArray();
 
             array_walk(
                 $oldAdTags,
-                function (AdTagInterface $adTag) use(&$newAdSlot){
+                function (AdTagInterface $adTag) use(&$newAdSlot, $libraryVisible){
                     $newAdTag = clone $adTag;
                     $newAdTag->setId(null);
                     $newAdTag->setAdSlot($newAdSlot);
+
+                    if(!$libraryVisible){
+                        $newAdTag->setRefId(uniqid('', true));
+                    }
+
+                    if(!$adTag->getLibraryAdTag()->getVisible()){
+                        // clone the LibraryAdTag itself
+                        $newLibraryAdTag = clone $adTag->getLibraryAdTag();
+                        $newLibraryAdTag->setId(null);
+                        $newAdTag->setLibraryAdTag($newLibraryAdTag);
+                    }
 
                     $newAdSlot->getAdTags()->add($newAdTag);
                 }
@@ -58,7 +83,7 @@ abstract class AdSlotHandlerAbstract extends RoleHandlerAbstract
         }
 
         //persis cloned adSlot
-        $this->getDomainManager()->save($newAdSlot);
+        $this->getDomainManager()->persistAndFlush($newAdSlot);
 
         //dispatch event
         $event = $this->createCloneAdSlotEventLog($originAdSlot, $newAdSlot, $newName);

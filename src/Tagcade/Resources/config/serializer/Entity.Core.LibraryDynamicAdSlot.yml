@@ -1,0 +1,24 @@
+Tagcade\Entity\Core\LibraryDynamicAdSlot:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [dynamicadSlotlib.detail, dynamicadSlotlib.summary]
+        publisher:
+            expose: true
+            groups: [dynamicadSlotlib.detail]
+        referenceName:
+            expose: true
+            groups: [dynamicadSlotlib.detail, dynamicadSlotlib.summary, dynamicadSlotlib.ref]
+        expressions:
+            expose: true
+            groups: [dynamicadSlotlib.detail, dynamicadSlotlib.summary]
+        defaultAdSlot:
+            expose: true
+            groups: [dynamicadSlotlib.detail, dynamicadSlotlib.summary]
+        native:
+            expose: true
+            groups: [dynamicadSlotlib.detail, dynamicadSlotlib.summary]
+        visible:
+            expose: true
+            groups: [dynamicadSlotlib.detail, dynamicadSlotlib.summary]

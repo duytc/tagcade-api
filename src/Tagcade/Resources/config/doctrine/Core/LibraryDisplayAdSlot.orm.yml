@@ -1,0 +1,16 @@
+Tagcade\Entity\Core\LibraryDisplayAdSlot:
+    type: entity
+    table: library_display_ad_slot
+    repositoryClass: Tagcade\Repository\Core\LibraryDisplayAdSlotRepository
+
+    fields:
+        width:
+            type: integer
+        height:
+            type: integer
+
+    oneToMany:
+        displayAdSlots:
+            targetEntity: Tagcade\Entity\Core\DisplayAdSlot
+            mappedBy: libraryDisplayAdSlot
+            cascade: ['remove']

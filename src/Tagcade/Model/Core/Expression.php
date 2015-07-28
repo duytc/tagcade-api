@@ -13,9 +13,9 @@ class Expression implements ExpressionInterface
     protected $startingPosition;
     protected $deletedAt;
     /**
-     * @var DynamicAdSlotInterface
+     * @var LibraryDynamicAdSlotInterface
      */
-    protected $dynamicAdSlot;
+    protected $libraryDynamicAdSlot;
     /**
      * @var BaseAdSlotInterface
      */
@@ -66,19 +66,19 @@ class Expression implements ExpressionInterface
     }
 
     /**
-     * @return DynamicAdSlotInterface
+     * @return LibraryDynamicAdSlotInterface
      */
-    public function getDynamicAdSlot()
+    public function getLibraryDynamicAdSlot()
     {
-        return $this->dynamicAdSlot;
+        return $this->libraryDynamicAdSlot;
     }
 
     /**
-     * @param DynamicAdSlotInterface $dynamicAdSlot
+     * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
      */
-    public function setDynamicAdSlot($dynamicAdSlot)
+    public function setLibraryDynamicAdSlot($libraryDynamicAdSlot)
     {
-        $this->dynamicAdSlot = $dynamicAdSlot;
+        $this->libraryDynamicAdSlot = $libraryDynamicAdSlot;
     }
 
     /**

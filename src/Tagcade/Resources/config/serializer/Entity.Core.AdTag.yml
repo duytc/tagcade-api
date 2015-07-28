@@ -7,15 +7,9 @@ Tagcade\Entity\Core\AdTag:
         adSlot:
             expose: true
             groups: [adtag.detail, adtag.summary]
-        adNetwork:
-            expose: true
-            groups: [adtag.detail, adtag.summary]
         name:
             expose: true
             groups: [adtag.detail, adtag.summary]
-        html:
-            expose: true
-            groups: [adtag.detail]
         position:
             expose: true
             groups: [adtag.detail]
@@ -28,9 +22,6 @@ Tagcade\Entity\Core\AdTag:
         rotation:
             expose: true
             groups: [adtag.detail]
-        adType:
-            expose: true
-            groups: [adtag.detail]
-        descriptor:
+        libraryAdTag:
             expose: true
             groups: [adtag.detail]

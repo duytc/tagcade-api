@@ -15,18 +15,17 @@ Tagcade\Entity\Core\AdTag:
         name:
             type: string
             length: 100
-        html:
-            type: text
-            nullable: true
 
         position:
             type: integer
             options:
                 default: 1
+
         active:
             type: boolean
             options:
                 default: true
+
         createdAt:
             type: datetime
             gedmo:
@@ -48,17 +47,13 @@ Tagcade\Entity\Core\AdTag:
         rotation:
             type: integer
             nullable: true
-
-        adType:
-            type: integer
-            options:
-                default: 0
-
-        descriptor:
-            type: json_array
+        refId:
+            type: string
             nullable: true
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
-        adNetwork:
-            targetEntity: Tagcade\Entity\Core\AdNetwork
+            inversedBy: adTags
+        libraryAdTag:
+            targetEntity: Tagcade\Entity\Core\LibraryAdTag
+            cascade: ['persist']

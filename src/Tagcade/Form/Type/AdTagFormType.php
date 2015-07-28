@@ -3,23 +3,16 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\AdTag;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\InvalidFormException;
+use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
-use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
-use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
 
 class AdTagFormType extends AbstractRoleSpecificFormType
 {
@@ -30,7 +23,6 @@ class AdTagFormType extends AbstractRoleSpecificFormType
 
     public function __construct(AdSlotRepositoryInterface $adSlotRepository){
         $this->adSlotRepository = $adSlotRepository;
-
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -39,27 +31,15 @@ class AdTagFormType extends AbstractRoleSpecificFormType
 
             // admins can add adSlots for any publisher
             $builder->add('adSlot');
-            $builder->add('adNetwork');
 
-        } else if ($this->userRole instanceof PublisherInterface) {
-
-            /** @var PublisherInterface $publisher */
-            $publisher = $this->userRole;
+        }
+        else if ($this->userRole instanceof PublisherInterface) {
 
             $builder
                 ->add('adSlot', 'entity', array(
                     'class' => AdSlotAbstract::class,
-                    'choices' => $this->getReportableAdSlotsForPublisher($publisher)
-                ))
-                ->add('adNetwork', 'entity', [
-                    'class' => AdNetwork::class,
-                    'query_builder' => function(AdNetworkRepositoryInterface $repository) use ($publisher) {
-                        return $repository->getAdNetworksForPublisherQuery($publisher);
-                    }
-                ])
-            ;
-
-            unset($publisher);
+                    'choices' => $this->getReportableAdSlotsForPublisher($this->userRole)
+                ));
 
         } else {
             throw new LogicException('A valid user role is required by AdTagFormType');
@@ -67,44 +47,23 @@ class AdTagFormType extends AbstractRoleSpecificFormType
 
         $builder
             ->add('name')
-            ->add('html')
             ->add('position')
             ->add('frequencyCap')
             ->add('active')
             ->add('rotation')
-            ->add('adType')
-            ->add('descriptor')
+            ->add('libraryAdTag', 'entity', array('class' => LibraryAdTag::class))
         ;
 
         $builder->addEventListener(
-            FormEvents::POST_SUBMIT,
+            FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
-                /** @var AdTagInterface $data */
-                $data = $event->getData();
+                $form = $event->getForm();
+                $adTag = $event->getData();
 
-                try {
-                    $frequencyCap = $data->getFrequencyCap();
-                    if (null !== $frequencyCap && (!is_integer($frequencyCap) || $frequencyCap < 1)) {
-                        throw new InvalidArgumentException('Frequency cap must be an positive integer');
-                    }
-                }
-                catch (InvalidArgumentException $e) {
-                    $form = $event->getForm();
-
-                    $form->get('frequencyCap')->addError(new FormError($e->getMessage()));
-                }
-                try {
-                    switch ($data->getAdType()) {
-                        case self::AD_TYPE_IMAGE:
-                            $this->validateImageAd($data);
-                            break;
-                        default:
-                            $this->validateCustomAd($data);
-                    }
-                } catch (InvalidFormException $ex) {
-                    $form = $event->getForm();
-
-                    $form->get('descriptor')->addError(new FormError($ex->getMessage()));
+                //create new Library
+                if(array_key_exists('libraryAdTag', $adTag) && is_array($adTag['libraryAdTag'])){
+                    $form->remove('libraryAdTag');
+                    $form->add('libraryAdTag', new LibraryAdTagFormType($this->userRole));
                 }
             }
         );
@@ -120,59 +79,59 @@ class AdTagFormType extends AbstractRoleSpecificFormType
         return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher);
     }
 
-    protected function validateImageAd(AdTagInterface $adTag)
-    {
-        $descriptor = $adTag->getDescriptor();
-
-        if (null === $descriptor || !is_array($descriptor) || !isset($descriptor['imageUrl']) || !isset($descriptor['targetUrl']))
-        {
-            throw new InvalidFormException('The descriptor "%descriptor%" for AD_TYPE_IMAGE invalid: must contain keys \'imageUrl\' and \'targetUrl\'.', $this);
-        }
-
-        $this->validateImageUrl($descriptor['imageUrl']);
-
-        $this->validateTargetUrl($descriptor['targetUrl']);
-    }
-
-    protected function validateCustomAd(AdTagInterface $adTag)
-    {
-         if (null === $adTag->getHtml()) {
-             throw new InvalidFormException('expect html of ad tag');
-         }
-    }
-
-    /**
-     * validate ImageUrl.
-     * @param $imageUrl
-     */
-    protected function validateImageUrl($imageUrl)
-    {
-        if (null === $imageUrl || sizeof($imageUrl) < 0) {
-            throw new InvalidFormException('The descriptor for AD_TYPE_IMAGE invalid: \'imageUrl\' must not null"', $this);
-        }
-
-        $this->validateUrl($imageUrl);
-    }
-
-    /**
-     * validate TargetUrl
-     * @param $targetUrl
-     */
-    protected function validateTargetUrl($targetUrl)
-    {
-        $this->validateUrl($targetUrl);
-    }
-
-    /**
-     * validate Url format
-     * @param $url
-     */
-    protected function validateUrl($url)
-    {
-        if(!filter_var($url, FILTER_VALIDATE_URL)){
-            throw new InvalidFormException('The format of url "%url%" is invalid.', $this);
-        }
-    }
+//    protected function validateImageAd(AdTagInterface $adTag)
+//    {
+//        $descriptor = $adTag->getDescriptor();
+//
+//        if (null === $descriptor || !is_array($descriptor) || !isset($descriptor['imageUrl']) || !isset($descriptor['targetUrl']))
+//        {
+//            throw new InvalidFormException('The descriptor "%descriptor%" for AD_TYPE_IMAGE invalid: must contain keys \'imageUrl\' and \'targetUrl\'.', $this);
+//        }
+//
+//        $this->validateImageUrl($descriptor['imageUrl']);
+//
+//        $this->validateTargetUrl($descriptor['targetUrl']);
+//    }
+//
+//    protected function validateCustomAd(AdTagInterface $adTag)
+//    {
+//         if (null === $adTag->getHtml()) {
+//             throw new InvalidFormException('expect html of ad tag');
+//         }
+//    }
+//
+//    /**
+//     * validate ImageUrl.
+//     * @param $imageUrl
+//     */
+//    protected function validateImageUrl($imageUrl)
+//    {
+//        if (null === $imageUrl || sizeof($imageUrl) < 0) {
+//            throw new InvalidFormException('The descriptor for AD_TYPE_IMAGE invalid: \'imageUrl\' must not null"', $this);
+//        }
+//
+//        $this->validateUrl($imageUrl);
+//    }
+//
+//    /**
+//     * validate TargetUrl
+//     * @param $targetUrl
+//     */
+//    protected function validateTargetUrl($targetUrl)
+//    {
+//        $this->validateUrl($targetUrl);
+//    }
+//
+//    /**
+//     * validate Url format
+//     * @param $url
+//     */
+//    protected function validateUrl($url)
+//    {
+//        if(!filter_var($url, FILTER_VALIDATE_URL)){
+//            throw new InvalidFormException('The format of url "%url%" is invalid.', $this);
+//        }
+//    }
 
     /**
      * check if string $haystack start with $needle

@@ -1,0 +1,22 @@
+Tagcade\Entity\Core\LibraryAdSlotAbstract:
+    exclusion_policy: ALL
+    discriminator:
+        field_name: libType
+        map:
+            lib_display: Tagcade\Entity\Core\LibraryDisplayAdSlot
+            lib_display_model: Tagcade\Model\Core\LibraryDisplayAdSlot
+            lib_native: Tagcade\Entity\Core\LibraryNativeAdSlot
+            lib_native_model: Tagcade\Model\Core\LibraryNativeAdSlot
+            lib_dynamic: Tagcade\Entity\Core\LibraryDynamicAdSlot
+            lib_dynamic_model: Tagcade\Model\Core\LibraryDynamicAdSlot
+
+    properties:
+        referenceName:
+            expose: true
+            groups: [slotlib.detail, slotlib.summary, slotlib.ref]
+        visible:
+            expose: true
+            groups: [slotlib.detail, slotlib.summary, slotlib.ref]
+        publisher:
+            expose: true
+            groups: [slotlib.detail, slotlib.summary, slotlib.ref]

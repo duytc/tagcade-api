@@ -2,7 +2,13 @@
 
 namespace Tagcade\DomainManager;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\PersistentCollection;
+use Exception;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Tagcade\DomainManager\Behaviors\ValidateAdSlotSynchronizationTrait;
+use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
@@ -12,16 +18,17 @@ use ReflectionClass;
 
 class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
 {
-    protected $om;
+    use ValidateAdSlotSynchronizationTrait;
+    protected $em;
     protected $repository;
     /**
      * @var AdSlotRepositoryInterface
      */
     private $adSlotRepository;
 
-    public function __construct(ObjectManager $om, DisplayAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository)
+    public function __construct(EntityManagerInterface $em, DisplayAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository)
     {
-        $this->om = $om;
+        $this->em = $em;
         $this->repository = $repository;
         $this->adSlotRepository = $adSlotRepository;
     }
@@ -37,19 +44,67 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(DisplayAdSlotInterface $adSlot)
+    public function save(DisplayAdSlotInterface $displayAdSlot)
     {
-        $this->om->persist($adSlot);
-        $this->om->flush();
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+            /** @var DisplayAdSlotInterface[] $coReferenceDisplayAdSlots */
+            $coReferenceDisplayAdSlots = $displayAdSlot->getCoReferencedAdSlots();
+
+            if($coReferenceDisplayAdSlots instanceof PersistentCollection) $coReferenceDisplayAdSlots = $coReferenceDisplayAdSlots->toArray();
+
+            // if the DisplayAdSlotLib is in the library
+            // "$adSlot->getId() == null" is to guarantee that we're creating new instance of DisplayAdSlot, not updating
+            if(null !== $coReferenceDisplayAdSlots && $displayAdSlot->getLibraryDisplayAdSlot()->isVisible() && count($coReferenceDisplayAdSlots) > 0 && $displayAdSlot->getId() == null) {
+                $referenceDisplayAdSlot = $coReferenceDisplayAdSlots[0];
+
+                // we are creating new ad slot from library
+                // hence we have to clone current existing AdTags base on other slot that also refers to the same library
+                $adTagsToBeCloned = $referenceDisplayAdSlot->getAdTags();
+
+                /** @var AdTagInterface $adTag */
+                foreach($adTagsToBeCloned as $adTag){
+
+                    $newAdTag = clone $adTag;
+                    $newAdTag->setAdSlot($displayAdSlot);
+                    $newAdTag->setRefId($adTag->getRefId());
+                    $newAdTag->setId(null);
+
+                    $displayAdSlot->getAdTags()->add($newAdTag);
+                }
+
+                // Validate synchronization
+                $this->prePersistValidate($displayAdSlot, $coReferenceDisplayAdSlots);
+            }
+
+            $this->em->persist($displayAdSlot);
+            $this->em->getConnection()->commit();
+
+            $this->em->flush();
+
+        } catch (Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(DisplayAdSlotInterface $adSlot)
+    public function delete(DisplayAdSlotInterface $displayAdSlot)
     {
-        $this->om->remove($adSlot);
-        $this->om->flush();
+        $libraryDisplayAdSlot = $displayAdSlot->getLibraryDisplayAdSlot();
+        //1. Remove library if visible = false and co-referenced slots less than 2
+        if(!$libraryDisplayAdSlot->isVisible() && count($displayAdSlot->getCoReferencedAdSlots()) < 2 ) {
+            $this->em->remove($libraryDisplayAdSlot); // resulting cascade remove this ad slot
+        }
+        else {
+            // 2. If the tag is in library then we only remove the tag itself, not the library.
+            $this->em->remove($displayAdSlot);
+        }
+
+        $this->em->flush();
     }
 
     /**
@@ -92,4 +147,13 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     {
         return $this->adSlotRepository->getDisplayAdSlotsForPublisher($publisher, $limit, $offset);
     }
-} 
+
+    /**
+     * @param DisplayAdSlotInterface $adSlot
+     */
+    public function persistAndFlush(DisplayAdSlotInterface $adSlot)
+    {
+        $this->em->persist($adSlot);
+        $this->em->flush();
+    }
+}

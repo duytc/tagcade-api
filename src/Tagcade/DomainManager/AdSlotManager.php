@@ -32,9 +32,9 @@ class AdSlotManager implements AdSlotManagerInterface
     private $adSlotRepository;
 
     public function __construct(DisplayAdSlotManagerInterface $displayAdSlotManager,
-        NativeAdSlotManagerInterface $nativeAdSlotManager,
-        DynamicAdSlotManagerInterface $dynamicAdSlotManager,
-        AdSlotRepositoryInterface $adSlotRepository
+                                NativeAdSlotManagerInterface $nativeAdSlotManager,
+                                DynamicAdSlotManagerInterface $dynamicAdSlotManager,
+                                AdSlotRepositoryInterface $adSlotRepository
     )
     {
         $this->displayAdSlotManager = $displayAdSlotManager;
@@ -94,7 +94,7 @@ class AdSlotManager implements AdSlotManagerInterface
 
     public function allReportableAdSlots($limit = null, $offset = null)
     {
-       return $this->adSlotRepository->allReportableAdSlots($limit, $offset);
+        return $this->adSlotRepository->allReportableAdSlots($limit, $offset);
     }
 
 
@@ -119,7 +119,7 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-       return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher, $limit, $offset);
+        return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher, $limit, $offset);
     }
 
     /**
@@ -143,5 +143,10 @@ class AdSlotManager implements AdSlotManagerInterface
         throw new LogicException('Do not support manager for this type of ad slot');
 
 
+    }
+
+    public function persistAndFlush(BaseAdSlotInterface $adSlot)
+    {
+        $this->getManager($adSlot)->persistAndFlush($adSlot);
     }
 }

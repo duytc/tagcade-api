@@ -27,8 +27,8 @@ Tagcade\Entity\Core\Expression:
             type: date
             nullable: true
     manyToOne:
-        dynamicAdSlot:
-            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+        libraryDynamicAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
             inversedBy: expressions
         expectAdSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

@@ -35,9 +35,15 @@ abstract class NativeAdSlotHandlerAbstract extends RoleHandlerAbstract
         //clone adSlot
         $newAdSlot = clone $originNativeAdSlot;
         $newAdSlot->setId(null);
+
+        $newLibraryAdSlot = clone $originNativeAdSlot->getLibraryNativeAdSlot();
+        $newLibraryAdSlot->setId(null);
+        $newLibraryAdSlot->setReferenceName($newName);
+        $newAdSlot->setLibraryNativeAdSlot($newLibraryAdSlot);
         $newAdSlot->setName($newName);
 
-        $newAdSlot->setAdTags(null); // remove referencing ad tags dues to current ad slot clone
+        $newAdSlot->setAdTags(new ArrayCollection()); // remove referencing ad tags dues to current ad slot clone
+
         //now clone adTags
         if (null !== $originNativeAdSlot->getAdTags() && count($originNativeAdSlot->getAdTags()) > 0) {
             $oldAdTags = $originNativeAdSlot->getAdTags()->toArray();
@@ -48,6 +54,14 @@ abstract class NativeAdSlotHandlerAbstract extends RoleHandlerAbstract
                     $newAdTag = clone $adTag;
                     $newAdTag->setId(null);
                     $newAdTag->setAdSlot($newAdSlot);
+                    $newAdTag->setRefId(uniqid('', true));
+
+                    if(!$adTag->getLibraryAdTag()->getVisible()){
+                        // clone the LibraryAdTag itself
+                        $newLibraryAdTag = clone $adTag->getLibraryAdTag();
+                        $newLibraryAdTag->setId(null);
+                        $newAdTag->setLibraryAdTag($newLibraryAdTag);
+                    }
 
                     $newAdSlot->getAdTags()->add($newAdTag);
                 }
@@ -59,7 +73,7 @@ abstract class NativeAdSlotHandlerAbstract extends RoleHandlerAbstract
         }
 
         //persis cloned adSlot
-        $this->getDomainManager()->save($newAdSlot);
+        $this->getDomainManager()->persistAndFlush($newAdSlot);
 
         //dispatch event
         $event = $this->createCloneNativeAdSlotEventLog($originNativeAdSlot, $newAdSlot, $newName);

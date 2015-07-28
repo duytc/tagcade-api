@@ -8,6 +8,15 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\AdTagInterface;
 
+/**
+ *
+ * This listener only supports updating position for ad tags in single ad slot.
+ * To make it works with library ad slots you have to set position manually for ad tags in library ad slot and flush.
+ * Then this listener will continue its job which is making sure position of ad tags in each slot is properly set
+ *
+ * Class UpdateAdTagPositionListener
+ * @package Tagcade\Bundle\ApiBundle\EventListener
+ */
 class UpdateAdTagPositionListener
 {
     public function onFlush(OnFlushEventArgs $args)

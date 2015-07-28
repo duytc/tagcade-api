@@ -1,0 +1,24 @@
+Tagcade\Entity\Core\LibraryDynamicAdSlot:
+    type: entity
+    table: library_dynamic_ad_slot
+    repositoryClass: Tagcade\Repository\Core\LibraryDynamicAdSlotRepository
+
+    fields:
+        native:
+            type: boolean
+            options:
+                default: false
+
+    oneToMany:
+        expressions:
+            targetEntity: Tagcade\Entity\Core\Expression
+            mappedBy: libraryDynamicAdSlot
+            cascade: ["persist", "remove"]
+            orphanRemoval: true
+        dynamicAdSlots:
+            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+            mappedBy: libraryDynamicAdSlot
+            cascade: ['remove']
+    manyToOne:
+        defaultAdSlot:
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract

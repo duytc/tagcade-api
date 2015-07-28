@@ -70,4 +70,6 @@ interface DynamicAdSlotManagerInterface
 //     * @return DynamicAdSlotInterface[]
 //     */
 //    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null);
+
+    public function persistAndFlush(DynamicAdSlotInterface $adSlot);
 }

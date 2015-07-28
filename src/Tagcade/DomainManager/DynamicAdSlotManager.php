@@ -38,9 +38,9 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(DynamicAdSlotInterface $adSlot)
+    public function save(DynamicAdSlotInterface $dynamicAdSlot)
     {
-        $this->om->persist($adSlot);
+        $this->om->persist($dynamicAdSlot);
         $this->om->flush();
     }
 
@@ -49,7 +49,16 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
      */
     public function delete(DynamicAdSlotInterface $adSlot)
     {
-        $this->om->remove($adSlot);
+        $libraryDynamicAdSlot = $adSlot->getLibraryDynamicAdSlot();
+        //1. Remove library if visible = false and co-referenced slots less than 2
+        if(!$libraryDynamicAdSlot->isVisible() && count($adSlot->getCoReferencedAdSlots()) < 2 ) {
+            $this->om->remove($libraryDynamicAdSlot); // resulting cascade remove this ad slot
+        }
+        else {
+            // 2. If the tag is in library then we only remove the tag itself, not the library.
+            $this->om->remove($adSlot);
+        }
+
         $this->om->flush();
     }
 
@@ -101,4 +110,8 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
 //    {
 //        return $this->repository->getDynamicAdSlotsForAdSlot($adSlot, $limit, $offset);
 //    }
+    public function persistAndFlush(DynamicAdSlotInterface $adSlot)
+    {
+        $this->om->persist($adSlot);
+        $this->om->flush();    }
 }

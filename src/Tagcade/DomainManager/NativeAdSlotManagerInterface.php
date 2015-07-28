@@ -61,4 +61,6 @@ interface NativeAdSlotManagerInterface
      * @return NativeAdSlotInterface[]
      */
     public function getNativeAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function persistAndFlush(NativeAdSlotInterface $adSlot);
 }

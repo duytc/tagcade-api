@@ -2,6 +2,8 @@
 
 namespace Tagcade\Model\Core;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class AdTag implements AdTagInterface
 {
     protected $id;
@@ -10,36 +12,31 @@ class AdTag implements AdTagInterface
      * @var BaseAdSlotInterface
      */
     protected $adSlot;
-
-    /**
-     * @var AdNetworkInterface
-     */
-    protected $adNetwork;
     protected $name;
-    protected $html;
     protected $position;
     protected $active;
     protected $frequencyCap;
 
     /** int - for rotation display AdTags */
     protected $rotation;
-    /** int - type of AdTags*/
-    protected $adType = 0;
-    /** array - json_array, descriptor of AdTag*/
-    protected $descriptor;
+
 
     /**
-     * @param string $name
-     * @param string $html
-     * @param AdNetworkInterface|null $adNetwork
+     * @var LibraryAdTagInterface
      */
-    public function __construct($name, $html, AdNetworkInterface $adNetwork = null)
+    protected $libraryAdTag;
+    protected $refId;
+    /**
+     * @param $name
+     * @param LibraryAdTagInterface $libraryAdTag
+     */
+    public function __construct($name,  LibraryAdTagInterface $libraryAdTag = null)
     {
         $this->name = $name;
-        $this->html = $html;
+        $this->html = $libraryAdTag->getHtml();
 
-        if ($adNetwork) {
-            $this->setAdNetwork($adNetwork);
+        if ($libraryAdTag) {
+            $this->setAdNetwork($libraryAdTag->getAdNetwork());
         }
     }
 
@@ -76,7 +73,7 @@ class AdTag implements AdTagInterface
         return $this->adSlot->getId();
     }
 
-    public function setAdSlot(ReportableAdSlotInterface $adSlot)
+    public function setAdSlot(BaseAdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
         return $this;
@@ -87,7 +84,15 @@ class AdTag implements AdTagInterface
      */
     public function getAdNetwork()
     {
-        return $this->adNetwork;
+
+        /**
+         * @var LibraryAdTagInterface $libraryAdTag
+         */
+        $libraryAdTag = $this->getLibraryAdTag();
+
+        if($libraryAdTag == null) return null;
+
+        return $libraryAdTag->getAdNetwork();
     }
 
     /**
@@ -95,16 +100,31 @@ class AdTag implements AdTagInterface
      */
     public function getAdNetworkId()
     {
-        if (!$this->adNetwork) {
-            return null;
-        }
+        $libraryAdTag = $this->getLibraryAdTag();
 
-        return $this->adNetwork->getId();
+        if($libraryAdTag == null) return null;
+
+        /**
+         * @var AdNetworkInterface $adNetwork
+         */
+        $adNetwork =  $libraryAdTag->getAdNetwork();
+
+        if($adNetwork == null) return null;
+
+        return $adNetwork->getId();
     }
 
     public function setAdNetwork(AdNetworkInterface $adNetwork)
     {
-        $this->adNetwork = $adNetwork;
+        /**
+         * @var LibraryAdTagInterface $libraryAdTag
+         */
+        $libraryAdTag = $this->getLibraryAdTag();
+
+        if($libraryAdTag != null) {
+            $libraryAdTag->setAdNetwork($adNetwork);
+        }
+
         return $this;
     }
 
@@ -130,7 +150,14 @@ class AdTag implements AdTagInterface
      */
     public function getHtml()
     {
-        return $this->html;
+        /**
+         * @var LibraryAdTagInterface $libraryAdTag
+         */
+        $libraryAdTag = $this->getLibraryAdTag();
+
+        if($libraryAdTag == null) return null;
+
+        return $libraryAdTag->getHtml();
     }
 
     /**
@@ -138,7 +165,15 @@ class AdTag implements AdTagInterface
      */
     public function setHtml($html)
     {
-        $this->html = $html;
+        /**
+         * @var LibraryAdTagInterface $libraryAdTag
+         */
+        $libraryAdTag = $this->getLibraryAdTag();
+
+        if($libraryAdTag != null) {
+            $libraryAdTag->setHtml($html);
+        }
+
         return $this;
     }
 
@@ -219,32 +254,62 @@ class AdTag implements AdTagInterface
     /**
      * @inheritdoc
      */
-    public function getAdType()
+    public function getLibraryAdTag()
     {
-        return $this->adType;
+        return $this->libraryAdTag;
     }
 
     /**
      * @inheritdoc
      */
-    public function setAdType($adType)
+    public function setLibraryAdTag(LibraryAdTagInterface $libraryAdTag)
     {
-        $this->adType = $adType;
+        $this->libraryAdTag = $libraryAdTag;
     }
 
     /**
-     * @inheritdoc
+     * @return AdTagInterface[]
      */
-    public function getDescriptor()
+    public function getCoReferencedAdTags()
     {
-        return $this->descriptor;
+        if($this->getLibraryAdTag() == null) return new ArrayCollection();
+
+        return $this->getLibraryAdTag()->getAdTags();
+    }
+
+
+    /**
+     * Calculate CheckSum string of an given AdTag
+     * by concatenating major properties together with null value ignored, then returning the MD5 hash
+     * @return string
+     */
+    public function checkSum()
+    {
+        return  md5(serialize(
+            array(
+                $this->getLibraryAdTag()->getId(),
+                $this->getName(),
+                $this->getPosition(),
+                $this->isActive(),
+                $this->getFrequencyCap(),
+                $this->getRotation(),
+                $this->getRefId()
+            )));
     }
 
     /**
-     * @inheritdoc
+     * @return mixed
      */
-    public function setDescriptor($descriptor)
+    public function getRefId()
     {
-        $this->descriptor = $descriptor;
+        return $this->refId;
+    }
+
+    /**
+     * @param mixed $refId
+     */
+    public function setRefId($refId)
+    {
+        $this->refId = $refId;
     }
 }

@@ -1,9 +1,9 @@
 Tagcade\Entity\Core\DisplayAdSlot:
     exclusion_policy: ALL
     virtual_properties:
-        getAdSlotType:
-            type: string
-            groups: [adslot.detail, adslot.summary]
+        getLibraryAdSlot:
+            serialized_name: libraryAdSlot
+            groups: [adslot.detail]
     properties:
         id:
             expose: true
@@ -11,15 +11,19 @@ Tagcade\Entity\Core\DisplayAdSlot:
         site:
             expose: true
             groups: [adslot.detail, adslot.summary]
+#        displayAdSlotLib:
+#            expose: true
+#            serialized_name: adSlotLib
+#            groups: [adslot.detail]
         name:
             expose: true
             groups: [adslot.detail, adslot.summary]
-        width:
-            expose: true
-            groups: [adslot.detail, adslot.summary]
-        height:
-            expose: true
-            groups: [adslot.detail, adslot.summary]
+#        width:
+#            expose: true
+#            groups: [adslot.detail, adslot.summary]
+#        height:
+#            expose: true
+#            groups: [adslot.detail, adslot.summary]
 #        type:
 #            expose: true
 #            groups: [adslot.detail, adslot.summary]

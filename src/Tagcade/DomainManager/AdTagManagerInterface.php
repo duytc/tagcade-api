@@ -58,6 +58,14 @@ interface AdTagManagerInterface
     public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
 
     /**
+     * @param BaseAdSlotInterface $adSlot
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getSharedAdTagsForAdSlot(BaseAdSlotInterface $adSlot, $limit = null, $offset = null);
+
+    /**
      * @param SiteInterface $site
      * @param bool $filterActive
      * @param int|null $limit
@@ -99,5 +107,5 @@ interface AdTagManagerInterface
 
     public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true);
 
-
+    public function getAdTagsByAdSlotAndRefId(BaseAdSlotInterface $adSlot, $refId, $limit = null, $offset = null);
 }

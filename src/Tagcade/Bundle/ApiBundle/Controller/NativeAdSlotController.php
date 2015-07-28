@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Handler\Handlers\Core\NativeAdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -25,6 +26,10 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 {
     /**
      * Get all ad slots
+     *
+     * @Rest\View(
+     *      serializerGroups={"nativeadslot.summary", "librarynativeadslot.ref" , "site.summary" , "user.summary"}
+     * )
      *
      * @ApiDoc(
      *  resource = true,
@@ -42,6 +47,10 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
     /**
      * Get a single nativeAdSlot for the given id
+     *
+     * @Rest\View(
+     *      serializerGroups={"nativeadslot.detail" , "librarynativeadslot.detail",  "slotlib.detail",  "user.summary", "site.summary" }
+     * )
      *
      * @ApiDoc(
      *  resource = true,
@@ -121,33 +130,33 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         return $this->post($request);
     }
 
-    /**
-     * Update the position of all ad tags in an ad slot
-     *
-     * @param Request $request
-     * @param int $id
-     * @return View
-     */
-    public function postAdtagsPositionsAction(Request $request, $id)
-    {
-        /** @var NativeAdSlotInterface $adSlot */
-        $adSlot = $this->one($id);
-        $newAdTagOrderIds = $request->request->get('ids');
-
-        if (!$newAdTagOrderIds) {
-            throw new BadRequestHttpException("Ad tagIds parameter is required");
-        }
-
-        $result = array_values(
-            $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
-                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
-        );
-
-        $event = $this->createUpdatePositionEventLog($adSlot, $newAdTagOrderIds);
-        $this->getHandler()->dispatchEvent($event);
-
-        return $result;
-    }
+//    /**
+//     * Update the position of all ad tags in an ad slot
+//     *
+//     * @param Request $request
+//     * @param int $id
+//     * @return View
+//     */
+//    public function postAdtagsPositionsAction(Request $request, $id)
+//    {
+//        /** @var NativeAdSlotInterface $adSlot */
+//        $adSlot = $this->one($id);
+//        $newAdTagOrderIds = $request->request->get('ids');
+//
+//        if (!$newAdTagOrderIds) {
+//            throw new BadRequestHttpException("Ad tagIds parameter is required");
+//        }
+//
+//        $result = array_values(
+//            $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
+//                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
+//        );
+//
+//        $event = $this->createUpdatePositionEventLog($adSlot, $newAdTagOrderIds);
+//        $this->getHandler()->dispatchEvent($event);
+//
+//        return $result;
+//    }
 
     /**
      * Update the position of all ad tags in an ad slot
@@ -256,15 +265,20 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         // dynamic ad slots that its expressions refer to this ad slot
 
         $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
-        $referencingDynamicAdSlots = array_map(
-            function(ExpressionInterface $expression) {
-                return $expression->getDynamicAdSlot();
-            },
-            $expressions
-        );
+
+        $referencingDynamicAdSlots = [];
+
+        /** @var ExpressionInterface $expression */
+        foreach($expressions as $expression){
+            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getDynamicAdSlots();
+
+            if($dynamicAdSlots->count() < 1) continue;
+
+            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $dynamicAdSlots->toArray());
+        }
 
         // dynamic ad slots that have default ad slot is this one.
-        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots()->toArray());
+        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots());
         $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
 
         if (count($referencingDynamicAdSlots) > 0) {
@@ -280,6 +294,14 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         return $this->handleView($view);
     }
 
+    /**
+     * @Rest\View(
+     *      serializerGroups={"adtag.detail", "adslot.summary", "nativeadslot.summary", "site.summary", "user.summary", "adtaglibrary.ref", "adnetwork.summary"}
+     * )
+     * @Rest\View(serializerEnableMaxDepthChecks=false)
+     * @param $id
+     * @return \Tagcade\Model\Core\AdTagInterface[]
+     */
     public function getAdtagsAction($id)
     {
         /** @var NativeAdSlotInterface $adSlot */

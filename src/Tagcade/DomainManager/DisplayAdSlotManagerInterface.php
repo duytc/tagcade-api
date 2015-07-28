@@ -61,4 +61,6 @@ interface DisplayAdSlotManagerInterface {
      * @return DisplayAdSlotInterface[]
      */
     public function getAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function persistAndFlush(DisplayAdSlotInterface $adSlot);
 } 

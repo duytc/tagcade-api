@@ -4,14 +4,13 @@ namespace Tagcade\Entity\Core;
 
 use DateTime;
 use Tagcade\Model\Core\AdTag as AdTagModel;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 
 class AdTag extends AdTagModel
 {
     protected $id;
     protected $adSlot;
-    protected $adNetwork;
     protected $name;
-    protected $html;
     protected $position;
     protected $active;
 
@@ -22,28 +21,15 @@ class AdTag extends AdTagModel
 
     /** int - for rotation display AdTags */
     protected $rotation;
-    /** int - type of AdTags*/
-    protected $adType;
-    /** array - json_array, descriptor of AdTag*/
-    protected $descriptor;
+    protected $refId;
+
+    /**
+     * @var LibraryAdTagInterface
+     */
+    protected $libraryAdTag;
 
     public function __construct()
     {
     }
 
-    /**
-     * @return null|DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return null|DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
 }

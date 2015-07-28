@@ -1,0 +1,7 @@
+Tagcade\Entity\Core\LibraryNativeAdSlot:
+    properties:
+        referenceName:
+            - NotBlank: ~
+            - Length:
+                min: 2
+                minMessage: "Ad slot name must be at least {{ limit }} characters in length"

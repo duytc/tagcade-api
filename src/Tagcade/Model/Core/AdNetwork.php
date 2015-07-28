@@ -16,8 +16,8 @@ class AdNetwork implements AdNetworkInterface
     protected $publisher;
     protected $name;
     protected $url;
-    protected $adTags;
-
+    protected $active;
+    protected $libraryAdTags;
     /**
      * This is the default CPM assigned to all ad tags unless it is overwritten
      */
@@ -25,7 +25,7 @@ class AdNetwork implements AdNetworkInterface
 
     public function __construct()
     {
-        $this->adTags = new ArrayCollection();
+        $this->libraryAdTags = new ArrayCollection();
     }
 
     /**
@@ -118,12 +118,16 @@ class AdNetwork implements AdNetworkInterface
 
     public function getActiveAdTagsCount()
     {
-        return count(array_filter($this->adTags->toArray(), function (AdTagInterface $adTag) { return $adTag->isActive() === true; }));
+        $allTags = $this->getAdTags();
+
+        return count(array_filter($allTags, function (AdTagInterface $adTag) { return $adTag->isActive() === true; }));
     }
 
     public function getPausedAdTagsCount()
     {
-        return count(array_filter($this->adTags->toArray(), function (AdTagInterface $adTag) { return $adTag->isActive() === false; }));
+        $allTags = $this->getAdTags();
+
+        return count(array_filter($allTags, function (AdTagInterface $adTag) { return $adTag->isActive() === false; }));
     }
 
     /**
@@ -131,7 +135,17 @@ class AdNetwork implements AdNetworkInterface
      */
     public function getAdTags()
     {
-        return $this->adTags;
+        $allAdTags = [];
+        $tagLibs = $this->libraryAdTags->toArray();
+        array_walk(
+            $tagLibs,
+            function(LibraryAdTagInterface $libraryAdTag) use(&$allAdTags){
+                $adTags = $libraryAdTag->getAdTags()->toArray();
+                $allAdTags = array_merge($allAdTags, $adTags);
+            }
+        );
+
+        return array_unique($allAdTags);
     }
 
     public function __toString()

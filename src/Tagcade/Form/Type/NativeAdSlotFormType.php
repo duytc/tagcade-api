@@ -3,13 +3,15 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Entity\Core\LibraryNativeAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlot;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
@@ -52,7 +54,40 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
 
         $builder
             ->add('name')
+            ->add('libraryAdSlot', 'entity', array('class' => LibraryNativeAdSlot::class))
         ;
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                $nativeAdSlot = $event->getData();
+
+                //create new Library
+                if(array_key_exists('libraryAdSlot', $nativeAdSlot) && is_array($nativeAdSlot['libraryAdSlot'])){
+                    $form->remove('libraryAdSlot');
+                    $form->add('libraryAdSlot', new LibraryNativeAdSlotFormType($this->userRole));
+                }
+            }
+        );
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                /** @var NativeAdSlotInterface $nativeAdSlot */
+                $nativeAdSlot = $event->getData();
+
+                $site = $nativeAdSlot->getSite();
+                $publisher = $site->getPublisher();
+
+                // set nativeAdSlotLib to NativeAdSlot for cascade persist
+                /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
+                $libraryNativeAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
+                $libraryNativeAdSlot->setPublisher($publisher);
+
+                $nativeAdSlot->setLibraryNativeAdSlot($libraryNativeAdSlot);
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

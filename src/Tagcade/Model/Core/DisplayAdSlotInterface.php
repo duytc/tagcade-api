@@ -39,7 +39,40 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
     public function setAdTags($adTags);
 
     /**
-     * @return ArrayCollection
+     * @return LibraryDynamicAdSlotInterface[]
+     */
+    public function getDefaultLibraryDynamicAdSlots();
+
+    /**
+     * @param LibraryDynamicAdSlotInterface[] $defaultLibraryDynamicAdSlots
+     */
+    public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots);
+
+    /**
+     * @return LibraryDisplayAdSlotInterface
+     */
+    public function getLibraryDisplayAdSlot();
+
+    /**
+     * @return LibraryDisplayAdSlotInterface
+     */
+    public function getLibraryAdSlot();
+
+    /**
+     * @param LibraryDisplayAdSlotInterface $libraryDisplayAdSlot
+     * @return mixed
+     */
+    public function setLibraryDisplayAdSlot(LibraryDisplayAdSlotInterface $libraryDisplayAdSlot);
+
+
+    /**
+     * get the list of DisplayAdSlot that also refers to the DisplayAdSlotLib of this entity
+     * @return DisplayAdSlotInterface[]
+     */
+    public function getCoReferencedAdSlots();
+
+    /**
+     * @return DynamicAdSlotInterface[]
      */
     public function defaultDynamicAdSlots();
 }

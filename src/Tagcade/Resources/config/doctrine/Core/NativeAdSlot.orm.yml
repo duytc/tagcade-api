@@ -2,23 +2,12 @@ Tagcade\Entity\Core\NativeAdSlot:
     type: entity
     table: core_native_ad_slot
     repositoryClass: Tagcade\Repository\Core\NativeAdSlotRepository
-#    gedmo:
-#        soft_deleteable:
-#            field_name: deletedAt
-#            time_aware: false
-#    id:
-#        id:
-#            type: integer
-#            generator:
-#                strategy: AUTO
-#    fields:
-#        name:
-#            type: string
-#            length: 100
-#        deletedAt:
-#            type: date
-#            nullable: true
+
+    manyToOne:
+        libraryNativeAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryNativeAdSlot
+            cascade: ['persist']
     oneToMany:
-        defaultDynamicAdSlots:
-            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+        defaultLibraryDynamicAdSlots:
+            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
             mappedBy: defaultAdSlot

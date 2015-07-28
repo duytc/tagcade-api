@@ -28,14 +28,14 @@ interface ExpressionInterface extends ModelInterface
     public function setStartingPosition($startingPosition);
 
     /**
-     * @return DynamicAdSlotInterface
+     * @return LibraryDynamicAdSlotInterface
      */
-    public function getDynamicAdSlot();
+    public function getLibraryDynamicAdSlot();
 
     /**
-     * @param DynamicAdSlotInterface $dynamicAdSlot
+     * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
      */
-    public function setDynamicAdSlot($dynamicAdSlot);
+    public function setLibraryDynamicAdSlot($libraryDynamicAdSlot);
     /**
      * @return BaseAdSlotInterface
      */

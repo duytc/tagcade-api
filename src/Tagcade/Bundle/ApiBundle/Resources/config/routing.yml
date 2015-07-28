@@ -18,9 +18,19 @@ api_ad_slot:
     resource: Tagcade\Bundle\ApiBundle\Controller\AdSlotController
     name_prefix:  api_1_
 
+api_library_ad_slot:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibraryAdSlotController
+    name_prefix:  api_1_
+
 api_display_ad_slot:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\DisplayAdSlotController
+    name_prefix:  api_1_
+
+api_library_display_ad_slot:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibraryDisplayAdSlotController
     name_prefix:  api_1_
 
 api_dynamic_ad_slot:
@@ -28,14 +38,29 @@ api_dynamic_ad_slot:
     resource: Tagcade\Bundle\ApiBundle\Controller\DynamicAdSlotController
     name_prefix:  api_1_
 
+api_library_dynamic_ad_slot:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibraryDynamicAdSlotController
+    name_prefix:  api_1_
+
 api_native_ad_slot:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\NativeAdSlotController
     name_prefix:  api_1_
 
+api_library_native_ad_slot:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibraryNativeAdSlotController
+    name_prefix:  api_1_
+
 api_ad_tag:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\AdTagController
+    name_prefix:  api_1_
+
+api_library_ad_tag:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibraryAdTagController
     name_prefix:  api_1_
 
 api_ad_network:
