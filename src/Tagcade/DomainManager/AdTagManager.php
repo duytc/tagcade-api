@@ -119,48 +119,39 @@ class AdTagManager implements AdTagManagerInterface
      */
     public function delete(AdTagInterface $adTag)
     {
-        // start transaction here
-        $this->em->getConnection()->beginTransaction();
+        $libraryAdTag = $adTag->getLibraryAdTag();
+        //1. Remove library if visible = false and co-referenced tags less than 2
+        if(!$libraryAdTag->getVisible() && count($adTag->getCoReferencedAdTags()) < 2 ) {
+            $this->em->remove($libraryAdTag); // resulting cascade remove this ad tag
+        }
 
-        try {
-            $libraryAdTag = $adTag->getLibraryAdTag();
-            //1. Remove library if visible = false and co-referenced tags less than 2
-            if(!$libraryAdTag->getVisible() && count($adTag->getCoReferencedAdTags()) < 2 ) {
-                $this->em->remove($libraryAdTag); // resulting cascade remove this ad tag
-            }
-//            else {
-//            // 2. If the tag is in library then we only remove the tag itself, not the library.
-//                $this->em->remove($adTag);
-//            }
+        // 3. if the ad slot containing this ad tag is in library, then we have to remove all ad tags in other ad slots as well
+        // these ad tags must be shared from the same tag library record with visible = false or true
+        $adSlot = $adTag->getAdSlot();
+        if ($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof NativeAdSlotInterface) {
+            $adSlotLib = $adSlot->getLibraryAdSlot();
 
-            // 3. if the ad slot containing this ad tag is in library, then we have to remove all ad tags in other ad slots as well
-            // these ad tags must be shared from the same tag library record with visible = false or true
-            $adSlot = $adTag->getAdSlot();
-            if ($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof NativeAdSlotInterface) {
-                $adSlotLib = $adSlot->getLibraryAdSlot();
-
-                if ($adSlotLib->isVisible()) { // telling the slot is in library
+            if ($adSlotLib->isVisible()) { // telling the slot is in library
+                try {
+                    // start transaction here
+                    $this->em->getConnection()->beginTransaction();
                     $referencedAdSlots = $adSlot->getCoReferencedAdSlots();
-
 
                     foreach($referencedAdSlots as $referredAdSlot){
                         $adTags = $this->getAdTagsByAdSlotAndRefId($referredAdSlot, $adTag->getRefId());
                         array_map(function(AdTagInterface $t){
                             $this->em->remove($t);
                         },$adTags);
-//                        foreach($adTags as $t){
-//                            $this->em->remove($t);
-//                        }
                     }
+
+                    $this->em->getConnection()->commit();
+                }
+                catch (\Exception $e) {
+                    $this->em->getConnection()->rollback();
+                    return;
                 }
             }
-
-            $this->em->getConnection()->commit();
-        } catch (Exception $e) {
-            $this->em->getConnection()->rollback();
-            throw $e;
         }
-        // end transaction
 
         $this->em->flush();
     }
