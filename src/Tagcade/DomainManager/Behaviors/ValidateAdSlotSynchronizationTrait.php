@@ -3,6 +3,7 @@
 namespace Tagcade\DomainManager\Behaviors;
 
 
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 
