@@ -3,34 +3,36 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\PersistentCollection;
 use Exception;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use ReflectionClass;
+use Tagcade\DomainManager\Behaviors\ReplicateLibraryAdSlotDataTrait;
 use Tagcade\DomainManager\Behaviors\ValidateAdSlotSynchronizationTrait;
-use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
-use Tagcade\Model\Core\SiteInterface;
-use ReflectionClass;
+use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 
 class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
 {
     use ValidateAdSlotSynchronizationTrait;
+    use ReplicateLibraryAdSlotDataTrait;
+
     protected $em;
     protected $repository;
     /**
      * @var AdSlotRepositoryInterface
      */
     private $adSlotRepository;
+    private $librarySlotTagRepository;
 
-    public function __construct(EntityManagerInterface $em, DisplayAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository)
+    public function __construct(EntityManagerInterface $em, DisplayAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
     {
         $this->em = $em;
         $this->repository = $repository;
         $this->adSlotRepository = $adSlotRepository;
+        $this->librarySlotTagRepository = $librarySlotTagRepository;
     }
 
     /**
@@ -46,41 +48,15 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
      */
     public function save(DisplayAdSlotInterface $displayAdSlot)
     {
-        $this->em->getConnection()->beginTransaction();
 
         try {
-            /** @var DisplayAdSlotInterface[] $coReferenceDisplayAdSlots */
-            $coReferenceDisplayAdSlots = $displayAdSlot->getCoReferencedAdSlots();
-
-            if($coReferenceDisplayAdSlots instanceof PersistentCollection) $coReferenceDisplayAdSlots = $coReferenceDisplayAdSlots->toArray();
-
-            // if the DisplayAdSlotLib is in the library
-            // "$adSlot->getId() == null" is to guarantee that we're creating new instance of DisplayAdSlot, not updating
-            if(null !== $coReferenceDisplayAdSlots && $displayAdSlot->getLibraryDisplayAdSlot()->isVisible() && count($coReferenceDisplayAdSlots) > 0 && $displayAdSlot->getId() == null) {
-                $referenceDisplayAdSlot = $coReferenceDisplayAdSlots[0];
-
-                // we are creating new ad slot from library
-                // hence we have to clone current existing AdTags base on other slot that also refers to the same library
-                $adTagsToBeCloned = $referenceDisplayAdSlot->getAdTags();
-
-                /** @var AdTagInterface $adTag */
-                foreach($adTagsToBeCloned as $adTag){
-
-                    $newAdTag = clone $adTag;
-                    $newAdTag->setAdSlot($displayAdSlot);
-                    $newAdTag->setRefId($adTag->getRefId());
-                    $newAdTag->setId(null);
-
-                    $displayAdSlot->getAdTags()->add($newAdTag);
-                }
-
-                // Validate synchronization
-                $this->prePersistValidate($displayAdSlot, $coReferenceDisplayAdSlots);
+            $this->em->getConnection()->beginTransaction();
+            if (null === $displayAdSlot->getId()) {
+                $displayAdSlot = $this->replicateFromLibrarySlotToSingleAdSlot($displayAdSlot->getLibraryAdSlot(), $displayAdSlot);
             }
-
+            $this->validateAdSlotSynchronization($displayAdSlot);
             $this->em->persist($displayAdSlot);
             $this->em->getConnection()->commit();
-
             $this->em->flush();
 
         } catch (Exception $e) {
@@ -94,7 +70,7 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
      */
     public function delete(DisplayAdSlotInterface $displayAdSlot)
     {
-        $libraryDisplayAdSlot = $displayAdSlot->getLibraryDisplayAdSlot();
+        $libraryDisplayAdSlot = $displayAdSlot->getLibraryAdSlot();
         //1. Remove library if visible = false and co-referenced slots less than 2
         if(!$libraryDisplayAdSlot->isVisible() && count($displayAdSlot->getCoReferencedAdSlots()) < 2 ) {
             $this->em->remove($libraryDisplayAdSlot); // resulting cascade remove this ad slot
@@ -156,4 +132,14 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
         $this->em->persist($adSlot);
         $this->em->flush();
     }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    protected function getEntityManager()
+    {
+        return $this->em;
+    }
+
+
 }

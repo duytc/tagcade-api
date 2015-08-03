@@ -17,8 +17,7 @@ class AdNetworkAdminCest extends AdNetwork
             'defaultCpmRate' => 10,
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(201);
     }
@@ -32,8 +31,7 @@ class AdNetworkAdminCest extends AdNetwork
             'defaultCpmRate' => 10,
             //'name' => 'adNetwork-test', //missing this field
             'publisher' => PARAMS_PUBLISHER,
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -48,7 +46,6 @@ class AdNetworkAdminCest extends AdNetwork
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
             'url' => 'dtag-adnetwork-test.dev',
-            'active' => true,
             'unexpected_field' => true //unexpected field
         ]);
         $I->seeResponseCodeIs(400);
@@ -63,8 +60,7 @@ class AdNetworkAdminCest extends AdNetwork
             'defaultCpmRate' => '10_wrong', //wrong data type of this field
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -86,8 +82,7 @@ class AdNetworkAdminCest extends AdNetwork
             'defaultCpmRate' => 10,
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(204);
     }
@@ -102,7 +97,6 @@ class AdNetworkAdminCest extends AdNetwork
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
             'url' => 'dtag-adnetwork-test.dev',
-            'active' => true,
             'unexpected_field' => true //unexpected field
         ]);
         $I->seeResponseCodeIs(400);
@@ -117,8 +111,7 @@ class AdNetworkAdminCest extends AdNetwork
             'defaultCpmRate' => -10, //wrong data, must greater than 0
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -132,8 +125,7 @@ class AdNetworkAdminCest extends AdNetwork
             'defaultCpmRate' => '10_wrong', //wrong data type of this field
             'name' => 'adNetwork-test',
             'publisher' => PARAMS_PUBLISHER,
-            'url' => 'dtag-adnetwork-test.dev',
-            'active' => true
+            'url' => 'dtag-adnetwork-test.dev'
         ]);
         $I->seeResponseCodeIs(400);
     }

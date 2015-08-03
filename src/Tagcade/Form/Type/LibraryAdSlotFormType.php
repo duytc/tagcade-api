@@ -24,7 +24,7 @@ class LibraryAdSlotFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('referenceName')
+            ->add('name')
             ->add('width')
             ->add('height')
             ->add('visible')

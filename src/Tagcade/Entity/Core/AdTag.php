@@ -10,7 +10,6 @@ class AdTag extends AdTagModel
 {
     protected $id;
     protected $adSlot;
-    protected $name;
     protected $position;
     protected $active;
 

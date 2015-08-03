@@ -12,7 +12,7 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
             generator:
                 strategy: AUTO
     fields:
-        referenceName:
+        name:
             type: string
         visible:
             type: boolean
@@ -23,7 +23,7 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
     inheritanceType: JOINED
 
     discriminatorColumn:
-        name: libType
+        name: type
         type: string
 
     discriminatorMap:
@@ -34,3 +34,11 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        libSlotTags:
+            targetEntity: Tagcade\Entity\Core\LibrarySlotTag
+            mappedBy: libraryAdSlot
+        adSlots:
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+            mappedBy: libraryAdSlot
+            cascade: ['remove']

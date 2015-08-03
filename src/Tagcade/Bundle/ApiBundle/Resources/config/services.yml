@@ -15,6 +15,7 @@ parameters:
     tagcade.entity.core.library_ad_tag.class: Tagcade\Entity\Core\LibraryAdTag
     tagcade.entity.core.ad_network.class: Tagcade\Entity\Core\AdNetwork
     tagcade.entity.core.expression.class: Tagcade\Entity\Core\Expression
+    tagcade.entity.core.library_slot_tag.class: Tagcade\Entity\Core\LibrarySlotTag
 
     #form classes
 
@@ -28,6 +29,7 @@ parameters:
     tagcade.form.type.ad_tag.class: Tagcade\Form\Type\AdTagFormType
     tagcade.form.type.library_ad_tag.class: Tagcade\Form\Type\LibraryAdTagFormType
     tagcade.form.type.ad_network.class: Tagcade\Form\Type\AdNetworkFormType
+    tagcade.form.type.library_slot_tag.class: Tagcade\Form\Type\LibrarySlotTagFormType
 
     # jwt
     tagcade_api.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
@@ -145,7 +147,7 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.library_display_ad_slot
-            - @tagcade.repository.library_ad_slot
+            - @tagcade.repository.library_slot_tag
 
     tagcade.form.type.library_ad_slot:
         class: %tagcade.form.type.library_ad_slot.class%
@@ -222,6 +224,7 @@ services:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.display_ad_slot
             - @tagcade.repository.ad_slot
+            - @tagcade.repository.library_slot_tag
 
     tagcade.form.type.ad_slot:
         class: %tagcade.form.type.ad_slot.class%
@@ -258,65 +261,6 @@ services:
                 - @tagcade.handler.handlers.ad_slot.publisher
 
     # end ad slot #####################################################
-
-
-    # display ad slot lib ######################################################
-
-#    tagcade_api.handler.library_display_ad_slot:
-#        class: Tagcade\Handler\HandlerInterface
-#        factory_service: tagcade.handler.handler_manager.library_display_ad_slot
-#        factory_method: getHandler
-#        arguments:
-#            - @tagcade.user_role
-#
-#    ###### dependencies and base classes for native ad slot handler #######
-#
-#    tagcade.repository.library_display_ad_slot:
-#        class: Tagcade\Repository\Core\LibraryDisplayAdSlotRepositoryInterface
-#        factory_service: doctrine.orm.entity_manager
-#        factory_method: getRepository
-#        arguments:
-#            - Tagcade\Entity\Core\LibraryDisplayAdSlot
-#
-#    tagcade.domain_manager.library_display_ad_slot:
-#        class: Tagcade\DomainManager\LibraryDisplayAdSlotManager
-#        arguments:
-#            - @doctrine.orm.entity_manager
-#            - @tagcade.repository.library_display_ad_slot
-#
-#    tagcade.form.type.library_display_ad_slot:
-#        class: %tagcade.form.type.library_display_ad_slot.class%
-#        tags:
-#            - { name: form.type, alias: tagcade_form_library_display_ad_slot }
-#
-#    tagcade.handler.handlers.library_display_ad_slot.abstract:
-#        class: Tagcade\Handler\Handlers\Core\LibraryDisplayAdSlotHandlerAbstract
-#        parent: tagcade.handler.role_handler_abstract
-#        abstract: true
-#        public: false
-#        arguments:
-#            - @tagcade.form.type.library_display_ad_slot
-#            - @tagcade.domain_manager.library_display_ad_slot
-#
-#    tagcade.handler.handlers.library_display_ad_slot.admin:
-#        class: Tagcade\Handler\Handlers\Core\Admin\LibraryDisplayAdSlotHandler
-#        parent: tagcade.handler.handlers.library_display_ad_slot.abstract
-#        public: false
-#
-#    tagcade.handler.handlers.library_display_ad_slot.publisher:
-#        class: Tagcade\Handler\Handlers\Core\Publisher\LibraryDisplayAdSlotHandler
-#        parent: tagcade.handler.handlers.library_display_ad_slot.abstract
-#        public: false
-#
-#    tagcade.handler.handler_manager.library_display_ad_slot:
-#        class: Tagcade\Handler\HandlerManager
-#        arguments:
-#            - %tagcade.entity.core.library_display_ad_slot.class%
-#            -
-#                - @tagcade.handler.handlers.library_display_ad_slot.admin
-#                - @tagcade.handler.handlers.library_display_ad_slot.publisher
-
-    # end display ad slot lib #####################################################
 
 
     # dynamic ad slot ######################################################
@@ -464,6 +408,7 @@ services:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.native_ad_slot
             - @tagcade.repository.ad_slot
+            - @tagcade.repository.library_slot_tag
 
     tagcade.form.type.native_ad_slot:
         class: %tagcade.form.type.native_ad_slot.class%
@@ -582,6 +527,7 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.ad_tag
+            - @tagcade.repository.library_slot_tag
 
     tagcade.form.type.ad_tag:
         class: %tagcade.form.type.ad_tag.class%
@@ -738,7 +684,61 @@ services:
 
     # end ad network #####################################################
 
+    # library slot tag
+    tagcade_api.handler.library_slot_tag:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.library_slot_tag
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
 
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.library_slot_tag:
+        class: Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.library_slot_tag.class%
+
+    tagcade.domain_manager.library_slot_tag:
+        class: Tagcade\DomainManager\LibrarySlotTagManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.library_slot_tag
+
+    tagcade.form.type.library_slot_tag:
+        class: %tagcade.form.type.library_slot_tag.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_library_slot_tag }
+
+    tagcade.handler.handlers.library_slot_tag.abstract:
+        class: Tagcade\Handler\Handlers\Core\LibraryAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.library_slot_tag
+            - @tagcade.domain_manager.library_slot_tag
+
+    tagcade.handler.handlers.library_slot_tag.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\LibrarySlotTagHandler
+        parent: tagcade.handler.handlers.library_slot_tag.abstract
+        public: false
+
+    tagcade.handler.handlers.library_slot_tag.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\LibrarySlotTagHandler
+        parent: tagcade.handler.handlers.library_slot_tag.abstract
+        public: false
+
+    tagcade.handler.handler_manager.library_slot_tag:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.library_slot_tag.class%
+            -
+                - @tagcade.handler.handlers.library_slot_tag.admin
+                - @tagcade.handler.handlers.library_slot_tag.publisher
+    # end library slot tag
 
     ## expression
     tagcade.repository.expression:

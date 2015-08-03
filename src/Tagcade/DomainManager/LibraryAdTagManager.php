@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
+use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryAdTagRepositoryInterface;
@@ -47,6 +48,10 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
      */
     public function delete(LibraryAdTagInterface $libraryAdTag)
     {
+        if ($libraryAdTag->getVisible() && count($libraryAdTag->getAdTags()) > 0) {
+            throw new NotSupportedException('Can not delete library ad tag due to existing references');
+        }
+
         $this->em->remove($libraryAdTag);
         $this->em->flush();
     }

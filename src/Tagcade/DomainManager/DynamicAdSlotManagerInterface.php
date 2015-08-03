@@ -63,13 +63,5 @@ interface DynamicAdSlotManagerInterface
      */
     public function getDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
-//    /**
-//     * @param DisplayAdSlotInterface $adSlot
-//     * @param int|null $limit
-//     * @param int|null $offset
-//     * @return DynamicAdSlotInterface[]
-//     */
-//    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null);
-
     public function persistAndFlush(DynamicAdSlotInterface $adSlot);
 }

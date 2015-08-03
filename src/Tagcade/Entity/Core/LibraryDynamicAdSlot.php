@@ -10,7 +10,7 @@ use Tagcade\Model\Core\LibraryDynamicAdSlot as LibraryDynamicAdSlotModel;
 class LibraryDynamicAdSlot extends LibraryDynamicAdSlotModel
 {
     protected $id;
-    protected $referenceName;
+    protected $name;
     /**
      * @var DynamicAdSlotInterface[]
      */
@@ -19,7 +19,7 @@ class LibraryDynamicAdSlot extends LibraryDynamicAdSlotModel
      * @var BaseAdSlotInterface
      */
     protected $defaultAdSlot;
-
+    protected $libraryAdTags;
     protected $expressions;
     protected $visible;
     protected $native;

@@ -1,26 +1,12 @@
 Tagcade\Entity\Core\LibraryDisplayAdSlot:
     exclusion_policy: ALL
-    virtual_properties:
-        isReferenced:
-            serialized_name: referenced
-            type: boolean
-            groups: [librarydisplayadslot.summary, librarydisplayadslot.ref]
     properties:
         id:
             expose: true
             groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]
-#        publisher:
-#            expose: true
-#            groups: [displayadslotlib.detail]
-#        referenceName:
-#            expose: true
-#            groups: [displayadslotlib.detail, displayadslotlib.summary, displayadslotlib.ref]
         width:
             expose: true
-            groups: [librarydisplayadslot.detail, librarydisplayadslot.ref]
+            groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]
         height:
             expose: true
-            groups: [librarydisplayadslot.detail, librarydisplayadslot.ref]
-#        visible:
-#            expose: true
-#            groups: [displayadslotlib.detail, displayadslotlib.summary, displayadslotlib.ref]
+            groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]

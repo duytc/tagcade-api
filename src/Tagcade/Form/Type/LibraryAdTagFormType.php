@@ -63,7 +63,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('visible')
             ->add('adType')
             ->add('descriptor')
-            ->add('referenceName')
+            ->add('name')
             ->add('id')
         ;
 

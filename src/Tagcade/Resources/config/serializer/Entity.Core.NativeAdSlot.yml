@@ -1,16 +1,9 @@
 Tagcade\Entity\Core\NativeAdSlot:
     exclusion_policy: ALL
-    virtual_properties:
-        getLibraryAdSlot:
-            serialized_name: libraryAdSlot
-            groups: [nativeadslot.detail]
     properties:
         id:
             expose: true
             groups: [nativeadslot.detail, nativeadslot.summary]
         site:
-            expose: true
-            groups: [nativeadslot.detail, nativeadslot.summary]
-        name:
             expose: true
             groups: [nativeadslot.detail, nativeadslot.summary]

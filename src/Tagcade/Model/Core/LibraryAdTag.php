@@ -3,6 +3,9 @@
 namespace Tagcade\Model\Core;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
+
 class LibraryAdTag implements LibraryAdTagInterface{
 
     protected $id;
@@ -20,8 +23,12 @@ class LibraryAdTag implements LibraryAdTagInterface{
     protected $adNetwork;
 
     protected $adTags;
+    /**
+     * @var LibrarySlotTagInterface
+     */
+    protected $libSlotTags;
 
-    protected $referenceName;
+    protected $name;
     /**
      * @inheritdoc
      */
@@ -91,7 +98,7 @@ class LibraryAdTag implements LibraryAdTagInterface{
 
     function __toString()
     {
-        return $this->html;
+        return $this->id . $this->getName();
     }
 
     /**
@@ -140,22 +147,42 @@ class LibraryAdTag implements LibraryAdTagInterface{
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getReferenceName()
+    public function getName()
     {
-        return $this->referenceName;
+        return $this->name;
     }
 
     /**
-     * @param mixed $referenceName
+     * @param mixed $name
      */
-    public function setReferenceName($referenceName)
+    public function setName($name)
     {
-        $this->referenceName = $referenceName;
+        $this->name = $name;
     }
 
     public function isReferenced() {
         return $this->adTags != null && $this->adTags->count() > 0;
+    }
+
+    /**
+     * @return PersistentCollection
+     */
+    public function getLibSlotTags()
+    {
+        if (null === $this->libSlotTags) {
+            $this->libSlotTags = new ArrayCollection();
+        }
+
+        return $this->libSlotTags;
+    }
+
+    /**
+     * @param LibrarySlotTagInterface $libSlotTags
+     */
+    public function setLibSlotTags($libSlotTags)
+    {
+        $this->libSlotTags = $libSlotTags;
     }
 }

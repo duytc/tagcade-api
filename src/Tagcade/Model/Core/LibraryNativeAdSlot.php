@@ -11,11 +11,6 @@ use Tagcade\Model\Core\SiteInterface;
 class LibraryNativeAdSlot extends LibraryAdSlotAbstract implements LibraryNativeAdSlotInterface
 {
     protected $id;
-
-    /**
-     * @var NativeAdSlotInterface[]
-     */
-    protected $nativeAdSlots;
     /**
      * @var DynamicAdSlotInterface[]
      */
@@ -42,54 +37,4 @@ class LibraryNativeAdSlot extends LibraryAdSlotAbstract implements LibraryNative
     {
         return parent::__toString();
     }
-
-    /**
-     * @return NativeAdSlotInterface[]
-     */
-    public function getNativeAdSlots()
-    {
-        return $this->nativeAdSlots;
-    }
-
-    /**
-     * @param NativeAdSlotInterface[] $nativeAdSlots
-     */
-    public function setNativeAdSlots($nativeAdSlots)
-    {
-        $this->nativeAdSlots = $nativeAdSlots;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReferenceName()
-    {
-        return $this->referenceName;
-    }
-
-    /**
-     * @param string $referenceName
-     * @return self
-     */
-    public function setReferenceName($referenceName)
-    {
-        $this->referenceName = $referenceName;
-    }
-
-
-    public function isReferenced() {
-        return $this->nativeAdSlots != null && $this->nativeAdSlots->count() > 0;
-    }
-
-    public function getLibType()
-    {
-        return self::TYPE_NATIVE;
-    }
-
-    public function getAdSlots()
-    {
-        return $this->nativeAdSlots;
-    }
-
-
 }

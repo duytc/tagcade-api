@@ -46,7 +46,6 @@ class AdTagFormType extends AbstractRoleSpecificFormType
         }
 
         $builder
-            ->add('name')
             ->add('position')
             ->add('frequencyCap')
             ->add('active')
@@ -77,82 +76,6 @@ class AdTagFormType extends AbstractRoleSpecificFormType
     protected function getReportableAdSlotsForPublisher(PublisherInterface $publisher) {
 
         return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher);
-    }
-
-//    protected function validateImageAd(AdTagInterface $adTag)
-//    {
-//        $descriptor = $adTag->getDescriptor();
-//
-//        if (null === $descriptor || !is_array($descriptor) || !isset($descriptor['imageUrl']) || !isset($descriptor['targetUrl']))
-//        {
-//            throw new InvalidFormException('The descriptor "%descriptor%" for AD_TYPE_IMAGE invalid: must contain keys \'imageUrl\' and \'targetUrl\'.', $this);
-//        }
-//
-//        $this->validateImageUrl($descriptor['imageUrl']);
-//
-//        $this->validateTargetUrl($descriptor['targetUrl']);
-//    }
-//
-//    protected function validateCustomAd(AdTagInterface $adTag)
-//    {
-//         if (null === $adTag->getHtml()) {
-//             throw new InvalidFormException('expect html of ad tag');
-//         }
-//    }
-//
-//    /**
-//     * validate ImageUrl.
-//     * @param $imageUrl
-//     */
-//    protected function validateImageUrl($imageUrl)
-//    {
-//        if (null === $imageUrl || sizeof($imageUrl) < 0) {
-//            throw new InvalidFormException('The descriptor for AD_TYPE_IMAGE invalid: \'imageUrl\' must not null"', $this);
-//        }
-//
-//        $this->validateUrl($imageUrl);
-//    }
-//
-//    /**
-//     * validate TargetUrl
-//     * @param $targetUrl
-//     */
-//    protected function validateTargetUrl($targetUrl)
-//    {
-//        $this->validateUrl($targetUrl);
-//    }
-//
-//    /**
-//     * validate Url format
-//     * @param $url
-//     */
-//    protected function validateUrl($url)
-//    {
-//        if(!filter_var($url, FILTER_VALIDATE_URL)){
-//            throw new InvalidFormException('The format of url "%url%" is invalid.', $this);
-//        }
-//    }
-
-    /**
-     * check if string $haystack start with $needle
-     * @param $haystack
-     * @param $needle
-     * @return boolean
-     */
-    function startsWith($haystack, $needle) {
-        // search backwards starting from haystack length characters from the end
-        return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
-    }
-
-    /**
-     * check if string $haystack end with $needle
-     * @param $haystack
-     * @param $needle
-     * @return bool
-     */
-    function endsWith($haystack, $needle) {
-        // search forward starting from end minus needle length characters
-        return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

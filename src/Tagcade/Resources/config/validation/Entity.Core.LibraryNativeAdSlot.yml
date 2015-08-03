@@ -1,6 +1,6 @@
 Tagcade\Entity\Core\LibraryNativeAdSlot:
     properties:
-        referenceName:
+        name:
             - NotBlank: ~
             - Length:
                 min: 2

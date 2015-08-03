@@ -64,6 +64,9 @@ class AdTagChangeListener
                 }
 
                 foreach($adTags as $tag) {
+                    // ignore the ad tag that is not belonged to any AdSlot
+                    if(null === $tag->getAdSlot()) continue;
+
                     // ignore the ad tag in adSlot has been counted
                     if (in_array($tag->getAdSlot(), $adSlots)) {
                         continue;

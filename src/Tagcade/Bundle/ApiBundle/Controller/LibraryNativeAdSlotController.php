@@ -23,10 +23,10 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
 {
     /**
      * @Rest\View(
-     *      serializerGroups={"librarynativeadslot.summary", "slotlib.detail", "user.summary"}
+     *      serializerGroups={"librarynativeadslot.summary", "slotlib.summary", "user.summary", "nativeadslot.summary", "site.summary"}
      * )
      *
-     * Get all ad slots
+     * Get all native ad slots
      *
      * @ApiDoc(
      *  resource = true,
@@ -44,12 +44,11 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
 
     /**
      *
-     * Get a single adSlot for the given id
+     * Get a single native ad slots for the given id
      *
      * @Rest\View(
-     *      serializerGroups={"librarynativeadslot.detail", "slotlib.detail", "user.summary"}
+     *      serializerGroups={"librarynativeadslot.detail", "slotlib.summary", "user.summary", "nativeadslot.summary", "site.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=true)
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -69,7 +68,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * add an new adtag library to the current native ad slots
      *
      * @Rest\POST("/librarynativeadslots/{id}/adtag", requirements={"id" = "\d+"})
      * @param Request $request
@@ -79,37 +78,27 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     public function postAdtagAction(Request $request, $id)
     {
         /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
-        $libraryNativeAdSlot = $this->one($id);
+        $libraryNativeAdSlot = $this->getOr404($id);
 
-        /** @var NativeAdSLotInterface[] $referencedAdSlots */
-        $referencedAdSlots = $libraryNativeAdSlot->getNativeAdSlots()->toArray();
+        $request->request->set('libraryAdSlot', $id);
 
-        if(null == $referencedAdSlots ||  count($referencedAdSlots) < 1)
-        {
-            return $this->view("Not found any associated slots to this library", Codes::HTTP_NOT_FOUND);
-        }
-
-        $adSlot = $referencedAdSlots[0];
-
-        // set AdSlot
-        $request->request->add(array('adSlot' => $adSlot->getId()));
-        unset($adSlot);
-        unset($referencedAdSlots);
-
+        $request->request->set('refId', uniqid("", true));
         // move the creating AdTag to library
         $libraryAdTag = $request->request->get('libraryAdTag');
-        $libraryAdTag['visible'] = true;
-        $request->request->set('libraryAdTag', $libraryAdTag);
-        unset($libraryAdTag);
+        
+        if(is_array($libraryAdTag)){
+            $libraryAdTag['visible'] = true;
+            $request->request->set('libraryAdTag', $libraryAdTag);
+        }
 
-        $this->get('tagcade_api.handler.ad_tag')->post($request->request->all());
+        $this->get('tagcade_api.handler.library_slot_tag')->post($request->request->all());
 
         return $this->view(null, Codes::HTTP_CREATED);
     }
 
 
     /**
-     * Create a adSlot library from the submitted data
+     * Create a native ad slots from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -134,7 +123,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     }
 
     /**
-     * Update an existing nativeAdSlot from the submitted data or create a new nativeAdSlot at a specific location
+     * Update an existing native ad slots from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -153,27 +142,15 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      */
     public function patchAction(Request $request, $id)
     {
-        $params = $request->request->all();
-
-        if (array_key_exists('visible', $params) && false == $params['visible']) {
-            /**
-             * @var LibraryNativeAdSlotInterface $libraryNativeAdSlot;
-             */
-            $libraryNativeAdSlot = $this->getOr404($id);
-            $referencingSlots = $libraryNativeAdSlot->getNativeAdSlots()->toArray();
-            if (count($referencingSlots) > 0) {
-                throw new BadRequestHttpException('There are some slots still referencing to this library');
-            }
-
-        }
-
         return $this->patch($request, $id);
     }
 
 
     /**
      * Get those AdSlots which refer to the current AdSlot Library
-     *
+     * @Rest\View(
+     *      serializerGroups={"adslot.summary" , "slotlib.summary", "user.summary", "nativeadslot.summary", "librarynativeadslot.summary", "site.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -191,7 +168,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
         /** @var LibraryNativeAdSlotInterface $entity */
         $entity = $this->one($id);
 
-        return $entity->getNativeAdSlots();
+        return $entity->getAdSlots();
     }
 
 
@@ -214,13 +191,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     public function getAdtagsAction($id){
         /** @var LibraryNativeAdSlotInterface $entity */
         $entity = $this->one($id);
-        $adSlots = $entity->getNativeAdSlots();
-
-        if(null == $adSlots || count($adSlots) < 1) return [];
-
-        $adSlot = $adSlots[0];
-
-        return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdSlot($adSlot);
+        return $this->get('tagcade.repository.library_slot_tag')->getByLibraryAdSlot($entity);
     }
 
     /**
@@ -242,6 +213,14 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      */
     public function deleteAction($id)
     {
+        /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
+        $libraryNativeAdSlot = $this->getOr404($id);
+
+        $referencingSlots = $libraryNativeAdSlot->getAdSlots()->toArray();
+        if (count($referencingSlots) > 0) {
+            throw new BadRequestHttpException('There are some slots still referencing to this library');
+        }
+
         return $this->delete($id);
     }
 

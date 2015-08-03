@@ -6,7 +6,11 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\PersistentCollection;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Entity\Core\AdTag;
 
 /**
  *
@@ -25,7 +29,7 @@ class UpdateAdTagPositionListener
         $uow = $em->getUnitOfWork();
 
         $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions());
-        $md = $em->getClassMetadata('Tagcade\Entity\Core\AdTag');
+        $md = $em->getClassMetadata(AdTag::class);
 
         foreach ($entities as $entity) {
             if (!$entity instanceof AdTagInterface) {
@@ -62,23 +66,45 @@ class UpdateAdTagPositionListener
     {
         $adSlot = $updatingAdTag->getAdSlot();
 
+        if($adSlot instanceof ReportableAdSlotInterface)
+        {
+            return $this->updatePositionForAdSlot($updatingAdTag);
+        }
+    }
+
+    protected function updatePositionForAdSlot(AdTagInterface $updatingAdTag)
+    {
+        $adSlot = $updatingAdTag->getAdSlot();
+
+        if (!$adSlot instanceof ReportableAdSlotInterface) {
+            throw new InvalidArgumentException('expect instance of ReportableAdSlotInterface');
+        }
+
         $adTags = $adSlot->getAdTags()->toArray();
+
+        $this->correctAdTagPositionInList($updatingAdTag, $adTags);
+
+        return $this->updatePositionForAdTags($adTags);
+    }
+
+    protected function correctAdTagPositionInList(AdTagInterface &$updatingAdTag, array $adTags)
+    {
         // sort array asc with respect to position
         usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
-                if ($a->getPosition() == $b->getPosition()) {
-                    return 0;
-                }
-                return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
-            });
+            if ($a->getPosition() == $b->getPosition()) {
+                return 0;
+            }
+            return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+        });
 
         // list out all positions
         $positions = array();
         array_walk(
             $adTags,
             function(AdTagInterface $adTag) use(&$positions) {
-               if (!in_array($adTag->getPosition(), $positions)) {
-                   array_push($positions, count($positions) + 1);
-               }
+                if (!in_array($adTag->getPosition(), $positions)) {
+                    array_push($positions, count($positions) + 1);
+                }
             }
         );
 
@@ -90,7 +116,16 @@ class UpdateAdTagPositionListener
         if ($targetPosition == null || $targetPosition > $max) {
             $updatingAdTag->setPosition($max);
         }
+    }
 
+
+    /**
+     * Return sorted tags based on position
+     * @param array $adTags
+     * @return array
+     */
+    protected function updatePositionForAdTags(array $adTags)
+    {
         // if target position in range of min max then we have to make sure the range is continuous
         $groups = array();
         foreach ($adTags as $adTag) {
@@ -103,7 +138,8 @@ class UpdateAdTagPositionListener
         // truly update position
         $pos = 1;
         $updatedAdTags = [];
-        foreach ($groups as $adTagList) {
+        while(array_key_exists($pos, $groups)) {
+            $adTagList = $groups[$pos];
             foreach ($adTagList as $adTag) {
                 if ($adTag->getPosition() != $pos) {
                     $adTag->setPosition($pos);
@@ -117,8 +153,5 @@ class UpdateAdTagPositionListener
         }
 
         return $updatedAdTags;
-
     }
-
-
 } 

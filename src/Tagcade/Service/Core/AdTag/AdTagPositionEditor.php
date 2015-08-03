@@ -3,13 +3,17 @@
 namespace Tagcade\Service\Core\AdTag;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\DomainManager\AdTagManagerInterface;
+use Tagcade\DomainManager\LibrarySlotTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
@@ -19,15 +23,21 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @var AdTagManagerInterface
      */
     private $adTagManager;
+
+    /**
+     * @var LibrarySlotTagManagerInterface
+     */
+    private $librarySlotTagManager;
     /**
      * @var EntityManagerInterface
      */
     private $em;
 
-    function __construct(AdTagManagerInterface $adTagManager, EntityManagerInterface $em)
+    function __construct(AdTagManagerInterface $adTagManager, LibrarySlotTagManagerInterface $librarySlotTagManager,  EntityManagerInterface $em)
     {
         $this->adTagManager = $adTagManager;
         $this->em = $em;
+        $this->librarySlotTagManager = $librarySlotTagManager;
     }
 
     public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null)
@@ -65,7 +75,6 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
     public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
-        $coReferencedAdSlots = $adSlot->getCoReferencedAdSlots()->toArray();
         $adTags = $adSlot->getAdTags()->toArray();
 
         if (empty($adTags)) {
@@ -96,13 +105,26 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
 
                 $adTag = $adTagMap[$adTagId];
                 if ($pos != $adTag->getPosition()) {
+                    $adTag->setPosition($pos);
+                    $this->adTagManager->save($adTag);
                     //update all sibling AdTag
-                    array_walk($coReferencedAdSlots, function(DisplayAdSlotInterface $d) use($adTag, $pos){
-                        $siblingAdTags = $this->adTagManager->getAdTagsByAdSlotAndRefId($d, $adTag->getRefId());
-                        array_map(function(AdTagInterface $sib) use($pos){
-                            $sib->setPosition($pos);
-                        },$siblingAdTags);
-                    });
+//                    $librarySlotTag = $this->librarySlotTagManager->getByLibraryAdSlotAndLibraryAdTagAndRefId($adSlot->getLibraryAdSlot(), $adTag->getLibraryAdTag(), $adTag->getRefId());
+//
+//                    if($librarySlotTag instanceof LibrarySlotTagInterface) {
+//
+//                        /** @var LibrarySlotTagInterface $librarySlotTag */
+//                        $siblingTags = $librarySlotTag->getLibraryAdTag()->getAdTags()->toArray();
+//                        $siblingTags = array_filter($siblingTags, function(AdTagInterface $t) use($adSlot, $librarySlotTag){
+//                            return $t->getAdSlot()->getLibraryAdSlot()->getId() == $adSlot->getLibraryAdSlot()->getId() && $librarySlotTag->getRefId() == $t->getRefId();
+//                        });
+//
+//                        array_map(function(AdTagInterface $sib) use($pos){
+//                            $sib->setPosition($pos);
+//                            $this->adTagManager->save($sib);
+//                        },$siblingTags);
+//                    }
+
+
                 }
 
                 $processedAdTags[] = $adTag->getId();
@@ -115,6 +137,55 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
         $this->em->flush();
 
         return $orderedAdTags;
+    }
+
+    public function setAdTagPositionForLibraryAdSlot(LibraryDisplayAdSlotInterface $libraryAdSlot, array $newAdTagOrderIds) {
+        $librarySlotTags = $this->librarySlotTagManager->getByLibraryAdSlot($libraryAdSlot);
+
+        if($librarySlotTags instanceof PersistentCollection)  $librarySlotTags = $librarySlotTags->toArray();
+
+
+        if (empty($librarySlotTags)) {
+            return [];
+        }
+
+
+        $librarySlotTagsMap = array();
+        foreach ($librarySlotTags as $librarySlotTag) {
+            /** @var LibrarySlotTagInterface $librarySlotTag */
+            $librarySlotTagsMap[$librarySlotTag->getId()] = $librarySlotTag;
+        }
+
+        $pos = 1;
+        $orderedLibrarySlotTags = [];
+        $processedLibrarySlotTags = [];
+
+        foreach ($newAdTagOrderIds as $adTagIds) {
+            foreach ($adTagIds as $adTagId) {
+                if (!array_key_exists($adTagId, $librarySlotTagsMap)) {
+                    throw new RuntimeException('One of ids not existed in ad tag list of current ad slot');
+                }
+
+                if (in_array((int)$adTagId, $processedLibrarySlotTags)) {
+                    throw new RuntimeException('There is duplication of ad tag');
+                }
+
+                $librarySlotTag = $librarySlotTagsMap[$adTagId];
+                if ($pos != $librarySlotTag->getPosition()) {
+                    $librarySlotTag->setPosition($pos);
+                    $this->librarySlotTagManager->save($librarySlotTag);
+                }
+
+                $processedLibrarySlotTags[] = $librarySlotTag->getId();
+                $orderedLibrarySlotTags[] = $librarySlotTag;
+            }
+
+            $pos ++;
+        }
+
+        $this->em->flush();
+
+        return $orderedLibrarySlotTags;
     }
 
 
@@ -162,7 +233,10 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
             );
 
             foreach ($updatingSlots as $adSlot) {
-                $foundAdTags = $this->adTagManager->getAdTagsByAdSlotAndRefId($adSlot, $adTag->getRefId());
+                /**
+                 * @var BaseAdSlotInterface $adSlot
+                 */
+                $foundAdTags = $this->adTagManager->getAdTagsByLibraryAdSlotAndRefId($adSlot->getLibraryAdSlot(), $adTag->getRefId());
 
                 array_walk(
                     $foundAdTags,

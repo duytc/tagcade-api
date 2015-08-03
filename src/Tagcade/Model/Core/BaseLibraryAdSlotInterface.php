@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
 
 interface BaseLibraryAdSlotInterface extends ModelInterface
@@ -15,13 +16,13 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
     /**
      * @return string|null
      */
-    public function getReferenceName();
+    public function getName();
 
     /**
-     * @param string $referenceName
+     * @param string $name
      * @return self
      */
-    public function setReferenceName($referenceName);
+    public function setName($name);
 
     /**
      * @param $visible
@@ -39,6 +40,25 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
      */
     public function getLibType();
 
+    /**
+     * @return PersistentCollection
+     */
     public function getAdSlots();
+
+    /**
+     * @return PersistentCollection
+     */
+    public function getLibSlotTags();
+
+    /**
+     * @param LibrarySlotTagInterface $libSlotTags
+     */
+    public function setLibSlotTags($libSlotTags);
+
+    /**
+     * @return int|null
+     */
+    public function getPublisherId();
+
 
 }

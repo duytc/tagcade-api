@@ -23,7 +23,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
     /**
      * Get all ad tags
      * @Rest\View(
-     *      serializerGroups={"adtag.summary", "adslot.summary", "nativeadslot.summary", "site.summary", "user.summary", "adtaglibrary.ref", "adnetwork.summary"}
+     *      serializerGroups={"adtag.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "user.summary", "adnetwork.summary", "libraryadtag.summary"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -41,9 +41,8 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
 
     /**
      * @Rest\View(
-     *      serializerGroups={"adtag.detail", "adslot.summary", "nativeadslot.summary", "nativeadslotlib.summary", "displayadslotlib.summary", "site.summary", "user.summary", "adtaglibrary.ref", "adnetwork.summary"}
+     *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "user.summary", "adnetwork.summary", "libraryadtag.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
      *
      * Get a single adTag for the given id
      *

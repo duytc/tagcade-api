@@ -260,7 +260,13 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
         /** @var ExpressionInterface $expression */
         foreach($expressions as $expression){
             $libraryDynamicAdSlot = $expression->getLibraryDynamicAdSlot();
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $libraryDynamicAdSlot->getDynamicAdSlots()->toArray());
+            $dynamicSlots = $libraryDynamicAdSlot->getAdSlots();
+
+            if ($dynamicSlots->count() < 1) { // ignore expression in library not referencing to any dynamic slot
+                continue;
+            }
+
+            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $dynamicSlots->toArray());
         }
 
         $defaultDynamicAdSlots = $updatingAdSlot->defaultDynamicAdSlots();

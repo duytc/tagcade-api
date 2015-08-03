@@ -1,7 +1,7 @@
 Tagcade\Entity\Core\AdSlotAbstract:
     exclusion_policy: ALL
     discriminator:
-        field_name: type
+        field_name: slotType
         map:
             display_model: Tagcade\Model\Core\DisplayAdSlot
             display: Tagcade\Entity\Core\DisplayAdSlot
@@ -9,3 +9,12 @@ Tagcade\Entity\Core\AdSlotAbstract:
             dynamic: Tagcade\Entity\Core\DynamicAdSlot
             native_model: Tagcade\Model\Core\NativeAdSlot
             native: Tagcade\Entity\Core\NativeAdSlot
+    properties:
+        libraryAdSlot:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+        type:
+            expose: true
+            accessor: # access_type must be set to public_method
+                getter: getType
+            groups: [adslot.detail, adslot.summary]

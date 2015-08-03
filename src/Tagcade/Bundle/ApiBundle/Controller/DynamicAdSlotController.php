@@ -19,8 +19,10 @@ use Tagcade\Model\Core\DynamicAdSlotInterface;
 class DynamicAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad slots
-     *
+     * Get all dynamic ad slots
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "dynamicadslot.summary", "librarydynamicadslot.summary" , "site.summary" , "user.summary", "expression.detail", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -36,8 +38,10 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Get a single adSlot for the given id
-     *
+     * Get a single dynamic adSlot for the given id
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "dynamicadslot.detail", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -57,6 +61,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      * @param int $id
      * @return View
      */
@@ -65,11 +70,13 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
         /** @var DynamicAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
+        $jstag = $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
+
+        return $jstag;
     }
 
     /**
-     * Create a adSlot from the submitted data
+     * Create a dynamic adSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -90,7 +97,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
 
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot
+     * Update an existing dynamic adSlot from the submitted data or create a new dynamic adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -114,7 +121,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot at a specific location
+     * Update an existing dynamic adSlot from the submitted data or create a new dynamic adSlot at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -137,7 +144,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Delete an existing adSlot
+     * Delete an existing dynamic adSlot
      *
      * @ApiDoc(
      *  resource = true,

@@ -20,8 +20,11 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class LibraryDynamicAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad slots
+     * Get all library dynamic adSlot
      *
+     * @Rest\View(
+     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -37,8 +40,10 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
     }
 
     /**
-     * Get a single adSlot for the given id
-     * @Rest\View(serializerEnableMaxDepthChecks=true)
+     * Get a single library dynamic adSlot for the given id
+     * @Rest\View(
+     *      serializerGroups={"librarydynamicadslot.detail" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "displayadslot.summary", "nativeadslot.summary", "adslot.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -59,7 +64,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
 
 
     /**
-     * Create a adSlot library from the submitted data
+     * Create a library dynamic adSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -85,7 +90,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
 
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot at a specific location
+     * Update an existing library dynamic adSlot from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -111,7 +116,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
              * @var LibraryDynamicAdSlotInterface $libraryDynamicAdSlot;
              */
             $libraryDynamicAdSlot = $this->getOr404($id);
-            $referencingSlots = $libraryDynamicAdSlot->getDynamicAdSlots()->toArray();
+            $referencingSlots = $libraryDynamicAdSlot->getAdSlots()->toArray();
             if (count($referencingSlots) > 0) {
                 throw new BadRequestHttpException('There are some slots still referencing to this library');
             }
@@ -123,8 +128,10 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
 
 
     /**
-     * Get those AdSlots which refer to the current AdSlot Library
-     *
+     * Get those AdSlots which refer to the current library dynamic adSlot
+     * @Rest\View(
+     *      serializerGroups={"adslot.summary" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "librarydynamicadslot.summary", "site.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -142,7 +149,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
         /** @var LibraryDynamicAdSlotInterface $entity */
         $entity = $this->one($id);
 
-        return $entity->getDynamicAdSlots();
+        return $entity->getAdSlots();
     }
 
     /**
@@ -164,6 +171,14 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      */
     public function deleteAction($id)
     {
+        /** @var LibraryDynamicAdSlotInterface $libraryDynamicAdSlot */
+        $libraryDynamicAdSlot = $this->getOr404($id);
+
+        $referencingSlots = $libraryDynamicAdSlot->getAdSlots()->toArray();
+        if (count($referencingSlots) > 0) {
+            throw new BadRequestHttpException('There are some slots still referencing to this library');
+        }
+
         return $this->delete($id);
     }
 

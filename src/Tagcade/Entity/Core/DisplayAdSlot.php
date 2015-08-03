@@ -11,19 +11,11 @@ class DisplayAdSlot extends DisplayAdSlotModel
     protected $id;
     protected $site;
     protected $deletedAt;
-    /**
-     * @var LibraryDisplayAdSlotInterface
-     */
-    protected $libraryDisplayAdSlot;
 
     /**
      * @var LibraryDynamicAdSlotInterface[]
      */
     protected $defaultLibraryDynamicAdSlots;
-
-    protected $name;
-    protected $width;
-    protected $height;
 
     public function __construct()
     {

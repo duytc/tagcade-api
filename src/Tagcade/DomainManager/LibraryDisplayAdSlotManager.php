@@ -7,16 +7,19 @@ use ReflectionClass;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryDisplayAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 
 class LibraryDisplayAdSlotManager implements LibraryDisplayAdSlotManagerInterface
 {
     protected $om;
     protected $repository;
+    protected $librarySlotTagRepository;
 
-    public function __construct(ObjectManager $om, LibraryDisplayAdSlotRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, LibraryDisplayAdSlotRepositoryInterface $repository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->librarySlotTagRepository = $librarySlotTagRepository;
     }
 
     /**

@@ -49,13 +49,4 @@ interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
      */
     public function getPublisherId();
 
-    /**
-     * @return NativeAdSlotInterface[]
-     */
-    public function getNativeAdSlots();
-
-    /**
-     * @param NativeAdSlotInterface[] $nativeAdSlots
-     */
-    public function setNativeAdSlots($nativeAdSlots);
 }

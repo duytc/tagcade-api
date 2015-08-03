@@ -9,8 +9,3 @@ Tagcade\Entity\Core\LibraryDisplayAdSlot:
         height:
             type: integer
 
-    oneToMany:
-        displayAdSlots:
-            targetEntity: Tagcade\Entity\Core\DisplayAdSlot
-            mappedBy: libraryDisplayAdSlot
-            cascade: ['remove']

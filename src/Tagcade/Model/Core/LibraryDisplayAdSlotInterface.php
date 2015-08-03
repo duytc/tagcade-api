@@ -52,9 +52,4 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
      */
     public function getDisplayAdSlots();
 
-    /**
-     * @param DisplayAdSlotInterface[] $displayAdSlots
-     */
-    public function setDisplayAdSlots($displayAdSlots);
-
 }

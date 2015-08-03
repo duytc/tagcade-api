@@ -6,22 +6,19 @@ Tagcade\Entity\Core\AdTag:
             groups: [adtag.detail, adtag.summary]
         adSlot:
             expose: true
-            groups: [adtag.detail, adtag.summary]
-        name:
-            expose: true
-            groups: [adtag.detail, adtag.summary]
+            groups: [adtag.detail]
         position:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         frequencyCap:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         active:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         rotation:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         libraryAdTag:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]

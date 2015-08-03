@@ -45,7 +45,8 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         $qb = $this->createQueryBuilder('st')
             ->join('st.adSlots', 'sl')
             ->join('sl.adTags', 't')
-            ->where('t.adNetwork = :ad_network_id')
+            ->join('t.libraryAdTag', 'lt')
+            ->where('lt.adNetwork = :ad_network_id')
             ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER)
             ->addOrderBy('st.name', 'asc')
         ;

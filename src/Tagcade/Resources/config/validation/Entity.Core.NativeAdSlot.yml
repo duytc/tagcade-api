@@ -3,8 +3,3 @@ Tagcade\Entity\Core\NativeAdSlot:
         site:
             - NotBlank: ~
             - Valid: ~
-        name:
-            - NotBlank: ~
-            - Length:
-                min: 2
-                minMessage: "Ad slot name must be at least {{ limit }} characters in length"

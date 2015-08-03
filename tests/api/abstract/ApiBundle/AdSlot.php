@@ -53,7 +53,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'height' => 200, 'width' => 300
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(201);
@@ -69,7 +73,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => null,
-                'height' => 200, 'width' => 300
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -85,7 +93,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'height' => '200_invalid', 'width' => '300_invalid'
+                'libraryAdSlot' => [
+                    'width' => '300_invalid',
+                    'height' => '200_invalid',
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -101,7 +113,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 //'name' => null, //this is missing field
-                'height' => 200, 'width' => 300
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -111,13 +127,17 @@ class AdSlot
      * add adSlot failed caused by contains unexpected field
      * @param ApiTester $I
      */
-    public function addAdSlotWithWithUnexpectedField(ApiTester $I)
+    public function addAdSlotWithUnexpectedField(ApiTester $I)
     {
         $I->sendPOST(URL_API . '/displayadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'height' => 200, 'width' => 300,
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ],
                 'unexpected_field' => 'unexpected_field' //this is unexpected field
             ]
         );
@@ -221,7 +241,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'height' => 200, 'width' => 300
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(204);
@@ -240,7 +264,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => null,
-                'height' => 200, 'width' => 300
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -259,7 +287,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'height' => '200_wrong', 'width' => '300_wrong'
+                'libraryAdSlot' => [
+                    'width' => '300_wrong',
+                    'height' => '200_wrong',
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -278,7 +310,11 @@ class AdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'height' => 200, 'width' => 300,
+                'libraryAdSlot' => [
+                    'width' => 200,
+                    'height' => 300,
+                    'referenceName' => 'dtag.test.adslot'
+                ],
                 'unexpected_field' => 'unexpected_field' //this is unexpected field
             ]
         );
@@ -293,7 +329,29 @@ class AdSlot
         $I->sendGet(URL_API . '/displayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'], ['site' => PARAMS_SITE, 'height' => 250]);
+        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'], [
+            'site' => PARAMS_SITE,
+            'libraryAdSlot' => [
+                'height' => 250
+            ]
+        ]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdSlot
+     */
+    public function patchAdSlotMoveToLibrary(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/displayadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'], [
+            'libraryAdSlot' => [
+                'visible' => true,
+                'referenceName' => 'dtag.test.adslot-library'
+            ]
+        ]);
         $I->seeResponseCodeIs(204);
     }
 
@@ -325,8 +383,10 @@ class AdSlot
 
         $I->sendPATCH(URL_API . '/displayadslots/' . $item['id'],
             [
-                'height' => '250_wrong',
-                'width' => '250_wrong'
+                'libraryAdSlot' => [
+                    'width' => '250_wrong',
+                    'height' => '250_wrong'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);

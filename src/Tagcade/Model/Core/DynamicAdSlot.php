@@ -10,16 +10,10 @@ use Tagcade\Model\Core\SiteInterface;
 class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
     protected $id;
-    protected $name;
     /**
      * @var BaseAdSlotInterface
      */
     protected $defaultAdSlot;
-
-    /**
-     * @var LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
-     */
-    protected $libraryDynamicAdSlot;
 
     protected $deletedAt;
 
@@ -34,9 +28,9 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function getDefaultAdSlot()
     {
-        if($this->getLibraryDynamicAdSlot() == null) return null;
+        if($this->getLibraryAdSlot() == null) return null;
 
-        return $this->getLibraryDynamicAdSlot()->getDefaultAdSlot();
+        return $this->getLibraryAdSlot()->getDefaultAdSlot();
     }
 
     /**
@@ -44,9 +38,9 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function setDefaultAdSlot($defaultAdSlot)
     {
-        if($this->getLibraryDynamicAdSlot() != null)
+        if($this->getLibraryAdSlot() != null)
         {
-            $this->getLibraryDynamicAdSlot()->setDefaultAdSlot($defaultAdSlot);
+            $this->getLibraryAdSlot()->setDefaultAdSlot($defaultAdSlot);
         }
     }
 
@@ -55,20 +49,19 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function getExpressions()
     {
-        if ($this->getLibraryDynamicAdSlot() == null) return [];
+        if ($this->getLibraryAdSlot() == null) return new ArrayCollection();
 
-        return $this->getLibraryDynamicAdSlot()->getExpressions();
+        return $this->getLibraryAdSlot()->getExpressions();
     }
 
-    /**
-     * @param ExpressionInterface[] $expressions
-     */
     public function setExpressions($expressions)
     {
-        if($this->getLibraryDynamicAdSlot() != null)
+        if($this->getLibraryAdSlot() != null)
         {
-            $this->getLibraryDynamicAdSlot()->setExpressions($expressions);
+            $this->getLibraryAdSlot()->setExpressions($expressions);
         }
+
+        return $this;
     }
 
     /**
@@ -76,9 +69,9 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function isSupportedNative()
     {
-        if($this->getLibraryDynamicAdSlot() == null) return false;
+        if($this->getLibraryAdSlot() == null) return false;
 
-        return $this->getLibraryDynamicAdSlot()->isSupportedNative();
+        return $this->getLibraryAdSlot()->isSupportedNative();
     }
 
     /**
@@ -86,20 +79,19 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function getNative()
     {
-        if($this->getLibraryDynamicAdSlot() == null) return false;
+        if($this->getLibraryAdSlot() == null) return false;
 
-        return $this->getLibraryDynamicAdSlot()->isSupportedNative();
+        return $this->getLibraryAdSlot()->isSupportedNative();
     }
 
-    /**
-     * @param mixed $native
-     */
     public function setNative($native)
     {
-        if($this->getLibraryDynamicAdSlot() != null)
+        if($this->getLibraryAdSlot() != null)
         {
-            $this->getLibraryDynamicAdSlot()->setNative($native);
+            $this->getLibraryAdSlot()->setNative($native);
         }
+
+        return $this;
     }
 
     /**
@@ -113,68 +105,28 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 
     public function __toString()
     {
-        return $this->name;
+        return $this->id . $this->getName();
     }
-
-    /**
-     * @return LibraryDynamicAdSlotInterface
-     */
-    public function getLibraryDynamicAdSlot()
-    {
-        return $this->libraryDynamicAdSlot;
-    }
-
-    /**
-     * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
-     */
-    public function setLibraryDynamicAdSlot($libraryDynamicAdSlot)
-    {
-        $this->libraryDynamicAdSlot = $libraryDynamicAdSlot;
-    }
-
 
     /**
      * @return LibraryDynamicAdSlotInterface
      */
     public function getLibraryAdSlot()
     {
-        return $this->libraryDynamicAdSlot;
+        return $this->libraryAdSlot;
     }
 
-    public function setLibraryAdSlot($libaryAdSlot)
+    /**
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @return $this
+     */
+    public function setLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot)
     {
-        $this->libraryDynamicAdSlot = $libaryAdSlot;
+        $this->libraryAdSlot = $libraryAdSlot;
+
         return $this;
     }
 
-
-    /**
-     * get the list of DynamicAdSlot that also refers to the DynamicAdSlotLib of this entity
-     * @return DynamicAdSlotInterface[]
-     */
-    public function getCoReferencedAdSlots()
-    {
-        return $this->libraryDynamicAdSlot->getDynamicAdSlots();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     * @return $this|\Tagcade\Model\Core\BaseAdSlotInterface|void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
 
     /**
      * @return string

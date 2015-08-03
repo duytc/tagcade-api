@@ -23,8 +23,10 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
 
     /**
      *
-     * Get all ad tags
-     *
+     * Get all ad slots
+     * @Rest\View(
+     *      serializerGroups={"expression.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "site.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -51,9 +53,8 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
 
     /**
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "nativeadslot.detail", "site.summary", "nativeadslotlib.ref", "displayadslotlib.ref", "publisher.summary"}
+     *      serializerGroups={"expression.detail", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.detail", "user.summary", "slotlib.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=true)
      * Get a single adSlot for the given id
      *
      * @ApiDoc(

@@ -58,6 +58,11 @@ api_ad_tag:
     resource: Tagcade\Bundle\ApiBundle\Controller\AdTagController
     name_prefix:  api_1_
 
+api_library_slot_tag:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibrarySlotTagController
+    name_prefix:  api_1_
+
 api_library_ad_tag:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\LibraryAdTagController

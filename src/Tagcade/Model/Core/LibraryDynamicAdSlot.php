@@ -8,7 +8,6 @@ use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynamicAdSlotInterface
 {
     protected $id;
-    protected $referenceName;
 
     protected $deletedAt;
     /**
@@ -20,11 +19,6 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
      * @var BaseAdSlotInterface
      */
     protected $defaultAdSlot;
-
-    /**
-     * @var DynamicAdSlotInterface[]
-     */
-    protected $dynamicAdSlots;
 
     /** @var $native */
     protected $native;
@@ -78,7 +72,7 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
 
     public function __toString()
     {
-        return parent::__toString();
+        return $this->id . $this->getName();
     }
 
     /**
@@ -96,48 +90,4 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     {
         $this->defaultAdSlot = $defaultAdSlot;
     }
-
-    /**
-     * @return DynamicAdSlotInterface[]
-     */
-    public function getDynamicAdSlots()
-    {
-        return $this->dynamicAdSlots;
-    }
-
-    /**
-     * @param DynamicAdSlotInterface[] $dynamicAdSlots
-     */
-    public function setDynamicAdSlots($dynamicAdSlots)
-    {
-        $this->dynamicAdSlots = $dynamicAdSlots;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getReferenceName()
-    {
-        return $this->referenceName;
-    }
-
-    /**
-     * @param mixed $referenceName
-     */
-    public function setReferenceName($referenceName)
-    {
-        $this->referenceName = $referenceName;
-    }
-
-    public function getLibType()
-    {
-        return self::TYPE_DYNAMIC;
-    }
-
-    public function getAdSlots()
-    {
-        return $this->dynamicAdSlots;
-    }
-
-
 }

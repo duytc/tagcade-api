@@ -25,10 +25,10 @@ use Tagcade\Model\Core\SiteInterface;
 class NativeAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad slots
+     * Get all native ad slots
      *
      * @Rest\View(
-     *      serializerGroups={"nativeadslot.summary", "librarynativeadslot.ref" , "site.summary" , "user.summary"}
+     *      serializerGroups={"adslot.detail", "nativeadslot.summary","slotlib.summary", "librarynativeadslot.summary" , "site.summary" , "user.summary"}
      * )
      *
      * @ApiDoc(
@@ -46,10 +46,10 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
     }
 
     /**
-     * Get a single nativeAdSlot for the given id
+     * Get a single native AdSlot for the given id
      *
      * @Rest\View(
-     *      serializerGroups={"nativeadslot.detail" , "librarynativeadslot.detail",  "slotlib.detail",  "user.summary", "site.summary" }
+     *      serializerGroups={"adslot.detail", "nativeadslot.detail","slotlib.summary",  "librarynativeadslot.detail" , "site.summary" , "user.summary"}
      * )
      *
      * @ApiDoc(
@@ -81,37 +81,10 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
         return $this->get('tagcade.service.tag_generator')->createJsTags($nativeAdSlot);
     }
-//
-//    /**
-//     * @Rest\Get("/variableDescriptor/{id}", requirements={"id" = "\d+"})
-//     * @param Request $request
-//     * @param $id
-//     * @return View
-//     */
-//    public function getVariableDescriptorAction(Request $request, $id)
-//    {
-//        /** @var NativeAdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//
-//        return $this->getHandler()->getAdSlotVariableDescriptor($adSlot);
-//    }
 
-//    /**
-//     * @Rest\Get("/configExpression/{id}", requirements={"id" = "\d+"})
-//     * @param Request $request
-//     * @param $id
-//     * @return View
-//     */
-//    public function getConfigExpressionAction(Request $request, $id)
-//    {
-//        /** @var NativeAdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//
-//        return $this->getHandler()->getAdSlotConfigExpression($adSlot);
-//    }
 
     /**
-     * Create a nativeAdSlot from the submitted data
+     * Create a native AdSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -130,36 +103,9 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         return $this->post($request);
     }
 
-//    /**
-//     * Update the position of all ad tags in an ad slot
-//     *
-//     * @param Request $request
-//     * @param int $id
-//     * @return View
-//     */
-//    public function postAdtagsPositionsAction(Request $request, $id)
-//    {
-//        /** @var NativeAdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//        $newAdTagOrderIds = $request->request->get('ids');
-//
-//        if (!$newAdTagOrderIds) {
-//            throw new BadRequestHttpException("Ad tagIds parameter is required");
-//        }
-//
-//        $result = array_values(
-//            $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
-//                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
-//        );
-//
-//        $event = $this->createUpdatePositionEventLog($adSlot, $newAdTagOrderIds);
-//        $this->getHandler()->dispatchEvent($event);
-//
-//        return $result;
-//    }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * clone the current native ad slot
      *
      * @Rest\POST("/nativeadslots/{id}/clone", requirements={"id" = "\d+"})
      * @param Request $request
@@ -181,17 +127,17 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
         if($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
-            $this->getHandler()->cloneNativeAdSlot($originAdSlot, $newName, $site);
+            $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site);
         }
         else {
-            $this->getHandler()->cloneNativeAdSlot($originAdSlot, $newName);
+            $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
         }
 
         return $this->view(null, Codes::HTTP_CREATED);
     }
 
     /**
-     * Update an existing nativeAdSlot from the submitted data or create a new nativeAdSlot
+     * Update an existing native AdSlot from the submitted data or create a new native AdSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -215,7 +161,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
     }
 
     /**
-     * Update an existing nativeAdSlot from the submitted data or create a new nativeAdSlot at a specific location
+     * Update an existing native AdSlot from the submitted data or create a new native AdSlot at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -238,7 +184,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
     }
 
     /**
-     * Delete an existing nativeAdSlot
+     * Delete an existing native AdSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -270,7 +216,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
         /** @var ExpressionInterface $expression */
         foreach($expressions as $expression){
-            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getDynamicAdSlots();
+            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getAdSlots();
 
             if($dynamicAdSlots->count() < 1) continue;
 
@@ -296,9 +242,8 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
     /**
      * @Rest\View(
-     *      serializerGroups={"adtag.detail", "adslot.summary", "nativeadslot.summary", "site.summary", "user.summary", "adtaglibrary.ref", "adnetwork.summary"}
+     *      serializerGroups={"adtag.detail", "adslot.summary", "nativeadslot.summary", "site.summary", "user.summary", "libraryadtag.summary", "adnetwork.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
      * @param $id
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */

@@ -53,7 +53,6 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
         }
 
         $builder
-            ->add('name')
             ->add('libraryAdSlot', 'entity', array('class' => LibraryDisplayAdSlot::class))
         ;
 
@@ -85,7 +84,7 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
                 $libraryDisplayAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
                 $libraryDisplayAdSlot->setPublisher($publisher);
 
-                $displayAdSlot->setLibraryDisplayAdSlot($libraryDisplayAdSlot);
+                $displayAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
             }
         );
     }

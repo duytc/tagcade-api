@@ -15,14 +15,14 @@ Tagcade\Entity\Core\AdSlotAbstract:
         deletedAt:
             type: date
             nullable: true
-        name:
-            type: string
-            nullable: true
+#        name:
+#            type: string
+#            nullable: true
 
     inheritanceType: JOINED
 
     discriminatorColumn:
-        name: type
+        name: slotType
         type: string
     discriminatorMap:
         display: Tagcade\Entity\Core\DisplayAdSlot
@@ -40,3 +40,6 @@ Tagcade\Entity\Core\AdSlotAbstract:
         site:
             targetEntity: Tagcade\Entity\Core\Site
             inversedBy: adSlots
+        libraryAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract
+            cascade: ['persist']

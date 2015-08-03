@@ -49,7 +49,7 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
      */
     public function delete(DynamicAdSlotInterface $adSlot)
     {
-        $libraryDynamicAdSlot = $adSlot->getLibraryDynamicAdSlot();
+        $libraryDynamicAdSlot = $adSlot->getLibraryAdSlot();
         //1. Remove library if visible = false and co-referenced slots less than 2
         if(!$libraryDynamicAdSlot->isVisible() && count($adSlot->getCoReferencedAdSlots()) < 2 ) {
             $this->om->remove($libraryDynamicAdSlot); // resulting cascade remove this ad slot
@@ -103,13 +103,6 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
         return $this->adSlotRepository->getDynamicAdSlotsForPublisher($publisher, $limit, $offset);
     }
 
-//    /**
-//     * @inheritdoc
-//     */
-//    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null)
-//    {
-//        return $this->repository->getDynamicAdSlotsForAdSlot($adSlot, $limit, $offset);
-//    }
     public function persistAndFlush(DynamicAdSlotInterface $adSlot)
     {
         $this->om->persist($adSlot);

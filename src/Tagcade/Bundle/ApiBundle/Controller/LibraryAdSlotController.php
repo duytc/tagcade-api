@@ -24,8 +24,11 @@ class LibraryAdSlotController extends FOSRestController implements ClassResource
 
     /**
      *
-     * Get all ad tags
+     * Get all library ad slots
      *
+     * @Rest\View(
+     *      serializerGroups={"slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -38,21 +41,22 @@ class LibraryAdSlotController extends FOSRestController implements ClassResource
     public function cgetAction()
     {
         $role = $this->getUser();
-        $adSlotManager = $this->get('tagcade.domain_manager.library_ad_slot');
+        $libraryAdSlotManager = $this->get('tagcade.domain_manager.library_ad_slot');
 
         if ($role instanceof PublisherInterface) {
-            return $adSlotManager->getAdSlotsForPublisher($role);
+            $libraryAdSlots =  $libraryAdSlotManager->getAdSlotsForPublisher($role);
+
+            return $libraryAdSlots;
         }
 
-        return $adSlotManager->all();
+        return $libraryAdSlotManager->all();
     }
 
     /**
      * @Rest\View(
-     *      serializerGroups={"nativeadslotlib.ref", "displayadslotlib.ref", "publisher.summary"}
+     *      serializerGroups={"slotlib.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.detail", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=true)
-     * Get a single adSlot for the given id
+     * Get a single library adSlot for the given id
      *
      * @ApiDoc(
      *  resource = true,
@@ -69,14 +73,14 @@ class LibraryAdSlotController extends FOSRestController implements ClassResource
      */
     public function getAction($id)
     {
-        $adSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($id);
+        $libraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($id);
 
-        if (null === $adSlot) {
+        if (null === $libraryAdSlot) {
             throw new NotFoundHttpException(sprintf('not found ad slot with id %s', $id));
         }
         
         $securityContext = $this->get('security.context');
-        if (false === $securityContext->isGranted('view', $adSlot)) {
+        if (false === $securityContext->isGranted('view', $libraryAdSlot)) {
             throw new AccessDeniedException(
                 sprintf(
                     'You do not have permission to view this ad slot or it does not exist',
@@ -86,7 +90,7 @@ class LibraryAdSlotController extends FOSRestController implements ClassResource
             );
         }
 
-        return $adSlot;
+        return $libraryAdSlot;
     }
 
 }

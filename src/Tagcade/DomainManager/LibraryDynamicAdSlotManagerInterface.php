@@ -52,5 +52,4 @@ interface LibraryDynamicAdSlotManagerInterface
      * @return LibraryDynamicAdSlotInterface[]
      */
     public function getLibraryDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
-
 }

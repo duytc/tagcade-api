@@ -32,7 +32,7 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('referenceName')
+            ->add('name')
             ->add('defaultAdSlot')
             ->add('visible')
             ->add('id')
@@ -157,7 +157,6 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
     public function getName()
     {
-        //return 'tagcade_form_ad_slot';
         return 'tagcade_form_library_dynamic_ad_slot';
     }
 }

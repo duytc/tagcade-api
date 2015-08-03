@@ -14,32 +14,30 @@ trait ValidateAdSlotSynchronizationTrait {
      * @param BaseAdSlotInterface $originalAdSlot
      * @param $copies array
      */
-    protected function prePersistValidate(BaseAdSlotInterface $originalAdSlot, array $copies)
+    protected function validateAdSlotSynchronization(BaseAdSlotInterface $originalAdSlot, $copies = null)
     {
-        /**
-         * @var BaseAdSlotInterface $copy
-         */
-        foreach($copies as $copy){
-            if($originalAdSlot->checkSum() !== $copy->checkSum())
-            {
-                throw new RuntimeException(sprintf('%s is created from %s but it seems that their data are not synced', $copy->getName(), $originalAdSlot->getName()));
+        if($copies === null) {
+            $this->validateSingleAdSlot($originalAdSlot);
+        }
+        else {
+            /** @var BaseAdSlotInterface $copy */
+            foreach($copies as $copy){
+                if($originalAdSlot->checkSum() !== $copy->checkSum())
+                {
+                    throw new RuntimeException(sprintf('%s is created from %s but it seems that their data are not synced', $copy->getName(), $originalAdSlot->getName()));
+                }
             }
         }
     }
 
 
-    protected function preUpdateValidate(BaseAdSlotInterface $adSlot)
+    private function validateSingleAdSlot(BaseAdSlotInterface $adSlot)
     {
         $coReferencedAdSlots = $adSlot->getCoReferencedAdSlots();
-
         if($coReferencedAdSlots === null) return;
-
         if($coReferencedAdSlots instanceof PersistentCollection) $coReferencedAdSlots = $coReferencedAdSlots->toArray();
-
         if(count($coReferencedAdSlots) < 2) return;
-
         $originalAdSlot = $coReferencedAdSlots[0];
-
         foreach($coReferencedAdSlots as $copy){
             if($originalAdSlot->checkSum() !== $copy->checkSum())
             {

@@ -1,10 +1,5 @@
 Tagcade\Entity\Core\LibraryNativeAdSlot:
     exclusion_policy: ALL
-    virtual_properties:
-        isReferenced:
-            serialized_name: referenced
-            type: boolean
-            groups: [librarynativeadslot.summary, librarynativeadslot.ref]
     properties:
         id:
             expose: true

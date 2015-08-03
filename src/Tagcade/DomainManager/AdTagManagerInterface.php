@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -23,7 +24,7 @@ interface AdTagManagerInterface
      * @param AdTagInterface $adTag
      * @return void
      */
-    public function save(AdTagInterface $adTag);
+    public function save(AdTagInterface &$adTag);
 
     /**
      * @param AdTagInterface $adTag
@@ -108,4 +109,7 @@ interface AdTagManagerInterface
     public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true);
 
     public function getAdTagsByAdSlotAndRefId(BaseAdSlotInterface $adSlot, $refId, $limit = null, $offset = null);
+
+    public function getAdTagsByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
+
 }

@@ -29,6 +29,14 @@ modules:
         expectedAdSlot: 27
         expectedAdSlot_2: 28
         adTag: 1
+        # library feature
+        libraryAdSlot: 1
+        libraryDisplayAdSlot: 1
+        libraryNativeAdSlot: 3
+        libraryDynamicAdSlot: 5
+        libraryDefaultAdSlot: 1
+        libraryAdTag: 1
+        # end - library feature
 
     config:
         Db:

@@ -8,16 +8,10 @@ use Tagcade\Entity\Core\AdSlotAbstract;
 class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, ReportableAdSlotInterface
 {
     protected $id;
-    protected $name;
     /**
      * @var SiteInterface
      */
     protected $site;
-
-    /**
-     * @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot
-     */
-    protected $libraryDisplayAdSlot;
 
     /**
      * @var LibraryDynamicAdSlotInterface[]
@@ -37,9 +31,12 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
      */
     public function getWidth()
     {
-        if($this->libraryDisplayAdSlot == null) return null;
+        if($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface)
+        {
+            return $this->libraryAdSlot->getWidth();
+        }
 
-        return $this->libraryDisplayAdSlot->getWidth();
+        return null;
     }
 
     /**
@@ -47,8 +44,8 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
      */
     public function setWidth($width)
     {
-        if($this->libraryDisplayAdSlot){
-            $this->libraryDisplayAdSlot->setWidth($width);
+        if($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface){
+            $this->libraryAdSlot->setWidth($width);
         }
 
         return $this;
@@ -59,9 +56,11 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
      */
     public function getHeight()
     {
-        if($this->libraryDisplayAdSlot == null) return null;
+        if($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface){
+            return $this->libraryAdSlot->getHeight();
+        }
 
-        return $this->libraryDisplayAdSlot->getHeight();
+        return null;
     }
 
     /**
@@ -69,8 +68,8 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
      */
     public function setHeight($height)
     {
-        if($this->libraryDisplayAdSlot){
-            $this->libraryDisplayAdSlot->setHeight($height);
+        if($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface){
+            $this->libraryAdSlot->setHeight($height);
         }
 
         return $this;
@@ -86,16 +85,7 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
 
     public function __toString()
     {
-        return $this->name;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function getCoReferencedAdSlots()
-    {
-        return $this->libraryDisplayAdSlot->getDisplayAdSlots();
+        return $this->id . $this->getName();
     }
 
     /**
@@ -103,50 +93,20 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
      */
     public function getLibraryDisplayAdSlot()
     {
-        return $this->libraryDisplayAdSlot;
-    }
-
-    /**
-     * @return LibraryDisplayAdSlotInterface
-     */
-    public function getLibraryAdSlot()
-    {
-        return $this->libraryDisplayAdSlot;
-    }
-
-
-    public function setLibraryAdSlot($libraryAdSlot)
-    {
-        $this->libraryDisplayAdSlot = $libraryAdSlot;
+        return $this->libraryAdSlot;
     }
 
     /**
      * @param LibraryDisplayAdSlotInterface $libraryDisplayAdSlot
-     * @return mixed
+     * @return $this
      */
     public function setLibraryDisplayAdSlot(LibraryDisplayAdSlotInterface $libraryDisplayAdSlot)
     {
-        $this->libraryDisplayAdSlot = $libraryDisplayAdSlot;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return self
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        $this->libraryAdSlot = $libraryDisplayAdSlot;
 
         return $this;
     }
+
 
     /**
      * @return DynamicAdSlotInterface[]
@@ -160,8 +120,8 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         if(null == $libraryDynamicAdSlots) return $dynamicAdSlots;
 
         foreach($libraryDynamicAdSlots as $libraryDynamicAdSlot){
-            $temp = $libraryDynamicAdSlot->getDynamicAdSlots();
-            if($temp->count() < 1) continue;
+            $temp = $libraryDynamicAdSlot->getAdSlots();
+            if($temp->count() < 1) continue; // ignore library with no slot referencing
 
             $dynamicAdSlots = array_merge($dynamicAdSlots, $temp->toArray());
         }
@@ -177,12 +137,11 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         return $this->defaultLibraryDynamicAdSlots;
     }
 
-    /**
-     * @param LibraryDynamicAdSlotInterface[] $defaultLibraryDynamicAdSlots
-     */
     public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots)
     {
         $this->defaultLibraryDynamicAdSlots = $defaultLibraryDynamicAdSlots;
+
+        return $this;
     }
 
     /**
@@ -195,7 +154,7 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         $array = array(
             $this->getSite()->getId(),
             $this->getType(),
-            $this->getLibraryDisplayAdSlot()->getId()
+            $this->getLibraryAdSlot()->getId()
         );
 
         $adTags = $this->getAdTags()->toArray();

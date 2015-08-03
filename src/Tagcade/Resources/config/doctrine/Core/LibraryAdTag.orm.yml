@@ -12,7 +12,7 @@ Tagcade\Entity\Core\LibraryAdTag:
             generator:
                 strategy: AUTO
     fields:
-        referenceName:
+        name:
             type: string
             length: 100
         html:
@@ -51,8 +51,14 @@ Tagcade\Entity\Core\LibraryAdTag:
         adNetwork:
             targetEntity: Tagcade\Entity\Core\AdNetwork
             inversedBy: libraryAdTags
+
     oneToMany:
         adTags:
             targetEntity: Tagcade\Entity\Core\AdTag
             mappedBy: libraryAdTag
             cascade: ['remove']
+        libSlotTags:
+            targetEntity: Tagcade\Entity\Core\LibrarySlotTag
+            mappedBy: libraryAdTag
+            cascade: ['remove']
+

@@ -8,6 +8,7 @@ use Tagcade\Entity\Core\AdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -225,6 +226,28 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->setParameter('ad_slot_id', $adSlot->getId(), Type::INTEGER)
             ->setParameter('ref_id', $refId, Type::STRING)
         ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAdTagsByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'tl')
+            ->join('tl.libSlotTags', 'slt')
+            ->where('slt.libraryAdSlot = :library_ad_slot_id')
+            ->andWhere('slt.refId = :ref_id')
+            ->setParameter('library_ad_slot_id', $libraryAdSlot->getId(), Type::INTEGER)
+            ->setParameter('ref_id', $refId, Type::STRING)
+        ;
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
 
         return $qb->getQuery()->getResult();
     }

@@ -11,14 +11,7 @@ class DynamicAdSlot extends DynamicAdSlotModel
 {
     protected $id;
     protected $site;
-    protected $name;
-    protected $expressions;
 
-    protected $native;
-    /**
-     * @var LibraryDynamicAdSlotInterface
-     */
-    protected $libraryDynamicAdSlot;
     public function __construct()
     {}
 

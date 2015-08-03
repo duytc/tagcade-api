@@ -52,4 +52,4 @@ interface LibraryNativeAdSlotManagerInterface {
      * @return LibraryNativeAdSlotInterface[]
      */
     public function getLibraryNativeAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
-} 
+}

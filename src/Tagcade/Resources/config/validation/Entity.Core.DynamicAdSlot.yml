@@ -3,8 +3,3 @@ Tagcade\Entity\Core\DynamicAdSlot:
         site:
             - NotBlank: ~
             - Valid: ~
-        name:
-            - NotBlank: ~
-            - Length:
-                min: 2
-                minMessage: "Dynamic Ad slot name must be at least {{ limit }} characters in length"

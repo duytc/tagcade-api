@@ -57,17 +57,4 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
      * @param BaseAdSlotInterface $defaultAdSlot
      */
     public function setDefaultAdSlot($defaultAdSlot);
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getDynamicAdSlots();
-
-    /**
-     * @param DynamicAdSlotInterface[] $dynamicAdSlots
-     */
-    public function setDynamicAdSlots($dynamicAdSlots);
-
-
-
 }

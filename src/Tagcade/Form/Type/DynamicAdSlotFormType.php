@@ -45,7 +45,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
         }
 
         $builder
-            ->add('name')
             ->add('libraryAdSlot', 'entity', array('class' => LibraryDynamicAdSlot::class))
         ;
 
@@ -80,7 +79,7 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 $libraryDisplayAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
                 $libraryDisplayAdSlot->setPublisher($publisher);
 
-                $dynamicAdSlot->setLibraryDynamicAdSlot($libraryDisplayAdSlot);
+                $dynamicAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
             }
         );
     }
@@ -96,7 +95,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
     public function getName()
     {
-        //return 'tagcade_form_ad_slot';
         return 'tagcade_form_dynamic_ad_slot';
     }
 }

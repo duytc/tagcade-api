@@ -117,6 +117,6 @@ class Expression implements ExpressionInterface
 
     public function __toString()
     {
-        return "test";
+        return $this->id;
     }
 }

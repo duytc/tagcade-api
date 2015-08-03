@@ -9,8 +9,9 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 class LibraryNativeAdSlot extends LibraryNativeAdSlotModel
 {
     protected $id;
-    protected $referenceName;
+    protected $name;
     protected $visible;
+    protected $libraryAdTags;
     /**
      * @var NativeAdSlotInterface[]
      */

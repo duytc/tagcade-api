@@ -52,4 +52,5 @@ interface LibraryDisplayAdSlotManagerInterface {
      * @return LibraryDisplayAdSlotInterface[]
      */
     public function getLibraryDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
-} 
+
+}

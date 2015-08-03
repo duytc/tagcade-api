@@ -53,4 +53,17 @@ interface BaseAdSlotInterface extends ModelInterface
      * @return string
      */
     public function checkSum();
+
+    /**
+     * @return BaseLibraryAdSlotInterface
+     */
+    public function getLibraryAdSlot();
+
+
+    /**
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @return $this
+     */
+    public function setLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot);
+
 }

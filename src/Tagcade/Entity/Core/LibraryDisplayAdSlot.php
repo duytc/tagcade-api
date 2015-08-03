@@ -9,10 +9,11 @@ use Tagcade\Model\User\Role\PublisherInterface;
 class LibraryDisplayAdSlot extends LibraryDisplayAdSlotModel
 {
     protected $id;
-    protected $referenceName;
+    protected $name;
     protected $width;
     protected $height;
     protected $visible;
+    protected $libSlotTags;
     /**
      * @var PublisherInterface
      */
@@ -24,5 +25,4 @@ class LibraryDisplayAdSlot extends LibraryDisplayAdSlotModel
 
     public function __construct()
     {}
-
 }

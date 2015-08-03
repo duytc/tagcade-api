@@ -26,10 +26,11 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\
 class DisplayAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
+     *
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "site.summary", "displayadslotlib.detail"}
+     *      serializerGroups={"adslot.detail", "displayadslot.summary", "site.summary", "librarydisplayadslot.summary", "user.summary", "slotlib.summary"}
      * )
-     * Get all ad slots
+     * Get all display ad slots
      *
      * @ApiDoc(
      *  resource = true,
@@ -47,10 +48,9 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "site.summary", "displayadslotlib.ref"}
+     *      serializerGroups={"adslot.detail", "displayadslot.detail", "site.summary", "librarydisplayadslot.detail", "user.summary", "slotlib.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
-     * Get a single adSlot for the given id
+     * Get a single display adSlot for the given id
      *
      * @ApiDoc(
      *  resource = true,
@@ -81,37 +81,10 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
     }
-//
-//    /**
-//     * @Rest\Get("/variableDescriptor/{id}", requirements={"id" = "\d+"})
-//     * @param Request $request
-//     * @param $id
-//     * @return View
-//     */
-//    public function getVariableDescriptorAction(Request $request, $id)
-//    {
-//        /** @var AdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//
-//        return $this->getHandler()->getAdSlotVariableDescriptor($adSlot);
-//    }
 
-//    /**
-//     * @Rest\Get("/configExpression/{id}", requirements={"id" = "\d+"})
-//     * @param Request $request
-//     * @param $id
-//     * @return View
-//     */
-//    public function getConfigExpressionAction(Request $request, $id)
-//    {
-//        /** @var AdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//
-//        return $this->getHandler()->getAdSlotConfigExpression($adSlot);
-//    }
 
     /**
-     * Create a adSlot from the submitted data
+     * Create a display adSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -131,7 +104,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * Update the position of all ad tags in an display ad slot
      *
      * @param Request $request
      * @param int $id
@@ -159,7 +132,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * Update the position of all ad tags in an display ad slot
      *
      * @Rest\POST("/displayadslots/{id}/clone", requirements={"id" = "\d+"})
      * @param Request $request
@@ -181,6 +154,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         if($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
+            $this->getHandler()->getHandlerEvent();
             $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site);
         }
         else {
@@ -191,7 +165,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot
+     * Update an existing display adSlot from the submitted data or create a new display adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -215,7 +189,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot at a specific location
+     * Update an existing display adSlot from the submitted data or create a new display adSlot at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -238,7 +212,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Delete an existing adSlot
+     * Delete an existing display adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -269,7 +243,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         /** @var ExpressionInterface $expression */
         foreach($expressions as $expression){
-            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getDynamicAdSlots();
+            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getAdSlots();
 
             if($dynamicAdSlots->count() < 1) continue;
 
@@ -295,9 +269,8 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * @Rest\View(
-     *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslotlib.summary", "nativeadslot.summary", "nativeadslotlib.summary", "site.summary", "user.summary", "adtaglibrary.ref", "adnetwork.summary"}
+     *      serializerGroups={"adtag.summary", "site.summary", "user.summary", "libraryadtag.summary", "adnetwork.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
      * @param $id
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */

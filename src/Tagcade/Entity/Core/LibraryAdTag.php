@@ -3,6 +3,7 @@
 namespace Tagcade\Entity\Core;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\LibraryAdTag as LibraryAdTagModel;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 class LibraryAdTag extends LibraryAdTagModel {
 
@@ -17,8 +18,12 @@ class LibraryAdTag extends LibraryAdTagModel {
     protected $adNetwork;
 
     protected $adTags;
+    /**
+     * @var LibrarySlotTagInterface
+     */
+    protected $libSlotTags;
 
-    protected $referenceName;
+    protected $name;
 
     /** int - type of AdTags*/
     protected $adType;

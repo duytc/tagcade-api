@@ -4,6 +4,7 @@ namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 abstract class AdSlotAbstract
@@ -21,9 +22,12 @@ abstract class AdSlotAbstract
      * @var SiteInterface
      */
     protected $site;
-    protected $type;
-    protected $name;
-
+    protected $slotType;
+    protected $type; // # a hack to have type output in json
+    /**
+     * @var BaseLibraryAdSlotInterface
+     */
+    protected $libraryAdSlot;
     protected $deletedAt;
 
     public function __construct()
@@ -52,15 +56,7 @@ abstract class AdSlotAbstract
      */
     public function getType()
     {
-        return $this->type;
-    }
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
+        return $this->slotType;
     }
 
     /**
@@ -75,12 +71,11 @@ abstract class AdSlotAbstract
         return $this->adTags;
     }
 
-    /**
-     * @param \Tagcade\Model\Core\AdTagInterface[] $adTags
-     */
     public function setAdTags($adTags)
     {
         $this->adTags = $adTags;
+
+        return $this;
     }
 
     /**
@@ -88,15 +83,22 @@ abstract class AdSlotAbstract
      */
     public function getName()
     {
-        return $this->name;
+        if($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface)
+        {
+            return $this->libraryAdSlot->getName();
+        }
+
+        return null;
     }
 
-    /**
-     * @param mixed $name
-     */
     public function setName($name)
     {
-        $this->name = $name;
+        if($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface)
+        {
+            return $this->libraryAdSlot->setName($name);
+        }
+
+        return $this;
     }
 
     /**
@@ -107,18 +109,31 @@ abstract class AdSlotAbstract
         return $this->site;
     }
 
-    /**
-     * @param SiteInterface $site
-     */
     public function setSite(SiteInterface $site)
     {
         $this->site = $site;
+
+        return $this;
     }
 
+    public function getLibraryAdSlot()
+    {
+        return $this->libraryAdSlot;
+    }
 
-    abstract public function getLibraryAdSlot();
+    public function setLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot)
+    {
+        $this->libraryAdSlot = $libraryAdSlot;
 
+        return $this;
+    }
 
-    abstract public function setLibraryAdSlot($libaryAdSlot);
+    /**
+     * @inheritdoc
+     */
+    public function getCoReferencedAdSlots()
+    {
+        return $this->libraryAdSlot->getAdSlots();
+    }
 
 }

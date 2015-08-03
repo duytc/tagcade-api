@@ -76,4 +76,24 @@ interface LibraryAdTagInterface extends  ModelInterface{
      * @param array $descriptor
      */
     public function setDescriptor($descriptor);
+
+    /**
+     * @return LibrarySlotTagInterface
+     */
+    public function getLibSlotTags();
+
+    /**
+     * @param LibrarySlotTagInterface $libSlotTags
+     */
+    public function setLibSlotTags($libSlotTags);
+
+    /**
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name);
 }

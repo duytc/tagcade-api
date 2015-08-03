@@ -12,7 +12,6 @@ class AdTag implements AdTagInterface
      * @var BaseAdSlotInterface
      */
     protected $adSlot;
-    protected $name;
     protected $position;
     protected $active;
     protected $frequencyCap;
@@ -27,12 +26,10 @@ class AdTag implements AdTagInterface
     protected $libraryAdTag;
     protected $refId;
     /**
-     * @param $name
      * @param LibraryAdTagInterface $libraryAdTag
      */
-    public function __construct($name,  LibraryAdTagInterface $libraryAdTag = null)
+    public function __construct(LibraryAdTagInterface $libraryAdTag = null)
     {
-        $this->name = $name;
         $this->html = $libraryAdTag->getHtml();
 
         if ($libraryAdTag) {
@@ -84,15 +81,9 @@ class AdTag implements AdTagInterface
      */
     public function getAdNetwork()
     {
+        if($this->libraryAdTag === null) return null;
 
-        /**
-         * @var LibraryAdTagInterface $libraryAdTag
-         */
-        $libraryAdTag = $this->getLibraryAdTag();
-
-        if($libraryAdTag == null) return null;
-
-        return $libraryAdTag->getAdNetwork();
+        return $this->libraryAdTag->getAdNetwork();
     }
 
     /**
@@ -116,13 +107,8 @@ class AdTag implements AdTagInterface
 
     public function setAdNetwork(AdNetworkInterface $adNetwork)
     {
-        /**
-         * @var LibraryAdTagInterface $libraryAdTag
-         */
-        $libraryAdTag = $this->getLibraryAdTag();
-
-        if($libraryAdTag != null) {
-            $libraryAdTag->setAdNetwork($adNetwork);
+        if($this->libraryAdTag != null) {
+            $this->libraryAdTag->setAdNetwork($adNetwork);
         }
 
         return $this;
@@ -133,7 +119,12 @@ class AdTag implements AdTagInterface
      */
     public function getName()
     {
-        return $this->name;
+        if($this->libraryAdTag instanceof LibraryAdTagInterface)
+        {
+            return $this->libraryAdTag->getName();
+        }
+
+        return null;
     }
 
     /**
@@ -141,7 +132,11 @@ class AdTag implements AdTagInterface
      */
     public function setName($name)
     {
-        $this->name = $name;
+        if($this->libraryAdTag instanceof LibraryAdTagInterface)
+        {
+            return $this->libraryAdTag->setName($name);
+        }
+
         return $this;
     }
 
@@ -150,14 +145,9 @@ class AdTag implements AdTagInterface
      */
     public function getHtml()
     {
-        /**
-         * @var LibraryAdTagInterface $libraryAdTag
-         */
-        $libraryAdTag = $this->getLibraryAdTag();
+        if($this->libraryAdTag == null) return null;
 
-        if($libraryAdTag == null) return null;
-
-        return $libraryAdTag->getHtml();
+        return $this->libraryAdTag->getHtml();
     }
 
     /**
@@ -165,13 +155,8 @@ class AdTag implements AdTagInterface
      */
     public function setHtml($html)
     {
-        /**
-         * @var LibraryAdTagInterface $libraryAdTag
-         */
-        $libraryAdTag = $this->getLibraryAdTag();
-
-        if($libraryAdTag != null) {
-            $libraryAdTag->setHtml($html);
+        if($this->libraryAdTag != null) {
+            $this->libraryAdTag->setHtml($html);
         }
 
         return $this;
@@ -196,7 +181,7 @@ class AdTag implements AdTagInterface
 
     public function __toString()
     {
-        return $this->name;
+        return $this->id . $this->getName();
     }
 
     /**
@@ -277,6 +262,22 @@ class AdTag implements AdTagInterface
         return $this->getLibraryAdTag()->getAdTags();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getRefId()
+    {
+        return $this->refId;
+    }
+
+    /**
+     * @param mixed $refId
+     */
+    public function setRefId($refId)
+    {
+        $this->refId = $refId;
+    }
+
 
     /**
      * Calculate CheckSum string of an given AdTag
@@ -297,19 +298,4 @@ class AdTag implements AdTagInterface
             )));
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRefId()
-    {
-        return $this->refId;
-    }
-
-    /**
-     * @param mixed $refId
-     */
-    public function setRefId($refId)
-    {
-        $this->refId = $refId;
-    }
 }

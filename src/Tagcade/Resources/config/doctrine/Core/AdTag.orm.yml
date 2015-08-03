@@ -12,9 +12,9 @@ Tagcade\Entity\Core\AdTag:
             generator:
                 strategy: AUTO
     fields:
-        name:
-            type: string
-            length: 100
+#        name:
+#            type: string
+#            length: 100
 
         position:
             type: integer
@@ -49,7 +49,6 @@ Tagcade\Entity\Core\AdTag:
             nullable: true
         refId:
             type: string
-            nullable: true
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

@@ -3,10 +3,10 @@ Tagcade\Entity\Core\NativeAdSlot:
     table: core_native_ad_slot
     repositoryClass: Tagcade\Repository\Core\NativeAdSlotRepository
 
-    manyToOne:
-        libraryNativeAdSlot:
-            targetEntity: Tagcade\Entity\Core\LibraryNativeAdSlot
-            cascade: ['persist']
+#    manyToOne:
+#        libraryNativeAdSlot:
+#            targetEntity: Tagcade\Entity\Core\LibraryNativeAdSlot
+#            cascade: ['persist']
     oneToMany:
         defaultLibraryDynamicAdSlots:
             targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot

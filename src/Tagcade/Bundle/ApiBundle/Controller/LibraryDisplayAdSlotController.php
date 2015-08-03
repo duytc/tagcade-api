@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use Doctrine\ORM\PersistentCollection;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -22,12 +24,11 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class LibraryDisplayAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad slots
+     * Get all library displays adslots
      *
      * @Rest\View(
-     *      serializerGroups={"librarydisplayadslot.summary" , "slotlib.detail", "user.summary"}
+     *      serializerGroups={"librarydisplayadslot.summary" , "slotlib.summary", "user.summary", "displayadslot.summary", "site.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=true)
      *
      * @ApiDoc(
      *  resource = true,
@@ -45,11 +46,10 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
     /**
      * @Rest\View(
-     *      serializerGroups={"librarydisplayadslot.detail" , "slotlib.detail",  "user.summary"}
+     *      serializerGroups={"librarydisplayadslot.detail" , "slotlib.summary", "user.summary", "displayadslot.summary", "site.summary"}
      * )
-     * @Rest\View(serializerEnableMaxDepthChecks=true)
      *
-     * Get a single adSlot for the given id
+     * Get a single library displays adslot for the given id
      *
      * @ApiDoc(
      *  resource = true,
@@ -71,7 +71,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
 
     /**
-     * Update an existing nativeAdSlot from the submitted data or create a new nativeAdSlot at a specific location
+     * Update an existing library displays adslot from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -90,25 +90,11 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      */
     public function patchAction(Request $request, $id)
     {
-        $params = $request->request->all();
-
-        if (array_key_exists('visible', $params) && false == $params['visible']) {
-            /**
-             * @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot;
-             */
-            $libraryDisplayAdSlot = $this->getOr404($id);
-            $referencingSlots = $libraryDisplayAdSlot->getDisplayAdSlots()->toArray();
-            if (count($referencingSlots) > 0) {
-                throw new BadRequestHttpException('There are some slots still referencing to this library');
-            }
-
-        }
-
         return $this->patch($request, $id);
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * Update the position of all ad tags in an library displays adslot
      *
      * @param Request $request
      * @param int $id
@@ -118,29 +104,23 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
     {
         /** @var LibraryDisplayAdSlotInterface $libraryAdSlot */
         $libraryAdSlot = $this->one($id);
-
-        $adSlot = current($libraryAdSlot->getDisplayAdSlots()->toArray());
-
-        if (!$adSlot instanceof DisplayAdSlotInterface) {
-            throw new NotFoundHttpException('not found any slot in this library');
-        }
-
         $newAdTagOrderIds = $request->request->get('ids');
 
         if (!$newAdTagOrderIds) {
             throw new BadRequestHttpException("Ad tagIds parameter is required");
         }
 
+
         $result = array_values(
             $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor')
-                ->setAdTagPositionForAdSlot($adSlot, $newAdTagOrderIds)
+                ->setAdTagPositionForLibraryAdSlot($libraryAdSlot, $newAdTagOrderIds)
         );
 
         return $result;
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * Update the position of all ad tags in an library displays adslot
      *
      * @Rest\POST("/librarydisplayadslots/{id}/adtag", requirements={"id" = "\d+"})
      * @param Request $request
@@ -150,29 +130,18 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
     public function postAdtagAction(Request $request, $id)
     {
         /** @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot */
-        $libraryDisplayAdSlot = $this->one($id);
+        $libraryDisplayAdSlot = $this->getOr404($id);
 
-        /** @var DisplayAdSLotInterface[] $referencedAdSlots */
-        $referencedAdSlots = $libraryDisplayAdSlot->getDisplayAdSlots()->toArray();
-
-        if(null == $referencedAdSlots ||  count($referencedAdSlots) < 1)
-        {
-            return $this->view("Can not add an AdTag to an orphan AdSlot Library", Codes::HTTP_BAD_REQUEST);
+        $request->request->set('libraryAdSlot', $id);
+        $request->request->set('refId', uniqid("", true));
+        // move the creating AdTag to library
+        $libraryAdTag = $request->request->get('libraryAdTag');
+        if(is_array($libraryAdTag)){
+            $libraryAdTag['visible'] = true;
+            $request->request->set('libraryAdTag', $libraryAdTag);
         }
 
-        $adSlot = $referencedAdSlots[0];
-        // set AdSlot
-        $request->request->add(array('adSlot' => $adSlot->getId()));
-        unset($adSlot);
-        unset($referencedAdSlots);
-
-        // move the creating AdTag to Library
-        $libraryAdTag = $request->request->get('libraryAdTag');
-        $libraryAdTag['visible'] = true;
-        $request->request->set('libraryAdTag', $libraryAdTag);
-        unset($adTagLib);
-
-        $this->get('tagcade_api.handler.ad_tag')->post($request->request->all());
+        $this->get('tagcade_api.handler.library_slot_tag')->post($request->request->all());
 
         return $this->view(null, Codes::HTTP_CREATED);
     }
@@ -205,7 +174,9 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
     /**
      * Get those AdSlots which refer to the current AdSlot Library
-     *
+     * @Rest\View(
+     *      serializerGroups={"adslot.summary" , "slotlib.summary", "user.summary", "displayadslot.summary", "librarydisplayadslot.summary", "site.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -223,13 +194,15 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
         /** @var LibraryDisplayAdSlotInterface $entity */
         $entity = $this->one($id);
 
-        return $entity->getDisplayAdSlots();
+        return $entity->getAdSlots();
     }
 
 
     /**
-     * Get those AdTags which belong to the given AdSlot Library
-     *
+     * Get those AdTags which belong to the given display AdSlot Library
+     * @Rest\View(
+     *      serializerGroups={"libraryslottag.detail" , "slotlib.detail", "librarydisplayadslot.detail", "libraryadtag.detail", "user.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -246,13 +219,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
     public function getAdtagsAction($id){
         /** @var LibraryDisplayAdSlotInterface $entity */
         $entity = $this->one($id);
-        $adSlots = $entity->getDisplayAdSlots();
-
-        if(null == $adSlots || count($adSlots) < 1) return [];
-
-        $adSlot = $adSlots[0];
-
-        return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdSlot($adSlot);
+        return $this->get('tagcade.repository.library_slot_tag')->getByLibraryAdSlot($entity);
     }
 
     /**
@@ -274,6 +241,14 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      */
     public function deleteAction($id)
     {
+        /** @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot */
+        $libraryDisplayAdSlot = $this->getOr404($id);
+
+        $referencingSlots = $libraryDisplayAdSlot->getAdSlots()->toArray();
+        if (count($referencingSlots) > 0) {
+            throw new BadRequestHttpException('There are some slots still referencing to this library');
+        }
+
         return $this->delete($id);
     }
     /**

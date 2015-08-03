@@ -14,6 +14,13 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: onFlush }
 
+    ## Update library ad tag position, make sure its continuous
+    tagcade_api.event_listener.UpdateLibraryAdTagPositionListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateLibrarySlotTagPositionListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: onFlush }
+
 #    ## Update ad slot variableDescriptor, make sure auto update for expressions field
 #    tagcade_api.event_listener.UpdateAdSlotExpressionListener:
 #        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotExpressionListener
@@ -32,3 +39,4 @@ services:
         class: Tagcade\Bundle\ApiBundle\EventListener\MoveAdTagToLibraryListener
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }

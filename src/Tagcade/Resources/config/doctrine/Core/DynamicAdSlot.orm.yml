@@ -3,11 +3,11 @@ Tagcade\Entity\Core\DynamicAdSlot:
     table: core_dynamic_ad_slot
     repositoryClass: Tagcade\Repository\Core\DynamicAdSlotRepository
 
-    manyToOne:
-        libraryDynamicAdSlot:
-            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
-            inversedBy: dynamicAdSlots
-            cascade: ['persist']
+#    manyToOne:
+#        libraryDynamicAdSlot:
+#            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
+#            inversedBy: dynamicAdSlots
+#            cascade: ['persist']
 
 
 

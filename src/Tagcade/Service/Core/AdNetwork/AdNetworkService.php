@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -94,10 +95,14 @@ class AdNetworkService implements AdNetworkServiceInterface
 
         $activeTags = array_filter(
 
-            $adNetwork->getAdTags()->toArray(),
+            $adNetwork->getAdTags(),
 
             function(AdTagInterface $adTag) use ($site)
             {
+                if (!$adTag->getAdSlot() instanceof ReportableAdSlotInterface) {
+                    return false;
+                }
+
                 return $adTag->getAdSlot()->getSite() == $site && $adTag->isActive();
             }
         );

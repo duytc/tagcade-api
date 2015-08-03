@@ -53,7 +53,6 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
         }
 
         $builder
-            ->add('name')
             ->add('libraryAdSlot', 'entity', array('class' => LibraryNativeAdSlot::class))
         ;
 
@@ -85,7 +84,7 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
                 $libraryNativeAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
                 $libraryNativeAdSlot->setPublisher($publisher);
 
-                $nativeAdSlot->setLibraryNativeAdSlot($libraryNativeAdSlot);
+                $nativeAdSlot->setLibraryAdSlot($libraryNativeAdSlot);
             }
         );
     }
@@ -100,7 +99,6 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
 
     public function getName()
     {
-        //return 'tagcade_form_ad_slot';
         return 'tagcade_form_native_ad_slot';
     }
 }

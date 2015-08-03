@@ -1,10 +1,5 @@
 Tagcade\Entity\Core\LibraryAdTag:
     exclusion_policy: ALL
-    virtual_properties:
-        isReferenced:
-            serialized_name: referenced
-            type: boolean
-            groups: [libraryadtag.summary, libraryadtag.ref]
     properties:
         adNetwork:
             expose: true
@@ -21,7 +16,10 @@ Tagcade\Entity\Core\LibraryAdTag:
         descriptor:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        referenceName:
+        name:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        libraryAdSlot:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
         id:

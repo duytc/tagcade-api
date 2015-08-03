@@ -100,7 +100,7 @@ class UpdateDynamicAdSlotCacheListener
                     return false;
                 }
 
-                $updatingDynamicAdSlots = $entity->getLibraryDynamicAdSlot()->getDynamicAdSlots();
+                $updatingDynamicAdSlots = $entity->getLibraryDynamicAdSlot()->getAdSlots();
 
                 if(null === $updatingDynamicAdSlots) return true;
 

@@ -10,12 +10,6 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 {
     protected $id;
 
-    protected $name;
-
-    /**
-     * @var LibraryNativeAdSlotInterface $libraryNativeAdSlot
-     */
-    protected $libraryNativeAdSlot;
     /**
      * @var LibraryDynamicAdSlotInterface[]
      */
@@ -23,12 +17,8 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
     /**
      * @param string $name
      */
-    public function __construct($name)
-    {
-        parent::__construct();
 
-        $this->name = $name;
-    }
+
 
     /**
      * @inheritdoc
@@ -44,10 +34,13 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
     /**
      * @param ArrayCollection $adTags
+     * @return $this
      */
     public function setAdTags($adTags)
     {
         $this->adTags = $adTags;
+
+        return $this;
     }
 
     /**
@@ -61,58 +54,9 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
     public function __toString()
     {
-        return $this->name;
+        return $this->id . $this->getName();
     }
 
-    /**
-     * @return LibraryNativeAdSlotInterface
-     */
-    public function getLibraryAdSlot()
-    {
-        return $this->libraryNativeAdSlot;
-    }
-
-    /**
-     * @return LibraryNativeAdSlotInterface
-     */
-    public function getLibraryNativeAdSlot()
-    {
-        return $this->libraryNativeAdSlot;
-    }
-
-    /**
-     * @param LibraryNativeAdSlotInterface $libraryNativeAdSlot
-     */
-    public function setLibraryNativeAdSlot($libraryNativeAdSlot)
-    {
-        $this->libraryNativeAdSlot = $libraryNativeAdSlot;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getCoReferencedAdSlots()
-    {
-        return $this->libraryNativeAdSlot->getNativeAdSlots();
-    }
 
     /**
      * @return LibraryDynamicAdSlotInterface[]
@@ -124,10 +68,12 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
     /**
      * @param LibraryDynamicAdSlotInterface[] $defaultLibraryDynamicAdSlots
+     * @return $this
      */
     public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots)
     {
         $this->defaultLibraryDynamicAdSlots = $defaultLibraryDynamicAdSlots;
+        return $this;
     }
 
     /**
@@ -142,19 +88,13 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
         if(null == $libraryDynamicAdSlots) return $dynamicAdSlots;
 
         foreach($libraryDynamicAdSlots as $libraryDynamicAdSlot){
-            $temp = $libraryDynamicAdSlot->getDynamicAdSlots();
+            $temp = $libraryDynamicAdSlot->getAdSlots();
             if($temp->count() < 1) continue;
 
             $dynamicAdSlots = array_merge($dynamicAdSlots, $temp->toArray());
         }
 
         return array_unique($dynamicAdSlots);
-    }
-
-    public function setLibraryAdSlot($libraryAdSlot)
-    {
-        $this->libraryNativeAdSlot = $libraryAdSlot;
-        return $this;
     }
 
     /**
@@ -165,7 +105,7 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
         $array = array(
             $this->getSite()->getId(),
             $this->getType(),
-            $this->getLibraryNativeAdSlot()->getId()
+            $this->getLibraryAdSlot()->getId()
         );
 
         $adTags = $this->getAdTags()->toArray();

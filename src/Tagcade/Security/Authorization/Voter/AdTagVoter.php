@@ -2,6 +2,7 @@
 
 namespace Tagcade\Security\Authorization\Voter;
 
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
@@ -22,6 +23,9 @@ class AdTagVoter extends EntityVoterAbstract
      */
     protected function isPublisherActionAllowed($adTag, UserEntityInterface $user, $action)
     {
-        return $user->getId() == $adTag->getAdSlot()->getSite()->getPublisherId();
+        $adSlot = $adTag->getAdSlot();
+        $publisherId = $adSlot instanceof ReportableAdSlotInterface ? $adSlot->getSite()->getPublisherId() : $adTag->getLibraryAdTag()->getLibraryAdSlot()->getPublisherId();
+
+        return $user->getId() == $publisherId;
     }
 }

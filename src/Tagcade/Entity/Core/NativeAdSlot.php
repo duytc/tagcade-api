@@ -11,12 +11,7 @@ class NativeAdSlot extends NativeAdSlotModel
 {
     protected $id;
     protected $site;
-    protected $name;
     protected $deletedAt;
-    /**
-     * @var LibraryNativeAdSlotInterface
-     */
-    protected $libraryNativeAdSlot;
     /**
      * @var LibraryDynamicAdSlotInterface[]
      */

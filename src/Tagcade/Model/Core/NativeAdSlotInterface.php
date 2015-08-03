@@ -28,20 +28,6 @@ interface NativeAdSlotInterface extends BaseAdSlotInterface
     public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots);
 
     /**
-     * @return LibraryNativeAdSlotInterface
-     */
-    public function getLibraryAdSlot();
-    /**
-     * @return LibraryNativeAdSlotInterface
-     */
-    public function getLibraryNativeAdSlot();
-
-    /**
-     * @param LibraryNativeAdSlotInterface $libraryNativeAdSlot
-     */
-    public function setLibraryNativeAdSlot($libraryNativeAdSlot);
-
-    /**
      * get the list of NativeAdSlot that also refers to the NativeAdSlotLib of this entity
      * @return NativeAdSlotInterface[]
      */

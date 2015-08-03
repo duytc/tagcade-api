@@ -54,57 +54,60 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'groupType' => 'AND',
-                            'groupVal' => [
-                                [
-                                    'var' => 'checkLength',
-                                    'cmp' => 'length >=',
-                                    'val' => 10,
-                                    'type' => 'numeric'
-                                ],
-                                [
-                                    'groupType' => 'OR',
-                                    'groupVal' => [
-                                        [
-                                            'var' => 'checkMath',
-                                            'cmp' => '<=',
-                                            'val' => 2,
-                                            'type' => 'numeric'
-                                        ],
-                                        [
-                                            'var' => 'checkBoolean',
-                                            'cmp' => '==',
-                                            'val' => 'true',
-                                            'type' => 'boolean'
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'groupType' => 'AND',
+                                'groupVal' => [
+                                    [
+                                        'var' => 'checkLength',
+                                        'cmp' => 'length >=',
+                                        'val' => 10,
+                                        'type' => 'numeric'
+                                    ],
+                                    [
+                                        'groupType' => 'OR',
+                                        'groupVal' => [
+                                            [
+                                                'var' => 'checkMath',
+                                                'cmp' => '<=',
+                                                'val' => 2,
+                                                'type' => 'numeric'
+                                            ],
+                                            [
+                                                'var' => 'checkBoolean',
+                                                'cmp' => '==',
+                                                'val' => 'true',
+                                                'type' => 'boolean'
+                                            ]
                                         ]
+                                    ],
+                                    [
+                                        'var' => 'checkString',
+                                        'cmp' => '!=',
+                                        'val' => 'abc',
+                                        'type' => 'string'
                                     ]
-                                ],
-                                [
-                                    'var' => 'checkString',
-                                    'cmp' => '!=',
-                                    'val' => 'abc',
-                                    'type' => 'string'
                                 ]
-                            ]
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2,
+                            'startingPosition' => 1
+                        ]
                     ],
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2,
-                        'startingPosition' => 1
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(201);
@@ -120,19 +123,22 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 //'name' => 'dtag.test.adslot', //this is missing field
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -148,19 +154,22 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot'
                 ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
                 'unexpected_field' => 29 //this is unexpected field
             ]
         );
@@ -177,19 +186,22 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => '29_wrong' //this is wrong data type
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => '29_wrong', //this is wrong data type
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -205,11 +217,15 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => null,
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => null,
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
-        $I->seeResponseCodeIs(201);
+        //$I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIs(400); //now not allow
     }
 
     /**
@@ -223,19 +239,22 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor_wrong' => [ //this key is invalid
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor_wrong' => [ //this key is invalid
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -251,19 +270,22 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => -1, //this adSlot is not existed
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => -1, //this adSlot is not existed
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -280,19 +302,22 @@ class DynamicAdSlot
 //                'site' => PARAMS_SITE,
 //                'name' => 'dtag.test.adslot',
 //                'native' => false, //not support native
-//                'expressions' => [
-//                    [
-//                        'expressionDescriptor' => [
-//                            'var' => 'checkString',
-//                            'cmp' => '!=',
-//                            'val' => 'abc',
-//                            'type' => 'string'
-//                        ],
-//                        'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
-//                        'startingPosition' => 0
-//                    ]
-//                ],
-//                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+//                'libraryAdSlot' => [
+//                    'expressions' => [
+//                        [
+//                            'expressionDescriptor' => [
+//                                'var' => 'checkString',
+//                                'cmp' => '!=',
+//                                'val' => 'abc',
+//                                'type' => 'string'
+//                            ],
+//                            'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
+//                            'startingPosition' => 0
+//                        ]
+//                    ],
+//                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+//                    'referenceName' => 'dtag.test.adslot'
+//                ]
 //            ]
 //        );
 //        $I->seeResponseCodeIs(400);
@@ -312,40 +337,44 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'groupType' => 'AND',
-                            'groupVal' => [
-                                [
-                                    'var' => 'checkLength',
-                                    'cmp' => 'length >=',
-                                    'val' => 10,
-                                    'type' => 'numeric'
-                                ],
-                                [
-                                    'var' => 'checkString',
-                                    'cmp' => '!=',
-                                    'val' => 'abc',
-                                    'type' => 'string'
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'groupType' => 'AND',
+                                'groupVal' => [
+                                    [
+                                        'var' => 'checkLength',
+                                        'cmp' => 'length >=',
+                                        'val' => 10,
+                                        'type' => 'numeric'
+                                    ],
+                                    [
+                                        'var' => 'checkString',
+                                        'cmp' => '!=',
+                                        'val' => 'abc',
+                                        'type' => 'string'
+                                    ]
                                 ]
-                            ]
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
                         ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2,
+                            'startingPosition' => 1
+                        ]
                     ],
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT_2,
-                        'startingPosition' => 1
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(204);
@@ -365,19 +394,23 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
                 ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
                 'unexpected_field' => 29 //this is unexpected field
             ]
         );
@@ -398,19 +431,23 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => '29_wrong' //this is wrong data type
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => '29_wrong', //this is wrong data type
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -430,8 +467,12 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'defaultAdSlot' => null,
-                'expressions' => null
+                'libraryAdSlot' => [
+                    'expressions' => null,
+                    'defaultAdSlot' => null,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -451,19 +492,23 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor_wrong' => [ //this key is invalid
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor_wrong' => [ //this key is invalid
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -483,19 +528,23 @@ class DynamicAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
-                'expressions' => [
-                    [
-                        'expressionDescriptor_wrong' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => -1, //this adSlot is not existed
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor_wrong' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => -1, //this adSlot is not existed
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -516,42 +565,66 @@ class DynamicAdSlot
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.adslot',
                 'native' => false, //not support native
-                'expressions' => [
-                    [
-                        'expressionDescriptor' => [
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
     }
 
-//    /**
-//     * patch dynamicAdSlot
-//     * @depends addDynamicAdSlot
-//     * @param ApiTester $I
-//     */
-//    public function patchDynamicAdSlot(ApiTester $I)
-//    {
-//        //TODO - case failed
-//        $I->sendGet(URL_API . '/dynamicadslots');
-//        $item = array_pop($I->grabDataFromJsonResponse());
-//
-//        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
-//            [
-//                'name' => 'dtag.test.adslot.patched'
-//            ]
-//        );
-//        $I->seeResponseCodeIs(204);
-//    }
+    /**
+     * patch dynamicAdSlot
+     * @depends addDynamicAdSlot
+     * @param ApiTester $I
+     */
+    public function patchDynamicAdSlot(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'name' => 'dtag.test.adslot.patched'
+            ]
+        );
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * patch dynamicAdSlot
+     * @depends addDynamicAdSlot
+     * @param ApiTester $I
+     */
+    public function patchDynamicAdSlotMoveToLibrary(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'libraryAdSlot' => [
+                    'referenceName' => 'dtag.test.adslot-lib',
+                    'visible' => true
+                ]
+            ]
+        );
+        $I->seeResponseCodeIs(204);
+    }
 
     /**
      * patch dynamicAdSlot failed cause by unexpected field
@@ -633,19 +706,23 @@ class DynamicAdSlot
 
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
-                'expressions' => [
-                    [
-                        'expressionDescriptor_wrong' => [ //this key is invalid
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => -1, //this is not existed
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor_wrong' => [ //this key is invalid
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => -1, //this is not existed
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -664,19 +741,23 @@ class DynamicAdSlot
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'native' => false, //not support native
-                'expressions' => [
-                    [
-                        'expressionDescriptor_wrong' => [ //this key is invalid
-                            'var' => 'checkString',
-                            'cmp' => '!=',
-                            'val' => 'abc',
-                            'type' => 'string'
-                        ],
-                        'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
-                        'startingPosition' => 0
-                    ]
-                ],
-                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor_wrong' => [ //this key is invalid
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_NATIVE_AD_SLOT, //this is not supported
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'referenceName' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);

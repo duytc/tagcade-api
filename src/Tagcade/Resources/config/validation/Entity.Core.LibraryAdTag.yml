@@ -10,7 +10,7 @@ Tagcade\Entity\Core\LibraryAdTag:
                 message: "The value {{ value }} is not a valid number."
             - GreaterThan:
                 value: -1
-        referenceName:
+        name:
             - NotBlank: ~
             - Length:
                 min: 2

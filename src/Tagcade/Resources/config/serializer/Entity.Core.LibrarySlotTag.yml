@@ -1,0 +1,27 @@
+Tagcade\Entity\Core\LibrarySlotTag:
+    exclusion_policy: ALL
+    properties:
+        frequencyCap:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        active:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        position:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        rotation:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        name:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        libraryAdSlot:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        libraryAdTag:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        id:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]

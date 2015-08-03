@@ -14,6 +14,7 @@ parameters:
     tagcade.security.auth.voter.library_native_ad_slot.class: Tagcade\Security\Authorization\Voter\LibraryNativeAdSlotVoter
     tagcade.security.auth.voter.ad_tag.class: Tagcade\Security\Authorization\Voter\AdTagVoter
     tagcade.security.auth.voter.library_ad_tag.class: Tagcade\Security\Authorization\Voter\LibraryAdTagVoter
+    tagcade.security.auth.voter.library_slot_tag.class: Tagcade\Security\Authorization\Voter\LibrarySlotTagVoter
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
     tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
 
@@ -21,6 +22,12 @@ parameters:
     tagcade.events.handler_event: 'tagcade.events.handler_event'
 
 services:
+    tagcade.security.auth.voter.library_slot_tag:
+        class:  %tagcade.security.auth.voter.library_slot_tag.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
     tagcade.security.auth.voter.site:
         class:  %tagcade.security.auth.voter.site.class%
         public: false

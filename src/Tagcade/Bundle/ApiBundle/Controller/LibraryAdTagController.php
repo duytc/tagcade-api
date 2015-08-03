@@ -19,8 +19,7 @@ use Tagcade\Model\Core\LibraryAdTagInterface;
 class LibraryAdTagController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * @Rest\View(serializerGroups={"libraryadtag.summary", "adnetwork.summary", "publisher.summary", "adtag.detail"})
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
+     * @Rest\View(serializerGroups={"libraryadtag.summary", "adnetwork.summary", "user.summary", "adtag.summary"})
      * Get all adtag library
      *
      * @ApiDoc(
@@ -40,7 +39,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
     /**
      *
      * @Rest\View(
-     *      serializerGroups={"libraryadtag.detail", "adnetwork.detail", "user.detail"}
+     *      serializerGroups={"libraryadtag.detail", "adnetwork.summary", "user.summary", "adtag.summary"}
      * )
      *
      * Get a single adTag library for the given id

@@ -15,10 +15,7 @@ Tagcade\Entity\Core\LibraryDynamicAdSlot:
             mappedBy: libraryDynamicAdSlot
             cascade: ["persist", "remove"]
             orphanRemoval: true
-        dynamicAdSlots:
-            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
-            mappedBy: libraryDynamicAdSlot
-            cascade: ['remove']
+
     manyToOne:
         defaultAdSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

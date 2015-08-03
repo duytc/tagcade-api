@@ -8,7 +8,6 @@ use Tagcade\Model\User\Role\PublisherInterface;
 class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDisplayAdSlotInterface
 {
     protected $id;
-    protected $referenceName;
     protected $width;
     protected $height;
     /**
@@ -16,10 +15,6 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
      */
     protected $publisher;
 
-    /**
-     * @var DisplayAdSlotInterface[]
-     */
-    protected $displayAdSlots;
     /**
      * @param string $name
      * @param int $width
@@ -70,7 +65,7 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
 
     public function __toString()
     {
-        return parent::__toString();
+        return $this->id . $this->getName();
     }
 
     /**
@@ -78,16 +73,9 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
      */
     public function getDisplayAdSlots()
     {
-        return $this->displayAdSlots;
+        return $this->adSlots;
     }
 
-    /**
-     * @param DisplayAdSlotInterface[] $displayAdSlots
-     */
-    public function setDisplayAdSlots($displayAdSlots)
-    {
-        $this->displayAdSlots = $displayAdSlots;
-    }
 
     /**
      * @return PublisherInterface
@@ -99,41 +87,11 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
 
     /**
      * @param PublisherInterface $publisher
+     * @return $this
      */
     public function setPublisher(PublisherInterface $publisher)
     {
         $this->publisher = $publisher;
+        return $this;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getReferenceName()
-    {
-        return $this->referenceName;
-    }
-
-    /**
-     * @param mixed $referenceName
-     */
-    public function setReferenceName($referenceName)
-    {
-        $this->referenceName = $referenceName;
-    }
-
-    public function isReferenced() {
-        return $this->displayAdSlots != null && $this->displayAdSlots->count() > 0;
-    }
-
-    public function getLibType()
-    {
-        return self::TYPE_DISPLAY;
-    }
-
-    public function getAdSlots()
-    {
-        return $this->displayAdSlots;
-    }
-
-
 }

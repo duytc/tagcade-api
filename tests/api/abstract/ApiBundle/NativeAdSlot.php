@@ -52,7 +52,10 @@ class NativeAdSlot
         $I->sendPOST(URL_API . '/nativeadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.nativeAdslot'
+                'name' => 'dtag.test.nativeAdslot',
+                'libraryAdSlot' => [
+                    'referenceName' => 'dtag.test.nativeAdslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(201);
@@ -67,7 +70,10 @@ class NativeAdSlot
         $I->sendPOST(URL_API . '/nativeadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => null
+                'name' => null,
+                'libraryAdSlot' => [
+                    'referenceName' => 'dtag.test.nativeAdslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -83,6 +89,9 @@ class NativeAdSlot
             [
                 'site' => PARAMS_SITE,
                 //'name' => null, //this is missing field
+                'libraryAdSlot' => [
+                    'referenceName' => 'dtag.test.nativeAdslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -92,13 +101,16 @@ class NativeAdSlot
      * add adSlot failed caused by contains unexpected field
      * @param ApiTester $I
      */
-    public function addAdSlotWithWithUnexpectedField(ApiTester $I)
+    public function addAdSlotWithUnexpectedField(ApiTester $I)
     {
         $I->sendPOST(URL_API . '/nativeadslots',
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.nativeAdslot',
-                'unexpected_field' => 'unexpected_field' //this is unexpected field
+                'unexpected_field' => 'unexpected_field', //this is unexpected field
+                'libraryAdSlot' => [
+                    'referenceName' => 'dtag.test.nativeAdslot'
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -200,7 +212,13 @@ class NativeAdSlot
         $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.nativeAdslot'
+                'name' => 'dtag.test.nativeAdslot',
+                'libraryAdSlot' => [
+                    //'libType' => 'lib_native',
+                    //'isReferenced' => true,
+                    'referenceName' => 'dtag.test.nativeAdslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(204);
@@ -218,7 +236,13 @@ class NativeAdSlot
         $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => null
+                'name' => null,
+                'libraryAdSlot' => [
+                    //'libType' => 'lib_native',
+                    //'isReferenced' => true,
+                    'referenceName' => null,
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -237,6 +261,12 @@ class NativeAdSlot
             [
                 'site' => PARAMS_SITE,
                 'name' => 'dtag.test.nativeAdslot',
+                'libraryAdSlot' => [
+                    //'libType' => 'lib_native',
+                    //'isReferenced' => true,
+                    'referenceName' => 'dtag.test.nativeAdslot',
+                    'visible' => false
+                ],
                 'unexpected_field' => 'unexpected_field' //this is unexpected field
             ]
         );
@@ -251,7 +281,35 @@ class NativeAdSlot
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], ['site' => PARAMS_SITE, 'name' => 'dtag.test.nativeAdslot-rename']);
+        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], [
+            'site' => PARAMS_SITE,
+            'name' => 'dtag.test.nativeAdslot-rename',
+            'libraryAdSlot' => [
+                //'libType' => 'lib_native',
+                //'isReferenced' => true,
+                'referenceName' => 'dtag.test.nativeAdslot-rename',
+                'visible' => false
+            ]
+        ]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * @depends addAdSlot
+     */
+    public function patchAdSlotMoveToLibrary(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/nativeadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], [
+            'libraryAdSlot' => [
+                //'libType' => 'lib_native',
+                //'isReferenced' => true,
+                'referenceName' => 'dtag.test.nativeAdslot-lib2',
+                'visible' => true
+            ]
+        ]);
         $I->seeResponseCodeIs(204);
     }
 
@@ -266,7 +324,13 @@ class NativeAdSlot
 
         $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'],
             [
-                'name' => null
+                'name' => null,
+                'libraryAdSlot' => [
+                    //'libType' => 'lib_native',
+                    //'isReferenced' => true,
+                    'referenceName' => null,
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);

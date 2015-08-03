@@ -31,15 +31,6 @@ interface DynamicAdSlotInterface extends BaseAdSlotInterface
      */
     public function isSupportedNative();
 
-    /**
-     * @return LibraryDynamicAdSlotInterface
-     */
-    public function getLibraryDynamicAdSlot();
-
-    /**
-     * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
-     */
-    public function setLibraryDynamicAdSlot($libraryDynamicAdSlot);
 
     /**
      * @return LibraryDynamicAdSlotInterface
