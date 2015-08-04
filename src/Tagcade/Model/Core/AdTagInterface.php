@@ -120,7 +120,7 @@ interface AdTagInterface extends ModelInterface
      * @param LibraryAdTagInterface $libraryAdTag
      * @return mixed
      */
-    public function setLibraryAdTag(LibraryAdTagInterface $libraryAdTag);
+    public function setLibraryAdTag($libraryAdTag);
 
 
     /**

@@ -53,7 +53,7 @@ class LibraryNativeAdSlot
             [
                 //'publisher' => 2,
                 //'visible' => true,
-                'referenceName' => 'dtag.test.libraryNativeAdSlot'
+                'name' => 'dtag.test.libraryNativeAdSlot'
             ]
         );
         $I->seeResponseCodeIs(201);
@@ -69,7 +69,7 @@ class LibraryNativeAdSlot
             [
                 //'publisher' => 2,
                 //'visible' => true,
-                'referenceName' => null
+                'name' => null
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -85,7 +85,7 @@ class LibraryNativeAdSlot
             [
                 //'publisher' => 2,
                 //'visible' => true
-                //'referenceName' => 'dtag.test.libraryNativeAdSlot' //this is missing field
+                //'name' => 'dtag.test.libraryNativeAdSlot' //this is missing field
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -102,7 +102,7 @@ class LibraryNativeAdSlot
                 //'publisher' => 2,
                 //'visible' => true,
                 'unexpected_field' => 'unexpected_field', //this is unexpected field
-                'referenceName' => 'dtag.test.libraryNativeAdSlot'
+                'name' => 'dtag.test.libraryNativeAdSlot'
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -117,7 +117,7 @@ class LibraryNativeAdSlot
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendPATCH(URL_API . '/librarynativeadslots/' . $item['id'], [
-            'referenceName' => 'dtag.test.libraryNativeAdSlot-rename',
+            'name' => 'dtag.test.libraryNativeAdSlot-rename',
         ]);
         $I->seeResponseCodeIs(204);
     }
@@ -132,7 +132,7 @@ class LibraryNativeAdSlot
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendPATCH(URL_API . '/librarynativeadslots/' . $item['id'], [
-            'referenceName' => 'dtag.test.libraryNativeAdSlot-lib2',
+            'name' => 'dtag.test.libraryNativeAdSlot-lib2',
             'visible' => false
         ]);
         //$I->seeResponseCodeIs(400); //not allow
@@ -151,7 +151,7 @@ class LibraryNativeAdSlot
 
         $I->sendPATCH(URL_API . '/librarynativeadslots/' . $item['id'],
             [
-                'referenceName' => null,
+                'name' => null,
             ]
         );
         $I->seeResponseCodeIs(400);

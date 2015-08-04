@@ -1,5 +1,8 @@
 Tagcade\Entity\Core\AdTag:
     properties:
+        libraryAdTag:
+            - NotBlank: ~
+            - Valid: ~
         position:
             - Type:
                 type: integer

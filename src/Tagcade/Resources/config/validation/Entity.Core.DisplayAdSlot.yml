@@ -1,5 +1,5 @@
 Tagcade\Entity\Core\DisplayAdSlot:
     properties:
-        site:
+        libraryAdSlot:
             - NotBlank: ~
             - Valid: ~

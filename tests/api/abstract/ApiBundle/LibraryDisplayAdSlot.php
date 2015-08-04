@@ -53,7 +53,7 @@ class LibraryDisplayAdSlot
             [
                 'width' => 200,
                 'height' => 300,
-                'referenceName' => 'dtag.test.librarydisplayadslot',
+                'name' => 'dtag.test.librarydisplayadslot',
                 //'visible' => true,
                 //'publisher' => 2
             ]
@@ -71,7 +71,7 @@ class LibraryDisplayAdSlot
             [
                 'width' => 200,
                 'height' => 300,
-                'referenceName' => null,
+                'name' => null,
                 //'visible' => true,
                 //'publisher' => 2
             ]
@@ -89,7 +89,7 @@ class LibraryDisplayAdSlot
             [
                 'width' => '300_invalid',
                 'height' => '200_invalid',
-                'referenceName' => 'dtag.test.librarydisplayadslot',
+                'name' => 'dtag.test.librarydisplayadslot',
                 //'visible' => true,
                 //'publisher' => 2
             ]
@@ -107,7 +107,7 @@ class LibraryDisplayAdSlot
             [
                 'width' => 200,
                 'height' => 300,
-                //'referenceName' => 'dtag.test.librarydisplayadslot', //this is missing field
+                //'name' => 'dtag.test.librarydisplayadslot', //this is missing field
                 //'visible' => true,
                 //'publisher' => 2
             ]
@@ -125,7 +125,7 @@ class LibraryDisplayAdSlot
             [
                 'width' => 200,
                 'height' => 300,
-                'referenceName' => 'dtag.test.librarydisplayadslot',
+                'name' => 'dtag.test.librarydisplayadslot',
                 //'visible' => true,
                 //'publisher' => 2,
                 'unexpected_field' => 'unexpected_field' //this is unexpected field
@@ -159,7 +159,7 @@ class LibraryDisplayAdSlot
 
         $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], [
             'visible' => false,
-            'referenceName' => 'dtag.test.librarydisplayadslot-library'
+            'name' => 'dtag.test.librarydisplayadslot-library'
         ]);
         //$I->seeResponseCodeIs(400); //not allow
         $I->canSeeResponseCodeIs(204); //will be delete this adSlot if has no reference
@@ -177,7 +177,7 @@ class LibraryDisplayAdSlot
 
         $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'],
             [
-                'referenceName' => null
+                'name' => null
             ]
         );
         $I->seeResponseCodeIs(400);

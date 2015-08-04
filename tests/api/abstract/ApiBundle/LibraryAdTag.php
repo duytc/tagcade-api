@@ -57,7 +57,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -80,7 +80,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -101,7 +101,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => null, //this field is null
+            'name' => null, //this field is null
             'visible' => true,
             'id' => null
         ]);
@@ -122,7 +122,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -143,7 +143,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -165,7 +165,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -186,7 +186,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 //"targetUrl" => "http://www.libraryAdTag-test.com" //this is missing field
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -208,7 +208,7 @@ class LibraryAdTag
                 "targetUrl" => "http://www.libraryAdTag-test.com",
                 "unexpected_field" => "http_unexpected_field.com" //this is unexpected field
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -229,7 +229,7 @@ class LibraryAdTag
                 "imageUrl" => "http_wrong_url/image.jpg", //this is invalid URL
                 "targetUrl" => "http_wrong_url.libraryAdTag-test.com" //this is invalid URL
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -250,7 +250,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg_wrong", //this is invalid image URL
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'visible' => true,
             'id' => null
         ]);
@@ -277,7 +277,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test-rename',
+            'name' => 'libraryAdTag-test-rename',
             'id' => $item['id']
         ]);
         $I->seeResponseCodeIs(204);
@@ -302,7 +302,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => null, //this is null field
+            'name' => null, //this is null field
             'id' => $item['id']
         ]);
         $I->seeResponseCodeIs(400);
@@ -328,7 +328,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'id' => $item['id']
         ]);
         $I->seeResponseCodeIs(400);
@@ -353,7 +353,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'id' => $item['id']
         ]);
         $I->seeResponseCodeIs(400);
@@ -378,7 +378,7 @@ class LibraryAdTag
                 "imageUrl" => "http://www.libraryAdTag-test.com/image.jpg",
                 "targetUrl" => "http://www.libraryAdTag-test.com"
             ],
-            'referenceName' => 'libraryAdTag-test',
+            'name' => 'libraryAdTag-test',
             'id' => $item['id']
         ]);
         $I->seeResponseCodeIs(400);
@@ -427,7 +427,7 @@ class LibraryAdTag
         $item = array_pop($I->grabDataFromJsonResponse());
 
         $I->sendPATCH(URL_API . '/libraryadtags/' . $item['id'], [
-            'referenceName' => null //this is field null
+            'name' => null //this is field null
         ]);
         $I->seeResponseCodeIs(400);
     }

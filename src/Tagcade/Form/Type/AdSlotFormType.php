@@ -2,13 +2,16 @@
 
 namespace Tagcade\Form\Type;
 
+use Rhumsaa\Uuid\Console\Exception;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
@@ -82,9 +85,12 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
                 // set displayAdSlotLib to DisplayAdSlot for cascade persist
                 /** @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot */
                 $libraryDisplayAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
-                $libraryDisplayAdSlot->setPublisher($publisher);
 
-                $displayAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
+                if($libraryDisplayAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                    $libraryDisplayAdSlot->setPublisher($publisher);
+                    $displayAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
+                }
+
             }
         );
     }
@@ -94,6 +100,7 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => DisplayAdSlot::class,
+                'cascade_validation' => true,
             ]);
     }
 

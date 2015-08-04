@@ -53,7 +53,6 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -106,7 +105,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot'
+                    'name' => 'dtag.test.adslot'
                 ]
             ]
         );
@@ -122,23 +121,22 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                //'name' => 'dtag.test.adslot', //this is missing field
-                'libraryAdSlot' => [
-                    'expressions' => [
-                        [
-                            'expressionDescriptor' => [
-                                'var' => 'checkString',
-                                'cmp' => '!=',
-                                'val' => 'abc',
-                                'type' => 'string'
-                            ],
-                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
-                            'startingPosition' => 0
-                        ]
-                    ],
-                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot'
-                ]
+                //'libraryAdSlot' => [
+                //    'expressions' => [
+                //        [
+                //            'expressionDescriptor' => [
+                //                'var' => 'checkString',
+                //                'cmp' => '!=',
+                //                'val' => 'abc',
+                //                'type' => 'string'
+                //            ],
+                //            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                //            'startingPosition' => 0
+                //        ]
+                //    ],
+                //    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                //    'name' => 'dtag.test.adslot'
+                //] //this is missing field
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -153,7 +151,6 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -168,7 +165,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot'
+                    'name' => 'dtag.test.adslot'
                 ],
                 'unexpected_field' => 29 //this is unexpected field
             ]
@@ -185,7 +182,6 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -200,11 +196,27 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => '29_wrong', //this is wrong data type
-                    'referenceName' => 'dtag.test.adslot'
+                    'name' => 'dtag.test.adslot'
                 ]
             ]
         );
         $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * add dynamicAdSlot failed caused by libraryAdSlot null
+     * @param ApiTester $I
+     */
+    public function addDynamicAdSlotWithLibraryAdSlotNull(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/dynamicadslots',
+            [
+                'site' => PARAMS_SITE,
+                'libraryAdSlot' => null
+            ]
+        );
+        //$I->seeResponseCodeIs(201);
+        $I->seeResponseCodeIs(400); //now not allow
     }
 
     /**
@@ -216,16 +228,45 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => null,
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot'
+                    'name' => 'dtag.test.adslot'
                 ]
             ]
         );
         //$I->seeResponseCodeIs(201);
         $I->seeResponseCodeIs(400); //now not allow
+    }
+
+    /**
+     * add dynamicAdSlot failed caused by name null
+     * @param ApiTester $I
+     */
+    public function addDynamicAdSlotWithNameNull(ApiTester $I)
+    {
+        $I->sendPOST(URL_API . '/dynamicadslots',
+            [
+                'site' => PARAMS_SITE,
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'name' => null
+                ]
+            ]
+        );
+        $I->seeResponseCodeIs(400);
     }
 
     /**
@@ -238,7 +279,6 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -253,7 +293,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot'
+                    'name' => 'dtag.test.adslot'
                 ]
             ]
         );
@@ -269,7 +309,6 @@ class DynamicAdSlot
         $I->sendPOST(URL_API . '/dynamicadslots',
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -284,7 +323,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot'
+                    'name' => 'dtag.test.adslot'
                 ]
             ]
         );
@@ -300,7 +339,6 @@ class DynamicAdSlot
 //        $I->sendPOST(URL_API . '/dynamicadslots',
 //            [
 //                'site' => PARAMS_SITE,
-//                'name' => 'dtag.test.adslot',
 //                'native' => false, //not support native
 //                'libraryAdSlot' => [
 //                    'expressions' => [
@@ -316,7 +354,7 @@ class DynamicAdSlot
 //                        ]
 //                    ],
 //                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-//                    'referenceName' => 'dtag.test.adslot'
+//                    'name' => 'dtag.test.adslot'
 //                ]
 //            ]
 //        );
@@ -336,7 +374,6 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -372,7 +409,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
             ]
@@ -393,7 +430,6 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -408,7 +444,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ],
                 'unexpected_field' => 29 //this is unexpected field
@@ -430,7 +466,6 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -445,9 +480,28 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => '29_wrong', //this is wrong data type
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * edit dynamicAdSlot failed caused by library null
+     * @param ApiTester $I
+     */
+    public function editDynamicAdSlotWithLibraryAdSlotNull(ApiTester $I)
+    {
+
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'site' => PARAMS_SITE,
+                'libraryAdSlot' => null
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -466,11 +520,45 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => null,
-                    'defaultAdSlot' => null,
-                    'referenceName' => 'dtag.test.adslot',
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'name' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
+            ]
+        );
+        $I->seeResponseCodeIs(400);
+    }
+
+    /**
+     * edit dynamicAdSlot failed caused by name null
+     * @param ApiTester $I
+     */
+    public function editDynamicAdSlotWithNameNull(ApiTester $I)
+    {
+
+        $I->sendGet(URL_API . '/dynamicadslots');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
+            [
+                'site' => PARAMS_SITE,
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'name' => null,
                     'visible' => false
                 ]
             ]
@@ -491,7 +579,6 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -506,7 +593,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
             ]
@@ -527,7 +614,6 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
@@ -542,7 +628,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
             ]
@@ -563,7 +649,6 @@ class DynamicAdSlot
         $I->sendPUT(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'site' => PARAMS_SITE,
-                'name' => 'dtag.test.adslot',
                 'native' => false, //not support native
                 'libraryAdSlot' => [
                     'expressions' => [
@@ -579,7 +664,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
             ]
@@ -599,7 +684,23 @@ class DynamicAdSlot
 
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
-                'name' => 'dtag.test.adslot.patched'
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'name' => 'dtag.test.adslot-patched',
+                    'visible' => false
+                ],
             ]
         );
         $I->seeResponseCodeIs(204);
@@ -618,7 +719,7 @@ class DynamicAdSlot
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
                 'libraryAdSlot' => [
-                    'referenceName' => 'dtag.test.adslot-lib',
+                    'name' => 'dtag.test.adslot-lib',
                     'visible' => true
                 ]
             ]
@@ -638,8 +739,24 @@ class DynamicAdSlot
 
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
-                'name' => 'dtag.test.adslot.patched',
-                'unexpected_field' => 29 //this is unexpected field
+                'unexpected_field' => 29, //this is unexpected field
+                'libraryAdSlot' => [
+                    'expressions' => [
+                        [
+                            'expressionDescriptor' => [
+                                'var' => 'checkString',
+                                'cmp' => '!=',
+                                'val' => 'abc',
+                                'type' => 'string'
+                            ],
+                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+                            'startingPosition' => 0
+                        ]
+                    ],
+                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+                    'name' => 'dtag.test.adslot',
+                    'visible' => false
+                ]
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -658,7 +775,12 @@ class DynamicAdSlot
 //
 //        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
 //            [
-//                'variableDescriptor' => null
+//                'libraryAdSlot' => [
+//                    'expressions' => null,
+//                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+//                    'name' => 'dtag.test.adslot',
+//                    'visible' => false
+//                ],
 //            ]
 //        );
 //        $I->seeResponseCodeIs(400);
@@ -677,18 +799,23 @@ class DynamicAdSlot
 //
 //        $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
 //            [
-//                'expressions' => [
-//                    [
-//                        'expressionDescriptor_wrong' => [ //this key is invalid
-//                            'var' => 'checkString',
-//                            'cmp' => '!=',
-//                            'val' => 'abc',
-//                            'type' => 'string'
-//                        ],
-//                        'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT
-//                    ]
+//                'libraryAdSlot' => [
+//                    'expressions' => [
+//                        [
+//                            'expressionDescriptor_wrong' => [ //this key is invalid
+//                                'var' => 'checkString',
+//                                'cmp' => '!=',
+//                                'val' => 'abc',
+//                                'type' => 'string'
+//                            ],
+//                            'expectAdSlot' => PARAMS_EXPECTED_AD_SLOT,
+//                            'startingPosition' => 0
+//                        ]
+//                    ],
+//                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
+//                    'name' => 'dtag.test.adslot',
+//                    'visible' => false
 //                ],
-//                'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT
 //            ]
 //        );
 //        $I->seeResponseCodeIs(400);
@@ -709,7 +836,7 @@ class DynamicAdSlot
                 'libraryAdSlot' => [
                     'expressions' => [
                         [
-                            'expressionDescriptor_wrong' => [ //this key is invalid
+                            'expressionDescriptor' => [
                                 'var' => 'checkString',
                                 'cmp' => '!=',
                                 'val' => 'abc',
@@ -720,7 +847,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
             ]
@@ -740,11 +867,11 @@ class DynamicAdSlot
 
         $I->sendPATCH(URL_API . '/dynamicadslots/' . $item['id'],
             [
-                'native' => false, //not support native
                 'libraryAdSlot' => [
+                    //'native' => false, //already = false. not support native
                     'expressions' => [
                         [
-                            'expressionDescriptor_wrong' => [ //this key is invalid
+                            'expressionDescriptor' => [
                                 'var' => 'checkString',
                                 'cmp' => '!=',
                                 'val' => 'abc',
@@ -755,7 +882,7 @@ class DynamicAdSlot
                         ]
                     ],
                     'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                    'referenceName' => 'dtag.test.adslot',
+                    'name' => 'dtag.test.adslot',
                     'visible' => false
                 ]
             ]

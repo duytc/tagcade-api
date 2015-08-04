@@ -1,5 +1,2 @@
 Tagcade\Entity\Core\NativeAdSlot:
     properties:
-        site:
-            - NotBlank: ~
-            - Valid: ~

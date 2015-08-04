@@ -120,7 +120,7 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @return $this
      */
-    public function setLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot)
+    public function setLibraryAdSlot($libraryAdSlot)
     {
         $this->libraryAdSlot = $libraryAdSlot;
 

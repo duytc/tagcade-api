@@ -44,6 +44,7 @@ class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => LibrarySlotTag::class,
+                'cascade_validation' => true,
             ])
         ;
     }

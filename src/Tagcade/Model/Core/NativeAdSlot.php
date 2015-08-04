@@ -103,7 +103,6 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
     public function checkSum()
     {
         $array = array(
-            $this->getSite()->getId(),
             $this->getType(),
             $this->getLibraryAdSlot()->getId()
         );

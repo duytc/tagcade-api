@@ -77,9 +77,10 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 // set dynamicAdSlotLib to DynamicAdSlot for cascade persist
                 /** @var LibraryDynamicAdSlotInterface $libraryDisplayAdSlot */
                 $libraryDisplayAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
-                $libraryDisplayAdSlot->setPublisher($publisher);
-
-                $dynamicAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
+                if($libraryDisplayAdSlot instanceof LibraryDynamicAdSlotInterface) {
+                    $libraryDisplayAdSlot->setPublisher($publisher);
+                    $dynamicAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
+                }
             }
         );
     }
@@ -90,6 +91,7 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => DynamicAdSlot::class,
+                'cascade_validation' => true,
             ]);
     }
 

@@ -105,7 +105,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot'
+                'name' => 'dtag.test.adslot'
             ]
         );
         $I->seeResponseCodeIs(201);
@@ -134,7 +134,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                //'referenceName' => 'dtag.test.adslot' //this is missing field
+                //'name' => 'dtag.test.adslot' //this is missing field
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -163,7 +163,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot',
+                'name' => 'dtag.test.adslot',
                 'unexpected_field' => 29 //this is unexpected field
             ]
         );
@@ -193,7 +193,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => '29_wrong', //this is wrong data type
-                'referenceName' => 'dtag.test.adslot'
+                'name' => 'dtag.test.adslot'
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -211,7 +211,7 @@ class LibraryDynamicAdSlot
                 //'visible' => true,
                 'expressions' => null,
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot'
+                'name' => 'dtag.test.adslot'
             ]
         );
         //$I->seeResponseCodeIs(201);
@@ -242,7 +242,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot'
+                'name' => 'dtag.test.adslot'
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -271,7 +271,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot'
+                'name' => 'dtag.test.adslot'
             ]
         );
         $I->seeResponseCodeIs(400);
@@ -299,7 +299,7 @@ class LibraryDynamicAdSlot
 //                        ]
 //                    ],
 //                    'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-//                    'referenceName' => 'dtag.test.adslot'
+//                    'name' => 'dtag.test.adslot'
 //                ]
 //            ]
 //        );
@@ -318,7 +318,7 @@ class LibraryDynamicAdSlot
 
         $I->sendPATCH(URL_API . '/librarydynamicadslots/' . $item['id'],
             [
-                'referenceName' => 'dtag.test.adslot-patched'
+                'name' => 'dtag.test.adslot-patched'
             ]
         );
         $I->seeResponseCodeIs(204);
@@ -336,7 +336,7 @@ class LibraryDynamicAdSlot
 
         $I->sendPATCH(URL_API . '/librarydynamicadslots/' . $item['id'],
             [
-                'referenceName' => 'dtag.test.adslot-lib',
+                'name' => 'dtag.test.adslot-lib',
                 'visible' => false
             ]
         );
@@ -357,7 +357,7 @@ class LibraryDynamicAdSlot
 
         $I->sendPATCH(URL_API . '/librarydynamicadslots/' . $item['id'],
             [
-                'referenceName' => 'dtag.test.adslot-lib',
+                'name' => 'dtag.test.adslot-lib',
                 'unexpected_field' => 29 //this is unexpected field
             ]
         );
@@ -438,7 +438,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot',
+                'name' => 'dtag.test.adslot',
                 'visible' => true
             ]
         );
@@ -471,7 +471,7 @@ class LibraryDynamicAdSlot
                     ]
                 ],
                 'defaultAdSlot' => PARAMS_DEFAULT_AD_SLOT,
-                'referenceName' => 'dtag.test.adslot',
+                'name' => 'dtag.test.adslot',
                 'visible' => true
             ]
         );

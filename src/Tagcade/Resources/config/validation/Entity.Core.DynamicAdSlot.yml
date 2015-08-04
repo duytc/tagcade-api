@@ -1,5 +1,2 @@
 Tagcade\Entity\Core\DynamicAdSlot:
     properties:
-        site:
-            - NotBlank: ~
-            - Valid: ~

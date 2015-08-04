@@ -121,7 +121,7 @@ abstract class AdSlotAbstract
         return $this->libraryAdSlot;
     }
 
-    public function setLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot)
+    public function setLibraryAdSlot($libraryAdSlot)
     {
         $this->libraryAdSlot = $libraryAdSlot;
 

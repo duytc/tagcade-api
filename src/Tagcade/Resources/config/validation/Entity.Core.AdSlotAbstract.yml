@@ -1,0 +1,8 @@
+Tagcade\Entity\Core\AdSlotAbstract:
+    properties:
+        site:
+            - NotBlank: ~
+            - Valid: ~
+        libraryAdSlot:
+            - NotBlank: ~
+            - Valid: ~

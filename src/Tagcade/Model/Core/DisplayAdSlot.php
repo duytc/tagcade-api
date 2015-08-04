@@ -152,7 +152,6 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     public function checkSum()
     {
         $array = array(
-            $this->getSite()->getId(),
             $this->getType(),
             $this->getLibraryAdSlot()->getId()
         );

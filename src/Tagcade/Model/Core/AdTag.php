@@ -44,10 +44,13 @@ class AdTag implements AdTagInterface
 
     /**
      * @param mixed $id
+     * @return $this;
      */
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -73,6 +76,7 @@ class AdTag implements AdTagInterface
     public function setAdSlot(BaseAdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
+
         return $this;
     }
 
@@ -176,6 +180,7 @@ class AdTag implements AdTagInterface
     public function setPosition($position)
     {
         $this->position = $position;
+
         return $this;
     }
 
@@ -198,6 +203,7 @@ class AdTag implements AdTagInterface
     public function setActive($boolean)
     {
         $this->active = (Boolean)$boolean;
+
         return $this;
     }
 
@@ -226,6 +232,8 @@ class AdTag implements AdTagInterface
     public function setRotation($rotation)
     {
         $this->rotation = $rotation;
+
+        return $this;
     }
 
     /**
@@ -247,9 +255,11 @@ class AdTag implements AdTagInterface
     /**
      * @inheritdoc
      */
-    public function setLibraryAdTag(LibraryAdTagInterface $libraryAdTag)
+    public function setLibraryAdTag($libraryAdTag)
     {
         $this->libraryAdTag = $libraryAdTag;
+
+        return $this;
     }
 
     /**
@@ -272,10 +282,13 @@ class AdTag implements AdTagInterface
 
     /**
      * @param mixed $refId
+     * @return $this;
      */
     public function setRefId($refId)
     {
         $this->refId = $refId;
+
+        return $this;
     }
 
 

@@ -83,6 +83,7 @@ class AdTagFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => AdTag::class,
+                'cascade_validation' => true,
             ])
         ;
     }

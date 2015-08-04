@@ -82,9 +82,11 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
                 // set nativeAdSlotLib to NativeAdSlot for cascade persist
                 /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
                 $libraryNativeAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
-                $libraryNativeAdSlot->setPublisher($publisher);
+                if($libraryNativeAdSlot instanceof LibraryNativeAdSlotInterface) {
+                    $libraryNativeAdSlot->setPublisher($publisher);
+                    $nativeAdSlot->setLibraryAdSlot($libraryNativeAdSlot);
+                }
 
-                $nativeAdSlot->setLibraryAdSlot($libraryNativeAdSlot);
             }
         );
     }
@@ -94,6 +96,7 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => NativeAdSlot::class,
+                'cascade_validation' => true,
             ]);
     }
 

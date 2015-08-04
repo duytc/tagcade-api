@@ -64,6 +64,6 @@ interface BaseAdSlotInterface extends ModelInterface
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @return $this
      */
-    public function setLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot);
+    public function setLibraryAdSlot($libraryAdSlot);
 
 }

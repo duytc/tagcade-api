@@ -50,7 +50,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -59,7 +58,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -79,17 +78,16 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            //'name' => 'adTag-test', //this field is missing
-            'libraryAdTag' => [
-                'html' => 'oki',
-                'adNetwork' => PARAMS_AD_NETWORK,
-                'adType' => 1,
-                "descriptor" => [
-                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                    "targetUrl" => "http://www.adTag-test.com"
-                ],
-                'referenceName' => 'adTag-test'
-            ],
+            //'libraryAdTag' => [
+            //    'html' => 'oki',
+            //    'adNetwork' => PARAMS_AD_NETWORK,
+            //    'adType' => 1,
+            //    "descriptor" => [
+            //        "imageUrl" => "http://www.adTag-test.com/image.jpg",
+            //        "targetUrl" => "http://www.adTag-test.com"
+            //    ],
+            //    'name' => 'adTag-test'
+            //], //this field is missing
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
@@ -106,17 +104,7 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => null, //this field is null
-            'libraryAdTag' => [
-                'html' => 'oki',
-                'adNetwork' => PARAMS_AD_NETWORK,
-                'adType' => 1,
-                "descriptor" => [
-                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                    "targetUrl" => "http://www.adTag-test.com"
-                ],
-                'referenceName' => 'adTag-test'
-            ],
+            'libraryAdTag' => null, //this field is null
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
@@ -133,7 +121,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -142,7 +129,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => '300_wrong', //this is wrong data type
             'position' => 6,
@@ -160,7 +147,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -169,7 +155,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => -300, //this is wrong data, must positive
             'position' => 6,
@@ -187,7 +173,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'unexpected_field' => 'adTag-test', //this is unexpected field
             'libraryAdTag' => [
                 'html' => 'oki',
@@ -197,7 +182,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -215,7 +200,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -224,7 +208,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     //"targetUrl" => "http://www.adTag-test.com" //this is missing field
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -242,7 +226,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -252,7 +235,7 @@ class AdTag
                     "targetUrl" => "http://www.adTag-test.com",
                     "unexpected_field" => "http_unexpected_field.com" //this is unexpected field
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -270,7 +253,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -279,7 +261,7 @@ class AdTag
                     "imageUrl" => "http_wrong_url/image.jpg", //this is invalid URL
                     "targetUrl" => "http_wrong_url.adTag-test.com" //this is invalid URL
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -297,7 +279,6 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 'html' => 'oki',
                 'adNetwork' => PARAMS_AD_NETWORK,
@@ -306,7 +287,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg_wrong", //this is invalid image URL
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -329,7 +310,6 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 //'isReferenced' => true,
                 'html' => 'oki',
@@ -340,7 +320,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -362,19 +342,7 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => null, //this is null field
-            'libraryAdTag' => [
-                //'isReferenced' => true,
-                'html' => 'oki',
-                'visible' => false,
-                'adNetwork' => PARAMS_AD_NETWORK,
-                'adType' => 1,
-                "descriptor" => [
-                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                    "targetUrl" => "http://www.adTag-test.com"
-                ],
-                'referenceName' => 'adTag-test'
-            ],
+            'libraryAdTag' => null, //this is null field
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
@@ -395,7 +363,6 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'unexpected_field' => 'adTag-test', //this is unexpected field
             'libraryAdTag' => [
                 //'isReferenced' => true,
@@ -407,7 +374,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => 300,
             'position' => 6,
@@ -429,7 +396,6 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 //'isReferenced' => true,
                 'html' => 'oki',
@@ -440,7 +406,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => -300, //this is wrong data, must positive
             'position' => 6,
@@ -462,7 +428,6 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => 'adTag-test',
             'libraryAdTag' => [
                 //'isReferenced' => true,
                 'html' => 'oki',
@@ -473,7 +438,7 @@ class AdTag
                     "imageUrl" => "http://www.adTag-test.com/image.jpg",
                     "targetUrl" => "http://www.adTag-test.com"
                 ],
-                'referenceName' => 'adTag-test'
+                'name' => 'adTag-test'
             ],
             'frequencyCap' => '300_wrong', //this is wrong data type, must number
             'position' => 6,
@@ -517,7 +482,7 @@ class AdTag
             'adSlot' => PARAMS_AD_SLOT,
             'libraryAdTag' => [
                 'visible' => true,
-                'referenceName' => 'adTag-test-lib'
+                'name' => 'adTag-test-lib'
             ]
         ]);
         $I->seeResponseCodeIs(204);
@@ -535,7 +500,7 @@ class AdTag
 
         $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => null, //this is field null
+            'libraryAdTag' => null, //this is field null
             'frequencyCap' => 300
         ]);
         $I->seeResponseCodeIs(400);
