@@ -110,8 +110,9 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
         $adTags = $this->getAdTags()->toArray();
 
         usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
-            return ($a->getId() < $b->getId()) ? -1 : 1;
-        });
+                return strcmp($a->getRefId(), $b->getRefId());
+            }
+        );
 
         /** @var AdTagInterface $t */
         foreach($adTags as $t){

@@ -159,7 +159,7 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         $adTags = $this->getAdTags()->toArray();
 
         usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
-            return ($a->getId() < $b->getId()) ? -1 : 1;
+            return strcmp($a->getRefId(), $b->getRefId());
         });
 
         /** @var AdTagInterface $t */
