@@ -27,11 +27,13 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
         $this->addSql('CREATE TABLE library_ad_tag (id INT AUTO_INCREMENT NOT NULL, ad_network_id INT DEFAULT NULL, name VARCHAR(100) NOT NULL, html LONGTEXT DEFAULT NULL, visible TINYINT(1) DEFAULT \'0\' NOT NULL, ad_type INT DEFAULT 0 NOT NULL, descriptor LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, deleted_at DATE DEFAULT NULL, INDEX IDX_DA9C453FCB9BD82B (ad_network_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
 
         //// library_slot_tag (id, library_ad_tag_id, library_ad_slot_id, position, active, frequency_cap, rotation, ref_id, created_at, updated_at, deleted_at)
-        $this->addSql('CREATE TABLE library_slot_tag (id INT AUTO_INCREMENT NOT NULL, library_ad_tag_id INT DEFAULT NULL, library_ad_slot_id INT DEFAULT NULL, position INT DEFAULT NULL, active TINYINT(1) DEFAULT \'1\' NOT NULL, frequency_cap INT DEFAULT NULL, rotation INT DEFAULT NULL, ref_id VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, deleted_at DATE DEFAULT NULL, INDEX IDX_B71E147A3DC10368 (library_ad_tag_id), INDEX IDX_B71E147A70BBCB64 (library_ad_slot_id), UNIQUE INDEX unique_report_idx (library_ad_tag_id, library_ad_slot_id, ref_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
-        //// library_dynamic_ad_slot (id, default_ad_slot_id, native)
-        $this->addSql('CREATE TABLE library_dynamic_ad_slot (id INT NOT NULL, default_ad_slot_id INT DEFAULT NULL, native TINYINT(1) DEFAULT \'0\' NOT NULL, INDEX IDX_353CFBDCDC8CAC7B (default_ad_slot_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE library_ad_slot_ad_tag (id INT AUTO_INCREMENT NOT NULL, library_ad_tag_id INT DEFAULT NULL, library_ad_slot_id INT DEFAULT NULL, position INT DEFAULT NULL, active TINYINT(1) DEFAULT \'1\' NOT NULL, frequency_cap INT DEFAULT NULL, rotation INT DEFAULT NULL, ref_id VARCHAR(255) NOT NULL, created_at DATETIME NOT NULL, updated_at DATETIME NOT NULL, deleted_at DATE DEFAULT NULL, INDEX IDX_DC3B33AE3DC10368 (library_ad_tag_id), INDEX IDX_DC3B33AE70BBCB64 (library_ad_slot_id), UNIQUE INDEX unique_report_idx (library_ad_tag_id, library_ad_slot_id, ref_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        //// library_dynamic_ad_slot (id, default_library_ad_slot_id, native)
+        $this->addSql('CREATE TABLE library_dynamic_ad_slot (id INT NOT NULL, default_library_ad_slot_id INT DEFAULT NULL, native TINYINT(1) DEFAULT \'0\' NOT NULL, INDEX IDX_353CFBDC10FEC588 (default_library_ad_slot_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         //// library_native_ad_slot (id)
         $this->addSql('CREATE TABLE library_native_ad_slot (id INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        //// library_expression (id, library_dynamic_ad_slot_id, expect_library_ad_slot_id, expression_descriptor, starting_position, deleted_at)
+        $this->addSql('CREATE TABLE library_expression (id INT AUTO_INCREMENT NOT NULL, library_dynamic_ad_slot_id INT NOT NULL, expect_library_ad_slot_id INT DEFAULT NULL, expression_descriptor LONGTEXT NOT NULL COMMENT \'(DC2Type:json_array)\', starting_position INT DEFAULT 1, deleted_at DATE DEFAULT NULL, INDEX IDX_3C24657D3AF54DA0 (library_dynamic_ad_slot_id), INDEX IDX_3C24657D55FE8C5D (expect_library_ad_slot_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         //// library_ad_slot (id, publisher_id, name, visible, deleted_at, type)
         $this->addSql('CREATE TABLE library_ad_slot (id INT AUTO_INCREMENT NOT NULL, publisher_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, visible TINYINT(1) NOT NULL, deleted_at DATE DEFAULT NULL, type VARCHAR(255) NOT NULL, INDEX IDX_6E00CA3240C86FCE (publisher_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
 
@@ -41,15 +43,19 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
         //// library_ad_tag to core_ad_network
         $this->addSql('ALTER TABLE library_ad_tag ADD CONSTRAINT FK_DA9C453FCB9BD82B FOREIGN KEY (ad_network_id) REFERENCES core_ad_network (id)');
         //// library_slot_tag to library_ad_tag
-        $this->addSql('ALTER TABLE library_slot_tag ADD CONSTRAINT FK_B71E147A3DC10368 FOREIGN KEY (library_ad_tag_id) REFERENCES library_ad_tag (id)');
+        $this->addSql('ALTER TABLE library_ad_slot_ad_tag ADD CONSTRAINT FK_DC3B33AE3DC10368 FOREIGN KEY (library_ad_tag_id) REFERENCES library_ad_tag (id)');
         //// library_slot_tag to library_ad_slot
-        $this->addSql('ALTER TABLE library_slot_tag ADD CONSTRAINT FK_B71E147A70BBCB64 FOREIGN KEY (library_ad_slot_id) REFERENCES library_ad_slot (id)');
+        $this->addSql('ALTER TABLE library_ad_slot_ad_tag ADD CONSTRAINT FK_DC3B33AE70BBCB64 FOREIGN KEY (library_ad_slot_id) REFERENCES library_ad_slot (id)');
         //// library_dynamic_ad_slot to core_ad_slot
-        $this->addSql('ALTER TABLE library_dynamic_ad_slot ADD CONSTRAINT FK_353CFBDCDC8CAC7B FOREIGN KEY (default_ad_slot_id) REFERENCES core_ad_slot (id)');
+        $this->addSql('ALTER TABLE library_dynamic_ad_slot ADD CONSTRAINT FK_353CFBDC10FEC588 FOREIGN KEY (default_library_ad_slot_id) REFERENCES library_ad_slot (id)');
         //// library_dynamic_ad_slot to library_ad_slot
         $this->addSql('ALTER TABLE library_dynamic_ad_slot ADD CONSTRAINT FK_353CFBDCBF396750 FOREIGN KEY (id) REFERENCES library_ad_slot (id) ON DELETE CASCADE');
         //// library_native_ad_slot to library_ad_slot
         $this->addSql('ALTER TABLE library_native_ad_slot ADD CONSTRAINT FK_2F487A78BF396750 FOREIGN KEY (id) REFERENCES library_ad_slot (id) ON DELETE CASCADE');
+        //// library_expression to library_dynamic_ad_slot
+        $this->addSql('ALTER TABLE library_expression ADD CONSTRAINT FK_3C24657D3AF54DA0 FOREIGN KEY (library_dynamic_ad_slot_id) REFERENCES library_dynamic_ad_slot (id)');
+        //// library_expression to library_ad_slot
+        $this->addSql('ALTER TABLE library_expression ADD CONSTRAINT FK_3C24657D55FE8C5D FOREIGN KEY (expect_library_ad_slot_id) REFERENCES library_ad_slot (id)');
         //// library_ad_slot to core_user
         $this->addSql('ALTER TABLE library_ad_slot ADD CONSTRAINT FK_6E00CA3240C86FCE FOREIGN KEY (publisher_id) REFERENCES core_user (id)');
 
@@ -90,29 +96,39 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
         // MODIFY: end
 
         // MODIFY: clone old-data from dynamicAdSlot to libraryDynamicAdSlot, details as:
-        // MODIFY: from dynamicAdSlot.id, dynamicAdSlot.default_ad_slot_id, dynamicAdSlot.native
-        // MODIFY: to libraryDynamicAdSlot.id, libraryDynamicAdSlot.default_ad_slot_id, libraryDynamicAdSlot.native
-        $this->addSql('INSERT INTO library_dynamic_ad_slot (id, default_ad_slot_id, native)
+        // MODIFY: from dynamicAdSlot.id, dynamicAdSlot.default_ad_slot_id.library_ad_slot_id, dynamicAdSlot.native
+        // MODIFY: to libraryDynamicAdSlot.id, libraryDynamicAdSlot.default_library_ad_slot_id, libraryDynamicAdSlot.native
+        // note: dynamicAdSlot.default_ad_slot_id.library_ad_slot_id = dynamicAdSlot.default_ad_slot_id by clone libraryAdSlot.id = coreAdSlot.id as above
+        $this->addSql('INSERT INTO library_dynamic_ad_slot (id, default_library_ad_slot_id, native)
                             SELECT da.id, da.default_ad_slot_id, da.native
                             FROM core_dynamic_ad_slot da');
         // MODIFY: end
 
-        // drop constraint from dynamicAdSlot to coreAdSlot
-        $this->addSql('ALTER TABLE core_dynamic_ad_slot DROP FOREIGN KEY FK_B7415E41DC8CAC7B');
-        $this->addSql('DROP INDEX IDX_B7415E41DC8CAC7B ON core_dynamic_ad_slot');
-        // drop defaultAdSlot_id and native for dynamicAdSlot. defaultAdSlot already in abstractAdSlot, native already in libraryDynamicAdSlot
-        $this->addSql('ALTER TABLE core_dynamic_ad_slot DROP default_ad_slot_id, DROP native');
+        // drop native for dynamicAdSlot. defaultAdSlot already in abstractAdSlot, native already in libraryDynamicAdSlot
+        $this->addSql('ALTER TABLE core_dynamic_ad_slot DROP native');
 
-        // 5.alter table expression: move reference expression-dynamicAdSlot to expression-libraryDynamicAdSlot
-        // drop constraint to dynamicAdSlot
-        $this->addSql('ALTER TABLE core_expression DROP FOREIGN KEY FK_E47CD2E01D925722');
-        $this->addSql('DROP INDEX IDX_E47CD2E01D925722 ON core_expression');
+        // 5.alter table expression: add library_expression_id, add reference to library_expression
+        // MODIFY: clone old-data from coreExpression to libraryExpression, details as:
+        // MODIFY: from coreExpression.id, coreExpression.dynamicAdSlot.library_dynamic_ad_slot_id, coreExpression.expect_ad_slot.library_ad_slot_id, coreExpression.expression_descriptor, coreExpression.starting_position, coreExpression.deleted_at
+        // MODIFY: to libraryExpression.id, libraryExpression.library_dynamic_ad_slot_id, libraryExpression.expect_library_ad_slot_id, libraryExpression.expression_descriptor, libraryExpression.starting_position, libraryExpression.deleted_at
+        // note: coreExpression.dynamicAdSlot.library_dynamic_ad_slot_id = dynamicAdSlot.id: by clone libraryAdSlot.id = coreAdSlot.id as above
+        // note: coreExpression.expect_ad_slot.library_ad_slot_id = expression.expect_ad_slot.id: by clone libraryAdSlot.id = coreAdSlot.id as above
+        $this->addSql('INSERT INTO library_expression (id, library_dynamic_ad_slot_id, expect_library_ad_slot_id, expression_descriptor, starting_position, deleted_at)
+                            SELECT e.id, ds.id, e.expect_ad_slot_id, e.expression_descriptor, e.starting_position, e.deleted_at
+                            FROM core_expression e, core_dynamic_ad_slot ds
+                            WHERE e.dynamic_ad_slot_id = ds.id');
+        // MODIFY: end
 
-        // reference to libraryDynamicAdSlot
-        $this->addSql('ALTER TABLE core_expression CHANGE dynamic_ad_slot_id library_dynamic_ad_slot_id INT DEFAULT NULL');
-        // MODIFY: also update libraryDynamicAdSlot_id = dynamicAdSlot_id for core_expression, but they are already same values as above
-        $this->addSql('ALTER TABLE core_expression ADD CONSTRAINT FK_E47CD2E03AF54DA0 FOREIGN KEY (library_dynamic_ad_slot_id) REFERENCES library_dynamic_ad_slot (id)');
-        $this->addSql('CREATE INDEX IDX_E47CD2E03AF54DA0 ON core_expression (library_dynamic_ad_slot_id)');
+        // add library_expression_id, drop expression_descriptor/starting_position
+        $this->addSql('ALTER TABLE core_expression ADD library_expression_id INT DEFAULT NULL, DROP expression_descriptor, DROP starting_position');
+
+        // MODIFY: update library_expression_id = id for core_expression
+        $this->addSql('UPDATE core_expression SET library_expression_id = id');
+        // MODIFY: end
+
+        // add reference to library_expression
+        $this->addSql('ALTER TABLE core_expression ADD CONSTRAINT FK_E47CD2E01EE1453C FOREIGN KEY (library_expression_id) REFERENCES library_expression (id)');
+        $this->addSql('CREATE INDEX IDX_E47CD2E01EE1453C ON core_expression (library_expression_id)');
 
         // 6.alter table displayAdSlot: drop width/height
         // MODIFY: clone old-data from displayAdSlot to libraryDisplayAdSlot, details as:
@@ -156,21 +172,25 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         // 1.drop all constrains to library
-        $this->addSql('ALTER TABLE library_slot_tag DROP FOREIGN KEY FK_B71E147A3DC10368');
+        $this->addSql('ALTER TABLE library_ad_slot_ad_tag DROP FOREIGN KEY FK_DC3B33AE3DC10368');
         $this->addSql('ALTER TABLE core_ad_tag DROP FOREIGN KEY FK_D122BEED3DC10368');
-        $this->addSql('ALTER TABLE core_expression DROP FOREIGN KEY FK_E47CD2E03AF54DA0');
+        $this->addSql('ALTER TABLE library_expression DROP FOREIGN KEY FK_3C24657D3AF54DA0');
+        $this->addSql('ALTER TABLE core_expression DROP FOREIGN KEY FK_E47CD2E01EE1453C');
         $this->addSql('ALTER TABLE library_display_ad_slot DROP FOREIGN KEY FK_DCAFF75CBF396750');
-        $this->addSql('ALTER TABLE library_slot_tag DROP FOREIGN KEY FK_B71E147A70BBCB64');
+        $this->addSql('ALTER TABLE library_ad_slot_ad_tag DROP FOREIGN KEY FK_DC3B33AE70BBCB64');
+        $this->addSql('ALTER TABLE library_dynamic_ad_slot DROP FOREIGN KEY FK_353CFBDC10FEC588');
         $this->addSql('ALTER TABLE library_dynamic_ad_slot DROP FOREIGN KEY FK_353CFBDCBF396750');
         $this->addSql('ALTER TABLE library_native_ad_slot DROP FOREIGN KEY FK_2F487A78BF396750');
+        $this->addSql('ALTER TABLE library_expression DROP FOREIGN KEY FK_3C24657D55FE8C5D');
         $this->addSql('ALTER TABLE core_ad_slot DROP FOREIGN KEY FK_6D6C73170BBCB64');
 
         // DOCTRINE: drop all library tables
         //$this->addSql('DROP TABLE library_display_ad_slot');
         //$this->addSql('DROP TABLE library_ad_tag');
-        //$this->addSql('DROP TABLE library_slot_tag');
+        //$this->addSql('DROP TABLE library_ad_slot_ad_tag');
         //$this->addSql('DROP TABLE library_dynamic_ad_slot');
         //$this->addSql('DROP TABLE library_native_ad_slot');
+        //$this->addSql('DROP TABLE library_expression');
         //$this->addSql('DROP TABLE library_ad_slot');
         // end-DOCTRINE
         // but NEED rollback all data from libraries to core_tables, then drop library tables later
@@ -234,48 +254,35 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
                             WHERE ds.id = s.id AND s.library_ad_slot_id = lds.id');
 
         // 5.alter table core_dynamic_ad_slot: rollback data from library_dynamic_ad_slot
-        $this->addSql('ALTER TABLE core_dynamic_ad_slot ADD default_ad_slot_id INT DEFAULT NULL, ADD native TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE core_dynamic_ad_slot ADD native TINYINT(1) DEFAULT \'0\' NOT NULL');
 
         // MODIFY: clone old-data from libraryDynamicAdSlot to dynamicAdSlot, details as:
-        // MODIFY: from libraryDynamicAdSlot.native, libraryAdSlot.default_ad_slot_id
+        // MODIFY: from libraryDynamicAdSlot.native, libraryAdSlot.default_library_ad_slot_id
         // MODIFY: to dynamicAdSlot.native, dynamicAdSlot.default_ad_slot_id
         $this->addSql('UPDATE core_dynamic_ad_slot ds, library_dynamic_ad_slot lds, core_ad_slot s
-                            SET ds.native = lds.native, ds.default_ad_slot_id = lds.default_ad_slot_id
+                            SET ds.native = lds.native, ds.default_ad_slot_id = lds.default_library_ad_slot_id
                             WHERE ds.id = lds.id AND s.library_ad_slot_id = lds.id');
         // MODIFY: end
 
-        // add constraint to core_ad_slot
-        $this->addSql('ALTER TABLE core_dynamic_ad_slot ADD CONSTRAINT FK_B7415E41DC8CAC7B FOREIGN KEY (default_ad_slot_id) REFERENCES core_ad_slot (id)');
-        $this->addSql('CREATE INDEX IDX_B7415E41DC8CAC7B ON core_dynamic_ad_slot (default_ad_slot_id)');
-
         // 6.alter table core_expression
         // drop index
-        $this->addSql('DROP INDEX IDX_E47CD2E03AF54DA0 ON core_expression');
+        $this->addSql('DROP INDEX IDX_E47CD2E01EE1453C ON core_expression');
 
-        // rollback data
-        // DOCTRINE: change library_dynamic_ad_slot_id to dynamic_ad_slot_id
-        //$this->addSql('ALTER TABLE core_expression CHANGE library_dynamic_ad_slot_id dynamic_ad_slot_id INT DEFAULT NULL');
-        // but NEED add dynamic_ad_slot_id, then rollback data, finally drop library_dynamic_ad_slot_id
+        // DOCTRINE: ADD expression_descriptor/starting_position, DROP library_expression_id
+        // $this->addSql('ALTER TABLE core_expression ADD expression_descriptor LONGTEXT NOT NULL COLLATE utf8_unicode_ci COMMENT \'(DC2Type:json_array)\', ADD starting_position INT DEFAULT 1, DROP library_expression_id');
+        // DOCTRINE: end
+        // BUT we will ADD expression_descriptor/starting_position, then rollback data and finally DROP library_expression_id
 
-        // MODIFY: NEED add dynamic_ad_slot_id
-        $this->addSql('ALTER TABLE core_expression ADD dynamic_ad_slot_id INT DEFAULT NULL');
+        // ADD expression_descriptor/starting_position
+        $this->addSql('ALTER TABLE core_expression ADD expression_descriptor LONGTEXT NOT NULL COLLATE utf8_unicode_ci COMMENT \'(DC2Type:json_array)\', ADD starting_position INT DEFAULT 1');
 
-        // MODIFY: then rollback data
-        // MODIFY: clone old-data from dynamicAdSlot to expression, details as:
-        // MODIFY: from dynamicAdSlot.id
-        // MODIFY: to expression.dynamic_ad_slot_id
-        // MODIFY: where expression.library_dynamic_ad_slot_id = coreAdSlot.libraryAdSlot.id AND coreAdSlot.id = dynamicAdSlot.id
-        $this->addSql('UPDATE core_expression e, core_dynamic_ad_slot ds, core_ad_slot s
-                            SET e.dynamic_ad_slot_id = ds.id
-                            WHERE e.library_dynamic_ad_slot_id = s.library_ad_slot_id AND s.id = ds.id');
+        // then rollback data from library_expression to core_expression
+        $this->addSql('UPDATE core_expression e, library_expression le
+                            SET e.expression_descriptor = le.expression_descriptor, e.starting_position = le.starting_position
+                            WHERE e.library_expression_id = le.id');
 
-        // MODIFY: finally drop library_dynamic_ad_slot_id
-        $this->addSql('ALTER TABLE core_expression DROP library_dynamic_ad_slot_id');
-        // MODIFY: end
-
-        // add constraint to core_dynamic_ad_slot
-        $this->addSql('ALTER TABLE core_expression ADD CONSTRAINT FK_E47CD2E01D925722 FOREIGN KEY (dynamic_ad_slot_id) REFERENCES core_dynamic_ad_slot (id)');
-        $this->addSql('CREATE INDEX IDX_E47CD2E01D925722 ON core_expression (dynamic_ad_slot_id)');
+        // finally DROP library_expression_id
+        $this->addSql('ALTER TABLE core_expression DROP library_expression_id');
 
         // 7.FINALLY
         // 7.1.DROP library_ad_slot_id for core_ad_slot
@@ -286,9 +293,10 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
         // MODIFY: FINALLY, drop all library tables
         $this->addSql('DROP TABLE library_display_ad_slot');
         $this->addSql('DROP TABLE library_ad_tag');
-        $this->addSql('DROP TABLE library_slot_tag');
+        $this->addSql('DROP TABLE library_ad_slot_ad_tag');
         $this->addSql('DROP TABLE library_dynamic_ad_slot');
         $this->addSql('DROP TABLE library_native_ad_slot');
+        $this->addSql('DROP TABLE library_expression');
         $this->addSql('DROP TABLE library_ad_slot');
         // MODIFY: end
     }

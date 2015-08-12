@@ -96,6 +96,22 @@ class UpdateLibrarySlotTagPositionListener {
             }
         );
 
+//        array_walk(
+//            $adTags,
+//            function(AdTagInterface $adTag) use(&$positions, &$updatedAdTags, &$mappedPositions) {
+//                $myPos = $adTag->getPosition();
+//                $newPos = !array_key_exists($myPos, $mappedPositions) ? count($positions) + 1 : $mappedPositions[$myPos];
+//                $mappedPositions[$myPos] = $newPos;
+//                if (!in_array($newPos, $positions)) {
+//                    array_push($positions, $newPos);
+//                }
+//                if ($newPos !== $myPos) {
+//                    $adTag->setPosition($mappedPositions[$myPos]);
+//                    $updatedAdTags[] = $adTag;
+//                }
+//            }
+//        );
+
         $max = empty($positions) ? 1 : max($positions) + 1;;
         if (in_array($updatingLibrarySlotTag, $librarySlotTags)) {
             $max = $max - 1;

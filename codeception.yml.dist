@@ -20,23 +20,25 @@ modules:
 
     params:  # these are ids of entity involve in the test: publisher owns site, site owns ad slot and ad slot owns ad tag. Ad tag is for ad network.
         publisher: 2
-        adNetwork: 1
-        site: 22
-        adSlot: 6
-        nativeAdSlot: 125
-        dynamicAdSlot: 26
-        defaultAdSlot: 29
-        expectedAdSlot: 27
-        expectedAdSlot_2: 28
-        adTag: 1
-        # library feature
-        libraryAdSlot: 1
-        libraryDisplayAdSlot: 1
-        libraryNativeAdSlot: 3
-        libraryDynamicAdSlot: 5
-        libraryDefaultAdSlot: 1
-        libraryAdTag: 1
-        # end - library feature
+            adNetwork: 1
+            site: 1
+            adSlot: 1
+            nativeAdSlot: 2
+            dynamicAdSlot: 3
+            defaultAdSlot: 1
+            expectedAdSlot: 1
+            expectedAdSlot_2: 1
+            adTag: 1
+            # library feature
+            libraryAdSlot: 1
+            libraryDisplayAdSlot: 1
+            libraryNativeAdSlot: 2
+            libraryDynamicAdSlot: 3
+            libraryDefaultAdSlot: 1
+            libraryExpectedAdSlot: 1
+            libraryExpectedAdSlot_2: 1
+            libraryAdTag: 1
+            # end - library feature
 
     config:
         Db:
