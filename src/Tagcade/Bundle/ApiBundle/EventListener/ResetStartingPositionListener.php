@@ -52,7 +52,17 @@ class ResetStartingPositionListener
             return $tag->getPosition();
         }, $adTags);
 
-        $max = (null === $positions || empty($positions)) ? 0 : max($positions);
+        if (null === $positions || empty($positions)) {
+            $max = 0;
+        }
+        else {
+            $count = count($positions);
+            $max = max($positions);
+            if ($max > $count) {
+                $max = $count;
+            }
+        }
+
         /**
          * @var LibraryExpressionRepositoryInterface $repository
          */
