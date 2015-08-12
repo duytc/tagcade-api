@@ -64,8 +64,8 @@ class Version20150721091310_AdSlotLibrary extends AbstractMigration
         // MODIFY: from adTag.id, adTag.adNetworkId, adTag.name, adTag.html, adTag.ad_type, adTag.descriptor
         // MODIFY: to libraryAdTag.id, libraryAdTag.adNetworkId, libraryAdTag.name, libraryAdTag.html, visible=false, libraryAdTag.ad_type, libraryAdTag.descriptor
         // note: libraryAdTag_id set = adTag_id as simplest, not need condition 'where' if need query...
-        $this->addSql('INSERT INTO library_ad_tag (id, ad_network_id, name, html, visible, ad_type, descriptor)
-                            SELECT t.id, t.ad_network_id, t.name, t.html, false, t.ad_type, t.descriptor
+        $this->addSql('INSERT INTO library_ad_tag (id, ad_network_id, name, html, visible, ad_type, descriptor, created_at, updated_at, deleted_at)
+                            SELECT t.id, t.ad_network_id, t.name, t.html, false, t.ad_type, t.descriptor, t.created_at, t.updated_at, t.deleted_at
                             FROM core_ad_tag t');
         // MODIFY: end
 
