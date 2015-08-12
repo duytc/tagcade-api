@@ -96,7 +96,8 @@ class UpdateAdTagPositionListener
             throw new InvalidArgumentException('expect instance of ReportableAdSlotInterface');
         }
 
-        $adTags = $adSlot->getAdTags()->toArray();
+        $adTags = array_filter($adSlot->getAdTags()->toArray(), function(AdTagInterface $t) { return null === $t->getDeletedAt();});
+
         $updatedAdTags = $this->correctAdTagPositionInList($updatingAdTag, $adTags);
 
         return array_merge($updatedAdTags, $this->updatePositionForAdTags($adTags));
