@@ -209,23 +209,25 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     {
         if(array_key_exists('libraryAdSlot', $request->request->all()))
         {
-            $libraryAdSlot = (int)$request->request->get('libraryAdSlot');
-            /**
-             * @var DisplayAdSlotInterface $adSlot
-             */
-            $adSlot = $this->getOr404($id);
+            if(!is_array($request->request->get('libraryAdSlot'))) {
+                $libraryAdSlot = (int)$request->request->get('libraryAdSlot');
+                /**
+                 * @var DisplayAdSlotInterface $adSlot
+                 */
+                $adSlot = $this->getOr404($id);
 
-            if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlot) {
-                $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlot);
+                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlot && $adSlot->getLibraryAdSlot()->isVisible()) {
+                    $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlot);
 
-                if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
-                    throw new InvalidArgumentException('LibraryAdSlot not existed');
+                    if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                        throw new InvalidArgumentException('LibraryAdSlot not existed');
+                    }
+
+                    $this->checkUserPermission($newLibraryAdSlot);
+
+                    // create new ad tags
+                    $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
                 }
-
-                $this->checkUserPermission($newLibraryAdSlot);
-
-                // create new ad tags
-                $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
             }
         }
 
