@@ -11,12 +11,25 @@ use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 class UpdateLibrarySlotTagPositionListener {
 
+    private $presoftDeleteAdTags = [];
+
+    public function preSoftDelete(LifecycleEventArgs $args)
+    {
+        $em = $args->getEntityManager();
+        $uow = $em->getUnitOfWork();
+
+        $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) { return $entity instanceof LibrarySlotTagInterface; }));
+    }
+
     public function onFlush(OnFlushEventArgs $args)
     {
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions());
+        $preSoftDeleteAdTags = $this->presoftDeleteAdTags;
+        $this->presoftDeleteAdTags = [];
+
+        $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions(), $preSoftDeleteAdTags);
         $md = $em->getClassMetadata(LibrarySlotTag::class);
 
         foreach ($entities as $entity) {
@@ -58,13 +71,15 @@ class UpdateLibrarySlotTagPositionListener {
 
         if($librarySlotTags instanceof PersistentCollection) $librarySlotTags = $librarySlotTags->toArray();
 
+        $librarySlotTags = array_filter($librarySlotTags, function(LibrarySlotTagInterface $t) { return null === $t->getDeletedAt();});
+
         $updatedSlotTags = $this->correctLibrarySlotTagPositionInList($updatingLibrarySlotTag, $librarySlotTags);
 
         return array_merge($updatedSlotTags, $this->updatePositionForLibrarySlotTags($librarySlotTags));
     }
 
 
-    protected function correctLibrarySlotTagPositionInList(LibrarySlotTagInterface &$updatingLibrarySlotTag, array $librarySlotTags)
+    protected function correctLibrarySlotTagPositionInList(LibrarySlotTagInterface &$updatingLibrarySlotTag, array &$librarySlotTags)
     {
         // sort array asc with respect to position
         usort($librarySlotTags, function(LibrarySlotTagInterface $a, LibrarySlotTagInterface $b) {
@@ -95,22 +110,6 @@ class UpdateLibrarySlotTagPositionListener {
                 }
             }
         );
-
-//        array_walk(
-//            $adTags,
-//            function(AdTagInterface $adTag) use(&$positions, &$updatedAdTags, &$mappedPositions) {
-//                $myPos = $adTag->getPosition();
-//                $newPos = !array_key_exists($myPos, $mappedPositions) ? count($positions) + 1 : $mappedPositions[$myPos];
-//                $mappedPositions[$myPos] = $newPos;
-//                if (!in_array($newPos, $positions)) {
-//                    array_push($positions, $newPos);
-//                }
-//                if ($newPos !== $myPos) {
-//                    $adTag->setPosition($mappedPositions[$myPos]);
-//                    $updatedAdTags[] = $adTag;
-//                }
-//            }
-//        );
 
         $max = empty($positions) ? 1 : max($positions) + 1;;
         if (in_array($updatingLibrarySlotTag, $librarySlotTags)) {

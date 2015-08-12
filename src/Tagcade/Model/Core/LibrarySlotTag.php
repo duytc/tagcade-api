@@ -16,6 +16,7 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
      */
     protected $libraryAdSlot;
 
+    protected $deletedAt;
 
     /**
      * @var boolean
@@ -167,6 +168,16 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
     {
         $this->id = $id;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+
 
     public function __toString()
     {

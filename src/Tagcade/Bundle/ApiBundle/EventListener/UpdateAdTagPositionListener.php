@@ -156,7 +156,6 @@ class UpdateAdTagPositionListener
         return $updatedAdTags;
     }
 
-
     /**
      * Return sorted tags based on position
      * @param array $adTags

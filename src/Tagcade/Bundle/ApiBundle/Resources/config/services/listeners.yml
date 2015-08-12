@@ -22,6 +22,7 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: preSoftDelete }
 
 #    ## Update ad slot variableDescriptor, make sure auto update for expressions field
 #    tagcade_api.event_listener.UpdateAdSlotExpressionListener:

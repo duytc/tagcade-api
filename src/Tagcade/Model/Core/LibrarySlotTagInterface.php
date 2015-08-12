@@ -75,4 +75,7 @@ interface LibrarySlotTagInterface extends ModelInterface{
      * @param string $refId
      */
     public function setRefId($refId);
+
+    public function getDeletedAt();
+
 }
