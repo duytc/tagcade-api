@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -17,14 +18,6 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
      * @param mixed $native
      */
     public function setNative($native);
-    /**
-     * @return ArrayCollection
-     */
-    public function getExpressions();
-    /**
-     * @param ExpressionInterface[] $expressions
-     */
-    public function setExpressions($expressions);
 
     /**
      * @return boolean
@@ -42,19 +35,22 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
      */
     public function setPublisher(PublisherInterface $publisher);
 
+    /**
+     * @return PersistentCollection
+     */
+    public function getLibraryExpressions();
 
     /**
-     * @return mixed
+     * @param LibraryExpressionInterface[] $libraryExpressions
      */
-    public function getPublisherId();
+    public function setLibraryExpressions($libraryExpressions);
 
     /**
-     * @return BaseAdSlotInterface
+     * @return BaseLibraryAdSlotInterface
      */
-    public function getDefaultAdSlot();
-
+    public function getDefaultLibraryAdSlot();
     /**
-     * @param BaseAdSlotInterface $defaultAdSlot
+     * @param BaseLibraryAdSlotInterface $defaultLibraryAdSlot
      */
-    public function setDefaultAdSlot($defaultAdSlot);
+    public function setDefaultLibraryAdSlot($defaultLibraryAdSlot);
 }

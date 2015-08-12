@@ -2,9 +2,8 @@
 
 namespace Tagcade\Repository\Core;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
-use Tagcade\Model\Core\SiteInterface;
+use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class LibraryDisplayAdSlotRepository extends EntityRepository implements LibraryDisplayAdSlotRepositoryInterface

@@ -9,8 +9,8 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Model\Core\LibraryAdTagInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 
 /**

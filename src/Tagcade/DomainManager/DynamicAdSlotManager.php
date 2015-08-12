@@ -3,11 +3,13 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\Core\SiteInterface;
 use ReflectionClass;
+use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 
@@ -40,6 +42,12 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
      */
     public function save(DynamicAdSlotInterface $dynamicAdSlot)
     {
+        $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
+        $referenceSlot = $this->getReferencedAdSlotsForSite($libraryAdSlot, $dynamicAdSlot->getSite());
+        if ($referenceSlot instanceof DynamicAdSlotInterface && $referenceSlot->getId() !== $dynamicAdSlot->getId()) {
+            throw new LogicException('Cannot create more than one ad slots in the same site referring to the same library');
+        }
+
         $this->om->persist($dynamicAdSlot);
         $this->om->flush();
     }
@@ -106,5 +114,29 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
     public function persistAndFlush(DynamicAdSlotInterface $adSlot)
     {
         $this->om->persist($adSlot);
-        $this->om->flush();    }
+        $this->om->flush();
+    }
+
+    /**
+     * Get all referenced ad slots that refer to the same library and on the same site to current slot
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site)
+    {
+        return $this->adSlotRepository->getReferencedAdSlotsForSite($libraryAdSlot, $site);
+    }
+
+    /**
+     * Get all dynamic ad slots that have default ad slot $adSlot
+     * @param ReportableAdSlotInterface $adSlot
+     * @return array
+     */
+    public function getDynamicAdSlotsThatHaveDefaultAdSlot(ReportableAdSlotInterface $adSlot)
+    {
+        return $this->repository->getDynamicAdSlotsThatHaveDefaultAdSlot($adSlot);
+    }
+
+
 }

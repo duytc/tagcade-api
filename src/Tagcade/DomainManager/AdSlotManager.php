@@ -5,11 +5,15 @@ namespace Tagcade\DomainManager;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
 class AdSlotManager implements AdSlotManagerInterface
@@ -31,16 +35,21 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     private $adSlotRepository;
 
-    public function __construct(DisplayAdSlotManagerInterface $displayAdSlotManager,
-                                NativeAdSlotManagerInterface $nativeAdSlotManager,
-                                DynamicAdSlotManagerInterface $dynamicAdSlotManager,
-                                AdSlotRepositoryInterface $adSlotRepository
-    )
+    public function __construct(AdSlotRepositoryInterface $adSlotRepository)
     {
-        $this->displayAdSlotManager = $displayAdSlotManager;
-        $this->nativeAdSlotManager = $nativeAdSlotManager;
-        $this->dynamicAdSlotManager = $dynamicAdSlotManager;
         $this->adSlotRepository = $adSlotRepository;
+    }
+
+    public function setDisplayAdSlotManager(DisplayAdSlotManagerInterface $displayAdSlotManager) {
+        $this->displayAdSlotManager = $displayAdSlotManager;
+    }
+
+    public function setNativeAdSlotManager(NativeAdSlotManagerInterface $nativeAdSlotManager) {
+        $this->nativeAdSlotManager = $nativeAdSlotManager;
+    }
+
+    public function setDynamicAdSlotManager(DynamicAdSlotManagerInterface $dynamicAdSlotManager) {
+        $this->dynamicAdSlotManager = $dynamicAdSlotManager;
     }
 
     /**
@@ -123,20 +132,20 @@ class AdSlotManager implements AdSlotManagerInterface
     }
 
     /**
-     * @param BaseAdSlotInterface $adSlot
+     * @param BaseAdSlotInterface|BaseLibraryAdSlotInterface $adSlot
      * @return DisplayAdSlotManagerInterface|NativeAdSlotManagerInterface|DynamicAdSlotManagerInterface
      */
-    protected function getManager(BaseAdSlotInterface $adSlot)
+    protected function getManager($adSlot)
     {
-        if ($adSlot instanceof DisplayAdSlotInterface) {
+        if ($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof LibraryDisplayAdSlotInterface) {
             return $this->displayAdSlotManager;
         }
 
-        if ($adSlot instanceof NativeAdSlotInterface) {
+        if ($adSlot instanceof NativeAdSlotInterface || $adSlot instanceof LibraryNativeAdSlotInterface) {
             return $this->nativeAdSlotManager;
         }
 
-        if ($adSlot instanceof DynamicAdSlotInterface) {
+        if ($adSlot instanceof DynamicAdSlotInterface || $adSlot instanceof LibraryDynamicAdSlotInterface) {
             return $this->dynamicAdSlotManager;
         }
 
@@ -148,5 +157,16 @@ class AdSlotManager implements AdSlotManagerInterface
     public function persistAndFlush(BaseAdSlotInterface $adSlot)
     {
         $this->getManager($adSlot)->persistAndFlush($adSlot);
+    }
+
+    /**
+     * Get all referenced ad slots that refer to the same library and on the same site to current slot
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param SiteInterface $site
+     * @return BaseAdSlotInterface[]
+     */
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site)
+    {
+        return $this->getManager($libraryAdSlot)->getReferencedAdSlotsForSite($libraryAdSlot, $site);
     }
 }

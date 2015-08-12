@@ -2,20 +2,17 @@
 
 namespace Tagcade\DomainManager;
 
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
 
 class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
@@ -142,5 +139,42 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
     public function getLibraryDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->libraryAdSlotRepository->getLibraryDisplayAdSlotsForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * Get those library ad slots that haven't been referred by any ad slot
+     *
+     * @param SiteInterface $site
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getUnReferencedLibraryAdSlotForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $result = [];
+        $libraryAdSlots = $this->libraryAdSlotRepository->getLibraryAdSlotsForPublisher($site->getPublisher());
+        /**
+         * @var BaseLibraryAdSlotInterface $libraryAdSlot
+         */
+        foreach($libraryAdSlots as $libraryAdSlot) {
+            $adSlots = $libraryAdSlot->getAdSlots();
+            if($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
+
+            if(!is_array($adSlots) || count($adSlots) < 1) {
+                $result[] = $libraryAdSlot;
+                continue;
+            }
+
+            $adSlots = array_filter($adSlots, function(BaseAdSlotInterface $adSlot) use($site){
+                if($adSlot->getSite()->getId() === $site->getId()) return true;
+                else return false;
+            });
+
+            if(count($adSlots) < 1) {
+                $result[] = $libraryAdSlot;
+            }
+        }
+
+        return $result;
     }
 }

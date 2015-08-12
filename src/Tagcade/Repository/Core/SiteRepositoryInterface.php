@@ -3,10 +3,9 @@
 namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\Core\AdNetworkInterface;
 use Doctrine\ORM\QueryBuilder;
+use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SiteRepositoryInterface extends ObjectRepository
 {

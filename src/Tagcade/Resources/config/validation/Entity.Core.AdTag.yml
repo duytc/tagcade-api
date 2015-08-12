@@ -1,5 +1,8 @@
 Tagcade\Entity\Core\AdTag:
     properties:
+        adSlot:
+            - NotBlank: ~
+            - Valid: ~
         libraryAdTag:
             - NotBlank: ~
             - Valid: ~

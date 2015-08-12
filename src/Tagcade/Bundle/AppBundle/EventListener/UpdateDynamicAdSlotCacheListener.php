@@ -39,89 +39,96 @@ class UpdateDynamicAdSlotCacheListener
             return;
         }
 
-        $this->refreshDynamicAdSlotCache($entity);
-    }
-
-    /**
-     * keep persisting ExpressionInterface[], and then do Cache refresh in postFlush for DynamicAdSlot that containing these ExpressionInterface[]
-     * scheduled to remove expressions is not included
-     *
-     * @param OnFlushEventArgs $args
-     */
-    public function onFlush(OnFlushEventArgs $args)
-    {
-        $em = $args->getEntityManager();
-        $uow = $em->getUnitOfWork();
-
-        $tmp = array_merge($uow->getScheduledEntityInsertions());
-        // update is for Dynamic AdSlot - the default ad slot selection only
-        $updateEntities = array_filter(
-            $uow->getScheduledEntityUpdates(),
-            function($entity) use ($uow)
-            {
-                if (!$entity instanceof DynamicAdSlotInterface) {
-                    return false;
-                }
-
-                $changeSet = $uow->getEntityChangeSet($entity);
-                if ( isset($changeSet['defaultAdSlot']) && null !== $changeSet['defaultAdSlot']) {
-                    return true;
-                }
-
-                return false;
-            }
-        );
-
-        $this->changedEntities = array_merge($tmp, $updateEntities);
-    }
-
-    public function postFlush(PostFlushEventArgs $args)
-    {
-        if (!isset($this->changedEntities) || !is_array($this->changedEntities) || count($this->changedEntities) < 1) {
-            return;
+        if ($entity->getExpressions()->isEmpty()) { // refresh cache when dynamic has no expression. If there is we rely on ExpressonChangeListener
+            $this->refreshDynamicAdSlotCache($entity);
         }
-
-        $changedEntities = $this->changedEntities;
-
-        unset($this->changedEntities);
-
-        $dynamicAdSlots = [];
-
-        // filter all adTags and not (in $adSlots and in $adNetworks)
-        array_walk($changedEntities,
-            function($entity) use (&$dynamicAdSlots)
-            {
-                if ($entity instanceof DynamicAdSlotInterface && !in_array($entity, $dynamicAdSlots)) {
-                    $dynamicAdSlots[] = $entity;
-                }
-
-                if (!$entity instanceof ExpressionInterface)
-                {
-                    return false;
-                }
-
-                $updatingDynamicAdSlots = $entity->getLibraryDynamicAdSlot()->getAdSlots();
-
-                if(null === $updatingDynamicAdSlots) return true;
-
-                foreach ($updatingDynamicAdSlots as $dSlot) {
-                    // ignore the ad tag in adSlot has been counted
-                    if (in_array($dSlot, $dynamicAdSlots)) {
-                        continue;
-                    }
-
-                    $dynamicAdSlots[] = $dSlot;
-                }
-
-                return true;
-            }
-        );
-
-        if (count($dynamicAdSlots) > 0) {
-            $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($dynamicAdSlots));
-        }
-
     }
+
+//    /**
+//     * keep persisting ExpressionInterface[], and then do Cache refresh in postFlush for DynamicAdSlot that containing these ExpressionInterface[]
+//     * scheduled to remove expressions is not included
+//     *
+//     * @param OnFlushEventArgs $args
+//     */
+//    public function onFlush(OnFlushEventArgs $args)
+//    {
+//        $em = $args->getEntityManager();
+//        $uow = $em->getUnitOfWork();
+//
+//        $tmp = array_merge($uow->getScheduledEntityInsertions());
+//        // update is for Dynamic AdSlot - the default ad slot selection only
+//        $updateEntities = array_filter(
+//            $uow->getScheduledEntityUpdates(),
+//            function($entity) use ($uow)
+//            {
+//                if (!$entity instanceof DynamicAdSlotInterface) {
+//                    return false;
+//                }
+//
+//                $changeSet = $uow->getEntityChangeSet($entity);
+//                if ( isset($changeSet['defaultAdSlot']) && null !== $changeSet['defaultAdSlot']) {
+//                    return true;
+//                }
+//
+//                return false;
+//            }
+//        );
+//
+//        $this->changedEntities = array_merge($tmp, $updateEntities);
+//    }
+//
+//    public function postFlush(PostFlushEventArgs $args)
+//    {
+//        if (!isset($this->changedEntities) || !is_array($this->changedEntities) || count($this->changedEntities) < 1) {
+//            return;
+//        }
+//
+//        $changedEntities = $this->changedEntities;
+//
+//        unset($this->changedEntities);
+//
+//        $dynamicAdSlots = [];
+//
+//        // filter all adTags and not (in $adSlots and in $adNetworks)
+//        array_walk($changedEntities,
+//            function($entity) use (&$dynamicAdSlots)
+//            {
+//                if ($entity instanceof DynamicAdSlotInterface && !in_array($entity, $dynamicAdSlots)) {
+//                    $dynamicAdSlots[] = $entity;
+//                }
+//
+//                if (!$entity instanceof ExpressionInterface)
+//                {
+//                    return false;
+//                }
+//
+//                $updatingDynamicAdSlot = $entity->getDynamicAdSlot();
+//
+//                if(null === $updatingDynamicAdSlot) return true;
+//
+//                // ignore the ad tag in adSlot has been counted
+//                if (!in_array($updatingDynamicAdSlot, $dynamicAdSlots)) {
+//                    $dynamicAdSlots[] = $updatingDynamicAdSlot;
+//                }
+//
+////                foreach ($updatingDynamicAdSlots as $dSlot) {
+////                    // ignore the ad tag in adSlot has been counted
+////                    if (in_array($dSlot, $dynamicAdSlots)) {
+////                        continue;
+////                    }
+////
+////                    $dynamicAdSlots[] = $dSlot;
+////                }
+//
+//                return true;
+//            }
+//        );
+//
+//        if (count($dynamicAdSlots) > 0) {
+//            $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($dynamicAdSlots));
+//        }
+//
+//    }
 
     private function refreshDynamicAdSlotCache(DynamicAdSlotInterface $dynamicAdSlot)
     {

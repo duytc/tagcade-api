@@ -1,20 +1,30 @@
 <?php
 
-namespace Tagcade\DomainManager\Behaviors;
+namespace Tagcade\Service\TagLibrary;
 
 
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
-trait ValidateAdSlotSynchronizationTrait {
+class ChecksumValidator implements ChecksumValidatorInterface
+{
+    /**
+     * @var AdSlotRepositoryInterface
+     */
+    protected $adSlotRepository;
+    function __construct(AdSlotRepositoryInterface $adSlotRepository)
+    {
+        $this->adSlotRepository = $adSlotRepository;
+    }
 
     /**
      * Validate that all AdSlots that created from the same LibraryAdSlot must have the same Checksum value
      * @param BaseAdSlotInterface $originalAdSlot
      * @param $copies array
      */
-    protected function validateAdSlotSynchronization(BaseAdSlotInterface $originalAdSlot, $copies = null)
+    public function validateAdSlotSynchronization(BaseAdSlotInterface $originalAdSlot, $copies = null)
     {
         if($copies === null) {
             $this->validateSingleAdSlot($originalAdSlot);
@@ -30,19 +40,22 @@ trait ValidateAdSlotSynchronizationTrait {
         }
     }
 
+    public function validateAllAdSlotsSynchronized(array $adSlots) {
+        if (count($adSlots) < 1) {
+            return;
+        }
+
+        $baseAdSlot = current($adSlots);
+
+        $this->validateAdSlotSynchronization($baseAdSlot, $adSlots);
+    }
 
     private function validateSingleAdSlot(BaseAdSlotInterface $adSlot)
     {
-        $coReferencedAdSlots = $adSlot->getCoReferencedAdSlots();
-        if($coReferencedAdSlots === null) return;
+        $coReferencedAdSlots = $this->adSlotRepository->getCoReferencedAdSlots($adSlot->getLibraryAdSlot());
         if($coReferencedAdSlots instanceof PersistentCollection) $coReferencedAdSlots = $coReferencedAdSlots->toArray();
-        if(count($coReferencedAdSlots) < 2) return;
-        $originalAdSlot = $coReferencedAdSlots[0];
-        foreach($coReferencedAdSlots as $copy){
-            if($originalAdSlot->checkSum() !== $copy->checkSum())
-            {
-                throw new RuntimeException(sprintf('%s is created from %s but it seems that their data are not synced', $copy->getName(), $originalAdSlot->getName()));
-            }
-        }
+        if($coReferencedAdSlots === null || empty($coReferencedAdSlots)) return;
+
+        $this->validateAdSlotSynchronization($adSlot, $coReferencedAdSlots);
     }
 }

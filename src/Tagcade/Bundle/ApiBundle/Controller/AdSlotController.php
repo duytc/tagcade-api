@@ -5,15 +5,11 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("Adslot")
@@ -25,7 +21,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *
      * Get all ad slots
      * @Rest\View(
-     *      serializerGroups={"expression.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "site.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
+     *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "site.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -53,7 +49,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
 
     /**
      * @Rest\View(
-     *      serializerGroups={"expression.detail", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.detail", "user.summary", "slotlib.summary"}
+     *      serializerGroups={"libraryexpression.detail", "expression.summary", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
      * Get a single adSlot for the given id
      *

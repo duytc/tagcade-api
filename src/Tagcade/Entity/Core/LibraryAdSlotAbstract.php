@@ -182,6 +182,10 @@ abstract class LibraryAdSlotAbstract
      */
     public function getAdSlots()
     {
+        if (null === $this->adSlots) {
+            $this->adSlots = new ArrayCollection();
+        }
+        
         return $this->adSlots;
     }
 

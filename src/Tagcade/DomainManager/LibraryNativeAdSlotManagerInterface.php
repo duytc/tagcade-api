@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryNativeAdSlotManagerInterface {

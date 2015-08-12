@@ -1,2 +1,4 @@
 Tagcade\Entity\Core\DynamicAdSlot:
     properties:
+        defaultAdSlot:
+            - Valid: ~

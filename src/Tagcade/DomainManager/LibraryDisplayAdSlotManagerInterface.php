@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryDisplayAdSlotManagerInterface {
@@ -52,5 +53,4 @@ interface LibraryDisplayAdSlotManagerInterface {
      * @return LibraryDisplayAdSlotInterface[]
      */
     public function getLibraryDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
-
 }

@@ -168,4 +168,9 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
         $this->id = $id;
     }
 
+    public function __toString()
+    {
+        return $this->id . $this->libraryAdSlot->getId() . $this->libraryAdTag->getId();
+    }
+
 }

@@ -1,11 +1,11 @@
 Tagcade\Entity\Core\LibrarySlotTag:
     type: entity
-    table: library_slot_tag
+    table: library_ad_slot_ad_tag
     repositoryClass: Tagcade\Repository\Core\LibrarySlotTagRepository
-    gedmo:
-        soft_deleteable:
-            field_name: deletedAt
-            time_aware: false
+#    gedmo:
+#        soft_deleteable:
+#            field_name: deletedAt
+#            time_aware: false
     uniqueConstraints:
         unique_report_idx:
             columns:

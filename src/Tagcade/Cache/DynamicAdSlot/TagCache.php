@@ -255,24 +255,16 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     {
         $expressions = $this->expressionRepository->findBy(array('expectAdSlot' => $updatingAdSlot));
 
-        $referencingDynamicAdSlots = [];
+        $dynamicAdSlotsWithExpressionReference = array_map(
+            function(ExpressionInterface $expression)
+            {
+                return $expression->getDynamicAdSlot();
+            },
+            $expressions
+        );
 
-        /** @var ExpressionInterface $expression */
-        foreach($expressions as $expression){
-            $libraryDynamicAdSlot = $expression->getLibraryDynamicAdSlot();
-            $dynamicSlots = $libraryDynamicAdSlot->getAdSlots();
-
-            if ($dynamicSlots->count() < 1) { // ignore expression in library not referencing to any dynamic slot
-                continue;
-            }
-
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $dynamicSlots->toArray());
-        }
-
-        $defaultDynamicAdSlots = $updatingAdSlot->defaultDynamicAdSlots();
-        if ($defaultDynamicAdSlots !== null && !empty($defaultDynamicAdSlots)) {
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $defaultDynamicAdSlots);
-        }
+        $dynamicAdSlotsWithDefaultAdSlotReference = $this->dynamicAdSlotManager->getDynamicAdSlotsThatHaveDefaultAdSlot($updatingAdSlot);
+        $referencingDynamicAdSlots = array_merge($dynamicAdSlotsWithDefaultAdSlotReference, $dynamicAdSlotsWithExpressionReference);
 
         return array_unique($referencingDynamicAdSlots);
     }

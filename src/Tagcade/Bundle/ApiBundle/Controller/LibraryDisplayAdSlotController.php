@@ -2,7 +2,6 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
-use Doctrine\ORM\PersistentCollection;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
@@ -13,7 +12,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;

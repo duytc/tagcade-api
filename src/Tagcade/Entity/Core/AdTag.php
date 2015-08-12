@@ -2,7 +2,6 @@
 
 namespace Tagcade\Entity\Core;
 
-use DateTime;
 use Tagcade\Model\Core\AdTag as AdTagModel;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 

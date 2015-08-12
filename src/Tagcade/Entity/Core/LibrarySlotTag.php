@@ -6,6 +6,7 @@ use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTag as LibrarySlotTagModel;
 
 class LibrarySlotTag extends LibrarySlotTagModel {
+
     protected $id;
     /**
      * @var LibraryAdTagInterface

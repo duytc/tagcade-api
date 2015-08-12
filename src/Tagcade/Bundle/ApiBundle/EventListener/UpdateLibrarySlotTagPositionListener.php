@@ -58,9 +58,9 @@ class UpdateLibrarySlotTagPositionListener {
 
         if($librarySlotTags instanceof PersistentCollection) $librarySlotTags = $librarySlotTags->toArray();
 
-        $this->correctLibrarySlotTagPositionInList($updatingLibrarySlotTag, $librarySlotTags);
+        $updatedSlotTags = $this->correctLibrarySlotTagPositionInList($updatingLibrarySlotTag, $librarySlotTags);
 
-        return $this->updatePositionForLibrarySlotTags($librarySlotTags);
+        return array_merge($updatedSlotTags, $this->updatePositionForLibrarySlotTags($librarySlotTags));
     }
 
 
@@ -75,17 +75,31 @@ class UpdateLibrarySlotTagPositionListener {
         });
 
         // list out all positions
+        $updatedSlotTags = [];
         $positions = array();
+        $mappedPositions = array();
         array_walk(
             $librarySlotTags,
-            function(LibrarySlotTagInterface $librarySlotTag) use(&$positions) {
-                if (!in_array($librarySlotTag->getPosition(), $positions)) {
-                    array_push($positions, count($positions) + 1);
+            function(LibrarySlotTagInterface $slotTag) use(&$positions, &$updatedSlotTags, &$mappedPositions) {
+                $myPos = $slotTag->getPosition();
+                $newPos = !array_key_exists($myPos, $mappedPositions) ? count($positions) + 1 : $mappedPositions[$myPos];
+                $mappedPositions[$myPos] = $newPos;
+
+                if (!in_array($newPos, $positions)) {
+                    array_push($positions, $newPos);
+                }
+
+                if ($newPos !== $myPos) {
+                    $slotTag->setPosition($newPos);
+                    $updatedSlotTags[] = $slotTag;
                 }
             }
         );
 
         $max = empty($positions) ? 1 : max($positions) + 1;;
+        if (in_array($updatingLibrarySlotTag, $librarySlotTags)) {
+            $max = $max - 1;
+        }
 
         $targetPosition = $updatingLibrarySlotTag->getPosition();
         // Current updating ad tag will have position $max + 1 if the position is out of bound [1, max]
@@ -93,6 +107,8 @@ class UpdateLibrarySlotTagPositionListener {
         if ($targetPosition == null || $targetPosition > $max) {
             $updatingLibrarySlotTag->setPosition($max);
         }
+
+        return $updatedSlotTags;
     }
 
     /**

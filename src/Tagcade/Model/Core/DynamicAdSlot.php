@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\SiteInterface;
@@ -10,6 +11,12 @@ use Tagcade\Model\Core\SiteInterface;
 class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
     protected $id;
+
+    /**
+     * @var ExpressionInterface[]
+     */
+    protected $expressions;
+
     /**
      * @var BaseAdSlotInterface
      */
@@ -20,7 +27,10 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->expressions = new ArrayCollection();
+        $this->setSlotType(AdSlotAbstract::TYPE_NATIVE);
     }
 
     /**
@@ -28,38 +38,35 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function getDefaultAdSlot()
     {
-        if($this->getLibraryAdSlot() == null) return null;
-
-        return $this->getLibraryAdSlot()->getDefaultAdSlot();
+        return $this->defaultAdSlot;
     }
 
     /**
      * @param BaseAdSlotInterface $defaultAdSlot
+     * @return $this
      */
     public function setDefaultAdSlot($defaultAdSlot)
     {
-        if($this->getLibraryAdSlot() != null)
-        {
-            $this->getLibraryAdSlot()->setDefaultAdSlot($defaultAdSlot);
-        }
+        $this->defaultAdSlot = $defaultAdSlot;
+
+        return $this;
     }
 
     /**
-     * @return ExpressionInterface[]
+     * @return ArrayCollection
      */
     public function getExpressions()
     {
-        if ($this->getLibraryAdSlot() == null) return new ArrayCollection();
+        if ($this->expressions === null) {
+            $this->expressions = new ArrayCollection();
+        }
 
-        return $this->getLibraryAdSlot()->getExpressions();
+        return $this->expressions;
     }
 
     public function setExpressions($expressions)
     {
-        if($this->getLibraryAdSlot() != null)
-        {
-            $this->getLibraryAdSlot()->setExpressions($expressions);
-        }
+        $this->expressions = $expressions;
 
         return $this;
     }
@@ -126,6 +133,7 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 
         return $this;
     }
+
 
 
     /**

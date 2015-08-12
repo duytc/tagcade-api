@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 
 interface DisplayAdSlotInterface extends BaseAdSlotInterface
 {
@@ -29,7 +30,7 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
     public function setHeight($height);
 
     /**
-     * @return ArrayCollection
+     * @return PersistentCollection
      */
     public function getAdTags();
 
@@ -38,25 +39,10 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      */
     public function setAdTags($adTags);
 
-    /**
-     * @return LibraryDynamicAdSlotInterface[]
-     */
-    public function getDefaultLibraryDynamicAdSlots();
-
-    /**
-     * @param LibraryDynamicAdSlotInterface[] $defaultLibraryDynamicAdSlots
-     */
-    public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots);
-
 
     /**
      * get the list of DisplayAdSlot that also refers to the DisplayAdSlotLib of this entity
      * @return DisplayAdSlotInterface[]
      */
     public function getCoReferencedAdSlots();
-
-    /**
-     * @return DynamicAdSlotInterface[]
-     */
-    public function defaultDynamicAdSlots();
 }

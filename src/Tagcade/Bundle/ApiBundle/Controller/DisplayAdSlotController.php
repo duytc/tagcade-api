@@ -6,19 +6,19 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
-use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("DisplayAdslot")
@@ -154,11 +154,10 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         if($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
-            $this->getHandler()->getHandlerEvent();
-            $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site);
+            $this->get('tagcade_api.service.tag_library.clone_ad_slot_service')->cloneAdSlot($originAdSlot, $newName, $site);
         }
         else {
-            $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+            $this->get('tagcade_api.service.tag_library.clone_ad_slot_service')->cloneAdSlot($originAdSlot, $newName);
         }
 
         return $this->view(null, Codes::HTTP_CREATED);
@@ -208,6 +207,28 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function patchAction(Request $request, $id)
     {
+        if(array_key_exists('libraryAdSlot', $request->request->all()))
+        {
+            $libraryAdSlot = (int)$request->request->get('libraryAdSlot');
+            /**
+             * @var DisplayAdSlotInterface $adSlot
+             */
+            $adSlot = $this->getOr404($id);
+
+            if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlot) {
+                $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlot);
+
+                if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                    throw new InvalidArgumentException('LibraryAdSlot not existed');
+                }
+
+                $this->checkUserPermission($newLibraryAdSlot);
+
+                // create new ad tags
+                $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
+            }
+        }
+
         return $this->patch($request, $id);
     }
 
@@ -239,30 +260,15 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         // dynamic ad slots that its expressions refer to this ad slot
 
         $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
-        $referencingDynamicAdSlots = [];
+        $defaultSlots = $this->get('tagcade.repository.dynamic_ad_slot')->findBy(array('defaultAdSlot' => $entity));
 
-        /** @var ExpressionInterface $expression */
-        foreach($expressions as $expression){
-            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getAdSlots();
-
-            if($dynamicAdSlots->count() < 1) continue;
-
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $dynamicAdSlots->toArray());
-        }
-
-        // dynamic ad slots that have default ad slot is this one.
-        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots());
-        $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
-
-        if (count($referencingDynamicAdSlots) > 0) {
-            $view = $this->view(null, Codes::HTTP_BAD_REQUEST);
+        if (count($expressions) > 0 || count($defaultSlots) > 0) { // this ensures that there is existing dynamic slot that one of its expressions containing this slot
+            $view = $this->view('Existing dynamic ad slot that is referencing to this ad slot', Codes::HTTP_BAD_REQUEST);
         }
         else {
             $this->getHandler()->delete($entity);
             $view = $this->view(null, Codes::HTTP_NO_CONTENT);
         }
-
-
 
         return $this->handleView($view);
     }

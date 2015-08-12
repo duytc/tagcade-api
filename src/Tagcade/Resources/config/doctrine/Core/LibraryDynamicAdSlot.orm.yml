@@ -10,12 +10,12 @@ Tagcade\Entity\Core\LibraryDynamicAdSlot:
                 default: false
 
     oneToMany:
-        expressions:
-            targetEntity: Tagcade\Entity\Core\Expression
+        libraryExpressions:
+            targetEntity: Tagcade\Entity\Core\LibraryExpression
             mappedBy: libraryDynamicAdSlot
             cascade: ["persist", "remove"]
             orphanRemoval: true
 
     manyToOne:
-        defaultAdSlot:
-            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+        defaultLibraryAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract

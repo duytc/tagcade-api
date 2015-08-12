@@ -3,8 +3,6 @@
 namespace Tagcade\Entity\Core;
 
 use Tagcade\Model\Core\DisplayAdSlot as DisplayAdSlotModel;
-use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
-use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 
 class DisplayAdSlot extends DisplayAdSlotModel
 {
@@ -12,12 +10,8 @@ class DisplayAdSlot extends DisplayAdSlotModel
     protected $site;
     protected $deletedAt;
 
-    /**
-     * @var LibraryDynamicAdSlotInterface[]
-     */
-    protected $defaultLibraryDynamicAdSlots;
-
     public function __construct()
     {
+        parent::__construct();
     }
 }

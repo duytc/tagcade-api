@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -10,14 +11,12 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 {
     protected $id;
 
-    /**
-     * @var LibraryDynamicAdSlotInterface[]
-     */
-    protected $defaultLibraryDynamicAdSlots;
-    /**
-     * @param string $name
-     */
+    function __construct()
+    {
+        parent::__construct();
 
+        $this->setSlotType(AdSlotAbstract::TYPE_NATIVE);
+    }
 
 
     /**
@@ -55,46 +54,6 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
     public function __toString()
     {
         return $this->id . $this->getName();
-    }
-
-
-    /**
-     * @return LibraryDynamicAdSlotInterface[]
-     */
-    public function getDefaultLibraryDynamicAdSlots()
-    {
-        return $this->defaultLibraryDynamicAdSlots;
-    }
-
-    /**
-     * @param LibraryDynamicAdSlotInterface[] $defaultLibraryDynamicAdSlots
-     * @return $this
-     */
-    public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots)
-    {
-        $this->defaultLibraryDynamicAdSlots = $defaultLibraryDynamicAdSlots;
-        return $this;
-    }
-
-    /**
-     * @return DynamicAdSlotInterface[]
-     */
-    public function defaultDynamicAdSlots()
-    {
-        $dynamicAdSlots = [];
-
-        $libraryDynamicAdSlots = $this->getDefaultLibraryDynamicAdSlots();
-
-        if(null == $libraryDynamicAdSlots) return $dynamicAdSlots;
-
-        foreach($libraryDynamicAdSlots as $libraryDynamicAdSlot){
-            $temp = $libraryDynamicAdSlot->getAdSlots();
-            if($temp->count() < 1) continue;
-
-            $dynamicAdSlots = array_merge($dynamicAdSlots, $temp->toArray());
-        }
-
-        return array_unique($dynamicAdSlots);
     }
 
     /**

@@ -3,13 +3,10 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\PersistentCollection;
-use Exception;
 use ReflectionClass;
-use Tagcade\DomainManager\Behaviors\ReplicateLibraryAdSlotDataTrait;
-use Tagcade\DomainManager\Behaviors\ValidateAdSlotSynchronizationTrait;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -22,16 +19,26 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
+use Tagcade\Service\TagLibrary\DeleteAdTagValidatorInterface;
+use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class AdTagManager implements AdTagManagerInterface
 {
-    use ValidateAdSlotSynchronizationTrait;
-    use ReplicateLibraryAdSlotDataTrait;
 
+    /**
+     * @var EntityManagerInterface
+     */
     protected $em;
     protected $repository;
+    /**
+     * @var LibrarySlotTagRepositoryInterface
+     */
     protected $librarySlotTagRepository;
 
+    /**
+     * @var ReplicatorInterface
+     */
+    protected $replicator;
 
     public function __construct(EntityManagerInterface $em, AdTagRepositoryInterface $repository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
     {
@@ -39,6 +46,11 @@ class AdTagManager implements AdTagManagerInterface
         $this->repository = $repository;
         $this->librarySlotTagRepository = $librarySlotTagRepository;
     }
+
+    public function setReplicator(ReplicatorInterface $replicator) {
+        $this->replicator = $replicator;
+    }
+    
 
     /**
      * @inheritdoc
@@ -72,36 +84,23 @@ class AdTagManager implements AdTagManagerInterface
             throw new InvalidArgumentException('expect ad tag in shared ad slot');
         }
 
-        try {
-            $this->em->getConnection()->beginTransaction();
 
-            if (!$adTag->getLibraryAdTag()->getVisible()) {
-                $adTag->getLibraryAdTag()->setVisible(true); // when slot is shared then its tag is shared as well
-            }
-
-            if($adTag->getId() !== null) {
-                $this->updateAdTagOfSharedAdSlot($adTag);
-            } else {
-                $createdAdTags = $this->createNewAdTagForSharedAdSlot($adSlot, $adTag);
-                foreach ($createdAdTags as $t) {
-                    if ($t->getAdSlot()->getId() === $adTag->getAdSlot()->getId()) {
-                        $adTag = $t; // update adTag instance to the newly created tag to be used by controller.
-                        break;
-                    }
-                }
-            }
-
-            //validate synchronization
-            $this->validateAdSlotSynchronization($adTag->getAdSlot());
-
-            $this->em->getConnection()->commit();
-        } catch (Exception $e) {
-            $this->em->getConnection()->rollback();
-            throw $e;
+        if (!$adTag->getLibraryAdTag()->getVisible()) {
+            $adTag->getLibraryAdTag()->setVisible(true); // when slot is shared then its tag is shared as well
         }
 
+        if($adTag->getId() !== null) {
+            $this->updateAdTagOfSharedAdSlot($adTag);
+        } else {
+            $createdAdTags = $this->createNewAdTagForSharedAdSlot($adSlot, $adTag);
+            foreach ($createdAdTags as $t) {
+                if ($t->getAdSlot()->getId() === $adTag->getAdSlot()->getId()) {
+                    $adTag = $t; // update adTag instance to the newly created tag to be used by controller.
+                    break;
+                }
+            }
+        }
         $this->em->flush();
-
         return $adTag;
     }
 
@@ -120,7 +119,7 @@ class AdTagManager implements AdTagManagerInterface
         $librarySlotTag->setFrequencyCap($adTag->getFrequencyCap());
         $this->em->persist($librarySlotTag);
 
-        $this->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
+        $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
     }
 
     protected function createNewAdTagForSharedAdSlot(BaseAdSlotInterface $adSlot, AdTagInterface $adTag)
@@ -138,7 +137,7 @@ class AdTagManager implements AdTagManagerInterface
 
         $this->em->persist($librarySlotTag);
 
-        return $this->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
+        return $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
     }
 
     protected function saveAdTagForNotSharedAdSlot(AdTagInterface $adTag)
@@ -163,37 +162,29 @@ class AdTagManager implements AdTagManagerInterface
      */
     public function delete(AdTagInterface $adTag)
     {
-        $this->em->getConnection()->beginTransaction();
+        $libraryAdTag = $adTag->getLibraryAdTag();
+        $adSlot = $adTag->getAdSlot();
+        $adSlotLib = $adSlot->getLibraryAdSlot();
 
-        try {
-            $libraryAdTag = $adTag->getLibraryAdTag();
-            $adSlot = $adTag->getAdSlot();
-            $adSlotLib = $adSlot->getLibraryAdSlot();
-
-            //1. Remove library if visible = false and co-referenced tags less than 2
-            if((!$libraryAdTag->getVisible() && count($adTag->getCoReferencedAdTags()) < 2)) {
-                $this->em->remove($libraryAdTag); // resulting cascade remove this ad tag
-            }
-            else if (false === $adSlotLib->isVisible()) {
-                $this->em->remove($adTag); //simple remove the ad tag if its slot is not in a library
-            }
-            else if (true === $adSlotLib->isVisible() && ($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof NativeAdSlotInterface)) {
-                // 3. if the ad slot containing this ad tag is in library, then we have to remove all ad tags in other ad slots as well
-                // these ad tags must be shared from the same tag library record with visible = false or true
-                $librarySlotTag = $this->librarySlotTagRepository->getByLibraryAdSlotAndLibraryAdTagAndRefId($adSlotLib, $adTag->getLibraryAdTag(), $adTag->getRefId());
-                if(!$librarySlotTag instanceof LibrarySlotTagInterface) {
-                    return;
-                }
-
-                $this->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
-                //remove the Library Slot Tag itself
-                $this->em->remove($librarySlotTag);
+        //1. Remove library if visible = false and co-referenced tags less than 2
+        if((!$libraryAdTag->getVisible() && count($adTag->getCoReferencedAdTags()) < 2)) {
+            $this->em->remove($libraryAdTag); // resulting cascade remove this ad tag
+        }
+        else if (false === $adSlotLib->isVisible()) {
+            $this->em->remove($adTag); //simple remove the ad tag if its slot is not in a library
+        }
+        else if (true === $adSlotLib->isVisible() && ($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof NativeAdSlotInterface)) {
+            // 3. if the ad slot containing this ad tag is in library, then we have to remove all ad tags in other ad slots as well
+            // these ad tags must be shared from the same tag library record with visible = false or true
+            $librarySlotTag = $this->librarySlotTagRepository->getByLibraryAdSlotAndLibraryAdTagAndRefId($adSlotLib, $adTag->getLibraryAdTag(), $adTag->getRefId());
+            if(!$librarySlotTag instanceof LibrarySlotTagInterface) {
+                return;
             }
 
-            $this->em->getConnection()->commit();
-        } catch (Exception $e) {
-            $this->em->getConnection()->rollback();
-            throw $e;
+            //remove the Library Slot Tag itself
+            $this->em->remove($librarySlotTag);
+
+            $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
         }
 
         $this->em->flush();

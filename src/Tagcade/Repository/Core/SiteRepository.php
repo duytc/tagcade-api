@@ -2,8 +2,8 @@
 
 namespace Tagcade\Repository\Core;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\DBAL\Types\Type;
+use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 

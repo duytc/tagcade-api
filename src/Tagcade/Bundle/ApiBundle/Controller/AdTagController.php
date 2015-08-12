@@ -6,7 +6,6 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,6 +13,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("Adtag")

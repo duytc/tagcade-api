@@ -12,6 +12,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlot;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
@@ -77,16 +78,17 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
                 $nativeAdSlot = $event->getData();
 
                 $site = $nativeAdSlot->getSite();
-                $publisher = $site->getPublisher();
+                if($site instanceof SiteInterface) {
+                    $publisher = $site->getPublisher();
 
-                // set nativeAdSlotLib to NativeAdSlot for cascade persist
-                /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
-                $libraryNativeAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
-                if($libraryNativeAdSlot instanceof LibraryNativeAdSlotInterface) {
-                    $libraryNativeAdSlot->setPublisher($publisher);
-                    $nativeAdSlot->setLibraryAdSlot($libraryNativeAdSlot);
+                    // set nativeAdSlotLib to NativeAdSlot for cascade persist
+                    /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
+                    $libraryNativeAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
+                    if($libraryNativeAdSlot instanceof LibraryNativeAdSlotInterface) {
+                        $libraryNativeAdSlot->setPublisher($publisher);
+                        $nativeAdSlot->setLibraryAdSlot($libraryNativeAdSlot);
+                    }
                 }
-
             }
         );
     }

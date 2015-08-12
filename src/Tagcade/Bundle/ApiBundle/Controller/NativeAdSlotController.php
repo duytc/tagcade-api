@@ -6,18 +6,17 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use InvalidArgumentException;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Handler\Handlers\Core\NativeAdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
-use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("NativeAdSlot")
@@ -127,10 +126,10 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
         if($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
-            $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site);
+            $this->get('tagcade_api.service.tag_library.clone_ad_slot_service')->cloneAdSlot($originAdSlot, $newName, $site);
         }
         else {
-            $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+            $this->get('tagcade_api.service.tag_library.clone_ad_slot_service')->cloneAdSlot($originAdSlot, $newName);
         }
 
         return $this->view(null, Codes::HTTP_CREATED);
@@ -180,6 +179,28 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      */
     public function patchAction(Request $request, $id)
     {
+        if(array_key_exists('libraryAdSlot', $request->request->all()))
+        {
+            $libraryAdSlot = (int)$request->request->get('libraryAdSlot');
+            /**
+             * @var NativeAdSlotInterface $adSlot
+             */
+            $adSlot = $this->getOr404($id);
+
+            if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlot) {
+                $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlot);
+
+                if(!$newLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+                    throw new InvalidArgumentException('LibraryAdSlot not existed');
+                }
+
+                $this->checkUserPermission($newLibraryAdSlot);
+
+                // create new ad tags
+                $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
+            }
+        }
+
         return $this->patch($request, $id);
     }
 
@@ -211,31 +232,15 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         // dynamic ad slots that its expressions refer to this ad slot
 
         $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
+        $defaultSlots = $this->get('tagcade.repository.dynamic_ad_slot')->findBy(array('defaultAdSlot' => $entity));
 
-        $referencingDynamicAdSlots = [];
-
-        /** @var ExpressionInterface $expression */
-        foreach($expressions as $expression){
-            $dynamicAdSlots = $expression->getLibraryDynamicAdSlot()->getAdSlots();
-
-            if($dynamicAdSlots->count() < 1) continue;
-
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $dynamicAdSlots->toArray());
-        }
-
-        // dynamic ad slots that have default ad slot is this one.
-        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots());
-        $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
-
-        if (count($referencingDynamicAdSlots) > 0) {
-            $view = $this->view(null, Codes::HTTP_BAD_REQUEST);
+        if (count($expressions) > 0 || count($defaultSlots) > 0) { // this ensures that there is existing dynamic slot that one of its expressions containing this slot
+            $view = $this->view('Existing dynamic ad slot that is referencing to this ad slot', Codes::HTTP_BAD_REQUEST);
         }
         else {
             $this->getHandler()->delete($entity);
             $view = $this->view(null, Codes::HTTP_NO_CONTENT);
         }
-
-
 
         return $this->handleView($view);
     }
@@ -254,58 +259,6 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
         return $this->get('tagcade.domain_manager.ad_tag')
             ->getAdTagsForAdSlot($adSlot);
-    }
-
-    /**
-     * @param NativeAdSlotInterface $adSlot
-     * @param array $newAdTagOrderIds
-     *
-     * @return HandlerEventLog
-     */
-    private function createUpdatePositionEventLog(NativeAdSlotInterface $adSlot, array $newAdTagOrderIds)
-    {
-        $newAdTagFlattenList = [];
-        array_walk_recursive($newAdTagOrderIds, function ($adTagId) use (&$newAdTagFlattenList) {
-            $newAdTagFlattenList[] = $adTagId;
-        });
-
-        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
-        $event = new HandlerEventLog('POST', $adSlot);
-        // backup for old adTags
-        /** @var AdTagInterface[] $oldAdTags */
-        $oldAdTags = $adSlot->getAdTags()->toArray(); // this is sorted already according to doctrine yml setting
-
-        //// calculate old and new AdTagOrderNames for add changedFields
-        /** @var AdTagInterface[] $adTags */
-        $adTagsMap = [];
-        foreach ($oldAdTags as $oldAdTag) {
-            $adTagsMap[$oldAdTag->getId()] = $oldAdTag->getName();
-        }
-
-        $oldAdTagOrderNames = array_map(
-            function (AdTagInterface $adTag) {
-                return $adTag->getName();
-            },
-            $oldAdTags
-        );
-
-        $newAdTagOrderNames = array_map(
-            function ($adTagId) use (&$adTagsMap) {
-                return $adTagsMap[$adTagId];
-            },
-            $newAdTagFlattenList
-        );
-
-        $event->addChangedFields('position', implode(', ', $oldAdTagOrderNames), implode(', ', $newAdTagOrderNames));
-
-        //// add affectedEntities
-        /** @var AdTagInterface[] $adTags */
-        $adTags = $adSlot->getAdTags();
-        foreach ($adTags as $adTag) {
-            $event->addAffectedEntity('AdTag', $adTag->getId(), $adTag->getName());
-        }
-
-        return $event;
     }
 
     protected function getResourceName()

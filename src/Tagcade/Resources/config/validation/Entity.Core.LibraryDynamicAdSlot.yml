@@ -1,2 +1,7 @@
 Tagcade\Entity\Core\LibraryDynamicAdSlot:
     properties:
+        defaultLibraryAdSlot:
+            - Valid: ~
+#        libraryExpressions:
+#            - NotBlank: ~
+#            - NotNull: ~

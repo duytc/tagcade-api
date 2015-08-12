@@ -3,12 +3,3 @@ Tagcade\Entity\Core\DisplayAdSlot:
     table: core_display_ad_slot
     repositoryClass: Tagcade\Repository\Core\DisplayAdSlotRepository
 
-#    manyToOne:
-#        libraryDisplayAdSlot:
-#            targetEntity: Tagcade\Entity\Core\LibraryDisplayAdSlot
-#            inversedBy: displayAdSlots
-#            cascade: ['persist']
-    oneToMany:
-        defaultLibraryDynamicAdSlots:
-            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
-            mappedBy: defaultAdSlot

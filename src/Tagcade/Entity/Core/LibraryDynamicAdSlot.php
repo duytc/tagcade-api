@@ -3,9 +3,10 @@
 namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlot as LibraryDynamicAdSlotModel;
+use Tagcade\Model\Core\LibraryExpressionInterface;
 
 class LibraryDynamicAdSlot extends LibraryDynamicAdSlotModel
 {
@@ -16,16 +17,19 @@ class LibraryDynamicAdSlot extends LibraryDynamicAdSlotModel
      */
     protected $dynamicAdSlots;
     /**
-     * @var BaseAdSlotInterface
+     * @var LibraryExpressionInterface[]
      */
-    protected $defaultAdSlot;
-    protected $libraryAdTags;
-    protected $expressions;
+    protected $libraryExpressions;
+
+    /**
+     * @var BaseLibraryAdSlotInterface
+     */
+    protected $defaultLibraryAdSlot;
     protected $visible;
     protected $native;
 
     public function __construct()
     {
-        $this->expressions = new ArrayCollection();
+        $this->libraryExpressions = new ArrayCollection();
     }
 }

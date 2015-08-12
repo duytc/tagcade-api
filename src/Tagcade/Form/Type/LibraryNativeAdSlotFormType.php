@@ -8,9 +8,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryNativeAdSlot;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\Role\UserRoleInterface;
 
 class LibraryNativeAdSlotFormType extends AbstractRoleSpecificFormType
 {

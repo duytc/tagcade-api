@@ -4,22 +4,13 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Handler\Handlers\Core\LibrarySlotTagHandlerAbstract;
-use Tagcade\Handler\Handlers\Core\NativeAdSlotHandlerAbstract;
-use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
-use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("LibrarySlotTag")

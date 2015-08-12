@@ -106,6 +106,10 @@ class LibraryAdTag implements LibraryAdTagInterface{
      */
     public function getAdTags()
     {
+        if(null === $this->adTags) {
+            $this->adTags = new ArrayCollection();
+        }
+
         return $this->adTags;
     }
 

@@ -5,11 +5,10 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\NativeAdSlot;
-use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -145,4 +144,25 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         return $qb;
     }
-} 
+
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdSlotsForSiteQuery($site, $libraryAdSlot, $offset)
+            ->andWhere('sl.libraryAdSlot = :library_ad_slot_id')
+            ->setParameter('library_ad_slot_id', $libraryAdSlot->getId())
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    public function getCoReferencedAdSlots(BaseLibraryAdSlotInterface $libraryAdSlot)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->where('sl.libraryAdSlot = :library_ad_slot_id')
+            ->setParameter('library_ad_slot_id', $libraryAdSlot->getId())
+            ->addOrderBy('sl.id', 'asc')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+}

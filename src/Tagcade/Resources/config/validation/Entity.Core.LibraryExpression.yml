@@ -1,0 +1,13 @@
+Tagcade\Entity\Core\LibraryExpression:
+    properties:
+        expressionDescriptor:
+            - NotBlank: ~
+        startingPosition:
+            - Type:
+                type: integer
+                message: "The value {{ value }} is not a valid number."
+            - GreaterThan:
+                value: 0
+        expectLibraryAdSlot:
+            - NotBlank: ~
+            - Valid: ~

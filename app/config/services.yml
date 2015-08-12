@@ -18,6 +18,9 @@ parameters:
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
     tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
 
+
+    tagcade.security.auth.voter.library_expresison.class: Tagcade\Security\Authorization\Voter\LibraryExpressionVoter
+
     # event dispatched on user action such as add, remove, delete
     tagcade.events.handler_event: 'tagcade.events.handler_event'
 
@@ -90,6 +93,12 @@ services:
 
     tagcade.security.auth.voter.user:
         class:  %tagcade.security.auth.voter.user.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.library_expression.user:
+        class:  %tagcade.security.auth.voter.library_expresison.class%
         public: false
         tags:
             - { name: security.voter }

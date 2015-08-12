@@ -1,0 +1,27 @@
+services:
+    tagcade_api.service.tag_library.checksum_validator:
+        class: Tagcade\Service\TagLibrary\ChecksumValidator
+        arguments:
+            - @tagcade.repository.ad_slot
+
+    ## Update ad tag html before ad tag persisted
+    tagcade_api.service.tag_library.replicator:
+        class: Tagcade\Service\TagLibrary\Replicator
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @tagcade_api.service.tag_library.checksum_validator
+        calls:
+            - [setAdSlotGenerator, ["@tagcade_api.service.tag_library.ad_slot_generator_service"]]
+            - [setAdSlotManager, ["@tagcade.domain_manager.ad_slot"]]
+
+
+    tagcade_api.service.tag_library.ad_slot_generator_service:
+        class: Tagcade\Service\TagLibrary\AdSlotGenerator
+        calls:
+            - [setAdSlotManager, ["@tagcade.domain_manager.ad_slot"]]
+
+    tagcade_api.service.tag_library.clone_ad_slot_service:
+        class: Tagcade\Service\TagLibrary\CloneAdSlot
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @event_dispatcher

@@ -1,12 +1,13 @@
 <?php
 
-namespace Tagcade\Handler;
+
+namespace Tagcade\Service\TagLibrary;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
-use Tagcade\DomainManager\NativeAdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -14,7 +15,17 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
-trait CloneAdSlotTrait {
+class CloneAdSlot implements CloneAdSlotInterface {
+    protected $entityManager;
+    protected $eventDispatcher;
+
+
+    function __construct(EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
+    {
+        $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
 
     /**
      * clone AdSlot
@@ -73,12 +84,14 @@ trait CloneAdSlotTrait {
         }
 
         //persis cloned adSlot
-        $this->getDomainManager()->persistAndFlush($newAdSlot);
+        $this->entityManager->persist($newAdSlot);
+        $this->entityManager->flush();
 
         //dispatch event
         $event = $this->createCloneAdSlotEventLog($originAdSlot, $newAdSlot, $newName);
-        $this->dispatchEvent($event);
+        $this->eventDispatcher->dispatch(HandlerEventLog::class, $event);
     }
+
 
     /**
      * @param BaseAdSlotInterface $originAdSlot
@@ -99,11 +112,4 @@ trait CloneAdSlotTrait {
 
         return $event;
     }
-
-    /**
-     * @return NativeAdSlotManagerInterface|DisplayAdSlotManagerInterface
-     */
-    protected abstract function getDomainManager();
-
-    protected abstract function dispatchEvent($event);
 }

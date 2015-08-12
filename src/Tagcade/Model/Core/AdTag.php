@@ -18,6 +18,7 @@ class AdTag implements AdTagInterface
 
     /** int - for rotation display AdTags */
     protected $rotation;
+    protected $deletedAt;
 
 
     /**
@@ -184,11 +185,6 @@ class AdTag implements AdTagInterface
         return $this;
     }
 
-    public function __toString()
-    {
-        return $this->id . $this->getName();
-    }
-
     /**
      * @inheritdoc
      */
@@ -291,6 +287,14 @@ class AdTag implements AdTagInterface
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
 
     /**
      * Calculate CheckSum string of an given AdTag
@@ -309,6 +313,11 @@ class AdTag implements AdTagInterface
                 $this->getRotation(),
                 $this->getRefId()
             )));
+    }
+
+    public function __toString()
+    {
+        return $this->id . $this->getName();
     }
 
 }

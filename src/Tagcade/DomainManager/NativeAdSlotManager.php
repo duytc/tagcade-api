@@ -4,20 +4,18 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
-use Rhumsaa\Uuid\Console\Exception;
-use Tagcade\DomainManager\Behaviors\ReplicateLibraryAdSlotDataTrait;
-use Tagcade\DomainManager\Behaviors\ValidateAdSlotSynchronizationTrait;
+use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
+use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class NativeAdSlotManager implements NativeAdSlotManagerInterface
 {
-    use ValidateAdSlotSynchronizationTrait;
-    use ReplicateLibraryAdSlotDataTrait;
     protected $em;
     protected $repository;
     /**
@@ -25,6 +23,10 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
      */
     private $adSlotRepository;
     protected $librarySlotTagRepository;
+    /**
+     * @var ReplicatorInterface
+     */
+    protected $replicator;
 
     public function __construct(EntityManagerInterface $em, NativeAdSlotRepositoryInterface $repository, AdSlotRepositoryInterface $adSlotRepository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
     {
@@ -34,6 +36,9 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
         $this->librarySlotTagRepository = $librarySlotTagRepository;
     }
 
+    public function setReplicator(ReplicatorInterface $replicator) {
+        $this->replicator = $replicator;
+    }
     /**
      * @inheritdoc
      */
@@ -47,26 +52,20 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
      */
     public function save(NativeAdSlotInterface $nativeAdSlot)
     {
-        $this->em->getConnection()->beginTransaction();
-
-        try {
-
-            if(null === $nativeAdSlot->getId()) {
-                $nativeAdSlot = $this->replicateFromLibrarySlotToSingleAdSlot($nativeAdSlot->getLibraryAdSlot(), $nativeAdSlot);
-            }
-            // Validate synchronization
-            $this->validateAdSlotSynchronization($nativeAdSlot);
-
-            $this->em->persist($nativeAdSlot);
-            $this->em->getConnection()->commit();
-
-            $this->em->flush();
-
-        } catch (Exception $e) {
-            $this->em->getConnection()->rollback();
-            throw $e;
+        $libraryAdSlot = $nativeAdSlot->getLibraryAdSlot();
+        $referenceSlot = $this->getReferencedAdSlotsForSite($libraryAdSlot, $nativeAdSlot->getSite());
+        if ($referenceSlot instanceof NativeAdSlotInterface && $referenceSlot->getId() !== $nativeAdSlot->getId()) {
+            throw new LogicException('Cannot create more than one ad slots in the same site referring to the same library');
         }
 
+
+        if(null === $nativeAdSlot->getId() && $nativeAdSlot->getLibraryAdSlot()->isVisible()) {
+            $this->replicator->replicateFromLibrarySlotToSingleAdSlot($nativeAdSlot->getLibraryAdSlot(), $nativeAdSlot);
+        }
+        else {
+            $this->em->persist($nativeAdSlot);
+            $this->em->flush();
+        }
     }
 
     /**
@@ -140,6 +139,17 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
     protected function getEntityManager()
     {
         return $this->em;
+    }
+
+    /**
+     * Get all referenced ad slots that refer to the same library and on the same site to current slot
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site)
+    {
+        return $this->adSlotRepository->getReferencedAdSlotsForSite($libraryAdSlot, $site);
     }
 
 

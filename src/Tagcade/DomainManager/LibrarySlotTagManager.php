@@ -4,24 +4,29 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
-use Tagcade\DomainManager\Behaviors\ReplicateLibraryAdSlotDataTrait;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
+use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
 {
-    use ReplicateLibraryAdSlotDataTrait;
-
     protected $em;
     protected $repository;
-
+    /**
+     * @var ReplicatorInterface
+     */
+    protected $replicator;
 
     public function __construct(EntityManagerInterface $em, LibrarySlotTagRepositoryInterface $repository)
     {
         $this->em = $em;
         $this->repository = $repository;
+    }
+
+    public function setReplicator(ReplicatorInterface $replicator) {
+        $this->replicator = $replicator;
     }
 
     /**
@@ -40,9 +45,9 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         $this->em->persist($librarySlotTag);
 
         if($librarySlotTag->getId() === null) {
-            $this->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
+            $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
         } else {
-            $this->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
+            $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
         }
 
         $this->em->flush();
@@ -53,7 +58,7 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
      */
     public function delete(LibrarySlotTagInterface $librarySlotTag)
     {
-        $this->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
+        $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
         $this->em->remove($librarySlotTag);
         $this->em->flush();
     }

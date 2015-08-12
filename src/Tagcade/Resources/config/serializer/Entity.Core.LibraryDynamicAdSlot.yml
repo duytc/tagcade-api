@@ -3,19 +3,16 @@ Tagcade\Entity\Core\LibraryDynamicAdSlot:
     properties:
         id:
             expose: true
-            groups: [librarydynamicadslot.detail, librarydynamicadslot.summary]
-        publisher:
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]
+        libraryExpressions:
             expose: true
-            groups: [librarydynamicadslot.detail, librarydynamicadslot.summary]
-        expressions:
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]
+        defaultLibraryAdSlot:
             expose: true
-            groups: [librarydynamicadslot.detail, librarydynamicadslot.summary]
-        defaultAdSlot:
-            expose: true
-            groups: [librarydynamicadslot.detail, librarydynamicadslot.summary]
+            groups: [librarydynamicadslot.detail]
         native:
             expose: true
-            groups: [librarydynamicadslot.detail, librarydynamicadslot.summary]
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]
         visible:
             expose: true
-            groups: [librarydynamicadslot.detail, librarydynamicadslot.summary]
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]

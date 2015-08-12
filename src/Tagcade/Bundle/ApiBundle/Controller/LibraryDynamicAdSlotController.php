@@ -23,7 +23,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Get all library dynamic adSlot
      *
      * @Rest\View(
-     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary"}
+     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary" , "libraryexpression.detail"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -42,7 +42,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
     /**
      * Get a single library dynamic adSlot for the given id
      * @Rest\View(
-     *      serializerGroups={"librarydynamicadslot.detail" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "displayadslot.summary", "nativeadslot.summary", "adslot.summary"}
+     *      serializerGroups={"librarydynamicadslot.detail" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "displayadslot.summary", "nativeadslot.summary", "adslot.summary", "libraryexpression.detail"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -61,7 +61,6 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
     {
         return $this->one($id);
     }
-
 
     /**
      * Create a library dynamic adSlot from the submitted data
@@ -150,6 +149,31 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
         $entity = $this->one($id);
 
         return $entity->getAdSlots();
+    }
+
+
+    /**
+     * Update an existing library dynamic adSlot from the submitted data or create a new one
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when the resource is created",
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function putAction(Request $request, $id)
+    {
+        return $this->put($request, $id);
     }
 
     /**

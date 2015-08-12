@@ -9,41 +9,25 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
 {
     protected $id;
 
-    protected $deletedAt;
     /**
-     * @var ExpressionInterface[]
+     * @var LibraryExpressionInterface[]
      */
-    protected $expressions;
+    protected $libraryExpressions;
 
     /**
-     * @var BaseAdSlotInterface
+     * @var BaseLibraryAdSlotInterface
      */
-    protected $defaultAdSlot;
+    protected $defaultLibraryAdSlot;
 
     /** @var $native */
     protected $native;
+    protected $deletedAt;
 
     public function __construct()
     {
-        $this->expressions = new ArrayCollection();
+        $this->libraryExpressions = new ArrayCollection();
     }
 
-
-    /**
-     * @return ExpressionInterface[]
-     */
-    public function getExpressions()
-    {
-        return $this->expressions;
-    }
-
-    /**
-     * @param ExpressionInterface[] $expressions
-     */
-    public function setExpressions($expressions)
-    {
-        $this->expressions = $expressions;
-    }
 
     /**
      * @return boolean
@@ -69,25 +53,41 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
         $this->native = $native;
     }
 
+    /**
+     * @return LibraryExpressionInterface[]
+     */
+    public function getLibraryExpressions()
+    {
+        return $this->libraryExpressions;
+    }
+
+    /**
+     * @param LibraryExpressionInterface[] $libraryExpressions
+     */
+    public function setLibraryExpressions($libraryExpressions)
+    {
+        $this->libraryExpressions = $libraryExpressions;
+    }
+
+    /**
+     * @return BaseLibraryAdSlotInterface
+     */
+    public function getDefaultLibraryAdSlot()
+    {
+        return $this->defaultLibraryAdSlot;
+    }
+
+    /**
+     * @param BaseLibraryAdSlotInterface $defaultLibraryAdSlot
+     */
+    public function setDefaultLibraryAdSlot($defaultLibraryAdSlot)
+    {
+        $this->defaultLibraryAdSlot = $defaultLibraryAdSlot;
+    }
+
 
     public function __toString()
     {
         return $this->id . $this->getName();
-    }
-
-    /**
-     * @return BaseAdSlotInterface
-     */
-    public function getDefaultAdSlot()
-    {
-        return $this->defaultAdSlot;
-    }
-
-    /**
-     * @param BaseAdSlotInterface $defaultAdSlot
-     */
-    public function setDefaultAdSlot($defaultAdSlot)
-    {
-        $this->defaultAdSlot = $defaultAdSlot;
     }
 }

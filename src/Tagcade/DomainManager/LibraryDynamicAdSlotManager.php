@@ -5,18 +5,25 @@ namespace Tagcade\DomainManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use ReflectionClass;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
+use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterface
 {
     protected $om;
     protected $repository;
+    /**
+     * @var ReplicatorInterface
+     */
+    private $replicator;
 
-    public function __construct(ObjectManager $om, LibraryDynamicAdSlotRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->replicator = $replicator;
     }
 
     /**
@@ -30,10 +37,13 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
     /**
      * @inheritdoc
      */
-    public function save(LibraryDynamicAdSlotInterface $adSlot)
+    public function save(LibraryDynamicAdSlotInterface $entity)
     {
-        $this->om->persist($adSlot);
+        $this->om->persist($entity);
         $this->om->flush();
+
+        // creating expression for all referencing slots if the LibraryDynamicAdSlot introduces libraryExpression
+        $this->replicator->replicateLibraryExpressionsForAllReferencedDynamicAdSlots($entity->getLibraryExpressions()->toArray());
     }
 
     /**

@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
-use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 

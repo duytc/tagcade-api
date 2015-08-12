@@ -4,7 +4,6 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Tagcade\Entity\Core\AdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;

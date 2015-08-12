@@ -3,11 +3,15 @@ Tagcade\Entity\Core\DynamicAdSlot:
     table: core_dynamic_ad_slot
     repositoryClass: Tagcade\Repository\Core\DynamicAdSlotRepository
 
-#    manyToOne:
-#        libraryDynamicAdSlot:
-#            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
-#            inversedBy: dynamicAdSlots
-#            cascade: ['persist']
+    oneToMany:
+        expressions:
+            targetEntity: Tagcade\Entity\Core\Expression
+            mappedBy: dynamicAdSlot
+            cascade: ['persist', 'remove']
+    manyToOne:
+        defaultAdSlot:
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+
 
 
 

@@ -1,0 +1,22 @@
+Tagcade\Entity\Core\LibraryExpression:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [libraryexpression.detail, libraryexpression.summary]
+        expressionDescriptor:
+            expose: true
+            groups: [libraryexpression.detail, libraryexpression.summary]
+        startingPosition:
+            expose: true
+            groups: [libraryexpression.detail, libraryexpression.summary]
+#        libraryDynamicAdSlot:
+#            expose: true
+#            groups: [libraryexpression.detail]
+        expectLibraryAdSlot:
+            expose: true
+            groups: [libraryexpression.detail]
+        expressions:
+            expose: true
+            groups: [libraryexpression.detail]
+

@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use ReflectionClass;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryDisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;

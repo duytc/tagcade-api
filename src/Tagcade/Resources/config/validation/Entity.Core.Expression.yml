@@ -1,16 +1,20 @@
 Tagcade\Entity\Core\Expression:
     properties:
-        expressionDescriptor:
-            - NotBlank: ~
-        startingPosition:
-            - Type:
-                type: integer
-                message: "The value {{ value }} is not a valid number."
-            - GreaterThan:
-                value: 0
-        libraryDynamicAdSlot:
+#        expressionDescriptor:
+#            - NotBlank: ~
+#        startingPosition:
+#            - Type:
+#                type: integer
+#                message: "The value {{ value }} is not a valid number."
+#            - GreaterThan:
+#                value: 0
+        libraryExpression:
             - NotBlank: ~
             - Valid: ~
+#        expressionInJs:
+#            - NotBlank: ~
+#            - Valid: ~
         expectAdSlot:
             - NotBlank: ~
             - Valid: ~
+

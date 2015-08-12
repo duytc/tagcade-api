@@ -4,10 +4,13 @@ Tagcade\Entity\Core\Expression:
         expectAdSlot:
             expose: true
             groups: [expression.detail, expression.summary]
-        expressionDescriptor:
+        dynamicAdSlot:
             expose: true
-            groups: [expression.detail, expression.summary]
-        startingPosition:
+            groups: [expression.detail]
+        expressionInJs:
             expose: true
-            groups: [expression.detail, expression.summary]
+            groups: [expression.detail]
+        libraryExpression:
+            expose: true
+            groups: [expression.detail]
 

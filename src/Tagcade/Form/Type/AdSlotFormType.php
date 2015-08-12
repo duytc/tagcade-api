@@ -2,19 +2,17 @@
 
 namespace Tagcade\Form\Type;
 
-use Rhumsaa\Uuid\Console\Exception;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
@@ -80,15 +78,17 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
                 $displayAdSlot = $event->getData();
 
                 $site = $displayAdSlot->getSite();
-                $publisher = $site->getPublisher();
+                if($site instanceof SiteInterface) {
+                    $publisher = $site->getPublisher();
 
-                // set displayAdSlotLib to DisplayAdSlot for cascade persist
-                /** @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot */
-                $libraryDisplayAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
+                    // set displayAdSlotLib to DisplayAdSlot for cascade persist
+                    /** @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot */
+                    $libraryDisplayAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
 
-                if($libraryDisplayAdSlot instanceof LibraryDisplayAdSlotInterface) {
-                    $libraryDisplayAdSlot->setPublisher($publisher);
-                    $displayAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
+                    if($libraryDisplayAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                        $libraryDisplayAdSlot->setPublisher($publisher);
+                        $displayAdSlot->setLibraryAdSlot($libraryDisplayAdSlot);
+                    }
                 }
 
             }

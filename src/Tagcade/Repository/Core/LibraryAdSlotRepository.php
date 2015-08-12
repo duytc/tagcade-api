@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityRepository;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\LibraryNativeAdSlot;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class LibraryAdSlotRepository extends EntityRepository implements LibraryAdSlotRepositoryInterface

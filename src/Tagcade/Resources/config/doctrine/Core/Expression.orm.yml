@@ -12,14 +12,6 @@ Tagcade\Entity\Core\Expression:
             generator:
                 strategy: AUTO
     fields:
-        expressionDescriptor:
-            type: json_array
-            nullable: false
-        startingPosition:
-            type: integer
-            nullable: true
-            options:
-                default: 1
         expressionInJs:
             type: json_array
             nullable: false
@@ -27,8 +19,10 @@ Tagcade\Entity\Core\Expression:
             type: date
             nullable: true
     manyToOne:
-        libraryDynamicAdSlot:
-            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
+        libraryExpression:
+            targetEntity: Tagcade\Entity\Core\LibraryExpression
             inversedBy: expressions
         expectAdSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+        dynamicAdSlot:
+            targetEntity: Tagcade\Entity\Core\DynamicAdSlot

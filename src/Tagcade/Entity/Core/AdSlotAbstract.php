@@ -136,4 +136,19 @@ abstract class AdSlotAbstract
         return $this->libraryAdSlot->getAdSlots();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getSlotType()
+    {
+        return $this->slotType;
+    }
+
+    /**
+     * @param mixed $slotType
+     */
+    public function setSlotType($slotType)
+    {
+        $this->slotType = $slotType;
+    }
 }

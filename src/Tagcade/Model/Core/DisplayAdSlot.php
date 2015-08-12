@@ -3,7 +3,9 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot;
 
 class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, ReportableAdSlotInterface
 {
@@ -14,16 +16,13 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     protected $site;
 
     /**
-     * @var LibraryDynamicAdSlotInterface[]
-     */
-    protected $defaultLibraryDynamicAdSlots;
-    
-    /**
      * constructor
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->setSlotType(AdSlotAbstract::TYPE_DISPLAY);
     }
 
     /**
@@ -103,43 +102,6 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     public function setLibraryDisplayAdSlot(LibraryDisplayAdSlotInterface $libraryDisplayAdSlot)
     {
         $this->libraryAdSlot = $libraryDisplayAdSlot;
-
-        return $this;
-    }
-
-
-    /**
-     * @return DynamicAdSlotInterface[]
-     */
-    public function defaultDynamicAdSlots()
-    {
-        $dynamicAdSlots = [];
-
-        $libraryDynamicAdSlots = $this->getDefaultLibraryDynamicAdSlots();
-
-        if(null == $libraryDynamicAdSlots) return $dynamicAdSlots;
-
-        foreach($libraryDynamicAdSlots as $libraryDynamicAdSlot){
-            $temp = $libraryDynamicAdSlot->getAdSlots();
-            if($temp->count() < 1) continue; // ignore library with no slot referencing
-
-            $dynamicAdSlots = array_merge($dynamicAdSlots, $temp->toArray());
-        }
-
-        return array_unique($dynamicAdSlots);
-    }
-
-    /**
-     * @return LibraryDynamicAdSlotInterface[]
-     */
-    public function getDefaultLibraryDynamicAdSlots()
-    {
-        return $this->defaultLibraryDynamicAdSlots;
-    }
-
-    public function setDefaultLibraryDynamicAdSlots($defaultLibraryDynamicAdSlots)
-    {
-        $this->defaultLibraryDynamicAdSlots = $defaultLibraryDynamicAdSlots;
 
         return $this;
     }

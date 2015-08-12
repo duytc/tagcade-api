@@ -3,11 +3,11 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Repository\Core\SiteRepositoryInterface;
+use ReflectionClass;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\Core\AdNetworkInterface;
-use ReflectionClass;
+use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class SiteManager implements SiteManagerInterface
 {

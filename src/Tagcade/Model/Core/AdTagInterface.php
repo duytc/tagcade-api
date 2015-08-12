@@ -142,4 +142,7 @@ interface AdTagInterface extends ModelInterface
      * @return string
      */
     public function checkSum();
+
+    public function getDeletedAt();
+
 }

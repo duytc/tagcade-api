@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -9,10 +10,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Exception\InvalidFormException;
-use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlot;
-use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 
@@ -33,14 +33,14 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('name')
-            ->add('defaultAdSlot')
+            ->add('defaultLibraryAdSlot')
             ->add('visible')
             ->add('id')
-            ->add('expressions', 'collection',  array(
-                    'mapped' => false,
-                    'type' => new ExpressionFormType(),
+            ->add('libraryExpressions', 'collection',  array(
+                    'mapped' => true,
+                    'type' => new LibraryExpressionFormType(),
                     'allow_add' => true,
-                    'allow_delete' => true
+                    'allow_delete' => true,
                 )
             )
         ;
@@ -59,30 +59,49 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 }
         });
 
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                $libraryDynamicAdSlot = $event->getData();
+
+                if(array_key_exists('libraryExpressions', $libraryDynamicAdSlot)) {
+                    $libraryExpressions = $libraryDynamicAdSlot['libraryExpressions'];
+
+                    if(!is_array($libraryExpressions)) {
+                        $form->remove('libraryExpressions');
+                        $form->add('libraryExpressions', 'text');
+                    }
+                }
+            });
+
+
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
+                $form = $event->getForm();
                 // Validate expressions and update for dynamic adSlot
                 /** @var LibraryDynamicAdSlotInterface $libraryDynamicAdSlot */
                 $libraryDynamicAdSlot = $event->getForm()->getData();
+                /** @var null|LibraryExpressionInterface[] $libraryExpressions */
+                $libraryExpressions = $event->getForm()->get('libraryExpressions')->getData();
 
-                /** @var null|ExpressionInterface[] $expressions */
-                $expressions = $event->getForm()->get('expressions')->getData();
+                if($libraryExpressions === null || is_string($libraryExpressions)) {
+                    $form->get('libraryExpressions')->addError(new FormError('libraryExpressions must be an array string'));
+                    return;
+                }
 
                 try {
-                    // remove last expressions
-                    if (null != $expressions && is_array($expressions) ) {
-                        $libraryDynamicAdSlot->getExpressions()->clear();
-                        $this->updateLibraryDynamicAdSlotForExpression($libraryDynamicAdSlot, $expressions);
+                    foreach ($libraryExpressions as $libExp) {
+                        $libExp->setLibraryDynamicAdSlot($libraryDynamicAdSlot);
                     }
 
-                    if ($libraryDynamicAdSlot->getExpressions()->isEmpty()) {
+                    if (count($libraryDynamicAdSlot->getLibraryExpressions()) < 1 && null === $libraryDynamicAdSlot->getDefaultLibraryAdSlot()) {
                         throw new InvalidFormException('expect expression or default ad slot');
                     }
 
                 } catch (InvalidFormException $ex) {
-                    $form = $event->getForm();
-                    $form->get('expressions')->addError(new FormError($ex->getMessage()));
+                    $form->get('libraryExpressions')->addError(new FormError($ex->getMessage()));
 
                     return;
                 }
@@ -90,23 +109,19 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 // Validate defaultAdSlot and expectedAdSlot for native selected
                 if(!($libraryDynamicAdSlot->isSupportedNative())) {
                     // Validate defaultAdSlot for native selected
-                    if($libraryDynamicAdSlot->getDefaultAdSlot() instanceof NativeAdSlot) {
-                        $form = $event->getForm();
-
-                        $form->get('defaultAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native is false!'));
+                    if($libraryDynamicAdSlot->getDefaultLibraryAdSlot() instanceof LibraryNativeAdSlotInterface) {
+                        $form->get('defaultLibraryAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native not supported!'));
 
                         return;
                     }
 
-                    if (null === $expressions) {
+                    if (null === $libraryExpressions) {
                         return; // ignore if expression is null
                     }
                     // Validate expectedAdSlot for native selected
-                    foreach ($expressions as $idx => $expression) {
-                        if($expression->getExpectAdSlot() instanceof NativeAdSlot) {
-                            $form = $event->getForm();
-
-                            $form->get('expressions')[$idx]->get('expectAdSlot')->addError(new FormError('ExpectedAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native is false!'));
+                    foreach ($libraryExpressions as $idx => $libraryExpression) {
+                        if($libraryExpression->getExpectLibraryAdSlot() instanceof LibraryNativeAdSlotInterface) {
+                            $form->get('libraryExpressions')[$idx]->get('expectLibraryAdSlot')->addError(new FormError('ExpectedAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native not supported!'));
 
                             return;
                         }
@@ -125,22 +140,22 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
     /**
      * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
-     * @param ExpressionInterface[] $persistingExpressions
+     * @param LibraryExpressionInterface[] $persistingLibraryExpressions
      */
-    protected function updateLibraryDynamicAdSlotForExpression(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, array $persistingExpressions)
+    protected function updateLibraryDynamicAdSlotForExpression(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, Collection $persistingLibraryExpressions)
     {
-        $currentExpressions = $libraryDynamicAdSlot->getExpressions()->toArray();
-        $totalCurrentExpression = count($currentExpressions);
+        $currentLibraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions()->toArray();
+        $totalCurrentLibraryExpression = count($currentLibraryExpressions);
         // remove old expressions
-        for($i = $totalCurrentExpression-1; $i >= 0; $i -- ) {
-            $libraryDynamicAdSlot->getExpressions()->remove($i);
+        for($i = $totalCurrentLibraryExpression-1; $i >= 0; $i -- ) {
+            $libraryDynamicAdSlot->getLibraryExpressions()->remove($i);
         }
 
         // creating new expressions
-        foreach ($persistingExpressions as $expression) {
-            $expression->setLibraryDynamicAdSlot($libraryDynamicAdSlot);
+        foreach ($persistingLibraryExpressions as $libraryExpression) {
+            $libraryExpression->setLibraryDynamicAdSlot($libraryDynamicAdSlot);
 
-            $libraryDynamicAdSlot->getExpressions()->add($expression);
+            $libraryDynamicAdSlot->getLibraryExpressions()->add($libraryExpression);
         }
 
     }
