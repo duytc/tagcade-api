@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Entity\Core\AdTag as entity;
 
 class AdTag implements AdTagInterface
 {
@@ -314,6 +315,33 @@ class AdTag implements AdTagInterface
                 $this->getRefId()
             )));
     }
+
+    /**
+     * Get then entity that contain current object
+     * @return mixed
+     */
+    public function getContainer()
+    {
+        return $this->getAdSlot();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClassName()
+    {
+        return entity::class;
+    }
+
+    /**
+     * Get those entities that belong to the same container with the current entity
+     * @return mixed
+     */
+    public function getSiblings()
+    {
+        return $this->getAdSlot()->getAdTags();
+    }
+
 
     public function __toString()
     {

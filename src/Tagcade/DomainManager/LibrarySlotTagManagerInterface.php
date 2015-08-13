@@ -6,46 +6,8 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 
-interface LibrarySlotTagManagerInterface
+interface LibrarySlotTagManagerInterface extends ManagerInterface
 {
-    /**
-     * @see \Tagcade\DomainManager\ManagerInterface
-     *
-     * @param LibrarySlotTagInterface|string $entity
-     * @return bool
-     */
-    public function supportsEntity($entity);
-
-    /**
-     * @param LibrarySlotTagInterface $librarySlotTag
-     * @return void
-     */
-    public function save(LibrarySlotTagInterface $librarySlotTag);
-
-    /**
-     * @param LibrarySlotTagInterface $librarySlotTag
-     * @return void
-     */
-    public function delete(LibrarySlotTagInterface $librarySlotTag);
-
-    /**
-     * @return LibrarySlotTagInterface
-     */
-    public function createNew();
-
-    /**
-     * @param int $id
-     * @return LibrarySlotTagInterface|null
-     */
-    public function find($id);
-
-    /**
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return LibrarySlotTagInterface[]
-     */
-    public function all($limit = null, $offset = null);
-
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @param null $limit

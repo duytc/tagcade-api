@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
+use Tagcade\Entity\Core\LibrarySlotTag as entity;
 
 class LibrarySlotTag implements LibrarySlotTagInterface{
 
@@ -54,10 +55,13 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param boolean $active
+     * @return $this
      */
     public function setActive($active)
     {
         $this->active = $active;
+
+        return $this;
     }
 
     /**
@@ -70,10 +74,13 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param int $frequencyCap
+     * @return $this
      */
     public function setFrequencyCap($frequencyCap)
     {
         $this->frequencyCap = $frequencyCap;
+
+        return $this;
     }
 
     /**
@@ -86,10 +93,13 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param int $rotation
+     * @return $this
      */
     public function setRotation($rotation)
     {
         $this->rotation = $rotation;
+
+        return $this;
     }
 
     /**
@@ -102,10 +112,13 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param string $refId
+     * @return $this
      */
     public function setRefId($refId)
     {
         $this->refId = $refId;
+
+        return $this;
     }
 
     public function getId()
@@ -123,10 +136,13 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param int $position
+     * @return $this
      */
     public function setPosition($position)
     {
         $this->position = $position;
+
+        return $this;
     }
 
     /**
@@ -139,10 +155,13 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param LibraryAdTagInterface $libraryAdTag
+     * @return $this
      */
     public function setLibraryAdTag($libraryAdTag)
     {
         $this->libraryAdTag = $libraryAdTag;
+
+        return $this;
     }
 
     /**
@@ -155,18 +174,24 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
 
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @return $this
      */
     public function setLibraryAdSlot($libraryAdSlot)
     {
         $this->libraryAdSlot = $libraryAdSlot;
+
+        return $this;
     }
 
     /**
      * @param mixed $id
+     * @return $this
      */
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -177,6 +202,32 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
         return $this->deletedAt;
     }
 
+    /**
+     * Get then entity that contain current object
+     * @return mixed
+     */
+    public function getContainer()
+    {
+        return $this->getLibraryAdSlot();
+    }
+
+    /**
+     * Get those entities that belong to the same container with the current entity
+     * @return mixed
+     */
+    public function getSiblings()
+    {
+        return $this->getLibraryAdSlot()->getLibSlotTags();
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getClassName()
+    {
+        return entity::class;
+    }
 
 
     public function __toString()

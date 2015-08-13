@@ -44,9 +44,9 @@ services:
             - @event_dispatcher
         tags:
             - { name: doctrine.event_listener, event: postPersist }
-#            - { name: doctrine.event_listener, event: postUpdate }
-#            - { name: doctrine.event_listener, event: onFlush }
-#            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
 
     tagcade_app.service.core.ad_tag.ad_tag_position_editor:
         class: Tagcade\Service\Core\AdTag\AdTagPositionEditor
@@ -60,11 +60,3 @@ services:
         arguments:
             - @doctrine.orm.default_entity_manager
 
-
-    tagcade_app.event_listener.expression_change_listener:
-        class: Tagcade\Bundle\AppBundle\EventListener\ExpressionChangeListener
-        arguments:
-            - @event_dispatcher
-        tags:
-            - { name: doctrine.event_listener, event: onFlush }
-            - { name: doctrine.event_listener, event: postFlush }

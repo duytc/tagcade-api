@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tagcade\Service\TagLibrary;
+namespace Tagcade\Service\Core\AdSlot;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -15,7 +15,7 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
-class CloneAdSlot implements CloneAdSlotInterface {
+class AdSlotCloner implements AdSlotClonerInterface {
     protected $entityManager;
     protected $eventDispatcher;
 

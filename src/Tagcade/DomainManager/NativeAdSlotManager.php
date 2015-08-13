@@ -3,11 +3,13 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
@@ -50,8 +52,10 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(NativeAdSlotInterface $nativeAdSlot)
+    public function save(ModelInterface $nativeAdSlot)
     {
+        if(!$nativeAdSlot instanceof NativeAdSlotInterface) throw new InvalidArgumentException('expect NativeAdSlotInterface object');
+
         $libraryAdSlot = $nativeAdSlot->getLibraryAdSlot();
         $referenceSlot = $this->getReferencedAdSlotsForSite($libraryAdSlot, $nativeAdSlot->getSite());
         if ($referenceSlot instanceof NativeAdSlotInterface && $referenceSlot->getId() !== $nativeAdSlot->getId()) {
@@ -71,8 +75,10 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(NativeAdSlotInterface $nativeAdSlot)
+    public function delete(ModelInterface $nativeAdSlot)
     {
+        if(!$nativeAdSlot instanceof NativeAdSlotInterface) throw new InvalidArgumentException('expect NativeAdSlotInterface object');
+
         $libraryNativeAdSlot = $nativeAdSlot->getLibraryAdSlot();
         //1. Remove library if visible = false and co-referenced slots less than 2
         if(!$libraryNativeAdSlot->isVisible() && count($nativeAdSlot->getCoReferencedAdSlots()) < 2 ) {
@@ -151,6 +157,4 @@ class NativeAdSlotManager implements NativeAdSlotManagerInterface
     {
         return $this->adSlotRepository->getReferencedAdSlotsForSite($libraryAdSlot, $site);
     }
-
-
 }

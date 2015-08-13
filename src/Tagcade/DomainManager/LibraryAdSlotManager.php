@@ -3,6 +3,7 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\PersistentCollection;
+use InvalidArgumentException;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
@@ -12,6 +13,7 @@ use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
 
@@ -57,18 +59,21 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(BaseLibraryAdSlotInterface $libraryAdSlotRepository)
+    public function save(ModelInterface $libraryAdSlot)
     {
-        $this->getManager($libraryAdSlotRepository)->save($libraryAdSlotRepository);
+        if(!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) throw new InvalidArgumentException('expect BaseLibraryAdSlotInterface object');
+
+        $this->getManager($libraryAdSlot)->save($libraryAdSlot);
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(BaseLibraryAdSlotInterface $libraryAdSlotRepository)
+    public function delete(ModelInterface $libraryAdSlot)
     {
-        $this->getManager($libraryAdSlotRepository)->delete($libraryAdSlotRepository);
+        if(!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) throw new InvalidArgumentException('expect BaseLibraryAdSlotInterface object');
 
+        $this->getManager($libraryAdSlot)->delete($libraryAdSlot);
     }
 
     /**

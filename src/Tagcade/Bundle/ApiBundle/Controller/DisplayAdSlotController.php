@@ -154,10 +154,10 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         if($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
-            $this->get('tagcade_api.service.tag_library.clone_ad_slot_service')->cloneAdSlot($originAdSlot, $newName, $site);
+            $this->get('tagcade_api.service.tag_library.ad_slot_cloner_service')->cloneAdSlot($originAdSlot, $newName, $site);
         }
         else {
-            $this->get('tagcade_api.service.tag_library.clone_ad_slot_service')->cloneAdSlot($originAdSlot, $newName);
+            $this->get('tagcade_api.service.tag_library.ad_slot_cloner_service')->cloneAdSlot($originAdSlot, $newName);
         }
 
         return $this->view(null, Codes::HTTP_CREATED);

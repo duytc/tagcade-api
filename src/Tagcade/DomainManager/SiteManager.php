@@ -3,9 +3,11 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
@@ -31,8 +33,10 @@ class SiteManager implements SiteManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(SiteInterface $site)
+    public function save(ModelInterface $site)
     {
+        if(!$site instanceof SiteInterface) throw new InvalidArgumentException('expect SiteInterface object');
+
         $this->om->persist($site);
         $this->om->flush();
     }
@@ -40,8 +44,10 @@ class SiteManager implements SiteManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(SiteInterface $site)
+    public function delete(ModelInterface $site)
     {
+        if(!$site instanceof SiteInterface) throw new InvalidArgumentException('expect SiteInterface object');
+
         $this->om->remove($site);
         $this->om->flush();
     }

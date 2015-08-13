@@ -20,8 +20,8 @@ services:
         calls:
             - [setAdSlotManager, ["@tagcade.domain_manager.ad_slot"]]
 
-    tagcade_api.service.tag_library.clone_ad_slot_service:
-        class: Tagcade\Service\TagLibrary\CloneAdSlot
+    tagcade_api.service.tag_library.ad_slot_cloner_service:
+        class: Tagcade\Service\Core\AdSlot\AdSlotCloner
         arguments:
             - @doctrine.orm.entity_manager
             - @event_dispatcher

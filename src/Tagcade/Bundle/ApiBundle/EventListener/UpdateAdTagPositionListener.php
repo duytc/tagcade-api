@@ -3,15 +3,19 @@
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\PersistentCollection;
+use Tagcade\Entity\Core\AdTag;
+use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
-use Tagcade\Entity\Core\AdTag;
 
 /**
  *
@@ -31,7 +35,10 @@ class UpdateAdTagPositionListener
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) { return $entity instanceof AdTagInterface; }));
+        $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) {
+            return $entity instanceof PositionInterface;
+          }
+        ));
     }
 
     public function onFlush(OnFlushEventArgs $args)
@@ -43,13 +50,13 @@ class UpdateAdTagPositionListener
         $this->presoftDeleteAdTags = [];
 
         $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions(), $preSoftDeleteAdTags);
-        $md = $em->getClassMetadata(AdTag::class);
 
         foreach ($entities as $entity) {
-            if (!$entity instanceof AdTagInterface) {
+            if (!$entity instanceof PositionInterface) {
                 continue;
             }
 
+            $md = $em->getClassMetadata($entity->getClassName());
             $affectedAdTags = $this->updateTagPosition($entity);
 
             foreach ($affectedAdTags as $adTag) {
@@ -63,7 +70,7 @@ class UpdateAdTagPositionListener
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof AdTagInterface) {
+        if(!$entity instanceof PositionInterface) {
             return;
         }
 
@@ -73,30 +80,30 @@ class UpdateAdTagPositionListener
     /**
      * Update AdTag position. It should be continues according to current list of ad tag in the same ad slot
      *
-     * @param AdTagInterface $updatingAdTag
+     * @param PositionInterface $updatingAdTag
      * @return array
      */
-    protected function updateTagPosition(AdTagInterface $updatingAdTag)
+    protected function updateTagPosition(PositionInterface $updatingAdTag)
     {
-        $adSlot = $updatingAdTag->getAdSlot();
+        $adSlot = $updatingAdTag->getContainer();
 
-        if($adSlot instanceof ReportableAdSlotInterface)
+        if($adSlot instanceof ReportableAdSlotInterface || $adSlot instanceof BaseLibraryAdSlotInterface)
         {
             return $this->updatePositionForAdSlot($updatingAdTag);
         }
 
-        throw new LogicException('not support tag of something other than ReportableAdSlotInterface');
+        throw new LogicException('not support tag of something other than ReportableAdSlotInterface or BaseLibraryAdSlotInterface');
     }
 
-    protected function updatePositionForAdSlot(AdTagInterface $updatingAdTag)
+    protected function updatePositionForAdSlot(PositionInterface $updatingAdTag)
     {
-        $adSlot = $updatingAdTag->getAdSlot();
+        $listTags = $updatingAdTag->getSiblings();
 
-        if (!$adSlot instanceof ReportableAdSlotInterface) {
-            throw new InvalidArgumentException('expect instance of ReportableAdSlotInterface');
-        }
+        if($listTags instanceof ArrayCollection || $listTags instanceof PersistentCollection) $listTags = $listTags->toArray();
 
-        $adTags = array_filter($adSlot->getAdTags()->toArray(), function(AdTagInterface $t) { return null === $t->getDeletedAt();});
+        if(null === $listTags) $listTags = [];
+
+        $adTags = array_filter($listTags, function(PositionInterface $t) { return null === $t->getDeletedAt();});
 
         $updatedAdTags = $this->correctAdTagPositionInList($updatingAdTag, $adTags);
 
@@ -106,14 +113,17 @@ class UpdateAdTagPositionListener
     /**
      * This method will make sure the position of $updatingAdTag is in range with other positions as in $adTags
      *
-     * @param AdTagInterface $updatingAdTag
+     * @param mixed $updatingAdTag
      * @param array $adTags
      * @return array
      */
-    protected function correctAdTagPositionInList(AdTagInterface &$updatingAdTag, array &$adTags)
+    protected function correctAdTagPositionInList(&$updatingAdTag, array &$adTags)
     {
+        if(!$updatingAdTag instanceof PositionInterface) {
+            return [];
+        }
         // sort array asc with respect to position
-        usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
+        usort($adTags, function(PositionInterface $a, PositionInterface $b) {
             if ($a->getPosition() == $b->getPosition()) {
                 return 0;
             }
@@ -126,7 +136,7 @@ class UpdateAdTagPositionListener
         $mappedPositions = array();
         array_walk(
             $adTags,
-            function(AdTagInterface $adTag) use(&$positions, &$updatedAdTags, &$mappedPositions) {
+            function(PositionInterface $adTag) use(&$positions, &$updatedAdTags, &$mappedPositions) {
                 $myPos = $adTag->getPosition();
                 $newPos = !array_key_exists($myPos, $mappedPositions) ? count($positions) + 1 : $mappedPositions[$myPos];
                 $mappedPositions[$myPos] = $newPos;
@@ -167,11 +177,10 @@ class UpdateAdTagPositionListener
         $groups = array();
         foreach ($adTags as $adTag) {
             /**
-             * @var AdTagInterface $adTag
+             * @var PositionInterface $adTag
              */
             $groups[$adTag->getPosition()][] = $adTag;
         }
-
         // truly update position
         $pos = 1;
         $updatedAdTags = [];
@@ -182,13 +191,10 @@ class UpdateAdTagPositionListener
                     $adTag->setPosition($pos);
                     $updatedAdTags[] = $adTag;
                 }
-
                 continue;
             }
-
             $pos ++;
         }
-
         return $updatedAdTags;
     }
 } 

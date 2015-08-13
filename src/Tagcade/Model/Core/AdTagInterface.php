@@ -4,7 +4,7 @@ namespace Tagcade\Model\Core;
 
 use Tagcade\Model\ModelInterface;
 
-interface AdTagInterface extends ModelInterface
+interface AdTagInterface extends PositionInterface, ModelInterface
 {
     /**
      * @param mixed $id
@@ -65,17 +65,6 @@ interface AdTagInterface extends ModelInterface
      * @return self
      */
     public function setHtml($html);
-
-    /**
-     * @return int|null
-     */
-    public function getPosition();
-
-    /**
-     * @param int $position
-     * @return self
-     */
-    public function setPosition($position);
 
     /**
      * @return bool
@@ -142,7 +131,4 @@ interface AdTagInterface extends ModelInterface
      * @return string
      */
     public function checkSum();
-
-    public function getDeletedAt();
-
 }

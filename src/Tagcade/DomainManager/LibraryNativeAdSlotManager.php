@@ -3,9 +3,10 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryNativeAdSlotRepositoryInterface;
 
@@ -31,8 +32,10 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(LibraryNativeAdSlotInterface $adSlot)
+    public function save(ModelInterface $adSlot)
     {
+        if(!$adSlot instanceof LibraryNativeAdSlotInterface) throw new InvalidArgumentException('expect LibraryNativeAdSlotInterface object');
+
         $this->om->persist($adSlot);
         $this->om->flush();
     }
@@ -40,8 +43,10 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(LibraryNativeAdSlotInterface $adSlot)
+    public function delete(ModelInterface $adSlot)
     {
+        if(!$adSlot instanceof LibraryNativeAdSlotInterface) throw new InvalidArgumentException('expect LibraryNativeAdSlotInterface object');
+
         $this->om->remove($adSlot);
         $this->om->flush();
     }

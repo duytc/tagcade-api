@@ -54,7 +54,6 @@ class MoveAdTagToLibraryListener
                     $librarySlotTag->setRotation($adTag->getRotation());
                     $librarySlotTag->setPosition($adTag->getPosition());
                     $librarySlotTag->setFrequencyCap($adTag->getFrequencyCap());
-//                    $librarySlotTag->setName($adTag->getName());
                     $librarySlotTag->setLibraryAdSlot($entity);
                     $librarySlotTag->setLibraryAdTag($adTag->getLibraryAdTag());
                     $librarySlotTag->setRefId($adTag->getRefId());
@@ -80,5 +79,4 @@ class MoveAdTagToLibraryListener
             $em->flush();
         }
     }
-
-} 
+}

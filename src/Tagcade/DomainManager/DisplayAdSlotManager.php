@@ -3,11 +3,13 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
@@ -52,8 +54,10 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(DisplayAdSlotInterface $displayAdSlot)
+    public function save(ModelInterface $displayAdSlot)
     {
+        if(!$displayAdSlot instanceof DisplayAdSlotInterface) throw new InvalidArgumentException('expect DisplayAdSlotInterface object');
+
         $libraryAdSlot = $displayAdSlot->getLibraryAdSlot();
         $referenceSlot = $this->getReferencedAdSlotsForSite($libraryAdSlot, $displayAdSlot->getSite());
         if ($referenceSlot instanceof DisplayAdSlotInterface && $referenceSlot->getId() !== $displayAdSlot->getId()) {
@@ -72,8 +76,10 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(DisplayAdSlotInterface $displayAdSlot)
+    public function delete(ModelInterface $displayAdSlot)
     {
+        if(!$displayAdSlot instanceof DisplayAdSlotInterface) throw new InvalidArgumentException('expect DisplayAdSlotInterface object');
+
         $libraryDisplayAdSlot = $displayAdSlot->getLibraryAdSlot();
         //1. Remove library if visible = false and co-referenced slots less than 2
         if(!$libraryDisplayAdSlot->isVisible() && count($displayAdSlot->getCoReferencedAdSlots()) < 2 ) {
@@ -155,6 +161,4 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     {
         return $this->adSlotRepository->getReferencedAdSlotsForSite($libraryAdSlot, $site);
     }
-
-
 }

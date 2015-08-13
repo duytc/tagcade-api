@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -19,7 +18,6 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
-use Tagcade\Service\TagLibrary\DeleteAdTagValidatorInterface;
 use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class AdTagManager implements AdTagManagerInterface

@@ -3,10 +3,12 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
-use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use ReflectionClass;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 
 class AdNetworkManager implements AdNetworkManagerInterface
 {
@@ -30,8 +32,10 @@ class AdNetworkManager implements AdNetworkManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(AdNetworkInterface $adNetwork)
+    public function save(ModelInterface $adNetwork)
     {
+        if(!$adNetwork instanceof AdNetworkInterface) throw new InvalidArgumentException('expect AdNetworkInterface object');
+
         $this->om->persist($adNetwork);
         $this->om->flush();
     }
@@ -39,8 +43,10 @@ class AdNetworkManager implements AdNetworkManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(AdNetworkInterface $adNetwork)
+    public function delete(ModelInterface $adNetwork)
     {
+        if(!$adNetwork instanceof AdNetworkInterface) throw new InvalidArgumentException('expect AdNetworkInterface object');
+
         $this->om->remove($adNetwork);
         $this->om->flush();
     }

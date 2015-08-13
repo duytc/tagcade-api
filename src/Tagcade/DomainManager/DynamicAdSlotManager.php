@@ -3,12 +3,14 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
@@ -40,8 +42,10 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(DynamicAdSlotInterface $dynamicAdSlot)
+    public function save(ModelInterface $dynamicAdSlot)
     {
+        if(!$dynamicAdSlot instanceof DynamicAdSlotInterface) throw new InvalidArgumentException('expect DynamicAdSlotInterface object');
+
         $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
         $referenceSlot = $this->getReferencedAdSlotsForSite($libraryAdSlot, $dynamicAdSlot->getSite());
         if ($referenceSlot instanceof DynamicAdSlotInterface && $referenceSlot->getId() !== $dynamicAdSlot->getId()) {
@@ -55,16 +59,18 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(DynamicAdSlotInterface $adSlot)
+    public function delete(ModelInterface $dynamicAdSlot)
     {
-        $libraryDynamicAdSlot = $adSlot->getLibraryAdSlot();
+        if(!$dynamicAdSlot instanceof DynamicAdSlotInterface) throw new InvalidArgumentException('expect DynamicAdSlotInterface object');
+
+        $libraryDynamicAdSlot = $dynamicAdSlot->getLibraryAdSlot();
         //1. Remove library if visible = false and co-referenced slots less than 2
-        if(!$libraryDynamicAdSlot->isVisible() && count($adSlot->getCoReferencedAdSlots()) < 2 ) {
+        if(!$libraryDynamicAdSlot->isVisible() && count($dynamicAdSlot->getCoReferencedAdSlots()) < 2 ) {
             $this->om->remove($libraryDynamicAdSlot); // resulting cascade remove this ad slot
         }
         else {
             // 2. If the tag is in library then we only remove the tag itself, not the library.
-            $this->om->remove($adSlot);
+            $this->om->remove($dynamicAdSlot);
         }
 
         $this->om->flush();

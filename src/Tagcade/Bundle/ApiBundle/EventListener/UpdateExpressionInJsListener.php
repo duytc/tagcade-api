@@ -50,37 +50,6 @@ class UpdateExpressionInJsListener {
         }
     }
 
-//    /**
-//     * update ExpressionInJS, built from expressionDescriptor automatically
-//     * @param ExpressionInterface $expression
-//     */
-//    private function updateExpectAdSlotForExpressionInJs(ExpressionInterface $expression)
-//    {
-//        $expressionInJS = $expression->getExpressionInJS();
-//        if (null == $expressionInJS || count($expressionInJS) < 1 || !array_key_exists('expectedAdSlot', $expressionInJS)) {
-//            return;
-//        }
-//
-//        $expressionInJS['expectedAdSlot'] = $expression->getExpectAdSlot()->getId();
-//
-//        $expression->setExpressionInJs($expressionInJS);
-//    }
-
-//    private function updateExpressionForExpressionInJs(ExpressionInterface $expression)
-//    {
-//        $expressionDescriptor = $expression->getExpressionDescriptor();
-//        if (null == $expressionDescriptor || count($expressionDescriptor) < 1) {
-//            return;
-//        }
-//
-//        $expressionInJS = $expression->getExpressionInJS();
-//        $convertedExpression = $this->simplifyExpression($expressionDescriptor);
-//
-//        $expressionInJS['expression'] = $convertedExpression['expression'];
-//        $expressionInJS['vars'] = $convertedExpression['vars'];
-//        $expression->setExpressionInJs($expressionInJS);
-//    }
-
     protected function createExpressionInJs(ExpressionInterface $expression)
     {
         $expressionDescriptor = $expression->getExpressionDescriptor();

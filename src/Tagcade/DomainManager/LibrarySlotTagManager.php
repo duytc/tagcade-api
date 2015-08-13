@@ -3,10 +3,12 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
@@ -40,8 +42,10 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(LibrarySlotTagInterface $librarySlotTag)
+    public function save(ModelInterface $librarySlotTag)
     {
+        if(!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
+
         $this->em->persist($librarySlotTag);
 
         if($librarySlotTag->getId() === null) {
@@ -56,8 +60,10 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(LibrarySlotTagInterface $librarySlotTag)
+    public function delete(ModelInterface $librarySlotTag)
     {
+        if(!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
+
         $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
         $this->em->remove($librarySlotTag);
         $this->em->flush();

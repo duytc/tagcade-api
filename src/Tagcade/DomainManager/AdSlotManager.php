@@ -2,6 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
+use InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -13,6 +14,7 @@ use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
@@ -63,18 +65,21 @@ class AdSlotManager implements AdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(BaseAdSlotInterface $adSlot)
+    public function save(ModelInterface $adSlot)
     {
+        if(!$this->supportsEntity($adSlot)) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
+
         $this->getManager($adSlot)->save($adSlot);
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(BaseAdSlotInterface $adSlot)
+    public function delete(ModelInterface $adSlot)
     {
-        $this->getManager($adSlot)->delete($adSlot);
+        if(!$this->supportsEntity($adSlot)) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
 
+        $this->getManager($adSlot)->delete($adSlot);
     }
 
     /**

@@ -3,8 +3,10 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
+use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 
 class LibraryExpressionManager implements LibraryExpressionManagerInterface
@@ -29,8 +31,10 @@ class LibraryExpressionManager implements LibraryExpressionManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(LibraryExpressionInterface $libraryExpression)
+    public function save(ModelInterface $libraryExpression)
     {
+        if(!$libraryExpression instanceof LibraryExpressionInterface) throw new InvalidArgumentException('expect LibraryExpressionInterface object');
+
         $libraryExpressionId = $libraryExpression->getId();
 
         if($libraryExpressionId == null){
@@ -44,7 +48,7 @@ class LibraryExpressionManager implements LibraryExpressionManagerInterface
     /**
      * @inheritdoc
      */
-    public function delete(LibraryExpressionInterface $libraryExpression)
+    public function delete(ModelInterface $libraryExpression)
     {
         $this->em->remove($libraryExpression);
         $this->em->flush();

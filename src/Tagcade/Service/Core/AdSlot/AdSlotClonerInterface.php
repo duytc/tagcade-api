@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Tagcade\Service\TagLibrary;
+namespace Tagcade\Service\Core\AdSlot;
 
 
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
-interface CloneAdSlotInterface {
+interface AdSlotClonerInterface {
     /**
      * clone AdSlot
      * @param BaseAdSlotInterface $originAdSlot
