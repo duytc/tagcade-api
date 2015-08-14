@@ -182,21 +182,21 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
         if(array_key_exists('libraryAdSlot', $request->request->all()))
         {
             if(!is_array($request->request->get('libraryAdSlot'))) {
-                $libraryAdSlot = (int)$request->request->get('libraryAdSlot');
+                $libraryAdSlotId = (int)$request->request->get('libraryAdSlot');
                 /**
                  * @var NativeAdSlotInterface $adSlot
                  */
                 $adSlot = $this->getOr404($id);
 
-                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlot) {
-                    $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlot);
+                $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlotId);
 
-                    if(!$newLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
-                        throw new InvalidArgumentException('LibraryAdSlot not existed');
-                    }
+                if(!$newLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+                    throw new InvalidArgumentException('LibraryAdSlot not existed');
+                }
 
-                    $this->checkUserPermission($newLibraryAdSlot);
+                $this->checkUserPermission($newLibraryAdSlot);
 
+                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlotId && $newLibraryAdSlot->isVisible()) {
                     // create new ad tags
                     $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
                 }
