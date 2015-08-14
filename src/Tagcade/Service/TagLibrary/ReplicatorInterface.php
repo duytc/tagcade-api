@@ -6,6 +6,7 @@ namespace Tagcade\Service\TagLibrary;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 
@@ -27,27 +28,18 @@ interface ReplicatorInterface {
      */
     public function replicateNewLibrarySlotTagToAllReferencedAdSlots(LibrarySlotTagInterface $librarySlotTag);
 
-
     /**
      * @param LibrarySlotTagInterface $librarySlotTag
      * @param bool $remove true if we are removing $librarySlotTag
      */
     public function replicateExistingLibrarySlotTagToAllReferencedAdTags(LibrarySlotTagInterface $librarySlotTag, $remove = false);
 
-
     /**
-     * Replicate single library expression for all referenced dynamic ad slots
-     * @param LibraryExpressionInterface $libraryExpression
-     * @return mixed
-     */
-    public function replicateLibraryExpressionForAllReferencedDynamicAdSlots(LibraryExpressionInterface $libraryExpression);
-
-    /**
-     * Replicate multiple library expressions for all referenced dynamic ad slots
+     * Replicate Default Library AdSlot and Expression to all referenced Dynamic AdSLot
      *
-     * @param array $libraryExpressions
+     * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
      * @return mixed
      */
-    public function replicateLibraryExpressionsForAllReferencedDynamicAdSlots(array $libraryExpressions);
+    public function replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot);
 
 } 

@@ -25,7 +25,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * Get all library displays adslots
      *
      * @Rest\View(
-     *      serializerGroups={"librarydisplayadslot.summary" , "slotlib.summary", "user.summary", "displayadslot.summary", "site.summary"}
+     *      serializerGroups={"librarydisplayadslot.summary" , "slotlib.extra", "user.summary", "displayadslot.summary", "site.summary"}
      * )
      *
      * @ApiDoc(

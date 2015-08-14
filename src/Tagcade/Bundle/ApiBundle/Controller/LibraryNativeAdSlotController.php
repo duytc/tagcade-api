@@ -23,7 +23,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
 {
     /**
      * @Rest\View(
-     *      serializerGroups={"librarynativeadslot.summary", "slotlib.summary", "user.summary", "nativeadslot.summary", "site.summary"}
+     *      serializerGroups={"librarynativeadslot.summary", "slotlib.extra", "user.summary", "nativeadslot.summary", "site.summary"}
      * )
      *
      * Get all native ad slots

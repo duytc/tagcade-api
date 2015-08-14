@@ -23,6 +23,6 @@ interface AdSlotGeneratorInterface {
      * @param SiteInterface $site
      * @return mixed
      */
-    public function generateTrueDefaultAdSlotAndExpressionsForLibraryDynamicAdSlotBySite(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, SiteInterface $site);
+    public function generateTrueDefaultAdSlotAndExpectAdSlotInExpressionsForLibraryDynamicAdSlotBySite(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, SiteInterface $site);
 
 }

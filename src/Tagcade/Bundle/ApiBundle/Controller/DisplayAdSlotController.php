@@ -210,20 +210,20 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         if(array_key_exists('libraryAdSlot', $request->request->all()))
         {
             if(!is_array($request->request->get('libraryAdSlot'))) {
-                $libraryAdSlot = (int)$request->request->get('libraryAdSlot');
+                $libraryAdSlotId = (int)$request->request->get('libraryAdSlot');
                 /**
                  * @var DisplayAdSlotInterface $adSlot
                  */
                 $adSlot = $this->getOr404($id);
 
-                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlot && $adSlot->getLibraryAdSlot()->isVisible()) {
-                    $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlot);
+                $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlotId);
+                if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                    throw new InvalidArgumentException('LibraryAdSlot not existed');
+                }
 
-                    if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
-                        throw new InvalidArgumentException('LibraryAdSlot not existed');
-                    }
+                $this->checkUserPermission($newLibraryAdSlot);
 
-                    $this->checkUserPermission($newLibraryAdSlot);
+                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlotId && $newLibraryAdSlot->isVisible()) {
 
                     // create new ad tags
                     $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
@@ -253,26 +253,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function deleteAction($id)
     {
-        /**
-         * @var DisplayAdSlotInterface $entity
-         */
-        $entity = $this->getOr404($id);
-        $this->checkUserPermission($entity, 'edit');
-
-        // dynamic ad slots that its expressions refer to this ad slot
-
-        $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
-        $defaultSlots = $this->get('tagcade.repository.dynamic_ad_slot')->findBy(array('defaultAdSlot' => $entity));
-
-        if (count($expressions) > 0 || count($defaultSlots) > 0) { // this ensures that there is existing dynamic slot that one of its expressions containing this slot
-            $view = $this->view('Existing dynamic ad slot that is referencing to this ad slot', Codes::HTTP_BAD_REQUEST);
-        }
-        else {
-            $this->getHandler()->delete($entity);
-            $view = $this->view(null, Codes::HTTP_NO_CONTENT);
-        }
-
-        return $this->handleView($view);
+       return $this->delete($id);
     }
 
     /**

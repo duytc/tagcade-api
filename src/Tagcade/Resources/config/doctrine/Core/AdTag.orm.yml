@@ -12,10 +12,6 @@ Tagcade\Entity\Core\AdTag:
             generator:
                 strategy: AUTO
     fields:
-#        name:
-#            type: string
-#            length: 100
-
         position:
             type: integer
             options:

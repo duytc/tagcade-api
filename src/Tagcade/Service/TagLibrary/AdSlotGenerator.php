@@ -13,6 +13,7 @@ use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -39,35 +40,43 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
         $dynamicAdSlot->setSite($site);
 
 
-        $this->generateTrueDefaultAdSlotAndExpressionsForLibraryDynamicAdSlotBySite($libraryDynamicAdSlot, $site);
+        $this->generateTrueDefaultAdSlotAndExpectAdSlotInExpressionsForLibraryDynamicAdSlotBySite($libraryDynamicAdSlot, $site);
 
         $libraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions();
-        /**
-         * @var LibraryExpressionInterface $libraryExpression
-         */
-        foreach($libraryExpressions as $libraryExpression) {
-            $expectAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpression->getExpectLibraryAdSlot(), $site);
-            if (!$expectAdSlot instanceof ReportableAdSlotInterface) {
-                throw new LogicException('expect existing expect ad slot for expression');
+        if($libraryExpressions !== null) {
+            /**
+             * @var LibraryExpressionInterface $libraryExpression
+             */
+            foreach($libraryExpressions as $libraryExpression) {
+                $expectAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpression->getExpectLibraryAdSlot(), $site);
+                if (!$expectAdSlot instanceof ReportableAdSlotInterface) {
+                    throw new LogicException('expect existing expect ad slot for expression');
+                }
+
+                $libraryExpression->getExpressions()->clear();
+                $expression = new Expression();
+                $expression->setExpectAdSlot($expectAdSlot);
+                $expression->setLibraryExpression($libraryExpression);
+
+                $libraryExpression->getExpressions()->add($expression);
+                $expression->setDynamicAdSlot($dynamicAdSlot);
+                $dynamicAdSlot->getExpressions()->add($expression);
             }
-
-            $libraryExpression->getExpressions()->clear();
-            $expression = new Expression();
-            $expression->setExpectAdSlot($expectAdSlot);
-            $expression->setLibraryExpression($libraryExpression);
-
-            $libraryExpression->getExpressions()->add($expression);
-            $expression->setDynamicAdSlot($dynamicAdSlot);
-            $dynamicAdSlot->getExpressions()->add($expression);
         }
+
 
         $dynamicAdSlot->setLibraryAdSlot($libraryDynamicAdSlot);
-        $defaultAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryDynamicAdSlot->getDefaultLibraryAdSlot(), $site);
-        if (!$defaultAdSlot instanceof ReportableAdSlotInterface) {
-            throw new LogicException('expect existing default ad slot for expression');
-        }
 
-        $dynamicAdSlot->setDefaultAdSlot($defaultAdSlot);
+        $defaultLibraryAdSlot = $libraryDynamicAdSlot->getDefaultLibraryAdSlot();
+        if($defaultLibraryAdSlot instanceof LibraryDisplayAdSlotInterface || $defaultLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+            $defaultAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site);
+
+            if (!$defaultAdSlot instanceof ReportableAdSlotInterface) {
+                throw new LogicException('expect existing default ad slot for expression');
+            }
+
+            $dynamicAdSlot->setDefaultAdSlot($defaultAdSlot);
+        }
 
         return $dynamicAdSlot;
     }
@@ -79,29 +88,35 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
      * @param SiteInterface $site
      * @return void
      */
-    public function generateTrueDefaultAdSlotAndExpressionsForLibraryDynamicAdSlotBySite(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, SiteInterface $site)
+    public function generateTrueDefaultAdSlotAndExpectAdSlotInExpressionsForLibraryDynamicAdSlotBySite(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, SiteInterface $site)
     {
         // Step 1. Get library default ad slot associated this dynamic ad slot and check if there is any ad slot for this site refer to this library
         $defaultLibraryAdSlot = $libraryDynamicAdSlot->getDefaultLibraryAdSlot();
-        $currentReference = $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site);
-
-        // Step 2. generate default ad slot if step 1 return empty (generate default ad slot base on default library ad slot in library dynamic ad slot)
-        if (null === $currentReference) {
-            $this->createReportableAdSlotForSite($site, $defaultLibraryAdSlot);
+        if ($defaultLibraryAdSlot instanceof LibraryDisplayAdSlotInterface || $defaultLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+            $currentReference = $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site);
+            // Step 2. generate default ad slot if step 1 return empty (generate default ad slot base on default library ad slot in library dynamic ad slot)
+            if (null === $currentReference) {
+                $this->createReportableAdSlotForSite($site, $defaultLibraryAdSlot);
+            }
         }
+
         // Step 3. Get expressions associated to this dynamic ad slot
         $libraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions();
+        if (null !== $libraryExpressions) {
+            // step 4. generate expect ad slot in expression if no ad slot refer to expect library (generation is based on expect library ad slot in each library expression)
+            foreach ($libraryExpressions as $libraryExpression) {
+                /**
+                 * @var LibraryExpressionInterface $libraryExpression
+                 */
+                $libraryExpectAdSlot = $libraryExpression->getExpectLibraryAdSlot();
+                if(!$libraryExpectAdSlot instanceof LibraryDisplayAdSlotInterface && !$libraryExpectAdSlot instanceof LibraryNativeAdSlotInterface) {
+                    throw new InvalidArgumentException('expect display or native library');
+                }
+                $currentReference = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpectAdSlot, $site);
 
-        // step 4. generate expect ad slot in expression if no ad slot refer to expect library (generation is based on expect library ad slot in each library expression)
-        foreach ($libraryExpressions as $libraryExpression) {
-            /**
-             * @var LibraryExpressionInterface $libraryExpression
-             */
-            $libraryExpectAdSlot = $libraryExpression->getExpectLibraryAdSlot();
-            $currentReference = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpectAdSlot, $site);
-
-            if (null === $currentReference) {
-                $this->createReportableAdSlotForSite($site, $libraryExpectAdSlot);
+                if (null === $currentReference) {
+                    $this->createReportableAdSlotForSite($site, $libraryExpectAdSlot);
+                }
             }
         }
     }

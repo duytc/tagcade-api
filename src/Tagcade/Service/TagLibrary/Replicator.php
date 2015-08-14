@@ -9,7 +9,6 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\Expression;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -18,10 +17,12 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Repository\Core\AdTagRepositoryInterface;
 
 class Replicator implements ReplicatorInterface
 {
@@ -177,15 +178,15 @@ class Replicator implements ReplicatorInterface
      */
     public function replicateExistingLibrarySlotTagToAllReferencedAdTags(LibrarySlotTagInterface $librarySlotTag, $remove = false)
     {
-        $siblingTags = $librarySlotTag->getLibraryAdTag()->getAdTags()->toArray();
-
-        $adTags = array_filter($siblingTags, function(AdTagInterface $adTag) use($librarySlotTag, $librarySlotTag){
-                return $adTag->getAdSlot()->getLibraryAdSlot()->getId() == $librarySlotTag->getLibraryAdSlot()->getId() && $librarySlotTag->getRefId() == $adTag->getRefId();
-            });
-
         $this->em->getConnection()->beginTransaction();
 
         try {
+            /**
+             * @var AdTagRepositoryInterface $adTagRepository
+             */
+            $adTagRepository = $this->em->getRepository(AdTag::class);
+            $adTags = $adTagRepository->getAdTagsByLibraryAdSlotAndRefId($librarySlotTag->getLibraryAdSlot(), $librarySlotTag->getRefId());
+
             array_walk(
                 $adTags,
                 function(AdTagInterface $t) use($librarySlotTag, $remove){
@@ -205,8 +206,14 @@ class Replicator implements ReplicatorInterface
                 }
             );
 
+            // if there no any more AdTag refer to this LibraryAdTag then it should be removed as well
+            $libraryAdTag = $librarySlotTag->getLibraryAdTag();
+            if(true === $remove && $libraryAdTag->getAssociatedTagCount() < 1) {
+                $this->em->remove($libraryAdTag);
+            }
+
             $this->em->flush();
-            
+
             $this->checksumValidator->validateAllAdSlotsSynchronized($librarySlotTag->getLibraryAdSlot()->getAdSlots()->toArray());
 
             $this->em->getConnection()->commit();
@@ -219,74 +226,88 @@ class Replicator implements ReplicatorInterface
     }
 
     /**
-     * @param LibraryExpressionInterface $libraryExpression
+     * Replicate Default Library AdSlot and Expression to all referenced Dynamic AdSLot
+     *
+     * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
      * @return mixed
      */
-    public function replicateLibraryExpressionForAllReferencedDynamicAdSlots(
-        LibraryExpressionInterface $libraryExpression
-    ) {
-        $libraryDynamicAdSlot = $libraryExpression->getLibraryDynamicAdSlot();
-        $dynamicAdSlots = $libraryDynamicAdSlot->getAdSlots()->toArray();
+    public function replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot)
+    {
+        // affected dynamic ad slots
+        $dynamicAdSlots = $libraryDynamicAdSlot->getAdSlots();
+
+        if ($dynamicAdSlots == null || empty($dynamicAdSlots)) {
+            return; // nothing to be replicated
+        }
 
         $this->em->getConnection()->beginTransaction();
-
         try {
-            // adding or editing
-            $processedSites = [];
+            // replicate default library ad slot
+            $defaultLibraryAdSlot = $libraryDynamicAdSlot->getDefaultLibraryAdSlot();
             foreach ($dynamicAdSlots as $adSlot) {
                 /**
                  * @var DynamicAdSlotInterface $adSlot
                  */
                 $site = $adSlot->getSite();
-                if (!in_array($site, $processedSites)) {
-                    $this->adSlotGenerator->generateTrueDefaultAdSlotAndExpressionsForLibraryDynamicAdSlotBySite($libraryDynamicAdSlot, $site);
+                $this->adSlotGenerator->generateTrueDefaultAdSlotAndExpectAdSlotInExpressionsForLibraryDynamicAdSlotBySite($libraryDynamicAdSlot, $site);
+                $currentReference = ($defaultLibraryAdSlot instanceof LibraryDisplayAdSlotInterface || $defaultLibraryAdSlot instanceof LibraryNativeAdSlotInterface) ? $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site) : null;
+                $adSlot->setDefaultAdSlot($currentReference);
+
+
+                $libraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions()->toArray(); // new library expression set
+                // remove expressions of current slot not attaching to this new library expressions
+                $tobeRemoveExpressions = array_filter(
+                    $adSlot->getExpressions()->toArray(),
+                    function(ExpressionInterface $exp) use ($libraryExpressions)
+                    {
+                        $newLibraryExpressions = $libraryExpressions !== null ? array_map(function(LibraryExpressionInterface $libExp) { return $libExp->getId();}, $libraryExpressions) : [];
+
+                        return !in_array($exp->getLibraryExpression()->getId(), $newLibraryExpressions);
+                    }
+                );
+
+                if (null !== $tobeRemoveExpressions && !empty($tobeRemoveExpressions)) {
+                    array_walk($tobeRemoveExpressions, function (ExpressionInterface $exp) { $this->em->remove($exp); });
                 }
 
-                $processedSites[] = $site;
+                // updating or creating new expressions with respect to new library expressions
+                if (!empty($libraryExpressions)) {
+                    array_walk(
+                        $libraryExpressions,
+                        function(LibraryExpressionInterface $libraryExpression) use (&$adSlot)
+                        {
+                            // update with this new expressions
+                            // find existing expression use the same library expression
+                            $existingExpressionsToBeUpdated = array_filter($adSlot->getExpressions()->toArray(), function(ExpressionInterface $expression) use($libraryExpression) {
+                                    return ($expression->getLibraryExpression()->getId() === $libraryExpression->getId() && null !== $libraryExpression->getId());
+                                });
 
-                // find existing expression use the same library expression
-                $existingExpressions = array_filter($adSlot->getExpressions()->toArray(), function(ExpressionInterface $expression) use($libraryExpression) {
-                        return $expression->getLibraryExpression()->getId() === $libraryExpression->getId();
-                });
+                            $expectAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpression->getExpectLibraryAdSlot(), $adSlot->getSite());
+                            $expression = (null === $existingExpressionsToBeUpdated || count($existingExpressionsToBeUpdated) < 1) ? new Expression() : current($existingExpressionsToBeUpdated);
 
-                $expectAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpression->getExpectLibraryAdSlot(), $site);
-                $expression = (null === $existingExpressions || count($existingExpressions) < 1) ? new Expression() : current($existingExpressions);
+                            $expression->setExpectAdSlot($expectAdSlot);
+                            $expression->setLibraryExpression($libraryExpression);
+                            $expression->setDynamicAdSlot($adSlot);
 
-                $expression->setExpectAdSlot($expectAdSlot);
-                $expression->setLibraryExpression($libraryExpression);
-                $expression->setDynamicAdSlot($adSlot);
+                            if (!in_array($expression, $existingExpressionsToBeUpdated)) { // for the case add new expression
+                                $adSlot->getExpressions()->add($expression);
+                            }
 
-                if (!in_array($expression, $existingExpressions)) { // for the case add new expression
-                    $adSlot->getExpressions()->add($expression);
+                            $this->em->persist($expression);
+                        }
+                    );
                 }
 
-                $this->em->persist($expression);
-                $this->em->persist($adSlot);
+                $this->em->merge($adSlot);
             }
 
-            unset($processedSites);
-
             $this->em->flush();
-
             $this->em->getConnection()->commit();
         }
-        catch(\Exception $e) {
+        catch(\Exception $ex) {
             $this->em->getConnection()->rollback();
 
-            throw new RuntimeException($e);
-        }
-    }
-
-    /**
-     * Replicate multiple library expressions for all referenced dynamic ad slots
-     *
-     * @param array $libraryExpressions
-     * @return mixed
-     */
-    public function replicateLibraryExpressionsForAllReferencedDynamicAdSlots(array $libraryExpressions)
-    {
-        foreach ($libraryExpressions as $libraryExpression) {
-            $this->replicateLibraryExpressionForAllReferencedDynamicAdSlots($libraryExpression);
+            throw new RuntimeException($ex);
         }
     }
 }

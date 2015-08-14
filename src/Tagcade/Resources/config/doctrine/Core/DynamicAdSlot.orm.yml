@@ -8,6 +8,7 @@ Tagcade\Entity\Core\DynamicAdSlot:
             targetEntity: Tagcade\Entity\Core\Expression
             mappedBy: dynamicAdSlot
             cascade: ['persist', 'remove']
+            orphanRemoval: true
     manyToOne:
         defaultAdSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

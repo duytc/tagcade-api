@@ -232,10 +232,9 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
     public function getAdTagsByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
-            ->join('t.libraryAdTag', 'tl')
-            ->join('tl.libSlotTags', 'slt')
-            ->where('slt.libraryAdSlot = :library_ad_slot_id')
-            ->andWhere('slt.refId = :ref_id')
+            ->join('t.adSlot', 'sl')
+            ->where('sl.libraryAdSlot = :library_ad_slot_id')
+            ->andWhere('t.refId = :ref_id')
             ->setParameter('library_ad_slot_id', $libraryAdSlot->getId(), Type::INTEGER)
             ->setParameter('ref_id', $refId, Type::STRING)
         ;

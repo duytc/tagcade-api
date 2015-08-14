@@ -60,5 +60,8 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
      */
     public function getPublisherId();
 
-
+    /**
+     * return int
+     */
+    public function getAssociatedSlotCount();
 }

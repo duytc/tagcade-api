@@ -36,7 +36,7 @@ class LibraryAdSlotController extends FOSRestController implements ClassResource
      * Get all library ad slots
      *
      * @Rest\View(
-     *      serializerGroups={"slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
+     *      serializerGroups={"slotlib.extra", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
      * )
      * @ApiDoc(
      *  resource = true,

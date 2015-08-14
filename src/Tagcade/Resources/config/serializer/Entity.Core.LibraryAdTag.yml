@@ -1,5 +1,10 @@
 Tagcade\Entity\Core\LibraryAdTag:
     exclusion_policy: ALL
+    virtual_properties:
+        getAssociatedTagCount:
+            serialized_name: associatedTags
+            type: integer
+            groups: [libraryadtag.summary]
     properties:
         adNetwork:
             expose: true

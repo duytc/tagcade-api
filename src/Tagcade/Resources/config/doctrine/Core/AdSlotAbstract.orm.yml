@@ -15,9 +15,6 @@ Tagcade\Entity\Core\AdSlotAbstract:
         deletedAt:
             type: date
             nullable: true
-#        name:
-#            type: string
-#            nullable: true
 
     inheritanceType: JOINED
 

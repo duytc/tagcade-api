@@ -96,10 +96,7 @@ class LibraryAdTag implements LibraryAdTagInterface{
         return $this->visible;
     }
 
-    function __toString()
-    {
-        return $this->id . $this->getName();
-    }
+
 
     /**
      * @inheritdoc
@@ -188,5 +185,19 @@ class LibraryAdTag implements LibraryAdTagInterface{
     public function setLibSlotTags($libSlotTags)
     {
         $this->libSlotTags = $libSlotTags;
+    }
+
+    /**
+     * return int
+     */
+    public function getAssociatedTagCount()
+    {
+        return count($this->getAdTags());
+    }
+
+
+    function __toString()
+    {
+        return $this->id . $this->getName();
     }
 }

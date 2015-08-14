@@ -18,10 +18,6 @@ Tagcade\Entity\Core\LibrarySlotTag:
             generator:
                 strategy: AUTO
     fields:
-#        name:
-#            type: string
-#            length: 100
-
         position:
             type: integer
             nullable: true

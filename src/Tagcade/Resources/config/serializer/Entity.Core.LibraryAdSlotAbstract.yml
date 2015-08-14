@@ -9,17 +9,21 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
             lib_native_model: Tagcade\Model\Core\LibraryNativeAdSlot
             lib_dynamic: Tagcade\Entity\Core\LibraryDynamicAdSlot
             lib_dynamic_model: Tagcade\Model\Core\LibraryDynamicAdSlot
-
+    virtual_properties:
+        getAssociatedSlotCount:
+            serialized_name: associatedSlots
+            type: integer
+            groups: [slotlib.extra]
     properties:
         name:
             expose: true
-            groups: [slotlib.detail, slotlib.summary, slotlib.ref]
+            groups: [slotlib.detail, slotlib.summary, slotlib.extra]
         visible:
             expose: true
-            groups: [slotlib.detail, slotlib.summary, slotlib.ref]
+            groups: [slotlib.detail, slotlib.summary, slotlib.extra]
         publisher:
             expose: true
-            groups: [slotlib.detail, slotlib.summary, slotlib.ref]
+            groups: [slotlib.detail, slotlib.summary, slotlib.extra]
         adSlots:
             expose: true
             groups: [slotlib.detail]
@@ -27,4 +31,4 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
             expose: true
             accessor: # access_type must be set to public_method
                 getter: getLibType
-            groups: [slotlib.detail, slotlib.summary, slotlib.ref]
+            groups: [slotlib.detail, slotlib.summary, slotlib.extra]

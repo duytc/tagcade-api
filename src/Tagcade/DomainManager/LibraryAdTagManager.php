@@ -55,7 +55,7 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
         if(!$libraryAdTag instanceof LibraryAdTagInterface) throw new InvalidArgumentException('expect LibraryAdTagInterface object');
 
         if ($libraryAdTag->getVisible() && count($libraryAdTag->getAdTags()) > 0) {
-            throw new NotSupportedException('Can not delete library ad tag due to existing references');
+            throw new NotSupportedException('There are some AdTag still referring to this library');
         }
 
         $this->em->remove($libraryAdTag);

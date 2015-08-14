@@ -45,19 +45,18 @@ class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTa
     }
 
     /**
+     * ReferenceId is unique in each library ad slot so this query always return only one entity or null
+     *
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
-     * @param LibraryAdTagInterface $adTag
      * @param $refId
      * @return LibrarySlotTagInterface[]
      */
-    public function getByLibraryAdSlotAndLibraryAdTagAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, LibraryAdTagInterface $adTag, $refId)
+    public function getByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId)
     {
         $qb = $this->createQueryBuilder('lst')
             ->where('lst.libraryAdSlot = :library_ad_slot_id')
-            ->andWhere('lst.libraryAdTag = :library_ad_tag_id')
             ->andWhere('lst.refId = :ref_id')
             ->setParameter('library_ad_slot_id', $libraryAdSlot->getId(), Type::INTEGER)
-            ->setParameter('library_ad_tag_id', $adTag->getId(), Type::INTEGER)
             ->setParameter('ref_id', $refId, Type::STRING)
         ;
 

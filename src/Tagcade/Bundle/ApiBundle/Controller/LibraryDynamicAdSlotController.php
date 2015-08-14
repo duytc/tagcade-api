@@ -23,7 +23,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Get all library dynamic adSlot
      *
      * @Rest\View(
-     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary" , "libraryexpression.detail"}
+     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.extra", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary" , "libraryexpression.detail"}
      * )
      * @ApiDoc(
      *  resource = true,

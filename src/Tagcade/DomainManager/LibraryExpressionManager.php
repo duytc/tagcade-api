@@ -50,6 +50,8 @@ class LibraryExpressionManager implements LibraryExpressionManagerInterface
      */
     public function delete(ModelInterface $libraryExpression)
     {
+        if(!$libraryExpression instanceof LibraryExpressionInterface) throw new InvalidArgumentException('expect LibraryExpressionInterface object');
+
         $this->em->remove($libraryExpression);
         $this->em->flush();
     }

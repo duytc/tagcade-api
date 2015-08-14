@@ -197,5 +197,11 @@ abstract class LibraryAdSlotAbstract
         $this->adSlots = $adSlots;
     }
 
+    /**
+     * return int
+     */
+    public function getAssociatedSlotCount() {
+        return count($this->getAdSlots());
+    }
     
 }

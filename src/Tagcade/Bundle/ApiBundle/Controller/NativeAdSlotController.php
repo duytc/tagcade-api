@@ -225,26 +225,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      */
     public function deleteAction($id)
     {
-        /**
-         * @var NativeAdSlotInterface $entity
-         */
-        $entity = $this->getOr404($id);
-        $this->checkUserPermission($entity, 'edit');
-
-        // dynamic ad slots that its expressions refer to this ad slot
-
-        $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
-        $defaultSlots = $this->get('tagcade.repository.dynamic_ad_slot')->findBy(array('defaultAdSlot' => $entity));
-
-        if (count($expressions) > 0 || count($defaultSlots) > 0) { // this ensures that there is existing dynamic slot that one of its expressions containing this slot
-            $view = $this->view('Existing dynamic ad slot that is referencing to this ad slot', Codes::HTTP_BAD_REQUEST);
-        }
-        else {
-            $this->getHandler()->delete($entity);
-            $view = $this->view(null, Codes::HTTP_NO_CONTENT);
-        }
-
-        return $this->handleView($view);
+        return $this->delete($id);
     }
 
     /**

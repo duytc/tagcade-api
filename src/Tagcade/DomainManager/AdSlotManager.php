@@ -67,7 +67,7 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function save(ModelInterface $adSlot)
     {
-        if(!$this->supportsEntity($adSlot)) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
+        if(!$adSlot instanceof BaseAdSlotInterface) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
 
         $this->getManager($adSlot)->save($adSlot);
     }
@@ -77,7 +77,7 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function delete(ModelInterface $adSlot)
     {
-        if(!$this->supportsEntity($adSlot)) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
+        if(!$adSlot instanceof BaseAdSlotInterface) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
 
         $this->getManager($adSlot)->delete($adSlot);
     }

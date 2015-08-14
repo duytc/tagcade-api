@@ -64,8 +64,8 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
         if(!$dynamicAdSlot instanceof DynamicAdSlotInterface) throw new InvalidArgumentException('expect DynamicAdSlotInterface object');
 
         $libraryDynamicAdSlot = $dynamicAdSlot->getLibraryAdSlot();
-        //1. Remove library if visible = false and co-referenced slots less than 2
-        if(!$libraryDynamicAdSlot->isVisible() && count($dynamicAdSlot->getCoReferencedAdSlots()) < 2 ) {
+        //1. Remove library this ad slot is the only one that refer to the library
+        if(count($dynamicAdSlot->getCoReferencedAdSlots()) < 2 ) {
             $this->om->remove($libraryDynamicAdSlot); // resulting cascade remove this ad slot
         }
         else {

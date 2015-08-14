@@ -43,10 +43,10 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
         if(!$entity instanceof LibraryDynamicAdSlotInterface) throw new InvalidArgumentException('expect LibraryDynamicAdSlotInterface object');
 
         $this->om->persist($entity);
-        $this->om->flush();
+        // creating default ad slot and expression for all referencing slots if the LibraryDynamicAdSlot introduces libraryExpression
+        $this->replicator->replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots($entity);
 
-        // creating expression for all referencing slots if the LibraryDynamicAdSlot introduces libraryExpression
-        $this->replicator->replicateLibraryExpressionsForAllReferencedDynamicAdSlots($entity->getLibraryExpressions()->toArray());
+        $this->om->flush();
     }
 
     /**
@@ -54,6 +54,8 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
      */
     public function delete(ModelInterface $adSlot)
     {
+        if(!$adSlot instanceof LibraryDynamicAdSlotInterface) throw new InvalidArgumentException('expect LibraryDynamicAdSlotInterface object');
+
         $this->om->remove($adSlot);
         $this->om->flush();
     }

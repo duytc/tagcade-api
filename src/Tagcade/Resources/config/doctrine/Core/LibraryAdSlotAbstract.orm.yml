@@ -38,6 +38,7 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
         libSlotTags:
             targetEntity: Tagcade\Entity\Core\LibrarySlotTag
             mappedBy: libraryAdSlot
+            cascade: ['remove']
         adSlots:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
             mappedBy: libraryAdSlot

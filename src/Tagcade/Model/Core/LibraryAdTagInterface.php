@@ -4,6 +4,7 @@ namespace Tagcade\Model\Core;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
 
 interface LibraryAdTagInterface extends  ModelInterface{
@@ -48,7 +49,7 @@ interface LibraryAdTagInterface extends  ModelInterface{
     public function setVisible($visible);
 
     /**
-     * @return AdTagInterface[]
+     * @return PersistentCollection
      */
     public function getAdTags();
 
@@ -96,4 +97,9 @@ interface LibraryAdTagInterface extends  ModelInterface{
      * @param mixed $name
      */
     public function setName($name);
+
+    /**
+     * return int
+     */
+    public function getAssociatedTagCount();
 }
