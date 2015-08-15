@@ -3,12 +3,9 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use FOS\RestBundle\Util\Codes;
 use InvalidArgumentException;
 use ReflectionClass;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Tagcade\Entity\Core\DynamicAdSlot;
-use Tagcade\Entity\Core\Expression;
+use Tagcade\DomainManager\Behaviors\RemoveAdSlotTrait;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -17,14 +14,12 @@ use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
-use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
-use Tagcade\Repository\Core\ExpressionRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
 {
-
+    use RemoveAdSlotTrait;
     protected $em;
     protected $repository;
     /**
@@ -86,33 +81,7 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     {
         if(!$displayAdSlot instanceof DisplayAdSlotInterface) throw new InvalidArgumentException('expect DisplayAdSlotInterface object');
 
-        /**
-         * @var ExpressionRepositoryInterface $expressionRepository
-         */
-        $expressionRepository = $this->em->getRepository(Expression::class);
-        $expressions = $expressionRepository->findBy(array('expectAdSlot' => $displayAdSlot));
-
-        /**
-         * @var DynamicAdSlotRepositoryInterface $dynamicRepository
-         */
-        $dynamicRepository = $this->em->getRepository(DynamicAdSlot::class);
-        $defaultSlots = $dynamicRepository->findBy(array('defaultAdSlot' => $displayAdSlot));
-
-        if (!empty($expressions) > 0 || !empty($defaultSlots) > 0) { // this ensures that there is existing dynamic slot that one of its expressions containing this slot
-            throw new LogicException('Existing dynamic ad slot that is referencing to this ad slot');
-        }
-
-        $libraryDisplayAdSlot = $displayAdSlot->getLibraryAdSlot();
-        //1. Remove library if co-referenced slots less than 2
-        if(count($displayAdSlot->getCoReferencedAdSlots()) < 2 ) {
-            $this->em->remove($libraryDisplayAdSlot); // resulting cascade remove this ad slot
-        }
-        else {
-            // 2. If the tag is in library then we only remove the tag itself, not the library.
-            $this->em->remove($displayAdSlot);
-        }
-
-        $this->em->flush();
+        $this->removeAdSlot($displayAdSlot);
     }
 
     /**

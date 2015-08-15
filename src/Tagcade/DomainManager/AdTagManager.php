@@ -315,6 +315,20 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsByLibraryAdSlotAndRefId($libraryAdSlot, $refId, $limit, $offset);
     }
 
+    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
+    {
+        foreach ($adNetwork->getAdTags() as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
+                $adTag->setActive($active);
+                $this->save($adTag);
+            }
+        }
+    }
+
+
     /**
      * @return EntityManagerInterface
      */
@@ -322,6 +336,4 @@ class AdTagManager implements AdTagManagerInterface
     {
         return $this->em;
     }
-
-
 }

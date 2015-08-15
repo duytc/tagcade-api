@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\Exception\LogicException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\ModelInterface;
@@ -55,7 +56,7 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
         if(!$libraryAdTag instanceof LibraryAdTagInterface) throw new InvalidArgumentException('expect LibraryAdTagInterface object');
 
         if ($libraryAdTag->getVisible() && count($libraryAdTag->getAdTags()) > 0) {
-            throw new NotSupportedException('There are some AdTag still referring to this library');
+            throw new LogicException('There are some ad tag still referring to this library');
         }
 
         $this->em->remove($libraryAdTag);

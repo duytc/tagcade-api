@@ -466,7 +466,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
 
-        $this->get('tagcade_app.service.core.ad_network.ad_network_service')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
+        $this->get('tagcade.domain_manager.ad_tag')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('PUT', $adNetwork);

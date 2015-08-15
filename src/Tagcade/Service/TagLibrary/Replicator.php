@@ -58,7 +58,9 @@ class Replicator implements ReplicatorInterface
     }
 
     /**
-     * Replicate all ad tags of a shared ad slot to other ad slots that refer to the same library
+     * Copy all ad tags from an library ad slot to the given ad slot. This function is only meaningful to
+     * display ad slot or native ad slot
+     *
      * @param $libAdSlot
      * @param $adSlot
      *
@@ -81,16 +83,20 @@ class Replicator implements ReplicatorInterface
         $this->em->getConnection()->beginTransaction();
 
         try {
+            // Update library of the ad slot
+            $adSlot->setLibraryAdSlot($libAdSlot);
+
             // add new ad slot that refers to a library then we have to replicate all tags in that library to the slot
             $librarySlotTags = $libAdSlot->getLibSlotTags();
 
+            // remove old ad tags
             $adTags = $adSlot->getAdTags();
             foreach($adTags as $t) {
                 $this->em->remove($t);
             }
 
             $adSlot->getAdTags()->clear();
-
+            // add new ad tags
             foreach($librarySlotTags as $librarySlotTag) {
                 $newAdTag = new AdTag();
                 $newAdTag->setAdSlot($adSlot);
@@ -121,6 +127,8 @@ class Replicator implements ReplicatorInterface
 
     /**
      * add new ad tag to all slots that refer to the same library on persisting new $librarySlotTag
+     * This function gets invoked when user add a new ad tag to a library ad slot
+     *
      * @param LibrarySlotTagInterface $librarySlotTag
      * @return AdTagInterface[]|null
      */
@@ -173,6 +181,7 @@ class Replicator implements ReplicatorInterface
     }
 
     /**
+     * Replicate changes from an library ad tag to all reference ad tags
      * @param LibrarySlotTagInterface $librarySlotTag
      * @param bool $remove true if we are removing $librarySlotTag
      */

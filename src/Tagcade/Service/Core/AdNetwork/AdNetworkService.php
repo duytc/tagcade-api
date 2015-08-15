@@ -23,20 +23,6 @@ class AdNetworkService implements AdNetworkServiceInterface
         $this->em = $em;
     }
 
-    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
-    {
-
-        foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
-            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
-                $adTag->setActive($active);
-            }
-        }
-
-        $this->em->flush();
-    }
 
     public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
     {
