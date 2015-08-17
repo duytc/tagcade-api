@@ -56,13 +56,13 @@ class AdTagChangeListener
         $this->changedEntities = [];
         $this->presoftDeleteAdTags = [];
 
-       $adSlots = [];
+        $adSlots = [];
 
         // filter all adTags and not (in $adSlots and in $adNetworks)
         array_walk($changedEntities,
             function($entity) use (&$adSlots)
             {
-                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface && !$entity instanceof LibrarySlotTagInterface)
+                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface)
                 {
                     return false;
                 }
@@ -72,17 +72,17 @@ class AdTagChangeListener
                 if ($entity instanceof LibraryAdTagInterface ) {
                     $adTags = array_merge($adTags, $entity->getAdTags()->toArray());
                 }
-                else if ($entity instanceof LibrarySlotTagInterface) {
-                    $tmpAdTags = $entity->getLibraryAdTag()->getAdTags()->toArray();
-                    $tmpAdTags = array_filter( // filter for ad tags in the same library slot
-                        $tmpAdTags,
-                        function(AdTagInterface $adTag) use($entity) {
-                            return $adTag->getAdSlot()->getLibraryAdSlot()->getId() === $entity->getLibraryAdSlot()->getId();
-                        }
-                    );
-
-                    $adTags = array_merge($adTags, $tmpAdTags);
-                }
+//                else if ($entity instanceof LibrarySlotTagInterface) {
+//                    $tmpAdTags = $entity->getLibraryAdTag()->getAdTags()->toArray();
+//                    $tmpAdTags = array_filter( // filter for ad tags in the same library slot
+//                        $tmpAdTags,
+//                        function(AdTagInterface $adTag) use($entity) {
+//                            return $adTag->getAdSlot()->getLibraryAdSlot()->getId() === $entity->getLibraryAdSlot()->getId();
+//                        }
+//                    );
+//
+//                    $adTags = array_merge($adTags, $tmpAdTags);
+//                }
                 else {
                     $adTags = array_merge($adTags, [$entity]);
                 }
