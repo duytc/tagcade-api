@@ -2,9 +2,10 @@
 
 namespace Tagcade\DomainManager;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\DomainManager\Behaviors\RemoveLibraryAdSlotTrait;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -13,13 +14,15 @@ use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 
 class LibraryDisplayAdSlotManager implements LibraryDisplayAdSlotManagerInterface
 {
-    protected $om;
+    use RemoveLibraryAdSlotTrait;
+
+    protected $em;
     protected $repository;
     protected $librarySlotTagRepository;
 
-    public function __construct(ObjectManager $om, LibraryDisplayAdSlotRepositoryInterface $repository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
+    public function __construct(EntityManagerInterface $em, LibraryDisplayAdSlotRepositoryInterface $repository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
     {
-        $this->om = $om;
+        $this->em = $em;
         $this->repository = $repository;
         $this->librarySlotTagRepository = $librarySlotTagRepository;
     }
@@ -39,8 +42,8 @@ class LibraryDisplayAdSlotManager implements LibraryDisplayAdSlotManagerInterfac
     {
         if(!$adSlot instanceof LibraryDisplayAdSlotInterface) throw new InvalidArgumentException('expect LibraryDisplayAdSlotInterface object');
 
-        $this->om->persist($adSlot);
-        $this->om->flush();
+        $this->em->persist($adSlot);
+        $this->em->flush();
     }
 
     /**
@@ -50,8 +53,7 @@ class LibraryDisplayAdSlotManager implements LibraryDisplayAdSlotManagerInterfac
     {
         if(!$adSlot instanceof LibraryDisplayAdSlotInterface) throw new InvalidArgumentException('expect LibraryDisplayAdSlotInterface object');
 
-        $this->om->remove($adSlot);
-        $this->om->flush();
+        $this->removeLibraryAdSlot($adSlot);
     }
 
     /**
@@ -93,5 +95,13 @@ class LibraryDisplayAdSlotManager implements LibraryDisplayAdSlotManagerInterfac
     public function getLibraryDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getLibraryDisplayAdSlotsForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    protected function getEntityManager()
+    {
+        return $this->em;
     }
 }

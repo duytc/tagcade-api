@@ -2,9 +2,10 @@
 
 namespace Tagcade\DomainManager;
 
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\DomainManager\Behaviors\RemoveLibraryAdSlotTrait;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -13,16 +14,18 @@ use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterface
 {
-    protected $om;
+    use RemoveLibraryAdSlotTrait;
+
+    protected $em;
     protected $repository;
     /**
      * @var ReplicatorInterface
      */
     private $replicator;
 
-    public function __construct(ObjectManager $om, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator)
+    public function __construct(EntityManagerInterface $em, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator)
     {
-        $this->om = $om;
+        $this->em = $em;
         $this->repository = $repository;
         $this->replicator = $replicator;
     }
@@ -42,11 +45,11 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
     {
         if(!$entity instanceof LibraryDynamicAdSlotInterface) throw new InvalidArgumentException('expect LibraryDynamicAdSlotInterface object');
 
-        $this->om->persist($entity);
+        $this->em->persist($entity);
         // creating default ad slot and expression for all referencing slots if the LibraryDynamicAdSlot introduces libraryExpression
         $this->replicator->replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots($entity);
 
-        $this->om->flush();
+        $this->em->flush();
     }
 
     /**
@@ -56,8 +59,7 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
     {
         if(!$adSlot instanceof LibraryDynamicAdSlotInterface) throw new InvalidArgumentException('expect LibraryDynamicAdSlotInterface object');
 
-        $this->om->remove($adSlot);
-        $this->om->flush();
+        $this->removeLibraryAdSlot($adSlot);
     }
 
     /**
@@ -97,4 +99,14 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
     {
         return $this->repository->getLibraryDynamicAdSlotsForPublisher($publisher, $limit, $offset);
     }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    protected function getEntityManager()
+    {
+        return $this->em;
+    }
+
+
 }

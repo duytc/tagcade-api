@@ -3,8 +3,10 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\DomainManager\Behaviors\RemoveLibraryAdSlotTrait;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -12,12 +14,14 @@ use Tagcade\Repository\Core\LibraryNativeAdSlotRepositoryInterface;
 
 class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
 {
-    protected $om;
+    use RemoveLibraryAdSlotTrait;
+
+    protected $em;
     protected $repository;
 
-    public function __construct(ObjectManager $om, LibraryNativeAdSlotRepositoryInterface $repository)
+    public function __construct(EntityManagerInterface $em, LibraryNativeAdSlotRepositoryInterface $repository)
     {
-        $this->om = $om;
+        $this->em = $em;
         $this->repository = $repository;
     }
 
@@ -36,8 +40,8 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     {
         if(!$adSlot instanceof LibraryNativeAdSlotInterface) throw new InvalidArgumentException('expect LibraryNativeAdSlotInterface object');
 
-        $this->om->persist($adSlot);
-        $this->om->flush();
+        $this->em->persist($adSlot);
+        $this->em->flush();
     }
 
     /**
@@ -47,8 +51,7 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     {
         if(!$adSlot instanceof LibraryNativeAdSlotInterface) throw new InvalidArgumentException('expect LibraryNativeAdSlotInterface object');
 
-        $this->om->remove($adSlot);
-        $this->om->flush();
+        $this->removeLibraryAdSlot($adSlot);
     }
 
     /**
@@ -88,4 +91,14 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     {
         return $this->repository->getLibraryNativeAdSlotsForPublisher($publisher, $limit, $offset);
     }
+
+    /**
+     * @return EntityManagerInterface
+     */
+    protected function getEntityManager()
+    {
+        return $this->em;
+    }
+
+
 }

@@ -244,7 +244,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
         $referencingSlots = $libraryDisplayAdSlot->getAdSlots()->toArray();
         if (count($referencingSlots) > 0) {
-            throw new BadRequestHttpException('There are some slots still referencing to this library');
+            throw new BadRequestHttpException('There are some slots still referring to this library');
         }
 
         return $this->delete($id);
