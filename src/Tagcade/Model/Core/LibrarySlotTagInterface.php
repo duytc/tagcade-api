@@ -4,7 +4,7 @@ namespace Tagcade\Model\Core;
 
 use Tagcade\Model\ModelInterface;
 
-interface LibrarySlotTagInterface extends PositionInterface, ModelInterface{
+interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
      * @return LibraryAdTagInterface
@@ -55,14 +55,4 @@ interface LibrarySlotTagInterface extends PositionInterface, ModelInterface{
      * @param int $rotation
      */
     public function setRotation($rotation);
-
-    /**
-     * @return string
-     */
-    public function getRefId();
-
-    /**
-     * @param string $refId
-     */
-    public function setRefId($refId);
 }

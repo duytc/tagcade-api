@@ -2,9 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
-use Tagcade\Model\ModelInterface;
-
-interface AdTagInterface extends PositionInterface, ModelInterface
+interface AdTagInterface extends PositionInterface
 {
     /**
      * @param mixed $id
@@ -116,16 +114,6 @@ interface AdTagInterface extends PositionInterface, ModelInterface
      * @return AdTagInterface[]
      */
     public function getCoReferencedAdTags();
-
-    /**
-     * @return string
-     */
-    public function getRefId();
-
-    /**
-     * @param string $refId
-     */
-    public function setRefId($refId);
 
     /**
      * @return string

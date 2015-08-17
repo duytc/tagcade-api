@@ -6,7 +6,7 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 
-interface PositionInterface{
+interface PositionInterface extends ModelInterface {
     /**
      * @return int|null
      */
@@ -36,4 +36,14 @@ interface PositionInterface{
      * @return mixed
      */
     public function getSiblings();
+
+    /**
+     * @return string
+     */
+    public function getRefId();
+
+    /**
+     * @param string $refId
+     */
+    public function setRefId($refId);
 }

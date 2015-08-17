@@ -19,9 +19,8 @@ interface LibrarySlotTagManagerInterface extends ManagerInterface
 
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
-     * @param LibraryAdTagInterface $libraryAdTag
      * @param $refId
      * @return LibrarySlotTagInterface|null
      */
-    public function getByLibraryAdSlotAndLibraryAdTagAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, LibraryAdTagInterface $libraryAdTag, $refId);
+    public function getByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId);
 }

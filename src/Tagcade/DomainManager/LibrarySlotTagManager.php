@@ -106,7 +106,7 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         return $this->repository->getByLibraryAdSlot($libraryAdSlot, $limit, $offset);
     }
 
-    public function getByLibraryAdSlotAndLibraryAdTagAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, LibraryAdTagInterface $libraryAdTag, $refId)
+    public function getByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId)
     {
         return $this->repository->getByLibraryAdSlotAndRefId($libraryAdSlot, $refId);
     }

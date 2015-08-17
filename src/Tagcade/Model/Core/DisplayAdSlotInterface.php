@@ -39,6 +39,10 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      */
     public function setAdTags($adTags);
 
+    /**
+     * @return BaseLibraryAdSlotInterface
+     */
+    public function getLibraryAdSlot();
 
     /**
      * get the list of DisplayAdSlot that also refers to the DisplayAdSlotLib of this entity

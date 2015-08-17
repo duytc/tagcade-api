@@ -54,9 +54,10 @@ services:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.domain_manager.library_slot_tag
             - @doctrine.orm.default_entity_manager
+        calls:
+            - [setValidator, ["@tagcade_api.service.tag_library.checksum_validator"]]
 
     tagcade_app.service.core.ad_network.ad_network_service:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService
         arguments:
             - @doctrine.orm.default_entity_manager
-
