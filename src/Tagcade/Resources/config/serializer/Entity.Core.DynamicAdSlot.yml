@@ -1,25 +1,15 @@
 Tagcade\Entity\Core\DynamicAdSlot:
     exclusion_policy: ALL
-    virtual_properties:
-        getAdSlotType:
-            type: string
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
     properties:
         id:
             expose: true
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+            groups: [dynamicadslot.detail, dynamicadslot.summary]
         site:
             expose: true
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
-        name:
-            expose: true
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+            groups: [dynamicadslot.detail, dynamicadslot.summary]
+#        expressions:
+#            expose: true
+#            groups: [dynamicadslot.detail, dynamicadslot.summary]
         defaultAdSlot:
             expose: true
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
-        expressions:
-            expose: true
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
-        native:
-            expose: true
-            groups: [dynamicadSlot.detail, dynamicadSlot.summary]
+            groups: [dynamicadslot.detail, dynamicadslot.summary]

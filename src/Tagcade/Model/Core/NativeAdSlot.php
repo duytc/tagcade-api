@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -10,21 +11,13 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 {
     protected $id;
 
-    protected $name;
-
-    /**
-     * @var DynamicAdSlotInterface[]
-     */
-    protected $defaultDynamicAdSlots;
-    /**
-     * @param string $name
-     */
-    public function __construct($name)
+    function __construct()
     {
         parent::__construct();
 
-        $this->name = $name;
+        $this->setSlotType(AdSlotAbstract::TYPE_NATIVE);
     }
+
 
     /**
      * @inheritdoc
@@ -40,18 +33,13 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
     /**
      * @param ArrayCollection $adTags
+     * @return $this
      */
     public function setAdTags($adTags)
     {
         $this->adTags = $adTags;
-    }
 
-    /**
-     * @return DynamicAdSlotInterface[]
-     */
-    public function defaultDynamicAdSlots()
-    {
-        return $this->defaultDynamicAdSlots;
+        return $this;
     }
 
     /**
@@ -65,6 +53,31 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
     public function __toString()
     {
-        return parent::__toString();
+        return $this->id . $this->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function checkSum()
+    {
+        $array = array(
+            $this->getType(),
+            $this->getLibraryAdSlot()->getId()
+        );
+
+        $adTags = $this->getAdTags()->toArray();
+
+        usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
+                return strcmp($a->getRefId(), $b->getRefId());
+            }
+        );
+
+        /** @var AdTagInterface $t */
+        foreach($adTags as $t){
+            $array[] =  $t->checkSum();
+        }
+
+        return md5(serialize($array));
     }
 }

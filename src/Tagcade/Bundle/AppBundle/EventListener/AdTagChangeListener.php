@@ -2,11 +2,14 @@
 
 namespace Tagcade\Bundle\AppBundle\EventListener;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 class AdTagChangeListener
 {
@@ -20,9 +23,19 @@ class AdTagChangeListener
      */
     protected $changedEntities;
 
+    protected $presoftDeleteAdTags = [];
+
     function __construct(EventDispatcherInterface $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function preSoftDelete(LifecycleEventArgs $args)
+    {
+        $em = $args->getEntityManager();
+        $uow = $em->getUnitOfWork();
+
+        $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) { return $entity instanceof AdTagInterface; }));
     }
 
     public function onFlush(OnFlushEventArgs $args)
@@ -38,36 +51,73 @@ class AdTagChangeListener
     // Truly refresh cache invocation
     public function postFlush(PostFlushEventArgs $args)
     {
-        if (!isset($this->changedEntities) || !is_array($this->changedEntities) || count($this->changedEntities) < 1) {
-            return;
-        }
+        $changedEntities = array_merge($this->presoftDeleteAdTags, $this->changedEntities);
 
-        $changedEntities = $this->changedEntities;
+        $this->changedEntities = [];
+        $this->presoftDeleteAdTags = [];
 
-        unset($this->changedEntities);
-
-       $adSlots = [];
+        $adSlots = [];
 
         // filter all adTags and not (in $adSlots and in $adNetworks)
         array_walk($changedEntities,
             function($entity) use (&$adSlots)
             {
-                if (!$entity instanceof AdTagInterface)
+                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface)
                 {
                     return false;
                 }
 
-                // ignore the ad tag in adSlot has been counted
-                if (in_array($entity->getAdSlot(), $adSlots)) {
+                $adTags = [];
+
+                if ($entity instanceof LibraryAdTagInterface ) {
+                    $adTags = array_merge($adTags, $entity->getAdTags()->toArray());
+                }
+//                else if ($entity instanceof LibrarySlotTagInterface) {
+//                    $tmpAdTags = $entity->getLibraryAdTag()->getAdTags()->toArray();
+//                    $tmpAdTags = array_filter( // filter for ad tags in the same library slot
+//                        $tmpAdTags,
+//                        function(AdTagInterface $adTag) use($entity) {
+//                            return $adTag->getAdSlot()->getLibraryAdSlot()->getId() === $entity->getLibraryAdSlot()->getId();
+//                        }
+//                    );
+//
+//                    $adTags = array_merge($adTags, $tmpAdTags);
+//                }
+                else {
+                    $adTags = array_merge($adTags, [$entity]);
+                }
+
+                if (is_null($adTags)) { // ignore when update library with no tag reference
                     return false;
                 }
 
-                $updatingAdSlot = $entity->getAdSlot();
-                if (!$updatingAdSlot->getAdTags()->contains($entity)) {
-                    $updatingAdSlot->getAdTags()->add($entity);
+                foreach($adTags as $tag) {
+                    /**
+                     * @var AdTagInterface $tag
+                     */
+                    // ignore the ad tag that is not belonged to any AdSlot
+                    if(null === $tag->getAdSlot()) continue;
+
+                    $updatingAdSlot = $tag->getAdSlot();
+                    // ignore the ad tag in adSlot has been counted
+                    if (in_array($updatingAdSlot, $adSlots)) {
+                        continue;
+                    }
+
+                    if (null === $tag->getDeletedAt() && !$updatingAdSlot->getAdTags()->contains($tag)) { // include the entity being inserted
+                        $updatingAdSlot->getAdTags()->add($tag);
+                    }
+                    else if(null !== $tag->getDeletedAt()) {
+                        $removeElement = array_filter($updatingAdSlot->getAdTags()->toArray(), function(AdTagInterface $t) use($tag) { return $t->getId() === $tag->getId();});
+                        $removeElement = current($removeElement);
+                        if ($removeElement instanceof AdTagInterface) {
+                            $updatingAdSlot->getAdTags()->removeElement($removeElement);
+                        }
+                    }
+
+                    $adSlots[] = $updatingAdSlot;
                 }
-                
-                $adSlots[] = $updatingAdSlot;
+
 
                 return true;
             }

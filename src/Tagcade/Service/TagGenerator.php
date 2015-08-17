@@ -126,7 +126,7 @@ class TagGenerator
         $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
         $tag .= sprintf("var tc_size = '%dx%d';\n", $adSlot->getWidth(), $adSlot->getHeight());
         $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId());
 
         return $tag;
     }
@@ -148,7 +148,7 @@ class TagGenerator
         }
 
         $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSiteId());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId());
 
         return $tag;
     }
@@ -166,7 +166,7 @@ class TagGenerator
         $tag .= sprintf("var tc_slot = %d;\n", $nativeAdSlot->getId());
         $tag .= "var tc_native = true;\n";
         $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSiteId());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSite()->getId());
 
         return $tag;
     }

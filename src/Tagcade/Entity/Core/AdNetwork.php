@@ -11,7 +11,7 @@ class AdNetwork extends AdNetworkModel
     protected $name;
     protected $url;
     protected $defaultCpmRate;
-
+    protected $libraryAdTags;
     public function __construct()
     {}
 }

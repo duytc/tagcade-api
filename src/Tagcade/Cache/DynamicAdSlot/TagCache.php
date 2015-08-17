@@ -2,6 +2,7 @@
 
 namespace Tagcade\Cache\DynamicAdSlot;
 
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Cache\DynamicAdSlot\Behavior\CreateAdSlotDataTrait;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
@@ -254,16 +255,16 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     {
         $expressions = $this->expressionRepository->findBy(array('expectAdSlot' => $updatingAdSlot));
 
-        $referencingDynamicAdSlots = array_map(
-            function(ExpressionInterface $expression) {
+        $dynamicAdSlotsWithExpressionReference = array_map(
+            function(ExpressionInterface $expression)
+            {
                 return $expression->getDynamicAdSlot();
             },
             $expressions
         );
 
-        if ($updatingAdSlot->defaultDynamicAdSlots() != null && $updatingAdSlot->defaultDynamicAdSlots()->count() > 0) {
-            $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $updatingAdSlot->defaultDynamicAdSlots()->toArray());
-        }
+        $dynamicAdSlotsWithDefaultAdSlotReference = $this->dynamicAdSlotManager->getDynamicAdSlotsThatHaveDefaultAdSlot($updatingAdSlot);
+        $referencingDynamicAdSlots = array_merge($dynamicAdSlotsWithDefaultAdSlotReference, $dynamicAdSlotsWithExpressionReference);
 
         return array_unique($referencingDynamicAdSlots);
     }

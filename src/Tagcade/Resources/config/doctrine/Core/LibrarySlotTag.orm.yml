@@ -1,0 +1,62 @@
+Tagcade\Entity\Core\LibrarySlotTag:
+    type: entity
+    table: library_ad_slot_ad_tag
+    repositoryClass: Tagcade\Repository\Core\LibrarySlotTagRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    uniqueConstraints:
+        unique_report_idx:
+            columns:
+                - library_ad_tag_id
+                - library_ad_slot_id # underscore column name
+                - ref_id
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        position:
+            type: integer
+            nullable: true
+
+        active:
+            type: boolean
+            options:
+                default: true
+
+        frequencyCap:
+            type: integer
+            nullable: true
+
+        rotation:
+            type: integer
+            nullable: true
+
+        refId:
+            type: string
+
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+        updatedAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+        deletedAt:
+            type: date
+            nullable: true
+
+    manyToOne:
+        libraryAdTag:
+            targetEntity: Tagcade\Entity\Core\LibraryAdTag
+            inversedBy: libSlotTags
+            cascade: ["persist"]
+        libraryAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract
+            inversedBy: libSlotTags

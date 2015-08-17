@@ -3,14 +3,19 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\SiteInterface;
 
 class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
     protected $id;
 
-    protected $name;
+    /**
+     * @var ExpressionInterface[]
+     */
+    protected $expressions;
 
     /**
      * @var BaseAdSlotInterface
@@ -18,17 +23,14 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
     protected $defaultAdSlot;
 
     protected $deletedAt;
-    /**
-     * @var ExpressionInterface[]
-     */
-    protected $expressions;
 
-    /** @var $native */
-    protected $native;
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->expressions = new ArrayCollection();
+        $this->setSlotType(AdSlotAbstract::TYPE_NATIVE);
     }
 
     /**
@@ -41,30 +43,32 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 
     /**
      * @param BaseAdSlotInterface $defaultAdSlot
+     * @return $this
      */
     public function setDefaultAdSlot($defaultAdSlot)
     {
         $this->defaultAdSlot = $defaultAdSlot;
+
+        return $this;
     }
 
     /**
-     * @return ExpressionInterface[]
+     * @return ArrayCollection
      */
     public function getExpressions()
     {
-        if ($this->expressions == null) {
+        if ($this->expressions === null) {
             $this->expressions = new ArrayCollection();
         }
 
         return $this->expressions;
     }
 
-    /**
-     * @param ExpressionInterface[] $expressions
-     */
     public function setExpressions($expressions)
     {
         $this->expressions = $expressions;
+
+        return $this;
     }
 
     /**
@@ -72,7 +76,9 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function isSupportedNative()
     {
-        return $this->native;
+        if($this->getLibraryAdSlot() == null) return false;
+
+        return $this->getLibraryAdSlot()->isSupportedNative();
     }
 
     /**
@@ -80,15 +86,19 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function getNative()
     {
-        return $this->native;
+        if($this->getLibraryAdSlot() == null) return false;
+
+        return $this->getLibraryAdSlot()->isSupportedNative();
     }
 
-    /**
-     * @param mixed $native
-     */
     public function setNative($native)
     {
-        $this->native = $native;
+        if($this->getLibraryAdSlot() != null)
+        {
+            $this->getLibraryAdSlot()->setNative($native);
+        }
+
+        return $this;
     }
 
     /**
@@ -102,6 +112,35 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 
     public function __toString()
     {
-        return parent::__toString();
+        return $this->id . $this->getName();
+    }
+
+    /**
+     * @return LibraryDynamicAdSlotInterface
+     */
+    public function getLibraryAdSlot()
+    {
+        return $this->libraryAdSlot;
+    }
+
+    /**
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @return $this
+     */
+    public function setLibraryAdSlot($libraryAdSlot)
+    {
+        $this->libraryAdSlot = $libraryAdSlot;
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return string
+     */
+    public function checkSum()
+    {
+        throw new LogicException('Checksum is not supported with DynamicAdSlot');
     }
 }

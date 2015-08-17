@@ -3,11 +3,15 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\Core\SiteInterface;
+use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 
@@ -38,18 +42,37 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function save(DynamicAdSlotInterface $adSlot)
+    public function save(ModelInterface $dynamicAdSlot)
     {
-        $this->om->persist($adSlot);
+        if(!$dynamicAdSlot instanceof DynamicAdSlotInterface) throw new InvalidArgumentException('expect DynamicAdSlotInterface object');
+
+        $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
+        $referenceSlot = $this->getReferencedAdSlotsForSite($libraryAdSlot, $dynamicAdSlot->getSite());
+        if ($referenceSlot instanceof DynamicAdSlotInterface && $referenceSlot->getId() !== $dynamicAdSlot->getId()) {
+            throw new LogicException('Cannot create more than one ad slots in the same site referring to the same library');
+        }
+
+        $this->om->persist($dynamicAdSlot);
         $this->om->flush();
     }
 
     /**
      * @inheritdoc
      */
-    public function delete(DynamicAdSlotInterface $adSlot)
+    public function delete(ModelInterface $dynamicAdSlot)
     {
-        $this->om->remove($adSlot);
+        if(!$dynamicAdSlot instanceof DynamicAdSlotInterface) throw new InvalidArgumentException('expect DynamicAdSlotInterface object');
+
+        $libraryDynamicAdSlot = $dynamicAdSlot->getLibraryAdSlot();
+        //1. Remove library this ad slot is the only one that refer to the library
+        if(count($dynamicAdSlot->getCoReferencedAdSlots()) < 2 ) {
+            $this->om->remove($libraryDynamicAdSlot); // resulting cascade remove this ad slot
+        }
+        else {
+            // 2. If the tag is in library then we only remove the tag itself, not the library.
+            $this->om->remove($dynamicAdSlot);
+        }
+
         $this->om->flush();
     }
 
@@ -94,11 +117,32 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
         return $this->adSlotRepository->getDynamicAdSlotsForPublisher($publisher, $limit, $offset);
     }
 
-//    /**
-//     * @inheritdoc
-//     */
-//    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null)
-//    {
-//        return $this->repository->getDynamicAdSlotsForAdSlot($adSlot, $limit, $offset);
-//    }
+    public function persistAndFlush(DynamicAdSlotInterface $adSlot)
+    {
+        $this->om->persist($adSlot);
+        $this->om->flush();
+    }
+
+    /**
+     * Get all referenced ad slots that refer to the same library and on the same site to current slot
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site)
+    {
+        return $this->adSlotRepository->getReferencedAdSlotsForSite($libraryAdSlot, $site);
+    }
+
+    /**
+     * Get all dynamic ad slots that have default ad slot $adSlot
+     * @param ReportableAdSlotInterface $adSlot
+     * @return array
+     */
+    public function getDynamicAdSlotsThatHaveDefaultAdSlot(ReportableAdSlotInterface $adSlot)
+    {
+        return $this->repository->getDynamicAdSlotsThatHaveDefaultAdSlot($adSlot);
+    }
+
+
 }

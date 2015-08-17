@@ -1,0 +1,45 @@
+Tagcade\Entity\Core\LibraryAdSlotAbstract:
+    type: entity
+    table: library_ad_slot
+    repositoryClass: Tagcade\Repository\Core\LibraryAdSlotRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+        visible:
+            type: boolean
+        deletedAt:
+            type: date
+            nullable: true
+
+    inheritanceType: JOINED
+
+    discriminatorColumn:
+        name: type
+        type: string
+
+    discriminatorMap:
+        display: Tagcade\Entity\Core\LibraryDisplayAdSlot
+        dynamic: Tagcade\Entity\Core\LibraryDynamicAdSlot
+        native: Tagcade\Entity\Core\LibraryNativeAdSlot
+
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        libSlotTags:
+            targetEntity: Tagcade\Entity\Core\LibrarySlotTag
+            mappedBy: libraryAdSlot
+            cascade: ['remove']
+        adSlots:
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+            mappedBy: libraryAdSlot
+            cascade: ['remove']

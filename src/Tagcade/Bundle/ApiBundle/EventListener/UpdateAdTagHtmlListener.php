@@ -6,6 +6,7 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 
 class UpdateAdTagHtmlListener {
 
@@ -15,7 +16,7 @@ class UpdateAdTagHtmlListener {
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof AdTagInterface) {
+        if(!$entity instanceof LibraryAdTagInterface) {
             return;
         }
 
@@ -29,35 +30,35 @@ class UpdateAdTagHtmlListener {
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof AdTagInterface) {
+        if(!$entity instanceof LibraryAdTagInterface) {
             return;
         }
 
         $this->updateTagHtml($entity);
     }
 
-    protected function updateTagHtml(AdTagInterface $adTag)
+    protected function updateTagHtml(LibraryAdTagInterface $libraryAdTag)
     {
-        $html = $this->createHtmlFromDescriptor($adTag);
-        $adTag->setHtml($html);
+        $html = $this->createHtmlFromDescriptor($libraryAdTag);
+        $libraryAdTag->setHtml($html);
     }
 
     /**
-     * @param AdTagInterface $adTag
+     * @param LibraryAdTagInterface $libraryAdTag
      *
      * @return string
      */
-    protected function createHtmlFromDescriptor(AdTagInterface $adTag)
+    protected function createHtmlFromDescriptor(LibraryAdTagInterface $libraryAdTag)
     {
-        switch ($adTag->getAdType()) {
+        switch ($libraryAdTag->getAdType()) {
             case self::AD_TAG_TYPE_IMAGE:
-                return $this->createImageAdTag($adTag->getDescriptor());
+                return $this->createImageAdTag($libraryAdTag->getDescriptor());
             default:
                 break;
 
         }
 
-        return $adTag->getHtml();
+        return $libraryAdTag->getHtml();
     }
 
     /**

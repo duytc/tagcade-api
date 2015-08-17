@@ -2,10 +2,10 @@ Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig:
     type: entity
     table: source_report_email_config
     repositoryClass: Tagcade\Bundle\AdminApiBundle\Repository\SourceReportEmailConfigRepository
-    gedmo:
-        soft_deleteable:
-            field_name: deletedAt
-            time_aware: false
+#    gedmo:
+#        soft_deleteable:
+#            field_name: deletedAt
+#            time_aware: false
     id:
         id:
             type: integer

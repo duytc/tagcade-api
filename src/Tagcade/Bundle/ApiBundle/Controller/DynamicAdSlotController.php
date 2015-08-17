@@ -5,13 +5,14 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Handler\Handlers\Core\DynamicAdSlotHandlerAbstract;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("DynamicAdSlot")
@@ -19,8 +20,10 @@ use Tagcade\Model\Core\DynamicAdSlotInterface;
 class DynamicAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad slots
-     *
+     * Get all dynamic ad slots
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "dynamicadslot.summary", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -36,8 +39,13 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Get a single adSlot for the given id
+     * Get a single dynamic adSlot for the given id
      *
+     * @Rest\Get("/dynamicadslots/{id}", requirements={"id" = "\d+"})
+     *
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "dynamicadslot.detail", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -57,6 +65,46 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * @Rest\Get("/dynamicadslots/prospective")
+     *
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "dynamicadslot.detail", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
+     * )
+     *
+     * @Rest\QueryParam(name="site")
+     * @Rest\QueryParam(name="library")
+     *
+     * @return DynamicAdSlotInterface
+     *
+     */
+    public function getProspectiveAction()
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+
+        $siteId = (int)$paramFetcher->get('site');
+        $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+
+        if (!$site instanceof SiteInterface) {
+            throw new NotFoundHttpException(sprintf('not found any site  with id %s', $siteId));
+        }
+
+        $this->checkUserPermission($site);
+
+        $libraryId = (int)$paramFetcher->get('library');
+        $libraryAdSlot = $this->get('tagcade.domain_manager.library_dynamic_ad_slot')->find($libraryId);
+
+        if (!$libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
+            throw new NotFoundHttpException(sprintf('not found any site  with id %s', $siteId));
+        }
+
+        $this->checkUserPermission($libraryAdSlot);
+
+        return $this->get('tagcade_api.service.tag_library.ad_slot_generator_service')->getProspectiveDynamicAdSlotForLibraryAndSite($libraryAdSlot, $site);
+    }
+
+
+    /**
+     * @Rest\View(serializerEnableMaxDepthChecks=true)
      * @param int $id
      * @return View
      */
@@ -65,11 +113,13 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
         /** @var DynamicAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
+        $jstag = $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
+
+        return $jstag;
     }
 
     /**
-     * Create a adSlot from the submitted data
+     * Create a dynamic adSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -90,7 +140,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
 
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot
+     * Update an existing dynamic adSlot from the submitted data or create a new dynamic adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -114,7 +164,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot at a specific location
+     * Update an existing dynamic adSlot from the submitted data or create a new dynamic adSlot at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -137,7 +187,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Delete an existing adSlot
+     * Delete an existing dynamic adSlot
      *
      * @ApiDoc(
      *  resource = true,

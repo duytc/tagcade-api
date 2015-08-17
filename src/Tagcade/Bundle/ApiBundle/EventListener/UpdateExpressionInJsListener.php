@@ -7,31 +7,14 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Form\Type\ExpressionFormType;
+use Tagcade\Form\Type\LibraryExpressionFormType;
 use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Entity\Core\Expression;
+use Tagcade\Model\Core\LibraryExpressionInterface;
 
 class UpdateExpressionInJsListener {
 
     static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href'];
-    /**
-     * handle event preUpdate one expression, this auto update expressionInJS field.
-     * @param PreUpdateEventArgs $args
-     */
-//    public function preUpdate($args)
-//    {
-//        $entity = $args->getObject();
-//        if (!$entity instanceof ExpressionInterface ) {
-//            return;
-//        }
-//
-//        if ($args->hasChangedField('expectAdSlot')) {
-//            $this->updateExpectAdSlotForExpressionInJs($entity);
-//        }
-//
-//        if ($args->hasChangedField('expressionDescriptor')) {
-//            $this->updateExpressionForExpressionInJs($entity);
-//        }
-//
-//    }
 
     /**
      * handle event prePersist one expression, this auto update expressionInJS field.
@@ -47,36 +30,25 @@ class UpdateExpressionInJsListener {
         $this->createExpressionInJs($entity);
     }
 
-//    /**
-//     * update ExpressionInJS, built from expressionDescriptor automatically
-//     * @param ExpressionInterface $expression
-//     */
-//    private function updateExpectAdSlotForExpressionInJs(ExpressionInterface $expression)
-//    {
-//        $expressionInJS = $expression->getExpressionInJS();
-//        if (null == $expressionInJS || count($expressionInJS) < 1 || !array_key_exists('expectedAdSlot', $expressionInJS)) {
-//            return;
-//        }
-//
-//        $expressionInJS['expectedAdSlot'] = $expression->getExpectAdSlot()->getId();
-//
-//        $expression->setExpressionInJs($expressionInJS);
-//    }
-
-//    private function updateExpressionForExpressionInJs(ExpressionInterface $expression)
-//    {
-//        $expressionDescriptor = $expression->getExpressionDescriptor();
-//        if (null == $expressionDescriptor || count($expressionDescriptor) < 1) {
-//            return;
-//        }
-//
-//        $expressionInJS = $expression->getExpressionInJS();
-//        $convertedExpression = $this->simplifyExpression($expressionDescriptor);
-//
-//        $expressionInJS['expression'] = $convertedExpression['expression'];
-//        $expressionInJS['vars'] = $convertedExpression['vars'];
-//        $expression->setExpressionInJs($expressionInJS);
-//    }
+    /**
+     * handle event preUpdate one expression, this auto update expressionInJS field.
+     * @param PreUpdateEventArgs $args
+     */
+    public function preUpdate(PreUpdateEventArgs $args)
+    {
+        $entity = $args->getObject();
+        if ($entity instanceof LibraryExpressionInterface && ($args->hasChangedField('expressionDescriptor') || $args->hasChangedField('startingPosition'))) {
+            $expressions = $entity->getExpressions();
+            $em = $args->getEntityManager();
+            foreach ($expressions as $exp) {
+                $this->createExpressionInJs($exp);
+                $em->merge($exp);
+            }
+        }
+        else if($entity instanceof ExpressionInterface) {
+            $this->createExpressionInJs($entity);
+        }
+    }
 
     protected function createExpressionInJs(ExpressionInterface $expression)
     {
@@ -122,10 +94,10 @@ class UpdateExpressionInJsListener {
     protected function createExpressionObject(array $expression)
     {
         //try to get groupType, if not null => is group, else is not group
-        $groupType = (isset($expression[ExpressionFormType::KEY_GROUP_TYPE])) ? ExpressionFormType::$VAL_GROUPS[$expression[ExpressionFormType::KEY_GROUP_TYPE]] : null;
+        $groupType = (isset($expression[LibraryExpressionFormType::KEY_GROUP_TYPE])) ? LibraryExpressionFormType::$VAL_GROUPS[$expression[LibraryExpressionFormType::KEY_GROUP_TYPE]] : null;
 
         return ($groupType != null)
-            ? $this->createExpressionAsGroupObject($groupType, $expression[ExpressionFormType::KEY_GROUP_VAL])
+            ? $this->createExpressionAsGroupObject($groupType, $expression[LibraryExpressionFormType::KEY_GROUP_VAL])
             : $this->createExpressionAsConditionObject($expression);
     }
 
@@ -179,8 +151,8 @@ class UpdateExpressionInJsListener {
      */
     protected function createExpressionAsConditionObject(array $expression)
     {
-        $type = array_key_exists(ExpressionFormType::KEY_EXPRESSION_TYPE, $expression) ? $expression[ExpressionFormType::KEY_EXPRESSION_TYPE] : "";
-        $val = $expression[ExpressionFormType::KEY_EXPRESSION_VAL];
+        $type = array_key_exists(LibraryExpressionFormType::KEY_EXPRESSION_TYPE, $expression) ? $expression[LibraryExpressionFormType::KEY_EXPRESSION_TYPE] : "";
+        $val = $expression[LibraryExpressionFormType::KEY_EXPRESSION_VAL];
 
         if (null !== $type) {
             $type = strtolower($type);
@@ -192,9 +164,9 @@ class UpdateExpressionInJsListener {
                 break;
         }
 
-        $exp = $this->getConditionInJS($expression[ExpressionFormType::KEY_EXPRESSION_VAR], $expression[ExpressionFormType::KEY_EXPRESSION_CMP], $val);
+        $exp = $this->getConditionInJS($expression[LibraryExpressionFormType::KEY_EXPRESSION_VAR], $expression[LibraryExpressionFormType::KEY_EXPRESSION_CMP], $val);
 
-        return ['vars'=>['name'=>$expression[ExpressionFormType::KEY_EXPRESSION_VAR], 'type'=>$type], 'expression'=>$exp];
+        return ['vars'=>['name'=>$expression[LibraryExpressionFormType::KEY_EXPRESSION_VAR], 'type'=>$type], 'expression'=>$exp];
     }
 
     /**
@@ -204,8 +176,8 @@ class UpdateExpressionInJsListener {
      */
     protected function getOperatorInJS($operator)
     {
-        if (array_key_exists($operator, ExpressionFormType::$GROUP_TYPE_MAP_JS)) {
-            return ExpressionFormType::$GROUP_TYPE_MAP_JS[$operator];
+        if (array_key_exists($operator, LibraryExpressionFormType::$GROUP_TYPE_MAP_JS)) {
+            return LibraryExpressionFormType::$GROUP_TYPE_MAP_JS[$operator];
         }
 
         return $operator;
@@ -225,12 +197,12 @@ class UpdateExpressionInJsListener {
         $var = trim($var); // make sure not spacing
 
         //if MATH => format as '$var . $cmp . $val'
-        if (in_array($cmp, ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_MATH)) {
+        if (in_array($cmp, LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_MATH)) {
             return $this->getConditionInJSForMath($var, $cmp, $val);
         }
 
         //if STRING => format as 'func($var) . $real-cmp . $val', where func = $cmp['func'], $real-cmp = $cmp['cmp']
-        if (array_key_exists($cmp, ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING)) {
+        if (array_key_exists($cmp, LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING)) {
             return $this->getConditionInJSForString($var, $cmp, $val);
         }
 
@@ -278,7 +250,7 @@ class UpdateExpressionInJsListener {
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['cmp'] . $val .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['cmp'] . $val .
             ')';
         }
 
@@ -287,39 +259,39 @@ class UpdateExpressionInJsListener {
 
         if ($cmp === 'contains') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
             ')';
         }
 
         if ($cmp === 'notContains') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
             ')';
         }
 
         if ($cmp === 'startsWith') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
             ')';
         }
 
         if ($cmp === 'notStartsWith') {
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
 
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
         if ($cmp === 'notEndsWith') {
 
             return '(window.' .
-            $var . '.' . ExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
+            $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 

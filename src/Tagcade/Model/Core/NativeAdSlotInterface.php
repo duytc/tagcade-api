@@ -18,8 +18,9 @@ interface NativeAdSlotInterface extends BaseAdSlotInterface
     public function setAdTags($adTags);
 
     /**
-     * @return ArrayCollection
+     * get the list of NativeAdSlot that also refers to the NativeAdSlotLib of this entity
+     * @return NativeAdSlotInterface[]
      */
-    public function defaultDynamicAdSlots();
+    public function getCoReferencedAdSlots();
 
 }

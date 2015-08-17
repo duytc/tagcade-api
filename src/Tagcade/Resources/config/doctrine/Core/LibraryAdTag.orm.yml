@@ -1,0 +1,64 @@
+Tagcade\Entity\Core\LibraryAdTag:
+    type: entity
+    table: library_ad_tag
+    repositoryClass: Tagcade\Repository\Core\LibraryAdTagRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        html:
+            type: text
+            nullable: true
+
+        visible:
+            type: boolean
+            options:
+                default: false
+
+        adType:
+            type: integer
+            options:
+                default: 0
+
+        descriptor:
+            type: json_array
+            nullable: true
+
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+        updatedAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+        deletedAt:
+            type: date
+            nullable: true
+
+    manyToOne:
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork
+            inversedBy: libraryAdTags
+
+    oneToMany:
+        adTags:
+            targetEntity: Tagcade\Entity\Core\AdTag
+            mappedBy: libraryAdTag
+            cascade: ['remove']
+        libSlotTags:
+            targetEntity: Tagcade\Entity\Core\LibrarySlotTag
+            mappedBy: libraryAdTag
+            cascade: ['remove']
+

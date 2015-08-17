@@ -10,6 +10,13 @@ require_once 'api/abstract/ApiBundle/AdSlot.php';
 require_once 'api/abstract/ApiBundle/NativeAdSlot.php';
 require_once 'api/abstract/ApiBundle/DynamicAdSlot.php';
 require_once 'api/abstract/ApiBundle/AdTag.php';
+/* library feature */
+require_once 'api/abstract/ApiBundle/LibraryAdSlot.php';
+require_once 'api/abstract/ApiBundle/LibraryDisplayAdSlot.php';
+require_once 'api/abstract/ApiBundle/LibraryNativeAdSlot.php';
+require_once 'api/abstract/ApiBundle/LibraryDynamicAdSlot.php';
+require_once 'api/abstract/ApiBundle/LibraryAdTag.php';
+/* end - library feature */
 require_once 'api/abstract/ApiBundle/Site.php';
 require_once 'api/abstract/ApiBundle/Token.php';
 require_once 'api/abstract/ReportApiBundle/BillingReport.php';

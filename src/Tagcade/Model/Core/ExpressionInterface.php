@@ -28,15 +28,6 @@ interface ExpressionInterface extends ModelInterface
     public function setStartingPosition($startingPosition);
 
     /**
-     * @return DynamicAdSlotInterface
-     */
-    public function getDynamicAdSlot();
-
-    /**
-     * @param DynamicAdSlotInterface $dynamicAdSlot
-     */
-    public function setDynamicAdSlot($dynamicAdSlot);
-    /**
      * @return BaseAdSlotInterface
      */
     public function getExpectAdSlot();
@@ -53,5 +44,35 @@ interface ExpressionInterface extends ModelInterface
      * @param mixed $expressionInJs
      */
     public function setExpressionInJs($expressionInJs);
+
+    /**
+     * @return BaseAdSlotInterface
+     */
+    public function getDefaultAdSlot();
+
+
+    /**
+     * @param LibraryExpressionInterface $libraryExpression
+     * @return $this
+     */
+    public function setLibraryExpression($libraryExpression);
+
+    /**
+     * @return LibraryExpressionInterface
+     */
+    public function getLibraryExpression();
+
+    /**
+     * @return DynamicAdSlotInterface
+     */
+    public function getDynamicAdSlot();
+
+    /**
+     * @param DynamicAdSlotInterface $dynamicAdSlot
+     */
+    public function setDynamicAdSlot($dynamicAdSlot);
+
+    public function getDeletedAt();
+
 
 }

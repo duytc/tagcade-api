@@ -6,35 +6,19 @@ Tagcade\Entity\Core\AdTag:
             groups: [adtag.detail, adtag.summary]
         adSlot:
             expose: true
-            groups: [adtag.detail, adtag.summary]
-        adNetwork:
-            expose: true
-            groups: [adtag.detail, adtag.summary]
-        name:
-            expose: true
-            groups: [adtag.detail, adtag.summary]
-        html:
-            expose: true
             groups: [adtag.detail]
         position:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         frequencyCap:
             expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         active:
             expose: true
-            access_type: public_method
-            accessor:
-                getter: isActive
-                setter: setActive
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]
         rotation:
             expose: true
-            groups: [adtag.detail]
-        adType:
+            groups: [adtag.detail, adtag.summary]
+        libraryAdTag:
             expose: true
-            groups: [adtag.detail]
-        descriptor:
-            expose: true
-            groups: [adtag.detail]
+            groups: [adtag.detail, adtag.summary]

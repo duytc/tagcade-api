@@ -50,19 +50,23 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
+
+
         $I->seeResponseCodeIs(201);
     }
 
@@ -74,18 +78,20 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            //'name' => 'adTag-test', //this field is null
-            'html' => 'oki',
+            //'libraryAdTag' => [
+            //    'html' => 'oki',
+            //    'adNetwork' => PARAMS_AD_NETWORK,
+            //    'adType' => 1,
+            //    "descriptor" => [
+            //        "imageUrl" => "http://www.adTag-test.com/image.jpg",
+            //        "targetUrl" => "http://www.adTag-test.com"
+            //    ],
+            //    'name' => 'adTag-test'
+            //], //this field is missing
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -98,18 +104,11 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => null, //this field is null
-            'html' => 'oki',
+            'libraryAdTag' => null, //this field is null
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -122,18 +121,20 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => '300_wrong', //this is wrong data type
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -146,18 +147,20 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => -300, //this is wrong data, must positive
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -170,19 +173,21 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
             'unexpected_field' => 'adTag-test', //this is unexpected field
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -195,18 +200,20 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    //"targetUrl" => "http://www.adTag-test.com" //this is missing field
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg"
-                //"targetUrl" => "http://www.adTag-test.com" //this is missing field
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -219,19 +226,21 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com",
+                    "unexpected_field" => "http_unexpected_field.com" //this is unexpected field
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg",
-                "targetUrl" => "http://www.adTag-test.com",
-                "unexpected_field" => "http_unexpected_field.com" //this is unexpected field
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(201);
     }
@@ -244,18 +253,20 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http_wrong_url/image.jpg", //this is invalid URL
+                    "targetUrl" => "http_wrong_url.adTag-test.com" //this is invalid URL
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http_wrong_url/image.jpg", //this is invalid URL
-                "targetUrl" => "http_wrong_url.adTag-test.com" //this is invalid URL
-            ]
+            "rotation" => 50
         ]);
         $I->seeResponseCodeIs(400);
     }
@@ -268,20 +279,23 @@ class AdTag
     {
         $I->sendPOST(URL_API . '/adtags', [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki',
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg_wrong", //this is invalid image URL
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
             'active' => true,
-            "rotation" => 50,
-            "adType" => 1,
-            "descriptor" => [
-                "imageUrl" => "http://www.adTag-test.com/image.jpg_wrong", //this is invalid image URL
-                "targetUrl" => "http_wrong_url.adTag-test.com"
-            ]
+            "rotation" => 50
         ]);
-        $I->seeResponseCodeIs(400);
+        //$I->seeResponseCodeIs(400);
+        $I->seeResponseCodeIs(201); //now uncheck file extension
     }
 
     /**
@@ -296,12 +310,23 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                //'isReferenced' => true,
+                'html' => 'oki',
+                'visible' => false,
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
-            'active' => true]);
+            'active' => true,
+            "rotation" => 50
+        ]);
         $I->seeResponseCodeIs(204);
     }
 
@@ -317,12 +342,12 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => null, //this is null field
-            'html' => 'oki',
+            'libraryAdTag' => null, //this is null field
             'frequencyCap' => 300,
             'position' => 6,
-            'active' => true]);
+            'active' => true,
+            "rotation" => 50
+        ]);
         $I->seeResponseCodeIs(400);
     }
 
@@ -338,12 +363,24 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
             'unexpected_field' => 'adTag-test', //this is unexpected field
-            'html' => 'oki',
+            'libraryAdTag' => [
+                //'isReferenced' => true,
+                'html' => 'oki',
+                'visible' => false,
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => 300,
             'position' => 6,
-            'active' => true]);
+            'active' => true,
+            "rotation" => 50
+        ]);
         $I->seeResponseCodeIs(400);
     }
 
@@ -359,12 +396,23 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                //'isReferenced' => true,
+                'html' => 'oki',
+                'visible' => false,
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => -300, //this is wrong data, must positive
             'position' => 6,
-            'active' => true]);
+            'active' => true,
+            "rotation" => 50
+        ]);
         $I->seeResponseCodeIs(400);
     }
 
@@ -380,12 +428,23 @@ class AdTag
 
         $I->sendPUT(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'adNetwork' => PARAMS_AD_NETWORK,
-            'name' => 'adTag-test',
-            'html' => 'oki',
+            'libraryAdTag' => [
+                //'isReferenced' => true,
+                'html' => 'oki',
+                'visible' => false,
+                'adNetwork' => PARAMS_AD_NETWORK,
+                'adType' => 1,
+                "descriptor" => [
+                    "imageUrl" => "http://www.adTag-test.com/image.jpg",
+                    "targetUrl" => "http://www.adTag-test.com"
+                ],
+                'name' => 'adTag-test'
+            ],
             'frequencyCap' => '300_wrong', //this is wrong data type, must number
             'position' => 6,
-            'active' => true]);
+            'active' => true,
+            "rotation" => 50
+        ]);
         $I->seeResponseCodeIs(400);
     }
 
@@ -401,8 +460,30 @@ class AdTag
 
         $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'html' => 'oki',
-            'frequencyCap' => 300
+            'libraryAdTag' => [
+                'html' => 'oki-edited',
+            ],
+            'frequencyCap' => 310
+        ]);
+        $I->seeResponseCodeIs(204);
+    }
+
+    /**
+     * patch AdTag
+     * @depends addAdTag
+     * @param ApiTester $I
+     */
+    public function patchAdTagMoveToLibrary(ApiTester $I)
+    {
+        $I->sendGet(URL_API . '/adtags');
+        $item = array_pop($I->grabDataFromJsonResponse());
+
+        $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
+            'adSlot' => PARAMS_AD_SLOT,
+            'libraryAdTag' => [
+                'visible' => true,
+                'name' => 'adTag-test-lib'
+            ]
         ]);
         $I->seeResponseCodeIs(204);
     }
@@ -419,7 +500,7 @@ class AdTag
 
         $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'name' => null, //this is field null
+            'libraryAdTag' => null, //this is field null
             'frequencyCap' => 300
         ]);
         $I->seeResponseCodeIs(400);
@@ -437,7 +518,9 @@ class AdTag
 
         $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki-edited',
+            ],
             'unexpected_field' => 'oki', //this is unexpected field
             'frequencyCap' => 300
         ]);
@@ -456,7 +539,9 @@ class AdTag
 
         $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki-edited',
+            ],
             'frequencyCap' => -300 //this is wrong data, must possitive
         ]);
         $I->seeResponseCodeIs(400);
@@ -474,7 +559,9 @@ class AdTag
 
         $I->sendPATCH(URL_API . '/adtags/' . $item['id'], [
             'adSlot' => PARAMS_AD_SLOT,
-            'html' => 'oki',
+            'libraryAdTag' => [
+                'html' => 'oki-edited',
+            ],
             'frequencyCap' => '300_wrong' //this is wrong data type, must number
         ]);
         $I->seeResponseCodeIs(400);

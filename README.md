@@ -108,3 +108,9 @@ run single test with debug
 ```
 codecept run tests/api/publisher/ApiBundle/DynamicAdSlotPublisherCest.php:addDynamicAdSlot --debug
 ```
+
+3) Migrations
+---------------------------------
+
+See https://github.com/tagcade/tagcade-api/blob/develop/app/migrations/README.md
+Pay attention to section #4

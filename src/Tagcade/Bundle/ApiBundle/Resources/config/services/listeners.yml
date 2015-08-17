@@ -13,18 +13,28 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: onFlush }
-
-#    ## Update ad slot variableDescriptor, make sure auto update for expressions field
-#    tagcade_api.event_listener.UpdateAdSlotExpressionListener:
-#        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotExpressionListener
-#        tags:
-#            - { name: doctrine.event_listener, event: prePersist }
-#            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preSoftDelete }
 
     ## Update expression in js, for tagcache latter
     tagcade_api.event_listener.UpdateExpressionInJstListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
-#            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preUpdate }
 
+    tagcade_api.event_listener.MoveAdTagToLibraryListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\MoveAdTagToLibraryListener
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    tagcade_api.event_listener.MoveDynamicAdSlotToLibraryListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\MoveDynamicAdSlotToLibraryListener
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.ResetStartingPositionListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\ResetStartingPositionListener
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postSoftDelete }

@@ -24,10 +24,9 @@ interface BaseAdSlotInterface extends ModelInterface
     public function setSite(SiteInterface $site);
 
     /**
-     * @return int|null
+     * @return mixed
      */
-    public function getSiteId();
-
+    public function getType();
 
     /**
      * @return string|null
@@ -40,6 +39,31 @@ interface BaseAdSlotInterface extends ModelInterface
      */
     public function setName($name);
 
-    public function getType();
+    /**
+     * @return ArrayCollection
+     */
+    public function getAdTags();
+
+    /**
+     * @return BaseAdSlotInterface[]
+     */
+    public function getCoReferencedAdSlots();
+
+    /**
+     * @return string
+     */
+    public function checkSum();
+
+    /**
+     * @return BaseLibraryAdSlotInterface
+     */
+    public function getLibraryAdSlot();
+
+
+    /**
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @return $this
+     */
+    public function setLibraryAdSlot($libraryAdSlot);
 
 }

@@ -2,27 +2,4 @@ Tagcade\Entity\Core\DisplayAdSlot:
     type: entity
     table: core_display_ad_slot
     repositoryClass: Tagcade\Repository\Core\DisplayAdSlotRepository
-#    gedmo:
-#        soft_deleteable:
-#            field_name: deletedAt
-#            time_aware: false
-#    id:
-#        id:
-#            type: integer
-#            generator:
-#                strategy: AUTO
-    fields:
-#        name:
-#            type: string
-#            length: 100
-        width:
-            type: integer
-        height:
-            type: integer
-#        deletedAt:
-#            type: date
-#            nullable: true
-    oneToMany:
-        defaultDynamicAdSlots:
-            targetEntity: Tagcade\Entity\Core\DynamicAdSlot
-            mappedBy: defaultAdSlot
+

@@ -1,0 +1,6 @@
+Tagcade\Entity\Core\LibraryNativeAdSlot:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [librarynativeadslot.detail, librarynativeadslot.summary, librarynativeadslot.ref]

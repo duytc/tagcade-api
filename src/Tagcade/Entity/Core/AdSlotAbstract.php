@@ -3,6 +3,8 @@
 namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 abstract class AdSlotAbstract
@@ -12,14 +14,20 @@ abstract class AdSlotAbstract
     const TYPE_DYNAMIC = 'dynamic';
 
     protected $id;
+    /**
+     * @var AdTagInterface[]
+     */
     protected $adTags;
-
     /**
      * @var SiteInterface
      */
     protected $site;
-    protected $name;
-    protected $type;
+    protected $slotType;
+    protected $type; // # a hack to have type output in json
+    /**
+     * @var BaseLibraryAdSlotInterface
+     */
+    protected $libraryAdSlot;
     protected $deletedAt;
 
     public function __construct()
@@ -46,21 +54,13 @@ abstract class AdSlotAbstract
     /**
      * @return mixed
      */
-    public function getName()
+    public function getType()
     {
-        return $this->name;
+        return $this->slotType;
     }
 
     /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @inheritdoc
+     * @return \Tagcade\Model\Core\AdTagInterface[]
      */
     public function getAdTags()
     {
@@ -71,81 +71,84 @@ abstract class AdSlotAbstract
         return $this->adTags;
     }
 
-    /**
-     * @param ArrayCollection $adTags
-     */
     public function setAdTags($adTags)
     {
         $this->adTags = $adTags;
+
+        return $this;
     }
+
     /**
      * @return mixed
+     */
+    public function getName()
+    {
+        if($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface)
+        {
+            return $this->libraryAdSlot->getName();
+        }
+
+        return null;
+    }
+
+    public function setName($name)
+    {
+        if($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface)
+        {
+            return $this->libraryAdSlot->setName($name);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return SiteInterface
      */
     public function getSite()
     {
         return $this->site;
     }
 
-    /**
-     * @param mixed $site
-     */
     public function setSite(SiteInterface $site)
     {
         $this->site = $site;
+
+        return $this;
+    }
+
+    public function getLibraryAdSlot()
+    {
+        return $this->libraryAdSlot;
+    }
+
+    public function setLibraryAdSlot($libraryAdSlot)
+    {
+        $this->libraryAdSlot = $libraryAdSlot;
+
+        return $this;
     }
 
     /**
      * @inheritdoc
      */
-    public function getSiteId()
+    public function getCoReferencedAdSlots()
     {
-        if (!$this->site) {
-            return null;
-        }
-
-        return $this->site->getId();
+        return $this->libraryAdSlot->getAdSlots();
     }
 
     /**
      * @return mixed
      */
-    public function getDeletedAt()
+    public function getSlotType()
     {
-        return $this->deletedAt;
+        return $this->slotType;
     }
 
     /**
-     * @param mixed $deletedAt
+     * @param mixed $slotType
      */
-    public function setDeletedAt($deletedAt)
+    public function setSlotType($slotType)
     {
-        $this->deletedAt = $deletedAt;
+        $this->slotType = $slotType;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param mixed $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    public function __toString()
-    {
-        return $this->name;
-    }
-
-    public function getAdSlotType()
-    {
-        return $this->getType();
-    }
-
 }

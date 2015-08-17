@@ -1,0 +1,18 @@
+Tagcade\Entity\Core\LibraryDynamicAdSlot:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]
+        libraryExpressions:
+            expose: true
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]
+        defaultLibraryAdSlot:
+            expose: true
+            groups: [librarydynamicadslot.detail]
+        native:
+            expose: true
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]
+        visible:
+            expose: true
+            groups: [librarydynamicadslot.summary, librarydynamicadslot.detail]

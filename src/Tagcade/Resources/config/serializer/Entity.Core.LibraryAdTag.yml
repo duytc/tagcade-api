@@ -1,0 +1,32 @@
+Tagcade\Entity\Core\LibraryAdTag:
+    exclusion_policy: ALL
+    virtual_properties:
+        getAssociatedTagCount:
+            serialized_name: associatedTags
+            type: integer
+            groups: [libraryadtag.summary]
+    properties:
+        adNetwork:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        html:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        visible:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        adType:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        descriptor:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        name:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        libraryAdSlot:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        id:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary ]

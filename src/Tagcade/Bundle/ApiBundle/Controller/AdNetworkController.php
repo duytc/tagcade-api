@@ -7,7 +7,6 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -19,6 +18,7 @@ use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 
 /**
@@ -466,7 +466,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
 
-        $this->get('tagcade_app.service.core.ad_network.ad_network_service')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
+        $this->get('tagcade.domain_manager.ad_tag')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('PUT', $adNetwork);

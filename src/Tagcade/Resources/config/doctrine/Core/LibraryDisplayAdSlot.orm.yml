@@ -1,0 +1,11 @@
+Tagcade\Entity\Core\LibraryDisplayAdSlot:
+    type: entity
+    table: library_display_ad_slot
+    repositoryClass: Tagcade\Repository\Core\LibraryDisplayAdSlotRepository
+
+    fields:
+        width:
+            type: integer
+        height:
+            type: integer
+

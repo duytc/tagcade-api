@@ -1,0 +1,6 @@
+Tagcade\Entity\Core\LibrarySlotTag:
+    properties:
+        libraryAdTag:
+            - NotBlank: ~
+        libraryAdSlot:
+            - NotBlank: ~

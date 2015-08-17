@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Core;
 
 
 use Doctrine\Common\Persistence\ObjectRepository;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -35,5 +36,10 @@ interface AdSlotRepositoryInterface extends ObjectRepository {
     public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function allReportableAdSlots($limit = null, $offset = null);
+
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site, $limit = null, $offset = null);
+
+    public function getCoReferencedAdSlots(BaseLibraryAdSlotInterface $libraryAdSlot);
+
 
 } 

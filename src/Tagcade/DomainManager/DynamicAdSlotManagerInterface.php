@@ -2,51 +2,16 @@
 
 namespace Tagcade\DomainManager;
 
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface DynamicAdSlotManagerInterface
+interface DynamicAdSlotManagerInterface extends ManagerInterface
 {
-    /**
-     * @see \Tagcade\DomainManager\ManagerInterface
-     *
-     * @param DynamicAdSlotInterface|string $entity
-     * @return bool
-     */
-    public function supportsEntity($entity);
-
-    /**
-     * @param DynamicAdSlotInterface $adSlot
-     * @return void
-     */
-    public function save(DynamicAdSlotInterface $adSlot);
-
-    /**
-     * @param DynamicAdSlotInterface $adSlot
-     * @return void
-     */
-    public function delete(DynamicAdSlotInterface $adSlot);
-
-    /**
-     * @return DynamicAdSlotInterface
-     */
-    public function createNew();
-
-    /**
-     * @param int $id
-     * @return DynamicAdSlotInterface|null
-     */
-    public function find($id);
-
-    /**
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return DynamicAdSlotInterface[]
-     */
-    public function all($limit = null, $offset = null);
-
     /**
      * @param SiteInterface $site
      * @param int|null $limit
@@ -63,11 +28,21 @@ interface DynamicAdSlotManagerInterface
      */
     public function getDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
-//    /**
-//     * @param DisplayAdSlotInterface $adSlot
-//     * @param int|null $limit
-//     * @param int|null $offset
-//     * @return DynamicAdSlotInterface[]
-//     */
-//    public function getDynamicAdSlotsForAdSlot(DisplayAdSlotInterface $adSlot, $limit = null, $offset = null);
+    public function persistAndFlush(DynamicAdSlotInterface $adSlot);
+
+    /**
+     * Get all referenced ad slots that refer to the same library and on the same site to current slot
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site);
+
+    /**
+     * Get all dynamic ad slots that have default ad slot $adSlot
+     * @param ReportableAdSlotInterface $adSlot
+     * @return array
+     */
+    public function getDynamicAdSlotsThatHaveDefaultAdSlot(ReportableAdSlotInterface $adSlot);
+
 }

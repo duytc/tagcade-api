@@ -1,0 +1,41 @@
+Tagcade\Entity\Core\LibraryExpression:
+    type: entity
+    table: library_expression
+    repositoryClass: Tagcade\Repository\Core\LibraryExpressionRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        expressionDescriptor:
+            type: json_array
+            nullable: false
+        startingPosition:
+            type: integer
+            nullable: true
+            options:
+                default: 1
+        deletedAt:
+            type: date
+            nullable: true
+    oneToMany:
+        expressions:
+            targetEntity: Tagcade\Entity\Core\Expression
+            mappedBy: libraryExpression
+            cascade: ["persist", "remove"]
+    manyToOne:
+        libraryDynamicAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryDynamicAdSlot
+            inversedBy: libraryExpressions
+            joinColumn:
+                name: library_dynamic_ad_slot_id
+                referencedColumnName: id
+                nullable: false
+
+        expectLibraryAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract

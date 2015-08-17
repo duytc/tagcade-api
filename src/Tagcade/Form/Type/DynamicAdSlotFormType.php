@@ -9,19 +9,21 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DynamicAdSlot;
+use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
-use Tagcade\Model\Core\NativeAdSlot;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->userRole instanceof AdminInterface) {
@@ -48,110 +50,95 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
         }
 
         $builder
-            ->add('name')
+            ->add('libraryAdSlot', 'entity', array('class' => LibraryDynamicAdSlot::class))
             ->add('defaultAdSlot')
             ->add('expressions', 'collection',  array(
-                    'mapped' => false,
+                    'mapped' => true,
                     'type' => new ExpressionFormType(),
                     'allow_add' => true,
-                    'allow_delete' => true
+                    'allow_delete' => true,
                 )
             )
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) {
-                /** @var null|DynamicAdSlotInterface $dynamicAdSlot */
-                $dynamicAdSlot = $event->getData();
-                $form = $event->getForm();
 
-                // check if the DynamicAdSlot object is "new"
-                // If no data is passed to the form, the data is "null".
-                // This should be considered a new "DynamicAdSlot"
-                if (!$dynamicAdSlot || null === $dynamicAdSlot->getId()) {
-                    $form->add('native');
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                $dynamicAdSlot = $event->getData();
+
+                //create new Library
+                if(array_key_exists('libraryAdSlot', $dynamicAdSlot) && is_array($dynamicAdSlot['libraryAdSlot'])){
+                    $form->remove('libraryAdSlot');
+                    $form->add('libraryAdSlot', new LibraryDynamicAdSlotFormType($this->userRole));
                 }
-        });
+            }
+        );
+
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
-                // Validate expressions and update for dynamic adSlot
                 /** @var DynamicAdSlotInterface $dynamicAdSlot */
-                $dynamicAdSlot = $event->getForm()->getData();
+                $dynamicAdSlot = $event->getData();
+                /** @var LibraryDynamicAdSlotInterface $libraryAdSlot */
+                $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
 
-                /** @var null|ExpressionInterface[] $expressions */
-                $expressions = $event->getForm()->get('expressions')->getData();
-
-                try {
-                    // remove last expressions
-                    $dynamicAdSlot->getExpressions()->clear();
-                    if (null != $expressions && is_array($expressions) ) {
-                        $this->updateDynamicAdSlotForExpression($dynamicAdSlot, $expressions);
-                    }
-
-                    if ($dynamicAdSlot->getExpressions()->isEmpty() && null === $dynamicAdSlot->getDefaultAdSlot()) {
-                        throw new InvalidFormException('expect expression or default ad slot');
-                    }
-
-                } catch (InvalidFormException $ex) {
-                    $form = $event->getForm();
-                    $form->get('expressions')->addError(new FormError($ex->getMessage()));
-
+                if($libraryAdSlot === null) {
+                    // return here to let the Validation rules add error to form
                     return;
                 }
 
-                // Validate defaultAdSlot and expectedAdSlot for native selected
-                if(!($dynamicAdSlot->isSupportedNative())) {
-                    // Validate defaultAdSlot for native selected
-                    if($dynamicAdSlot->getDefaultAdSlot() instanceof NativeAdSlot) {
-                        $form = $event->getForm();
+                $libraryExpressions = $libraryAdSlot->getLibraryExpressions();
 
-                        $form->get('defaultAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native is false!'));
+                if(($libraryExpressions === null || ($libraryExpressions instanceof PersistentCollection && count($libraryExpressions) < 1))
+                    && $dynamicAdSlot->getDefaultAdSlot() === null) {
+                    $event->getForm()->addError(new FormError("DefaultAdSlot and LibraryExpressions can not be both null"));
+                    return;
+                }
+                // if we create new Dynamic AdSlot from existing Library Dynamic AdSlot
+                // then this form must have child 'expression'
+                if($libraryAdSlot->isVisible() && $libraryAdSlot->getId() !== null) {
+                    $expressions = $event->getForm()->get('expressions')->getData();
+                    /** @var ExpressionInterface $expression */
+                    foreach($expressions as $expression) {
+                        $expression->setDynamicAdSlot($dynamicAdSlot);
+                    }
+                } else { // we create new Dynamic AdSlot from scratch
+                    $libraryExpressions = $libraryAdSlot->getLibraryExpressions();
+                    /** @var LibraryExpressionInterface $libraryExpression */
+                    foreach ($libraryExpressions as $libraryExpression) {
+                        $expressions = $libraryExpression->getExpressions();
+                        /** @var ExpressionInterface $expression */
+                        foreach ($expressions as $expression) {
+                            $expression->setDynamicAdSlot($dynamicAdSlot);
+                        }
+                    }
+                }
+
+                if(!$dynamicAdSlot->isSupportedNative()) {
+                    // Validate defaultAdSlot for native selected
+                    if($dynamicAdSlot->getDefaultAdSlot() instanceof NativeAdSlotInterface) {
+                        $event->getForm()->get('defaultAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native not supported!'));
 
                         return;
                     }
+                }
 
-                    if (null === $expressions) {
-                        return; // ignore if expression is null
-                    }
-                    // Validate expectedAdSlot for native selected
-                    foreach ($expressions as $idx => $expression) {
-                        if($expression->getExpectAdSlot() instanceof NativeAdSlot) {
-                            $form = $event->getForm();
+                // implicitly set publisher
+                $site = $dynamicAdSlot->getSite();
+                if($site instanceof SiteInterface) {
+                    $publisher = $site->getPublisher();
 
-                            $form->get('expressions')[$idx]->get('expectAdSlot')->addError(new FormError('ExpectedAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native is false!'));
-
-                            return;
-                        }
+                    if($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
+                        $libraryAdSlot->setPublisher($publisher);
+                        $dynamicAdSlot->setLibraryAdSlot($libraryAdSlot);
                     }
                 }
             }
         );
     }
-
-    /**
-     * @param DynamicAdSlotInterface $dynamicAdSlot
-     * @param ExpressionInterface[] $persistingExpressions
-     */
-    protected function updateDynamicAdSlotForExpression(DynamicAdSlotInterface $dynamicAdSlot, array $persistingExpressions)
-    {
-        $currentExpressions = $dynamicAdSlot->getExpressions()->toArray();
-        $totalCurrentExpression = count($currentExpressions);
-        // remove old expressions
-        for($i = $totalCurrentExpression-1; $i >= 0; $i -- ) {
-            $dynamicAdSlot->getExpressions()->remove($i);
-        }
-
-        // creating new expressions
-        foreach ($persistingExpressions as $expression) {
-            $expression->setDynamicAdSlot($dynamicAdSlot);
-
-            $dynamicAdSlot->getExpressions()->add($expression);
-        }
-
-    }
-
 
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -159,12 +146,12 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => DynamicAdSlot::class,
+                'cascade_validation' => true,
             ]);
     }
 
     public function getName()
     {
-        //return 'tagcade_form_ad_slot';
         return 'tagcade_form_dynamic_ad_slot';
     }
 }

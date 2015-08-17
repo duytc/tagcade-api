@@ -8,12 +8,6 @@ use Tagcade\Model\ModelInterface;
 interface DynamicAdSlotInterface extends BaseAdSlotInterface
 {
     /**
-     * @param string $name
-     * @return self
-     */
-    public function setName($name);
-
-    /**
      * @return BaseAdSlotInterface
      */
     public function getDefaultAdSlot();
@@ -37,4 +31,15 @@ interface DynamicAdSlotInterface extends BaseAdSlotInterface
      */
     public function isSupportedNative();
 
+
+    /**
+     * @return LibraryDynamicAdSlotInterface
+     */
+    public function getLibraryAdSlot();
+
+    /**
+     * get the list of DynamicAdSlot that also refers to the DynamicAdSlotLib of this entity
+     * @return DynamicAdSlotInterface[]
+     */
+    public function getCoReferencedAdSlots();
 }

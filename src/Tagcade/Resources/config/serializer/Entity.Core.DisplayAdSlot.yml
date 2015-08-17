@@ -1,25 +1,9 @@
 Tagcade\Entity\Core\DisplayAdSlot:
     exclusion_policy: ALL
-    virtual_properties:
-        getAdSlotType:
-            type: string
-            groups: [adslot.detail, adslot.summary]
     properties:
         id:
             expose: true
-            groups: [adslot.detail, adslot.summary]
+            groups: [displayadslot.detail, displayadslot.summary]
         site:
             expose: true
-            groups: [adslot.detail, adslot.summary]
-        name:
-            expose: true
-            groups: [adslot.detail, adslot.summary]
-        width:
-            expose: true
-            groups: [adslot.detail, adslot.summary]
-        height:
-            expose: true
-            groups: [adslot.detail, adslot.summary]
-#        type:
-#            expose: true
-#            groups: [adslot.detail, adslot.summary]
+            groups: [displayadslot.detail, displayadslot.summary]

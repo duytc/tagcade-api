@@ -12,9 +12,6 @@ Tagcade\Entity\Core\AdSlotAbstract:
             generator:
                 strategy: AUTO
     fields:
-        name:
-            type: string
-            length: 100
         deletedAt:
             type: date
             nullable: true
@@ -22,7 +19,7 @@ Tagcade\Entity\Core\AdSlotAbstract:
     inheritanceType: JOINED
 
     discriminatorColumn:
-        name: type
+        name: slotType
         type: string
     discriminatorMap:
         display: Tagcade\Entity\Core\DisplayAdSlot
@@ -35,6 +32,11 @@ Tagcade\Entity\Core\AdSlotAbstract:
             orderBy: { 'position': 'ASC' }
             mappedBy: adSlot
             cascade: ["persist", "remove", "detach"]
+
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site
+            inversedBy: adSlots
+        libraryAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract
+            cascade: ['persist']

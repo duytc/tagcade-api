@@ -6,17 +6,19 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\ExpressionInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("DisplayAdslot")
@@ -24,7 +26,11 @@ use Tagcade\Model\Core\SiteInterface;
 class DisplayAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad slots
+     *
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "displayadslot.summary", "site.summary", "librarydisplayadslot.summary", "user.summary", "slotlib.summary"}
+     * )
+     * Get all display ad slots
      *
      * @ApiDoc(
      *  resource = true,
@@ -41,7 +47,10 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Get a single adSlot for the given id
+     * @Rest\View(
+     *      serializerGroups={"adslot.detail", "displayadslot.detail", "site.summary", "librarydisplayadslot.detail", "user.summary", "slotlib.summary"}
+     * )
+     * Get a single display adSlot for the given id
      *
      * @ApiDoc(
      *  resource = true,
@@ -72,37 +81,10 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
     }
-//
-//    /**
-//     * @Rest\Get("/variableDescriptor/{id}", requirements={"id" = "\d+"})
-//     * @param Request $request
-//     * @param $id
-//     * @return View
-//     */
-//    public function getVariableDescriptorAction(Request $request, $id)
-//    {
-//        /** @var AdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//
-//        return $this->getHandler()->getAdSlotVariableDescriptor($adSlot);
-//    }
 
-//    /**
-//     * @Rest\Get("/configExpression/{id}", requirements={"id" = "\d+"})
-//     * @param Request $request
-//     * @param $id
-//     * @return View
-//     */
-//    public function getConfigExpressionAction(Request $request, $id)
-//    {
-//        /** @var AdSlotInterface $adSlot */
-//        $adSlot = $this->one($id);
-//
-//        return $this->getHandler()->getAdSlotConfigExpression($adSlot);
-//    }
 
     /**
-     * Create a adSlot from the submitted data
+     * Create a display adSlot from the submitted data
      *
      * @ApiDoc(
      *  resource = true,
@@ -122,7 +104,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * Update the position of all ad tags in an display ad slot
      *
      * @param Request $request
      * @param int $id
@@ -150,7 +132,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update the position of all ad tags in an ad slot
+     * Update the position of all ad tags in an display ad slot
      *
      * @Rest\POST("/displayadslots/{id}/clone", requirements={"id" = "\d+"})
      * @param Request $request
@@ -172,17 +154,17 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
         if($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
-            $this->getHandler()->cloneAdSlot($originAdSlot, $newName, $site);
+            $this->get('tagcade_api.service.tag_library.ad_slot_cloner_service')->cloneAdSlot($originAdSlot, $newName, $site);
         }
         else {
-            $this->getHandler()->cloneAdSlot($originAdSlot, $newName);
+            $this->get('tagcade_api.service.tag_library.ad_slot_cloner_service')->cloneAdSlot($originAdSlot, $newName);
         }
 
         return $this->view(null, Codes::HTTP_CREATED);
     }
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot
+     * Update an existing display adSlot from the submitted data or create a new display adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -206,7 +188,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update an existing adSlot from the submitted data or create a new adSlot at a specific location
+     * Update an existing display adSlot from the submitted data or create a new display adSlot at a specific location
      *
      * @ApiDoc(
      *  resource = true,
@@ -225,11 +207,35 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function patchAction(Request $request, $id)
     {
+        if(array_key_exists('libraryAdSlot', $request->request->all()))
+        {
+            if(!is_array($request->request->get('libraryAdSlot'))) {
+                $libraryAdSlotId = (int)$request->request->get('libraryAdSlot');
+                /**
+                 * @var DisplayAdSlotInterface $adSlot
+                 */
+                $adSlot = $this->getOr404($id);
+
+                $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlotId);
+                if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                    throw new InvalidArgumentException('LibraryAdSlot not existed');
+                }
+
+                $this->checkUserPermission($newLibraryAdSlot);
+
+                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlotId && $newLibraryAdSlot->isVisible()) {
+
+                    // create new ad tags
+                    $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
+                }
+            }
+        }
+
         return $this->patch($request, $id);
     }
 
     /**
-     * Delete an existing adSlot
+     * Delete an existing display adSlot
      *
      * @ApiDoc(
      *  resource = true,
@@ -247,39 +253,16 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function deleteAction($id)
     {
-        /**
-         * @var DisplayAdSlotInterface $entity
-         */
-        $entity = $this->getOr404($id);
-        $this->checkUserPermission($entity, 'edit');
-
-        // dynamic ad slots that its expressions refer to this ad slot
-
-        $expressions = $this->get('tagcade.repository.expression')->findBy(array('expectAdSlot' => $entity));
-        $referencingDynamicAdSlots = array_map(
-            function(ExpressionInterface $expression) {
-                return $expression->getDynamicAdSlot();
-            },
-            $expressions
-        );
-
-        // dynamic ad slots that have default ad slot is this one.
-        $referencingDynamicAdSlots = array_merge($referencingDynamicAdSlots, $entity->defaultDynamicAdSlots()->toArray());
-        $referencingDynamicAdSlots = array_unique($referencingDynamicAdSlots);
-
-        if (count($referencingDynamicAdSlots) > 0) {
-            $view = $this->view(null, Codes::HTTP_BAD_REQUEST);
-        }
-        else {
-            $this->getHandler()->delete($entity);
-            $view = $this->view(null, Codes::HTTP_NO_CONTENT);
-        }
-
-
-
-        return $this->handleView($view);
+       return $this->delete($id);
     }
 
+    /**
+     * @Rest\View(
+     *      serializerGroups={"adtag.summary", "site.summary", "user.summary", "libraryadtag.summary", "adnetwork.summary"}
+     * )
+     * @param $id
+     * @return \Tagcade\Model\Core\AdTagInterface[]
+     */
     public function getAdtagsAction($id)
     {
         /** @var DisplayAdSlotInterface $adSlot */

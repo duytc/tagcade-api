@@ -1,0 +1,5 @@
+Tagcade\Entity\Core\LibraryNativeAdSlot:
+    type: entity
+    table: library_native_ad_slot
+    repositoryClass: Tagcade\Repository\Core\LibraryNativeAdSlotRepository
+

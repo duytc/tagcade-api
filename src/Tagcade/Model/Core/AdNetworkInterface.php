@@ -59,7 +59,7 @@ interface AdNetworkInterface extends ModelInterface
     public function setDefaultCpmRate($defaultCpmRate);
 
     /**
-     * @return PersistentCollection
+     * @return array
      */
     public function getAdTags();
 

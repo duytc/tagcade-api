@@ -1,24 +1,5 @@
 Tagcade\Entity\Core\DisplayAdSlot:
     properties:
-        name:
-            - NotBlank: ~
-            - Length:
-                min: 2
-                minMessage: "Ad slot name must be at least {{ limit }} characters in length"
-        width:
-            - NotBlank: ~
-            - Type:
-                type: integer
-                message: "The value {{ value }} is not a valid number."
-            - GreaterThan:
-                value: 0
-        height:
-            - NotBlank: ~
-            - Type:
-                type: integer
-                message: "The value {{ value }} is not a valid number."
-            - GreaterThan:
-                value: 0
-        site:
+        libraryAdSlot:
             - NotBlank: ~
             - Valid: ~

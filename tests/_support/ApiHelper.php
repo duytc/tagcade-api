@@ -72,6 +72,40 @@ class ApiHelper extends \Codeception\Module
         if (!defined('PARAMS_AD_TAG')) {
             define('PARAMS_AD_TAG', $settings['modules']['params']['adTag']);
         }
+
+        /* library feature */
+        if (!defined('PARAMS_LIBRARY_AD_SLOT')) {
+            define('PARAMS_LIBRARY_AD_SLOT', $settings['modules']['params']['libraryAdSlot']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_DISPLAY_AD_SLOT')) {
+            define('PARAMS_LIBRARY_DISPLAY_AD_SLOT', $settings['modules']['params']['libraryDisplayAdSlot']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_NATIVE_AD_SLOT')) {
+            define('PARAMS_LIBRARY_NATIVE_AD_SLOT', $settings['modules']['params']['libraryNativeAdSlot']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_DYNAMIC_AD_SLOT')) {
+            define('PARAMS_LIBRARY_DYNAMIC_AD_SLOT', $settings['modules']['params']['libraryDynamicAdSlot']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_DEFAULT_AD_SLOT')) {
+            define('PARAMS_LIBRARY_DEFAULT_AD_SLOT', $settings['modules']['params']['libraryDefaultAdSlot']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_EXPECTED_AD_SLOT')) {
+            define('PARAMS_LIBRARY_EXPECTED_AD_SLOT', $settings['modules']['params']['libraryExpectedAdSlot']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_EXPECTED_AD_SLOT_2')) {
+            define('PARAMS_LIBRARY_EXPECTED_AD_SLOT_2', $settings['modules']['params']['libraryExpectedAdSlot_2']);
+        }
+
+        if (!defined('PARAMS_LIBRARY_AD_TAG')) {
+            define('PARAMS_LIBRARY_AD_TAG', $settings['modules']['params']['libraryAdTag']);
+        }
+        /* end - library feature */
     }
 
     private function _getToken($url, $username, $password)

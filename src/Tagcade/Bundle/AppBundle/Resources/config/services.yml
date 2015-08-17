@@ -13,6 +13,7 @@ services:
         tags:
             - { name: doctrine.event_listener, event: onFlush }
             - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: preSoftDelete }
 
     tagcade_app.event_listener.adslot_change_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\AdSlotChangeListener
@@ -20,7 +21,8 @@ services:
             - @event_dispatcher
         tags:
             - { name: doctrine.event_listener, event: postPersist }
-#            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postUpdate }
 
     tagcade_app.event_listener.native_adslot_change_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\NativeAdSlotChangeListener
@@ -41,8 +43,8 @@ services:
         arguments:
             - @event_dispatcher
         tags:
-#            - { name: doctrine.event_listener, event: postPersist }
-#            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: onFlush }
             - { name: doctrine.event_listener, event: postFlush }
 
@@ -50,7 +52,10 @@ services:
         class: Tagcade\Service\Core\AdTag\AdTagPositionEditor
         arguments:
             - @tagcade.domain_manager.ad_tag
+            - @tagcade.domain_manager.library_slot_tag
             - @doctrine.orm.default_entity_manager
+        calls:
+            - [setValidator, ["@tagcade_api.service.tag_library.checksum_validator"]]
 
     tagcade_app.service.core.ad_network.ad_network_service:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService

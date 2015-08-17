@@ -1,0 +1,16 @@
+Tagcade\Entity\Core\LibraryDisplayAdSlot:
+    properties:
+        width:
+            - NotBlank: ~
+            - Type:
+                type: integer
+                message: "The value {{ value }} is not a valid number."
+            - GreaterThan:
+                value: 0
+        height:
+            - NotBlank: ~
+            - Type:
+                type: integer
+                message: "The value {{ value }} is not a valid number."
+            - GreaterThan:
+                value: 0

@@ -23,6 +23,7 @@ Tagcade\Entity\Core\AdNetwork:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
     oneToMany:
-        adTags:
-            targetEntity: AdTag
+        libraryAdTags:
+            targetEntity: Tagcade\Entity\Core\LibraryAdTag
             mappedBy: adNetwork
+            cascade: ['remove']

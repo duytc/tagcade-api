@@ -8,20 +8,24 @@ use Tagcade\Model\Core\SiteInterface;
 class Expression implements ExpressionInterface
 {
     protected $id;
-
-    protected $expressionDescriptor;
-    protected $startingPosition;
-    protected $deletedAt;
-    /**
-     * @var DynamicAdSlotInterface
-     */
-    protected $dynamicAdSlot;
     /**
      * @var BaseAdSlotInterface
      */
     protected $expectAdSlot;
 
     protected $expressionInJs;
+
+    /**
+     * @var LibraryExpressionInterface
+     */
+    protected $libraryExpression;
+
+    /**
+     * @var DynamicAdSlotInterface
+     */
+    protected $dynamicAdSlot;
+
+    protected $deletedAt;
 
     public function __construct()
     {
@@ -38,15 +42,22 @@ class Expression implements ExpressionInterface
      */
     public function getExpressionDescriptor()
     {
-        return $this->expressionDescriptor;
+        if($this->libraryExpression === null) return null;
+
+        return $this->libraryExpression->getExpressionDescriptor();
     }
 
     /**
      * @param mixed $expressionDescriptor
+     * @return $this
      */
     public function setExpressionDescriptor($expressionDescriptor)
     {
-        $this->expressionDescriptor = $expressionDescriptor;
+        if($this->libraryExpression instanceof LibraryExpressionInterface) {
+            $this->libraryExpression->setExpressionDescriptor($expressionDescriptor);
+        }
+
+        return $this;
     }
 
     /**
@@ -54,15 +65,92 @@ class Expression implements ExpressionInterface
      */
     public function getStartingPosition()
     {
-        return $this->startingPosition;
+        if($this->libraryExpression === null) return null;
+
+        return $this->libraryExpression->getStartingPosition();
     }
 
     /**
      * @param int $startingPosition
+     * @return $this
      */
     public function setStartingPosition($startingPosition)
     {
-        $this->startingPosition = $startingPosition;
+        if($this->libraryExpression instanceof LibraryExpressionInterface) {
+            $this->libraryExpression->setStartingPosition($startingPosition);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return BaseAdSlotInterface
+     */
+    public function getExpectAdSlot()
+    {
+        return $this->expectAdSlot;
+    }
+
+    /**
+     * @param ReportableAdSlotInterface $expectAdSlot
+     * @return $this
+     */
+    public function setExpectAdSlot(ReportableAdSlotInterface $expectAdSlot)
+    {
+        $this->expectAdSlot = $expectAdSlot;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpressionInJs()
+    {
+        return $this->expressionInJs;
+    }
+
+    /**
+     * @param mixed $expressionInJs
+     * @return $this
+     */
+    public function setExpressionInJs($expressionInJs)
+    {
+        $this->expressionInJs = $expressionInJs;
+
+        return $this;
+    }
+
+
+
+    /**
+     * @return BaseAdSlotInterface
+     */
+    public function getDefaultAdSlot()
+    {
+        if($this->getDynamicAdSlot() instanceof DynamicAdSlotInterface) {
+            return $this->getDynamicAdSlot()->getDefaultAdSlot();
+        }
+    }
+
+
+    /**
+     * @param LibraryExpressionInterface $libraryExpression
+     * @return $this
+     */
+    public function setLibraryExpression($libraryExpression)
+    {
+        $this->libraryExpression = $libraryExpression;
+        return $this;
+    }
+
+    /**
+     * @return LibraryExpressionInterface
+     */
+    public function getLibraryExpression()
+    {
+        return $this->libraryExpression;
     }
 
     /**
@@ -82,41 +170,17 @@ class Expression implements ExpressionInterface
     }
 
     /**
-     * @return BaseAdSlotInterface
-     */
-    public function getExpectAdSlot()
-    {
-        return $this->expectAdSlot;
-    }
-
-    /**
-     * @param ReportableAdSlotInterface $expectAdSlot
-     */
-    public function setExpectAdSlot(ReportableAdSlotInterface $expectAdSlot)
-    {
-        $this->expectAdSlot = $expectAdSlot;
-    }
-
-    /**
      * @return mixed
      */
-    public function getExpressionInJs()
+    public function getDeletedAt()
     {
-        return $this->expressionInJs;
-    }
-
-    /**
-     * @param mixed $expressionInJs
-     */
-    public function setExpressionInJs($expressionInJs)
-    {
-        $this->expressionInJs = $expressionInJs;
+        return $this->deletedAt;
     }
 
 
 
     public function __toString()
     {
-        return "test";
+        return (string)$this->id;
     }
 }

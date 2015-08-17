@@ -120,11 +120,6 @@ class Site implements SiteInterface
         return $this->adSlots;
     }
 
-    public function __toString()
-    {
-        return $this->name;
-    }
-
     /**
      * @inheritdoc
      */
@@ -144,6 +139,11 @@ class Site implements SiteInterface
     public function getSourceReportSiteConfigs()
     {
         return $this->sourceReportSiteConfigs;
+    }
+
+    public function __toString()
+    {
+        return $this->id . $this->getName();
     }
 
 }

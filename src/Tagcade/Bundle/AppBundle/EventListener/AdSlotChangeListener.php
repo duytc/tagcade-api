@@ -3,9 +3,12 @@
 namespace Tagcade\Bundle\AppBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 
 class AdSlotChangeListener
 {
@@ -13,6 +16,8 @@ class AdSlotChangeListener
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
+    private $updatedAdSlots = null;
 
     function __construct(EventDispatcherInterface $eventDispatcher)
     {
@@ -24,28 +29,41 @@ class AdSlotChangeListener
         $this->dispatchUpdateCacheEventDueToAdSlot($args);
     }
 
-//    public function postUpdate(LifecycleEventArgs $args)
-//    {
-//        $entity = $args->getEntity();
-//
-//        if (!$entity instanceof AdSlotInterface) {
-//            return;
-//        }
-//
-//        $em = $args->getEntityManager();
-//        $uow = $em->getUnitOfWork();
-//
-//        $changeSet = $uow->getEntityChangeSet($entity);
-//
-//        if (true === array_key_exists('variableDescriptor', $changeSet) || true === array_key_exists('enableVariable', $changeSet)) {
-//            $this->dispatchUpdateCacheEventDueToAdSlot($args);
-//        }
-//    }
+    public function preUpdate(PreUpdateEventArgs $args)
+    {
+        $entity = $args->getEntity();
 
-//    public function postRemove(LifecycleEventArgs $args)
-//    {
-//        $this->dispatchUpdateCacheEventDueToAdSlot($args);
-//    }
+        if (!$entity instanceof LibraryDisplayAdSlotInterface) {
+            return;
+        }
+
+        if ($args->hasChangedField('width') || $args->hasChangedField('height')) {
+            $this->updatedAdSlots = $entity->getAdSlots();
+        }
+    }
+
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if (!$entity instanceof LibraryDisplayAdSlotInterface) {
+            return;
+        }
+
+        if (empty($this->updatedAdSlots)) {
+            return;
+        }
+
+        $adSlots = $this->updatedAdSlots;
+        if($adSlots instanceof PersistentCollection) {
+            $adSlots = $adSlots->toArray();
+        }
+
+        unset($this->updatedAdSlots);
+
+        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($adSlots));
+
+    }
 
     protected function dispatchUpdateCacheEventDueToAdSlot(LifecycleEventArgs $args)
     {
