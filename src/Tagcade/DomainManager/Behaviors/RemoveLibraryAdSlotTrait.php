@@ -23,7 +23,7 @@ trait RemoveLibraryAdSlotTrait {
     protected function removeLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot) {
         $adSlots = $libraryAdSlot->getAdSlots();
 
-        if (!empty($adSlots)) {
+        if ($adSlots !== null && count($adSlots) > 0) {
             throw new LogicException('There are some slots still referring to this library');
         }
 
