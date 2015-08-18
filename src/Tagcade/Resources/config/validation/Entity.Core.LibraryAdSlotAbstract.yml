@@ -1,5 +1,8 @@
 Tagcade\Entity\Core\LibraryAdSlotAbstract:
     properties:
+        #publisher:
+        #    - NotBlank: ~
+        #    - Valid: ~
         name:
             - NotBlank: ~
             - Length:

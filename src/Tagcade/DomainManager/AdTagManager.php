@@ -229,13 +229,15 @@ class AdTagManager implements AdTagManagerInterface
         $adTags = $this->repository->getAdTagsForSite($site, $limit, $offset);
 
         if (true === $filterActive) {
-            return array_filter(
+            $filteredAdTags = array_filter(
                 $adTags,
                 function(AdTagInterface $adTag)
                 {
                     return $adTag->isActive();
                 }
             );
+
+            return ((is_array($filteredAdTags)) ? array_values($filteredAdTags) : $filteredAdTags);
         }
 
         return $adTags;

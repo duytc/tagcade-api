@@ -37,7 +37,6 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->userRole instanceof AdminInterface) {
-
             // allow all sites, default is fine
             $builder->add('adNetwork');
 
