@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Form\Type\ExpressionFormType;
@@ -15,6 +16,8 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 class UpdateExpressionInJsListener {
 
     static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href'];
+
+    protected $updatedExpressions = [];
 
     /**
      * handle event prePersist one expression, this auto update expressionInJS field.
@@ -39,14 +42,27 @@ class UpdateExpressionInJsListener {
         $entity = $args->getObject();
         if ($entity instanceof LibraryExpressionInterface && ($args->hasChangedField('expressionDescriptor') || $args->hasChangedField('startingPosition'))) {
             $expressions = $entity->getExpressions();
-            $em = $args->getEntityManager();
             foreach ($expressions as $exp) {
                 $this->createExpressionInJs($exp);
-                $em->merge($exp);
+                $this->updatedExpressions[] = $exp;
             }
         }
         else if($entity instanceof ExpressionInterface) {
             $this->createExpressionInJs($entity);
+        }
+    }
+
+    public function postFlush(PostFlushEventArgs $args)
+    {
+        if(!empty($this->updatedExpressions)) {
+            $em = $args->getEntityManager();
+            foreach ($this->updatedExpressions as $exp) {
+                $em->merge($exp);
+            }
+
+            $this->updatedExpressions = []; // reset updated expressions
+
+            $em->flush();
         }
     }
 
