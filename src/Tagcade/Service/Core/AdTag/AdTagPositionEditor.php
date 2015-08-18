@@ -13,6 +13,7 @@ use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -236,6 +237,10 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                  * @var AdTagInterface $adTag
                  */
                 if ($adTag instanceof AdTagInterface && !$adTag->getAdSlot() instanceof DisplayAdSlotInterface) {
+                    return; // not updating position for other types of ad slot like native ad slot
+                }
+
+                if ($adTag instanceof LibrarySlotTagInterface && !$adTag->getContainer() instanceof LibraryNativeAdSlotInterface) {
                     return; // not updating position for other types of ad slot like native ad slot
                 }
 
