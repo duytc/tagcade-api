@@ -240,6 +240,7 @@ services:
         class: %tagcade.form.type.ad_slot.class%
         arguments:
             - @tagcade.repository.display_ad_slot
+            - @tagcade.repository.site
         tags:
             - { name: form.type, alias: tagcade_form_ad_slot }
 
@@ -302,6 +303,7 @@ services:
         class: %tagcade.form.type.dynamic_ad_slot.class%
         arguments:
             - @tagcade.repository.display_ad_slot
+            - @tagcade.repository.site
         tags:
             - { name: form.type, alias: tagcade_form_dynamic_ad_slot }
 
@@ -427,6 +429,7 @@ services:
         class: %tagcade.form.type.native_ad_slot.class%
         arguments:
             - @tagcade.repository.native_ad_slot
+            - @tagcade.repository.site
         tags:
             - { name: form.type, alias: tagcade_form_native_ad_slot }
 

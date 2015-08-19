@@ -3,6 +3,7 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -21,11 +22,15 @@ use Tagcade\Repository\Core\SiteRepositoryInterface;
 class NativeAdSlotFormType extends AbstractRoleSpecificFormType
 {
     /** @var NativeAdSlotRepositoryInterface */
-    private $repository;
+    private $nativeAdSlotRepository;
 
-    function __construct(NativeAdSlotRepositoryInterface $nativeAdSlotRepository)
+    /** @var SiteRepositoryInterface */
+    private $siteRepository;
+
+    function __construct(NativeAdSlotRepositoryInterface $nativeAdSlotRepository, SiteRepositoryInterface $siteRepository)
     {
-        $this->repository = $nativeAdSlotRepository;
+        $this->nativeAdSlotRepository = $nativeAdSlotRepository;
+        $this->siteRepository = $siteRepository;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -67,6 +72,17 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
                 if(array_key_exists('libraryAdSlot', $nativeAdSlot) && is_array($nativeAdSlot['libraryAdSlot'])){
                     $form->remove('libraryAdSlot');
                     $form->add('libraryAdSlot', new LibraryNativeAdSlotFormType($this->userRole));
+
+                    if($this->userRole instanceof AdminInterface) {
+                        $site = $this->siteRepository->find($nativeAdSlot['site']);
+                        if(!$site instanceof SiteInterface) {
+                            $form->get('site')->addError(new FormError('This value is not valid'));
+                            return;
+                        }
+
+                        $nativeAdSlot['libraryAdSlot']['publisher'] = $site->getPublisher()->getId();
+                        $event->setData($nativeAdSlot);
+                    }
                 }
             }
         );
