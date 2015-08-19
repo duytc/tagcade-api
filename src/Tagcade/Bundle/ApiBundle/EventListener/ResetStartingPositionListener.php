@@ -34,13 +34,17 @@ class ResetStartingPositionListener
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof PositionInterface || ($entity instanceof PositionInterface && !$args->hasChangedField('position'))) {
+        if((!$entity instanceof PositionInterface) || ($entity instanceof PositionInterface && (!$args->hasChangedField('position') && !$args->hasChangedField('active')))) {
             return;
         }
 
         $this->resetStartingPositionForExpression($entity, $args);
     }
 
+    /**
+     * @param PositionInterface $adTag the tag to be deleted or updated position
+     * @param LifecycleEventArgs $args
+     */
     protected function resetStartingPositionForExpression(PositionInterface $adTag, LifecycleEventArgs $args)
     {
         $displayAdSlot = $adTag->getContainer();
