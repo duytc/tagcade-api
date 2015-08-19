@@ -4,21 +4,19 @@ namespace Tagcade\Service\Core\AdTag;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
-use Rhumsaa\Uuid\Console\Exception;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\DomainManager\LibrarySlotTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdTag;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 use Tagcade\Service\TagLibrary\ChecksumValidatorInterface;
 
 class AdTagPositionEditor implements AdTagPositionEditorInterface
@@ -178,7 +176,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
             $this->em->getConnection()->commit();
 
 
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             $this->em->getConnection()->rollBack();
             throw new RuntimeException($e);
         }
@@ -201,43 +199,27 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     protected function updatePosition(array $adTags, $position)
     {
         $allTagsToBeUpdated = $adTags;
-        $processedSlots = [];
         foreach($adTags as $adTag) {
             /**
              * @var AdTagInterface $adTag
              */
-            $adSlot = $adTag->getAdSlot();
-            if (!$adSlot instanceof DisplayAdSlotInterface) {
-                continue;
-            }
-
-            $updatingSlots = $adSlot->getCoReferencedAdSlots()->toArray();
-            if (count($updatingSlots) < 2) { // only one slot then there is no shared 
-                continue;
-            }
-
-            $updatingSlots = array_filter(
-                $updatingSlots,
-                function (DisplayAdSlotInterface $adSlot) use(&$processedSlots){
-                    if (!in_array($adSlot, $processedSlots)) {
-                        $processedSlots[] = $adSlot;
-
-                        return true;
-                    }
-
-                    return false;
+            //update to slot tag if this is a shared ad slot
+            $libAdSlot = $adTag->getAdSlot()->getLibraryAdSlot();
+            // update position for library slot tag
+            $librarySlotTag = $this->librarySlotTagManager->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+            if ($librarySlotTag instanceof LibrarySlotTagInterface) {
+                if (!in_array($librarySlotTag, $allTagsToBeUpdated)) {
+                    $allTagsToBeUpdated[] = $librarySlotTag;
                 }
-            );
+            }
 
-            foreach ($updatingSlots as $adSlot) {
-                /**
-                 * @var BaseAdSlotInterface $adSlot
-                 */
-                $foundAdTags = $this->adTagManager->getAdTagsByLibraryAdSlotAndRefId($adSlot->getLibraryAdSlot(), $adTag->getRefId());
-
+            //update all referenced AdTags if they are shared ad slot library
+            $referencedTags = $this->adTagManager->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+            if(!empty($referencedTags)) {
                 array_walk(
-                    $foundAdTags,
-                    function(AdTagInterface $t) use(&$allTagsToBeUpdated) {
+                    $referencedTags,
+                    function(AdTagInterface $t) use(&$allTagsToBeUpdated)
+                    {
                         if (!in_array($t, $allTagsToBeUpdated)) {
                             $allTagsToBeUpdated[] = $t;
                         }
@@ -249,14 +231,19 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
         $updateCount = 0;
         array_walk(
             $allTagsToBeUpdated,
-            function($adTag) use ($position, &$updateCount)
+            function(PositionInterface $adTag) use ($position, &$updateCount)
             {
                 /**
                  * @var AdTagInterface $adTag
                  */
-                if (!$adTag->getAdSlot() instanceof DisplayAdSlotInterface) {
+                if ($adTag instanceof AdTagInterface && !$adTag->getAdSlot() instanceof DisplayAdSlotInterface) {
                     return; // not updating position for other types of ad slot like native ad slot
                 }
+
+                if ($adTag instanceof LibrarySlotTagInterface && !$adTag->getContainer() instanceof LibraryNativeAdSlotInterface) {
+                    return; // not updating position for other types of ad slot like native ad slot
+                }
+
                 if ($adTag->getPosition() != $position ) {
 
                     $adTag->setPosition($position);

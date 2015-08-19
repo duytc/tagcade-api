@@ -99,10 +99,12 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
     {
         $allLibraries = $this->libraryAdSlotRepository->findAll();
 
-        return array_filter($allLibraries, function (LibraryAdSlotAbstract $lib) {
+        $filteredAdSlots = array_filter($allLibraries, function (LibraryAdSlotAbstract $lib) {
                     return $lib->isVisible() === true;
             }
         );
+
+        return ((is_array($filteredAdSlots)) ? array_values($filteredAdSlots) : $filteredAdSlots);
     }
 
 

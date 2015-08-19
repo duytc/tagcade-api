@@ -10,9 +10,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Exception\InvalidFormException;
+use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 
@@ -44,6 +46,15 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 )
             )
         ;
+
+        if ($this->userRole instanceof AdminInterface) {
+            $builder->add(
+                $builder->create('publisher')
+                    ->addModelTransformer(
+                        new RoleToUserEntityTransformer(), false
+                    )
+            );
+        }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
@@ -128,9 +139,14 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     }
                 }
 
-                if($this->userRole instanceof PublisherInterface){
-                    if($libraryDynamicAdSlot->getPublisher() === null)
-                    {
+                // check if missing "publisher" when using admin account. TODO: this should be validated in Entity.Core.LibraryAdSlotAbstract.yml instead of here!
+                if ($this->userRole instanceof AdminInterface) {
+                    if ($libraryDynamicAdSlot->getPublisher() === null) {
+                        $event->getForm()->get('publisher')->addError(new FormError('publisher must not be null'));
+                        return;
+                    }
+                } else if ($this->userRole instanceof PublisherInterface) {
+                    if ($libraryDynamicAdSlot->getPublisher() === null) {
                         $libraryDynamicAdSlot->setPublisher($this->userRole);
                     }
                 }

@@ -20,10 +20,23 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 {
+    /** @var DisplayAdSlotRepositoryInterface */
+    private $displayAdSlotRepository;
+
+    /** @var SiteRepositoryInterface */
+    private $siteRepository;
+
+    function __construct(DisplayAdSlotRepositoryInterface $displayAdSlotRepository, SiteRepositoryInterface $siteRepository)
+    {
+        $this->displayAdSlotRepository = $displayAdSlotRepository;
+        $this->siteRepository = $siteRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->userRole instanceof AdminInterface) {
@@ -72,6 +85,17 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 if(array_key_exists('libraryAdSlot', $dynamicAdSlot) && is_array($dynamicAdSlot['libraryAdSlot'])){
                     $form->remove('libraryAdSlot');
                     $form->add('libraryAdSlot', new LibraryDynamicAdSlotFormType($this->userRole));
+
+                    if($this->userRole instanceof AdminInterface) {
+                        $site = $this->siteRepository->find($dynamicAdSlot['site']);
+                        if(!$site instanceof SiteInterface) {
+                            $form->get('site')->addError(new FormError('This value is not valid'));
+                            return;
+                        }
+
+                        $dynamicAdSlot['libraryAdSlot']['publisher'] = $site->getPublisher()->getId();
+                        $event->setData($dynamicAdSlot);
+                    }
                 }
             }
         );
