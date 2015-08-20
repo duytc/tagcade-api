@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\AdminApiBundle\Repository;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Validator\Constraints\True;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -40,4 +41,21 @@ class SourceReportEmailConfigRepository extends EntityRepository implements Sour
 
         return $result;
     }
+
+    /**
+     * Get all active email config
+     *
+     * @return SourceReportEmailConfigInterface[]
+     */
+    public function getActiveConfig()
+    {
+        $qb = $this->createQueryBuilder('emCf')
+            ->where('emCf.active = :active')
+            ->setParameter('active', True, TYPE::BOOLEAN)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+
 }

@@ -4,10 +4,15 @@ modules:
     config:
         Symfony2:
             environment: 'dev'
+#    config:
 #        Db:
 #            dsn: 'mysql:host=tagcade.dev;dbname=tagcade_api'
 #            user: 'tagcadedev'
 #            password: 'tagcadedev'
 #            dump: 'tests/_data/dump.sql'
-#            populate: true
-#            cleanup: false
+#        Symfony2:
+#            environment: dev
+#        Doctrine2:
+#            depends: Symfony2
+#            connection_callback: [AFakeValueHere]
+

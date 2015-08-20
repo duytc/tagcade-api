@@ -31,7 +31,7 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      */
     public function getAction($siteConfigId)
     {
-        return $this -> one($siteConfigId);
+        return $this->one($siteConfigId);
     }
 
     /**
