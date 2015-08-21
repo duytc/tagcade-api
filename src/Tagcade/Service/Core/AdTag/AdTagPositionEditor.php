@@ -240,7 +240,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                     return; // not updating position for other types of ad slot like native ad slot
                 }
 
-                if ($adTag instanceof LibrarySlotTagInterface && !$adTag->getContainer() instanceof LibraryNativeAdSlotInterface) {
+                if ($adTag instanceof LibrarySlotTagInterface && !$adTag->getContainer() instanceof LibraryDisplayAdSlotInterface) {
                     return; // not updating position for other types of ad slot like native ad slot
                 }
 
