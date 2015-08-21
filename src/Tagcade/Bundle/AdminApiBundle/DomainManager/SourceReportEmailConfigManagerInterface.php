@@ -31,4 +31,6 @@ interface SourceReportEmailConfigManagerInterface {
      * @throws InvalidArgumentException
      */
     public function saveSourceReportConfig(array $emails, array $sites);
+
+    public function getActiveConfig();
 } 

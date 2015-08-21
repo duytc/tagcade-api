@@ -7,7 +7,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Entity\Core\AdTag;
+use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\Expression;
+use Tagcade\Entity\Core\LibraryDynamicAdSlot;
+use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdTagInterface;
@@ -23,6 +26,10 @@ use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
+use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\ExpressionRepositoryInterface;
+use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 
 class Replicator implements ReplicatorInterface
 {
@@ -71,30 +78,27 @@ class Replicator implements ReplicatorInterface
         if(!$libAdSlot instanceof LibraryDisplayAdSlotInterface && !$libAdSlot instanceof LibraryNativeAdSlotInterface) {
             throw new InvalidArgumentException('expect instance of LibraryDisplayAdSlotInterface or LibraryNativeAdSlotInterface');
         }
-
         if(!$adSlot instanceof DisplayAdSlotInterface && !$adSlot instanceof NativeAdSlotInterface) {
             throw new InvalidArgumentException('expect instance of DisplayAdSlotInterface or NativeAdSlotInterface');
         }
 
-        if(null !== $adSlot->getId() && $adSlot->getLibraryAdSlot()->getId() === $libAdSlot->getId()) {
+        $oldLibrary = $adSlot->getLibraryAdSlot();
+
+        if(null !== $adSlot->getId() && $oldLibrary->getId() === $libAdSlot->getId()) {
             return $adSlot; // nothing to be replicated
         }
-
         $this->em->getConnection()->beginTransaction();
-
         try {
+
             // Update library of the ad slot
             $adSlot->setLibraryAdSlot($libAdSlot);
-
             // add new ad slot that refers to a library then we have to replicate all tags in that library to the slot
             $librarySlotTags = $libAdSlot->getLibSlotTags();
-
             // remove old ad tags
             $adTags = $adSlot->getAdTags();
             foreach($adTags as $t) {
                 $this->em->remove($t);
             }
-
             $adSlot->getAdTags()->clear();
             // add new ad tags
             foreach($librarySlotTags as $librarySlotTag) {
@@ -106,13 +110,43 @@ class Replicator implements ReplicatorInterface
                 $newAdTag->setPosition($librarySlotTag->getPosition());
                 $newAdTag->setRotation($librarySlotTag->getRotation());
                 $newAdTag->setActive($librarySlotTag->isActive());
-
                 $adSlot->getAdTags()->add($newAdTag);
             }
 
             $this->em->persist($adSlot);
-            $this->em->flush();
 
+            // replicate for library expression in dynamic ad slot
+            /** @var ExpressionRepositoryInterface $expressionRepository */
+            $expressionRepository = $this->em->getRepository(Expression::class);
+            $expressions = $expressionRepository->getByExpectAdSlot($adSlot);
+            if(!empty($expressions)) {
+                /** @var ExpressionInterface $expression */
+                foreach($expressions as $expression) {
+                    // replace with the new library ad slot
+                    $libraryExpression = $expression->getLibraryExpression();
+                    $libraryExpression->setExpectLibraryAdSlot($libAdSlot);
+                    $this->em->merge($libraryExpression);
+                }
+            }
+
+            // 2. Check if there are changes in default library ad slot
+            /**
+             * @var DynamicAdSlotRepositoryInterface $dynamicAdSlotRepository
+             */
+            $dynamicAdSlotRepository = $this->em->getRepository(DynamicAdSlot::class);
+            $dynamicAdSlots = $dynamicAdSlotRepository->getDynamicAdSlotsThatHaveDefaultAdSlot($adSlot);
+            if(!empty($dynamicAdSlots)) {
+                /**
+                 * @var DynamicAdSlotInterface $dynamicAdSlot
+                 */
+                foreach($dynamicAdSlots as $dynamicAdSlot) {
+                    $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
+                    $libraryAdSlot->setDefaultLibraryAdSlot($libraryAdSlot);
+                    $this->em->merge($libraryAdSlot);
+                }
+            }
+
+            $this->em->flush();
             $this->checksumValidator->validateAdSlotSynchronization($adSlot);
 
             $this->em->getConnection()->commit();

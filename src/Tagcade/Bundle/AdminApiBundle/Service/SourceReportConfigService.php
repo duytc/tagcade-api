@@ -33,8 +33,8 @@ class SourceReportConfigService implements SourceReportConfigServiceInterface
         //step 1. get all sites that has "enableSourceReport = true"
         $sites = $this->siteManager->getAllSitesThatEnableSourceReport();
 
-        //step 2. get all emailConfigs
-        $emailConfigs = $this->sourceReportEmailConfigManager->all();
+        //step 2. get all active emailConfigs
+        $emailConfigs = $this->sourceReportEmailConfigManager->getActiveConfig();
 
         //step 1. build all "reports" for output
         $reports = [];

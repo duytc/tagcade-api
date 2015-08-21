@@ -29,4 +29,18 @@ class ExpressionRepository extends EntityRepository implements ExpressionReposit
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @param BaseAdSlotInterface $adSlot
+     * @return mixed
+     */
+    public function getByExpectAdSlot(BaseAdSlotInterface $adSlot)
+    {
+        $qb = $this->createQueryBuilder('exp')
+            ->where('exp.expectAdSlot = :expect_ad_slot_id')
+            ->setParameter('expect_ad_slot_id', $adSlot->getId(), Type::INTEGER)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

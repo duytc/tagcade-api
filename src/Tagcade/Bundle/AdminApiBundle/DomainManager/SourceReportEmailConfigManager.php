@@ -188,6 +188,12 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
         $this->om->flush();
     }
 
+    public function getActiveConfig()
+    {
+        return $this->repository->getActiveConfig();
+    }
+
+
     /**
      * Validate email format
      *

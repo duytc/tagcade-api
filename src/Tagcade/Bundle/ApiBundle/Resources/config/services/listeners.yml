@@ -37,5 +37,5 @@ services:
     tagcade_api.event_listener.ResetStartingPositionListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\ResetStartingPositionListener
         tags:
-            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preUpdate, priority: 100 }
             - { name: doctrine.event_listener, event: postSoftDelete }
