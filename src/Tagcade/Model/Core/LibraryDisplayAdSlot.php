@@ -63,10 +63,6 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
     }
 
 
-    public function __toString()
-    {
-        return $this->id . $this->getName();
-    }
 
     /**
      * @return DisplayAdSlotInterface[]
@@ -93,5 +89,37 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
     {
         $this->publisher = $publisher;
         return $this;
+    }
+
+    /**
+     * Calculate CheckSum string of an given library AdSlot
+     * by concatenating major properties together with null value ignored, then returning the MD5 hash
+     * @return string
+     */
+    public function checkSum()
+    {
+        $array = array(
+            parent::TYPE_DISPLAY,
+            $this->getId()
+        );
+
+        $adTags = $this->getLibSlotTags()->toArray();
+
+        usort($adTags, function(LibrarySlotTagInterface $a, LibrarySlotTagInterface $b) {
+            return strcmp($a->getRefId(), $b->getRefId());
+        });
+
+        /** @var LibrarySlotTagInterface $t */
+        foreach($adTags as $t){
+            $array[] =  $t->checkSum();
+        }
+
+        return md5(serialize($array));
+    }
+
+
+    public function __toString()
+    {
+        return $this->id . $this->getName();
     }
 }

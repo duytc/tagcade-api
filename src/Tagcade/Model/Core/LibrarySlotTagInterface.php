@@ -55,4 +55,9 @@ interface LibrarySlotTagInterface extends PositionInterface {
      * @param int $rotation
      */
     public function setRotation($rotation);
+
+    /**
+     * @return string
+     */
+    public function checkSum();
 }

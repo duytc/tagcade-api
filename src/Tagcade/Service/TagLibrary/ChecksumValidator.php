@@ -4,8 +4,11 @@ namespace Tagcade\Service\TagLibrary;
 
 
 use Doctrine\ORM\PersistentCollection;
+use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
 class ChecksumValidator implements ChecksumValidatorInterface

@@ -220,6 +220,33 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
         return $this->getLibraryAdSlot()->getLibSlotTags();
     }
 
+    /**
+     * @return string
+     */
+    public function checkSum()
+    {
+        return  md5(serialize(
+            array(
+                $this->getLibraryAdTag()->getId(),
+                $this->getName(),
+                $this->getPosition(),
+                $this->isActive(),
+                $this->getFrequencyCap(),
+                $this->getRotation(),
+                $this->getRefId()
+            )));
+    }
+
+    /**
+     * get 'name' of the entity
+     *
+     * @return string
+     */
+    protected function getName(){
+        if($this->getLibraryAdTag() === null) return null;
+
+        return $this->getLibraryAdTag()->getName();
+    }
 
     /**
      * @return mixed

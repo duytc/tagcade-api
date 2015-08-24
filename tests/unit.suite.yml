@@ -1,15 +1,16 @@
 class_name: UnitTester
 modules:
-    enabled: [Symfony2, Doctrine2, UnitHelper, Asserts]
+    enabled: [Symfony2, Doctrine2, UnitHelper, Asserts, Db]
     config:
         Symfony2:
             environment: 'dev'
-#    config:
-#        Db:
-#            dsn: 'mysql:host=tagcade.dev;dbname=tagcade_api'
-#            user: 'tagcadedev'
-#            password: 'tagcadedev'
-#            dump: 'tests/_data/dump.sql'
+        Db:
+            dsn: 'mysql:host=localhost;dbname=tagcade_api'
+            user: 'tagcadedev'
+            password: 'tagcadedev'
+            dump: 'tests/_data/replicator_unit_test.sql'
+            populate: true
+            cleanup: true
 #        Symfony2:
 #            environment: dev
 #        Doctrine2:
