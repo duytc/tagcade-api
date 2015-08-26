@@ -1,0 +1,7 @@
+Tagcade\Entity\Core\Channel:
+    properties:
+        name:
+            - NotBlank: ~
+        publisher:
+            - NotBlank: ~
+            - Valid: ~

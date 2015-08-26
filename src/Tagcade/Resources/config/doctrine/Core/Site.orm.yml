@@ -38,4 +38,9 @@ Tagcade\Entity\Core\Site:
             mappedBy: site
             cascade: ["remove"]
             orphanRemoval: true
+        channelSites:
+            targetEntity: Tagcade\Entity\Core\ChannelSite
+            mappedBy: site
+            cascade: ["persist", "remove", "detach"]
+            orphanRemoval: true
 

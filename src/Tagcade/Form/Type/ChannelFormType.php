@@ -8,21 +8,18 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Tagcade\Entity\Core\Site;
+use Tagcade\Entity\Core\Channel;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\ChannelSiteInterface;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 
-class SiteFormType extends AbstractRoleSpecificFormType
+class ChannelFormType extends AbstractRoleSpecificFormType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name')
-            ->add('domain')
-            ->add('enableSourceReport');
+            ->add('name');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -44,26 +41,21 @@ class SiteFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
-                /* modify enableSourceReport for site */
-                /** @var SiteInterface $site */
-                $site = $event->getData();
+                /** @var ChannelInterface $channel */
+                $channel = $event->getData();
                 $form = $event->getForm();
-
-                if (!$site->getPublisher()->hasAnalyticsModule()) {
-                    $site->setEnableSourceReport(false);
-                }
 
                 /** @var ChannelSiteInterface[] $channelSites */
                 $channelSites = $event->getForm()->get('channelSites')->getData();
 
-                if ($channelSites === null) {
+                if($channelSites === null) {
                     $form->get('channelSites')->addError(new FormError('channelSites must be an array string'));
                     return;
                 }
 
                 foreach ($channelSites as $cs) {
-                    if (!$cs->getSite() instanceof SiteInterface) {
-                        $cs->setSite($site);
+                    if (!$cs->getChannel() instanceof ChannelInterface) {
+                        $cs->setChannel($channel);
                     }
                 }
 
@@ -72,7 +64,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 }
 
                 $channelSites = array_unique($channelSites);
-                $site->setChannelSites($channelSites);
+                $channel->setChannelSites($channelSites);
             }
         );
     }
@@ -81,13 +73,13 @@ class SiteFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
-                'data_class' => Site::class,
+                'data_class' => Channel::class,
                 'cascade_validation' => true
             ]);
     }
 
     public function getName()
     {
-        return 'tagcade_form_site';
+        return 'tagcade_form_channel';
     }
 }

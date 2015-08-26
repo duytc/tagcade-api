@@ -1,5 +1,9 @@
 Tagcade\Entity\Core\Site:
     exclusion_policy: ALL
+    virtual_properties:
+        getChannels:
+            serialized_name: channels
+            groups: [site.detail]
     properties:
         id:
             expose: true
@@ -16,3 +20,6 @@ Tagcade\Entity\Core\Site:
         enableSourceReport:
             expose: true
             groups: [site.detail, site.summary]
+#        channelSites:
+#            expose: true
+#            groups: [site.detail, site.summary]

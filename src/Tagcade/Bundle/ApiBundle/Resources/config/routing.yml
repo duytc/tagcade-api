@@ -78,6 +78,11 @@ api_library_expression:
     resource: Tagcade\Bundle\ApiBundle\Controller\LibraryExpressionController
     name_prefix:  api_1_
 
+api_channel:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\ChannelController
+    name_prefix:  api_1_
+
 api_reset_password_send_email:
     path: /resetting/sendEmail
     defaults: { _controller: TagcadeApiBundle:ResetPassword:sendEmail }

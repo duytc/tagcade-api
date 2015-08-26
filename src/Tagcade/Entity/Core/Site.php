@@ -2,6 +2,7 @@
 
 namespace Tagcade\Entity\Core;
 
+use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\Site as SiteModel;
 
 class Site extends SiteModel
@@ -13,6 +14,7 @@ class Site extends SiteModel
     protected $deletedAt;
     protected $enableSourceReport;
     protected $sourceReportSiteConfigs;
+    protected $channelSites;
 
     public function __construct()
     {}

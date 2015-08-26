@@ -30,4 +30,13 @@ interface SiteManagerInterface extends ManagerInterface
      * @return SiteInterface[]
      */
     public function getAllSitesThatEnableSourceReport($enableSourceReport = true);
+
+    /**
+     * Delete one channel for a site (in list channels of site)
+     *
+     * @param SiteInterface $site
+     * @param $channelId
+     * @return int number of removed channels
+     */
+    public function deleteChannelForSite(SiteInterface $site, $channelId) ;
 }

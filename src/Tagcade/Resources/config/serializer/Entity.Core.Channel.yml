@@ -1,0 +1,19 @@
+Tagcade\Entity\Core\Channel:
+    exclusion_policy: ALL
+    virtual_properties:
+        getSites:
+            serialized_name: sites
+            groups: [channel.summary]
+    properties:
+        id:
+            expose: true
+            groups: [channel.detail, channel.summary]
+        publisher:
+            expose: true
+            groups: [channel.detail, channel.summary]
+        name:
+            expose: true
+            groups: [channel.detail, channel.summary]
+#        channelSites:
+#            expose: true
+#            groups: [channel.detail, channel.summary]

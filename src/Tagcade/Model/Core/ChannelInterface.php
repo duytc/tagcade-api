@@ -6,7 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface SiteInterface extends ModelInterface
+interface ChannelInterface extends ModelInterface
 {
     /**
      * @param string $name
@@ -20,15 +20,9 @@ interface SiteInterface extends ModelInterface
     public function getName();
 
     /**
-     * @param string $domain
-     * @return self
+     * @return int|null
      */
-    public function setDomain($domain);
-
-    /**
-     * @return string|null
-     */
-    public function getDomain();
+    public function getPublisherId();
 
     /**
      * @return PublisherInterface|null
@@ -36,35 +30,15 @@ interface SiteInterface extends ModelInterface
     public function getPublisher();
 
     /**
-     * @return int|null
-     */
-    public function getPublisherId();
-
-    /**
      * @param PublisherInterface $publisher
      * @return self
      */
     public function setPublisher(PublisherInterface $publisher);
 
-    public function getReportableAdSlots();
-
-
-    public function getAllAdSlots();
-
     /**
-     * @return boolean|null
+     * @return mixed
      */
-    public function getEnableSourceReport();
-
-    /**
-     * @param boolean $enableSourceReport
-     */
-    public function setEnableSourceReport($enableSourceReport);
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getSourceReportSiteConfigs();
+    public function getDeletedAt();
 
     /**
      * @param ChannelSiteInterface[] $channelSites
@@ -72,12 +46,12 @@ interface SiteInterface extends ModelInterface
     public function setChannelSites($channelSites);
 
     /**
-     * @return ArrayCollection
+     * @return ChannelSiteInterface[]|ArrayCollection|null
      */
     public function getChannelSites();
 
     /**
      * @return array
      */
-    public function getChannels();
+    public function getSites();
 }

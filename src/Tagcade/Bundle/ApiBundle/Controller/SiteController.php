@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,9 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Get all sites
      *
+     * @Rest\View(
+     *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -36,6 +40,9 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Get a single site for the given id
      *
+     * @Rest\View(
+     *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
+     * )
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -141,6 +148,38 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     public function deleteAction($id)
     {
         return $this->delete($id);
+    }
+
+    /**
+     * Delete one channel in channels list for a existing site
+     *
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @Rest\Delete("/sites/{siteId}/channel/{channelId}", requirements={"siteId" = "\d+", "channelId" = "\d+"})
+     *
+     * @param int $siteId the site id
+     * @param int $channelId the channel id
+     *
+     * @return View
+     *
+     * @throws NotFoundHttpException when the resource not exist
+     */
+    public function deleteChannelForSiteAction($siteId, $channelId)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->getOr404($siteId);
+
+        $this->checkUserPermission($site, 'edit');
+
+        $result = $this->get('tagcade.domain_manager.site')->deleteChannelForSite($site, $channelId);
+
+        return $this->view(null, ($result > 0 ? Codes::HTTP_NO_CONTENT : Codes::HTTP_NOT_FOUND));
     }
 
     /**
