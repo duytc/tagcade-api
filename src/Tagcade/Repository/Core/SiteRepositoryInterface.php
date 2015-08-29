@@ -5,7 +5,10 @@ namespace Tagcade\Repository\Core;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\SiteInterface;
 
 interface SiteRepositoryInterface extends ObjectRepository
 {
@@ -39,4 +42,14 @@ interface SiteRepositoryInterface extends ObjectRepository
     public function getSitesThatEnableSourceReportForPublisher(PublisherInterface $publisher, $enableSourceReport = true);
 
     public function getAllSitesThatEnableSourceReport($enableSourceReport = true);
+
+    /**
+     * get all Sites which have no Ad Slot references to a library Ad Slot
+     *
+     * @param $slotLibrary
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return array
+     */
+    public function getSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null);
 }

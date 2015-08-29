@@ -18,6 +18,7 @@ interface ChannelSiteInterface extends ModelInterface
 
     /**
      * @param ChannelInterface $channel
+     * @return self
      */
     public function setChannel($channel);
 
@@ -28,6 +29,7 @@ interface ChannelSiteInterface extends ModelInterface
 
     /**
      * @param SiteInterface $site
+     * @return self
      */
     public function setSite($site);
 

@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -86,7 +87,6 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
 
         return $this->post($request);
     }
-
 
     /**
      * Update an existing library dynamic adSlot from the submitted data or create a new one at a specific location

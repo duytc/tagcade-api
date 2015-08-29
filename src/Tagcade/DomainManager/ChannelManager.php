@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -35,7 +36,7 @@ class ChannelManager implements ChannelManagerInterface
      */
     public function save(ModelInterface $channel)
     {
-        if(!$channel instanceof ChannelInterface) throw new InvalidArgumentException('expect ChannelInterface object');
+        if (!$channel instanceof ChannelInterface) throw new InvalidArgumentException('expect ChannelInterface object');
 
         $this->om->persist($channel);
         $this->om->flush();
@@ -46,7 +47,7 @@ class ChannelManager implements ChannelManagerInterface
      */
     public function delete(ModelInterface $channel)
     {
-        if(!$channel instanceof ChannelInterface) throw new InvalidArgumentException('expect ChannelInterface object');
+        if (!$channel instanceof ChannelInterface) throw new InvalidArgumentException('expect ChannelInterface object');
 
         $this->om->remove($channel);
         $this->om->flush();
@@ -88,10 +89,19 @@ class ChannelManager implements ChannelManagerInterface
     /**
      * @inheritdoc
      */
-    public function deleteSiteForChannel(ChannelInterface $channel, $siteId) {
+    public function getChannelsIncludeSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null)
+    {
+        return $this->repository->getChannelsIncludeSitesUnreferencedToLibraryAdSlot($slotLibrary, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteSiteForChannel(ChannelInterface $channel, $siteId)
+    {
         $channelSites = $channel->getChannelSites();
 
-        if($channelSites instanceof Collection) {
+        if ($channelSites instanceof Collection) {
             $channelSites = $channelSites->toArray();
         }
 
@@ -99,7 +109,7 @@ class ChannelManager implements ChannelManagerInterface
         $removedCount = 0;
 
         foreach ($channelSites as $idx => $cs) {
-            if($cs->getSite()->getId() == $siteId) {
+            if ($cs->getSite()->getId() == $siteId) {
                 //remove matched element
                 $this->om->remove($cs);
                 $removedCount++;

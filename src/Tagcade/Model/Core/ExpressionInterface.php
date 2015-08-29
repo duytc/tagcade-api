@@ -14,6 +14,7 @@ interface ExpressionInterface extends ModelInterface
     public function getExpressionDescriptor();
     /**
      * @param mixed $expressionDescriptor
+     * @return self
      */
     public function setExpressionDescriptor($expressionDescriptor);
 
@@ -24,6 +25,7 @@ interface ExpressionInterface extends ModelInterface
 
     /**
      * @param int $startingPosition
+     * @return self
      */
     public function setStartingPosition($startingPosition);
 
@@ -33,6 +35,7 @@ interface ExpressionInterface extends ModelInterface
     public function getExpectAdSlot();
     /**
      * @param ReportableAdSlotInterface $expectAdSlot
+     * @return self
      */
     public function setExpectAdSlot(ReportableAdSlotInterface $expectAdSlot);
 
@@ -42,6 +45,7 @@ interface ExpressionInterface extends ModelInterface
     public function getExpressionInJs();
     /**
      * @param mixed $expressionInJs
+     * @return self
      */
     public function setExpressionInJs($expressionInJs);
 
@@ -53,7 +57,7 @@ interface ExpressionInterface extends ModelInterface
 
     /**
      * @param LibraryExpressionInterface $libraryExpression
-     * @return $this
+     * @return self
      */
     public function setLibraryExpression($libraryExpression);
 
@@ -69,10 +73,9 @@ interface ExpressionInterface extends ModelInterface
 
     /**
      * @param DynamicAdSlotInterface $dynamicAdSlot
+     * @return self
      */
     public function setDynamicAdSlot($dynamicAdSlot);
 
     public function getDeletedAt();
-
-
 }

@@ -7,9 +7,13 @@ use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class SiteManager implements SiteManagerInterface
@@ -107,6 +111,14 @@ class SiteManager implements SiteManagerInterface
     public function getAllSitesThatEnableSourceReport($enableSourceReport = true)
     {
         return $this->repository->getAllSitesThatEnableSourceReport($enableSourceReport);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null)
+    {
+        return $this->repository->getSitesUnreferencedToLibraryAdSlot($slotLibrary, $limit = null, $offset = null);
     }
 
     /**

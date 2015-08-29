@@ -13,6 +13,7 @@ interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
      * @param LibraryAdTagInterface $libraryAdTag
+     * @return self
      */
     public function setLibraryAdTag($libraryAdTag);
 
@@ -23,6 +24,7 @@ interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @return self
      */
     public function setLibraryAdSlot($libraryAdSlot);
 
@@ -34,6 +36,7 @@ interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
      * @param boolean $active
+     * @return self
      */
     public function setActive($active);
     /**
@@ -43,6 +46,7 @@ interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
      * @param int $frequencyCap
+     * @return self
      */
     public function setFrequencyCap($frequencyCap);
 
@@ -53,6 +57,7 @@ interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
      * @param int $rotation
+     * @return self
      */
     public function setRotation($rotation);
 

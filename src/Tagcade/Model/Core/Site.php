@@ -137,6 +137,8 @@ class Site implements SiteInterface
     public function setEnableSourceReport($enableSourceReport)
     {
         $this->enableSourceReport = $enableSourceReport;
+
+        return $this;
     }
 
     public function getSourceReportSiteConfigs()
@@ -145,11 +147,13 @@ class Site implements SiteInterface
     }
 
     /**
-     * @param ChannelSiteInterface[] $channelSites
+     * @inheritdoc
      */
     public function setChannelSites($channelSites)
     {
         $this->channelSites = $channelSites;
+
+        return $this;
     }
 
     /**

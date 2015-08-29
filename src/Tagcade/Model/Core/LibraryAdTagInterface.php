@@ -10,7 +10,7 @@ use Tagcade\Model\ModelInterface;
 interface LibraryAdTagInterface extends  ModelInterface{
     /**
      * @param $id
-     * @return mixed
+     * @return self
      */
     public function setId($id);
 
@@ -21,14 +21,14 @@ interface LibraryAdTagInterface extends  ModelInterface{
 
     /**
      * @param $html
-     * @return mixed
+     * @return self
      */
     public function setHtml($html);
 
 
     /**
      * @param AdNetworkInterface $adNetwork
-     * @return mixed
+     * @return self
      */
     public function setAdNetwork($adNetwork);
 
@@ -44,7 +44,7 @@ interface LibraryAdTagInterface extends  ModelInterface{
 
     /**
      * @param $visible boolean
-     * @return mixed
+     * @return self
      */
     public function setVisible($visible);
 
@@ -63,6 +63,7 @@ interface LibraryAdTagInterface extends  ModelInterface{
     /**
      * set AdType
      * @param int $adType
+     * @return self
      */
     public function setAdType($adType);
 
@@ -75,6 +76,7 @@ interface LibraryAdTagInterface extends  ModelInterface{
     /**
      * set Descriptor formatted as json_array
      * @param array $descriptor
+     * @return self
      */
     public function setDescriptor($descriptor);
 
@@ -85,6 +87,7 @@ interface LibraryAdTagInterface extends  ModelInterface{
 
     /**
      * @param LibrarySlotTagInterface $libSlotTags
+     * @return self
      */
     public function setLibSlotTags($libSlotTags);
 
@@ -95,11 +98,12 @@ interface LibraryAdTagInterface extends  ModelInterface{
 
     /**
      * @param mixed $name
+     * @return self
      */
     public function setName($name);
 
     /**
-     * return int
+     * @return int
      */
     public function getAssociatedTagCount();
 }

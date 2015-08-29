@@ -163,10 +163,13 @@ class Expression implements ExpressionInterface
 
     /**
      * @param DynamicAdSlotInterface $dynamicAdSlot
+     * @return $this
      */
     public function setDynamicAdSlot($dynamicAdSlot)
     {
         $this->dynamicAdSlot = $dynamicAdSlot;
+
+        return $this;
     }
 
     /**

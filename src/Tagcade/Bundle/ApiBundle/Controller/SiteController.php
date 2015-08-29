@@ -3,12 +3,14 @@
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -39,6 +41,8 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Get a single site for the given id
+     *
+     * @Rest\Get("/sites/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
      *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
@@ -264,6 +268,36 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
         return $this->get('tagcade.service.tag_generator')
             ->getTagsForSite($site);
+    }
+
+    /**
+     * get all Sites which have no Ad Slot references to a library Ad Slot
+     *
+     * @Rest\View(
+     *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
+     * )
+     *
+     * @Rest\Get("sites/noreference")
+     *
+     * @Rest\QueryParam(name="slotLibrary", requirements="\d+")
+     *
+     * @return array
+     */
+    public function getSitesUnreferencedToLibraryAdSlotAction()
+    {
+        /** @var ParamFetcherInterface $paramFetcher */
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $slotLibraryId = $paramFetcher->get('slotLibrary');
+        $slotLibraryId = filter_var($slotLibraryId, FILTER_VALIDATE_INT);
+
+        $slotLibrary = $this->get('tagcade.domain_manager.library_ad_slot')->find($slotLibraryId);
+        if (!$slotLibrary instanceof BaseLibraryAdSlotInterface) {
+            throw new NotFoundHttpException('Not found that slot library');
+        }
+
+        $this->checkUserPermission($slotLibrary, 'edit');
+
+        return $this->get('tagcade.domain_manager.site')->getSitesUnreferencedToLibraryAdSlot($slotLibrary);
     }
 
     protected function getResourceName()

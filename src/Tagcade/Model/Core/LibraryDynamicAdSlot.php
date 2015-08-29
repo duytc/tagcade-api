@@ -47,11 +47,13 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     }
 
     /**
-     * @param mixed $native
+     * @inheritdoc
      */
     public function setNative($native)
     {
         $this->native = $native;
+
+        return $this;
     }
 
     /**
@@ -63,11 +65,13 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     }
 
     /**
-     * @param LibraryExpressionInterface[] $libraryExpressions
+     * @inheritdoc
      */
     public function setLibraryExpressions($libraryExpressions)
     {
         $this->libraryExpressions = $libraryExpressions;
+
+        return $this;
     }
 
     /**
@@ -79,11 +83,13 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     }
 
     /**
-     * @param BaseLibraryAdSlotInterface $defaultLibraryAdSlot
+     * @inheritdoc
      */
     public function setDefaultLibraryAdSlot($defaultLibraryAdSlot)
     {
         $this->defaultLibraryAdSlot = $defaultLibraryAdSlot;
+
+        return $this;
     }
 
     /**

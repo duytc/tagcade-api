@@ -2,6 +2,8 @@
 
 namespace Tagcade\DomainManager;
 
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -23,4 +25,14 @@ interface ChannelManagerInterface extends ManagerInterface
      * @return int number of removed sites
      */
     public function deleteSiteForChannel(ChannelInterface $channel, $siteId) ;
+
+    /**
+     * get Channels Include Sites Unreferenced To Library AdSlot
+     *
+     * @param BaseLibraryAdSlotInterface $slotLibrary
+     * @param null $limit
+     * @param null $offset
+     * @return ChannelInterface[]
+     */
+    public function getChannelsIncludeSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null) ;
 }

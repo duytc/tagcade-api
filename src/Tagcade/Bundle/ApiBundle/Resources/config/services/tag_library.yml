@@ -8,17 +8,18 @@ services:
     tagcade_api.service.tag_library.replicator:
         class: Tagcade\Service\TagLibrary\Replicator
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine.orm.entity_manager
             - @tagcade_api.service.tag_library.checksum_validator
         calls:
             - [setAdSlotGenerator, ["@tagcade_api.service.tag_library.ad_slot_generator_service"]]
             - [setAdSlotManager, ["@tagcade.domain_manager.ad_slot"]]
 
-
     tagcade_api.service.tag_library.ad_slot_generator_service:
         class: Tagcade\Service\TagLibrary\AdSlotGenerator
         calls:
             - [setAdSlotManager, ["@tagcade.domain_manager.ad_slot"]]
+            - [setChannelManager, ["@tagcade.domain_manager.channel"]]
+            - [setSiteManager, ["@tagcade.domain_manager.site"]]
 
     tagcade_api.service.tag_library.ad_slot_cloner_service:
         class: Tagcade\Service\Core\AdSlot\AdSlotCloner

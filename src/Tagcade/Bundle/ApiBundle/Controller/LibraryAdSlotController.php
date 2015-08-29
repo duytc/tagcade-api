@@ -2,33 +2,27 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
-use Doctrine\ORM\PersistentCollection;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Tagcade\Entity\Core\DisplayAdSlot;
-use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
+use Tagcade\Exception\RuntimeException;
+use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
-use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
-use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlot;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\TagLibrary\AdSlotGenerator;
 
 /**
  * @Rest\RouteResource("LibraryAdslot")
  */
-class LibraryAdSlotController extends FOSRestController implements ClassResourceInterface
+class LibraryAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
 
     /**
@@ -118,5 +112,153 @@ class LibraryAdSlotController extends FOSRestController implements ClassResource
         }
 
         return $this->get('tagcade.domain_manager.library_ad_slot')->getUnReferencedLibraryAdSlotForSite($site);
+    }
+
+    /**
+     * @Rest\Post("/libraryadslots/{id}/createlinks", requirements={"id" = "\d+"})
+     *
+     * @param Request $request
+     *
+     * @param int $id
+     *
+     * @return view
+     */
+    public function postCreateLinksAction(Request $request, $id)
+    {
+        //find and validate slotLibrary
+        /** @var BaseLibraryAdSlotInterface $slotLibrary */
+        $slotLibrary = $this->get('tagcade.domain_manager.library_ad_slot')->find($id);
+        if(!$slotLibrary instanceof BaseLibraryAdSlotInterface) {
+            throw new NotFoundHttpException(
+                sprintf("The %s resource '%s' was not found or you do not have access", $this->getResourceName(), $id)
+            );
+        }
+
+        $this->checkUserPermission($slotLibrary, 'view');
+        //get params as channelIds and siteIds
+        $allParams = $request->request->all();
+        $channelIds = $allParams['channels'];
+        $siteIds = $allParams['sites'];
+
+        //get Channels And Validate Permission
+        /** @var ChannelInterface[] $channels */
+        $channels = $this->getAndValidatePermissionForChannels($channelIds);
+        //get Sites And Validate Permission
+        /** @var SiteInterface[] $sites */
+        $sites = $this->getAndValidatePermissionForSites($siteIds);
+
+        $this->get('tagcade_api.service.tag_library.ad_slot_generator_service')->generateAdSlotFromLibraryForChannelsAndSites($slotLibrary, $channels, $sites);
+
+        return $this->view(null, Codes::HTTP_CREATED);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getResourceName()
+    {
+        return 'libraryadslot';
+    }
+
+    /**
+     * The 'get' route name to redirect to after resource creation
+     *
+     * @return string
+     */
+    protected function getGETRouteName()
+    {
+        return 'api_1_get_libraryadslot';
+    }
+
+    /**
+     * @return HandlerInterface
+     */
+    protected function getHandler()
+    {
+        throw new RuntimeException('Not support get handler of for common libraryAdSlot.
+        Go to either LibraryDisplayAdSlotController, LibraryNativeAdSlotController or LibraryDynamicAdSlotController and use associate handlers.');
+    }
+
+    /**
+     * get And Validate Permission For Channels
+     * @param array $channelIds
+     * @return ChannelInterface[]
+     * @throws NotFoundHttpException if $user have no Permission on any Channels
+     */
+    private function getAndValidatePermissionForChannels(array $channelIds)
+    {
+        $channels = [];
+        $channelManager = $this->get('tagcade.domain_manager.channel');
+
+        array_walk(
+            $channelIds, function($channelId) use($channelManager, &$channels){
+                $channel = $channelManager->find((int)$channelId);
+
+                if (!$channel instanceof ChannelInterface) {
+                    throw new NotFoundHttpException('Some channels are not found');
+                }
+
+                if (!in_array($channel, $channels)) {
+                    $this->checkUserPermission($channel, 'edit');
+                    $channels[] = $channel;
+                }
+            }
+        );
+
+        return $channels;
+    }
+
+    /**
+     * get And Validate Permission For Sites
+     * @param array $siteIds
+     * @return SiteInterface[]
+     * @throws NotFoundHttpException if $user have no Permission on any Sites
+     */
+    private function getAndValidatePermissionForSites(array $siteIds)
+    {
+        /** @var SiteInterface[] $sites */
+        $sites = [];
+        /** @var SiteManagerInterface $siteManager */
+        $siteManager = $this->get('tagcade.domain_manager.site');
+        array_walk(
+            $siteIds,
+            function($siteId) use($siteManager, &$sites) {
+                $site = $siteManager->find((int)$siteId);
+
+                if (!$site instanceof SiteInterface) {
+                    throw new NotFoundHttpException('Some channels are not found');
+                }
+
+                if (!in_array($site, $sites)) {
+                    $this->checkUserPermission($site, 'edit');
+                    $sites[] = $site;
+                }
+            }
+        );
+
+        return $sites;
+    }
+
+    /**
+     * filter Sites Existed In Channels
+     * @param ChannelInterface[] $channels
+     * @param SiteInterface[] $sites
+     * @return array
+     */
+    private function filterSitesExistedInChannels(array $channels, array $sites)
+    {
+        return array_filter(
+            $sites,
+            function (SiteInterface $site) use ($channels) {
+                $channelsOfSite = $site->getChannels();
+                foreach ($channelsOfSite as $cn) {
+                    if (in_array($cn, $channels)) {
+                        return false; // ignore this site since it is in input channel already
+                    }
+                }
+
+                return true;
+            }
+        );
     }
 }
