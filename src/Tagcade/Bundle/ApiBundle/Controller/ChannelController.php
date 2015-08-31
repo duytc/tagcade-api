@@ -24,7 +24,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * Get all channels
      *
      * @Rest\View(
-     *      serializerGroups={"channel.summary", "user.summary", "site.detail"}
+     *      serializerGroups={"channel.summary", "user.summary"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -46,7 +46,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * @Rest\Get("/channels/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"channel.summary", "user.summary", "site.detail"}
+     *      serializerGroups={"channel.summary", "user.summary"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -67,10 +67,37 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
     }
 
     /**
+     * Get sites of channel for the given id
+     *
+     * @Rest\View(
+     *      serializerGroups={"site.detail", "user.summary"}
+     * )
+     * @ApiDoc(
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     *
+     * @return \Tagcade\Model\Core\SiteInterface[]
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getSitesAction($id)
+    {
+        /** @var ChannelInterface $channel */
+        $channel = $this->one($id);
+
+        return $channel->getSites();
+    }
+
+    /**
      * get Channels Include Sites Unreferenced To Library AdSlot
      *
      * @Rest\View(
-     *      serializerGroups={"channel.summary", "user.summary", "site.detail"}
+     *      serializerGroups={"channel.summary", "user.summary"}
      * )
      *
      * @Rest\Get("channels/noreference")

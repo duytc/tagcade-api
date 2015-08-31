@@ -4,7 +4,6 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
-use Tagcade\Exception\LogicException;
 
 class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynamicAdSlotInterface
 {
@@ -90,14 +89,6 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
         $this->defaultLibraryAdSlot = $defaultLibraryAdSlot;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function checkSum()
-    {
-        throw new LogicException('Checksum is not supported with DynamicAdSlot');
     }
 
 

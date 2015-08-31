@@ -23,7 +23,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Get all sites
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
+     *      serializerGroups={"site.detail", "user.summary"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -45,7 +45,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\Get("/sites/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
+     *      serializerGroups={"site.detail", "user.summary"}
      * )
      * @ApiDoc(
      *  resource = true,
@@ -271,10 +271,28 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
+     * Retrieve a list of channels for this site
+     *
+     * @Rest\View(
+     *      serializerGroups={"channel.summary", "user.summary"}
+     * )
+     *
+     * @param int $id
+     * @return \Tagcade\Model\Core\ChannelInterface[]
+     */
+    public function getChannelsAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        return $site->getChannels();
+    }
+
+    /**
      * get all Sites which have no Ad Slot references to a library Ad Slot
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "channel.summary"}
+     *      serializerGroups={"site.detail", "user.summary"}
      * )
      *
      * @Rest\Get("sites/noreference")

@@ -20,6 +20,7 @@ services:
             - [setAdSlotManager, ["@tagcade.domain_manager.ad_slot"]]
             - [setChannelManager, ["@tagcade.domain_manager.channel"]]
             - [setSiteManager, ["@tagcade.domain_manager.site"]]
+            - [setArrayUtil, ["@tagcade.service.array_util"]]
 
     tagcade_api.service.tag_library.ad_slot_cloner_service:
         class: Tagcade\Service\Core\AdSlot\AdSlotCloner

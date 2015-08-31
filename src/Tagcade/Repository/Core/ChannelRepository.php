@@ -46,14 +46,31 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
     public function getChannelsIncludeSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null)
     {
         $referencedChannels = [];
+        $referencedSites = [];
 
         $referencedAdSlots = $slotLibrary->getAdSlots()->toArray();
         array_walk($referencedAdSlots,
-            function (BaseAdSlotInterface $adSlot) use (&$referencedChannels) {
+            function (BaseAdSlotInterface $adSlot) use (&$referencedChannels, &$referencedSites) {
                 $referencedChannels = array_merge($referencedChannels, $adSlot->getSite()->getChannels());
+                $referencedSites[] = $adSlot->getSite();
             }
         );
         $referencedChannels = array_unique($referencedChannels);
+
+        //filter all channels return channels which have all ad slots already referenced to library
+        $referencedChannels = array_filter($referencedChannels,
+            function($refChannel) use ($referencedSites) {
+                /** @var ChannelInterface $refChannel */
+                foreach($refChannel->getSites() as $refSite) {
+                    if(!in_array($refSite, $referencedSites)) {
+                        //still contains site not referenced to library -> skip this channel
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
 
         $qb = $this->createQueryBuilder('cn')
             ->where('cn.publisher = :publisher_id')

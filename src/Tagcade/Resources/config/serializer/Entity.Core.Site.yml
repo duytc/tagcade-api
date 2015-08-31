@@ -1,9 +1,10 @@
 Tagcade\Entity\Core\Site:
     exclusion_policy: ALL
-    virtual_properties:
-        getChannels:
-            serialized_name: channels
-            groups: [site.detail]
+#    virtual_properties:
+#        getChannels:
+#            serialized_name: channels
+#            groups: [site.detail]
+#            max_depth: 1
     properties:
         id:
             expose: true

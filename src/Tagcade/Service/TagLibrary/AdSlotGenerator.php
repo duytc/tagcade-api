@@ -20,6 +20,8 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
+use Tagcade\Service\ArrayUtilInterface;
 
 class AdSlotGenerator implements AdSlotGeneratorInterface
 {
@@ -32,6 +34,9 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
 
     /** @var SiteManagerInterface */
     private $siteManager;
+
+    /** @var ArrayUtilInterface */
+    private $arrayUtil;
 
     public function setAdSlotManager(AdSlotManagerInterface $adSlotManager)
     {
@@ -46,6 +51,11 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
     public function setSiteManager(SiteManagerInterface $siteManager)
     {
         $this->siteManager = $siteManager;
+    }
+
+    public function setArrayUtil(ArrayUtilInterface $arrayUtil)
+    {
+        $this->arrayUtil = $arrayUtil;
     }
 
     /**
@@ -143,7 +153,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
 
     public function generateAdSlotFromLibraryForChannelsAndSites(BaseLibraryAdSlotInterface $libraryAdSlot, array $channels, array $sites)
     {
-        $channels = array_unique($channels);
+        $channels = $this->arrayUtil->array_unique_object($channels);
         //get all sites for channels
         /** @var SiteInterface[] $allSites */
         $allSites = $sites;
@@ -155,7 +165,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
             unset($tmpSites);
         }
 
-        $allSites = array_unique($allSites);
+        $allSites = $this->arrayUtil->array_unique_object($allSites);
 
         return $this->generateAdSlotFromLibraryForSites($libraryAdSlot, $allSites);
     }
@@ -165,7 +175,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
      */
     public function generateAdSlotFromLibraryForChannels(BaseLibraryAdSlotInterface $libraryAdSlot, array $channels)
     {
-        $channels = array_unique($channels);
+        $channels = $this->arrayUtil->array_unique_object($channels);
 
         //get all sites for channels
         /** @var SiteInterface[] $allSites */
@@ -178,7 +188,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
             unset($sites);
         }
 
-        return $this->generateAdSlotFromLibraryForSites($libraryAdSlot, array_unique($allSites));
+        return $this->generateAdSlotFromLibraryForSites($libraryAdSlot, $this->arrayUtil->array_unique_object($allSites));
     }
 
     /**
@@ -186,7 +196,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
      */
     public function generateAdSlotFromLibraryForSites(BaseLibraryAdSlotInterface $libraryAdSlot, array $sites)
     {
-        $sites = array_unique($sites);
+        $sites = $this->arrayUtil->array_unique_object($sites);
 
         if (count($sites) < 1) {
             return 0;

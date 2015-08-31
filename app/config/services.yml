@@ -155,3 +155,6 @@ services:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.domain_manager.ad_network
             - @tagcade.domain_manager.site
+
+    tagcade.service.array_util:
+        class: Tagcade\Service\ArrayUtil
