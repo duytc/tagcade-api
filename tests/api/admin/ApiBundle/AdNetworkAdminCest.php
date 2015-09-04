@@ -129,15 +129,4 @@ class AdNetworkAdminCest extends AdNetwork
         ]);
         $I->seeResponseCodeIs(400);
     }
-
-//    public function addPositionsAdNetwork(ApiTester $I) {
-//        $I->sendPOST(URL_API.'/adnetworks/'.PARAMS_AD_NETWORK.'/positions', []);
-//        $I->seeResponseCodeIs(201);
-//    }
-
-//    public function addPositionsForSiteAndAdNetwork(ApiTester $I) {
-//        $I->sendPOST(URL_API.'/adnetworks/'.PARAMS_AD_NETWORK.'/sites/'.PARAMS_SITE.'/positions', []);
-//        $I->seeResponseCodeIs(201);
-//    }
-
 }

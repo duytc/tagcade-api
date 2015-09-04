@@ -11,6 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
@@ -131,11 +132,21 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     }
                 } else { // we create new Dynamic AdSlot from scratch
                     $libraryExpressions = $libraryAdSlot->getLibraryExpressions();
+
+                    if($libraryExpressions === null || is_string($libraryExpressions)) {
+                        return;
+                    }
+
                     /** @var LibraryExpressionInterface $libraryExpression */
                     foreach ($libraryExpressions as $libraryExpression) {
                         $expressions = $libraryExpression->getExpressions();
                         /** @var ExpressionInterface $expression */
                         foreach ($expressions as $expression) {
+                            if(!($expression instanceof ExpressionInterface)) {
+                                $event->getForm()->addError(new FormError("Expression null or not is array"));
+                                return;
+                            }
+
                             $expression->setDynamicAdSlot($dynamicAdSlot);
                         }
                     }
