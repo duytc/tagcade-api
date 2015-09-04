@@ -106,6 +106,12 @@ class ApiHelper extends \Codeception\Module
             define('PARAMS_LIBRARY_AD_TAG', $settings['modules']['params']['libraryAdTag']);
         }
         /* end - library feature */
+
+        /* channel feature */
+        if (!defined('PARAMS_CHANNEL')) {
+            define('PARAMS_CHANNEL', $settings['modules']['params']['channel']);
+        }
+        /* end - channel feature */
     }
 
     private function _getToken($url, $username, $password)

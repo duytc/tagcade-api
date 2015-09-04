@@ -178,4 +178,44 @@ class Site
         $I->sendGET(URL_API . '/sites/' . '-1' . '/jstags');
         $I->seeResponseCodeIs(404);
     }
+
+    /**
+     * get Channels By Site
+     * @param ApiTester $I
+     */
+    public function getChannelsBySite(ApiTester $I)
+    {
+        $I->sendGET(URL_API . '/sites/' . PARAMS_SITE . '/channels');
+        $I->seeResponseCodeIs(200);
+    }
+
+    /**
+     * get Channels By Site not Existed
+     * @param ApiTester $I
+     */
+    public function getChannelsBySiteNotExisted(ApiTester $I)
+    {
+        $I->sendGET(URL_API . '/sites/' . '-1' . '/channels');
+        $I->seeResponseCodeIs(404);
+    }
+
+    /**
+     * get Sites have no ad slot Unreferenced to Library Ad Slot
+     * @param ApiTester $I
+     */
+    public function getSitesUnreferencedByLibraryAdSlot(ApiTester $I)
+    {
+        $I->sendGET(URL_API . '/sites/noreference?slotLibrary=' . PARAMS_LIBRARY_AD_SLOT);
+        $I->seeResponseCodeIs(200);
+    }
+
+    /**
+     * get Sites have no ad slot Unreferenced to Library Ad Slot Not Existed
+     * @param ApiTester $I
+     */
+    public function getSitesUnreferencedByLibraryAdSlotNotExisted(ApiTester $I)
+    {
+        $I->sendGET(URL_API . '/sites/noreference?slotLibrary=' . '-1');
+        $I->seeResponseCodeIs(404);
+    }
 }

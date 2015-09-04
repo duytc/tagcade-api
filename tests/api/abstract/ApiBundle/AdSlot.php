@@ -442,9 +442,6 @@ class AdSlot
      */
     public function deleteAdSlotNotExisted(ApiTester $I)
     {
-        //add new before editing
-        $this->addAdSlot($I);
-
         $I->sendDELETE(URL_API . '/displayadslots/' . '-1');
         $I->seeResponseCodeIs(404);
     }
