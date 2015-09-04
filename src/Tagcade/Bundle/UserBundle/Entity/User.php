@@ -12,7 +12,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     const MODULE_PREFIX = 'MODULE_';
 
     const MODULE_DISPLAY = 'MODULE_DISPLAY';
-    const MODULE_VIDEO = 'MODULE_VIDEO';
+    const MODULE_VIDEO = 'MODULE_VIDEO_ANALYTICS';
     const MODULE_ANALYTICS = 'MODULE_ANALYTICS';
     const MODULE_FRAUD_DETECTION = 'MODULE_FRAUD_DETECTION';
 
@@ -42,6 +42,14 @@ abstract class User extends BaseUser implements UserEntityInterface
     public function hasAnalyticsModule()
     {
         return in_array(static::MODULE_ANALYTICS, $this->getEnabledModules());
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasVideoModule()
+    {
+        return in_array(static::MODULE_VIDEO, $this->getEnabledModules());
     }
 
     /**

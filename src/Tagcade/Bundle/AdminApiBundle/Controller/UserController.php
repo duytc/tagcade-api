@@ -3,6 +3,8 @@
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
 use FOS\UserBundle\Model\UserManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Tagcade\Bundle\AdminApiBundle\Utils\ModuleNameMapper;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -14,6 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {

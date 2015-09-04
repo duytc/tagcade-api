@@ -58,7 +58,6 @@ interface SiteInterface extends ModelInterface
 
     /**
      * @param boolean $enableSourceReport
-     * @return self
      */
     public function setEnableSourceReport($enableSourceReport);
 
@@ -69,7 +68,6 @@ interface SiteInterface extends ModelInterface
 
     /**
      * @param ChannelSiteInterface[] $channelSites
-     * @return self
      */
     public function setChannelSites($channelSites);
 

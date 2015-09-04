@@ -2,11 +2,11 @@
 
 namespace Tagcade\Repository\Core;
 
+namespace Tagcade\Repository\Core;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-
 interface ChannelRepositoryInterface extends ObjectRepository
 {
     /**
@@ -16,7 +16,6 @@ interface ChannelRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getChannelsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
-
     /**
      * @param PublisherInterface $publisher
      * @param int|null $limit
@@ -24,7 +23,6 @@ interface ChannelRepositoryInterface extends ObjectRepository
      * @return QueryBuilder
      */
     public function getChannelsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null);
-
     /**
      * get Channels Include Sites Unreferenced To Library AdSlot
      *

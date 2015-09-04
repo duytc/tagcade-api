@@ -22,6 +22,7 @@ class User extends BaseUser implements PublisherInterface
     protected $postalCode;
     protected $country;
     protected $settings; //json string represent setting for report bundle
+    protected $moduleConfigs; // array string represent video players available
     /**
      * @inheritdoc
      */
@@ -207,4 +208,77 @@ class User extends BaseUser implements PublisherInterface
         $this->settings = $settings;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getModuleConfigs()
+    {
+        return $this->moduleConfigs;
+    }
+
+    /**
+     * @param mixed $moduleConfigs
+     * @return $this
+     */
+    public function setModuleConfigs($moduleConfigs)
+    {
+        $this->moduleConfigs = $moduleConfigs;
+
+        return $this;
+    }
+
+    /**
+     * get configuration for the given module name
+     * @param $moduleName
+     * @return mixed
+     */
+    public function getConfig($moduleName)
+    {
+        if(!in_array($moduleName, $this->getRoles())) {
+            return null;
+        }
+
+        if(!array_key_exists($moduleName, $this->moduleConfigs)) {
+            return null;
+        }
+
+        return $this->moduleConfigs[$moduleName];
+    }
+
+//    /**
+//     * @return array
+//     */
+//    public function getEnabledModulesWithConfigs()
+//    {
+//        $moduleWithConfigs = [];
+//        foreach($this->getEnabledModules() as $module){
+//            if($module != parent::MODULE_VIDEO) {
+//                $moduleWithConfigs[] = $this->map($module);
+//            }
+//            else{
+//                $moduleWithConfigs[] = [$this->map($module) => $this->getConfig($module)];
+//            }
+//        }
+//
+//        return $moduleWithConfigs;
+//    }
+//
+//    /**
+//     * @param string $moduleName
+//     * @return bool
+//     */
+//    protected function map($moduleName) {
+//        switch($moduleName) {
+//            case "MODULE_VIDEO_ANALYTICS":
+//                return "videoAnalytics";
+//            case "MODULE_DISPLAY":
+//                return "displayAds";
+//            case "MODULE_ANALYTICS":
+//                return "analytics";
+//            case "MODULE_FRAUD_DETECTION":
+//                return 'fraudDetection';
+//            default:
+//                return '';
+//        }
+//    }
 }

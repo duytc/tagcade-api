@@ -37,3 +37,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         settings:
             type: json_array
             nullable: true
+        moduleConfigs:
+            type: json_array
+            nullable: true

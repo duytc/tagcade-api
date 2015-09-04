@@ -19,7 +19,6 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
         $qb = $this->getChannelsForPublisherQuery($publisher, $limit, $offset);
         return $qb->getQuery()->getResult();
     }
-
     /**
      * @inheritdoc
      */
@@ -28,18 +27,14 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
         $qb = $this->createQueryBuilder('cl')
             ->where('cl.publisher = :publisher_id')
             ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
-
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
         }
-
         if (is_int($offset)) {
             $qb->setFirstResult($offset);
         }
-
         return $qb;
     }
-
     /**
      * @inheritdoc
      */
@@ -47,7 +42,6 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
     {
         $referencedChannels = [];
         $referencedSites = [];
-
         $referencedAdSlots = $slotLibrary->getAdSlots()->toArray();
         array_walk($referencedAdSlots,
             function (BaseAdSlotInterface $adSlot) use (&$referencedChannels, &$referencedSites) {
@@ -56,7 +50,6 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
             }
         );
         $referencedChannels = array_unique($referencedChannels);
-
         //filter all channels return channels which have all ad slots already referenced to library
         $referencedChannels = array_filter($referencedChannels,
             function($refChannel) use ($referencedSites) {
@@ -67,28 +60,22 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
                         return false;
                     }
                 }
-
                 return true;
             }
         );
-
         $qb = $this->createQueryBuilder('cn')
             ->where('cn.publisher = :publisher_id')
             ->setParameter('publisher_id', $slotLibrary->getPublisherId());
-
         if (count($referencedChannels) > 0) {
             $qb->andWhere('cn NOT IN (:referencedChannels)')
                 ->setParameter('referencedChannels', $referencedChannels);
         }
-
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
         }
-
         if (is_int($offset)) {
             $qb->setFirstResult($offset);
         }
-
         $channels = $qb->getQuery()->getResult();
         $channels = array_filter($channels,
             function ($channel) {
@@ -96,7 +83,6 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
                 return (count($channel->getSites()) > 0) ? true : false;
             }
         );
-
         return array_values($channels);
     }
 }

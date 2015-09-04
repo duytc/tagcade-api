@@ -19,7 +19,7 @@ Tagcade\Entity\Core\AdSlotAbstract:
     inheritanceType: JOINED
 
     discriminatorColumn:
-        name: slotType
+        name: slot_type
         type: string
     discriminatorMap:
         display: Tagcade\Entity\Core\DisplayAdSlot

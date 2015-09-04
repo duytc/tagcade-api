@@ -15,9 +15,9 @@ class JWTResponseTransformer
         $data['userRoles'] = $user->getUserRoles();
         $data['enabledModules'] = $user->getEnabledModules();
 
-
         if($user instanceof PublisherInterface) {
             $data['settings'] = $user->getSettings();
+            $data['moduleConfigs'] = $user->getModuleConfigs();
         }
 
         return $data;
