@@ -80,4 +80,14 @@ interface SiteInterface extends ModelInterface
      * @return array
      */
     public function getChannels();
+
+    /**
+     * @return mixed
+     */
+    public function getPlayers();
+
+    /**
+     * @param mixed $players
+     */
+    public function setPlayers($players);
 }

@@ -111,6 +111,16 @@ interface PublisherInterface extends UserRoleInterface
      */
     public function hasAnalyticsModule();
 
+    /**
+     * @return bool
+     */
+    public function hasVideoModule();
+
+    /**
+     * @return bool
+     */
+    public function hasDisplayModule();
+
     public function getEmail();
 
     /**
@@ -122,23 +132,4 @@ interface PublisherInterface extends UserRoleInterface
      * @param mixed $settings
      */
     public function setSettings($settings);
-
-    /**
-     * @return mixed
-     */
-    public function getModuleConfigs();
-
-
-    /**
-     * @param mixed $moduleConfigs
-     * @return $this
-     */
-    public function setModuleConfigs($moduleConfigs);
-
-    /**
-     * get configuration for the given module name
-     * @param $moduleName
-     * @return mixed
-     */
-    public function getConfig($moduleName);
 }

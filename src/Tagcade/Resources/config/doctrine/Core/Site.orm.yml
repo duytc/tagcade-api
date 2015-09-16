@@ -25,6 +25,9 @@ Tagcade\Entity\Core\Site:
             type: boolean
             options:
                 default: false
+        players:
+            type: json_array
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

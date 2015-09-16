@@ -50,7 +50,13 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
             /**@var SiteInterface $site */
             foreach($sites as $site){
                 if($site instanceof SiteInterface) {
-                    $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($publisher->getModuleConfigs()));
+                    if($publisher->hasVideoModule()){
+                        $moduleConfigs = array('MODULE_VIDEO_ANALYTICS' => $site->getPlayers());
+                        $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($moduleConfigs));
+                    }
+                    else{
+                        $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules));
+                    }
                 }
             }
         }

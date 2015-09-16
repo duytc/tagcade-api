@@ -12,7 +12,9 @@ Tagcade\Bundle\UserBundle\Entity\User:
         - enabled
     virtual_properties:
 #        getUserRoles: ~
-        getEnabledModules: ~
+        getEnabledModules:
+            groups: [user.summary]
+
     properties:
         id:
             expose: true

@@ -21,6 +21,6 @@ Tagcade\Entity\Core\Site:
         enableSourceReport:
             expose: true
             groups: [site.detail, site.summary]
-#        channelSites:
-#            expose: true
-#            groups: [site.detail, site.summary]
+        players:
+            expose: true
+            groups: [site.detail, site.summary]
