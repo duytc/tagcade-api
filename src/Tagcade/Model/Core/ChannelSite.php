@@ -47,6 +47,7 @@ class ChannelSite implements ChannelSiteInterface
     public function setChannel($channel)
     {
         $this->channel = $channel;
+        return $this;
     }
 
     /**
@@ -63,6 +64,7 @@ class ChannelSite implements ChannelSiteInterface
     public function setSite($site)
     {
         $this->site = $site;
+        return $this;
     }
 
     /**

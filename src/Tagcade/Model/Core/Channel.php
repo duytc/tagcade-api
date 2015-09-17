@@ -88,13 +88,17 @@ class Channel implements ChannelInterface
     }
 
     /**
-     * @param ChannelSiteInterface[] $channelSites
+     * @inheritdoc
      */
     public function setChannelSites($channelSites)
     {
         $this->channelSites = $channelSites;
+        return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getChannelSites()
     {
         if (null === $this->channelSites) {
@@ -105,7 +109,7 @@ class Channel implements ChannelInterface
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function getSites()
     {

@@ -1,6 +1,7 @@
 <?php
 
 namespace Tagcade\DomainManager;
+
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
@@ -10,15 +11,18 @@ use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\ChannelRepositoryInterface;
+
 class ChannelManager implements ChannelManagerInterface
 {
     protected $om;
     protected $repository;
+
     public function __construct(ObjectManager $om, ChannelRepositoryInterface $repository)
     {
         $this->om = $om;
         $this->repository = $repository;
     }
+
     /**
      * @inheritdoc
      */
@@ -26,6 +30,7 @@ class ChannelManager implements ChannelManagerInterface
     {
         return is_subclass_of($entity, ChannelInterface::class);
     }
+
     /**
      * @inheritdoc
      */
@@ -35,6 +40,7 @@ class ChannelManager implements ChannelManagerInterface
         $this->om->persist($channel);
         $this->om->flush();
     }
+
     /**
      * @inheritdoc
      */
@@ -44,6 +50,7 @@ class ChannelManager implements ChannelManagerInterface
         $this->om->remove($channel);
         $this->om->flush();
     }
+
     /**
      * @inheritdoc
      */
@@ -52,6 +59,7 @@ class ChannelManager implements ChannelManagerInterface
         $entity = new ReflectionClass($this->repository->getClassName());
         return $entity->newInstance();
     }
+
     /**
      * @inheritdoc
      */
@@ -59,6 +67,7 @@ class ChannelManager implements ChannelManagerInterface
     {
         return $this->repository->find($id);
     }
+
     /**
      * @inheritdoc
      */
@@ -66,6 +75,7 @@ class ChannelManager implements ChannelManagerInterface
     {
         return $this->repository->findBy($criteria = [], $orderBy = null, $limit, $offset);
     }
+
     /**
      * @inheritdoc
      */
@@ -73,6 +83,7 @@ class ChannelManager implements ChannelManagerInterface
     {
         return $this->repository->getChannelsForPublisher($publisher, $limit, $offset);
     }
+
     /**
      * @inheritdoc
      */
@@ -80,17 +91,21 @@ class ChannelManager implements ChannelManagerInterface
     {
         return $this->repository->getChannelsIncludeSitesUnreferencedToLibraryAdSlot($slotLibrary, $limit, $offset);
     }
+
     /**
      * @inheritdoc
      */
     public function deleteSiteForChannel(ChannelInterface $channel, $siteId)
     {
         $channelSites = $channel->getChannelSites();
+
         if ($channelSites instanceof Collection) {
             $channelSites = $channelSites->toArray();
         }
+
         //number of removed channels
         $removedCount = 0;
+
         foreach ($channelSites as $idx => $cs) {
             if ($cs->getSite()->getId() == $siteId) {
                 //remove matched element
@@ -98,10 +113,12 @@ class ChannelManager implements ChannelManagerInterface
                 $removedCount++;
             }
         }
+
         //flush to db if has element removed
         if ($removedCount > 0) {
             $this->om->flush();
         }
+
         //return number of removed channels
         return $removedCount;
     }
