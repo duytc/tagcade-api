@@ -14,15 +14,19 @@ use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class SiteFormType extends AbstractRoleSpecificFormType
 {
+    protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name')
             ->add('domain')
-            ->add('enableSourceReport');
+            ->add('enableSourceReport')
+            ->add('players');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -40,6 +44,8 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 'allow_delete' => true,
             )
         );
+
+
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
@@ -73,6 +79,32 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
                 $channelSites = array_unique($channelSites);
                 $site->setChannelSites($channelSites);
+
+                $players = $form->get('players')->getData();
+                if($this->userRole instanceof PublisherInterface) {
+                    if(!$this->userRole->getUser()->hasVideoModule()) {
+                        if(is_array($players)) {
+                            $form->get('players')->addError(new FormError('this user does not have module video enabled'));
+                            return;
+                        }
+                    }
+                    else{
+                        if(!is_array($players)) {
+                            $form->get('players')->addError(new FormError('expect player config to be an array object'));
+                            return;
+                        }
+                        else{
+                            foreach($players as $player){
+                                if(!in_array($player, $this->listPlayers)) {
+                                    $form->get('players')->addError(new FormError(sprintf('players %s is not supported', $player)));
+                                    return;
+                                }
+
+                            }
+                        }
+                    }
+                }
+
             }
         );
     }

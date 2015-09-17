@@ -58,7 +58,6 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('postalCode')
             ->add('country')
             ->add('settings')
-            ->add('moduleConfigs')
         ;
 
         if($this->userRole instanceof AdminInterface){
@@ -85,31 +84,9 @@ class UserFormType extends AbstractRoleSpecificFormType
                     $form = $event->getForm();
 
                     $modules = $form->get('enabledModules')->getData();
-                    $moduleConfigs = $form->get(self::MODULE_CONFIG)->getData();
 
                     if (null !== $modules && is_array($modules)) {
                         $user->setEnabledModules($modules);
-                    }
-
-                    if(!is_array($moduleConfigs)) {
-                        $form->get(self::MODULE_CONFIG)->addError(new FormError('expect moduleConfigs to be array object'));
-                        return;
-                    }
-
-                    // validate video player configuration
-                    if($user->hasVideoModule()) {
-                        if(!array_key_exists(self::VIDEO_MODULE, $moduleConfigs)) {
-                            $form->get(self::MODULE_CONFIG)->addError(new FormError('expect moduleConfigs to contain valid video players configuration'));
-                            return;
-                        }
-
-                        $this->validateVideoConfig($moduleConfigs[self::VIDEO_MODULE], $form);
-                    }
-                    else {
-                        if(array_key_exists(self::VIDEO_MODULE, $moduleConfigs)){
-                            $form->get(self::MODULE_CONFIG)->addError(new FormError('This user does not have video module enabled'));
-                            return;
-                        }
                     }
                 }
             );
@@ -190,49 +167,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                     }
                 }
             );
-        }
-    }
-
-    protected function validateVideoConfig($videoConfig, FormInterface $form)
-    {
-        if(!is_array($videoConfig)) {
-            $form->get(self::MODULE_CONFIG)->addError(new FormError('Invalid video configuration'));
-            return;
-        }
-
-        if(!array_key_exists(self::VIDEO_PLAYERS, $videoConfig)) {
-            $form->get(self::MODULE_CONFIG)->addError(new FormError('expect video players configuration'));
-            return;
-        }
-
-        $videoPlayers = $videoConfig[self::VIDEO_PLAYERS];
-        if(!is_array($videoPlayers)) {
-            $form->get(self::MODULE_CONFIG)->addError(new FormError('Invalid video players configuration'));
-            return;
-        }
-
-        if(count($videoPlayers) < 1) {
-            $form->get(self::MODULE_CONFIG)->addError(new FormError('No player found'));
-            return;
-        }
-
-        foreach($videoPlayers as $player){
-//            if(!is_array($player) || !array_key_exists('name', $player)) {
-//                $form->get(self::MODULE_CONFIG)->addError(new FormError('Invalid video players configuration'));
-//                return;
-//            }
-//
-//            $name = $player['name'];
-
-            if(!in_array($player, $this->listPlayers)) {
-                $form->get(self::MODULE_CONFIG)->addError(new FormError(sprintf('players %s is not supported', $player)));
-                return;
-            }
-
-//            if(count(array_keys($player)) > 2) {
-//                $form->get(self::MODULE_CONFIG)->addError(new FormError('video players configuration should not contain extra field'));
-//                return;
-//            }
         }
     }
 

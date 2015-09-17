@@ -22,6 +22,7 @@ class Site implements SiteInterface
 
     /** @var ChannelSiteInterface[] */
     protected $channelSites;
+    protected $players;
 
     /**
      * @param string $name
@@ -185,5 +186,21 @@ class Site implements SiteInterface
     public function __toString()
     {
         return $this->id . $this->getName();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlayers()
+    {
+        return $this->players;
+    }
+
+    /**
+     * @param mixed $players
+     */
+    public function setPlayers($players)
+    {
+        $this->players = $players;
     }
 }
