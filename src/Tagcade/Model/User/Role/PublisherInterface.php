@@ -102,7 +102,7 @@ interface PublisherInterface extends UserRoleInterface
     public function setCountry($country);
 
     /**
-     * @return bool $enableSourceReport
+     * @return array $enableSourceReport
      */
     public function getEnabledModules();
 
