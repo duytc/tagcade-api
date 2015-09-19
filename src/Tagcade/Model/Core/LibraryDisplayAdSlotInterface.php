@@ -36,7 +36,7 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @return mixed
+     * @return self
      */
     public function setPublisher(PublisherInterface $publisher);
 

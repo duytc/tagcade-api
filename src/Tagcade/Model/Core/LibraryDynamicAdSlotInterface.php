@@ -16,6 +16,7 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param mixed $native
+     * @return self
      */
     public function setNative($native);
 
@@ -31,7 +32,7 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param PublisherInterface $publisher
-     * @return mixed
+     * @return self
      */
     public function setPublisher(PublisherInterface $publisher);
 
@@ -42,6 +43,7 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param LibraryExpressionInterface[] $libraryExpressions
+     * @return self
      */
     public function setLibraryExpressions($libraryExpressions);
 
@@ -49,8 +51,10 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
      * @return BaseLibraryAdSlotInterface
      */
     public function getDefaultLibraryAdSlot();
+    
     /**
      * @param BaseLibraryAdSlotInterface $defaultLibraryAdSlot
+     * @return self
      */
     public function setDefaultLibraryAdSlot($defaultLibraryAdSlot);
 }

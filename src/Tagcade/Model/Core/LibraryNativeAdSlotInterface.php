@@ -20,7 +20,7 @@ interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param $visible
-     * @return mixed
+     * @return self
      */
     public function setVisible($visible);
 
@@ -31,6 +31,7 @@ interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param mixed $id
+     * @return self
      */
     public function setId($id);
 
@@ -41,6 +42,7 @@ interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
 
     /**
      * @param PublisherInterface $publisher
+     * @return self
      */
     public function setPublisher(PublisherInterface $publisher);
 

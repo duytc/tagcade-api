@@ -30,7 +30,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Get all ad networks
      *
      * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary"})
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
      *
      * @ApiDoc(
      *  resource = true,

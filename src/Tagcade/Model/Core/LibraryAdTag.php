@@ -35,6 +35,8 @@ class LibraryAdTag implements LibraryAdTagInterface{
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -51,6 +53,8 @@ class LibraryAdTag implements LibraryAdTagInterface{
     public function setHtml($html)
     {
         $this->html = $html;
+
+        return $this;
     }
 
 
@@ -60,6 +64,8 @@ class LibraryAdTag implements LibraryAdTagInterface{
     public function setAdNetwork($adNetwork)
     {
         $this->adNetwork = $adNetwork;
+
+        return $this;
     }
 
     /**
@@ -85,6 +91,8 @@ class LibraryAdTag implements LibraryAdTagInterface{
     public function setVisible($visible)
     {
         $this->visible = $visible;
+
+        return $this;
     }
 
 
@@ -121,12 +129,13 @@ class LibraryAdTag implements LibraryAdTagInterface{
     }
 
     /**
-     * set AdType
-     * @param int $adType
+     * @inheritdoc
      */
     public function setAdType($adType)
     {
         $this->adType = $adType;
+
+        return $this;
     }
 
     /**
@@ -139,12 +148,13 @@ class LibraryAdTag implements LibraryAdTagInterface{
     }
 
     /**
-     * set Descriptor formatted as json_array
-     * @param array $descriptor
+     * @inheritdoc
      */
     public function setDescriptor($descriptor)
     {
         $this->descriptor = $descriptor;
+
+        return $this;
     }
 
     /**
@@ -156,11 +166,13 @@ class LibraryAdTag implements LibraryAdTagInterface{
     }
 
     /**
-     * @param mixed $name
+     * @inheritdoc
      */
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     public function isReferenced() {
@@ -180,15 +192,17 @@ class LibraryAdTag implements LibraryAdTagInterface{
     }
 
     /**
-     * @param LibrarySlotTagInterface $libSlotTags
+     * @inheritdoc
      */
     public function setLibSlotTags($libSlotTags)
     {
         $this->libSlotTags = $libSlotTags;
+
+        return $this;
     }
 
     /**
-     * return int
+     * @inheritdoc
      */
     public function getAssociatedTagCount()
     {

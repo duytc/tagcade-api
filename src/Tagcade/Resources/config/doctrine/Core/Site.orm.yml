@@ -25,6 +25,9 @@ Tagcade\Entity\Core\Site:
             type: boolean
             options:
                 default: false
+        players:
+            type: json_array
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
@@ -37,5 +40,10 @@ Tagcade\Entity\Core\Site:
             targetEntity: Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig
             mappedBy: site
             cascade: ["remove"]
+            orphanRemoval: true
+        channelSites:
+            targetEntity: Tagcade\Entity\Core\ChannelSite
+            mappedBy: site
+            cascade: ["persist", "remove", "detach"]
             orphanRemoval: true
 

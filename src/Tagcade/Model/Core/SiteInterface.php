@@ -2,10 +2,9 @@
 
 namespace Tagcade\Model\Core;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\UserEntityInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 interface SiteInterface extends ModelInterface
 {
@@ -51,6 +50,7 @@ interface SiteInterface extends ModelInterface
 
 
     public function getAllAdSlots();
+
     /**
      * @return boolean|null
      */
@@ -58,6 +58,7 @@ interface SiteInterface extends ModelInterface
 
     /**
      * @param boolean $enableSourceReport
+     * @return self
      */
     public function setEnableSourceReport($enableSourceReport);
 
@@ -65,4 +66,30 @@ interface SiteInterface extends ModelInterface
      * @return ArrayCollection
      */
     public function getSourceReportSiteConfigs();
+
+    /**
+     * @param ChannelSiteInterface[] $channelSites
+     * @return self
+     */
+    public function setChannelSites($channelSites);
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChannelSites();
+
+    /**
+     * @return array
+     */
+    public function getChannels();
+
+    /**
+     * @return mixed
+     */
+    public function getPlayers();
+
+    /**
+     * @param mixed $players
+     */
+    public function setPlayers($players);
 }

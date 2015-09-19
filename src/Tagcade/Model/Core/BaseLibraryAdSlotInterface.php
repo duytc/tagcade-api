@@ -64,4 +64,9 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
      * return int
      */
     public function getAssociatedSlotCount();
+
+    /**
+     * @return string
+     */
+    public function checkSum();
 }

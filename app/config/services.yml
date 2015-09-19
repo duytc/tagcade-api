@@ -17,7 +17,7 @@ parameters:
     tagcade.security.auth.voter.library_slot_tag.class: Tagcade\Security\Authorization\Voter\LibrarySlotTagVoter
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
     tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
-
+    tagcade.security.auth.voter.channel.class: Tagcade\Security\Authorization\Voter\ChannelVoter
 
     tagcade.security.auth.voter.library_expresison.class: Tagcade\Security\Authorization\Voter\LibraryExpressionVoter
 
@@ -103,6 +103,12 @@ services:
         tags:
             - { name: security.voter }
 
+    tagcade.security.auth.voter.channel:
+            class:  %tagcade.security.auth.voter.channel.class%
+            public: false
+            tags:
+                - { name: security.voter }
+
     tagcade.service.tag_generator:
         class: Tagcade\Service\TagGenerator
         arguments:
@@ -149,3 +155,6 @@ services:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.domain_manager.ad_network
             - @tagcade.domain_manager.site
+
+    tagcade.service.array_util:
+        class: Tagcade\Service\ArrayUtil

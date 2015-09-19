@@ -158,7 +158,7 @@ abstract class LibraryAdSlotAbstract
     }
 
     /**
-     * @return LibrarySlotTagInterface
+     * @return ArrayCollection
      */
     public function getLibSlotTags()
     {

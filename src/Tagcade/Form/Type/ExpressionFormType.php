@@ -3,6 +3,8 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\Expression;

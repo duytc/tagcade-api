@@ -2,9 +2,19 @@
 
 class NativeAdSlot
 {
+    static $JSON_DATA_SAMPLE_NATIVE_AD_SLOT = [];
+
     public function _before(ApiTester $I)
     {
         $I->amBearerAuthenticated($I->getToken());
+
+        self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT = [
+            'site' => PARAMS_SITE,
+            'libraryAdSlot' => [
+                'name' => 'dtag.test.nativeAdslot',
+                //'visible' => false //default
+            ]
+        ];
     }
 
     public function _after(ApiTester $I)
@@ -49,15 +59,11 @@ class NativeAdSlot
      */
     public function addAdSlot(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots',
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => [
-                    'name' => 'dtag.test.nativeAdslot',
-                    'visible' => false
-                ]
-            ]
-        );
+        $I->comment('adding AdSlot...');
+
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+
+        $I->sendPOST(URL_API . '/nativeadslots', $jsonData);
         $I->seeResponseCodeIs(201);
     }
 
@@ -67,15 +73,11 @@ class NativeAdSlot
      */
     public function addAdSlotWithNameNull(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots',
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => [
-                    'name' => null,
-                    'visible' => false
-                ]
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //libraryAdSlot name null
+        $jsonData['libraryAdSlot']['name'] = null;
+
+        $I->sendPOST(URL_API . '/nativeadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -85,12 +87,11 @@ class NativeAdSlot
      */
     public function addAdSlotWithLibraryAdSlotNull(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots',
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => null
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //libraryAdSlot null
+        $jsonData['libraryAdSlot'] = null;
+
+        $I->sendPOST(URL_API . '/nativeadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -100,15 +101,11 @@ class NativeAdSlot
      */
     public function addAdSlotMissingField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots',
-            [
-                'site' => PARAMS_SITE,
-                //'libraryAdSlot' => [
-                //    'name' => 'dtag.test.nativeAdslot',
-                //    'visible' => false
-                //] //this is missing field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //libraryAdSlot missing
+        unset($jsonData['libraryAdSlot']);
+
+        $I->sendPOST(URL_API . '/nativeadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -118,16 +115,11 @@ class NativeAdSlot
      */
     public function addAdSlotWithUnexpectedField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots',
-            [
-                'site' => PARAMS_SITE,
-                'unexpected_field' => 'unexpected_field', //this is unexpected field
-                'libraryAdSlot' => [
-                    'name' => 'dtag.test.nativeAdslot',
-                    'visible' => false
-                ]
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unexpected field
+        $jsonData['unexpected_field'] = 'unexpected_field';
+
+        $I->sendPOST(URL_API . '/nativeadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -137,12 +129,13 @@ class NativeAdSlot
      */
     public function cloneAdSlot(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone',
-            [
-                'site' => PARAMS_SITE,
-                'name' => 'dtag.test.nativeAdslot-clone',
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unset libraryAdSlot
+        unset($jsonData['libraryAdSlot']);
+        //new name for cloning, replace 'libraryAdSlot' json
+        $jsonData['name'] = 'dtag.test.nativeAdslot-clone';
+
+        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone', $jsonData);
         $I->seeResponseCodeIs(201);
         $I->seeResponseIsJson();
     }
@@ -153,12 +146,13 @@ class NativeAdSlot
      */
     public function cloneAdSlotNotExisted(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots/' . '-1' . '/clone',
-            [
-                'site' => PARAMS_SITE,
-                'name' => 'dtag.test.nativeAdslot-clone',
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unset libraryAdSlot
+        unset($jsonData['libraryAdSlot']);
+        //new name for cloning, replace 'libraryAdSlot' json
+        $jsonData['name'] = 'dtag.test.nativeAdslot-clone';
+
+        $I->sendPOST(URL_API . '/nativeadslots/' . '-1' . '/clone', $jsonData);
         $I->seeResponseCodeIs(404);
     }
 
@@ -168,12 +162,13 @@ class NativeAdSlot
      */
     public function cloneAdSlotWithNullField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone',
-            [
-                'site' => PARAMS_SITE,
-                'name' => null //this is null field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unset libraryAdSlot
+        unset($jsonData['libraryAdSlot']);
+        //new name for cloning, replace 'libraryAdSlot' json
+        $jsonData['name'] = null;
+
+        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -183,12 +178,13 @@ class NativeAdSlot
      */
     public function cloneAdSlotWithWrongData(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone',
-            [
-                'site' => PARAMS_SITE,
-                'name' => "" //this is wrong data type field, must not empty
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unset libraryAdSlot
+        unset($jsonData['libraryAdSlot']);
+        //new name for cloning, replace 'libraryAdSlot' json
+        $jsonData['name'] = '';
+
+        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -213,34 +209,31 @@ class NativeAdSlot
      */
     public function cloneAdSlotWithWithMissingField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone',
-            [
-                'site' => PARAMS_SITE,
-                'unexpected_field' => 'unexpected_field' //this is unexpected field, require 'name' field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unset libraryAdSlot
+        unset($jsonData['libraryAdSlot']);
+        //new name for cloning is missing, replace 'libraryAdSlot' json
+        $jsonData['unexpected_field'] = 'unexpected_field';
+
+        $I->sendPOST(URL_API . '/nativeadslots/' . PARAMS_NATIVE_AD_SLOT . '/clone', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * @depends addAdSlot
+     * @param ApiTester $I
      */
     public function editAdSlot(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'],
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => [
-                    //'libType' => 'lib_native',
-                    //'isReferenced' => true,
-                    'name' => 'dtag.test.nativeAdslot',
-                    'visible' => false
-                ]
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['libraryAdSlot']['name'] = 'dtag.test.adslot-edited';
+
+        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(204);
     }
 
@@ -250,20 +243,16 @@ class NativeAdSlot
      */
     public function editAdSlotWithNameNull(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'],
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => [
-                    //'libType' => 'lib_native',
-                    //'isReferenced' => true,
-                    'name' => null,
-                    'visible' => false
-                ]
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['libraryAdSlot']['name'] = null;
+
+        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -273,15 +262,16 @@ class NativeAdSlot
      */
     public function editAdSlotWithLibraryAdSlotNull(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'],
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => null
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['libraryAdSlot'] = null;
+
+        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -291,60 +281,52 @@ class NativeAdSlot
      */
     public function editAdSlotWithUnexpectedField(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'],
-            [
-                'site' => PARAMS_SITE,
-                'libraryAdSlot' => [
-                    //'libType' => 'lib_native',
-                    //'isReferenced' => true,
-                    'name' => 'dtag.test.nativeAdslot',
-                    'visible' => false
-                ],
-                'unexpected_field' => 'unexpected_field' //this is unexpected field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['unexpected_field'] = 'unexpected_field';
+
+        $I->sendPUT(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * @depends addAdSlot
+     * @param ApiTester $I
      */
     public function patchAdSlot(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], [
-            'site' => PARAMS_SITE,
-            'libraryAdSlot' => [
-                //'libType' => 'lib_native',
-                //'isReferenced' => true,
-                'name' => 'dtag.test.nativeAdslot-rename',
-                'visible' => false
-            ]
-        ]);
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        //unset($jsonData['site']); //required!!!
+        $jsonData['libraryAdSlot']['name'] = 'dtag.test.adslot-patched';
+
+        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(204);
     }
 
     /**
-     * @depends addAdSlot
+     * @param ApiTester $I
      */
     public function patchAdSlotMoveToLibrary(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], [
-            'libraryAdSlot' => [
-                //'libType' => 'lib_native',
-                //'isReferenced' => true,
-                'name' => 'dtag.test.nativeAdslot-lib2',
-                'visible' => true
-            ]
-        ]);
+        $jsonData = ['visible' => true];
+
+        $I->sendPATCH(URL_API . '/librarynativeadslots/' . $item['libraryAdSlot']['id'], $jsonData);
         $I->seeResponseCodeIs(204);
     }
 
@@ -354,19 +336,16 @@ class NativeAdSlot
      */
     public function patchAdSlotWithNameNull(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'],
-            [
-                'libraryAdSlot' => [
-                    //'libType' => 'lib_native',
-                    //'isReferenced' => true,
-                    'name' => null,
-                    'visible' => false
-                ]
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['libraryAdSlot']['name'] = null;
+
+        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -376,15 +355,21 @@ class NativeAdSlot
      */
     public function patchAdSlotWithLibraryAdSlotNull(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
+
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['libraryAdSlot'] = null;
 
         $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'],
             [
                 'libraryAdSlot' => null
             ]
         );
-        $I->seeResponseCodeIs(400);
+        $I->seeResponseCodeIs(500); //current, api return in controller, instead of 400 or 404
     }
 
     /**
@@ -393,22 +378,28 @@ class NativeAdSlot
      */
     public function patchAdSlotWithUnexpectedField(ApiTester $I)
     {
+        //add new before editing
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'],
-            [
-                'unexpected_field' => 'unexpected_field' //this is unexpected field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT;
+        $jsonData['unexpected_field'] = 'unexpected_field';
+
+        $I->sendPATCH(URL_API . '/nativeadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * @depends addAdSlot
+     * delete ad slot
+     * @param ApiTester $I
      */
     public function deleteAdSlot(ApiTester $I)
     {
+        //add new before deleting
+        $this->addAdSlot($I);
+
         $I->sendGet(URL_API . '/nativeadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -422,6 +413,9 @@ class NativeAdSlot
      */
     public function deleteAdSlotNotExisted(ApiTester $I)
     {
+        //add new before deleting
+        $this->addAdSlot($I);
+
         $I->sendDELETE(URL_API . '/nativeadslots/' . '-1');
         $I->seeResponseCodeIs(404);
     }

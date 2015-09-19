@@ -113,11 +113,19 @@ class LibraryExpressionFormType extends AbstractRoleSpecificFormType
                      */
                     $libraryExpression = $event->getData();
 
+                    if(!($libraryExpression instanceof LibraryExpressionInterface)) {
+                        throw new InvalidFormException('libraryExpression null or not is array');
+                    }
+
                     $expressions = $libraryExpression->getExpressions();
                     /**
                      * @var ExpressionInterface $expression
                      */
                     foreach ($expressions as $expression) {
+                        if(!($expression instanceof ExpressionInterface)) {
+                            throw new InvalidFormException('Expression null or not is array');
+                        }
+
                         $expression->setLibraryExpression($libraryExpression);
                     }
 

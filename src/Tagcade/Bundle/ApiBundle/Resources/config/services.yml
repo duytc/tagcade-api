@@ -17,9 +17,9 @@ parameters:
     tagcade.entity.core.ad_network.class: Tagcade\Entity\Core\AdNetwork
     tagcade.entity.core.expression.class: Tagcade\Entity\Core\Expression
     tagcade.entity.core.library_slot_tag.class: Tagcade\Entity\Core\LibrarySlotTag
-
-
     tagcade.entity.core.library_expression.class: Tagcade\Entity\Core\LibraryExpression
+    tagcade.entity.core.channel.class: Tagcade\Entity\Core\Channel
+    tagcade.entity.core.channel_site.class: Tagcade\Entity\Core\ChannelSite
 
     #form classes
 
@@ -34,9 +34,9 @@ parameters:
     tagcade.form.type.library_ad_tag.class: Tagcade\Form\Type\LibraryAdTagFormType
     tagcade.form.type.ad_network.class: Tagcade\Form\Type\AdNetworkFormType
     tagcade.form.type.library_slot_tag.class: Tagcade\Form\Type\LibrarySlotTagFormType
-
-
     tagcade.form.type.library_expression.class: Tagcade\Form\Type\LibraryExpressionFormType
+    tagcade.form.type.channel.class: Tagcade\Form\Type\ChannelFormType
+    tagcade.form.type.channel_site.class: Tagcade\Form\Type\ChannelSiteFormType
 
     # jwt
     tagcade_api.service.jwt_response_transformer.class: Tagcade\Bundle\ApiBundle\Service\JWTResponseTransformer
@@ -827,6 +827,65 @@ services:
         factory_method: getRepository
         arguments:
             - %tagcade.entity.core.expression.class%
+
+    # end expression #####################################################
+
+
+    # channel handler #####################################################
+    tagcade_api.handler.channel:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.channel
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for channel handler ##############
+
+    tagcade.repository.channel:
+        class: Tagcade\Repository\Core\ChannelRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\Channel
+
+    tagcade.domain_manager.channel:
+        class: Tagcade\DomainManager\ChannelManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.channel
+
+    tagcade.form.type.channel:
+        class: %tagcade.form.type.channel.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_channel }
+
+    tagcade.handler.handlers.channel.abstract:
+        class: Tagcade\Handler\Handlers\Core\ChannelHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.channel
+            - @tagcade.domain_manager.channel
+
+    tagcade.handler.handlers.channel.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\ChannelHandler
+        parent: tagcade.handler.handlers.channel.abstract
+        public: false
+
+    tagcade.handler.handlers.channel.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\ChannelHandler
+        parent: tagcade.handler.handlers.channel.abstract
+        public: false
+
+    tagcade.handler.handler_manager.channel:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.channel.class%
+            -
+                - @tagcade.handler.handlers.channel.admin
+                - @tagcade.handler.handlers.channel.publisher
+    # end channel #####################################################
 
     # authentication
     tagcade_api.service.jwt_response_transformer:

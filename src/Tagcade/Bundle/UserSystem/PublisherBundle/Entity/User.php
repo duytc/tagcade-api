@@ -206,5 +206,4 @@ class User extends BaseUser implements PublisherInterface
     {
         $this->settings = $settings;
     }
-
 }

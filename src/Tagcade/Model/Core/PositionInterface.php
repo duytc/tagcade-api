@@ -44,6 +44,7 @@ interface PositionInterface extends ModelInterface {
 
     /**
      * @param string $refId
+     * @return self
      */
     public function setRefId($refId);
 }

@@ -11,19 +11,12 @@ class AdTag extends AdTagModel
     protected $adSlot;
     protected $position;
     protected $active;
-
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;
     protected $frequencyCap;
-
-    /** int - for rotation display AdTags */
     protected $rotation;
     protected $refId;
-
-    /**
-     * @var LibraryAdTagInterface
-     */
     protected $libraryAdTag;
 
     public function __construct()

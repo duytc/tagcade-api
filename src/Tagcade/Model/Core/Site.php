@@ -2,28 +2,27 @@
 
 namespace Tagcade\Model\Core;
 
-use Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig;
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class Site implements SiteInterface
 {
     protected $id;
 
-    /**
-     * @var UserEntityInterface
-     */
+    /** @var UserEntityInterface */
     protected $publisher;
     protected $name;
     protected $domain;
     protected $adSlots;
     protected $enableSourceReport;
-    /**
-     * @var SourceReportSiteConfigInterface[]
-     */
+    /** @var SourceReportSiteConfigInterface[] */
     protected $sourceReportSiteConfigs;
+
+    /** @var ChannelSiteInterface[] */
+    protected $channelSites;
+    protected $players;
 
     /**
      * @param string $name
@@ -34,6 +33,7 @@ class Site implements SiteInterface
         $this->name = $name;
         $this->domain = $domain;
         $this->adSlots = new ArrayCollection();
+        $this->channelSites = new ArrayCollection();
     }
 
     public function getId()
@@ -64,7 +64,8 @@ class Site implements SiteInterface
     /**
      * @inheritdoc
      */
-    public function setPublisher(PublisherInterface $publisher) {
+    public function setPublisher(PublisherInterface $publisher)
+    {
         $this->publisher = $publisher->getUser();
         return $this;
     }
@@ -107,12 +108,15 @@ class Site implements SiteInterface
     {
         $this->adSlots;
     }
+
     /**
      * @inheritdoc
      */
     public function getReportableAdSlots()
     {
-        return array_filter($this->adSlots->toArray(), function (BaseAdSlotInterface $adSlot) { return $adSlot instanceof ReportableAdSlotInterface; });
+        return array_filter($this->adSlots->toArray(), function (BaseAdSlotInterface $adSlot) {
+                return $adSlot instanceof ReportableAdSlotInterface;
+            });
     }
 
     public function getAllAdSlots()
@@ -134,6 +138,7 @@ class Site implements SiteInterface
     public function setEnableSourceReport($enableSourceReport)
     {
         $this->enableSourceReport = $enableSourceReport;
+        return $this;
     }
 
     public function getSourceReportSiteConfigs()
@@ -141,9 +146,61 @@ class Site implements SiteInterface
         return $this->sourceReportSiteConfigs;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function setChannelSites($channelSites)
+    {
+        $this->channelSites = $channelSites;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChannelSites()
+    {
+        if(null === $this->channelSites) {
+            $this->channelSites = new ArrayCollection();
+        }
+        return $this->channelSites;
+    }
+
+    /**
+     * @return array
+     */
+    public function getChannels()
+    {
+        $channels = [];
+        $channelSites = $this->getChannelSites();
+        /**
+         * @var ChannelSiteInterface $channelSite
+         */
+        foreach($channelSites as $channelSite) {
+            $channels[] = $channelSite->getChannel();
+        }
+
+        return $channels;
+    }
+
     public function __toString()
     {
         return $this->id . $this->getName();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPlayers()
+    {
+        return $this->players;
+    }
+
+    /**
+     * @param mixed $players
+     */
+    public function setPlayers($players)
+    {
+        $this->players = $players;
+    }
 }

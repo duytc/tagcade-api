@@ -102,7 +102,7 @@ interface PublisherInterface extends UserRoleInterface
     public function setCountry($country);
 
     /**
-     * @return bool $enableSourceReport
+     * @return array $enableSourceReport
      */
     public function getEnabledModules();
 
@@ -110,6 +110,16 @@ interface PublisherInterface extends UserRoleInterface
      * @return bool
      */
     public function hasAnalyticsModule();
+
+    /**
+     * @return bool
+     */
+    public function hasVideoModule();
+
+    /**
+     * @return bool
+     */
+    public function hasDisplayModule();
 
     public function getEmail();
 
@@ -122,5 +132,4 @@ interface PublisherInterface extends UserRoleInterface
      * @param mixed $settings
      */
     public function setSettings($settings);
-
 }

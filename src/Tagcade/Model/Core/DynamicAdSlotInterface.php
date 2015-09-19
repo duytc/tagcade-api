@@ -14,6 +14,7 @@ interface DynamicAdSlotInterface extends BaseAdSlotInterface
 
     /**
      * @param BaseAdSlotInterface $defaultAdSlot
+     * @return self
      */
     public function setDefaultAdSlot($defaultAdSlot);
 
@@ -23,6 +24,7 @@ interface DynamicAdSlotInterface extends BaseAdSlotInterface
     public function getExpressions();
     /**
      * @param ExpressionInterface[] $expressions
+     * @return self
      */
     public function setExpressions($expressions);
 

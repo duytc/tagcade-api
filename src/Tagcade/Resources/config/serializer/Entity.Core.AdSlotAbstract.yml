@@ -1,7 +1,7 @@
 Tagcade\Entity\Core\AdSlotAbstract:
     exclusion_policy: ALL
     discriminator:
-        field_name: slotType
+        field_name: slot_type
         map:
             display_model: Tagcade\Model\Core\DisplayAdSlot
             display: Tagcade\Entity\Core\DisplayAdSlot

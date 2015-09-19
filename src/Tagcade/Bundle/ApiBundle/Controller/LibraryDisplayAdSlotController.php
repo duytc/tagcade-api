@@ -144,7 +144,6 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
         return $this->view(null, Codes::HTTP_CREATED);
     }
 
-
     /**
      * Create a adSlot library from the submitted data
      *
@@ -169,6 +168,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
         return $this->post($request);
     }
+
 
     /**
      * Get those AdSlots which refer to the current AdSlot Library

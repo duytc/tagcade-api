@@ -1,0 +1,33 @@
+Tagcade\Entity\Core\ChannelSite:
+    type: entity
+    table: core_channel_site
+    repositoryClass: Tagcade\Repository\Core\ChannelSiteRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+
+#    uniqueConstraints:
+#        unique_channel_site_idx:
+#            columns:
+#                - channel_id
+#                - site_id # underscore column name
+
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        channel:
+            targetEntity: Tagcade\Entity\Core\Channel
+            inversedBy: channelSites
+            #cascade: ["persist"]
+        site:
+            targetEntity: Tagcade\Entity\Core\Site
+            inversedBy: channelSites
+            #cascade: ["persist"]

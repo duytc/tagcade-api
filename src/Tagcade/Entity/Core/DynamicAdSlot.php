@@ -9,12 +9,7 @@ class DynamicAdSlot extends DynamicAdSlotModel
 {
     protected $id;
     protected $site;
-
-    /**
-     * @var ExpressionInterface[]
-     */
     protected $expressions;
-
     protected $defaultAdSlot;
 
     public function __construct()

@@ -2,9 +2,19 @@
 
 class LibraryDisplayAdSlot
 {
+    static $JSON_DATA_SAMPLE_LIBRARY_AD_SLOT = [];
+
     public function _before(ApiTester $I)
     {
         $I->amBearerAuthenticated($I->getToken());
+
+        self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT = [
+            'width' => 200,
+            'height' => 300,
+            'name' => 'dtag.test.librarydisplayadslot',
+            //'visible' => true, //default
+            //'publisher' => 2
+        ];
     }
 
     public function _after(ApiTester $I)
@@ -49,15 +59,11 @@ class LibraryDisplayAdSlot
      */
     public function addLibraryDisplayAdSlot(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/librarydisplayadslots',
-            [
-                'width' => 200,
-                'height' => 300,
-                'name' => 'dtag.test.librarydisplayadslot',
-                //'visible' => true,
-                //'publisher' => 2
-            ]
-        );
+        $I->comment('adding library AdSlot...');
+
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+
+        $I->sendPOST(URL_API . '/librarydisplayadslots', $jsonData);
         $I->seeResponseCodeIs(201);
     }
 
@@ -67,15 +73,11 @@ class LibraryDisplayAdSlot
      */
     public function addLibraryDisplayAdSlotWithNameNull(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/librarydisplayadslots',
-            [
-                'width' => 200,
-                'height' => 300,
-                'name' => null,
-                //'visible' => true,
-                //'publisher' => 2
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        //name null
+        $jsonData['name'] = null;
+
+        $I->sendPOST(URL_API . '/librarydisplayadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -85,15 +87,12 @@ class LibraryDisplayAdSlot
      */
     public function addLibraryDisplayAdSlotWithWidthOrHeightInvalid(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/librarydisplayadslots',
-            [
-                'width' => '300_invalid',
-                'height' => '200_invalid',
-                'name' => 'dtag.test.librarydisplayadslot',
-                //'visible' => true,
-                //'publisher' => 2
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        //width, height invalid
+        $jsonData['width'] = '300_invalid';
+        $jsonData['height'] = '200_invalid';
+
+        $I->sendPOST(URL_API . '/librarydisplayadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -103,15 +102,11 @@ class LibraryDisplayAdSlot
      */
     public function addLibraryDisplayAdSlotMissingField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/librarydisplayadslots',
-            [
-                'width' => 200,
-                'height' => 300,
-                //'name' => 'dtag.test.librarydisplayadslot', //this is missing field
-                //'visible' => true,
-                //'publisher' => 2
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        //name missing
+        unset($jsonData['name']);
+
+        $I->sendPOST(URL_API . '/librarydisplayadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -121,29 +116,32 @@ class LibraryDisplayAdSlot
      */
     public function addLibraryDisplayAdSlotWithUnexpectedField(ApiTester $I)
     {
-        $I->sendPOST(URL_API . '/librarydisplayadslots',
-            [
-                'width' => 200,
-                'height' => 300,
-                'name' => 'dtag.test.librarydisplayadslot',
-                //'visible' => true,
-                //'publisher' => 2,
-                'unexpected_field' => 'unexpected_field' //this is unexpected field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        //this is unexpected field
+        $jsonData['unexpected_field'] = 'unexpected_field';
+
+        $I->sendPOST(URL_API . '/librarydisplayadslots', $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * @depends addLibraryDisplayAdSlot
+     * @param ApiTester $I
      */
     public function patchLibraryDisplayAdSlot(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydisplayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        unset($jsonData['name']);
+        unset($jsonData['width']);
+        //patch height
+        $jsonData['height'] = 250;
+
         $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], [
-            'height' => 250
         ]);
         $I->seeResponseCodeIs(204);
     }
@@ -154,13 +152,20 @@ class LibraryDisplayAdSlot
      */
     public function patchLibraryDisplayAdSlotSetInvisible(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydisplayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], [
-            'visible' => false,
-            'name' => 'dtag.test.librarydisplayadslot-library'
-        ]);
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        unset($jsonData['width']);
+        unset($jsonData['height']);
+        //patch height
+        $jsonData['name'] = 'dtag.test.librarydisplayadslot-library';
+        $jsonData['visible'] = false;
+
+        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], $jsonData);
         //$I->seeResponseCodeIs(400); //not allow
         $I->canSeeResponseCodeIs(204); //will be delete this adSlot if has no reference
         //$I->canSeeResponseCodeIs(400); //will be error if has at least one reference
@@ -172,14 +177,19 @@ class LibraryDisplayAdSlot
      */
     public function patchLibraryDisplayAdSlotWithNameNull(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydisplayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'],
-            [
-                'name' => null
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        unset($jsonData['width']);
+        unset($jsonData['height']);
+        //patch name null
+        $jsonData['name'] = null;
+
+        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -189,15 +199,19 @@ class LibraryDisplayAdSlot
      */
     public function patchLibraryDisplayAdSlotWithWidthOrHeightInvalid(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydisplayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'],
-            [
-                'width' => '250_wrong',
-                'height' => '250_wrong'
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        unset($jsonData['name']);
+        //patch width, height invalid
+        $jsonData['width'] = '250_wrong';
+        $jsonData['height'] = '250_wrong';
+
+        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
@@ -207,22 +221,31 @@ class LibraryDisplayAdSlot
      */
     public function patchLibraryDisplayAdSlotWithUnexpectedField(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydisplayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
-        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'],
-            [
-                'unexpected_field' => 'unexpected_field' //this is unexpected field
-            ]
-        );
+        $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_AD_SLOT;
+        unset($jsonData['name']);
+        unset($jsonData['width']);
+        unset($jsonData['height']);
+        //this is unexpected field
+        $jsonData['unexpected_field'] = 'unexpected_field';
+
+        $I->sendPATCH(URL_API . '/librarydisplayadslots/' . $item['id'], $jsonData);
         $I->seeResponseCodeIs(400);
     }
 
     /**
-     * @depends addLibraryDisplayAdSlot
+     * @param ApiTester $I
      */
     public function deleteLibraryDisplayAdSlot(ApiTester $I)
     {
+        //add new before deleting
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydisplayadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -232,10 +255,13 @@ class LibraryDisplayAdSlot
 
     /**
      * delete LibraryDisplayAdSlot Not Existed
-     * @depends addLibraryDisplayAdSlot
+     * @param ApiTester $I
      */
     public function deleteLibraryDisplayAdSlotNotExisted(ApiTester $I)
     {
+        //add new before deleting
+        $this->addLibraryDisplayAdSlot($I);
+
         $I->sendDELETE(URL_API . '/librarydisplayadslots/' . '-1');
         $I->seeResponseCodeIs(404);
     }

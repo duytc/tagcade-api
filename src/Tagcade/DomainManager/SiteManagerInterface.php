@@ -2,6 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -30,4 +31,23 @@ interface SiteManagerInterface extends ManagerInterface
      * @return SiteInterface[]
      */
     public function getAllSitesThatEnableSourceReport($enableSourceReport = true);
+
+    /**
+     * get all Sites which have no Ad Slot references to a library Ad Slot
+     *
+     * @param $slotLibrary
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return array
+     */
+    public function getSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null);
+
+    /**
+     * Delete one channel for a site (in list channels of site)
+     *
+     * @param SiteInterface $site
+     * @param $channelId
+     * @return int number of removed channels
+     */
+    public function deleteChannelForSite(SiteInterface $site, $channelId) ;
 }

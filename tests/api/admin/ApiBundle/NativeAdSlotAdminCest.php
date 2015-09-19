@@ -7,10 +7,13 @@ class NativeAdSlotAdminCest extends NativeAdSlot
 {
     public function _before(ApiTester $I) {
         $I->amBearerAuthenticated($I->getAdminToken());
-    }
 
-//    public function addPositionsAdSlot(ApiTester $I) {
-//        $I->sendPOST(URL_API.'/adslots/1/adtags/positions', []);
-//        $I->seeResponseCodeIs(201);
-//    }
+        self::$JSON_DATA_SAMPLE_NATIVE_AD_SLOT = [
+            'site' => PARAMS_SITE,
+            'libraryAdSlot' => [
+                'name' => 'dtag.test.nativeAdslot',
+                //'visible' => false //default
+            ]
+        ];
+    }
 }

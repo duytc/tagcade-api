@@ -10,7 +10,7 @@ class LibraryDynamicAdSlot
 
         self::$JSON_DATA_SAMPLE_LIBRARY_DYNAMIC_AD_SLOT = [
             //'publisher' => 2,
-            //'visible' => true,
+            //'visible' => true, //default true
             //'native' => false, //default false
             'name' => 'dynamicAdSlot-test',
             'libraryExpressions' => [
@@ -605,7 +605,7 @@ class LibraryDynamicAdSlot
         $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_DYNAMIC_AD_SLOT;
 
         //'defaultLibraryAdSlot' null
-        $jsonData[''] = null;
+        $jsonData['defaultLibraryAdSlot'] = null;
 
         $I->sendPOST(URL_API . '/librarydynamicadslots', $jsonData);
         //$I->seeResponseCodeIs(400);
@@ -620,8 +620,9 @@ class LibraryDynamicAdSlot
     {
         $jsonData = self::$JSON_DATA_SAMPLE_LIBRARY_DYNAMIC_AD_SLOT;
 
-        //'defaultLibraryAdSlot' null
-        $jsonData[''] = null;
+        //both 'libraryExpressions' and 'defaultLibraryAdSlot' null
+        $jsonData['libraryExpressions'] = null;
+        $jsonData['defaultLibraryAdSlot'] = null;
 
         $I->sendPOST(URL_API . '/librarydynamicadslots', $jsonData);
         $I->seeResponseCodeIs(400); //not allow, because at least one of libraryExpressions and DefaultAdSlot not null
@@ -658,11 +659,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlot(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -680,11 +683,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot set visible=false
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlotSetInvisible(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -706,11 +711,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot failed cause by unexpected field
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlotFailedByUnexpectedField(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -730,11 +737,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot failed cause by LibraryExpression not json_array
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlotFailedByLibraryExpressNotJsonArray(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -752,11 +761,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot failed cause by LibraryExpression descriptor not json_array
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlotFailedByLibraryExpressDescriptorNotJsonArray(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -774,11 +785,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot failed cause by LibraryExpression descriptor contains unexpected field
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlotFailedByLibraryExpressDescriptorContainsUnexpectedField(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -796,11 +809,13 @@ class LibraryDynamicAdSlot
 
     /**
      * patch libraryDynamicAdSlot failed cause by expressions expectAdSlot not existed
-     * @depends addLibraryDynamicAdSlot
      * @param ApiTester $I
      */
     public function patchLibraryDynamicAdSlotFailedByExpectLibraryAdSlotNotExisted(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -822,6 +837,9 @@ class LibraryDynamicAdSlot
      */
     public function patchLibraryDynamicAdSlotFailedByChangingNative(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -844,6 +862,9 @@ class LibraryDynamicAdSlot
      */
     public function patchLibraryDynamicAdSlotFailedByDefaultLibraryAdSlotNotExisted(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -865,6 +886,9 @@ class LibraryDynamicAdSlot
      */
     public function patchLibraryDynamicAdSlotFailedByWrongDataType(ApiTester $I)
     {
+        //add new before editing
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -882,10 +906,12 @@ class LibraryDynamicAdSlot
 
     /**
      * delete libraryDynamicAdSlot
-     * @depends addLibraryDynamicAdSlot
      */
     public function deleteLibraryDynamicAdSlot(ApiTester $I)
     {
+        //add new before deleting
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendGet(URL_API . '/librarydynamicadslots');
         $item = array_pop($I->grabDataFromJsonResponse());
 
@@ -895,10 +921,12 @@ class LibraryDynamicAdSlot
 
     /**
      * delete AdSlot Not Existed
-     * @depends addLibraryDynamicAdSlot
      */
     public function deleteLibraryDynamicAdSlotNotExisted(ApiTester $I)
     {
+        //add new before deleting
+        $this->addLibraryDynamicAdSlot($I);
+
         $I->sendDELETE(URL_API . '/librarydynamicadslots/' . '-1');
         $I->seeResponseCodeIs(404);
     }

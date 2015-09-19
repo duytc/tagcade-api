@@ -2,13 +2,17 @@
 namespace Tagcade\Service\TagLibrary;
 
 use Tagcade\DomainManager\AdSlotManagerInterface;
+use Tagcade\DomainManager\ChannelManagerInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\Expression;
 use Tagcade\Entity\Core\NativeAdSlot;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
@@ -16,18 +20,44 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
+use Tagcade\Service\ArrayUtilInterface;
 
 class AdSlotGenerator implements AdSlotGeneratorInterface
 {
 
-    /**
-     * @var AdSlotManagerInterface
-     */
+    /** @var AdSlotManagerInterface */
     private $adSlotManager;
 
-    public function setAdSlotManager(AdSlotManagerInterface $adSlotManager) {
+    /** @var ChannelManagerInterface */
+    private $channelManager;
+
+    /** @var SiteManagerInterface */
+    private $siteManager;
+
+    /** @var ArrayUtilInterface */
+    private $arrayUtil;
+
+    public function setAdSlotManager(AdSlotManagerInterface $adSlotManager)
+    {
         $this->adSlotManager = $adSlotManager;
     }
+
+    public function setChannelManager(ChannelManagerInterface $channelManager)
+    {
+        $this->channelManager = $channelManager;
+    }
+
+    public function setSiteManager(SiteManagerInterface $siteManager)
+    {
+        $this->siteManager = $siteManager;
+    }
+
+    public function setArrayUtil(ArrayUtilInterface $arrayUtil)
+    {
+        $this->arrayUtil = $arrayUtil;
+    }
+
     /**
      * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
      * @param SiteInterface $site
@@ -43,11 +73,11 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
         $this->generateTrueDefaultAdSlotAndExpectAdSlotInExpressionsForLibraryDynamicAdSlotBySite($libraryDynamicAdSlot, $site);
 
         $libraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions();
-        if($libraryExpressions !== null) {
+        if ($libraryExpressions !== null) {
             /**
              * @var LibraryExpressionInterface $libraryExpression
              */
-            foreach($libraryExpressions as $libraryExpression) {
+            foreach ($libraryExpressions as $libraryExpression) {
                 $expectAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpression->getExpectLibraryAdSlot(), $site);
                 if (!$expectAdSlot instanceof ReportableAdSlotInterface) {
                     throw new LogicException('expect existing expect ad slot for expression');
@@ -68,7 +98,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
         $dynamicAdSlot->setLibraryAdSlot($libraryDynamicAdSlot);
 
         $defaultLibraryAdSlot = $libraryDynamicAdSlot->getDefaultLibraryAdSlot();
-        if($defaultLibraryAdSlot instanceof LibraryDisplayAdSlotInterface || $defaultLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+        if ($defaultLibraryAdSlot instanceof LibraryDisplayAdSlotInterface || $defaultLibraryAdSlot instanceof LibraryNativeAdSlotInterface) {
             $defaultAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site);
 
             if (!$defaultAdSlot instanceof ReportableAdSlotInterface) {
@@ -96,7 +126,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
             $currentReference = $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site);
             // Step 2. generate default ad slot if step 1 return empty (generate default ad slot base on default library ad slot in library dynamic ad slot)
             if (null === $currentReference) {
-                $this->createReportableAdSlotForSite($site, $defaultLibraryAdSlot);
+                $this->createReportableAdSlotForSite($defaultLibraryAdSlot, $site);
             }
         }
 
@@ -109,16 +139,95 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
                  * @var LibraryExpressionInterface $libraryExpression
                  */
                 $libraryExpectAdSlot = $libraryExpression->getExpectLibraryAdSlot();
-                if(!$libraryExpectAdSlot instanceof LibraryDisplayAdSlotInterface && !$libraryExpectAdSlot instanceof LibraryNativeAdSlotInterface) {
+                if (!$libraryExpectAdSlot instanceof LibraryDisplayAdSlotInterface && !$libraryExpectAdSlot instanceof LibraryNativeAdSlotInterface) {
                     throw new InvalidArgumentException('expect display or native library');
                 }
                 $currentReference = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpectAdSlot, $site);
 
                 if (null === $currentReference) {
-                    $this->createReportableAdSlotForSite($site, $libraryExpectAdSlot);
+                    $this->createReportableAdSlotForSite($libraryExpectAdSlot, $site);
                 }
             }
         }
+    }
+
+    public function generateAdSlotFromLibraryForChannelsAndSites(BaseLibraryAdSlotInterface $libraryAdSlot, array $channels, array $sites)
+    {
+        $channels = $this->arrayUtil->array_unique_object($channels);
+        //get all sites for channels
+        /** @var SiteInterface[] $allSites */
+        $allSites = $sites;
+        foreach ($channels as $cn) {
+            /** @var ChannelInterface $cn */
+            $tmpSites = $cn->getSites();
+            $allSites = array_merge($allSites, $tmpSites);
+
+            unset($tmpSites);
+        }
+
+        $allSites = $this->arrayUtil->array_unique_object($allSites);
+
+        return $this->generateAdSlotFromLibraryForSites($libraryAdSlot, $allSites);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function generateAdSlotFromLibraryForChannels(BaseLibraryAdSlotInterface $libraryAdSlot, array $channels)
+    {
+        $channels = $this->arrayUtil->array_unique_object($channels);
+
+        //get all sites for channels
+        /** @var SiteInterface[] $allSites */
+        $allSites = [];
+        foreach ($channels as $cn) {
+            /** @var ChannelInterface $cn */
+            $sites = $cn->getSites();
+            $allSites = array_merge($allSites, $sites);
+
+            unset($sites);
+        }
+
+        return $this->generateAdSlotFromLibraryForSites($libraryAdSlot, $this->arrayUtil->array_unique_object($allSites));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function generateAdSlotFromLibraryForSites(BaseLibraryAdSlotInterface $libraryAdSlot, array $sites)
+    {
+        $sites = $this->arrayUtil->array_unique_object($sites);
+
+        if (count($sites) < 1) {
+            return 0;
+        }
+
+        //filter all sites have no ad slots linked to library Ad Slot
+        $filteredSites = array_filter($sites, function (SiteInterface $site) use ($libraryAdSlot) {
+            return null === $this->adSlotManager->getReferencedAdSlotsForSite($libraryAdSlot, $site);
+        });
+
+        //do create link
+        $createdLinks = 0;
+
+        foreach ($filteredSites as $site) {
+            /** @var BaseAdSlotInterface $adSlot */
+            if ($libraryAdSlot instanceof LibraryDisplayAdSlotInterface || $libraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+                //this for library display and library native ad slot
+                $this->createReportableAdSlotForSite($libraryAdSlot, $site);
+
+                $createdLinks++;
+            } else if ($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
+                //this for library dynamic ad slot
+                $dynamicAdSlot = $this->getProspectiveDynamicAdSlotForLibraryAndSite($libraryAdSlot, $site);
+
+                $this->adSlotManager->save($dynamicAdSlot);
+
+                $createdLinks++;
+            }
+        }
+
+        return $createdLinks;
     }
 
     /**
@@ -128,7 +237,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @return ReportableAdSlotInterface
      */
-    protected function createReportableAdSlotForSite(SiteInterface $site, BaseLibraryAdSlotInterface $libraryAdSlot)
+    protected function createReportableAdSlotForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site)
     {
         if ($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
             throw new InvalidArgumentException('expect display or native library');
@@ -141,6 +250,4 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
 
         return $adSlot;
     }
-
-
 }

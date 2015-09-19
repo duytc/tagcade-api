@@ -3,11 +3,10 @@
 namespace Tagcade\Bundle\AdminApiBundle\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Exception\UnexpectedTypeException;
-use Symfony\Component\Form\Exception\FormException;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
@@ -29,6 +28,10 @@ class UserFormType extends AbstractRoleSpecificFormType
         'passbacks',
         'fillRate',
     ];
+    const MODULE_CONFIG = 'moduleConfigs';
+    const VIDEO_MODULE = 'MODULE_VIDEO_ANALYTICS';
+    const VIDEO_PLAYERS = 'players';
+    protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
 
 //    private $userRole;
 
@@ -37,7 +40,6 @@ class UserFormType extends AbstractRoleSpecificFormType
     public function __construct(UserEntityInterface $userRole)
     {
         $this->setUserRole($userRole);
-//        $this->userRole = $userRole;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -56,19 +58,6 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('postalCode')
             ->add('country')
             ->add('settings')
-
-            // custom fields
-            // even though in the system, roles and modules are simply just symfony2 roles
-            // we separate the collection of them
-//            ->add('userRoles', 'choice', [
-//                'mapped' => false,
-//                'empty_data' => null,
-//                'multiple' => true,
-//                'choices' => [
-//                    'ROLE_PUBLISHER' => 'Publisher',
-//                    'ROLE_ADMIN'     => 'Admin'
-//                ],
-//            ])
         ;
 
         if($this->userRole instanceof AdminInterface){
@@ -80,7 +69,7 @@ class UserFormType extends AbstractRoleSpecificFormType
                     'multiple' => true,
                     'choices' => [
                         'MODULE_DISPLAY'         => 'Display',
-                        'MODULE_VIDEO'           => 'Video',
+                        'MODULE_VIDEO_ANALYTICS'           => 'Video',
                         'MODULE_ANALYTICS'       => 'Analytics',
                         'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
                     ],
@@ -90,16 +79,11 @@ class UserFormType extends AbstractRoleSpecificFormType
                 ->addEventListener(
                 FormEvents::POST_SUBMIT,
                 function (FormEvent $event) {
-                    /** @var User $user */
+                    /** @var UserEntityInterface $user */
                     $user = $event->getData();
                     $form = $event->getForm();
 
-//                $mainUserRole = $form->get('userRoles')->getData();
                     $modules = $form->get('enabledModules')->getData();
-
-//                if (null !== $mainUserRole) {
-//                    $user->setUserRoles((array) $mainUserRole);
-//                }
 
                     if (null !== $modules && is_array($modules)) {
                         $user->setEnabledModules($modules);

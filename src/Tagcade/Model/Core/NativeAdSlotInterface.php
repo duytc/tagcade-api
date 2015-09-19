@@ -14,6 +14,7 @@ interface NativeAdSlotInterface extends BaseAdSlotInterface
 
     /**
      * @param ArrayCollection $adTags
+     * @return self
      */
     public function setAdTags($adTags);
 

@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\ChannelSite:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [channelsite.detail, channelsite.summary]
+        channel:
+            expose: true
+            groups: [channelsite.detail, channelsite.summary]
+        site:
+            expose: true
+            groups: [channelsite.detail, channelsite.summary]

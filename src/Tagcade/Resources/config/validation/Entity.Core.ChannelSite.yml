@@ -1,0 +1,6 @@
+Tagcade\Entity\Core\ChannelSite:
+    properties:
+        channel:
+            - Valid: ~
+        site:
+            - Valid: ~

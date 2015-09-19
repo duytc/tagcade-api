@@ -4,6 +4,7 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
+use Tagcade\Exception\RuntimeException;
 
 class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynamicAdSlotInterface
 {
@@ -46,11 +47,13 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     }
 
     /**
-     * @param mixed $native
+     * @inheritdoc
      */
     public function setNative($native)
     {
         $this->native = $native;
+
+        return $this;
     }
 
     /**
@@ -62,11 +65,13 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     }
 
     /**
-     * @param LibraryExpressionInterface[] $libraryExpressions
+     * @inheritdoc
      */
     public function setLibraryExpressions($libraryExpressions)
     {
         $this->libraryExpressions = $libraryExpressions;
+
+        return $this;
     }
 
     /**
@@ -78,11 +83,21 @@ class LibraryDynamicAdSlot extends LibraryAdSlotAbstract implements LibraryDynam
     }
 
     /**
-     * @param BaseLibraryAdSlotInterface $defaultLibraryAdSlot
+     * @inheritdoc
      */
     public function setDefaultLibraryAdSlot($defaultLibraryAdSlot)
     {
         $this->defaultLibraryAdSlot = $defaultLibraryAdSlot;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function checkSum()
+    {
+        throw new RuntimeException('not support checksum for dynamic ad slot');
     }
 
 
