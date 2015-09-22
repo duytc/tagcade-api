@@ -271,6 +271,11 @@ class UpdateExpressionInJsListener {
         }
 
         // Below functions use regex, hence we have to remove the quotes from json
+        // note: remove quotes and then json_encode to escape js with special chars and then remove quotes again due to json_encode
+        $val = str_replace('"','', $val);
+        // do escape js regex, not just concatenate string like this: (/' . $val . '/i)
+        $val = json_encode($val);
+        // Below functions use regex, hence we have to remove the quotes from json
         $val = str_replace('"','', $val);
 
         if ($cmp === 'contains') {
