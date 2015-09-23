@@ -15,7 +15,7 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 
 class UpdateExpressionInJsListener {
 
-    static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href'];
+    static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href', '${USERAGENT}'=>'navigator.userAgent'];
 
     protected $updatedExpressions = [];
 

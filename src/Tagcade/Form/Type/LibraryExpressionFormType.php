@@ -271,7 +271,7 @@ class LibraryExpressionFormType extends AbstractRoleSpecificFormType
         }
 
         //validate as javascript variable syntax
-        if (!preg_match('/\${PAGEURL}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
+        if (!preg_match('/\${PAGEURL}|\${USERAGENT}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
             throw new InvalidFormException('invalid variable name syntax of \'' . $var . '\' of condition');
         }
     }
