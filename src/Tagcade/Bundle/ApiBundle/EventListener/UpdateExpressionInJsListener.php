@@ -16,7 +16,7 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 class UpdateExpressionInJsListener {
 
     static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href', '${USERAGENT}'=>'navigator.userAgent'];
-
+    static $SERVER_VARS = ['${COUNTRY}'];
     protected $updatedExpressions = [];
 
     /**
@@ -235,9 +235,11 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForMath($var, $cmp, $val)
     {
+        $jsContainer = in_array($var, self::$SERVER_VARS) ? '' : 'window.';
+
         $var = $this->getConvertedVar($var);
 
-        return '(window.' . $var . $cmp . $val . ')';
+        return '(' . $jsContainer. $var . $cmp . $val . ')';
     }
 
     private function getConvertedVar($var)
@@ -263,9 +265,10 @@ class UpdateExpressionInJsListener {
         // Convert local variable to js variable
         $var = $this->getConvertedVar($var);
 
+        $jsContainer = in_array($var, self::$SERVER_VARS) ? '' : 'window.';
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['cmp'] . $val .
             ')';
         }
@@ -279,39 +282,39 @@ class UpdateExpressionInJsListener {
         $val = str_replace('"','', $val);
 
         if ($cmp === 'contains') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
             ')';
         }
 
         if ($cmp === 'notContains') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
             ')';
         }
 
         if ($cmp === 'startsWith') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
             ')';
         }
 
         if ($cmp === 'notStartsWith') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
 
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
         if ($cmp === 'notEndsWith') {
 
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }

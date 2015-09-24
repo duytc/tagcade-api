@@ -4,6 +4,7 @@ namespace Tagcade\Cache\DynamicAdSlot\Behavior;
 
 
 use Doctrine\Common\Collections\Collection;
+use Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -13,9 +14,8 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
-trait CreateAdSlotDataTrait {
-
-
+trait CreateAdSlotDataTrait
+{
     /**
      * @param ModelInterface $model
      * @return array
@@ -197,6 +197,17 @@ trait CreateAdSlotDataTrait {
             array_walk($expressions,
                 function(ExpressionInterface $expression ) use (&$data){
                     array_push($data['expressions'], $expression->getExpressionInJs());
+
+                    $expressionDescriptor = $expression->getExpressionDescriptor();
+                    $groupVals = $expressionDescriptor['groupVal'];
+
+                    foreach($groupVals as $groupVal) {
+                        $varName = $groupVal['var'];
+                        if (in_array($varName, UpdateExpressionInJsListener::$SERVER_VARS)) {
+                            $data['server_vars'][] = $varName;
+                        }
+                    }
+
                 }
             );
 
