@@ -10,3 +10,6 @@ Tagcade\Entity\Core\LibraryDisplayAdSlot:
         height:
             expose: true
             groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]
+        autoFit:
+            expose: true
+            groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]

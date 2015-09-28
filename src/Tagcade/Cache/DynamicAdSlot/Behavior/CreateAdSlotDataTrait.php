@@ -90,6 +90,9 @@ trait CreateAdSlotDataTrait
             'tags' => []
         ];
 
+        if($adSlot->isAutoFit()) {
+            $data['autoFit'] = true;
+        }
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
         $adTags = $adSlot->getAdTags();

@@ -15,7 +15,14 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 
 class UpdateExpressionInJsListener {
 
-    static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href', '${USERAGENT}'=>'navigator.userAgent'];
+    static $INTERNAL_VARIABLE_MAP = [
+        '${PAGE_URL}'=>'location.href',
+        '${USER_AGENT}'=>'navigator.userAgent',
+        '${SCREEN_WIDTH}'=>'top.screen.width',
+        '${SCREEN_HEIGHT}'=>'top.screen.height',
+        '${WINDOW_WIDTH}'=>'top.screen.availWidth',
+        '${WINDOW_HEIGHT}'=>'top.screen.availHeight'
+        ];
     static $SERVER_VARS = ['${COUNTRY}'];
     protected $updatedExpressions = [];
 

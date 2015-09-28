@@ -75,6 +75,30 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     }
 
     /**
+     * @inheritdoc
+     */
+    public function isAutoFit()
+    {
+        if($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface){
+            return $this->libraryAdSlot->isAutoFit();
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAutoFit($autoFit)
+    {
+        if($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface){
+            $this->libraryAdSlot->setAutoFit($autoFit);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getType()

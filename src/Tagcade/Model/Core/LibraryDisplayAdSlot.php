@@ -10,6 +10,7 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
     protected $id;
     protected $width;
     protected $height;
+    protected $autoFit = false;
     /**
      * @var PublisherInterface
      */
@@ -26,6 +27,7 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
 
         $this->width = $width;
         $this->height = $height;
+        $this->autoFit = false;
     }
 
     /**
@@ -115,6 +117,25 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
         }
 
         return md5(serialize($array));
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoFit()
+    {
+        return $this->autoFit;
+    }
+
+    /**
+     * @param boolean $autoFit
+     * @return $this
+     */
+    public function setAutoFit($autoFit)
+    {
+        $this->autoFit = $autoFit;
+
+        return $this;
     }
 
 
