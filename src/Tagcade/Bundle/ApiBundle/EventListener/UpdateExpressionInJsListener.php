@@ -20,8 +20,8 @@ class UpdateExpressionInJsListener {
         '${USER_AGENT}'=>'navigator.userAgent',
         '${SCREEN_WIDTH}'=>'top.screen.width',
         '${SCREEN_HEIGHT}'=>'top.screen.height',
-        '${WINDOW_WIDTH}'=>'top.screen.availWidth',
-        '${WINDOW_HEIGHT}'=>'top.screen.availHeight'
+        '${WINDOW_WIDTH}'=>'top.outerWidth',
+        '${WINDOW_HEIGHT}'=>'top.outerHeight'
         ];
     static $SERVER_VARS = ['${COUNTRY}'];
     protected $updatedExpressions = [];
