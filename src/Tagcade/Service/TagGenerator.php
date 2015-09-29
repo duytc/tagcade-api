@@ -122,11 +122,7 @@ class TagGenerator
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
 
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $adSlot->getSite()->getDomain());
-        $tag .= '<script type="text/javascript">' . "\n";
-        $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
-        $tag .= sprintf("var tc_size = '%dx%d';\n", $adSlot->getWidth(), $adSlot->getHeight());
-        $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-size="%dx%d"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight());
 
         return $tag;
     }
@@ -140,15 +136,13 @@ class TagGenerator
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
 
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $adSlot->getSite()->getDomain());
-        $tag .= '<script type="text/javascript">' . "\n";
-        $tag .= sprintf("var tc_slot = %d;\n", $adSlot->getId());
 
         if ($adSlot->isSupportedNative()) {
-            $tag .= "var tc_native = true;\n";
+            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId(), $adSlot->getId());
         }
-
-        $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId());
+        else {
+            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId(), $adSlot->getId());
+        }
 
         return $tag;
     }
@@ -162,11 +156,7 @@ class TagGenerator
         $adSlotName = htmlspecialchars($nativeAdSlot->getName(), ENT_QUOTES);
 
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $nativeAdSlot->getSite()->getDomain());
-        $tag .= '<script type="text/javascript">' . "\n";
-        $tag .= sprintf("var tc_slot = %d;\n", $nativeAdSlot->getId());
-        $tag .= "var tc_native = true;\n";
-        $tag .= "</script>\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSite()->getId());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSite()->getId(), $nativeAdSlot->getId());
 
         return $tag;
     }
