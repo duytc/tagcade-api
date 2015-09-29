@@ -242,8 +242,7 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForMath($var, $cmp, $val)
     {
-        $jsContainer = in_array($var, self::$SERVER_VARS) ? '' : 'window.';
-
+        $jsContainer = $this->getJsContainer($var);
         $var = $this->getConvertedVar($var);
 
         return '(' . $jsContainer. $var . $cmp . $val . ')';
@@ -260,6 +259,15 @@ class UpdateExpressionInJsListener {
     }
 
     /**
+     * Get js container, either "window." or empty string
+     * @param $var untranslated variable from ui
+     * @return string
+     */
+    private function getJsContainer($var)
+    {
+        return (in_array($var, self::$SERVER_VARS) || array_key_exists($var, self::$INTERNAL_VARIABLE_MAP)) ? '' : 'window.';
+    }
+    /**
      * get condition In JS for MATH. Return condition mapped from UI to Javascript syntax. e.g:
      * + 'b, length >=, 10' => 'b.length >= 10'
      * @param $var
@@ -270,9 +278,9 @@ class UpdateExpressionInJsListener {
     private function getConditionInJSForString($var, $cmp, $val)
     {
         // Convert local variable to js variable
+        $jsContainer = $this->getJsContainer($var);
         $var = $this->getConvertedVar($var);
 
-        $jsContainer = in_array($var, self::$SERVER_VARS) ? '' : 'window.';
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
             return '(' . $jsContainer .
