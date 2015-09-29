@@ -203,14 +203,11 @@ trait CreateAdSlotDataTrait
 
                     $expressionDescriptor = $expression->getExpressionDescriptor();
                     $groupVals = $expressionDescriptor['groupVal'];
-
-                    foreach($groupVals as $groupVal) {
-                        $varName = $groupVal['var'];
-                        if (in_array($varName, UpdateExpressionInJsListener::$SERVER_VARS)) {
-                            $data['serverVars'][] = $varName;
-                        }
+                    if(!is_array($groupVals)) {
+                        return;
                     }
 
+                    $this->updateServerVars($groupVals, $data);
                 }
             );
 
@@ -224,8 +221,6 @@ trait CreateAdSlotDataTrait
 
             $adSlotsForSelecting = array_merge($adSlotsForSelecting, $tmpAdSlotsForSelecting);
         }
-
-
 
         $adSlotsForSelecting = array_unique($adSlotsForSelecting);
 
@@ -241,6 +236,25 @@ trait CreateAdSlotDataTrait
 
         //step 5. return data
         return $data;
+    }
+
+    /**
+     * @param $groupVals
+     * @param $data
+     */
+    protected function updateServerVars(array $groupVals, &$data)
+    {
+        foreach($groupVals as $groupVal) {
+            if(!array_key_exists('groupVal', $groupVal)) {
+                $varName = $groupVal['var'];
+                if (in_array($varName, UpdateExpressionInJsListener::$SERVER_VARS)) {
+                    $data['serverVars'][] = $varName;
+                }
+            }
+            else {
+                $this->updateServerVars($groupVal['groupVal'], $data);
+            }
+        }
     }
 
     protected function createNativeAdSlotCacheData(NativeAdSlotInterface $nativeAdSlot)
