@@ -1,9 +1,9 @@
 <?php
 
-namespace Tagcade\Cache\DynamicAdSlot;
+namespace Tagcade\Cache\V2;
 
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Cache\DynamicAdSlot\Behavior\CreateAdSlotDataTrait;
+use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;

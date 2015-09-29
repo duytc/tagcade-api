@@ -12,8 +12,8 @@ services:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
             - @tagcade.domain_manager.display_ad_slot
 
-    tagcade.cache.dynamic_ad_slot.tag_cache:
-        class: Tagcade\Cache\DynamicAdSlot\TagCache
+    tagcade.cache.v2.tag_cache:
+        class: Tagcade\Cache\V2\TagCache
         arguments:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
             - @tagcade.domain_manager.display_ad_slot
@@ -26,4 +26,4 @@ services:
         arguments:
             -
                 - @tagcade.cache.legacy.tag_cache
-                - @tagcade.cache.dynamic_ad_slot.tag_cache
+                - @tagcade.cache.v2.tag_cache

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Cache\DynamicAdSlot\Behavior;
+namespace Tagcade\Cache\V2\Behavior;
 
 
 use Doctrine\Common\Collections\Collection;
