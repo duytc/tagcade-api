@@ -11,8 +11,10 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
@@ -122,6 +124,13 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     $event->getForm()->addError(new FormError("DefaultAdSlot and LibraryExpressions can not be both null"));
                     return;
                 }
+
+                if($dynamicAdSlot->getSite() instanceof SiteInterface &&
+                    $dynamicAdSlot->getDefaultAdSlot() instanceof BaseAdSlotInterface &&
+                    $dynamicAdSlot->getDefaultAdSlot()->getSite()->getId() != $dynamicAdSlot->getSite()->getId()) {
+                    throw new InvalidArgumentException('DynamicAdSlot and DefaultAdSlot do not belong to the same site');
+                }
+
                 // if we create new Dynamic AdSlot from existing Library Dynamic AdSlot
                 // then this form must have child 'expression'
                 if($libraryAdSlot->isVisible() && $libraryAdSlot->getId() !== null) {
@@ -145,6 +154,11 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                             if(!($expression instanceof ExpressionInterface)) {
                                 $event->getForm()->addError(new FormError("Expression null or not is array"));
                                 return;
+                            }
+
+                            if($dynamicAdSlot->getSite() instanceof SiteInterface &&
+                                $expression->getExpectAdSlot()->getSite()->getId() != $dynamicAdSlot->getSite()->getId()) {
+                                throw new InvalidArgumentException('DynamicAdSlot and ExpectAdSlot do not belong to the same site');
                             }
 
                             $expression->setDynamicAdSlot($dynamicAdSlot);

@@ -8,7 +8,9 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Bundle\ApiBundle\Behaviors\UpdateSiteForAdSlotValidator;
 use Tagcade\Handler\Handlers\Core\DynamicAdSlotHandlerAbstract;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -19,6 +21,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
  */
 class DynamicAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use UpdateSiteForAdSlotValidator;
     /**
      * Get all dynamic ad slots
      * @Rest\View(
@@ -183,6 +186,10 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function patchAction(Request $request, $id)
     {
+        /** @var BaseAdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+        $this->validateSiteWhenUpdatingAdSlot($request, $adSlot);
+
         return $this->patch($request, $id);
     }
 

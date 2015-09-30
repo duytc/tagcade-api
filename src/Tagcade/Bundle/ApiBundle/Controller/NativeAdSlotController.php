@@ -10,9 +10,10 @@ use InvalidArgumentException;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Bundle\ApiBundle\Behaviors\UpdateSiteForAdSlotValidator;
 use Tagcade\Handler\Handlers\Core\NativeAdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -23,6 +24,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
  */
 class NativeAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use UpdateSiteForAdSlotValidator;
     /**
      * Get all native ad slots
      *
@@ -179,6 +181,10 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      */
     public function patchAction(Request $request, $id)
     {
+        /** @var BaseAdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+        $this->validateSiteWhenUpdatingAdSlot($request, $adSlot);
+
         if(array_key_exists('libraryAdSlot', $request->request->all()))
         {
             if(!is_array($request->request->get('libraryAdSlot'))) {

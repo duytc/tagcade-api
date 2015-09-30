@@ -185,6 +185,26 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      */
     public function patchAction(Request $request, $id)
     {
+        /** @var AdTagInterface $adTag */
+        $adTag = $this->one($id);
+
+        if(array_key_exists('adSlot', $request->request->all())) {
+            $adSlot = (int)$request->get('adSlot');
+            if($adTag->getAdSlotId() != $adSlot) {
+                throw new InvalidArgumentException('adSlot in invalid');
+            }
+        }
+
+//        if(array_key_exists('libraryAdTag', $request->request->all())) {
+//            $libraryAdTag = $request->get('libraryAdTag');
+//            if(is_array($libraryAdTag) && array_key_exists('adNetwork', $libraryAdTag)) {
+//                $adNetwork = (int)$libraryAdTag['adNetwork'];
+//                if($adTag->getAdNetworkId() != $adNetwork) {
+//                    throw new InvalidArgumentException('adNetwork in invalid');
+//                }
+//            }
+//        }
+
         return $this->patch($request, $id);
     }
 

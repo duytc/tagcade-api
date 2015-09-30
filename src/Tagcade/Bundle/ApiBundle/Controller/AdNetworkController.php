@@ -623,6 +623,18 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function patchAction(Request $request, $id)
     {
+        /**
+         * @var AdNetworkInterface $adNetwork
+         */
+        $adNetwork = $this->one($id);
+
+        if(array_key_exists('publisher', $request->request->all())) {
+            $publisher = (int)$request->get('publisher');
+            if($adNetwork->getPublisherId() != $publisher) {
+                throw new InvalidArgumentException('publisher in invalid');
+            }
+        }
+
         return $this->patch($request, $id);
     }
 
