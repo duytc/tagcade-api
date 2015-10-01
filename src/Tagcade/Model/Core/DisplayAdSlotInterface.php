@@ -30,6 +30,17 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
     public function setHeight($height);
 
     /**
+     * @return boolean
+     */
+    public function isAutoFit();
+
+    /**
+     * @param int $autoFit
+     * @return self
+     */
+    public function setAutoFit($autoFit);
+
+    /**
      * @return PersistentCollection
      */
     public function getAdTags();

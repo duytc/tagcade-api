@@ -30,6 +30,16 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
     public function setHeight($height);
 
     /**
+     * @return boolean
+     */
+    public function isAutoFit();
+
+    /**
+     * @param boolean $autoFit
+     */
+    public function setAutoFit($autoFit);
+
+    /**
      * @return PublisherInterface
      */
     public function getPublisher();

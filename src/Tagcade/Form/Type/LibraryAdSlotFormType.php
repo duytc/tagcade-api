@@ -29,6 +29,7 @@ class LibraryAdSlotFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('width')
             ->add('height')
+            ->add('autoFit')
             ->add('visible')
             ->add('id')
         ;

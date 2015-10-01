@@ -10,6 +10,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -129,6 +130,18 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      */
     public function patchAction(Request $request, $id)
     {
+        /**
+         * @var SiteInterface $site
+         */
+        $site = $this->one($id);
+
+        if(array_key_exists('publisher', $request->request->all())) {
+            $publisher = (int)$request->get('publisher');
+            if($site->getPublisherId() != $publisher) {
+                throw new InvalidArgumentException('publisher in invalid');
+            }
+        }
+
         return $this->patch($request, $id);
     }
 

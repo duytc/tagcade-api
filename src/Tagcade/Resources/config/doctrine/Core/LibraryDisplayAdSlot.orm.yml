@@ -8,4 +8,7 @@ Tagcade\Entity\Core\LibraryDisplayAdSlot:
             type: integer
         height:
             type: integer
-
+        autoFit:
+            type: boolean
+            options:
+                default: false

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Cache\DynamicAdSlot;
+namespace Tagcade\Cache\V2;
 
 
 use Tagcade\Model\Core\BaseAdSlotInterface;

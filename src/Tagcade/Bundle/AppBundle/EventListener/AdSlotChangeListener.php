@@ -37,7 +37,7 @@ class AdSlotChangeListener
             return;
         }
 
-        if ($args->hasChangedField('width') || $args->hasChangedField('height')) {
+        if ($args->hasChangedField('width') || $args->hasChangedField('height') || $args->hasChangedField('autoFit')) {
             $this->updatedAdSlots = $entity->getAdSlots();
         }
     }

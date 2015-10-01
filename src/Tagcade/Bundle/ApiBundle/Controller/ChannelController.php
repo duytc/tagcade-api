@@ -11,6 +11,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\ChannelHandlerAbstract;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
@@ -163,6 +164,18 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      */
     public function patchAction(Request $request, $id)
     {
+        /**
+         * @var ChannelInterface $channel
+         */
+        $channel = $this->one($id);
+
+        if(array_key_exists('publisher', $request->request->all())) {
+            $publisher = (int)$request->get('publisher');
+            if($channel->getPublisherId() != $publisher) {
+                throw new InvalidArgumentException('publisher in invalid');
+            }
+        }
+
         return $this->patch($request, $id);
     }
 

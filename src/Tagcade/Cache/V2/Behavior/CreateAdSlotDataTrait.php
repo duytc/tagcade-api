@@ -1,9 +1,10 @@
 <?php
 
-namespace Tagcade\Cache\DynamicAdSlot\Behavior;
+namespace Tagcade\Cache\V2\Behavior;
 
 
 use Doctrine\Common\Collections\Collection;
+use Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -13,9 +14,8 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
-trait CreateAdSlotDataTrait {
-
-
+trait CreateAdSlotDataTrait
+{
     /**
      * @param ModelInterface $model
      * @return array
@@ -90,6 +90,9 @@ trait CreateAdSlotDataTrait {
             'tags' => []
         ];
 
+        if($adSlot->isAutoFit()) {
+            $data['autoFit'] = true;
+        }
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
         $adTags = $adSlot->getAdTags();
@@ -197,6 +200,14 @@ trait CreateAdSlotDataTrait {
             array_walk($expressions,
                 function(ExpressionInterface $expression ) use (&$data){
                     array_push($data['expressions'], $expression->getExpressionInJs());
+
+                    $expressionDescriptor = $expression->getExpressionDescriptor();
+                    $groupVals = $expressionDescriptor['groupVal'];
+                    if(!is_array($groupVals)) {
+                        return;
+                    }
+
+                    $this->updateServerVars($groupVals, $data);
                 }
             );
 
@@ -210,8 +221,6 @@ trait CreateAdSlotDataTrait {
 
             $adSlotsForSelecting = array_merge($adSlotsForSelecting, $tmpAdSlotsForSelecting);
         }
-
-
 
         $adSlotsForSelecting = array_unique($adSlotsForSelecting);
 
@@ -227,6 +236,25 @@ trait CreateAdSlotDataTrait {
 
         //step 5. return data
         return $data;
+    }
+
+    /**
+     * @param $groupVals
+     * @param $data
+     */
+    protected function updateServerVars(array $groupVals, &$data)
+    {
+        foreach($groupVals as $groupVal) {
+            if(!array_key_exists('groupVal', $groupVal)) {
+                $varName = $groupVal['var'];
+                if (in_array($varName, UpdateExpressionInJsListener::$SERVER_VARS)) {
+                    $data['serverVars'][] = $varName;
+                }
+            }
+            else {
+                $this->updateServerVars($groupVal['groupVal'], $data);
+            }
+        }
     }
 
     protected function createNativeAdSlotCacheData(NativeAdSlotInterface $nativeAdSlot)

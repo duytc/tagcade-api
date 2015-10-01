@@ -3,7 +3,7 @@
 namespace Tagcade\Cache;
 
 
-use Tagcade\Cache\DynamicAdSlot\TagCache;
+use Tagcade\Cache\V2\TagCache;
 use Tagcade\Cache\Legacy\TagCache as LegacyCache;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;

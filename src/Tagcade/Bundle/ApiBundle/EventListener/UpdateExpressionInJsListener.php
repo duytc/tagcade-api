@@ -15,8 +15,16 @@ use Tagcade\Model\Core\LibraryExpressionInterface;
 
 class UpdateExpressionInJsListener {
 
-    static $INTERNAL_VARIABLE_MAP = ['${PAGEURL}'=>'location.href'];
-
+    static $INTERNAL_VARIABLE_MAP = [
+        '${PAGE_URL}'=>'location.href',
+        '${USER_AGENT}'=>'navigator.userAgent',
+        '${SCREEN_WIDTH}'=>'top.screen.width',
+        '${SCREEN_HEIGHT}'=>'top.screen.height',
+        '${WINDOW_WIDTH}'=>'top.outerWidth',
+        '${WINDOW_HEIGHT}'=>'top.outerHeight',
+        '${DOMAIN}'=>'top.location.hostname'
+        ];
+    static $SERVER_VARS = ['${COUNTRY}'];
     protected $updatedExpressions = [];
 
     /**
@@ -235,9 +243,10 @@ class UpdateExpressionInJsListener {
      */
     private function getConditionInJSForMath($var, $cmp, $val)
     {
+        $jsContainer = $this->getJsContainer($var);
         $var = $this->getConvertedVar($var);
 
-        return '(window.' . $var . $cmp . $val . ')';
+        return '(' . $jsContainer. $var . $cmp . $val . ')';
     }
 
     private function getConvertedVar($var)
@@ -251,6 +260,15 @@ class UpdateExpressionInJsListener {
     }
 
     /**
+     * Get js container, either "window." or empty string
+     * @param $var untranslated variable from ui
+     * @return string
+     */
+    private function getJsContainer($var)
+    {
+        return (in_array($var, self::$SERVER_VARS) || array_key_exists($var, self::$INTERNAL_VARIABLE_MAP)) ? '' : 'window.';
+    }
+    /**
      * get condition In JS for MATH. Return condition mapped from UI to Javascript syntax. e.g:
      * + 'b, length >=, 10' => 'b.length >= 10'
      * @param $var
@@ -261,52 +279,58 @@ class UpdateExpressionInJsListener {
     private function getConditionInJSForString($var, $cmp, $val)
     {
         // Convert local variable to js variable
+        $jsContainer = $this->getJsContainer($var);
         $var = $this->getConvertedVar($var);
 
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['cmp'] . $val .
             ')';
         }
 
         // Below functions use regex, hence we have to remove the quotes from json
+        // note: remove quotes and then json_encode to escape js with special chars and then remove quotes again due to json_encode
+        $val = str_replace('"','', $val);
+        // do escape js regex, not just concatenate string like this: (/' . $val . '/i)
+        $val = json_encode($val);
+        // Below functions use regex, hence we have to remove the quotes from json
         $val = str_replace('"','', $val);
 
         if ($cmp === 'contains') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
             ')';
         }
 
         if ($cmp === 'notContains') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
             ')';
         }
 
         if ($cmp === 'startsWith') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
             ')';
         }
 
         if ($cmp === 'notStartsWith') {
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
 
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
         if ($cmp === 'notEndsWith') {
 
-            return '(window.' .
+            return '(' . $jsContainer .
             $var . '.' . LibraryExpressionFormType::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
             ')';
         }

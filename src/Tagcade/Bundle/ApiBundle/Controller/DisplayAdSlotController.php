@@ -11,10 +11,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\Entity\Core\LibraryAdSlotAbstract;
+use Tagcade\Bundle\ApiBundle\Behaviors\UpdateSiteForAdSlotValidator;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -26,6 +27,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
  */
 class DisplayAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use UpdateSiteForAdSlotValidator;
     /**
      *
      * @Rest\View(
@@ -208,13 +210,15 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function patchAction(Request $request, $id)
     {
+        /** @var BaseAdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+        $this->validateSiteWhenUpdatingAdSlot($request, $adSlot);
+
         if(array_key_exists('libraryAdSlot', $request->request->all()))
         {
             if(!is_array($request->request->get('libraryAdSlot'))) {
                 $libraryAdSlotId = (int)$request->request->get('libraryAdSlot');
-                /**
-                 * @var DisplayAdSlotInterface $adSlot
-                 */
+                /** @var DisplayAdSlotInterface $adSlot */
                 $adSlot = $this->getOr404($id);
 
                 $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlotId);
@@ -225,7 +229,6 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
                 $this->checkUserPermission($newLibraryAdSlot);
 
                 if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlotId && $newLibraryAdSlot->isVisible()) {
-
                     // create new ad tags
                     $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
                 }
