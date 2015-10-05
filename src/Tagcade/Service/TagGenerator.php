@@ -167,7 +167,8 @@ class TagGenerator
      */
     public function createDisplayPassbackTag(SiteInterface $site)
     {
-        $tag = sprintf('<script type="text/javascript" src="%s/2.0/%d/passback.js"></script>' . "\n", $this->baseTagUrl, $site->getId());
+        $tag = "<!-- Tagcade Universal Passback -->\n";
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-passback="true"></script>' . "\n", $this->baseTagUrl, $site->getId());
 
         return $tag;
     }
