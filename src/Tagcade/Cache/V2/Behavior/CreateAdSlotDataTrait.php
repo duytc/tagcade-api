@@ -87,6 +87,7 @@ trait CreateAdSlotDataTrait
             'type' => 'display',
             'width' => $adSlot->getWidth(),
             'height' => $adSlot->getHeight(),
+            'passbackMode' => $adSlot->getPassbackMode(),
             'tags' => []
         ];
 

@@ -40,6 +40,17 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
     public function setAutoFit($autoFit);
 
     /**
+     * @return string
+     */
+    public function getPassbackMode();
+
+    /**
+     * @param string $passbackMode
+     * @return self
+     */
+    public function setPassbackMode($passbackMode);
+
+    /**
      * @return PublisherInterface
      */
     public function getPublisher();

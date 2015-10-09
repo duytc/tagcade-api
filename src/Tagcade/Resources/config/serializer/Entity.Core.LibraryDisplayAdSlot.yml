@@ -13,3 +13,6 @@ Tagcade\Entity\Core\LibraryDisplayAdSlot:
         autoFit:
             expose: true
             groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]
+        passbackMode:
+            expose: true
+            groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]

@@ -29,6 +29,12 @@ class LibraryAdSlotFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('width')
             ->add('height')
+            ->add('passbackMode', 'choice' , array(
+                'choices' => array(
+                    'position' => 'Position',
+                    'peerpriority' => 'Peer Priority'
+                )
+            ))
             ->add('autoFit')
             ->add('visible')
             ->add('id')

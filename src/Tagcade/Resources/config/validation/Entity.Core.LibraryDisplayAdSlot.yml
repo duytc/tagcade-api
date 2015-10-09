@@ -14,3 +14,5 @@ Tagcade\Entity\Core\LibraryDisplayAdSlot:
                 message: "The value {{ value }} is not a valid number."
             - GreaterThan:
                 value: 0
+        passbackMode:
+            - NotBlank: ~
