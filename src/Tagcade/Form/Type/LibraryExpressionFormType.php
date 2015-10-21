@@ -318,7 +318,7 @@ class LibraryExpressionFormType extends AbstractRoleSpecificFormType
         switch ($type) {
             case 'string':
                 //validate as escape syntax
-                if (trim($val) != '' && preg_match("/[^a-zA-Z0-9_=&\.!\$\+\*',\(\)\-\/\?\s]/", $val)) {
+                if (trim($val) != '' && preg_match("/[^a-zA-Z0-9_=@&!',:;#\.\$\+\*\(\)\[\]\-\/\?\s]/", $val)) {
                     throw new InvalidFormException('not allow special characters (js injection) in \'' . $val . '\' of condition');
                 }
 
