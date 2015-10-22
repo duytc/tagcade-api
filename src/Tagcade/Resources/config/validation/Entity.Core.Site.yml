@@ -8,9 +8,8 @@ Tagcade\Entity\Core\Site:
         domain:
             - NotBlank: ~
             - Length:
-                min: 2
+                min: 4
                 minMessage: "Domain name must be at least {{ limit }} characters in length"
-            - Url: ~
         publisher:
             - NotBlank: ~
             - Valid: ~
