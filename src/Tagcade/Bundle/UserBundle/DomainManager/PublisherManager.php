@@ -3,14 +3,11 @@
 namespace Tagcade\Bundle\UserBundle\DomainManager;
 
 use FOS\UserBundle\Model\UserInterface;
-use FOS\UserBundle\Model\UserManagerInterface as FOSUserManagerInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
-use Rollerworks\Bundle\MultiUserBundle\Model\DelegatingUserManager;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User as PublisherEntity;
 
 /**
  * Most of the other handlers talk to doctrine directly
@@ -91,6 +88,19 @@ class PublisherManager implements PublisherManagerInterface
 
         return array_values($publishers);
     }
+
+    /**
+     * @return array
+     */
+    public function allActivePublishers()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER) && $user->isEnabled();
+        });
+
+        return array_values($publishers);
+    }
+
 
     /**
      * @inheritdoc

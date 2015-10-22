@@ -39,6 +39,24 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
+     * Get all publisher
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @return \Tagcade\Bundle\UserBundle\Entity\User[]
+     */
+    public function getActivepublishersAction()
+    {
+        return $this->getHandler()->allActivePublishers();
+    }
+
+    /**
      * Get a single publisher for the given id
      *
      * @ApiDoc(

@@ -54,6 +54,10 @@ interface PublisherManagerInterface
      */
     public function allPublishers();
 
+    /**
+     * @return array
+     */
+    public function allActivePublishers();
 
     /**
      * @param int $id

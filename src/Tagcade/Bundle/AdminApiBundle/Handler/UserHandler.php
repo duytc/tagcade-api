@@ -32,4 +32,9 @@ class UserHandler extends HandlerAbstract implements UserHandlerInterface
     {
         return $this->getDomainManager()->allPublishers();
     }
+
+    public function allActivePublishers()
+    {
+        return $this->getDomainManager()->allActivePublishers();
+    }
 }

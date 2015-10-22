@@ -10,4 +10,6 @@ interface UserHandlerInterface extends HandlerInterface
      * @return array
      */
     public function allPublishers();
+
+    public function allActivePublishers();
 }
