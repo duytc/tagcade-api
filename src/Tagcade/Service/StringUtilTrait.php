@@ -4,7 +4,7 @@
 namespace Tagcade\Service;
 
 
-trait StringUtil
+trait StringUtilTrait
 {
     /**
      * Check if the given string is a valid domain

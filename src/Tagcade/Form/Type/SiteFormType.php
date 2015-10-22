@@ -9,18 +9,16 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
-use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\StringUtil;
+use Tagcade\Service\StringUtilTrait;
 
 class SiteFormType extends AbstractRoleSpecificFormType
 {
-    use StringUtil;
+    use StringUtilTrait;
 
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
 
