@@ -35,19 +35,8 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $publisherManager = $this->getContainer()->get('tagcade_admin_api.handler.user');
+        $count = $this->getContainer()->get('tagcade_app.service.core.publisher.publisher_service')->GenerateAndAssignUuid();
 
-        $allPublisher = $publisherManager->allPublishers();
-
-        /**
-         * @var PublisherInterface $publisher
-         */
-        foreach($allPublisher as $publisher) {
-            if ($publisher->getUuid() === null) {
-                $publisher->generateAndAssignUuid();
-            }
-        }
-
-        $output->writeln('OK');
+        $output->writeln(sprintf('%d publisher(s) get updated !', $count));
     }
 }

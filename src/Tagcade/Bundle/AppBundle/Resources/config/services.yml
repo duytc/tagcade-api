@@ -61,3 +61,9 @@ services:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService
         arguments:
             - @doctrine.orm.default_entity_manager
+
+    tagcade_app.service.core.publisher.publisher_service:
+        class: Tagcade\Service\Core\Publisher\PublisherService
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @tagcade_user.domain_manager.publisher
