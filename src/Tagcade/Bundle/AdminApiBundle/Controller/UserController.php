@@ -22,7 +22,8 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 {
     /**
      * Get all publisher
-     *
+     * @Rest\Get("/users")
+     * @Rest\QueryParam(name="all", requirements="(true|false)", nullable=true)
      * @ApiDoc(
      *  section = "admin",
      *  resource = true,
@@ -35,25 +36,14 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      */
     public function cgetAction()
     {
-        return $this->getHandler()->allPublishers();
-    }
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $all = $paramFetcher->get('all');
 
-    /**
-     * Get all publisher
-     *
-     * @ApiDoc(
-     *  section = "admin",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @return \Tagcade\Bundle\UserBundle\Entity\User[]
-     */
-    public function getActivepublishersAction()
-    {
-        return $this->getHandler()->allActivePublishers();
+        if ($all === null || !filter_var($all, FILTER_VALIDATE_BOOLEAN)) {
+            return $this->getHandler()->allActivePublishers();
+        }
+
+        return $this->getHandler()->allPublishers();
     }
 
     /**
