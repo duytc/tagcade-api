@@ -83,6 +83,10 @@ class UserFormType extends AbstractRoleSpecificFormType
                     $user = $event->getData();
                     $form = $event->getForm();
 
+                    if ($user->getId() === null) {
+                        $user->generateAndAssignUuid();
+                    }
+
                     $modules = $form->get('enabledModules')->getData();
 
                     if (null !== $modules && is_array($modules)) {

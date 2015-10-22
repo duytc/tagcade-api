@@ -3,6 +3,9 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
     table: core_user_publisher
 
     fields:
+        uuid:
+            type: string
+            nullable: true
         firstName:
             type: string
             nullable: true

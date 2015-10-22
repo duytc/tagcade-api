@@ -5,11 +5,14 @@ namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Service\StringUtilTrait;
 
 class User extends BaseUser implements PublisherInterface
 {
-    protected $id;
+    use StringUtilTrait;
 
+    protected $id;
+    protected $uuid;
     protected $billingRate;
 
     protected $firstName;
@@ -22,6 +25,38 @@ class User extends BaseUser implements PublisherInterface
     protected $postalCode;
     protected $country;
     protected $settings; //json string represent setting for report bundle
+
+    /**
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     * @return self
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function generateAndAssignUuid()
+    {
+        if ($this->uuid === null || empty($this->uuid)) {
+            $this->uuid = $this->generateUuid($this);
+        }
+
+        return $this;
+    }
+
+
     /**
      * @inheritdoc
      */

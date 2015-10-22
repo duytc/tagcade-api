@@ -5,6 +5,21 @@ namespace Tagcade\Model\User\Role;
 interface PublisherInterface extends UserRoleInterface
 {
     /**
+     * @return string
+     */
+    public function getUuid();
+
+    /**
+     * @param string $uuid
+     * @return self
+     */
+    public function setUuid($uuid);
+
+    /**
+     * @return self
+     */
+    public function generateAndAssignUuid();
+    /**
      * @return float
      */
     public function getBillingRate();
