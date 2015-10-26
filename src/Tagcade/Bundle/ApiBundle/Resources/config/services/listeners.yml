@@ -39,3 +39,10 @@ services:
         tags:
             - { name: doctrine.event_listener, event: preUpdate, priority: 100 }
             - { name: doctrine.event_listener, event: postSoftDelete }
+
+    tagcade_api.event_listener.UpdateAdTagCountForAdNetworkListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagCountForAdNetworkListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preSoftDelete }
+            - { name: doctrine.event_listener, event: onFlush }

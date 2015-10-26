@@ -1,14 +1,5 @@
 Tagcade\Entity\Core\AdNetwork:
     exclusion_policy: ALL
-    virtual_properties:
-        getActiveAdTagsCount:
-            serialized_name: activeTags
-            type: integer
-            groups: [adnetwork.extra]
-        getPausedAdTagsCount:
-            serialized_name: pausedTags
-            type: integer
-            groups: [adnetwork.extra]
     properties:
         id:
             expose: true
@@ -23,5 +14,11 @@ Tagcade\Entity\Core\AdNetwork:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail]
         defaultCpmRate:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail]
+        activeAdTagsCount:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail]
+        pausedAdTagsCount:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail]

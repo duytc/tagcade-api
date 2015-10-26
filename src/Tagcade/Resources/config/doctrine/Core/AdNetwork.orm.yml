@@ -18,6 +18,14 @@ Tagcade\Entity\Core\AdNetwork:
             type: decimal
             scale: 4
             nullable: true
+        activeAdTagsCount:
+            type: integer
+            options:
+                default: 0
+        pausedAdTagsCount:
+            type: integer
+            options:
+                default: 0
 
     manyToOne:
         publisher:

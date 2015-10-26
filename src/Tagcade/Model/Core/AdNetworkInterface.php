@@ -2,10 +2,9 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 interface AdNetworkInterface extends ModelInterface
 {
@@ -63,7 +62,49 @@ interface AdNetworkInterface extends ModelInterface
      */
     public function getAdTags();
 
+    /**
+     * get number of active ad tags
+     * @return int
+     */
     public function getActiveAdTagsCount();
 
+    /**
+     * set number of active ad tags
+     * @param int $activeAdTagsCount
+     * @return self
+     */
+    public function setActiveAdTagsCount($activeAdTagsCount);
+
+    /**
+     * @return self
+     */
+    public function increaseActiveAdTagsCount();
+
+    /**
+     * @return self
+     */
+    public function decreaseActiveAdTagsCount();
+
+    /**
+     * get number of paused ad tags
+     * @return int
+     */
     public function getPausedAdTagsCount();
+
+    /**
+     * set number of paused ad tags
+     * @param int $pausedAdTagsCount
+     * @return self
+     */
+    public function setPausedAdTagsCount($pausedAdTagsCount);
+
+    /**
+     * @return self
+     */
+    public function increasePausedAdTagsCount();
+
+    /**
+     * @return self
+     */
+    public function decreasePausedAdTagsCount();
 }
