@@ -25,6 +25,7 @@ class User extends BaseUser implements PublisherInterface
     protected $postalCode;
     protected $country;
     protected $settings; //json string represent setting for report bundle
+    protected $tagDomain;
 
     /**
      * @return string
@@ -240,5 +241,24 @@ class User extends BaseUser implements PublisherInterface
     public function setSettings($settings)
     {
         $this->settings = $settings;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTagDomain()
+    {
+        return $this->tagDomain;
+    }
+
+    /**
+     * @param string $tagDomain
+     * @return self
+     *
+     */
+    public function setTagDomain($tagDomain)
+    {
+        $this->tagDomain = $tagDomain;
+        return $this;
     }
 }

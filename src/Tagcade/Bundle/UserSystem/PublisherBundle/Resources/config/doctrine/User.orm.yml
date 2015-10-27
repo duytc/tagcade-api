@@ -40,3 +40,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         settings:
             type: json_array
             nullable: true
+        tagDomain:
+            type: string
+            nullable: true

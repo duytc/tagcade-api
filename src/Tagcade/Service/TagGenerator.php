@@ -8,6 +8,7 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class TagGenerator
 {
@@ -86,7 +87,7 @@ class TagGenerator
      */
     public function createHeaderTag(SiteInterface $site)
     {
-        $tag = sprintf('<script type="text/javascript" src="%s/2.0/%d/tagcade.js"></script>' . "\n", $this->baseTagUrl, $site->getId());
+        $tag = sprintf('<script type="text/javascript" src="%s/2.0/%d/tagcade.js"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId());
 
         return $tag;
     }
@@ -120,9 +121,9 @@ class TagGenerator
     public function createDisplayAdTagForAdSlot(DisplayAdSlotInterface $adSlot)
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
-
-        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $adSlot->getSite()->getDomain());
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-size="%dx%d"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight());
+        $site = $adSlot->getSite();
+        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-size="%dx%d"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight());
 
         return $tag;
     }
@@ -134,14 +135,14 @@ class TagGenerator
     public function createDisplayAdTagForDynamicAdSlot(DynamicAdSlotInterface $adSlot)
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
-
-        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $adSlot->getSite()->getDomain());
+        $site = $adSlot->getSite();
+        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
 
         if ($adSlot->isSupportedNative()) {
-            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId(), $adSlot->getId());
+            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
         }
         else {
-            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"></script>' . "\n", $this->baseTagUrl, $adSlot->getSite()->getId(), $adSlot->getId());
+            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
         }
 
         return $tag;
@@ -154,9 +155,9 @@ class TagGenerator
     public function createDisplayAdTagForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot)
     {
         $adSlotName = htmlspecialchars($nativeAdSlot->getName(), ENT_QUOTES);
-
-        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $nativeAdSlot->getSite()->getDomain());
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->baseTagUrl, $nativeAdSlot->getSite()->getId(), $nativeAdSlot->getId());
+        $site = $nativeAdSlot->getSite();
+        $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId());
 
         return $tag;
     }
@@ -168,8 +169,18 @@ class TagGenerator
     public function createDisplayPassbackTag(SiteInterface $site)
     {
         $tag = "<!-- Tagcade Universal Passback -->\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-passback="true"></script>' . "\n", $this->baseTagUrl, $site->getId());
+        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-passback="true"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId());
 
         return $tag;
+    }
+
+    protected function getBaseTagUrlForPublisher(PublisherInterface $publisher)
+    {
+        $tagDomain = $publisher->getTagDomain();
+        if ($tagDomain === null || strlen($tagDomain) < 1) {
+            return $this->baseTagUrl;
+        }
+
+        return $tagDomain;
     }
 } 

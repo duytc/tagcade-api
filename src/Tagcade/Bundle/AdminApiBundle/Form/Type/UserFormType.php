@@ -6,16 +6,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
+use Tagcade\Service\StringUtilTrait;
 
 class UserFormType extends AbstractRoleSpecificFormType
 {
+    use StringUtilTrait;
     static $REPORT_SETTINGS_ADTAG_KEY_VALUES = [
         'totalOpportunities',
         'firstOpportunities',
@@ -32,9 +33,6 @@ class UserFormType extends AbstractRoleSpecificFormType
     const VIDEO_MODULE = 'MODULE_VIDEO_ANALYTICS';
     const VIDEO_PLAYERS = 'players';
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
-
-//    private $userRole;
-
     private $oldSettings;
 
     public function __construct(UserEntityInterface $userRole)
@@ -58,6 +56,7 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('postalCode')
             ->add('country')
             ->add('settings')
+            ->add('tagDomain')
         ;
 
         if($this->userRole instanceof AdminInterface){
@@ -74,26 +73,7 @@ class UserFormType extends AbstractRoleSpecificFormType
                         'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
                     ],
                 ])
-                ->add('billingRate')
-
-                ->addEventListener(
-                FormEvents::POST_SUBMIT,
-                function (FormEvent $event) {
-                    /** @var UserEntityInterface $user */
-                    $user = $event->getData();
-                    $form = $event->getForm();
-
-                    if ($user->getId() === null) {
-                        $user->generateAndAssignUuid();
-                    }
-
-                    $modules = $form->get('enabledModules')->getData();
-
-                    if (null !== $modules && is_array($modules)) {
-                        $user->setEnabledModules($modules);
-                    }
-                }
-            );
+                ->add('billingRate');
         }
 
         //validate 'settings' field submitted by publisher
@@ -107,11 +87,33 @@ class UserFormType extends AbstractRoleSpecificFormType
                     $publisher = $form->getData();
                     $this->oldSettings = $publisher->getSettings();
                 });
+        }
 
-            $builder->addEventListener(
-                FormEvents::POST_SUBMIT,
-                function(FormEvent $event) {
-                    $form = $event->getForm();
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function(FormEvent $event) {
+                /** @var UserEntityInterface $publisher */
+                $publisher = $event->getData();
+                $form = $event->getForm();
+                //validate tag domain if there's
+                $tagDomain = $publisher->getTagDomain();
+                if ($tagDomain !== null && !$this->validateDomain($tagDomain)) {
+                    $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain)));
+                    return;
+                }
+
+                if ($this->userRole instanceof AdminInterface) {
+                    if ($publisher->getId() === null) {
+                        $publisher->generateAndAssignUuid();
+                    }
+
+                    $modules = $form->get('enabledModules')->getData();
+
+                    if (null !== $modules && is_array($modules)) {
+                        $publisher->setEnabledModules($modules);
+                    }
+                }
+                else if ($this->userRole instanceof PublisherInterface) {
                     /** @var PublisherInterface $publisher */
                     $publisher = $form->getData();
                     //this settings is only patched settings
@@ -170,8 +172,8 @@ class UserFormType extends AbstractRoleSpecificFormType
                         $publisher->setSettings($this->oldSettings);
                     }
                 }
-            );
-        }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
