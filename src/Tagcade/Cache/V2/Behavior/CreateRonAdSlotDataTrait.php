@@ -317,16 +317,13 @@ trait CreateRonAdSlotDataTrait {
             //step 2. get all AdSlots related to DynamicAdSlot and Expressions
             ////adSlots from expressionInJS of Expressions
             $tmpAdSlotsForSelecting = array_map(function (LibraryExpressionInterface $libraryExpression) {
-                    $ronAdSlot = $libraryExpression->getExpectLibraryAdSlot()->getRonAdSlot();
-                    if (!$ronAdSlot instanceof RonAdSlotInterface) {
-                        throw new LogicException('expect an RonAdSlotInterface object');
-                    }
-
-                    return $ronAdSlot;
+                    return $libraryExpression->getExpectLibraryAdSlot()->getRonAdSlot();
                 },
                 $libraryExpressions
             );
-
+            $tmpAdSlotsForSelecting = array_filter($tmpAdSlotsForSelecting, function($ronAdSlot) {
+                return $ronAdSlot instanceof RonAdSlotInterface;
+            });
             $ronAdSlotsForSelecting = array_merge($ronAdSlotsForSelecting, $tmpAdSlotsForSelecting);
         }
 

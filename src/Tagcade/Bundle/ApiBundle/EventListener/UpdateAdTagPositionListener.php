@@ -9,12 +9,14 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\PositionInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 
 /**
  *
@@ -51,7 +53,7 @@ class UpdateAdTagPositionListener
         $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions(), $preSoftDeleteAdTags);
 
         foreach ($entities as $entity) {
-            if (!$entity instanceof PositionInterface || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
+            if (!$entity instanceof PositionInterface) {
                 continue;
             }
 
@@ -69,7 +71,7 @@ class UpdateAdTagPositionListener
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof PositionInterface || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
+        if(!$entity instanceof PositionInterface) {
             return;
         }
 
@@ -86,13 +88,9 @@ class UpdateAdTagPositionListener
     {
         $adSlot = $updatingAdTag->getContainer();
 
-        if($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof LibraryDisplayAdSlotInterface)
+        if($adSlot instanceof ReportableAdSlotInterface || $adSlot instanceof BaseLibraryAdSlotInterface)
         {
             return $this->updatePositionForAdSlot($updatingAdTag);
-        }
-
-        if ($adSlot instanceof NativeAdSlotInterface || $adSlot instanceof LibraryNativeAdSlotInterface) {
-            return [];
         }
 
         throw new LogicException('not support tag of something other than ReportableAdSlotInterface or BaseLibraryAdSlotInterface');
