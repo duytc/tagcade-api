@@ -1,0 +1,72 @@
+parameters:
+    # entity class
+    tagcade.entity.core.native_ad_slot.class: Tagcade\Entity\Core\NativeAdSlot
+    # form class
+    tagcade.form.type.native_ad_slot.class: Tagcade\Form\Type\NativeAdSlotFormType
+
+services:
+
+    # native ad slot ######################################################
+
+    tagcade_api.handler.native_ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.native_ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for native ad slot handler #######
+
+    tagcade.repository.native_ad_slot:
+        class: Tagcade\Repository\Core\NativeAdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\NativeAdSlot
+
+    tagcade.domain_manager.native_ad_slot:
+        class: Tagcade\DomainManager\NativeAdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.native_ad_slot
+            - @tagcade.repository.ad_slot
+            - @tagcade.repository.library_slot_tag
+        calls:
+            - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
+
+    tagcade.form.type.native_ad_slot:
+        class: %tagcade.form.type.native_ad_slot.class%
+        arguments:
+            - @tagcade.repository.native_ad_slot
+            - @tagcade.repository.site
+        tags:
+            - { name: form.type, alias: tagcade_form_native_ad_slot }
+
+    tagcade.handler.handlers.native_ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\NativeAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.native_ad_slot
+            - @tagcade.domain_manager.native_ad_slot
+
+    tagcade.handler.handlers.native_ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\NativeAdSlotHandler
+        parent: tagcade.handler.handlers.native_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.native_ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\NativeAdSlotHandler
+        parent: tagcade.handler.handlers.native_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.native_ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.native_ad_slot.class%
+            -
+                - @tagcade.handler.handlers.native_ad_slot.admin
+                - @tagcade.handler.handlers.native_ad_slot.publisher
+
+    # end native ad slot #####################################################

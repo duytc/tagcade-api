@@ -10,6 +10,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 
 class TagCacheManager implements TagCacheManagerInterface {
 
@@ -91,6 +92,21 @@ class TagCacheManager implements TagCacheManagerInterface {
              * @var TagCache $tagCache
              */
             $tagCache->refreshCacheForNativeAdSlot($nativeAdSlot);
+        }
+    }
+
+    public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = true)
+    {
+        /**
+         * @var TagCache[]
+         */
+        $refreshTagCaches = $this->getTagCachesForVersion(self::VERSION_2);
+
+        foreach ($refreshTagCaches as $tagCache) {
+            /**
+             * @var TagCache $tagCache
+             */
+            $tagCache->refreshCacheForRonAdSlot($ronAdSlot);
         }
     }
 

@@ -1,0 +1,67 @@
+Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdTagReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Segment\RonAdTagReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_segment_ron_ad_tag
+    uniqueConstraints:
+        unique_platform_adtag_report_idx:
+            columns: [date, ron_ad_tag_id, super_report_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+        position:
+            type: integer
+            nullable: true
+        totalOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+            nullable: true
+        fillRate:
+            type: decimal
+            scale: 4
+        relativeFillRate:
+            type: decimal
+            scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+        firstOpportunities:
+            type: integer
+        verifiedImpressions:
+            type: integer
+        unverifiedImpressions:
+            type: integer
+            nullable: true
+        blankImpressions:
+            type: integer
+            nullable: true
+        voidImpressions:
+            type: integer
+            nullable: true
+        clicks:
+            type: integer
+            nullable: true
+    manyToOne:
+        ronAdTag:
+            targetEntity: Tagcade\Entity\Core\LibrarySlotTag
+        superReport:
+            targetEntity: RonAdSlotReport
+            inversedBy: subReports
+        segment:
+            targetEntity: Tagcade\Entity\Core\Segment

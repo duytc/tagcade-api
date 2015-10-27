@@ -4,8 +4,6 @@ namespace Tagcade\Repository\Core;
 
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryAdSlotRepositoryInterface extends ObjectRepository {

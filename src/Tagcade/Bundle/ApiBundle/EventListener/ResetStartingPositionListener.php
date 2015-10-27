@@ -25,7 +25,7 @@ class ResetStartingPositionListener
     public function postSoftDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof PositionInterface) {
+        if(!$entity instanceof PositionInterface || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
             return;
         }
 
@@ -55,7 +55,7 @@ class ResetStartingPositionListener
             return;
         }
 
-        if(!$entity instanceof PositionInterface || ($entity instanceof PositionInterface && !$args->hasChangedField('position'))) {
+        if(!$entity instanceof PositionInterface || ($entity instanceof PositionInterface && !$args->hasChangedField('position')) || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
             return;
         }
 

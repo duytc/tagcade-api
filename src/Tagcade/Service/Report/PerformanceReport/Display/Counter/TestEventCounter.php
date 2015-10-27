@@ -2,10 +2,13 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
-use DateTime;
 
-use Doctrine\Common\Cache\Cache;
-use Tagcade\Model\Core\AdSlot;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\Core\SegmentInterface;
 
 /**
  * This counter is only used for testing
@@ -27,9 +30,13 @@ class TestEventCounter extends AbstractEventCounter
     protected $adSlots;
     protected $adSlotData = [];
     protected $adTagData = [];
+    protected $ronAdSlotData = [];
+    protected $ronAdSlotSegmentData = [];
+    protected $ronAdTagData = [];
+    protected $ronAdTagSegmentData = [];
 
     /**
-     * @param AdSlot[] $adSlots
+     * @param ReportableAdSlotInterface[] $adSlots
      */
     public function __construct(array $adSlots)
     {
@@ -40,6 +47,10 @@ class TestEventCounter extends AbstractEventCounter
     {
         $this->adSlotData = [];
         $this->adTagData = [];
+        $this->ronAdSlotData = [];
+        $this->ronAdSlotSegmentData = [];
+        $this->ronAdTagData = [];
+        $this->ronAdTagSegmentData = [];
 
         foreach($this->adSlots as $adSlot) {
             $this->seedRandomGenerator();
@@ -50,6 +61,29 @@ class TestEventCounter extends AbstractEventCounter
             $this->adSlotData[$adSlot->getId()] = [
                 static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
             ];
+
+            $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
+            if ($ronAdSlot instanceof RonAdSlotInterface) {
+                $currentData = array_key_exists($ronAdSlot->getId(), $this->ronAdSlotData) ? $this->ronAdSlotData[$ronAdSlot->getId()] : null;
+
+                $this->ronAdSlotData[$ronAdSlot->getId()] = $this->arraySum([
+                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
+                ], $currentData);
+
+                $totalRonSlotOpportunities = $this->ronAdSlotData[$ronAdSlot->getId()][static::KEY_SLOT_OPPORTUNITY];
+                $segmentCount = count($ronAdSlot->getSegments());
+                $slotSegments = $this->distributeValueToArray($totalRonSlotOpportunities, $segmentCount);
+                $i = 0;
+                foreach ($ronAdSlot->getSegments() as $segment) {
+                    /**
+                     * @var SegmentInterface $segment
+                     */
+                    $this->ronAdSlotSegmentData[$ronAdSlot->getId()][$segment->getId()] =  [
+                        static::KEY_SLOT_OPPORTUNITY => $slotSegments[$i],
+                    ];
+                    $i ++;
+                }
+            }
 
             foreach($adSlot->getAdTags() as $adTag) {
                 /** @var \Tagcade\Entity\Core\AdTag $adTag */
@@ -85,8 +119,110 @@ class TestEventCounter extends AbstractEventCounter
                 ];
 
                 $opportunitiesRemaining = $passbacks;
+
+                $libSlotTags = $adTag->getLibraryAdTag()->getLibSlotTags();
+                foreach ($libSlotTags as $slotTag) {
+                    /**
+                     * @var LibrarySlotTagInterface $slotTag
+                     */
+
+                    $ronSlot = $slotTag->getLibraryAdSlot()->getRonAdSlot();
+                    if ($ronSlot instanceof RonAdSlotInterface) {
+                        $currentData = array_key_exists($slotTag->getId(), $this->ronAdTagData) ? $this->ronAdTagData[$slotTag->getId()] : null;
+
+                        $this->ronAdTagData[$slotTag->getId()] = $this->arraySum([
+                            static::KEY_OPPORTUNITY => $opportunities,
+                            static::KEY_IMPRESSION => $impressions,
+                            static::KEY_PASSBACK => $passbacks,
+                            static::KEY_FIRST_OPPORTUNITY => $firstOpportunities,
+                            static::KEY_VERIFIED_IMPRESSION => $verifiedImpressions,
+                            static::KEY_UNVERIFIED_IMPRESSION => $unverifiedImpressions,
+                            static::KEY_BLANK_IMPRESSION => $blankImpressions,
+                            static::KEY_VOID_IMPRESSION => $voidImpressions,
+                            static::KEY_CLICK => $clicks,
+                        ], $currentData);
+
+                        // distribute events to different segments
+                        $segmentCount = count($ronSlot->getSegments());
+                        $tmpOppArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_OPPORTUNITY], $segmentCount);
+                        $tmpImpArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_IMPRESSION], $segmentCount);
+                        $tmpPassbackArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_PASSBACK], $segmentCount);
+                        $tmpFirstOppArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_FIRST_OPPORTUNITY], $segmentCount);
+                        $tmpVerImpArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_VERIFIED_IMPRESSION], $segmentCount);
+                        $tmpUnverImpArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_UNVERIFIED_IMPRESSION], $segmentCount);
+                        $tmpBlankImpArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_BLANK_IMPRESSION], $segmentCount);
+                        $tmpVoidImpArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_VOID_IMPRESSION], $segmentCount);
+                        $tmpClickArrVal = $this->distributeValueToArray($this->ronAdTagData[$slotTag->getId()][static::KEY_CLICK], $segmentCount);
+
+                        $i = 0;
+                        foreach ($ronSlot->getSegments() as $segment) {
+                            /**
+                             * @var SegmentInterface $segment
+                             */
+                            $this->ronAdTagSegmentData[$slotTag->getId()][$segment->getId()] =  [
+                                static::KEY_SLOT_OPPORTUNITY => $tmpOppArrVal[$i],
+                                static::KEY_IMPRESSION => $tmpImpArrVal[$i],
+                                static::KEY_PASSBACK => $tmpPassbackArrVal[$i],
+                                static::KEY_FIRST_OPPORTUNITY => $tmpFirstOppArrVal[$i],
+                                static::KEY_VERIFIED_IMPRESSION => $tmpVerImpArrVal[$i],
+                                static::KEY_UNVERIFIED_IMPRESSION => $tmpUnverImpArrVal[$i],
+                                static::KEY_BLANK_IMPRESSION => $tmpBlankImpArrVal[$i],
+                                static::KEY_VOID_IMPRESSION => $tmpVoidImpArrVal[$i],
+                                static::KEY_CLICK => $tmpClickArrVal[$i],
+                            ];
+                            $i ++;
+                        }
+
+                    }
+                }
             }
         }
+    }
+
+    private function arraySum(array $array1, array $array2 = null) {
+        if (null === $array2) {
+            return $array1;
+        }
+
+        $arrayFinal = array();
+        foreach ($array1 as $key => $val) {
+            if (!array_key_exists($key, $array2)) {
+                throw new RuntimeException(sprintf('expect key "%s" in both array', $key));
+            }
+
+            $arrayFinal[$key] = $array1[$key] + $array2[$key];
+        }
+
+        return $arrayFinal;
+    }
+
+    /**
+     * @param $value
+     * @param $arraySize
+     * @return array that has size = $arraySize
+     */
+    private function distributeValueToArray($value, $arraySize) {
+
+        if (!is_int($arraySize) || $arraySize < 0) {
+            throw new InvalidArgumentException('expect a positive array size');
+        }
+
+        if ($arraySize < 2) {
+            return array($value);
+        }
+
+        $maxEachItem = floor(100 / $arraySize);
+
+        $result = [];
+        for($i = 0; $i < $arraySize - 1; $i ++) {
+            $tmpVal = mt_rand(0, $maxEachItem);
+            $result[] = round($tmpVal * $value / 100);
+        }
+
+        $currentTotal = array_sum($result);
+        $result[] = $value - $currentTotal;
+
+        return $result;
     }
 
     public function getAdSlotData()
@@ -97,6 +233,38 @@ class TestEventCounter extends AbstractEventCounter
     public function getAdTagData()
     {
         return $this->adTagData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRonAdSlotData()
+    {
+        return $this->ronAdSlotData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRonAdTagData()
+    {
+        return $this->ronAdTagData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRonAdSlotSegmentData()
+    {
+        return $this->ronAdSlotSegmentData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRonAdTagSegmentData()
+    {
+        return $this->ronAdTagSegmentData;
     }
 
     /**
@@ -225,6 +393,186 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adTagData[$tagId][static::KEY_CLICK];
     }
 
+    /**
+     * @param int $ronSlotId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonSlotOpportunityCount($ronSlotId, $segment = null)
+    {
+        if (!isset($this->ronAdSlotData[$ronSlotId][static::KEY_SLOT_OPPORTUNITY])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_SLOT_OPPORTUNITY] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_SLOT_OPPORTUNITY] : $this->ronAdSlotData[$ronSlotId][static::KEY_SLOT_OPPORTUNITY];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonOpportunityCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_OPPORTUNITY])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_OPPORTUNITY] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_OPPORTUNITY] : $this->ronAdTagData[$ronTagId][static::KEY_OPPORTUNITY];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonImpressionCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_IMPRESSION])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_IMPRESSION] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_IMPRESSION] : $this->ronAdTagData[$ronTagId][static::KEY_IMPRESSION];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonPassbackCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_PASSBACK])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_PASSBACK] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_PASSBACK] : $this->ronAdTagData[$ronTagId][static::KEY_PASSBACK];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonFirstOpportunityCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_FIRST_OPPORTUNITY])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_FIRST_OPPORTUNITY] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_FIRST_OPPORTUNITY] : $this->ronAdTagData[$ronTagId][static::KEY_FIRST_OPPORTUNITY];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonVerifiedImpressionCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_VERIFIED_IMPRESSION])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_VERIFIED_IMPRESSION] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_VERIFIED_IMPRESSION] : $this->ronAdTagData[$ronTagId][static::KEY_VERIFIED_IMPRESSION];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonUnverifiedImpressionCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_UNVERIFIED_IMPRESSION])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_UNVERIFIED_IMPRESSION] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_UNVERIFIED_IMPRESSION] : $this->ronAdTagData[$ronTagId][static::KEY_UNVERIFIED_IMPRESSION];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonBlankImpressionCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_BLANK_IMPRESSION])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_BLANK_IMPRESSION] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_BLANK_IMPRESSION] : $this->ronAdTagData[$ronTagId][static::KEY_BLANK_IMPRESSION];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonVoidImpressionCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_VOID_IMPRESSION])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_VOID_IMPRESSION] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_VOID_IMPRESSION] : $this->ronAdTagData[$ronTagId][static::KEY_VOID_IMPRESSION];
+    }
+
+    /**
+     * @param int $ronTagId
+     * @param int|null $segment
+     * @return mixed
+     */
+    public function getRonClickCount($ronTagId, $segment = null)
+    {
+        if (!isset($this->ronAdTagData[$ronTagId][static::KEY_CLICK])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_CLICK] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdTagSegmentData[$ronTagId][$segment][static::KEY_CLICK] : $this->ronAdTagData[$ronTagId][static::KEY_CLICK];
+    }
+
 
     protected function seedRandomGenerator()
     {
@@ -233,4 +581,5 @@ class TestEventCounter extends AbstractEventCounter
 
         mt_srand($seed);
     }
+
 }

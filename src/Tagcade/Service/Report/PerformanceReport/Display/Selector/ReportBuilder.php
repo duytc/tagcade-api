@@ -11,8 +11,11 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment as SegmentReportTypes;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -244,6 +247,12 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new PlatformReportTypes\AdSlot($adSlot), $params);
     }
 
+
+    public function getRonAdSlotReport(RonAdSlotInterface $adSlot, Params $params)
+    {
+        return $this->getReports(new SegmentReportTypes\RonAdSlot($adSlot), $params);
+    }
+
     public function getAdSlotAdTagsReport(ReportableAdSlotInterface $adSlot, Params $params)
     {
         $adSlotReport = $this->getAdSlotReport($adSlot, $params);
@@ -266,6 +275,106 @@ class ReportBuilder implements ReportBuilderInterface
 
         return new ExpandedReportCollection($adTagReports, $adSlotReport);
     }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotSegmentsReport(RonAdSlotInterface $ronAdSlot, Params $params)
+    {
+        $segments = $ronAdSlot->getSegments();
+
+        $reportTypes = array_map(function($segment) use ($ronAdSlot){
+            return new SegmentReportTypes\RonAdSlot($ronAdSlot, $segment);
+        }, $segments);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotSitesReport(RonAdSlotInterface $ronAdSlot, Params $params)
+    {
+        $ronAdSlotReport = $this->getRonAdSlotReport($ronAdSlot, $params);
+
+        if (!$ronAdSlotReport) {
+            return false;
+        }
+
+        $adSlots = $this->adSlotManager->getAdSlotsForRonAdSlot($ronAdSlot);
+
+        $reportTypes = array_map(function($adSlot) {
+            return new PlatformReportTypes\AdSlot($adSlot);
+        }, $adSlots);
+
+        $adSlotReports =  $this->getReports($reportTypes, $params);
+
+        if (!$adSlotReports) {
+            return false;
+        }
+
+        return new ExpandedReportCollection($adSlotReports, $ronAdSlotReport);
+    }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotAdTagsReport(RonAdSlotInterface $ronAdSlot, Params $params)
+    {
+        $ronAdSlotReport = $this->getRonAdSlotReport($ronAdSlot, $params);
+
+        if (!$ronAdSlotReport) {
+            return false;
+        }
+
+        $ronAdTags = $ronAdSlot->getRonAdTags();
+
+        $reportTypes = array_map(function($ronAdTag) {
+            return new SegmentReportTypes\RonAdTag($ronAdTag);
+        }, $ronAdTags);
+
+        $ronAdTagReports = $this->getReports($reportTypes, $params);
+
+        if (!$ronAdTagReports) {
+            return false;
+        }
+
+        return new ExpandedReportCollection($ronAdTagReports, $ronAdSlotReport);
+    }
+
+    /**
+     * @param SegmentInterface $segment
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getSegmentReport(SegmentInterface $segment, Params $params)
+    {
+        return $this->getReports(new SegmentReportTypes\Segment($segment), $params);
+    }
+
+    /**
+     * @param SegmentInterface $segment
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getSegmentRonAdSlotsReport(SegmentInterface $segment, Params $params)
+    {
+        $ronAdSlots = $segment->getRonAdSlots();
+
+        $reportTypes = array_map(function($ronAdSlot) {
+            return new SegmentReportTypes\RonAdSlot($ronAdSlot);
+        }, $ronAdSlots);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
 
     public function getAdTagReport(AdTagInterface $adTag, Params $params)
     {

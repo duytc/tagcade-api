@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\AppBundle\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
@@ -35,7 +36,22 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $count = $this->getContainer()->get('tagcade_app.service.core.publisher.publisher_service')->GenerateAndAssignUuid();
+        /**
+         * @var PublisherManagerInterface $publisherManager
+         */
+        $publisherManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
+        $count = 0;
+        $allPublisher = $publisherManager->allPublishers();
+        /**
+         * @var PublisherInterface $publisher
+         */
+        foreach($allPublisher as $publisher) {
+            if ($publisher->getUuid() === null) {
+                $count++;
+                $publisher->setUuid($publisherManager->generateUuid($publisher));
+                $publisherManager->save($publisher);
+            }
+        }
 
         $output->writeln(sprintf('%d publisher(s) get updated !', $count));
     }

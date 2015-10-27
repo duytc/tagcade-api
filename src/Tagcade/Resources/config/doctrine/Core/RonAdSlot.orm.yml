@@ -1,0 +1,45 @@
+Tagcade\Entity\Core\RonAdSlot:
+    type: entity
+    table: ron_ad_slot
+    repositoryClass: Tagcade\Repository\Core\RonAdSlotRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+        updatedAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: update
+        deletedAt:
+            type: date
+            nullable: true
+    oneToOne:
+        libraryAdSlot:
+            targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract
+            inversedBy: ronAdSlot
+            joinColumn:
+                name: library_ad_slot_id
+                referencedColumnName: id
+                nullable: false
+            cascade: ['remove']
+            orphanRemoval: true
+
+    oneToMany:
+        ronAdSlotSegments:
+            targetEntity: Tagcade\Entity\Core\RonAdSlotSegment
+            mappedBy: ronAdSlot
+            cascade: ['persist', 'remove']
+            orphanRemoval: true
+

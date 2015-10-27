@@ -6,7 +6,9 @@ parameters:
     jms_serializer.cache_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
 
     tagcade.security.auth.voter.site.class: Tagcade\Security\Authorization\Voter\SiteVoter
+    tagcade.security.auth.voter.segment.class: Tagcade\Security\Authorization\Voter\SegmentVoter
     tagcade.security.auth.voter.ad_slot.class: Tagcade\Security\Authorization\Voter\AdSlotVoter
+    tagcade.security.auth.voter.ron_ad_slot.class: Tagcade\Security\Authorization\Voter\RonAdSlotVoter
     tagcade.security.auth.voter.library_display_ad_slot.class: Tagcade\Security\Authorization\Voter\LibraryDisplayAdSlotVoter
     tagcade.security.auth.voter.dynamic_ad_slot.class: Tagcade\Security\Authorization\Voter\DynamicAdSlotVoter
     tagcade.security.auth.voter.library_dynamic_ad_slot.class: Tagcade\Security\Authorization\Voter\LibraryDynamicAdSlotVoter
@@ -37,8 +39,20 @@ services:
         tags:
             - { name: security.voter }
 
+    tagcade.security.auth.voter.segment:
+        class:  %tagcade.security.auth.voter.segment.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
     tagcade.security.auth.voter.ad_slot:
         class:  %tagcade.security.auth.voter.ad_slot.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.ron_ad_slot:
+        class:  %tagcade.security.auth.voter.ron_ad_slot.class%
         public: false
         tags:
             - { name: security.voter }
@@ -113,6 +127,7 @@ services:
         class: Tagcade\Service\TagGenerator
         arguments:
             - %tc.base_tag_url%
+            - @tagcade.domain_manager.ron_ad_slot
 
     tagcade.service.console_output:
         class: Symfony\Component\Console\Output\ConsoleOutput

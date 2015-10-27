@@ -1,0 +1,30 @@
+Tagcade\Entity\Core\RonAdSlotSegment:
+    type: entity
+    table: ron_ad_slot_segment
+    repositoryClass: Tagcade\Repository\Core\RonAdSlotSegmentRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        segment:
+            targetEntity: Tagcade\Entity\Core\Segment
+            inversedBy: ronAdSlotSegments
+            cascade: ['persist']
+        ronAdSlot:
+            targetEntity: Tagcade\Entity\Core\RonAdSlot
+            inversedBy: ronAdSlotSegments

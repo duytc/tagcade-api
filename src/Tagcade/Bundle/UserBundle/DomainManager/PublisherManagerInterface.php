@@ -95,4 +95,6 @@ interface PublisherManagerInterface
 
     public function updateCanonicalFields(UserInterface $user);
 
+    public function generateUuid(UserInterface $user);
+
 }

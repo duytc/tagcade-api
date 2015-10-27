@@ -47,4 +47,9 @@ interface PositionInterface extends ModelInterface {
      * @return self
      */
     public function setRefId($refId);
+
+    /**
+     * @return bool
+     */
+    public function isInLibrary();
 }

@@ -11,6 +11,8 @@ use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;

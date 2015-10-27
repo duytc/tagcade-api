@@ -2,24 +2,119 @@
 
 namespace Tagcade\Service;
 
+use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class TagGenerator
 {
     protected $baseTagUrl;
+    /**
+     * @var RonAdSlotManagerInterface
+     */
+    private $ronAdSlotManager;
 
     /**
      * @param string $baseUrl
+     * @param RonAdSlotManagerInterface $ronAdSlotManager
      */
-    public function __construct($baseUrl)
+    public function __construct($baseUrl, RonAdSlotManagerInterface $ronAdSlotManager)
     {
         $this->baseTagUrl = rtrim($baseUrl, '/');
+        $this->ronAdSlotManager = $ronAdSlotManager;
+    }
+
+    public function getTagsForPassback(PublisherInterface $publisher)
+    {
+        return array('passback' => $this->createDisplayPassbackTag($publisher));
+    }
+
+    public function getTagsForSingleRonAdSlot(RonAdSlotInterface $ronAdSlot)
+    {
+        $tags = [];
+        $tags['header'] = $this->createHeaderTagForPublisher($ronAdSlot->getLibraryAdSlot()->getPublisher());
+        $tags['jstag'] = $this->createJsTags($ronAdSlot);
+        $tags['name'] = $ronAdSlot->getName();
+        $segments = [];
+        $allSegments = $ronAdSlot->getSegments();
+        /**
+         * @var SegmentInterface $segment
+         */
+        foreach($allSegments as $segment) {
+            $segments[$segment->getName()] = $this->createJsTagForRonAdSlot($ronAdSlot, $segment);
+        }
+        $tags['segments'] = $segments;
+
+        return $tags;
+    }
+
+
+    public function getRonTagsForPublisher(PublisherInterface $publisher)
+    {
+        $tags = [];
+
+        $tags['header'] = $this->createHeaderTagForPublisher($publisher);
+
+        $tags = array_merge($tags, [
+            'display' => [
+                'ad_slots' => [],
+            ],
+
+            'native' => [
+                'ad_slots' => [],
+            ],
+
+            'dynamic' => [
+                'ad_slots' => [],
+            ]
+        ]);
+        $ronAdSlots = $this->ronAdSlotManager->getRonAdSlotsForPublisher($publisher);
+        foreach($ronAdSlots as $ronAdSlot) {
+            /** @var RonAdSlotInterface $ronAdSlot */
+            if (!array_key_exists($ronAdSlot->getLibraryAdSlot()->getLibType(), $tags)) {
+                continue; // not support generating tags for this ad slot type
+            }
+
+            $adSlots = &$tags[$ronAdSlot->getLibraryAdSlot()->getLibType()]['ad_slots'];
+            $adSlots[$ronAdSlot->getId()] = array('jstag' => $this->createJsTags($ronAdSlot));
+            $adSlots[$ronAdSlot->getId()]['name'] = $ronAdSlot->getName();
+            $segments = &$adSlots[$ronAdSlot->getId()]['segments'];
+            $allSegments = $ronAdSlot->getSegments();
+            /**
+             * @var SegmentInterface $segment
+             */
+            foreach($allSegments as $segment) {
+                $segments[$segment->getName()] = $this->createJsTagForRonAdSlot($ronAdSlot, $segment);
+            }
+        }
+
+        $removeKeys = [];
+
+        array_walk($tags,
+            function ($tagItem, $key) use(&$removeKeys) {
+                if (is_array($tagItem) && count($tagItem['ad_slots']) < 1) {
+                    $removeKeys[] = $key;
+                }
+            }
+        );
+
+        array_walk($removeKeys,
+            function($key) use (&$tags) {
+                unset($tags[$key]);
+            }
+        );
+
+        return $tags;
     }
 
     /**
@@ -32,12 +127,11 @@ class TagGenerator
 
         $tags = [];
 
-        $tags['header'] = $this->createHeaderTag($site);
+        $tags['header'] = $this->createHeaderTagForSite($site);
 
         if ($publisher->hasDisplayModule()) {
             $tags = array_merge($tags, [
                 'display' => [
-                    'passback' => $this->createDisplayPassbackTag($site),
                     'ad_slots' => [],
                 ],
 
@@ -58,7 +152,10 @@ class TagGenerator
                 }
 
                 $adSlots = &$tags[$adSlot->getType()]['ad_slots'];
-                $adSlots[$adSlot->getName()] = $this->createJsTags($adSlot);
+                $adSlots[$adSlot->getId()] = array(
+                    'jstag' =>$this->createJsTags($adSlot),
+                    'name' => $adSlot->getName()
+                );
             }
 
             $removeKeys = [];
@@ -81,19 +178,21 @@ class TagGenerator
         return $tags;
     }
 
-    /**
-     * @param SiteInterface $site
-     * @return string
-     */
-    public function createHeaderTag(SiteInterface $site)
+    public function createHeaderTagForSite(SiteInterface $site)
     {
-        $tag = sprintf('<script type="text/javascript" src="%s/2.0/%d/tagcade.js"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId());
-
-        return $tag;
+        return sprintf('<script type="text/javascript" src="%s/2.0/%d/tagcade.js"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId());
     }
 
+
+    public function createHeaderTagForPublisher(PublisherInterface $publisher)
+    {
+        return sprintf('<script type="text/javascript" src="%s/2.0/tagcade.js"></script>' . "\n", $this->getBaseTagUrlForPublisher($publisher));
+    }
+
+
+
     /**
-     * @param BaseAdSlotInterface $adSlot
+     * @param BaseAdSlotInterface|RonAdSlotInterface $adSlot
      * @return string
      */
     public function createJsTags($adSlot)
@@ -110,8 +209,160 @@ class TagGenerator
             return $this->createDisplayAdTagForNativeAdSlot($adSlot);
         }
 
-        throw new RuntimeException(sprintf('Generate ad tag for %s is not supported', get_class($adSlot)));
+        if ($adSlot instanceof RonAdSlotInterface) {
+            return $this->createJsTagForRonAdSlot($adSlot);
+        }
 
+        throw new RuntimeException(sprintf('Generate ad tag for %s is not supported', get_class($adSlot)));
+    }
+
+    protected function createJsTagForRonAdSlot(RonAdSlotInterface $ronAdSlot, $segment = null)
+    {
+        $libraryAdSlot = $ronAdSlot->getLibraryAdSlot();
+
+        if ($libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+            return $this->createDisplayAdTagForRonAdSlot($ronAdSlot, $segment);
+        }
+        else if ($libraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+            return $this->createDisplayAdTagForNativeRonAdSlot($ronAdSlot, $segment);
+        }
+        else if ($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
+            return $this->createDisplayAdTagForDynamicRonAdSlot($ronAdSlot, $segment);
+        }
+        else throw new RuntimeException(sprintf('Generate ad tag for %s is not supported', get_class($ronAdSlot)));
+    }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param null|SegmentInterface $segment
+     * @return string
+     */
+    protected function createDisplayAdTagForRonAdSlot(RonAdSlotInterface $ronAdSlot, $segment = null)
+    {
+        $libraryAdSlot = $ronAdSlot->getLibraryAdSlot();
+        if (!$libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+            throw new RuntimeException('expect a LibraryDisplayAdSlotInterface object');
+        }
+
+        $adSlotName = htmlspecialchars($ronAdSlot->getName(), ENT_QUOTES);
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+        $publisherUuid = $publisher->getUuid();
+
+        $commentTemplate = "<!-- %s%s -->\n";
+        $jsTemplate = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-ron-slot="%d" data-tc-size="%dx%d"%s%s></script>' . "\n";
+
+        if ($publisherUuid !== null) {
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), $libraryAdSlot->getWidth(), $libraryAdSlot->getHeight(), ' data-tc-publisher="%s"', '%s');
+            $jsTemplate = sprintf($jsTemplate, $publisherUuid, '%s');
+        }
+        else {
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), $libraryAdSlot->getWidth(), $libraryAdSlot->getHeight(), '', '%s');
+        }
+
+        if ($segment instanceof SegmentInterface) {
+            $jsTemplate = sprintf($jsTemplate, ' data-tc-report-segment="%d"');
+            $jsTemplate = sprintf($jsTemplate, $segment->getId());
+
+            $segmentName = htmlspecialchars($segment->getName(), ENT_QUOTES);
+            $commentTemplate = sprintf($commentTemplate, $adSlotName, ' - '. $segmentName);
+        }
+        else {
+            $jsTemplate = sprintf($jsTemplate, '');
+            $commentTemplate = sprintf($commentTemplate, $adSlotName, '');
+        }
+
+        return $commentTemplate . $jsTemplate;
+    }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param null|SegmentInterface $segment
+     * @return string
+     */
+    protected function createDisplayAdTagForNativeRonAdSlot(RonAdSlotInterface $ronAdSlot, $segment = null)
+    {
+        $libraryAdSlot = $ronAdSlot->getLibraryAdSlot();
+        if (!$libraryAdSlot instanceof LibraryNativeAdSlotInterface) {
+            throw new RuntimeException('expect a LibraryNativeAdSlotInterface object');
+        }
+
+        $adSlotName = htmlspecialchars($ronAdSlot->getName(), ENT_QUOTES);
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+        $publisherUuid = $publisher->getUuid();
+
+        $commentTemplate = "<!-- %s%s -->\n";
+        $jsTemplate = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-ron-slot="%d" data-tc-slot-type="native"%s%s></script>' . "\n";
+
+        if ($publisherUuid !== null) {
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), ' data-tc-publisher="%s"', '%s');
+            $jsTemplate = sprintf($jsTemplate, $publisherUuid, '%s');
+        }
+        else {
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), '', '%s');
+        }
+
+        if ($segment instanceof SegmentInterface) {
+            $segmentName = htmlspecialchars($segment->getName(), ENT_QUOTES);
+            $commentTemplate = sprintf($commentTemplate, $adSlotName, ' - '.$segmentName);
+
+            $jsTemplate = sprintf($jsTemplate, ' data-tc-report-segment="%d"');
+            $jsTemplate = sprintf($jsTemplate, $segment->getId());
+        }
+        else {
+            $commentTemplate = sprintf($commentTemplate, $adSlotName, '');
+            $jsTemplate = sprintf($jsTemplate, '');
+        }
+
+        return $commentTemplate . $jsTemplate;
+    }
+
+    /**
+     * @param RonAdSlotInterface $adSlot
+     * @param null|SegmentInterface $segment
+     * @return string
+     */
+    protected function createDisplayAdTagForDynamicRonAdSlot(RonAdSlotInterface $adSlot, $segment = null)
+    {
+        $libraryAdSlot = $adSlot->getLibraryAdSlot();
+        if (!$libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
+            throw new RuntimeException('expect a LibraryDynamicAdSlotInterface object');
+        }
+
+        $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
+        $publisher = $adSlot->getLibraryAdSlot()->getPublisher();
+        $publisherUuid = $publisher->getUuid();
+
+        $commentTemplate = "<!-- %s%s -->\n";
+        $jsTemplate = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-ron-slot="%d"%s%s%s></script>' . "\n";
+
+        if ($publisherUuid !== null) {
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $adSlot->getId(), ' data-tc-publisher="%s"', '%s', '%s');
+            $jsTemplate = sprintf($jsTemplate, $publisherUuid, '%s', '%s');
+        }
+        else {
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $adSlot->getId(), '', '%s', '%s');
+        }
+
+        if ($libraryAdSlot->isSupportedNative()) {
+            $jsTemplate = sprintf($jsTemplate, ' data-tc-slot-type="native"', '%s');
+        }
+        else {
+            $jsTemplate = sprintf($jsTemplate, '', '%s');
+        }
+
+        if ($segment instanceof SegmentInterface) {
+            $segmentName = htmlspecialchars($segment->getName(), ENT_QUOTES);
+            $commentTemplate = sprintf($commentTemplate, $adSlotName, ' - '.$segmentName);
+
+            $jsTemplate = sprintf($jsTemplate, ' data-tc-report-segment="%d"');
+            $jsTemplate = sprintf($jsTemplate, $segment->getId());
+        }
+        else {
+            $commentTemplate = sprintf($commentTemplate, $adSlotName, '');
+            $jsTemplate = sprintf($jsTemplate, '');
+        }
+
+        return $commentTemplate . $jsTemplate;
     }
 
     /**
@@ -122,10 +373,19 @@ class TagGenerator
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
         $site = $adSlot->getSite();
+        $publisherUuid = $site->getPublisher()->getUuid();
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-size="%dx%d"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight());
+        $template = '<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-size="%dx%d"%s></script>' . "\n";
 
-        return $tag;
+        if ($publisherUuid !== null) {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight(), ' data-tc-publisher="%s"');
+            $template = sprintf($template, $publisherUuid);
+        }
+        else {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight(), '');
+        }
+
+        return $tag . $template;
     }
 
     /**
@@ -136,16 +396,42 @@ class TagGenerator
     {
         $adSlotName = htmlspecialchars($adSlot->getName(), ENT_QUOTES);
         $site = $adSlot->getSite();
+        $publisherUuid = $site->getPublisher()->getUuid();
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
-
-        if ($adSlot->isSupportedNative()) {
-            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
+        $template = '<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"%s%s></script>' . "\n";
+        if ($publisherUuid !== null) {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), ' data-tc-publisher="%s"', '%s');
+            $template = sprintf($template, $publisherUuid, '%s');
         }
         else {
-            $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
+            $template = sprintf($template, '', '%s');
         }
 
-        return $tag;
+        if ($adSlot->isSupportedNative()) {
+            $template = sprintf($template, ' data-tc-slot-type="native"');
+        }
+        else {
+            $template = sprintf($template, '');
+        }
+
+//        if ($publisherUuid !== null) {
+//            if ($adSlot->isSupportedNative()) {
+//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native" data-tc-publisher="%s"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $publisherUuid);
+//            }
+//            else {
+//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-publisher="%s"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $publisherUuid);
+//            }
+//        }
+//        else {
+//            if ($adSlot->isSupportedNative()) {
+//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
+//            }
+//            else {
+//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
+//            }
+//        }
+
+        return $tag . $template;
     }
 
     /**
@@ -157,21 +443,37 @@ class TagGenerator
         $adSlotName = htmlspecialchars($nativeAdSlot->getName(), ENT_QUOTES);
         $site = $nativeAdSlot->getSite();
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId());
+        $template = '<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"%s></script>' . "\n";
+        $publisherUuid = $site->getPublisher()->getUuid();
+        if ($publisherUuid !== null) {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId(), ' data-tc-publisher="%s"');
+            $template = sprintf($template, $publisherUuid);
+        }
+        else {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId(), '');
+        }
 
-        return $tag;
+        return $tag . $template;
     }
 
     /**
-     * @param SiteInterface $site
+     * @param PublisherInterface $publisher
      * @return string
      */
-    public function createDisplayPassbackTag(SiteInterface $site)
+    public function createDisplayPassbackTag(PublisherInterface $publisher)
     {
         $tag = "<!-- Tagcade Universal Passback -->\n";
-        $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-passback="true"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId());
+        $template = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-passback="true"%s></script>' . "\n";
+        $publisherUuid = $publisher->getUuid();
+        if ($publisherUuid !== null) {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($publisher), ' data-tc-publisher="%s"');
+            $template = sprintf($template, $publisherUuid);
+        }
+        else {
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($publisher), '');
+        }
 
-        return $tag;
+        return $tag . $template;
     }
 
     protected function getBaseTagUrlForPublisher(PublisherInterface $publisher)

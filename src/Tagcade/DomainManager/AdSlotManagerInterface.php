@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -39,4 +40,12 @@ interface AdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site);
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getAdSlotsForRonAdSlot(RonAdSlotInterface $ronAdSlot, $limit = null, $offset = null);
 }

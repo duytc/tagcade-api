@@ -43,4 +43,12 @@ class LibraryNativeAdSlotRepository extends EntityRepository implements LibraryN
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getLibraryNativeAdSlotsUnusedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getLibraryNativeAdSlotsForPublisherQuery($publisher, $limit = null, $offset = null);
+        $qb->andWhere('sl.ronAdSlot IS NULL');
+
+        return $qb->getQuery()->getResult();
+    }
 }

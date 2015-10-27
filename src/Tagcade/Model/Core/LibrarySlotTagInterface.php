@@ -62,6 +62,11 @@ interface LibrarySlotTagInterface extends PositionInterface {
     public function setRotation($rotation);
 
     /**
+     * @return null|AdNetworkInterface
+     */
+    public function getAdNetwork();
+
+    /**
      * @return string
      */
     public function checkSum();

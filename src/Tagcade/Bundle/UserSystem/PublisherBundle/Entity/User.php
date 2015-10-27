@@ -5,11 +5,12 @@ namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Service\StringUtilTrait;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+use Tagcade\Exception\LogicException;
 
 class User extends BaseUser implements PublisherInterface
 {
-    use StringUtilTrait;
 
     protected $id;
     protected $uuid;
@@ -51,7 +52,13 @@ class User extends BaseUser implements PublisherInterface
     public function generateAndAssignUuid()
     {
         if ($this->uuid === null || empty($this->uuid)) {
-            $this->uuid = $this->generateUuid($this);
+            try {
+                $uuid5 = Uuid::uuid5(Uuid::NAMESPACE_DNS, $this->getEmail());
+                $this->uuid = $uuid5->toString();
+
+            } catch(UnsatisfiedDependencyException $e) {
+                throw new LogicException($e->getMessage());
+            }
         }
 
         return $this;

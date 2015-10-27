@@ -12,6 +12,9 @@ Tagcade\Entity\Core\LibraryExpression:
             generator:
                 strategy: AUTO
     fields:
+        expressionInJs:
+            type: json_array
+            nullable: false
         expressionDescriptor:
             type: json_array
             nullable: false

@@ -1,0 +1,5 @@
+Tagcade\Entity\Core\RonAdSlot:
+    properties:
+        libraryAdSlot:
+            - NotBlank: ~
+            - Valid: ~

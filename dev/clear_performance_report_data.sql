@@ -9,6 +9,10 @@ truncate table report_performance_display_hierarchy_platform_ad_tag;
 truncate table report_performance_display_hierarchy_ad_network;
 truncate table report_performance_display_hierarchy_ad_network_site;
 truncate table report_performance_display_hierarchy_ad_network_ad_tag;
+
+truncate table report_performance_display_hierarchy_segment_segment;
+truncate table report_performance_display_hierarchy_segment_ron_ad_slot;
+truncate table report_performance_display_hierarchy_segment_ron_ad_tag;
 --
 
 set foreign_key_checks = 0;

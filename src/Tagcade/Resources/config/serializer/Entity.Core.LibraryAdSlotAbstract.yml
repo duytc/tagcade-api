@@ -14,6 +14,8 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
             serialized_name: associatedSlots
             type: integer
             groups: [slotlib.extra]
+        isRonAdSlot:
+            groups: [slotlib.summary, slotlib.extra]
     properties:
         name:
             expose: true
@@ -27,6 +29,9 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
         adSlots:
             expose: true
             groups: [slotlib.detail]
+#        ronAdSlot:
+#            expose: true
+#            groups: [slotlib.detail, slotlib.extra]
         libType:
             expose: true
             accessor: # access_type must be set to public_method

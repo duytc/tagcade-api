@@ -16,6 +16,7 @@ class Site extends SiteModel
     protected $sourceReportSiteConfigs;
     protected $channelSites;
     protected $players;
+    protected $autoCreate;
 
     public function __construct()
     {}

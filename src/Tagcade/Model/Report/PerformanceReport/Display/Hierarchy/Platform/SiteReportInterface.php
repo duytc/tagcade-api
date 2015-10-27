@@ -17,4 +17,10 @@ interface SiteReportInterface extends BillableInterface, CalculatedReportInterfa
      * @return int|null
      */
     public function getSiteId();
+
+    /**
+     * @param SiteInterface|null $site
+     * @return $this
+     */
+    public function setSite($site);
 }

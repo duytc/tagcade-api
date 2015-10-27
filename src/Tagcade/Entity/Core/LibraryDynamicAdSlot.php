@@ -9,6 +9,8 @@ class LibraryDynamicAdSlot extends LibraryDynamicAdSlotModel
 {
     protected $id;
     protected $name;
+    protected $ronAdSlot;
+    protected $publisher;
     protected $dynamicAdSlots;
     protected $libraryExpressions;
     protected $defaultLibraryAdSlot;

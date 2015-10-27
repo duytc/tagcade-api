@@ -14,6 +14,7 @@ class LibraryDisplayAdSlot extends LibraryDisplayAdSlotModel
     protected $visible;
     protected $passbackMode;
     protected $libSlotTags;
+    protected $ronAdSlot;
     protected $publisher;
     protected $displayAdSlots;
 

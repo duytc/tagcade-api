@@ -57,6 +57,11 @@ services:
             - { name: doctrine.event_listener, event: preRemove }
             - { name: doctrine.event_listener, event: preUpdate }
 
+    tagcade_admin_api.event_listener.set_publisher_uuid_listener:
+        class: Tagcade\Bundle\AdminApiBundle\EventListener\SetPublisherUuidListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist}
+
     # update source report config event listener
     tagcade_admin_api.event_listener.update_source_report_config_listener:
         class: Tagcade\Bundle\AdminApiBundle\EventListener\UpdateSourceReportConfigListener

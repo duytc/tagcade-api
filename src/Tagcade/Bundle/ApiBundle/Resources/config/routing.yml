@@ -18,6 +18,11 @@ api_ad_slot:
     resource: Tagcade\Bundle\ApiBundle\Controller\AdSlotController
     name_prefix:  api_1_
 
+api_ron_ad_slot:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\RonAdSlotController
+    name_prefix:  api_1_
+
 api_library_ad_slot:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\LibraryAdSlotController
@@ -81,6 +86,11 @@ api_library_expression:
 api_channel:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\ChannelController
+    name_prefix:  api_1_
+
+api_segment:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\SegmentController
     name_prefix:  api_1_
 
 api_reset_password_send_email:

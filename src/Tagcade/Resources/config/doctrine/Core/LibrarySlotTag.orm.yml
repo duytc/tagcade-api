@@ -7,7 +7,7 @@ Tagcade\Entity\Core\LibrarySlotTag:
             field_name: deletedAt
             time_aware: false
     uniqueConstraints:
-        unique_report_idx:
+        slot_tag_compound_primary_key:
             columns:
                 - library_ad_tag_id
                 - library_ad_slot_id # underscore column name

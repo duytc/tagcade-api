@@ -1,0 +1,67 @@
+parameters:
+    # entity class
+    tagcade.entity.core.segment.class: Tagcade\Entity\Core\Segment
+    # form class
+    tagcade.form.type.segment.class: Tagcade\Form\Type\SegmentFormType
+
+services:
+
+    # segment ######################################################
+
+    tagcade_api.handler.segment:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.segment
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for segment handler #######
+
+    tagcade.repository.segment:
+        class: Tagcade\Repository\Core\SegmentRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.segment.class%
+
+    tagcade.domain_manager.segment:
+        class: Tagcade\DomainManager\SegmentManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.segment
+
+    tagcade.form.type.segment:
+        class: %tagcade.form.type.segment.class%
+        arguments:
+            - @tagcade.repository.segment
+        tags:
+            - { name: form.type, alias: tagcade_form_segment }
+
+    tagcade.handler.handlers.segment.abstract:
+        class: Tagcade\Handler\Handlers\Core\SegmentHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.segment
+            - @tagcade.domain_manager.segment
+
+    tagcade.handler.handlers.segment.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\SegmentHandler
+        parent: tagcade.handler.handlers.segment.abstract
+        public: false
+
+    tagcade.handler.handlers.segment.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\SegmentHandler
+        parent: tagcade.handler.handlers.segment.abstract
+        public: false
+
+    tagcade.handler.handler_manager.segment:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.segment.class%
+            -
+                - @tagcade.handler.handlers.segment.admin
+                - @tagcade.handler.handlers.segment.publisher
+
+    # end segment #####################################################

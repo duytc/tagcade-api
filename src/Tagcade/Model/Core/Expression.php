@@ -5,7 +5,7 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Core\SiteInterface;
 
-class Expression implements ExpressionInterface
+class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
 {
     protected $id;
     /**
@@ -46,6 +46,15 @@ class Expression implements ExpressionInterface
 
         return $this->libraryExpression->getExpressionDescriptor();
     }
+
+    /**
+     * @return array
+     */
+    public function getDescriptor()
+    {
+        return $this->getExpressionDescriptor();
+    }
+
 
     /**
      * @param mixed $expressionDescriptor

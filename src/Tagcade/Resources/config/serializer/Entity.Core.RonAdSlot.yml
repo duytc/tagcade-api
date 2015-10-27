@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\RonAdSlot:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [ronadslot.detail, ronadslot.summary]
+        libraryAdSlot:
+            expose: true
+            groups: [ronadslot.detail, ronadslot.summary]
+        ronAdSlotSegments:
+            expose: true
+            groups: [ronadslot.detail, ronadslot.summary]

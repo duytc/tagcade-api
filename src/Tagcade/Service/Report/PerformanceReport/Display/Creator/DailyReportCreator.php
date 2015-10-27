@@ -4,10 +4,15 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Tagcade\DomainManager\RonAdSlotManagerInterface;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Platform as PlatformReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\Segment as SegmentReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot as RonAdSlotReportType;
+use Tagcade\Repository\Core\SegmentRepositoryInterface;
 
 class DailyReportCreator
 {
@@ -19,11 +24,21 @@ class DailyReportCreator
      * @var ReportCreatorInterface
      */
     private $reportCreator;
+    /**
+     * @var SegmentRepositoryInterface
+     */
+    private $segmentRepository;
+    /**
+     * @var RonAdSlotManagerInterface
+     */
+    private $ronAdSlotManager;
 
-    public function __construct(ObjectManager $om, ReportCreatorInterface $reportCreator)
+    public function __construct(ObjectManager $om, ReportCreatorInterface $reportCreator, SegmentRepositoryInterface $segmentRepository, RonAdSlotManagerInterface $ronAdSlotManager)
     {
         $this->om = $om;
         $this->reportCreator = $reportCreator;
+        $this->segmentRepository = $segmentRepository;
+        $this->ronAdSlotManager = $ronAdSlotManager;
     }
 
     /**
@@ -50,6 +65,30 @@ class DailyReportCreator
 
             $this->om->persist($adNetworkReport);
             $createdReports[] = $adNetworkReport;
+        }
+
+        foreach ($publishers as $publisher) {
+            $segments = $this->segmentRepository->getSegmentsForPublisher($publisher);
+            foreach($segments as $segment) {
+                if ($segment instanceof SegmentInterface) {
+                    $segmentReport = $this->reportCreator->getReport(
+                        new SegmentReportType($segment)
+                    );
+
+                    $this->om->persist($segmentReport);
+                    $createdReports[] = $segmentReport;
+                }
+            }
+        }
+
+        $ronAdSlotsWithoutSegment = $this->ronAdSlotManager->all();
+        foreach($ronAdSlotsWithoutSegment as $ronAdSlot) {
+            $ronAdSlotReport = $this->reportCreator->getReport(
+                new RonAdSlotReportType($ronAdSlot)
+            );
+
+            $this->om->persist($ronAdSlotReport);
+            $createdReports[] = $ronAdSlotReport;
         }
 
         $this->om->flush();

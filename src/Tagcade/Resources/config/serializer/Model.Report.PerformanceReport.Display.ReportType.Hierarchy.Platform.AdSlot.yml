@@ -5,6 +5,8 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdS
             type: integer
         getAdSlotType:
             type: string
+        getSite:
+#            type: string
     properties:
         adSlot:
             exclude: true

@@ -4,13 +4,12 @@ namespace Tagcade\Cache\Legacy\Cache;
 
 // Used for live report data only
 
-use Doctrine\Common\Cache\Cache;
 use RedisArray;
 
-class RedisArrayCache implements Cache
+class RedisArrayCache implements RedisArrayCacheInterface
 {
     /**
-     * @var RedisArray|null
+     * @var RedisArray|\Redis
      */
     private $redis;
 
@@ -34,6 +33,15 @@ class RedisArrayCache implements Cache
         return $this->redis->get($id);
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hFetch($hash, $field)
+    {
+        return $this->redis->hGet($hash, $field);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -54,6 +62,12 @@ class RedisArrayCache implements Cache
         return $this->redis->set($id, $data);
     }
 
+    public function hSave($hash, $field, $data)
+    {
+        return $this->redis->hSet($hash, $field, $data);
+    }
+
+
     /**
      * {@inheritdoc}
      */
@@ -61,6 +75,12 @@ class RedisArrayCache implements Cache
     {
         return $this->redis->delete($id) > 0;
     }
+
+    public function hDelete($hash, $field)
+    {
+        return $this->redis->hDel($hash, $field);
+    }
+
 
     /**
      * {@inheritdoc}

@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
 {
@@ -33,6 +34,19 @@ class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
                 if(array_key_exists('libraryAdTag', $librarySlotTag) && is_array($librarySlotTag['libraryAdTag'])){
                     $form->remove('libraryAdTag');
                     $form->add('libraryAdTag', new LibraryAdTagFormType($this->userRole));
+                }
+            }
+        );
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                /** @var LibrarySlotTagInterface $librarySlotTag */
+                $librarySlotTag = $event->getData();
+                // explicitly add LibrarySlotTag to library ad slot when creating new library ad tag
+                if ($librarySlotTag->getId() === null) {
+                    $libraryAdSlot = $librarySlotTag->getLibraryAdSlot();
+                    $libraryAdSlot->addLibSlotTag($librarySlotTag);
                 }
             }
         );

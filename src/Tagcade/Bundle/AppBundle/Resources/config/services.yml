@@ -31,6 +31,15 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
 
+    tagcade_app.event_listener.ronadslot_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\RonAdSlotChangeListener
+        arguments:
+            - @event_dispatcher
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+
     tagcade_app.event_listener.update_cache_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\UpdateCacheListener
         arguments:
@@ -61,9 +70,3 @@ services:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService
         arguments:
             - @doctrine.orm.default_entity_manager
-
-    tagcade_app.service.core.publisher.publisher_service:
-        class: Tagcade\Service\Core\Publisher\PublisherService
-        arguments:
-            - @doctrine.orm.default_entity_manager
-            - @tagcade_user.domain_manager.publisher

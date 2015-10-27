@@ -1,0 +1,69 @@
+parameters:
+    # entity class
+    tagcade.entity.core.dynamic_ad_slot.class: Tagcade\Entity\Core\DynamicAdSlot
+    # form class
+    tagcade.form.type.dynamic_ad_slot.class: Tagcade\Form\Type\DynamicAdSlotFormType
+
+services:
+
+    # dynamic ad slot ######################################################
+
+    tagcade_api.handler.dynamic_ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.dynamic_ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for dynamic ad slot handler #######
+
+    tagcade.repository.dynamic_ad_slot:
+        class: Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\DynamicAdSlot
+
+    tagcade.domain_manager.dynamic_ad_slot:
+        class: Tagcade\DomainManager\DynamicAdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.dynamic_ad_slot
+            - @tagcade.repository.ad_slot
+
+    tagcade.form.type.dynamic_ad_slot:
+        class: %tagcade.form.type.dynamic_ad_slot.class%
+        arguments:
+            - @tagcade.repository.display_ad_slot
+            - @tagcade.repository.site
+        tags:
+            - { name: form.type, alias: tagcade_form_dynamic_ad_slot }
+
+    tagcade.handler.handlers.dynamic_ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\DynamicAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.dynamic_ad_slot
+            - @tagcade.domain_manager.dynamic_ad_slot
+
+    tagcade.handler.handlers.dynamic_ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\DynamicAdSlotHandler
+        parent: tagcade.handler.handlers.dynamic_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.dynamic_ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\DynamicAdSlotHandler
+        parent: tagcade.handler.handlers.dynamic_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.dynamic_ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.dynamic_ad_slot.class%
+            -
+                - @tagcade.handler.handlers.dynamic_ad_slot.admin
+                - @tagcade.handler.handlers.dynamic_ad_slot.publisher
+
+    # end dynamic ad slot #####################################################

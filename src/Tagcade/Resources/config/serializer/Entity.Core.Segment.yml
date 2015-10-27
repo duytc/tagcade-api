@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\Segment:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [segment.detail, segment.summary]
+        name:
+            expose: true
+            groups: [segment.detail, segment.summary]
+        publisher:
+            expose: true
+            groups: [segment.detail, segment.summary]

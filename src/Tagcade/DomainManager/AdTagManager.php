@@ -120,6 +120,8 @@ class AdTagManager implements AdTagManagerInterface
 
         $this->em->merge($librarySlotTag);
 
+        $this->em->flush();
+
         $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
     }
 

@@ -1,0 +1,88 @@
+parameters:
+    # entity class
+    tagcade.entity.core.ad_slot.class: Tagcade\Entity\Core\DisplayAdSlot
+    # form class
+    tagcade.form.type.ad_slot.class: Tagcade\Form\Type\AdSlotFormType
+
+services:
+
+    # ad slot ######################################################
+
+    tagcade_api.handler.ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+    tagcade.repository.ad_slot:
+        class: Tagcade\Repository\Core\AdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\AdSlotAbstract
+
+
+    tagcade.domain_manager.ad_slot:
+        class: Tagcade\DomainManager\AdSlotManager
+        arguments:
+            - @tagcade.repository.ad_slot
+        calls:
+            - [setDisplayAdSlotManager, ["@tagcade.domain_manager.display_ad_slot"]]
+            - [setNativeAdSlotManager, ["@tagcade.domain_manager.native_ad_slot"]]
+            - [setDynamicAdSlotManager, ["@tagcade.domain_manager.dynamic_ad_slot"]]
+
+    tagcade.repository.display_ad_slot:
+        class: Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\DisplayAdSlot
+
+    tagcade.domain_manager.display_ad_slot:
+        class: Tagcade\DomainManager\DisplayAdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.display_ad_slot
+            - @tagcade.repository.ad_slot
+            - @tagcade.repository.library_slot_tag
+        calls:
+            - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
+
+    tagcade.form.type.ad_slot:
+        class: %tagcade.form.type.ad_slot.class%
+        arguments:
+            - @tagcade.repository.display_ad_slot
+            - @tagcade.repository.site
+        tags:
+            - { name: form.type, alias: tagcade_form_ad_slot }
+
+    tagcade.handler.handlers.ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ad_slot
+            - @tagcade.domain_manager.display_ad_slot
+
+    tagcade.handler.handlers.ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\DisplayAdSlotHandler
+        parent: tagcade.handler.handlers.ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\DisplayAdSlotHandler
+        parent: tagcade.handler.handlers.ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ad_slot.class%
+            -
+                - @tagcade.handler.handlers.ad_slot.admin
+                - @tagcade.handler.handlers.ad_slot.publisher
+
+    # end ad slot #####################################################

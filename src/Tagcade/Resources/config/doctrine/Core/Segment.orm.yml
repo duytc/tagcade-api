@@ -1,0 +1,33 @@
+Tagcade\Entity\Core\Segment:
+    type: entity
+    table: segment
+    repositoryClass: Tagcade\Repository\Core\SegmentRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        createdAt:
+            type: datetime
+            gedmo:
+                timestampable:
+                    on: create
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        ronAdSlotSegments:
+            targetEntity: Tagcade\Entity\Core\RonAdSlotSegment
+            mappedBy: segment
+            cascade: ["remove"]

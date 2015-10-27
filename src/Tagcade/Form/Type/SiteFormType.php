@@ -63,6 +63,8 @@ class SiteFormType extends AbstractRoleSpecificFormType
                     $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
                 }
 
+                $site->setAutoCreate(false);
+
                 if (!$site->getPublisher()->hasAnalyticsModule()) {
                     $site->setEnableSourceReport(false);
                 }

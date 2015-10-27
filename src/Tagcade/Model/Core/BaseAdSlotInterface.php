@@ -66,4 +66,14 @@ interface BaseAdSlotInterface extends ModelInterface
      */
     public function setLibraryAdSlot($libraryAdSlot);
 
+    /**
+     * @return boolean
+     */
+    public function isAutoCreate();
+
+    /**
+     * @param boolean $autoCreate
+     * @return self
+     */
+    public function setAutoCreate($autoCreate);
 }

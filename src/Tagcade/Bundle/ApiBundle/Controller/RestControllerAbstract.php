@@ -51,9 +51,9 @@ abstract class RestControllerAbstract extends FOSRestController
                 $request->request->all()
             );
 
-            $routeOptions = array(
-                '_format' => $request->get('_format')
-            );
+                $routeOptions = array(
+                    '_format' => $request->get('_format')
+                );
 
             return $this->addRedirectToResource($newEntity, Codes::HTTP_CREATED, $routeOptions);
         } catch (InvalidFormException $exception) {

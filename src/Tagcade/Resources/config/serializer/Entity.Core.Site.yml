@@ -8,7 +8,7 @@ Tagcade\Entity\Core\Site:
     properties:
         id:
             expose: true
-            groups: [site.detail, site.summary]
+            groups: [site.detail, site.summary, site.minimum]
         publisher:
             expose: true
             groups: [site.detail, site.summary]
@@ -17,7 +17,7 @@ Tagcade\Entity\Core\Site:
             groups: [site.detail, site.summary]
         domain:
             expose: true
-            groups: [site.detail]
+            groups: [site.detail, site.minimum]
         enableSourceReport:
             expose: true
             groups: [site.detail, site.summary]

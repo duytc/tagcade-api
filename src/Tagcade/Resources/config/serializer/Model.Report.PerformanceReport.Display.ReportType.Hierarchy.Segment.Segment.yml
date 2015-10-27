@@ -1,0 +1,5 @@
+Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\Segment:
+    exclusion_policy: NONE
+    properties:
+        segment:
+            expose: true

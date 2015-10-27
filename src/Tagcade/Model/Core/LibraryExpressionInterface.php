@@ -14,7 +14,7 @@ interface LibraryExpressionInterface extends  ModelInterface{
     public function setId($id);
 
     /**
-     * @return string
+     * @return array
      */
     public function getExpressionDescriptor();
 
@@ -67,4 +67,10 @@ interface LibraryExpressionInterface extends  ModelInterface{
      * @return $this
      */
     public function setExpectLibraryAdSlot($expectLibraryAdSlot);
+
+    /**
+     * @return array
+     */
+    public function getExpressionInJs();
+
 }

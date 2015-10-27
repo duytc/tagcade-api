@@ -2,14 +2,10 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
-use FOS\UserBundle\Model\UserManagerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Tagcade\Bundle\AdminApiBundle\Utils\ModuleNameMapper;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -17,6 +13,7 @@ use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
@@ -66,6 +63,31 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     public function getAction($id)
     {
         return $this->one($id);
+    }
+
+    /**
+     * Get the javascript display ad tags for all ron ad slot of this publisher
+     * @param int $id
+     * @return array
+     */
+    public function getRonjstagsAction($id)
+    {
+        /** @var PublisherInterface $publisher */
+        $publisher = $this->one($id);
+
+        return $this->get('tagcade.service.tag_generator')
+            ->getRonTagsForPublisher($publisher);
+    }
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getJspassbackAction($id)
+    {
+        /** @var PublisherInterface $publisher */
+        $publisher = $this->one($id);
+        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher);
     }
 
     public function getAdnetworksAction($publisherId)

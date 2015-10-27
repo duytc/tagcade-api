@@ -3,6 +3,8 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
 use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -130,11 +132,53 @@ interface ReportBuilderInterface
     public function getAdSlotReport(ReportableAdSlotInterface $adSlot, Params $params);
 
     /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotReport(RonAdSlotInterface $ronAdSlot, Params $params);
+
+    /**
      * @param ReportableAdSlotInterface $adSlot
      * @param Params $params
      * @return ReportResultInterface|false
      */
     public function getAdSlotAdTagsReport(ReportableAdSlotInterface $adSlot, Params $params);
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotSegmentsReport(RonAdSlotInterface $ronAdSlot, Params $params);
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotSitesReport(RonAdSlotInterface $ronAdSlot, Params $params);
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getRonAdSlotAdTagsReport(RonAdSlotInterface $ronAdSlot, Params $params);
+
+    /**
+     * @param SegmentInterface $segment
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getSegmentReport(SegmentInterface $segment, Params $params);
+
+    /**
+     * @param SegmentInterface $segment
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getSegmentRonAdSlotsReport(SegmentInterface $segment, Params $params);
 
     /**
      * @param AdTagInterface $adTag

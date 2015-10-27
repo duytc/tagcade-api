@@ -4,7 +4,7 @@ namespace Tagcade\Model\Core;
 
 use Tagcade\Entity\Core\LibrarySlotTag as entity;
 
-class LibrarySlotTag implements LibrarySlotTagInterface{
+class LibrarySlotTag implements LibrarySlotTagInterface, RonAdTagInterface{
 
     protected $id;
     /**
@@ -195,6 +195,15 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
     }
 
     /**
+     * @return bool
+     */
+    public function isInLibrary()
+    {
+        return true;
+    }
+
+
+    /**
      * @return mixed
      */
     public function getDeletedAt()
@@ -218,6 +227,17 @@ class LibrarySlotTag implements LibrarySlotTagInterface{
     public function getSiblings()
     {
         return $this->getLibraryAdSlot()->getLibSlotTags();
+    }
+
+    /**
+     * @return null|AdNetworkInterface
+     */
+    public function getAdNetwork() {
+        if ($this->libraryAdTag instanceof LibraryAdTagInterface) {
+            return $this->libraryAdTag->getAdNetwork();
+        }
+
+        return null;
     }
 
     /**

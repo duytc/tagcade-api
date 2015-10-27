@@ -8,7 +8,9 @@ use Doctrine\ORM\EntityRepository;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\NativeAdSlot;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -162,6 +164,56 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             ->setParameter('library_ad_slot_id', $libraryAdSlot->getId())
             ->addOrderBy('sl.id', 'asc')
         ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param $domain
+     * @return null|BaseAdSlotInterface
+     */
+    public function getAdSlotForPublisherAndDomainAndLibraryAdSlot(PublisherInterface $publisher, BaseLibraryAdSlotInterface $libraryAdSlot, $domain)
+    {
+        $qb = $this->createQueryBuilder('sl');
+        $like = $qb->expr()->like('st.domain', '?1');
+
+        $qb->leftJoin('sl.site', 'st')
+            ->where('sl.libraryAdSlot = :library_ad_slot_id')
+            ->andWhere($like)
+            ->andWhere('st.publisher = :publisher_id')
+            ->setParameter('library_ad_slot_id', $libraryAdSlot->getId(), TYPE::INTEGER)
+            ->setParameter(1, '%//' . $domain . '%', TYPE::STRING)
+            ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER);
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * Get all AdSlot that was created from the given RonAdSlot
+     *
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return array
+     */
+    public function getByRonAdSlot(RonAdSlotInterface $ronAdSlot, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->leftJoin('sl.libraryAdSlot', 'lsl')
+            ->join('lsl.ronAdSlot', 'rsl')
+            ->where('rsl.id = :ron_ad_slot_id')
+            ->andWhere('sl.autoCreate = true')
+            ->setParameter('ron_ad_slot_id', $ronAdSlot->getId(), TYPE::INTEGER);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
 
         return $qb->getQuery()->getResult();
     }

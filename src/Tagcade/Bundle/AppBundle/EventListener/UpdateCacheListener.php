@@ -8,6 +8,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 
 class UpdateCacheListener
@@ -46,6 +47,9 @@ class UpdateCacheListener
                 }
                 else if ($entity instanceof NativeAdSlotInterface) {
                     $this->tagCacheManager->refreshCacheForNativeAdSlot($entity);
+                }
+                else if ($entity instanceof RonAdSlotInterface) {
+                    $this->tagCacheManager->refreshCacheForRonAdSlot($entity);
                 }
             }
         );

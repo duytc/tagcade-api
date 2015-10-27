@@ -7,15 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Entity\Core\AdTag;
-use Tagcade\Entity\Core\LibrarySlotTag;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\PositionInterface;
-use Tagcade\Model\Core\ReportableAdSlotInterface;
 
 /**
  *
@@ -36,7 +33,7 @@ class UpdateAdTagPositionListener
         $uow = $em->getUnitOfWork();
 
         $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) {
-            return $entity instanceof PositionInterface;
+            return ($entity instanceof LibrarySlotTagInterface || ($entity instanceof AdTagInterface && !$entity->isInLibrary()));
           }
         ));
     }
@@ -52,7 +49,7 @@ class UpdateAdTagPositionListener
         $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions(), $preSoftDeleteAdTags);
 
         foreach ($entities as $entity) {
-            if (!$entity instanceof PositionInterface) {
+            if (!$entity instanceof PositionInterface || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
                 continue;
             }
 
@@ -70,7 +67,7 @@ class UpdateAdTagPositionListener
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof PositionInterface) {
+        if(!$entity instanceof PositionInterface || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
             return;
         }
 
@@ -87,7 +84,7 @@ class UpdateAdTagPositionListener
     {
         $adSlot = $updatingAdTag->getContainer();
 
-        if($adSlot instanceof ReportableAdSlotInterface || $adSlot instanceof BaseLibraryAdSlotInterface)
+        if($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof LibraryDisplayAdSlotInterface)
         {
             return $this->updatePositionForAdSlot($updatingAdTag);
         }
@@ -119,11 +116,13 @@ class UpdateAdTagPositionListener
      */
     protected function correctAdTagPositionInList(&$updatingAdTag, array &$adTags)
     {
-        if(!$updatingAdTag instanceof PositionInterface) {
+        if(!$updatingAdTag instanceof PositionInterface || ($updatingAdTag instanceof AdTagInterface && $updatingAdTag->isInLibrary())) {
             return [];
         }
         // sort array asc with respect to position
         usort($adTags, function(PositionInterface $a, PositionInterface $b) {
+            if($a->getPosition() === null) return 1;
+            if($b->getPosition() === null) return -1;
             if ($a->getPosition() == $b->getPosition()) {
                 return 0;
             }

@@ -24,6 +24,7 @@ class LibraryAdSlotRepository extends EntityRepository implements LibraryAdSlotR
         return $qb->getQuery()->getResult();
     }
 
+
     public function getLibraryDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->getLibraryAdSlotsForPublisherQuery($publisher, $limit, $offset);

@@ -5,7 +5,7 @@ namespace Tagcade\Model\Core;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDisplayAdSlotInterface
+class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDisplayAdSlotInterface, ReportableLibraryAdSlotInterface
 {
     protected $id;
     protected $width;

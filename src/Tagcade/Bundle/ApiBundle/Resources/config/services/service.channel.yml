@@ -1,0 +1,62 @@
+parameters:
+    # entity class
+    tagcade.entity.core.channel.class: Tagcade\Entity\Core\Channel
+    # form class
+    tagcade.form.type.channel.class: Tagcade\Form\Type\ChannelFormType
+
+services:
+    # channel handler #####################################################
+    tagcade_api.handler.channel:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.channel
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for channel handler ##############
+
+    tagcade.repository.channel:
+        class: Tagcade\Repository\Core\ChannelRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\Channel
+
+    tagcade.domain_manager.channel:
+        class: Tagcade\DomainManager\ChannelManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.channel
+
+    tagcade.form.type.channel:
+        class: %tagcade.form.type.channel.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_channel }
+
+    tagcade.handler.handlers.channel.abstract:
+        class: Tagcade\Handler\Handlers\Core\ChannelHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.channel
+            - @tagcade.domain_manager.channel
+
+    tagcade.handler.handlers.channel.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\ChannelHandler
+        parent: tagcade.handler.handlers.channel.abstract
+        public: false
+
+    tagcade.handler.handlers.channel.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\ChannelHandler
+        parent: tagcade.handler.handlers.channel.abstract
+        public: false
+
+    tagcade.handler.handler_manager.channel:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.channel.class%
+            -
+                - @tagcade.handler.handlers.channel.admin
+                - @tagcade.handler.handlers.channel.publisher
+    # end channel #####################################################

@@ -1,0 +1,15 @@
+parameters:
+    # entity class
+    tagcade.entity.core.expression.class: Tagcade\Entity\Core\Expression
+
+services:
+
+    # expression
+    tagcade.repository.expression:
+        class: Tagcade\Repository\Core\ExpressionRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.expression.class%
+
+    # end expression #####################################################

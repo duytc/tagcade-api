@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.library_native_ad_slot.class: Tagcade\Entity\Core\LibraryNativeAdSlot
+    # form class
+    tagcade.form.type.library_native_ad_slot.class: Tagcade\Form\Type\LibraryNativeAdSlotFormType
+
+services:
+
+    # native ad slot lib ######################################################
+
+    tagcade_api.handler.library_native_ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.library_native_ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for native ad slot handler #######
+
+    tagcade.repository.library_native_ad_slot:
+        class: Tagcade\Repository\Core\LibraryNativeAdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\LibraryNativeAdSlot
+
+    tagcade.domain_manager.library_native_ad_slot:
+        class: Tagcade\DomainManager\LibraryNativeAdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.library_native_ad_slot
+
+    tagcade.form.type.library_native_ad_slot:
+        class: %tagcade.form.type.library_native_ad_slot.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_library_native_ad_slot }
+
+    tagcade.handler.handlers.library_native_ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\LibraryNativeAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.library_native_ad_slot
+            - @tagcade.domain_manager.library_native_ad_slot
+
+    tagcade.handler.handlers.library_native_ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\LibraryNativeAdSlotHandler
+        parent: tagcade.handler.handlers.library_native_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.library_native_ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\LibraryNativeAdSlotHandler
+        parent: tagcade.handler.handlers.library_native_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.library_native_ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.library_native_ad_slot.class%
+            -
+                - @tagcade.handler.handlers.library_native_ad_slot.admin
+                - @tagcade.handler.handlers.library_native_ad_slot.publisher
+
+    # end native ad slot lib #####################################################

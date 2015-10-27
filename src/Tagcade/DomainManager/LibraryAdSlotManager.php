@@ -12,6 +12,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -147,6 +148,84 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
     {
         return $this->libraryAdSlotRepository->getLibraryDisplayAdSlotsForPublisher($publisher, $limit, $offset);
     }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return BaseLibraryAdSlotInterface[]
+     */
+    public function getLibraryAdSlotsUnusedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $result = [];
+        $libraryAdSlots = $this->libraryAdSlotRepository->getLibraryAdSlotsForPublisher($publisher, $limit, $offset);
+        foreach($libraryAdSlots as $libraryAdSlot) {
+            if ($libraryAdSlot->getRonAdSlot() === null) {
+                $result[] = $libraryAdSlot;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return BaseLibraryAdSlotInterface[]
+     */
+    public function getLibraryAdSlotsUsedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $result = [];
+        $libraryAdSlots = $this->libraryAdSlotRepository->getLibraryAdSlotsForPublisher($publisher, $limit, $offset);
+
+        foreach($libraryAdSlots as $libraryAdSlot) {
+            if ($libraryAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
+                $result[] = $libraryAdSlot;
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return BaseLibraryAdSlotInterface[]
+     */
+    public function getAllLibraryAdSlotsUnusedInRon($limit = null, $offset = null)
+    {
+        $result = [];
+        $libraryAdSlots = $this->libraryAdSlotRepository->findAll($limit, $offset);
+
+        foreach ($libraryAdSlots as $libraryAdSlot) {
+            if ($libraryAdSlot->getRonAdSlot() === null) {
+                $result[] = $libraryAdSlot;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param null $limit
+     * @param null $offset
+     * @return BaseLibraryAdSlotInterface[]
+     */
+    public function getAllLibraryAdSlotsUsedInRon($limit = null, $offset = null)
+    {
+        $result = [];
+        $libraryAdSlots = $this->libraryAdSlotRepository->findAll($limit, $offset);
+
+        foreach($libraryAdSlots as $libraryAdSlot) {
+            if ($libraryAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
+                $result[] = $libraryAdSlot;
+            }
+        }
+
+        return $result;
+    }
+
 
     /**
      * Get those library ad slots that haven't been referred by any ad slot
