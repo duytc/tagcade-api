@@ -11,7 +11,9 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\PositionInterface;
 
 /**
@@ -87,6 +89,10 @@ class UpdateAdTagPositionListener
         if($adSlot instanceof DisplayAdSlotInterface || $adSlot instanceof LibraryDisplayAdSlotInterface)
         {
             return $this->updatePositionForAdSlot($updatingAdTag);
+        }
+
+        if ($adSlot instanceof NativeAdSlotInterface || $adSlot instanceof LibraryNativeAdSlotInterface) {
+            return [];
         }
 
         throw new LogicException('not support tag of something other than ReportableAdSlotInterface or BaseLibraryAdSlotInterface');
