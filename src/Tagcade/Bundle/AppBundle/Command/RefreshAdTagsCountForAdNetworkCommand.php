@@ -2,7 +2,9 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -24,7 +26,18 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:ad-network:refresh-ad-tag-count')
-            ->setDescription('Recalculate active and paused ad tags for all ad network');
+            ->setDescription('Recalculate active and paused ad tags for all ad network')
+            ->addArgument(
+                'id',
+                InputArgument::OPTIONAL,
+                'The AdNetwork\'s id to be updated'
+            )
+            ->addOption(
+                'all',
+                null,
+                InputOption::VALUE_NONE,
+                'If set, all AdNetworks will get updated'
+            )
         ;
     }
 
@@ -39,27 +52,53 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
     {
         $count = 0;
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
-        $allAdNetworks = $adNetworkManager->all();
-        /**
-         * @var AdNetworkInterface $adNetwork
-         */
-        foreach($allAdNetworks as $adNetwork) {
-            $adTags = $adNetwork->getAdTags();
-            $activeCount = count(array_filter($adTags, function(AdTagInterface $adTag) {
-                return $adTag->isActive();
-            }));
+        if ($input->getOption('all')) {
+            $allAdNetworks = $adNetworkManager->all();
+            /** @var AdNetworkInterface $adNetwork */
+            foreach($allAdNetworks as $adNetwork) {
+                $this->recalculateAdTagCountForAdNetwork($adNetwork);
+                $count++;
+            }
 
-            $pausedCount = count(array_filter($adTags, function(AdTagInterface $adTag) {
-                return !$adTag->isActive();
-            }));
-
-            $adNetwork->setActiveAdTagsCount($activeCount);
-            $adNetwork->setPausedAdTagsCount($pausedCount);
-            $adNetworkManager->save($adNetwork);
-            
-            $count++;
+            $output->writeln(sprintf('%d AdNetwork(s) get updated !', $count));
         }
+        else {
+            $id = $input->getArgument('id');
 
-        $output->writeln(sprintf('%d AdNetwork(s) get updated !', $count));
+            if ($id) {
+                $adNetwork = $adNetworkManager->find(filter_var($id, FILTER_VALIDATE_INT));
+
+                if ($adNetwork instanceof AdNetworkInterface) {
+                    $this->recalculateAdTagCountForAdNetwork($adNetwork);
+                    $count++;
+                    $output->writeln(sprintf('%d AdNetwork(s) get updated !', $count));
+                }
+                else {
+                    $output->writeln('<error>The AdNetwork does not exist</error>');
+                }
+            }
+            else {
+                $output->writeln('<question>Are you missing {id} or --all option ?"</question>');
+                $output->writeln('<question>Try "php app/console tc:ad-network:refresh-ad-tag-count {id}"</question>');
+                $output->writeln('<question>Or "php app/console tc:ad-network:refresh-ad-tag-count --all"</question>');
+            }
+        }
+    }
+
+    private function recalculateAdTagCountForAdNetwork(AdNetworkInterface $adNetwork)
+    {
+        $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
+        $adTags = $adNetwork->getAdTags();
+        $activeCount = count(array_filter($adTags, function(AdTagInterface $adTag) {
+            return $adTag->isActive();
+        }));
+
+        $pausedCount = count(array_filter($adTags, function(AdTagInterface $adTag) {
+            return !$adTag->isActive();
+        }));
+
+        $adNetwork->setActiveAdTagsCount($activeCount);
+        $adNetwork->setPausedAdTagsCount($pausedCount);
+        $adNetworkManager->save($adNetwork);
     }
 }
