@@ -91,10 +91,6 @@ class CDNUpdater implements CDNUpdaterInterface
 
     public function pushRonSlot($ronSlotId)
     {
-        if (!is_int($ronSlotId)) {
-            throw new InvalidArgumentException('invalid ron ad slot id');
-        }
-
         // Creating stream resource
         $ronAdTags = $this->tagCache->getAdTagsForRonAdSlot($ronSlotId);
         if(false === $ronAdTags) {
@@ -153,7 +149,7 @@ class CDNUpdater implements CDNUpdaterInterface
         }
 
         foreach ($data['expressions'] as &$expression) {
-            $temp = preg_replace('/\\${COUNTRY}/', '[%COUNTRY%]', $expression['expression']);
+            $temp = preg_replace('/\\${COUNTRY}/', '"[%COUNTRY%]"', $expression['expression']);
             $expression['expression'] = $temp;
         }
 
