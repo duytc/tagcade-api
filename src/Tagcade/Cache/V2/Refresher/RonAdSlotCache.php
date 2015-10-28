@@ -12,6 +12,7 @@ use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
+use Tagcade\Worker\Manager;
 
 class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterface
 {
@@ -30,12 +31,13 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
     private $libDynamicAdSlotRepository;
 
     function __construct(NamespaceCacheInterface $cache,
+        Manager $workerManager,
         RonAdSlotManagerInterface $ronAdSlotManager,
         LibraryExpressionRepositoryInterface $libExpressionRepository,
         LibraryDynamicAdSlotRepositoryInterface $libDynamicAdSlotRepository
     )
     {
-        parent::__construct($cache);
+        parent::__construct($cache, $workerManager);
         $this->ronAdSlotManager = $ronAdSlotManager;
         $this->libExpressionRepository = $libExpressionRepository;
         $this->libDynamicAdSlotRepository = $libDynamicAdSlotRepository;
@@ -74,6 +76,31 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
 
         return $this->refreshCacheForReferencingDynamicRonAdSlot($ronAdSlot);
     }
+
+    /**
+     *
+     * @param $ronAdSlotId
+     * @return string|false jsons tring of ron slot tags data
+     */
+    public function getAdTagsForRonAdSlot($ronAdSlotId)
+    {
+        $namespace = $this->getNamespace($ronAdSlotId);
+        $this->cache->setNamespace($namespace);
+
+        $cacheKey = 'all_tags_array';
+
+        if ($this->cache->contains($cacheKey)) {
+            return $this->cache->fetch($cacheKey);
+        }
+
+        return false;
+    }
+
+    public function getNamespace($slotId)
+    {
+        return sprintf(self::NAMESPACE_RON_AD_SLOT_CACHE_KEY, $slotId);
+    }
+
 
     /**
      * refresh Cache For Referencing Dynamic Ron Ad Slot (ron ad slot related to a library dynamic ad slot)

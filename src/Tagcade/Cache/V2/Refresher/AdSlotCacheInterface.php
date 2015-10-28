@@ -24,4 +24,10 @@ interface AdSlotCacheInterface
     public function createAdSlotCacheData(BaseAdSlotInterface $adSlot);
 
     public function getNamespace($slotId);
+
+    /**
+     * @param $slotId
+     * @return string|false json string of ad slot cache
+     */
+    public function getAdTagsForAdSlot($slotId);
 }

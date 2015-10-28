@@ -17,6 +17,7 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
+use Tagcade\Worker\Manager;
 
 class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
 {
@@ -40,12 +41,13 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     private $nativeAdSlotManager;
 
     public function __construct(NamespaceCacheInterface $cache,
+        Manager $workerManager,
         DisplayAdSlotManagerInterface $displayAdSlotManager,
         NativeAdSlotManagerInterface $nativeAdSlotManager,
         DynamicAdSlotManagerInterface $dynamicAdSlotManager,
         ExpressionRepositoryInterface $expressionRepository)
     {
-        parent::__construct($cache);
+        parent::__construct($cache, $workerManager);
 
         $this->expressionRepository = $expressionRepository;
         $this->dynamicAdSlotManager = $dynamicAdSlotManager;
@@ -115,11 +117,25 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     public function refreshForCacheKey($cacheKey, ModelInterface $model)
     {
         if ($cacheKey !== self::CACHE_KEY_AD_SLOT) {
-            throw new InvalidArgumentException( sprintf('expect cache key %s', self::CACHE_KEY_AD_SLOT));
+            throw new InvalidArgumentException(sprintf('expect cache key %s', self::CACHE_KEY_AD_SLOT));
         }
 
         return parent::refreshForCacheKey($cacheKey, $model);
     }
+
+    public function getAdTagsForAdSlot($slotId)
+    {
+        $namespace= $this->getNamespace($slotId);
+        $this->cache->setNamespace($namespace);
+        $cacheKey = 'all_tags_array';
+
+        if ($this->cache->contains($cacheKey)) {
+            return $this->cache->fetch($cacheKey);
+        }
+
+        return false;
+    }
+
 
     protected function refreshCacheForReferencingDynamicAdSlot(ReportableAdSlotInterface $adSlot)
     {

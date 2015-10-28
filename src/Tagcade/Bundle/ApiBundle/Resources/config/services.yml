@@ -17,6 +17,7 @@ imports:
     - { resource: services/service.libslottag.yml }
     - { resource: services/service.expression.yml }
     - { resource: services/service.expressionlib.yml }
+    - { resource: services/cdn.yml }
 
 parameters:
     # jwt

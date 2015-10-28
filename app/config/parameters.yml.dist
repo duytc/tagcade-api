@@ -37,3 +37,13 @@ parameters:
         - {threshold: 1000000000, cpmRate: 0.014}
         - {threshold: 1500000000, cpmRate: 0.012}
         - {threshold: 2000000000, cpmRate: 0.010}
+
+    tc.cdn_config:
+        host: '192.168.55.100'
+        secured: false
+        username: 'user'
+        password: 'guest'
+        port: 2121
+        timeout: 90
+        ad_slot_path: adslot/
+        ron_ad_slot_path: ronadslot/

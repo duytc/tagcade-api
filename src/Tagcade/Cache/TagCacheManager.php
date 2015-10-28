@@ -7,6 +7,7 @@ use Tagcade\Cache\V2\TagCache;
 use Tagcade\Cache\Legacy\TagCache as LegacyCache;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
@@ -32,6 +33,20 @@ class TagCacheManager implements TagCacheManagerInterface {
             $this->tagCaches[] = clone $tagCache;
         }
     }
+
+    public function refreshCacheForAdSlot(BaseAdSlotInterface $adSlot)
+    {
+        if ($adSlot instanceof DisplayAdSlotInterface) {
+            $this->refreshCacheForDisplayAdSlot($adSlot);
+        }
+        else if ($adSlot instanceof NativeAdSlotInterface) {
+            $this->refreshCacheForNativeAdSlot($adSlot);
+        }
+        else if ($adSlot instanceof DynamicAdSlotInterface) {
+            $this->refreshCacheForDynamicAdSlot($adSlot);
+        }
+    }
+
 
     /**
      * @param DisplayAdSlotInterface $adSlot

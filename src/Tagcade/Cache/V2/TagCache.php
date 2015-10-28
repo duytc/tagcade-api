@@ -16,6 +16,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
@@ -128,6 +129,25 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     {
         return $this->adSlotCache->refreshCacheForNativeAdSlot($nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot);
     }
+
+    /**
+     * @param int $adSlotId
+     * @return string|false json string
+     */
+    public function getAdTagsForAdSlot($adSlotId)
+    {
+        return $this->adSlotCache->getAdTagsForAdSlot($adSlotId);
+    }
+
+    /**
+     * @param $ronAdSlotId
+     * @return string json string
+     */
+    public function getAdTagsForRonAdSlot($ronAdSlotId)
+    {
+        return $this->ronAdSlotCache->getAdTagsForRonAdSlot($ronAdSlotId);
+    }
+
 
     protected function createAdSlotCacheData(DisplayAdSlotInterface $adSlot)
     {

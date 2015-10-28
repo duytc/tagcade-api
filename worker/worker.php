@@ -10,7 +10,14 @@ $loader = require_once __DIR__ . '/../app/autoload.php';
 
 require_once __DIR__ . '/../app/AppKernel.php';
 
-$kernel = new AppKernel('prod', $debug = false);
+$env = getenv('SYMFONY_ENV') ?: 'prod';
+$debug = false;
+
+if ($env == 'dev') {
+    $debug = true;
+}
+
+$kernel = new AppKernel($env, $debug);
 $kernel->boot();
 
 $container = $kernel->getContainer();
@@ -18,7 +25,8 @@ $entityManager = $container->get('doctrine.orm.entity_manager');
 $queue = $container->get("leezy.pheanstalk");
 // only tasks listed here are able to run
 $availableWorkers = [
-    $container->get('tagcade.worker.workers.update_revenue_worker')
+    $container->get('tagcade.worker.workers.update_revenue_worker'),
+    $container->get('tagcade.worker.workers.update_cdn_worker')
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

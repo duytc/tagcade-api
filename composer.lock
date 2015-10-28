@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "192a2eb2f9a012e8a94580b94b133a04",
-    "content-hash": "93925a0da943f91efeee8f562b04e6b0",
+    "hash": "d87965ac6ff7f42847d2f84f22d5c231",
+    "content-hash": "502bb36e0984e2af5568138a0e2b78f4",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -3069,6 +3069,45 @@
             "time": "2015-05-26 23:43:20"
         },
         {
+            "name": "touki/ftp",
+            "version": "v1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/touki653/php-ftp-wrapper.git",
+                "reference": "9cb0d85fe695058db4a7daafd07b884f987feae3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/touki653/php-ftp-wrapper/zipball/9cb0d85fe695058db4a7daafd07b884f987feae3",
+                "reference": "9cb0d85fe695058db4a7daafd07b884f987feae3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Touki\\FTP": [
+                        "lib/",
+                        "tests/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Touki",
+                    "email": "g.vincendon@vithemis.com"
+                }
+            ],
+            "description": "A fully object oriented library for PHP FTP functions",
+            "time": "2014-06-27 14:24:15"
+        },
+        {
             "name": "twig/twig",
             "version": "v1.22.3",
             "source": {
@@ -3838,7 +3877,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liip/LiipFunctionalTestBundle/zipball/3de5ac111f245b51455dbf748b73450bb2213912",
+                "url": "https://api.github.com/repos/liip/LiipFunctionalTestBundle/zipball/58bb1d2c6717d08ddd2cc3b90ba3567c55942aa9",
                 "reference": "3de5ac111f245b51455dbf748b73450bb2213912",
                 "shasum": ""
             },

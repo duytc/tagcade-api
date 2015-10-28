@@ -14,4 +14,12 @@ interface RonAdSlotCacheInterface {
 
     public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = false);
 
+    /**
+     *
+     * @param $ronAdSlotId
+     * @return string|false jsons tring of ron slot tags data
+     */
+    public function getAdTagsForRonAdSlot($ronAdSlotId);
+
+
 } 

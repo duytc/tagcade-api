@@ -171,5 +171,10 @@ services:
             - @tagcade.domain_manager.ad_network
             - @tagcade.domain_manager.site
 
+    tagcade.worker.workers.update_cdn_worker:
+        class: Tagcade\Worker\Workers\UpdateCDNWorker
+        arguments:
+            - @tagcade.service.cdn.cdn_updater
+
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil

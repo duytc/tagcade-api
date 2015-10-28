@@ -7,6 +7,7 @@ use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Worker\Manager;
 
 abstract class RefresherAbstract {
 
@@ -18,10 +19,15 @@ abstract class RefresherAbstract {
      * @var NamespaceCacheInterface
      */
     protected $cache;
+    /**
+     * @var Manager
+     */
+    private $workerManager;
 
-    function __construct($cache)
+    function __construct($cache, Manager $workerManager)
     {
         $this->cache = $cache;
+        $this->workerManager = $workerManager;
     }
 
     public function refreshForCacheKey($cacheKey, ModelInterface $model)
@@ -40,6 +46,8 @@ abstract class RefresherAbstract {
         $this->cache->setNamespaceVersion($oldVersion);
 
         $this->cache->deleteAll();
+
+        $this->workerManager->updateCdnForEntity($model);
 
         return $this;
     }

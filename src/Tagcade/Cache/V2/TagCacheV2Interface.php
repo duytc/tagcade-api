@@ -19,4 +19,16 @@ interface TagCacheV2Interface {
 
     public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = true);
 
+    /**
+     * @param int $adSlotId
+     * @return array
+     */
+    public function getAdTagsForAdSlot($adSlotId);
+
+    /**
+     * @param $ronAdSlotId
+     * @return array
+     */
+    public function getAdTagsForRonAdSlot($ronAdSlotId);
+
 } 

@@ -23,6 +23,7 @@ services:
         class: Tagcade\Cache\V2\Refresher\AdSlotCache
         arguments:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
+            - @tagcade.worker.manager
             - @tagcade.domain_manager.display_ad_slot
             - @tagcade.domain_manager.native_ad_slot
             - @tagcade.domain_manager.dynamic_ad_slot
@@ -32,6 +33,7 @@ services:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache
         arguments:
             - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
+            - @tagcade.worker.manager
             - @tagcade.domain_manager.ron_ad_slot
             - @tagcade.repository.library_expression
             - @tagcade.repository.library_dynamic_ad_slot
