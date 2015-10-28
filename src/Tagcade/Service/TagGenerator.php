@@ -252,16 +252,16 @@ class TagGenerator
         $jsTemplate = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-ron-slot="%d" data-tc-size="%dx%d"%s%s></script>' . "\n";
 
         if ($publisherUuid !== null) {
-            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), $libraryAdSlot->getWidth(), $libraryAdSlot->getHeight(), ' data-tc-publisher="%s"', '%s');
-            $jsTemplate = sprintf($jsTemplate, $publisherUuid, '%s');
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), $libraryAdSlot->getWidth(), $libraryAdSlot->getHeight(), $uuidAttribute, '%s');
         }
         else {
             $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), $libraryAdSlot->getWidth(), $libraryAdSlot->getHeight(), '', '%s');
         }
 
         if ($segment instanceof SegmentInterface) {
-            $jsTemplate = sprintf($jsTemplate, ' data-tc-report-segment="%d"');
-            $jsTemplate = sprintf($jsTemplate, $segment->getId());
+            $segmentAttribute = sprintf(' data-tc-report-segment="%d"', $segment->getId());
+            $jsTemplate = sprintf($jsTemplate, $segmentAttribute);
 
             $segmentName = htmlspecialchars($segment->getName(), ENT_QUOTES);
             $commentTemplate = sprintf($commentTemplate, $adSlotName, ' - '. $segmentName);
@@ -294,8 +294,8 @@ class TagGenerator
         $jsTemplate = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-ron-slot="%d" data-tc-slot-type="native"%s%s></script>' . "\n";
 
         if ($publisherUuid !== null) {
-            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), ' data-tc-publisher="%s"', '%s');
-            $jsTemplate = sprintf($jsTemplate, $publisherUuid, '%s');
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), $uuidAttribute, '%s');
         }
         else {
             $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $ronAdSlot->getId(), '', '%s');
@@ -305,8 +305,8 @@ class TagGenerator
             $segmentName = htmlspecialchars($segment->getName(), ENT_QUOTES);
             $commentTemplate = sprintf($commentTemplate, $adSlotName, ' - '.$segmentName);
 
-            $jsTemplate = sprintf($jsTemplate, ' data-tc-report-segment="%d"');
-            $jsTemplate = sprintf($jsTemplate, $segment->getId());
+            $segmentAttribute = sprintf(' data-tc-report-segment="%d"', $segment->getId());
+            $jsTemplate = sprintf($jsTemplate, $segmentAttribute);
         }
         else {
             $commentTemplate = sprintf($commentTemplate, $adSlotName, '');
@@ -336,8 +336,8 @@ class TagGenerator
         $jsTemplate = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-ron-slot="%d"%s%s%s></script>' . "\n";
 
         if ($publisherUuid !== null) {
-            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $adSlot->getId(), ' data-tc-publisher="%s"', '%s', '%s');
-            $jsTemplate = sprintf($jsTemplate, $publisherUuid, '%s', '%s');
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $adSlot->getId(), $uuidAttribute, '%s', '%s');
         }
         else {
             $jsTemplate = sprintf($jsTemplate, $this->getBaseTagUrlForPublisher($publisher), $adSlot->getId(), '', '%s', '%s');
@@ -354,8 +354,8 @@ class TagGenerator
             $segmentName = htmlspecialchars($segment->getName(), ENT_QUOTES);
             $commentTemplate = sprintf($commentTemplate, $adSlotName, ' - '.$segmentName);
 
-            $jsTemplate = sprintf($jsTemplate, ' data-tc-report-segment="%d"');
-            $jsTemplate = sprintf($jsTemplate, $segment->getId());
+            $segmentAttribute = sprintf(' data-tc-report-segment="%d"', $segment->getId());
+            $jsTemplate = sprintf($jsTemplate, $segmentAttribute);
         }
         else {
             $commentTemplate = sprintf($commentTemplate, $adSlotName, '');
@@ -378,8 +378,8 @@ class TagGenerator
         $template = '<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-size="%dx%d"%s></script>' . "\n";
 
         if ($publisherUuid !== null) {
-            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight(), ' data-tc-publisher="%s"');
-            $template = sprintf($template, $publisherUuid);
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight(), $uuidAttribute);
         }
         else {
             $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $adSlot->getWidth(), $adSlot->getHeight(), '');
@@ -400,11 +400,11 @@ class TagGenerator
         $tag = sprintf("<!-- %s - %s -->\n", $adSlotName, $site->getDomain());
         $template = '<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"%s%s></script>' . "\n";
         if ($publisherUuid !== null) {
-            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), ' data-tc-publisher="%s"', '%s');
-            $template = sprintf($template, $publisherUuid, '%s');
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $uuidAttribute, '%s');
         }
         else {
-            $template = sprintf($template, '', '%s');
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), '', '%s');
         }
 
         if ($adSlot->isSupportedNative()) {
@@ -413,23 +413,6 @@ class TagGenerator
         else {
             $template = sprintf($template, '');
         }
-
-//        if ($publisherUuid !== null) {
-//            if ($adSlot->isSupportedNative()) {
-//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native" data-tc-publisher="%s"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $publisherUuid);
-//            }
-//            else {
-//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-publisher="%s"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId(), $publisherUuid);
-//            }
-//        }
-//        else {
-//            if ($adSlot->isSupportedNative()) {
-//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
-//            }
-//            else {
-//                $tag .= sprintf('<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d"></script>' . "\n", $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $adSlot->getId());
-//            }
-//        }
 
         return $tag . $template;
     }
@@ -446,8 +429,8 @@ class TagGenerator
         $template = '<script type="text/javascript" src="%s/2.0/%d/adtag.js" data-tc-slot="%d" data-tc-slot-type="native"%s></script>' . "\n";
         $publisherUuid = $site->getPublisher()->getUuid();
         if ($publisherUuid !== null) {
-            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId(), ' data-tc-publisher="%s"');
-            $template = sprintf($template, $publisherUuid);
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId(), $uuidAttribute);
         }
         else {
             $template = sprintf($template, $this->getBaseTagUrlForPublisher($site->getPublisher()), $site->getId(), $nativeAdSlot->getId(), '');
@@ -466,8 +449,8 @@ class TagGenerator
         $template = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-passback="true"%s></script>' . "\n";
         $publisherUuid = $publisher->getUuid();
         if ($publisherUuid !== null) {
-            $template = sprintf($template, $this->getBaseTagUrlForPublisher($publisher), ' data-tc-publisher="%s"');
-            $template = sprintf($template, $publisherUuid);
+            $uuidAttribute = sprintf(' data-tc-publisher="%s"', $publisherUuid);
+            $template = sprintf($template, $this->getBaseTagUrlForPublisher($publisher), $uuidAttribute);
         }
         else {
             $template = sprintf($template, $this->getBaseTagUrlForPublisher($publisher), '');
