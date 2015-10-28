@@ -82,6 +82,8 @@ class CDNUpdater implements CDNUpdaterInterface
             if ($this->pushAdSlot($adSlotId)) {
                 $adSlotPushedCount ++;
             }
+
+            usleep(50);
         }
 
         return $adSlotPushedCount;
@@ -126,6 +128,8 @@ class CDNUpdater implements CDNUpdaterInterface
             if ($this->pushRonSlot($ronSlot)) {
                 $ronAdSlotPushedCount ++;
             }
+
+            usleep(50);
         }
 
         return $ronAdSlotPushedCount;
