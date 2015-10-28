@@ -203,7 +203,15 @@ abstract class LibraryAdSlotAbstract
     }
 
     public function isRonAdSlot() {
-        return $this->ronAdSlot instanceof RonAdSlotInterface;
+        if ($this->ronAdSlot instanceof RonAdSlotInterface) {
+            return array(
+                'id' => $this->ronAdSlot->getId()
+            );
+        }
+
+        return array(
+            'id' => null
+        );
     }
     /**
      * @param LibrarySlotTagInterface $libSlotTags
