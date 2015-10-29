@@ -15,6 +15,7 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
@@ -67,7 +68,10 @@ trait RemoveAdSlotTrait {
          */
         $libraryDynamicAdSlotRepository = $this->getEntityManager()->getRepository(LibraryDynamicAdSlot::class);
         $libraryDynamicAdSlots = $libraryDynamicAdSlotRepository->getByDefaultLibraryAdSlot($libraryAdSlot);
-        if (!empty($libraryExpressions) || !empty($libraryDynamicAdSlots) || count($adSlot->getCoReferencedAdSlots()) > 1 ) {
+        if (!empty($libraryExpressions) ||
+            !empty($libraryDynamicAdSlots) ||
+            (count($adSlot->getCoReferencedAdSlots()) > 1) ||
+            $libraryAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
             // only remove the ad slot itself if library dynamic is referencing or more than one ad slot referencing the library, not removing the library
             $this->getEntityManager()->remove($adSlot);
             $this->getEntityManager()->flush();
