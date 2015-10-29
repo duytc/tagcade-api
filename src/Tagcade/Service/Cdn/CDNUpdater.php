@@ -22,7 +22,7 @@ class CDNUpdater implements CDNUpdaterInterface
     const AD_SLOT_DIR = 'ad_slot_path';
     const RON_AD_SLOT_DIR = 'ron_ad_slot_path';
 
-    const CDN_TEMPLATE = '[%%JSON_P_BEGIN%%] %s [%%JSON_P_END%%]';
+    const CDN_TEMPLATE = '[%%JSON_P_BEGIN%%]%s[%%JSON_P_END%%]';
 
     /**
      * @var
@@ -58,18 +58,8 @@ class CDNUpdater implements CDNUpdaterInterface
         }
 
         $remotePath = sprintf('%s/%d', $this->config[self::AD_SLOT_DIR], $adSlotId);
-        $stream = $this->createFtpStreamFromArray(self::CDN_TEMPLATE, $adTags);
-        // pushing stream to cdn
-        $ftpWrapper = new FTPWrapper($this->ftpConnection);
-        $this->ftpConnection->open();
-        $result = $ftpWrapper->fput($remotePath , $stream);
-        $this->ftpConnection->close();
 
-        if (true !== $result) {
-            throw new RuntimeException(sprintf('Could not push slot %d to cdn server', $adSlotId));
-        }
-
-        return $result;
+        return $this->doPushToCdn($remotePath, $adTags);
     }
 
     public function pushMultipleAdSlots(array $adSlots)
@@ -78,6 +68,7 @@ class CDNUpdater implements CDNUpdaterInterface
         $adSlots = array_filter($adSlots, function($adSlot){
             return is_int($adSlot);
         });
+
         foreach ($adSlots as $adSlotId) {
             if ($this->pushAdSlot($adSlotId)) {
                 $adSlotPushedCount ++;
@@ -98,19 +89,8 @@ class CDNUpdater implements CDNUpdaterInterface
         }
 
         $remotePath = sprintf('%s/%d', $this->config[self::RON_AD_SLOT_DIR], $ronSlotId);
-        $stream = $this->createFtpStreamFromArray(self::CDN_TEMPLATE, $ronAdTags);
 
-        // pushing stream to cdn
-        $ftpWrapper = new FTPWrapper($this->ftpConnection);
-        $this->ftpConnection->open();
-        $result = $ftpWrapper->fput($remotePath , $stream);
-        $this->ftpConnection->close();
-
-        if (true !== $result) {
-            throw new RuntimeException(sprintf('Could not push slot %d to cdn server', $ronSlotId));
-        }
-
-        return $result;
+        return $this->doPushToCdn($remotePath, $ronAdTags);
     }
 
     public function pushMultipleRonSlots(array $ronSlots)
@@ -129,6 +109,25 @@ class CDNUpdater implements CDNUpdaterInterface
         }
 
         return $ronAdSlotPushedCount;
+    }
+
+    protected function doPushToCdn($remotePath, array $data) {
+        try {
+            $stream = $this->createFtpStreamFromArray(self::CDN_TEMPLATE, $data);
+            $ftpWrapper = new FTPWrapper($this->ftpConnection);
+            $this->ftpConnection->open();
+            $result = $ftpWrapper->fput($remotePath , $stream);
+            $this->ftpConnection->close();
+        }
+        catch(\Exception $e) {
+            $result = false;
+        }
+
+        if (true !== $result) {
+            throw new RuntimeException(sprintf('Could not push data to cdn server. Please make sure your connection or ad slot remote folder %s existence', $remotePath));
+        }
+
+        return $result;
     }
 
     protected function createFtpStreamFromArray($templateFormat, array $data)

@@ -32,8 +32,8 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('tc:blocking:remove')
-            ->setDescription('remove blocking ron slot for a certain domain')
+            ->setName('tc:ron-slot:remove-blocking')
+            ->setDescription('Remove blocking ron slot for a certain domain')
             ->addOption('ronSlot', 'r', InputOption::VALUE_OPTIONAL)
             ->addOption('domain', 'd', InputOption::VALUE_OPTIONAL)
         ;

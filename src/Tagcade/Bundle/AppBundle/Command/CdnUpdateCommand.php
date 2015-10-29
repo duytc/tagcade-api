@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Service\Cdn\CDNUpdaterInterface;
@@ -16,6 +17,9 @@ use Tagcade\Service\Cdn\CDNUpdaterInterface;
  */
 class CdnUpdateCommand extends ContainerAwareCommand
 {
+    const RON_AD_SLOT = 'ron';
+    const REGULAR_AD_SLOT = 'reg';
+
 
     /**
      * Configure the CLI task
@@ -27,6 +31,12 @@ class CdnUpdateCommand extends ContainerAwareCommand
         $this
             ->setName('tc:cdn:update')
             ->setDescription('Push the given adslots\'s data to the specified FTP server')
+            ->addOption(
+                'type',
+                't',
+                InputOption::VALUE_OPTIONAL,
+                'Specify the ad slot type: ron or reg'
+            )
             ->addArgument(
                 'ids',
                 InputArgument::IS_ARRAY,
@@ -34,16 +44,9 @@ class CdnUpdateCommand extends ContainerAwareCommand
             )
             ->addOption(
                 'all',
-                null,
+                'a',
                 InputOption::VALUE_NONE,
                 'If set, all ad slots (even ron ad slot) will get pushed to FTP server'
-            )
-            ->addOption(
-                'type',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Specify the ad slot type: ron or slot',
-                false
             )
         ;
     }
@@ -57,56 +60,75 @@ class CdnUpdateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('all')) {
-            $ronAdSlots = $this->getContainer()->get('tagcade.domain_manager.ron_ad_slot')->all();
-            $ronAdSlots = array_map(function(RonAdSlotInterface $ronAdSlot) {
-                return $ronAdSlot->getId();
-            }, $ronAdSlots);
+        $type = $input->getOption('type');
+        $forAll = $input->getOption('all');
+        $ids = $input->getArgument('ids');
 
-            $adSlots = $this->getContainer()->get('tagcade.domain_manager.ad_slot')->all();
-            $adSlots = array_map(function(BaseAdSlotInterface $adSlot) {
-                return $adSlot->getId();
-            }, $adSlots);
+        $ronAdSlots = array();
+        $regularAdSlots = array();
 
-            $this->push($output, $input->getOption('type'), $ronAdSlots, $adSlots);
-            return;
+        if (is_array($ids) && !empty($ids)) {
+            if ($type != self::RON_AD_SLOT && $type != self::REGULAR_AD_SLOT) {
+                throw new RuntimeException('expect type of ad slot');
+            }
+
+            switch($type) {
+                case self::RON_AD_SLOT:
+                    $ronAdSlots = $ids;
+                    break;
+                case self::REGULAR_AD_SLOT:
+                    $regularAdSlots = $ids;
+                    break;
+            }
         }
 
-        $ronAdSlots = $input->getArgument('ids');
-        if (count($ronAdSlots) < 1) {
-            $output->writeln(sprintf('<question>Are you missing some ids ?</question>'));
-            $output->writeln(sprintf('<question>Try php app/console tc:cdn:update --type=ron {id1} {id2} ...</question>'));
-            return;
-        }
-        $adSlots = $ronAdSlots;
+        if (true === $forAll) {
 
-        $this->push($output, $input->getOption('type'), $ronAdSlots, $adSlots);
+            if (null === $type || $type === self::RON_AD_SLOT) {
+                $ronAdSlots = $this->getContainer()->get('tagcade.domain_manager.ron_ad_slot')->all();
+                $ronAdSlots = array_map(function(RonAdSlotInterface $ronAdSlot) {
+                    return $ronAdSlot->getId();
+                }, $ronAdSlots);
+            }
+
+            if (null === $type || $type === self::REGULAR_AD_SLOT) {
+                $regularAdSlots = $this->getContainer()->get('tagcade.domain_manager.ad_slot')->all();
+                $regularAdSlots = array_map(function(BaseAdSlotInterface $adSlot) {
+                    return $adSlot->getId();
+                }, $regularAdSlots);
+
+            }
+
+        }
+
+        try {
+            
+            $count = $this->doPushCdn($type, $ronAdSlots, $regularAdSlots);
+            $output->writeln(sprintf('%d items get pushed to cdn.', $count));
+        }
+        catch(\RuntimeException $ex) {
+            $output->writeln('Could not push data to cdn. ' . $ex);
+        }
     }
 
-    /**
-     * push slots to CDN and write result to output console
-     *
-     * @param OutputInterface $output
-     * @param $type
-     * @param array $ronAdSlots
-     * @param array $adSlots
-     */
-    protected function push(OutputInterface $output, $type, array $ronAdSlots, array $adSlots)
+    protected function doPushCdn($type, array $ronAdSlots, array $adSlots)
     {
         /**  @var CDNUpdaterInterface $cdnUpdater */
         $cdnUpdater = $this->getContainer()->get('tagcade.service.cdn.cdn_updater');
-
+        $count = 0;
         switch ($type) {
-            case 'ron':
-                $output->writeln(sprintf('<info>%d ron ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleRonSlots($ronAdSlots)));
+            case self::RON_AD_SLOT:
+                $count = $cdnUpdater->pushMultipleRonSlots($ronAdSlots);
                 break;
-            case 'slot':
-                $output->writeln(sprintf('<info>%d ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleAdSlots($adSlots)));
+            case self::REGULAR_AD_SLOT:
+                $count = $cdnUpdater->pushMultipleAdSlots($adSlots);
                 break;
             default:
-                $output->writeln(sprintf('<info>%d ron ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleRonSlots($ronAdSlots)));
-                $output->writeln(sprintf('<info>%d ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleAdSlots($adSlots)));
+                $count = $cdnUpdater->pushMultipleRonSlots($ronAdSlots);
+                $count += $cdnUpdater->pushMultipleAdSlots($adSlots);
                 break;
         }
+
+        return $count;
     }
 }

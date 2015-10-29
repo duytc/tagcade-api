@@ -27,9 +27,24 @@ class RonAdSlotChangeListener {
     public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if ($entity instanceof RonAdSlotInterface) {
-            $this->dispatchUpdateCacheEventDueToRonAdSlot($args);
+
+        if (!$entity instanceof RonAdSlotInterface && !$entity instanceof LibraryExpressionInterface) {
+            return;
         }
+
+        if ($entity instanceof RonAdSlotInterface) {
+            $this->dispatchUpdateCacheEventDueToRonAdSlot($entity);
+            return;
+        }
+
+        $libAdSlot =  $entity->getLibraryDynamicAdSlot();
+        $ronAdSlot = $libAdSlot->getRonAdSlot();
+
+        if (!$ronAdSlot instanceof RonAdSlotInterface) {
+            return;
+        }
+
+        $this->dispatchUpdateCacheEventDueToRonAdSlot($ronAdSlot);
     }
 
     /**
@@ -78,6 +93,24 @@ class RonAdSlotChangeListener {
         }
     }
 
+    public function postSoftDelete(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if (!$entity instanceof LibraryExpressionInterface) {
+            return;
+        }
+
+        $libAdSlot =  $entity->getLibraryDynamicAdSlot();
+        $ronAdSlot = $libAdSlot->getRonAdSlot();
+
+        if (!$ronAdSlot instanceof RonAdSlotInterface) {
+            return;
+        }
+
+        $this->dispatchUpdateCacheEventDueToRonAdSlot($ronAdSlot);
+    }
+
     /**
      * handle event on post update. A Library Display or Native or Dynamic Ad Slot, which Ron Ad Slot using, is updated (to database),
      * so need send event Ron Slot change for updating cache
@@ -100,15 +133,10 @@ class RonAdSlotChangeListener {
 
     /**
      * dispatch event on Ron Ad Slot created / changed directly
-     * @param LifecycleEventArgs $args
+     * @param RonAdSlotInterface $ronAdSlot
      */
-    protected function dispatchUpdateCacheEventDueToRonAdSlot(LifecycleEventArgs $args)
+    protected function dispatchUpdateCacheEventDueToRonAdSlot(RonAdSlotInterface $ronAdSlot)
     {
-        $entity = $args->getEntity();
-        if (!$entity instanceof RonAdSlotInterface) {
-            return;
-        }
-
-        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($entity));
+        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($ronAdSlot));
     }
 } 
