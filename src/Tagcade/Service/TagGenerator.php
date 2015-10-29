@@ -466,6 +466,6 @@ class TagGenerator
             return $this->baseTagUrl;
         }
 
-        return 'http://' . $tagDomain;
+        return '//' . $tagDomain;
     }
 } 
