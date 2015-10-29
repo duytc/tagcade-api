@@ -19,6 +19,7 @@ use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotSegmentInterface;
+use Tagcade\Model\ModelInterface;
 
 class RonAdSlotChangeListener {
 
@@ -34,18 +35,27 @@ class RonAdSlotChangeListener {
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof RonAdSlotInterface && !$entity instanceof LibraryExpressionInterface) {
+        if (!$entity instanceof RonAdSlotInterface && !$entity instanceof LibraryExpressionInterface && !$entity instanceof LibrarySlotTagInterface) {
             return;
         }
 
+        $libAdSlot = null;
         if ($entity instanceof RonAdSlotInterface) {
             $this->dispatchUpdateCacheEventDueToRonAdSlot($entity);
             return;
+        }else if ($entity instanceof LibrarySlotTagInterface) {
+
+            $libAdSlot = $entity->getLibraryAdSlot();
+            if (!$libAdSlot->getLibSlotTags()->contains($entity)) {
+                $libAdSlot->getLibSlotTags()->add($entity);
+            }
+
+        }
+        else if ($entity instanceof LibraryExpressionInterface) {
+            $libAdSlot =  $entity->getLibraryDynamicAdSlot();
         }
 
-        $libAdSlot =  $entity->getLibraryDynamicAdSlot();
         $ronAdSlot = $libAdSlot->getRonAdSlot();
-
         if (!$ronAdSlot instanceof RonAdSlotInterface) {
             return;
         }
@@ -98,7 +108,7 @@ class RonAdSlotChangeListener {
             return;
         }
 
-        if ($entity instanceof LibraryAdTagInterface && $args->hasChangedField('html')) {
+        if ($entity instanceof LibraryAdTagInterface && ($args->hasChangedField('html') || $args->hasChangedField('adType'))) {
             $libAdSlots = $this->getLibAdSlotsFromLibAdTag($entity);
             $this->updatingLibraryAdSlots = array_merge($this->updatingLibraryAdSlots, $libAdSlots);
         }
@@ -107,19 +117,37 @@ class RonAdSlotChangeListener {
     public function postSoftDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
+        $ronSlots = [];
+        $ronSlots = array_merge($ronSlots, $this->getAffectedRonSlotFromUpdatingLibraryExpression($entity));
+        $ronSlots = array_merge($ronSlots, $this->getAffectedRonSlotFromUpdatingLibrarySlotTag($entity));
 
-        if (!$entity instanceof LibraryExpressionInterface) {
-            return;
+        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($ronSlots));
+    }
+
+    protected function getAffectedRonSlotFromUpdatingLibrarySlotTag(ModelInterface $entity)
+    {
+        if (!$entity instanceof LibrarySlotTagInterface) {
+            return [];
         }
 
+        $ronAdSlot = $entity->getLibraryAdSlot()->getRonAdSlot();
+
+        return $ronAdSlot instanceof RonAdSlotInterface ? [$ronAdSlot] : [];
+    }
+
+    protected function getAffectedRonSlotFromUpdatingLibraryExpression(ModelInterface $entity)
+    {
+        if (!$entity instanceof LibraryExpressionInterface) {
+            return [];
+        }
         $libAdSlot =  $entity->getLibraryDynamicAdSlot();
         $ronAdSlot = $libAdSlot->getRonAdSlot();
 
         if (!$ronAdSlot instanceof RonAdSlotInterface) {
-            return;
+            return [];
         }
 
-        $this->dispatchUpdateCacheEventDueToRonAdSlot($ronAdSlot);
+        return [$ronAdSlot];
     }
 
     protected function getLibAdSlotsFromLibAdTag(LibraryAdTagInterface $libAdTag) {

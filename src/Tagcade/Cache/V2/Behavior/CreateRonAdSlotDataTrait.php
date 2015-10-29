@@ -152,7 +152,7 @@ trait CreateRonAdSlotDataTrait {
         $groups = array();
 
         foreach ($adTags as $adTag) {
-            if (!$adTag->isActive()) {
+            if (!$adTag->isActive() || null !== $adTag->getDeletedAt()) {
                 continue;
             }
 
@@ -219,7 +219,7 @@ trait CreateRonAdSlotDataTrait {
         }
 
         foreach ($adTags as $adTag) {
-            if (!$adTag->isActive()) {
+            if (!$adTag->isActive() || null !== $adTag->getDeletedAt()) {
                 continue;
             }
 
