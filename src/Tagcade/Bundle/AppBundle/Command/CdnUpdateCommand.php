@@ -2,15 +2,13 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Cdn\CDNUpdaterInterface;
 
 /**
@@ -41,10 +39,10 @@ class CdnUpdateCommand extends ContainerAwareCommand
                 'If set, all ad slots (even ron ad slot) will get pushed to FTP server'
             )
             ->addOption(
-                'ron',
+                'type',
                 null,
-                InputOption::VALUE_REQUIRED,
-                'Specify the ad slot is ron or not',
+                InputOption::VALUE_OPTIONAL,
+                'Specify the ad slot type: ron or slot',
                 false
             )
         ;
@@ -59,49 +57,56 @@ class CdnUpdateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * @var CDNUpdaterInterface $cdnUpdater
-         */
-        $cdnUpdater = $this->getContainer()->get('tagcade.service.cdn.cdn_updater');
-        $isRon = filter_var($input->getOption('ron'), FILTER_VALIDATE_BOOLEAN);
+        if ($input->getOption('all')) {
+            $ronAdSlots = $this->getContainer()->get('tagcade.domain_manager.ron_ad_slot')->all();
+            $ronAdSlots = array_map(function(RonAdSlotInterface $ronAdSlot) {
+                return $ronAdSlot->getId();
+            }, $ronAdSlots);
 
-        if ($isRon) {
-            if ($input->getOption('all')) {
-                $ronAdSlots = $this->getContainer()->get('tagcade.domain_manager.ron_ad_slot')->all();
-                $ronAdSlots = array_map(function(RonAdSlotInterface $ronAdSlot) {
-                    return $ronAdSlot->getId();
-                }, $ronAdSlots);
-            }
-            else {
-                $ronAdSlots = $input->getArgument('ids');
-                if (count($ronAdSlots) < 1) {
-                    $output->writeln(sprintf('<question>Are you missing some ids ?</question>'));
-                    $output->writeln(sprintf('<question>Try php app/console tc:cdn:update --ron=true {id1} {id2} ...</question>'));
-                    return;
-                }
-            }
+            $adSlots = $this->getContainer()->get('tagcade.domain_manager.ad_slot')->all();
+            $adSlots = array_map(function(BaseAdSlotInterface $adSlot) {
+                return $adSlot->getId();
+            }, $adSlots);
 
-            $count = $cdnUpdater->pushMultipleRonSlots($ronAdSlots);
-            $output->writeln(sprintf('<info>%d ron ad slot(s) get pushed !</info>', $count));
+            $this->push($output, $input->getOption('type'), $ronAdSlots, $adSlots);
+            return;
         }
-        else {
-            if ($input->getOption('all')) {
-                $adSlots = $this->getContainer()->get('tagcade.domain_manager.ad_slot')->all();
-                $adSlots = array_map(function(BaseAdSlotInterface $adSlot) {
-                    return $adSlot->getId();
-                }, $adSlots);
-            }
-            else {
-                $adSlots = $input->getArgument('ids');
-                if (count($adSlots) < 1) {
-                    $output->writeln(sprintf('<question>Are you missing some ids ?</question>'));
-                    $output->writeln(sprintf('<question>Try php app/console tc:cdn:update --ron=false {id1} {id2} ...</question>'));
-                    return;
-                }
-            }
 
-            $count = $cdnUpdater->pushMultipleAdSlots($adSlots);
-            $output->writeln(sprintf('<info>%d ad slot(s) get pushed !</info>', $count));
+        $ronAdSlots = $input->getArgument('ids');
+        if (count($ronAdSlots) < 1) {
+            $output->writeln(sprintf('<question>Are you missing some ids ?</question>'));
+            $output->writeln(sprintf('<question>Try php app/console tc:cdn:update --type=ron {id1} {id2} ...</question>'));
+            return;
+        }
+        $adSlots = $ronAdSlots;
+
+        $this->push($output, $input->getOption('type'), $ronAdSlots, $adSlots);
+    }
+
+    /**
+     * push slots to CDN and write result to output console
+     *
+     * @param OutputInterface $output
+     * @param $type
+     * @param array $ronAdSlots
+     * @param array $adSlots
+     */
+    protected function push(OutputInterface $output, $type, array $ronAdSlots, array $adSlots)
+    {
+        /**  @var CDNUpdaterInterface $cdnUpdater */
+        $cdnUpdater = $this->getContainer()->get('tagcade.service.cdn.cdn_updater');
+
+        switch ($type) {
+            case 'ron':
+                $output->writeln(sprintf('<info>%d ron ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleRonSlots($ronAdSlots)));
+                break;
+            case 'slot':
+                $output->writeln(sprintf('<info>%d ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleAdSlots($adSlots)));
+                break;
+            default:
+                $output->writeln(sprintf('<info>%d ron ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleRonSlots($ronAdSlots)));
+                $output->writeln(sprintf('<info>%d ad slot(s) get pushed !</info>', $cdnUpdater->pushMultipleAdSlots($adSlots)));
+                break;
         }
     }
 }

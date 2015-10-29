@@ -49,16 +49,14 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /**
-         * @var PublisherManagerInterface $publisherManager
-         */
+        /** @var PublisherManagerInterface $publisherManager */
         $publisherManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         $count = 0;
+
         if ($input->getOption('all')) {
             $allPublisher = $publisherManager->allPublishers();
-            /**
-             * @var PublisherInterface $publisher
-             */
+
+            /** @var PublisherInterface $publisher */
             foreach($allPublisher as $publisher) {
                 if ($publisher->getUuid() === null) {
                     $count++;
@@ -67,28 +65,28 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
                 }
             }
             $output->writeln(sprintf('<info>%d publisher(s) get updated !</info>', $count) );
+            return;
         }
-        else {
-            $id = $input->getArgument('id');
-            if ($id) {
-                $publisher = $publisherManager->find(filter_var($id, FILTER_VALIDATE_INT));
-                if (!$publisher instanceof PublisherInterface) {
-                    $output->writeln('<error>The publisher does not exist</error>');
-                }
-                else {
-                    if ($publisher->getUuid() === null) {
-                        $count++;
-                        $publisher->setUuid($publisherManager->generateUuid($publisher));
-                        $publisherManager->save($publisher);
-                    }
-                    $output->writeln(sprintf('<info>%d publisher(s) get updated !</info>', $count) );
-                }
-            }
-            else {
-                $output->writeln('<question>Are you missing {id} or --all option ?"</question>');
-                $output->writeln('<question>Try "php app/console tc:publisher:assign-uuid {id}"</question>');
-                $output->writeln('<question>Or "php app/console tc:publisher:assign-uuid --all"</question>');
-            }
+
+        $id = $input->getArgument('id');
+        if (!$id) {
+            $output->writeln('<question>Are you missing {id} or --all option ?"</question>');
+            $output->writeln('<question>Try "php app/console tc:publisher:assign-uuid {id}"</question>');
+            $output->writeln('<question>Or "php app/console tc:publisher:assign-uuid --all"</question>');
+            return;
         }
+
+        $publisher = $publisherManager->find(filter_var($id, FILTER_VALIDATE_INT));
+        if (!$publisher instanceof PublisherInterface) {
+            $output->writeln('<error>The publisher does not exist</error>');
+            return;
+        }
+
+        if ($publisher->getUuid() === null) {
+            $count++;
+            $publisher->setUuid($publisherManager->generateUuid($publisher));
+            $publisherManager->save($publisher);
+        }
+        $output->writeln(sprintf('<info>%d publisher(s) get updated !</info>', $count) );
     }
 }
