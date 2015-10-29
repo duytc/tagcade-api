@@ -36,18 +36,20 @@ services:
         arguments:
             - @event_dispatcher
         tags:
+            - { name: doctrine.event_listener, event: preSoftDelete }
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postSoftDelete }
+            - { name: doctrine.event_listener, event: onFlush }
             - { name: doctrine.event_listener, event: postFlush }
 
-    tagcade_app.event_listener.ronadslot_segment_change_listener:
-        class: Tagcade\Bundle\AppBundle\EventListener\RonAdSlotSegmentChangeListener
-        arguments:
-            - @event_dispatcher
-        tags:
-            - { name: doctrine.event_listener, event: postPersist }
-            - { name: doctrine.event_listener, event: postSoftDelete }
+#    tagcade_app.event_listener.ronadslot_segment_change_listener:
+#        class: Tagcade\Bundle\AppBundle\EventListener\RonAdSlotSegmentChangeListener
+#        arguments:
+#            - @event_dispatcher
+#        tags:
+#            - { name: doctrine.event_listener, event: postPersist }
+#            - { name: doctrine.event_listener, event: postSoftDelete }
 
     tagcade_app.event_listener.update_cache_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\UpdateCacheListener
