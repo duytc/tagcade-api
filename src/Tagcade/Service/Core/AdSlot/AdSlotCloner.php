@@ -46,6 +46,7 @@ class AdSlotCloner implements AdSlotClonerInterface {
         $newLibraryAdSlot = clone $originAdSlot->getLibraryAdSlot();
         $newLibraryAdSlot->setVisible(false);
         $newLibraryAdSlot->setId(null);
+        $newLibraryAdSlot->setRonAdSlot(null); // new library should not contain any RON
         $newLibraryAdSlot->setName($newName);
 
         $newAdSlot->setLibraryAdSlot($newLibraryAdSlot);

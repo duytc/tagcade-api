@@ -139,6 +139,8 @@ class AdTagManager implements AdTagManagerInterface
         $librarySlotTag->setRefId($refId);
 
         $this->em->persist($librarySlotTag);
+        // make sure library slot tag is inserted before it's ad tag
+        $this->em->flush();
 
         return $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
     }

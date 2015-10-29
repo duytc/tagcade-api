@@ -120,7 +120,7 @@ class UpdateAdTagPositionListener
      */
     protected function correctAdTagPositionInList(&$updatingAdTag, array &$adTags)
     {
-        if(!$updatingAdTag instanceof PositionInterface || ($updatingAdTag instanceof AdTagInterface && $updatingAdTag->isInLibrary())) {
+        if(!$updatingAdTag instanceof PositionInterface) {
             return [];
         }
         // sort array asc with respect to position

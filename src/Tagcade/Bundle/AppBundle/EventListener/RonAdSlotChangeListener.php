@@ -10,9 +10,13 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\LibraryAdTag;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotSegmentInterface;
 
@@ -93,6 +97,11 @@ class RonAdSlotChangeListener {
 
             return;
         }
+
+        if ($entity instanceof LibraryAdTagInterface && $args->hasChangedField('html')) {
+            $libAdSlots = $this->getLibAdSlotsFromLibAdTag($entity);
+            $this->updatingLibraryAdSlots = array_merge($this->updatingLibraryAdSlots, $libAdSlots);
+        }
     }
 
     public function postSoftDelete(LifecycleEventArgs $args)
@@ -111,6 +120,26 @@ class RonAdSlotChangeListener {
         }
 
         $this->dispatchUpdateCacheEventDueToRonAdSlot($ronAdSlot);
+    }
+
+    protected function getLibAdSlotsFromLibAdTag(LibraryAdTagInterface $libAdTag) {
+        $slotTags = $libAdTag->getLibSlotTags();
+        if (null === $slotTags) {
+            return [];
+        }
+
+        $libSlots = [];
+        foreach ($slotTags as $slotTag) {
+            /**
+             * @var LibrarySlotTagInterface $slotTag
+             */
+            $libSlot = $slotTag->getLibraryAdSlot();
+            if (!in_array($libSlot, $libSlots)) {
+                $libSlots[] = $libSlot;
+            }
+        }
+
+        return $libSlots;
     }
 
     /**
