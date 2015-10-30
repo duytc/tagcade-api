@@ -108,7 +108,7 @@ class RonAdSlotChangeListener {
             return;
         }
 
-        if ($entity instanceof LibraryAdTagInterface && ($args->hasChangedField('html') || $args->hasChangedField('adType'))) {
+        if ($entity instanceof LibraryAdTagInterface && ($args->hasChangedField('html') || $args->hasChangedField('adType') || $args->hasChangedField('descriptor'))) {
             $libAdSlots = $this->getLibAdSlotsFromLibAdTag($entity);
             $this->updatingLibraryAdSlots = array_merge($this->updatingLibraryAdSlots, $libAdSlots);
         }
