@@ -3,10 +3,10 @@ Tagcade\Entity\Core\DynamicAdSlot:
     properties:
         id:
             expose: true
-            groups: [dynamicadslot.detail, dynamicadslot.summary]
+            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum]
         site:
             expose: true
-            groups: [dynamicadslot.detail, dynamicadslot.summary]
+            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum]
 #        expressions:
 #            expose: true
 #            groups: [dynamicadslot.detail, dynamicadslot.summary]

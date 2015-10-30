@@ -10,6 +10,8 @@ interface LibraryDynamicAdSlotRepositoryInterface extends ObjectRepository
 {
     public function getLibraryDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
+    public function getLibraryDynamicAdSlotsUnusedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @param null $limit

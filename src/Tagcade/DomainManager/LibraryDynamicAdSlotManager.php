@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\DomainManager\Behaviors\RemoveLibraryAdSlotTrait;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
@@ -22,12 +25,17 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
      * @var ReplicatorInterface
      */
     private $replicator;
+    /**
+     * @var RonAdSlotManagerInterface
+     */
+    private $ronAdSlotManager;
 
-    public function __construct(EntityManagerInterface $em, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator)
+    public function __construct(EntityManagerInterface $em, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator, RonAdSlotManagerInterface $ronAdSlotManager)
     {
         $this->em = $em;
         $this->repository = $repository;
         $this->replicator = $replicator;
+        $this->ronAdSlotManager = $ronAdSlotManager;
     }
 
     /**
@@ -46,6 +54,27 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
         if(!$entity instanceof LibraryDynamicAdSlotInterface) throw new InvalidArgumentException('expect LibraryDynamicAdSlotInterface object');
 
         $this->em->persist($entity);
+
+        // create ron ad slot for new created library ad slot in expression
+        $ronAdSlot = $entity->getRonAdSlot();
+        if ($ronAdSlot instanceof RonAdSlotInterface) {
+            //check default library ad slot
+            $defaultLibraryAdSlot = $entity->getDefaultLibraryAdSlot();
+            if ($defaultLibraryAdSlot instanceof ReportableLibraryAdSlotInterface) {
+                $this->ronAdSlotManager->checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate($defaultLibraryAdSlot, $ronAdSlot->getRonAdSlotSegments()->toArray());
+            }
+
+            //check expect library ad slots
+            $libraryExpressions = $entity->getLibraryExpressions();
+            /** @var LibraryExpressionInterface $libraryExpression */
+            foreach($libraryExpressions as $libraryExpression) {
+                $expectLibrary = $libraryExpression->getExpectLibraryAdSlot();
+                if ($expectLibrary instanceof ReportableLibraryAdSlotInterface) {
+                    $this->ronAdSlotManager->checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate($expectLibrary, $ronAdSlot->getRonAdSlotSegments()->toArray());
+                }
+            }
+        }
+
         // creating default ad slot and expression for all referencing slots if the LibraryDynamicAdSlot introduces libraryExpression
         $this->replicator->replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots($entity);
 

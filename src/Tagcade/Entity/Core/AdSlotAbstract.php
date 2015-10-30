@@ -22,6 +22,10 @@ abstract class AdSlotAbstract
      * @var SiteInterface
      */
     protected $site;
+    /**
+     * @var bool
+     */
+    protected $autoCreate = false;
     protected $slotType;
     protected $type; // # a hack to have type output in json
     /**
@@ -33,6 +37,7 @@ abstract class AdSlotAbstract
     public function __construct()
     {
         $this->adTags = new ArrayCollection();
+        $this->autoCreate = false;
     }
 
     /**
@@ -150,5 +155,23 @@ abstract class AdSlotAbstract
     public function setSlotType($slotType)
     {
         $this->slotType = $slotType;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoCreate()
+    {
+        return $this->autoCreate;
+    }
+
+    /**
+     * @param boolean $autoCreate
+     * @return self
+     */
+    public function setAutoCreate($autoCreate)
+    {
+        $this->autoCreate = $autoCreate;
+        return $this;
     }
 }

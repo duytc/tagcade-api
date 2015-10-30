@@ -4,7 +4,6 @@ namespace Tagcade\Security\Authorization\Voter;
 
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\Core\SiteInterface;
 
 class ChannelVoter extends EntityVoterAbstract
 {
@@ -16,7 +15,7 @@ class ChannelVoter extends EntityVoterAbstract
     }
 
     /**
-     * @param SiteInterface $channel
+     * @param ChannelInterface $channel
      * @param UserEntityInterface $user
      * @param $action
      * @return bool

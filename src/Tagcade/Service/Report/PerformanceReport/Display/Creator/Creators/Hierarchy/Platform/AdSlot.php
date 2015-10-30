@@ -2,7 +2,6 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
-use Tagcade\Model\User\Role\Publisher;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;

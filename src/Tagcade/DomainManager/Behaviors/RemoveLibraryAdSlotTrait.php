@@ -11,6 +11,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 
@@ -22,8 +23,9 @@ trait RemoveLibraryAdSlotTrait {
      */
     protected function removeLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot) {
         $adSlots = $libraryAdSlot->getAdSlots();
+        $ronAdSlot = $libraryAdSlot->getRonAdSlot();
 
-        if ($adSlots !== null && count($adSlots) > 0) {
+        if (($adSlots !== null && count($adSlots) > 0) || $ronAdSlot instanceof RonAdSlotInterface) {
             throw new LogicException('There are some slots still referring to this library');
         }
 

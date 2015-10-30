@@ -16,6 +16,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         - country
         - settings
         - moduleConfigs
+        - tagDomain
     properties:
         id:
             expose: true
@@ -44,4 +45,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         settings:
             expose: true
         moduleConfigs:
+            expose: true
+        tagDomain:
             expose: true

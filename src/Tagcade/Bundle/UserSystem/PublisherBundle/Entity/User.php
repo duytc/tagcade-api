@@ -5,11 +5,15 @@ namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Model\User\UserEntityInterface;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+use Tagcade\Exception\LogicException;
 
 class User extends BaseUser implements PublisherInterface
 {
-    protected $id;
 
+    protected $id;
+    protected $uuid;
     protected $billingRate;
 
     protected $firstName;
@@ -22,6 +26,45 @@ class User extends BaseUser implements PublisherInterface
     protected $postalCode;
     protected $country;
     protected $settings; //json string represent setting for report bundle
+    protected $tagDomain;
+
+    /**
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     * @return self
+     */
+    public function setUuid($uuid)
+    {
+        $this->uuid = $uuid;
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function generateAndAssignUuid()
+    {
+        if ($this->uuid === null || empty($this->uuid)) {
+            try {
+                $uuid5 = Uuid::uuid5(Uuid::NAMESPACE_DNS, $this->getEmail());
+                $this->uuid = $uuid5->toString();
+
+            } catch(UnsatisfiedDependencyException $e) {
+                throw new LogicException($e->getMessage());
+            }
+        }
+
+        return $this;
+    }
+
+
     /**
      * @inheritdoc
      */
@@ -205,5 +248,24 @@ class User extends BaseUser implements PublisherInterface
     public function setSettings($settings)
     {
         $this->settings = $settings;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTagDomain()
+    {
+        return $this->tagDomain;
+    }
+
+    /**
+     * @param string $tagDomain
+     * @return self
+     *
+     */
+    public function setTagDomain($tagDomain)
+    {
+        $this->tagDomain = $tagDomain;
+        return $this;
     }
 }

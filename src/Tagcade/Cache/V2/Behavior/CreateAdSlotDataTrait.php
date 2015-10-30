@@ -4,7 +4,7 @@ namespace Tagcade\Cache\V2\Behavior;
 
 
 use Doctrine\Common\Collections\Collection;
-use Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -28,6 +28,10 @@ trait CreateAdSlotDataTrait
 
         if ($model instanceof NativeAdSlotInterface) {
             return $this->createNativeAdSlotCacheData($model);
+        }
+
+        if ($model instanceof DisplayAdSlotInterface) {
+            return $this->createDisplayAdSlotCacheData($model);
         }
 
         throw new LogicException(sprintf('Do not support cache v2 of ', get_class($model)));
@@ -87,6 +91,7 @@ trait CreateAdSlotDataTrait
             'type' => 'display',
             'width' => $adSlot->getWidth(),
             'height' => $adSlot->getHeight(),
+            'passbackMode' => $adSlot->getPassbackMode(),
             'tags' => []
         ];
 
@@ -247,7 +252,7 @@ trait CreateAdSlotDataTrait
         foreach($groupVals as $groupVal) {
             if(!array_key_exists('groupVal', $groupVal)) {
                 $varName = $groupVal['var'];
-                if (in_array($varName, UpdateExpressionInJsListener::$SERVER_VARS)) {
+                if (in_array($varName, ExpressionInJsGenerator::$SERVER_VARS)) {
                     $data['serverVars'][] = $varName;
                 }
             }

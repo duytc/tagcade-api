@@ -1,0 +1,10 @@
+Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag:
+    exclusion_policy: NONE
+    virtual_properties:
+        getRonAdTagId:
+            type: integer
+    properties:
+        ronAdTag:
+            exclude: true
+        segment:
+            exclude: true

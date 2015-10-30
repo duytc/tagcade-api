@@ -5,16 +5,16 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Tagcade\Entity\Core\LibraryDisplayAdSlot;
+use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdTag;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\PositionInterface;
-use Tagcade\Repository\Core\LibraryDisplayAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 
 class ResetStartingPositionListener
@@ -25,7 +25,7 @@ class ResetStartingPositionListener
     public function postSoftDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof PositionInterface) {
+        if(!$entity instanceof PositionInterface || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
             return;
         }
 
@@ -40,22 +40,24 @@ class ResetStartingPositionListener
         $entity = $args->getEntity();
 
         if ($entity instanceof LibraryExpressionInterface && $args->hasChangedField('expectLibraryAdSlot')) {
-            /**
-             * @var LibraryDisplayAdSlotRepositoryInterface $libraryDisplayAdSlotRepository
-             */
-            $libraryDisplayAdSlotRepository = $args->getEntityManager()->getRepository(LibraryDisplayAdSlot::class);
-            $newLibraryDisplayAdSLot = $libraryDisplayAdSlotRepository->find($args->getNewValue('expectLibraryAdSlot'));
+            /** @var LibraryAdSlotRepositoryInterface $libraryAdSlotRepository */
+            $libraryAdSlotRepository = $args->getEntityManager()->getRepository(LibraryAdSlotAbstract::class);
+            $newLibraryAdSLot = $libraryAdSlotRepository->find($args->getNewValue('expectLibraryAdSlot'));
 
-            if(!$newLibraryDisplayAdSLot instanceof LibraryDisplayAdSlotInterface) {
-                throw new LogicException('expect a LibraryDisplayAdSlotInterface object');
+            if(!$newLibraryAdSLot instanceof LibraryDisplayAdSlotInterface && !$newLibraryAdSLot instanceof LibraryNativeAdSlotInterface) {
+                throw new LogicException('expect a LibraryDisplayAdSlotInterface or a LibraryNativeAdSlotInterface  object');
             }
 
-            $this->resetStartingPositionDueToExpectLibraryAdSlotChange($entity, $newLibraryDisplayAdSLot, $args);
+            if ($newLibraryAdSLot instanceof LibraryDisplayAdSlotInterface) {
+                $this->resetStartingPositionDueToExpectLibraryAdSlotChange($entity, $newLibraryAdSLot, $args);
+            }
 
             return;
         }
 
-        if(!$entity instanceof PositionInterface || ($entity instanceof PositionInterface && !$args->hasChangedField('position'))) {
+        if(!$entity instanceof PositionInterface ||
+            ($entity instanceof PositionInterface && (!$args->hasChangedField('position')) && !$args->hasChangedField('active')) ||
+            ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
             return;
         }
 

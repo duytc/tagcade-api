@@ -1,0 +1,67 @@
+parameters:
+    # entity class
+    tagcade.entity.core.library_expression.class: Tagcade\Entity\Core\LibraryExpression
+    #form classes
+    tagcade.form.type.library_expression.class: Tagcade\Form\Type\LibraryExpressionFormType
+
+services:
+
+    # library expression ######################################################
+
+    tagcade_api.handler.library_expression:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.library_expression
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.library_expression:
+        class: Tagcade\Repository\Core\LibraryExpressionRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.library_expression.class%
+
+    tagcade.domain_manager.library_expression:
+        class: Tagcade\DomainManager\LibraryExpressionManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.library_expression
+
+    tagcade.form.type.library_expression:
+        class: %tagcade.form.type.library_expression.class%
+        arguments:
+            - @tagcade_api.service.expression_in_js_generator
+        tags:
+            - { name: form.type, alias: tagcade_form_library_expression }
+
+    tagcade.handler.handlers.library_expression.abstract:
+        class: Tagcade\Handler\Handlers\Core\LibraryExpressionHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.library_expression
+            - @tagcade.domain_manager.library_expression
+
+    tagcade.handler.handlers.library_expression.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\LibraryExpressionHandler
+        parent: tagcade.handler.handlers.library_expression.abstract
+        public: false
+
+    tagcade.handler.handlers.library_expression.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\LibraryExpressionHandler
+        parent: tagcade.handler.handlers.library_expression.abstract
+        public: false
+
+    tagcade.handler.handler_manager.library_expression:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.library_expression.class%
+            -
+                - @tagcade.handler.handlers.library_expression.admin
+                - @tagcade.handler.handlers.library_expression.publisher
+
+    # end ad tag library #####################################################

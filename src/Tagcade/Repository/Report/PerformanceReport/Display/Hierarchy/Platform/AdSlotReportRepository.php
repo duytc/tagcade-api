@@ -12,6 +12,7 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
     public function getReportFor(ReportableAdSlotInterface $adSlot, DateTime $startDate, DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
+            ->leftJoin('r.adSlot', 'sl')
             ->andWhere('r.adSlot = :ad_slot')
             ->setParameter('ad_slot', $adSlot)
             ->getQuery()

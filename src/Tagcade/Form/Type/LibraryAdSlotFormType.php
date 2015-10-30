@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -29,6 +30,12 @@ class LibraryAdSlotFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('width')
             ->add('height')
+            ->add('passbackMode', 'choice' , array(
+                'choices' => array(
+                    'position' => 'Position',
+                    'peerpriority' => 'Peer Priority'
+                )
+            ))
             ->add('autoFit')
             ->add('visible')
             ->add('id')

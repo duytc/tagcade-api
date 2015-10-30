@@ -10,14 +10,16 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
-use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\StringUtilTrait;
 
 class SiteFormType extends AbstractRoleSpecificFormType
 {
+    use StringUtilTrait;
+
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -54,6 +56,14 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 /** @var SiteInterface $site */
                 $site = $event->getData();
                 $form = $event->getForm();
+
+                //validate domain
+                $domain = $site->getDomain();
+                if (!$this->validateDomain($domain)) {
+                    $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
+                }
+
+                $site->setAutoCreate(false);
 
                 if (!$site->getPublisher()->hasAnalyticsModule()) {
                     $site->setEnableSourceReport(false);

@@ -289,6 +289,15 @@ class AdTag implements AdTagInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isInLibrary()
+    {
+        return ($this->libraryAdTag instanceof LibraryAdTagInterface && $this->libraryAdTag->getVisible());
+    }
+
+
+    /**
      * @return mixed
      */
     public function getDeletedAt()

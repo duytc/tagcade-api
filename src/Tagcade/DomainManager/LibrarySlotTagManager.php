@@ -46,15 +46,17 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
     {
         if(!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
 
-        $this->em->persist($librarySlotTag);
+        $newSlotTag = $librarySlotTag->getId() === null;
 
-        if($librarySlotTag->getId() === null) {
+        $this->em->persist($librarySlotTag);
+        //make sure libslottag is inserted before adtags
+        $this->em->flush();
+
+        if(true === $newSlotTag) {
             $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
         } else {
             $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
         }
-
-        $this->em->flush();
     }
 
     /**
@@ -65,6 +67,10 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         if(!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
 
         $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
+
+        $libraryAdSlot = $librarySlotTag->getLibraryAdSlot();
+        $libraryAdSlot->removeLibSlotTag($librarySlotTag);
+        $this->em->merge($libraryAdSlot);
         $this->em->remove($librarySlotTag);
         $this->em->flush();
     }

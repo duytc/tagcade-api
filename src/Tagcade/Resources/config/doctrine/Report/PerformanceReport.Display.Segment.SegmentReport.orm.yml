@@ -1,0 +1,55 @@
+Tagcade\Entity\Report\PerformanceReport\Display\Segment\SegmentReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Segment\SegmentReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_segment_segment
+    uniqueConstraints:
+        unique_platform_site_report_idx:
+            columns: [date, segment_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+        totalOpportunities:
+            type: integer
+        slotOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+        billedRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        billedAmount:
+            type: decimal
+            scale: 4
+            nullable: true
+    manyToOne:
+        segment:
+            targetEntity: Tagcade\Entity\Core\Segment
+    oneToMany:
+        subReports:
+            targetEntity: RonAdSlotReport
+            orderBy: { 'totalOpportunities': 'DESC' }
+            mappedBy: superReport
+            cascade: ["persist", "remove", "detach"]

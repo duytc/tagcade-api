@@ -7,9 +7,11 @@ use Tagcade\Cache\V2\TagCache;
 use Tagcade\Cache\Legacy\TagCache as LegacyCache;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 
 class TagCacheManager implements TagCacheManagerInterface {
 
@@ -31,6 +33,20 @@ class TagCacheManager implements TagCacheManagerInterface {
             $this->tagCaches[] = clone $tagCache;
         }
     }
+
+    public function refreshCacheForAdSlot(BaseAdSlotInterface $adSlot)
+    {
+        if ($adSlot instanceof DisplayAdSlotInterface) {
+            $this->refreshCacheForDisplayAdSlot($adSlot);
+        }
+        else if ($adSlot instanceof NativeAdSlotInterface) {
+            $this->refreshCacheForNativeAdSlot($adSlot);
+        }
+        else if ($adSlot instanceof DynamicAdSlotInterface) {
+            $this->refreshCacheForDynamicAdSlot($adSlot);
+        }
+    }
+
 
     /**
      * @param DisplayAdSlotInterface $adSlot
@@ -91,6 +107,21 @@ class TagCacheManager implements TagCacheManagerInterface {
              * @var TagCache $tagCache
              */
             $tagCache->refreshCacheForNativeAdSlot($nativeAdSlot);
+        }
+    }
+
+    public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = true)
+    {
+        /**
+         * @var TagCache[]
+         */
+        $refreshTagCaches = $this->getTagCachesForVersion(self::VERSION_2);
+
+        foreach ($refreshTagCaches as $tagCache) {
+            /**
+             * @var TagCache $tagCache
+             */
+            $tagCache->refreshCacheForRonAdSlot($ronAdSlot);
         }
     }
 

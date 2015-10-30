@@ -13,6 +13,7 @@ use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -173,5 +174,16 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site)
     {
         return $this->getManager($libraryAdSlot)->getReferencedAdSlotsForSite($libraryAdSlot, $site);
+    }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getAdSlotsForRonAdSlot(RonAdSlotInterface $ronAdSlot, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getByRonAdSlot($ronAdSlot, $limit, $offset);
     }
 }

@@ -54,6 +54,10 @@ interface PublisherManagerInterface
      */
     public function allPublishers();
 
+    /**
+     * @return array
+     */
+    public function allActivePublishers();
 
     /**
      * @param int $id
@@ -90,5 +94,7 @@ interface PublisherManagerInterface
     public function findUserByConfirmationToken($token);
 
     public function updateCanonicalFields(UserInterface $user);
+
+    public function generateUuid(UserInterface $user);
 
 }

@@ -43,3 +43,9 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
             mappedBy: libraryAdSlot
             cascade: ['remove']
+    oneToOne:
+        ronAdSlot:
+            targetEntity: Tagcade\Entity\Core\RonAdSlot
+            mappedBy: libraryAdSlot
+            cascade: ['persist']
+

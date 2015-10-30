@@ -10,6 +10,7 @@ use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 
 class AdTagChangeListener
 {
@@ -35,7 +36,16 @@ class AdTagChangeListener
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) { return $entity instanceof AdTagInterface; }));
+        $this->presoftDeleteAdTags = array_merge(
+            $this->presoftDeleteAdTags,
+            array_filter(
+                $uow->getScheduledEntityDeletions(),
+                function($entity)
+                {
+                    return $entity instanceof AdTagInterface || $entity instanceof LibrarySlotTagInterface;
+                }
+            )
+        );
     }
 
     public function onFlush(OnFlushEventArgs $args)
@@ -62,7 +72,7 @@ class AdTagChangeListener
         array_walk($changedEntities,
             function($entity) use (&$adSlots)
             {
-                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface)
+                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface && !$entity instanceof LibrarySlotTagInterface)
                 {
                     return false;
                 }
@@ -71,6 +81,13 @@ class AdTagChangeListener
 
                 if ($entity instanceof LibraryAdTagInterface ) {
                     $adTags = array_merge($adTags, $entity->getAdTags()->toArray());
+                }
+                else if($entity instanceof LibrarySlotTagInterface) {
+                    // also update cache of RonAdTag which is known as LibrarySlotTag
+                    $ronAdSlot = $entity->getLibraryAdSlot()->getRonAdSlot();
+                    if ($ronAdSlot instanceof RonAdSlotInterface) {
+                        $adSlots[] = $ronAdSlot;
+                    }
                 }
 //                else if ($entity instanceof LibrarySlotTagInterface) {
 //                    $tmpAdTags = $entity->getLibraryAdTag()->getAdTags()->toArray();

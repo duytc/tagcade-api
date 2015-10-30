@@ -193,6 +193,4 @@ abstract class User extends BaseUser implements UserEntityInterface
     {
         $this->type = $type;
     }
-
-
 }

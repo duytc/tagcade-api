@@ -43,4 +43,14 @@ class LibraryDisplayAdSlotRepository extends EntityRepository implements Library
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getLibraryDisplayAdSlotsUnusedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getLibraryDisplayAdSlotsForPublisherQuery($publisher, $limit = null, $offset = null);
+        $qb->andWhere('sl.ronAdSlot IS NULL');
+
+        return $qb->getQuery()->getResult();
+    }
+
+
 }

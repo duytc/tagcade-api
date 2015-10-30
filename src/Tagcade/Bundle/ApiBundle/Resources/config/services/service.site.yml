@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.site.class: Tagcade\Entity\Core\Site
+    # form class
+    tagcade.form.type.site.class: Tagcade\Form\Type\SiteFormType
+
+services:
+
+    # site handler #####################################################
+
+    tagcade_api.handler.site:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.site
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for site handler ##############
+
+    tagcade.repository.site:
+        class: Tagcade\Repository\Core\SiteRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\Site
+
+    tagcade.domain_manager.site:
+        class: Tagcade\DomainManager\SiteManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.site
+
+    tagcade.form.type.site:
+        class: %tagcade.form.type.site.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_site }
+
+    tagcade.handler.handlers.site.abstract:
+        class: Tagcade\Handler\Handlers\Core\SiteHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.site
+            - @tagcade.domain_manager.site
+
+    tagcade.handler.handlers.site.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\SiteHandler
+        parent: tagcade.handler.handlers.site.abstract
+        public: false
+
+    tagcade.handler.handlers.site.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\SiteHandler
+        parent: tagcade.handler.handlers.site.abstract
+        public: false
+
+    tagcade.handler.handler_manager.site:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.site.class%
+            -
+                - @tagcade.handler.handlers.site.admin
+                - @tagcade.handler.handlers.site.publisher
+
+    # end site #####################################################

@@ -1,0 +1,69 @@
+parameters:
+    # entity class
+    tagcade.entity.core.ron_ad_slot.class: Tagcade\Entity\Core\RonAdSlot
+    # form class
+    tagcade.form.type.ron_ad_slot.class: Tagcade\Form\Type\RonAdSlotFormType
+
+services:
+
+    # ron ad slot ######################################################
+
+    tagcade_api.handler.ron_ad_slot:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ron_ad_slot
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ron ad slot handler #######
+
+    tagcade.repository.ron_ad_slot:
+        class: Tagcade\Repository\Core\RonAdSlotRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.ron_ad_slot.class%
+
+    tagcade.domain_manager.ron_ad_slot:
+        class: Tagcade\DomainManager\RonAdSlotManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.ron_ad_slot
+            - @tagcade.repository.site
+            - @tagcade.domain_manager.ad_slot
+        calls:
+            - [setAdSlotGenerator, ["@tagcade_api.service.tag_library.ad_slot_generator_service"]]
+
+    tagcade.form.type.ron_ad_slot:
+        class: %tagcade.form.type.ron_ad_slot.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_ron_ad_slot }
+
+    tagcade.handler.handlers.ron_ad_slot.abstract:
+        class: Tagcade\Handler\Handlers\Core\RonAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ron_ad_slot
+            - @tagcade.domain_manager.ron_ad_slot
+
+    tagcade.handler.handlers.ron_ad_slot.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\RonAdSlotHandler
+        parent: tagcade.handler.handlers.ron_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handlers.ron_ad_slot.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\RonAdSlotHandler
+        parent: tagcade.handler.handlers.ron_ad_slot.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ron_ad_slot:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ron_ad_slot.class%
+            -
+                - @tagcade.handler.handlers.ron_ad_slot.admin
+                - @tagcade.handler.handlers.ron_ad_slot.publisher
+
+    # end ron ad slot #####################################################

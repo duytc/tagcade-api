@@ -18,6 +18,8 @@ services:
     ## Update expression in js, for tagcache latter
     tagcade_api.event_listener.UpdateExpressionInJstListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener
+        arguments:
+            - @tagcade_api.service.expression_in_js_generator
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
@@ -38,4 +40,27 @@ services:
         class: Tagcade\Bundle\ApiBundle\EventListener\ResetStartingPositionListener
         tags:
             - { name: doctrine.event_listener, event: preUpdate, priority: 100 }
+            - { name: doctrine.event_listener, event: postSoftDelete }
+
+    tagcade_api.event_listener.UpdateAdTagCountForAdNetworkListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagCountForAdNetworkListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preSoftDelete }
+            - { name: doctrine.event_listener, event: onFlush }
+
+    tagcade_api.event_listener.UpdateExistingRonSlotDomainCacheListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonSlotDomainCacheListener
+        arguments:
+            - @tagcade.cache.configuration_cache
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postSoftDelete }
+
+    tagcade_api.event_listener.UpdateExistingRonTagSlotCacheListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonTagSlotCacheListener
+        arguments:
+            - @tagcade.cache.configuration_cache
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postSoftDelete }

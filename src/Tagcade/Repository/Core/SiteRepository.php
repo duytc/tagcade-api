@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
@@ -124,5 +125,27 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Check if a site with the given domain already existed
+     *
+     * @param $domain
+     * @param PublisherInterface $publisher
+     * @return bool
+     */
+    public function getSiteByDomainAndPublisher(PublisherInterface $publisher, $domain)
+    {
+        if (!is_string($domain)) {
+            throw new InvalidArgumentException('expect an object of string');
+        }
+
+        $qb = $this->createQueryBuilder('s');
+        $like = $qb->expr()->like('s.domain', '?1');
+        return $qb->where($like)
+            ->andWhere('s.publisher = :publisher_id')
+            ->setParameter(1, '%'. $domain . '%', TYPE::STRING)
+            ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
+            ->getQuery()->getOneOrNullResult();
     }
 }

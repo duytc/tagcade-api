@@ -6,7 +6,8 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 
-class LibraryExpression implements LibraryExpressionInterface{
+class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProducibleInterface
+{
 
     protected $id;
     /**
@@ -37,6 +38,8 @@ class LibraryExpression implements LibraryExpressionInterface{
 
     protected $deletedAt;
 
+    protected $expressionInJs;
+
 
     /**
      * @inheritdoc
@@ -58,12 +61,21 @@ class LibraryExpression implements LibraryExpressionInterface{
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getExpressionDescriptor()
     {
         return $this->expressionDescriptor;
     }
+
+    /**
+     * @return array
+     */
+    public function getDescriptor()
+    {
+        return $this->getExpressionDescriptor();
+    }
+
 
     /**
      * @param string $expressionDescriptor
@@ -157,6 +169,22 @@ class LibraryExpression implements LibraryExpressionInterface{
         $this->expectLibraryAdSlot = $expectLibraryAdSlot;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpressionInJs()
+    {
+        return $this->expressionInJs;
+    }
+
+    /**
+     * @param mixed $expressionInJs
+     */
+    public function setExpressionInJs($expressionInJs)
+    {
+        $this->expressionInJs = $expressionInJs;
     }
 
     function __toString()

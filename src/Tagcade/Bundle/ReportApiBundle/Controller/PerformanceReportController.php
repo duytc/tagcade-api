@@ -8,6 +8,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
@@ -338,6 +339,33 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Rest\Get("/ronadslots/{ronAdSlotId}", requirements={"ronAdSlotId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $ronAdSlotId
+     *
+     * @return array
+     */
+    public function getRonAdSlotAction($ronAdSlotId)
+    {
+        /** @var RonAdSlotInterface $ronAdSlot */
+        $ronAdSlot = $this->get('tagcade.domain_manager.ron_ad_slot')->find($ronAdSlotId);
+
+        if (!$ronAdSlot) {
+            throw new NotFoundHttpException('That ron ad slot does not exist');
+        }
+
+        $this->checkUserPermission($ronAdSlot);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getRonAdSlotReport($ronAdSlot, $this->getParams())
+        );
+    }
+
+    /**
      * @Rest\Get("/adslots/{adSlotId}/adtags", requirements={"adSlotId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -360,6 +388,143 @@ class PerformanceReportController extends FOSRestController
 
         return $this->getResult(
             $this->getReportBuilder()->getAdSlotAdTagsReport($adSlot, $this->getParams())
+        );
+    }
+
+    /**
+     * There's only on ad slot in a single site that was created from an ron ad slot.
+     * Hence report for ron ad slot break down by site is corresponding to break down by ad slot
+     *
+     *
+     * @Rest\Get("/ronadslots/{ronAdSlotId}/segments", requirements={"ronAdSlotId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $ronAdSlotId
+     *
+     * @return array
+     */
+    public function getRonAdSlotSegmentsAction($ronAdSlotId)
+    {
+        /** @var RonAdSlotInterface $ronAdSlot */
+        $ronAdSlot = $this->get('tagcade.domain_manager.ron_ad_slot')->find($ronAdSlotId);
+
+        if (!$ronAdSlot) {
+            throw new NotFoundHttpException('That ron ad slot does not exist');
+        }
+
+        $this->checkUserPermission($ronAdSlot);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getRonAdSlotSegmentsReport($ronAdSlot, $this->getParams())
+        );
+    }
+
+    /**
+     * There's only on ad slot in a single site that was created from an ron ad slot.
+     * Hence report for ron ad slot break down by site is corresponding to break down by ad slot
+     *
+     *
+     * @Rest\Get("/ronadslots/{ronAdSlotId}/sites", requirements={"ronAdSlotId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $ronAdSlotId
+     *
+     * @return array
+     */
+    public function getRonAdSlotSitesAction($ronAdSlotId)
+    {
+        /** @var RonAdSlotInterface $ronAdSlot */
+        $ronAdSlot = $this->get('tagcade.domain_manager.ron_ad_slot')->find($ronAdSlotId);
+
+        if (!$ronAdSlot) {
+            throw new NotFoundHttpException('That ron ad slot does not exist');
+        }
+
+        $this->checkUserPermission($ronAdSlot);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getRonAdSlotSitesReport($ronAdSlot, $this->getParams())
+        );
+    }
+
+    /**
+     * @Rest\Get("/ronadslots/{ronAdSlotId}/adtags", requirements={"ronAdSlotId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @param int $ronAdSlotId
+     *
+     * @return array
+     */
+    public function getRonAdSlotAdTagsAction($ronAdSlotId)
+    {
+        /** @var RonAdSlotInterface $ronAdSlot */
+        $ronAdSlot = $this->get('tagcade.domain_manager.ron_ad_slot')->find($ronAdSlotId);
+
+        if (!$ronAdSlot) {
+            throw new NotFoundHttpException('That ron ad slot does not exist');
+        }
+
+        $this->checkUserPermission($ronAdSlot);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getRonAdSlotAdTagsReport($ronAdSlot, $this->getParams())
+        );
+    }
+
+    /**
+     * @Rest\Get("/segments/{segmentId}", requirements={"segmentId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @param $segmentId
+     * @return array
+     */
+    public function getSegmentAction($segmentId)
+    {
+        $segment = $this->get('tagcade.domain_manager.segment')->find($segmentId);
+
+        if (!$segment) {
+            throw new NotFoundHttpException('That segment does not exist');
+        }
+
+        $this->checkUserPermission($segment);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getSegmentReport($segment, $this->getParams())
+        );
+    }
+
+    /**
+     * @Rest\Get("/segments/{segmentId}/ronadslots", requirements={"segmentId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @param $segmentId
+     * @return array
+     */
+    public function getSegmentRonAdSlotsAction($segmentId)
+    {
+        $segment = $this->get('tagcade.domain_manager.segment')->find($segmentId);
+
+        if (!$segment) {
+            throw new NotFoundHttpException('That segment does not exist');
+        }
+
+        $this->checkUserPermission($segment);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getSegmentRonAdSlotsReport($segment, $this->getParams())
         );
     }
 

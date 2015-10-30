@@ -8,6 +8,7 @@ use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 abstract class LibraryAdSlotAbstract
@@ -21,8 +22,11 @@ abstract class LibraryAdSlotAbstract
     protected $visible = false;
     protected $libType;
     protected $type; // a hack to have type in output json
+
+    /** @var RonAdSlotInterface */
+    protected $ronAdSlot;
     /**
-     * @var LibrarySlotTagInterface
+     * @var LibrarySlotTagInterface[]
      */
     protected $libSlotTags;
 
@@ -42,10 +46,6 @@ abstract class LibraryAdSlotAbstract
         $this->name = $name;
     }
 
-    function __toString()
-    {
-        return $this->id . $this->getName();
-    }
 
     /**
      * @return boolean
@@ -56,6 +56,12 @@ abstract class LibraryAdSlotAbstract
     }
 
     /**
+     * @return bool
+     */
+    public function isBelongedToRonAdSlot() {
+        return $this->ronAdSlot !== null;
+    }
+    /**
      * @return boolean
      */
     public function getVisible()
@@ -64,10 +70,12 @@ abstract class LibraryAdSlotAbstract
     }
     /**
      * @param boolean $visible
+     * @return self
      */
     public function setVisible($visible)
     {
         $this->visible = $visible;
+        return $this;
     }
 
     /**
@@ -80,10 +88,12 @@ abstract class LibraryAdSlotAbstract
 
     /**
      * @param mixed $id
+     * @return self
      */
     public function setId($id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -96,10 +106,12 @@ abstract class LibraryAdSlotAbstract
 
     /**
      * @param PublisherInterface $publisher
+     * @return self
      */
     public function setPublisher(PublisherInterface $publisher)
     {
         $this->publisher = $publisher;
+        return $this;
     }
 
     /**
@@ -119,10 +131,12 @@ abstract class LibraryAdSlotAbstract
 
     /**
      * @param string $name
+     * @return self
      */
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -151,10 +165,12 @@ abstract class LibraryAdSlotAbstract
     }
     /**
      * @param string $type
+     * @return self
      */
     public function setType($type)
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
@@ -170,11 +186,41 @@ abstract class LibraryAdSlotAbstract
     }
 
     /**
+     * @param LibrarySlotTagInterface $libSlotTag
+     * @return $this
+     */
+    public function addLibSlotTag(LibrarySlotTagInterface $libSlotTag)
+    {
+        $this->getLibSlotTags()->add($libSlotTag);
+
+        return $this;
+    }
+
+    public function removeLibSlotTag(LibrarySlotTagInterface $libSlotTag)
+    {
+        $this->getLibSlotTags()->removeElement($libSlotTag);
+        return $this;
+    }
+
+    public function isRonAdSlot() {
+        if ($this->ronAdSlot instanceof RonAdSlotInterface) {
+            return array(
+                'id' => $this->ronAdSlot->getId()
+            );
+        }
+
+        return array(
+            'id' => null
+        );
+    }
+    /**
      * @param LibrarySlotTagInterface $libSlotTags
+     * @return self
      */
     public function setLibSlotTags($libSlotTags)
     {
         $this->libSlotTags = $libSlotTags;
+        return $this;
     }
 
     /**
@@ -191,10 +237,12 @@ abstract class LibraryAdSlotAbstract
 
     /**
      * @param \Tagcade\Model\Core\BaseAdSlotInterface[] $adSlots
+     * @return self
      */
     public function setAdSlots($adSlots)
     {
         $this->adSlots = $adSlots;
+        return $this;
     }
 
     /**
@@ -203,5 +251,29 @@ abstract class LibraryAdSlotAbstract
     public function getAssociatedSlotCount() {
         return count($this->getAdSlots());
     }
-    
+
+    /**
+     * @return RonAdSlotInterface
+     */
+    public function getRonAdSlot()
+    {
+        return $this->ronAdSlot;
+    }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @return self
+     */
+    public function setRonAdSlot($ronAdSlot)
+    {
+        $this->ronAdSlot = $ronAdSlot;
+        return $this;
+    }
+
+
+    function __toString()
+    {
+        return $this->id . $this->getName();
+    }
+
 }

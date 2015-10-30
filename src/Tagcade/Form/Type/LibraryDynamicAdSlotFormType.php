@@ -8,12 +8,14 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -40,7 +42,7 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
             ->add('id')
             ->add('libraryExpressions', 'collection',  array(
                     'mapped' => true,
-                    'type' => new LibraryExpressionFormType(),
+                    'type' => new LibraryExpressionFormType(new ExpressionInJsGenerator()),
                     'allow_add' => true,
                     'allow_delete' => true,
                 )
@@ -150,6 +152,7 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                         $libraryDynamicAdSlot->setPublisher($this->userRole);
                     }
                 }
+
             }
         );
     }

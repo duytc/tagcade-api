@@ -5,12 +5,13 @@ namespace Tagcade\Model\Core;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDisplayAdSlotInterface
+class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDisplayAdSlotInterface, ReportableLibraryAdSlotInterface
 {
     protected $id;
     protected $width;
     protected $height;
     protected $autoFit = false;
+    protected $passbackMode;
     /**
      * @var PublisherInterface
      */
@@ -137,6 +138,25 @@ class LibraryDisplayAdSlot extends LibraryAdSlotAbstract implements LibraryDispl
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getPassbackMode()
+    {
+        return $this->passbackMode;
+    }
+
+    /**
+     * @param string $passbackMode
+     * @return self
+     */
+    public function setPassbackMode($passbackMode)
+    {
+        $this->passbackMode = $passbackMode;
+        return $this;
+    }
+
 
 
     public function __toString()

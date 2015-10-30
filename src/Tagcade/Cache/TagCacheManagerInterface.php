@@ -3,9 +3,11 @@
 namespace Tagcade\Cache;
 
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 
 interface TagCacheManagerInterface
 {
@@ -31,6 +33,10 @@ interface TagCacheManagerInterface
 
     public function refreshCacheForDynamicAdSlot(DynamicAdSlotInterface $dynamicAdSlot);
 
+    public function refreshCacheForAdSlot(BaseAdSlotInterface $adSlot);
+
     public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot);
+
+    public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = true);
 
 }

@@ -92,4 +92,15 @@ interface SiteInterface extends ModelInterface
      * @param mixed $players
      */
     public function setPlayers($players);
+
+    /**
+     * @return boolean
+     */
+    public function isAutoCreate();
+
+    /**
+     * @param boolean $autoCreate
+     * @return self
+     */
+    public function setAutoCreate($autoCreate);
 }

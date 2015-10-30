@@ -12,6 +12,10 @@ Tagcade\Entity\Core\AdSlotAbstract:
             generator:
                 strategy: AUTO
     fields:
+        autoCreate:
+            type: boolean
+            options:
+                default: false
         deletedAt:
             type: date
             nullable: true

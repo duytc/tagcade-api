@@ -7,13 +7,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Entity\Core\AdTag;
-use Tagcade\Entity\Core\LibrarySlotTag;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 
@@ -36,7 +37,7 @@ class UpdateAdTagPositionListener
         $uow = $em->getUnitOfWork();
 
         $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) {
-            return $entity instanceof PositionInterface;
+            return ($entity instanceof LibrarySlotTagInterface || ($entity instanceof AdTagInterface && !$entity->isInLibrary()));
           }
         ));
     }
@@ -124,6 +125,8 @@ class UpdateAdTagPositionListener
         }
         // sort array asc with respect to position
         usort($adTags, function(PositionInterface $a, PositionInterface $b) {
+            if($a->getPosition() === null) return 1;
+            if($b->getPosition() === null) return -1;
             if ($a->getPosition() == $b->getPosition()) {
                 return 0;
             }

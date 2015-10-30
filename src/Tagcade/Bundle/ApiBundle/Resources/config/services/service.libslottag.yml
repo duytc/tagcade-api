@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.library_slot_tag.class: Tagcade\Entity\Core\LibrarySlotTag
+    # form class
+    tagcade.form.type.library_slot_tag.class: Tagcade\Form\Type\LibrarySlotTagFormType
+
+services:
+
+    # library slot tag
+    tagcade_api.handler.library_slot_tag:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.library_slot_tag
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.library_slot_tag:
+        class: Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.library_slot_tag.class%
+
+    tagcade.domain_manager.library_slot_tag:
+        class: Tagcade\DomainManager\LibrarySlotTagManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.library_slot_tag
+        calls:
+            - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
+
+    tagcade.form.type.library_slot_tag:
+        class: %tagcade.form.type.library_slot_tag.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_library_slot_tag }
+
+    tagcade.handler.handlers.library_slot_tag.abstract:
+        class: Tagcade\Handler\Handlers\Core\LibraryAdSlotHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.library_slot_tag
+            - @tagcade.domain_manager.library_slot_tag
+
+    tagcade.handler.handlers.library_slot_tag.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\LibrarySlotTagHandler
+        parent: tagcade.handler.handlers.library_slot_tag.abstract
+        public: false
+
+    tagcade.handler.handlers.library_slot_tag.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\LibrarySlotTagHandler
+        parent: tagcade.handler.handlers.library_slot_tag.abstract
+        public: false
+
+    tagcade.handler.handler_manager.library_slot_tag:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.library_slot_tag.class%
+            -
+                - @tagcade.handler.handlers.library_slot_tag.admin
+                - @tagcade.handler.handlers.library_slot_tag.publisher
+    # end library slot tag

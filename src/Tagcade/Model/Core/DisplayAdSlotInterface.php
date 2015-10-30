@@ -41,6 +41,17 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
     public function setAutoFit($autoFit);
 
     /**
+     * @return string
+     */
+    public function getPassbackMode();
+
+    /**
+     * @param string $passbackMode
+     * @return self
+     */
+    public function setPassbackMode($passbackMode);
+
+    /**
      * @return PersistentCollection
      */
     public function getAdTags();

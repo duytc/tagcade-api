@@ -51,6 +51,23 @@ services:
             - @tagcade.domain_manager.site
             - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site
 
+    # Segment branch
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment\RonAdTag
+        arguments:
+            - @tagcade.service.report.performance_report.est_cpm_calculator
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_slot:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment\RonAdSlot
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag
+            - @tagcade.service.report.performance_report.display.billing.billing_calculator
+
+    tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.segment:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment\Segment
+        arguments:
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_slot
 
     # legacy access to live performance report data
 
@@ -85,6 +102,11 @@ services:
                 - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_tag
                 - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site
                 - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_network
+                # segment hierarchy
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.segment
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_slot
+                - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag
+
             - @tagcade.service.report.performance_report.display.counter.cache_event_counter
 
 
@@ -93,3 +115,5 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.service.report.performance_report.display.creator.report_creator
+            - @tagcade.repository.segment
+            - @tagcade.domain_manager.ron_ad_slot

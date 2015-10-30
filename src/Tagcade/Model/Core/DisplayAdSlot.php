@@ -106,10 +106,6 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         return self::TYPE_DISPLAY;
     }
 
-    public function __toString()
-    {
-        return $this->id . $this->getName();
-    }
 
     /**
      * @return LibraryDisplayAdSlotInterface
@@ -129,6 +125,32 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getPassbackMode()
+    {
+        if ($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+            return $this->libraryAdSlot->getPassbackMode();
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $passbackMode
+     * @return self
+     */
+    public function setPassbackMode($passbackMode)
+    {
+        if ($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+            $this->libraryAdSlot->setPassbackMode($passbackMode);
+        }
+
+        return $this;
+    }
+
 
     /**
      * Calculate CheckSum string of an given AdSlot
@@ -154,5 +176,11 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         }
 
         return md5(serialize($array));
+    }
+
+
+    public function __toString()
+    {
+        return $this->id . $this->getName();
     }
 }

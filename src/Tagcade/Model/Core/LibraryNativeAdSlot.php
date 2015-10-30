@@ -8,7 +8,7 @@ use Tagcade\Entity\Core\AdSlotLibAbstract;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Model\Core\SiteInterface;
 
-class LibraryNativeAdSlot extends LibraryAdSlotAbstract implements LibraryNativeAdSlotInterface
+class LibraryNativeAdSlot extends LibraryAdSlotAbstract implements LibraryNativeAdSlotInterface, ReportableLibraryAdSlotInterface
 {
     protected $id;
     /**

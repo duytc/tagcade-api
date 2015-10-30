@@ -15,6 +15,10 @@ class Site implements SiteInterface
     protected $publisher;
     protected $name;
     protected $domain;
+    /**
+     * @var bool
+     */
+    protected $autoCreate = false;
     protected $adSlots;
     protected $enableSourceReport;
     /** @var SourceReportSiteConfigInterface[] */
@@ -34,6 +38,7 @@ class Site implements SiteInterface
         $this->domain = $domain;
         $this->adSlots = new ArrayCollection();
         $this->channelSites = new ArrayCollection();
+        $this->autoCreate = false;
     }
 
     public function getId()
@@ -183,11 +188,6 @@ class Site implements SiteInterface
         return $channels;
     }
 
-    public function __toString()
-    {
-        return $this->id . $this->getName();
-    }
-
     /**
      * @return mixed
      */
@@ -202,5 +202,29 @@ class Site implements SiteInterface
     public function setPlayers($players)
     {
         $this->players = $players;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoCreate()
+    {
+        return $this->autoCreate;
+    }
+
+    /**
+     * @param boolean $autoCreate
+     * @return self
+     */
+    public function setAutoCreate($autoCreate)
+    {
+        $this->autoCreate = $autoCreate;
+        return $this;
+    }
+
+
+    public function __toString()
+    {
+        return $this->id . $this->getName();
     }
 }

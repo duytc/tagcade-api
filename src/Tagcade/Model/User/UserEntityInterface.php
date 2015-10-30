@@ -72,6 +72,8 @@ interface UserEntityInterface extends ModelInterface
      */
     public function getUserRoles();
 
+    public function isEnabled();
+
     public function getType();
 
     public function setType($type);

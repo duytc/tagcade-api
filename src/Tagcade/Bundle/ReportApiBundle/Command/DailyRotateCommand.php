@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator;
 
 class DailyRotateCommand extends ContainerAwareCommand
@@ -25,7 +26,8 @@ class DailyRotateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('start rotating...');
-
+        $adSlotManager = $this->getContainer()->get('tagcade.domain_manager.ad_slot');
+        $eventCounter = new TestEventCounter($adSlotManager->allReportableAdSlots());
         $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
@@ -37,7 +39,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         // create report from redis data
         $reportDate = new DateTime('yesterday');
         $dailyReportCreator->setReportDate($reportDate);
-
+        $eventCounter->refreshTestData();
         $dailyReportCreator->createAndSave(
             $userManager->allPublishers(),
             $adNetworkManager->all()

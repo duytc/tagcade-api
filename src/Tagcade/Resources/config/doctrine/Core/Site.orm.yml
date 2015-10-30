@@ -6,6 +6,12 @@ Tagcade\Entity\Core\Site:
         soft_deleteable:
             field_name: deletedAt
             time_aware: false
+    uniqueConstraints:
+        site_compound_primary_key:
+            columns:
+                - domain
+                - publisher_id
+                - deleted_at
     id:
         id:
             type: integer
@@ -18,8 +24,12 @@ Tagcade\Entity\Core\Site:
         domain:
             type: string
             length: 255
+        autoCreate:
+             type: boolean
+             options:
+                default: false
         deletedAt:
-            type: date
+            type: datetime
             nullable: true
         enableSourceReport:
             type: boolean

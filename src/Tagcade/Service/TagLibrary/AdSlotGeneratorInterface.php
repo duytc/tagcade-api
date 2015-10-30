@@ -49,7 +49,8 @@ interface AdSlotGeneratorInterface
      * generate DisplayAdSlot From LibraryDisplayAdSlot For Sites
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @param SiteInterface[] $sites
+     * @param int $returnAdSlot
      * @return int number of links created
      */
-    public function generateAdSlotFromLibraryForSites(BaseLibraryAdSlotInterface $libraryAdSlot, array $sites);
+    public function generateAdSlotFromLibraryForSites(BaseLibraryAdSlotInterface $libraryAdSlot, array $sites, $returnAdSlot = 0);
 }

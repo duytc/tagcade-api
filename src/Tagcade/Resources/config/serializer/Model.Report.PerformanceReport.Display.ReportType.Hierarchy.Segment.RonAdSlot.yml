@@ -1,0 +1,10 @@
+Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot:
+    exclusion_policy: NONE
+    virtual_properties:
+        getRonAdSlotId:
+            type: integer
+        getRonAdSlotType:
+            type: string
+    properties:
+        ronAdSlot:
+            exclude: true

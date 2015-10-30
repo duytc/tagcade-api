@@ -5,11 +5,13 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface BaseLibraryAdSlotInterface extends ModelInterface
 {
     /**
-     * @param mixed $id
+     * @param int $id
+     * @return self
      */
     public function setId($id);
 
@@ -26,7 +28,7 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
 
     /**
      * @param $visible
-     * @return mixed
+     * @return self
      */
     public function setVisible($visible);
 
@@ -34,6 +36,11 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
      * @return mixed
      */
     public function isVisible();
+
+    /**
+     * @return bool
+     */
+    public function isBelongedToRonAdSlot();
 
     /**
      * @return mixed
@@ -51,7 +58,20 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
     public function getLibSlotTags();
 
     /**
-     * @param LibrarySlotTagInterface $libSlotTags
+     * @param LibrarySlotTagInterface $libSlotTag
+     * @return $this
+     */
+    public function addLibSlotTag(LibrarySlotTagInterface $libSlotTag);
+
+    /**
+     * @param LibrarySlotTagInterface $libSlotTag
+     * @return self
+     */
+    public function removeLibSlotTag(LibrarySlotTagInterface $libSlotTag);
+
+    /**
+     * @param array $libSlotTags
+     * @return self
      */
     public function setLibSlotTags($libSlotTags);
 
@@ -61,9 +81,25 @@ interface BaseLibraryAdSlotInterface extends ModelInterface
     public function getPublisherId();
 
     /**
+     * @return PublisherInterface|null
+     */
+    public function getPublisher();
+
+    /**
      * return int
      */
     public function getAssociatedSlotCount();
+
+    /**
+     * @return RonAdSlotInterface
+     */
+    public function getRonAdSlot();
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @return self
+     */
+    public function setRonAdSlot($ronAdSlot);
 
     /**
      * @return string

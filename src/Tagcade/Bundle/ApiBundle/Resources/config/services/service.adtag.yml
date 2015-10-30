@@ -1,0 +1,70 @@
+parameters:
+    # entity class
+    tagcade.entity.core.ad_tag.class: Tagcade\Entity\Core\AdTag
+    # form class
+    tagcade.form.type.ad_tag.class: Tagcade\Form\Type\AdTagFormType
+
+services:
+
+    # ad tag ######################################################
+
+    tagcade_api.handler.ad_tag:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ad_tag
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.ad_tag:
+        class: Tagcade\Repository\Core\AdTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.ad_tag.class%
+
+    tagcade.domain_manager.ad_tag:
+        class: Tagcade\DomainManager\AdTagManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.ad_tag
+            - @tagcade.repository.library_slot_tag
+        calls:
+            - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
+
+    tagcade.form.type.ad_tag:
+        class: %tagcade.form.type.ad_tag.class%
+        arguments:
+            - @tagcade.repository.ad_slot
+        tags:
+            - { name: form.type, alias: tagcade_form_ad_tag }
+
+    tagcade.handler.handlers.ad_tag.abstract:
+        class: Tagcade\Handler\Handlers\Core\AdTagHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ad_tag
+            - @tagcade.domain_manager.ad_tag
+
+    tagcade.handler.handlers.ad_tag.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\AdTagHandler
+        parent: tagcade.handler.handlers.ad_tag.abstract
+        public: false
+
+    tagcade.handler.handlers.ad_tag.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\AdTagHandler
+        parent: tagcade.handler.handlers.ad_tag.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ad_tag:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ad_tag.class%
+            -
+                - @tagcade.handler.handlers.ad_tag.admin
+                - @tagcade.handler.handlers.ad_tag.publisher
+
+    # end ad tag #####################################################
