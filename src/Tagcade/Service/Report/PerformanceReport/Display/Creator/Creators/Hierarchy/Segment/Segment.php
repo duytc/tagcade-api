@@ -35,7 +35,7 @@ class Segment extends CreatorAbstract implements SegmentInterface
             ->setDate($this->getDate())
         ;
 
-        $ronAdSlots = $segment->getRonAdSlots();
+        $ronAdSlots = $segment->getReportableRonAdSlots();
         if (count($ronAdSlots) > 0) {
             foreach ($ronAdSlots as $ronAdSlot) {
                 $report->addSubReport(

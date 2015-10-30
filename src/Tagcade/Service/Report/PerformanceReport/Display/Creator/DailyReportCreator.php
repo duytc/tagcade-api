@@ -5,6 +5,8 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
+use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -83,6 +85,15 @@ class DailyReportCreator
 
         $ronAdSlotsWithoutSegment = $this->ronAdSlotManager->all();
         foreach($ronAdSlotsWithoutSegment as $ronAdSlot) {
+            if (!$ronAdSlot instanceof RonAdSlotInterface) {
+                continue;
+            }
+
+            $lib = $ronAdSlot->getLibraryAdSlot();
+            if (!$lib instanceof ReportableLibraryAdSlotInterface) {
+                continue;
+            }
+
             $ronAdSlotReport = $this->reportCreator->getReport(
                 new RonAdSlotReportType($ronAdSlot)
             );

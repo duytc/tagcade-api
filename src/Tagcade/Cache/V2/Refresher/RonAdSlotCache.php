@@ -3,6 +3,7 @@
 namespace Tagcade\Cache\V2\Refresher;
 
 
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateRonAdSlotDataTrait;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
@@ -29,18 +30,24 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
      * @var LibraryDynamicAdSlotRepositoryInterface
      */
     private $libDynamicAdSlotRepository;
+    /**
+     * @var ExpressionInJsGeneratorInterface
+     */
+    private $expressionInJsGenerator;
 
     function __construct(NamespaceCacheInterface $cache,
         Manager $workerManager,
         RonAdSlotManagerInterface $ronAdSlotManager,
         LibraryExpressionRepositoryInterface $libExpressionRepository,
-        LibraryDynamicAdSlotRepositoryInterface $libDynamicAdSlotRepository
+        LibraryDynamicAdSlotRepositoryInterface $libDynamicAdSlotRepository,
+        ExpressionInJsGeneratorInterface $expressionInJsGenerator
     )
     {
         parent::__construct($cache, $workerManager);
         $this->ronAdSlotManager = $ronAdSlotManager;
         $this->libExpressionRepository = $libExpressionRepository;
         $this->libDynamicAdSlotRepository = $libDynamicAdSlotRepository;
+        $this->expressionInJsGenerator = $expressionInJsGenerator;
     }
 
     /**
@@ -164,4 +171,14 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
 
         return $dynamicRonSlots;
     }
+
+    /**
+     * @return ExpressionInJsGeneratorInterface
+     */
+    protected function getExpressionInJsGenerator()
+    {
+        return $this->expressionInJsGenerator;
+    }
+
+
 }

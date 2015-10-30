@@ -55,7 +55,9 @@ class ResetStartingPositionListener
             return;
         }
 
-        if(!$entity instanceof PositionInterface || ($entity instanceof PositionInterface && !$args->hasChangedField('position')) || ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
+        if(!$entity instanceof PositionInterface ||
+            ($entity instanceof PositionInterface && (!$args->hasChangedField('position')) && !$args->hasChangedField('active')) ||
+            ($entity instanceof AdTagInterface && $entity->isInLibrary())) {
             return;
         }
 

@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\Segment;
 use Tagcade\Model\Core\SegmentInterface;
@@ -44,4 +45,11 @@ interface RonAdSlotManagerInterface extends ManagerInterface
      * @return array
      */
     public function getRonAdSlotsWithoutSegment($limit = null, $offset = null);
+
+    /**
+     * @param ReportableLibraryAdSlotInterface $libraryAdSlot
+     * @param array $ronAdSlotSegments
+     * @return mixed
+     */
+    public function checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate(ReportableLibraryAdSlotInterface $libraryAdSlot, array $ronAdSlotSegments);
 }

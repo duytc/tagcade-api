@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Tagcade\Cache\ConfigurationCacheInterface;
 use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
@@ -33,9 +34,9 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:ron-slot:remove-blocking')
-            ->setDescription('Remove blocking ron slot for a certain domain')
-            ->addOption('ronSlot', 'r', InputOption::VALUE_OPTIONAL)
-            ->addOption('domain', 'd', InputOption::VALUE_OPTIONAL)
+            ->setDescription('Remove blocking ron slots for a certain domain or all domains for a certain ron slot or unblock everything')
+            ->addOption('ronSlot', 'r', InputOption::VALUE_OPTIONAL, 'Id of the ron slot to be unblocked')
+            ->addOption('domain', 'd', InputOption::VALUE_OPTIONAL, 'The domain that ron slot(s) should be unblocked')
         ;
     }
 
@@ -48,60 +49,95 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $ronSlotId = (int)$input->getOption('ronSlot');
+        $ronSlotId = $input->getOption('ronSlot');
         $domain = $input->getOption('domain');
-
-        if (null === $ronSlotId) {
-            $this->removeAllBlockingRonSlots();
-            $output->writeln('All blocking ron slots are unblocked');
-
-            return;
-        }
-        /**
-         * @var RonAdSlotManagerInterface $ronAdSlotManager
-         */
-        $ronAdSlotManager = $this->getContainer()->get('tagcade.domain_manager.ron_ad_slot');
-        $ronSlot = $ronAdSlotManager->find($ronSlotId);
-        if (!$ronSlot instanceof RonAdSlotInterface) {
-            $output->writeln('Not found that ron slot');
-        }
 
         /**
          * @var \Redis $redis
          */
         $redis = $this->getContainer()->get('redis_array.performance_report_data');
-        if (null !== $domain) {
-            $domainRonSlotKey = sprintf(self::FIELD_RON_SLOT_DOMAIN, $ronSlotId, $domain);
-            if (!$redis->sIsMember(self::REDIS_SET_BLOCKING_DOMAIN_RON, $domainRonSlotKey) ) {
-                $output->writeln('the ron slot is not blocked on this domain');
-            }
 
-            $redis->sRemove(self::REDIS_SET_BLOCKING_DOMAIN_RON, $domainRonSlotKey);
-            $output->writeln('the ron slot is now unblocked on that domain');
+        if (null === $ronSlotId && null === $domain) {
+            $this->removeAllBlockingRonSlots($redis);
+            $output->writeln('All ron slots are unblocked');
 
             return;
         }
 
+
+        if (null !== $ronSlotId && null !== $domain) {
+            $this->removeBlockingRonSlotOnDomain($redis, $ronSlotId, $domain);
+            $output->writeln('The ron slot is now unblocked on that domain');
+
+            return;
+        }
+
+        if (null !== $ronSlotId) {
+            $this->removeBlockingRonSlot($redis, $ronSlotId);
+            $output->writeln('The ron slot is now unblocked on all domains');
+
+            return;
+        }
+
+        $this->removeBlockingDomain($redis, $domain);
+
+        $output->writeln('All ron slots are unblocked on that domain');
+    }
+
+    protected function removeBlockingRonSlot(\RedisArray $redis, $id)
+    {
+        if (null === $id) {
+            throw new InvalidArgumentException('Expect a valid id for ron slot');
+        }
         // remove blocking for ron slot id
         $members = $redis->sMembers(self::REDIS_SET_BLOCKING_DOMAIN_RON);
         foreach ($members as $ronSlotDomain) {
-            $searchKey = sprintf('ron_slot_%d', $ronSlotId);
+            $searchKey = sprintf('ron_slot_%d', $id);
             if (strpos($ronSlotDomain, $searchKey) === 0) {
                 $redis->sRemove(self::REDIS_SET_BLOCKING_DOMAIN_RON, $ronSlotDomain);
             }
         }
 
-
-        $output->writeln('The ron slot is now unblocked');
+        return true;
     }
 
-    protected function removeAllBlockingRonSlots()
+    protected function removeBlockingDomain(\RedisArray $redis, $domain)
     {
-        /**
-         * @var \Redis $redis
-         */
-        $redis = $this->getContainer()->get('tagcade.domain_manager.ron_ad_slot');
-        $redis->delete(self::REDIS_SET_BLOCKING_DOMAIN_RON);
+        if (null === $domain) {
+            throw new InvalidArgumentException('expect a valid domain');
+        }
 
+        // remove blocking for ron slot id
+        $members = $redis->sMembers(self::REDIS_SET_BLOCKING_DOMAIN_RON);
+        foreach ($members as $ronSlotDomain) {
+            $searchKey = sprintf('domain_%s', $domain);
+            if (strpos($ronSlotDomain, $searchKey) >= 0) {
+                $redis->sRemove(self::REDIS_SET_BLOCKING_DOMAIN_RON, $ronSlotDomain);
+            }
+        }
+
+        return true;
+
+    }
+
+    protected function removeBlockingRonSlotOnDomain(\RedisArray $redis, $id, $domain)
+    {
+        if (null === $id || null === $domain) {
+            throw new InvalidArgumentException(sprintf('Expect valid id and domain. Input was id=%d and domain=%s', $id, $domain));
+        }
+
+        $domainRonSlotKey = sprintf(self::FIELD_RON_SLOT_DOMAIN, $id, $domain);
+        if (!$redis->sIsMember(self::REDIS_SET_BLOCKING_DOMAIN_RON, $domainRonSlotKey) ) {
+            return false;
+        }
+
+        $redis->sRemove(self::REDIS_SET_BLOCKING_DOMAIN_RON, $domainRonSlotKey);
+
+        return true;
+    }
+
+    protected function removeAllBlockingRonSlots(\RedisArray $redis)
+    {
+        $redis->delete(self::REDIS_SET_BLOCKING_DOMAIN_RON);
     }
 }

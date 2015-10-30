@@ -109,6 +109,19 @@ class Segment implements SegmentInterface
         else return [];
     }
 
+    public function getReportableRonAdSlots()
+    {
+        $ronAdSlots = $this->getRonAdSlots();
+
+        return array_filter(
+            $ronAdSlots,
+            function (RonAdSlotInterface $ronAdSlot)
+            {
+                return $ronAdSlot->getLibraryAdSlot() instanceof ReportableLibraryAdSlotInterface;
+            }
+        );
+    }
+
 
     public function __toString()
     {

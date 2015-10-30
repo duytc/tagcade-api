@@ -11,6 +11,7 @@ Tagcade\Entity\Core\Site:
             columns:
                 - domain
                 - publisher_id
+                - deleted_at
     id:
         id:
             type: integer
@@ -28,7 +29,7 @@ Tagcade\Entity\Core\Site:
              options:
                 default: false
         deletedAt:
-            type: date
+            type: datetime
             nullable: true
         enableSourceReport:
             type: boolean

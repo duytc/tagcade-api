@@ -46,7 +46,7 @@ class UpdateExistingRonSlotDomainCacheListener
      *
      * @param LifecycleEventArgs $args
      */
-    public function postRemove(LifecycleEventArgs $args)
+    public function postSoftDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
         if ($entity instanceof BaseAdSlotInterface) {

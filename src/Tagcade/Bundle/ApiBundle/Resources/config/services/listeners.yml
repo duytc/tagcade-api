@@ -55,7 +55,7 @@ services:
             - @tagcade.cache.configuration_cache
         tags:
             - { name: doctrine.event_listener, event: postPersist }
-            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: postSoftDelete }
 
     tagcade_api.event_listener.UpdateExistingRonTagSlotCacheListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonTagSlotCacheListener
@@ -63,4 +63,4 @@ services:
             - @tagcade.cache.configuration_cache
         tags:
             - { name: doctrine.event_listener, event: postPersist }
-            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: postSoftDelete }

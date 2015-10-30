@@ -4,6 +4,7 @@ namespace Tagcade\Cache\V2\Behavior;
 
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Entity\Core\RonAdSlot;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
@@ -152,7 +153,7 @@ trait CreateRonAdSlotDataTrait {
         $groups = array();
 
         foreach ($adTags as $adTag) {
-            if (!$adTag->isActive()) {
+            if (!$adTag->isActive() || null !== $adTag->getDeletedAt()) {
                 continue;
             }
 
@@ -219,7 +220,7 @@ trait CreateRonAdSlotDataTrait {
         }
 
         foreach ($adTags as $adTag) {
-            if (!$adTag->isActive()) {
+            if (!$adTag->isActive() || null !== $adTag->getDeletedAt()) {
                 continue;
             }
 
@@ -302,7 +303,7 @@ trait CreateRonAdSlotDataTrait {
             //step 1. set 'expressions' for data: get expressionInJS of each expression in expressions
             array_walk($libraryExpressions,
                 function (LibraryExpressionInterface $expression) use (&$data) {
-                    array_push($data['expressions'], $expression->getExpressionInJs());
+                    array_push($data['expressions'], $this->createExpressionInJs($expression));
 
                     $expressionDescriptor = $expression->getExpressionDescriptor();
                     $groupVals = $expressionDescriptor['groupVal'];
@@ -365,4 +366,40 @@ trait CreateRonAdSlotDataTrait {
             }
         }
     }
+
+    protected function createExpressionInJs(LibraryExpressionInterface $expression)
+    {
+        $convertedExpression = $this->getExpressionInJsGenerator()->generateExpressionInJs($expression);
+
+        if (null !== $convertedExpression) {
+
+            $expInJs = [
+                'vars'=> $convertedExpression['vars'],
+                'expression' => $convertedExpression['expression']
+            ];
+
+            $libraryAdSlot = $expression->getExpectLibraryAdSlot();
+            $ronAdSlot = $libraryAdSlot->getRonAdSlot();
+
+            if ($ronAdSlot instanceof RonAdSlotInterface) {
+                $expInJs['expectedAdSlot'] = $ronAdSlot->getId();
+            }
+            else {
+                $expInJs['expectedLibraryAdSlot'] = $expression->getExpectLibraryAdSlot()->getId();
+            }
+
+            if (is_int($expression->getStartingPosition())) {
+                $expInJs['startingPosition'] = $expression->getStartingPosition();
+            }
+
+            return $expInJs;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return ExpressionInJsGeneratorInterface
+     */
+    protected abstract function getExpressionInJsGenerator();
 } 

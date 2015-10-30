@@ -4,6 +4,8 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
+use Tagcade\Entity\Core\LibraryDynamicAdSlot;
+use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Entity\Core\RonAdSlot;
 use Tagcade\Entity\Core\RonAdSlotSegment;
 use Tagcade\Entity\Core\Site;
@@ -20,6 +22,8 @@ use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 use Tagcade\Repository\Core\RonAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Service\StringUtil;
@@ -142,15 +146,43 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         if (!$entity instanceof RonAdSlotInterface) {
             throw new InvalidArgumentException('expect RonAdSlotInterface object');
         }
+
         $adSlots = $this->adSlotManager->getAdSlotsForRonAdSlot($entity);
         if (!empty($adSlots)) {
             throw new LogicException('this ron ad slot had been referred by another ad slot');
+        }
+
+        if ($this->checkIfRonAdSlotIsReferredByDynamicRonAdSlot($entity)) {
+            throw new LogicException('There are some dynamic ron ad slot still referring to this ron ad slot');
         }
 
         $this->em->remove($entity);
         $this->em->flush();
     }
 
+    protected function checkIfRonAdSlotIsReferredByDynamicRonAdSlot(RonAdSlotInterface $ronAdSlot)
+    {
+        $libraryAdSlot = $ronAdSlot->getLibraryAdSlot();
+        if (!$libraryAdSlot instanceof ReportableLibraryAdSlotInterface) {
+            return false;
+        }
+        /**
+         * @var LibraryExpressionRepositoryInterface $libraryExpressionRepository
+         */
+        $libraryExpressionRepository = $this->em->getRepository(LibraryExpression::class);
+        $libraryExpressions = $libraryExpressionRepository->getByExpectLibraryAdSlot($libraryAdSlot);
+        /**
+         * @var LibraryDynamicAdSlotRepositoryInterface $libraryDynamicAdSlotRepository
+         */
+        $libraryDynamicAdSlotRepository = $this->em->getRepository(LibraryDynamicAdSlot::class);
+        $libraryDynamicAdSlots = $libraryDynamicAdSlotRepository->getByDefaultLibraryAdSlot($libraryAdSlot);
+
+        if (!empty($libraryExpressions) || !empty($libraryDynamicAdSlots)) {
+            return true;
+        }
+
+        return false;
+    }
     /**
      * @return ModelInterface
      */

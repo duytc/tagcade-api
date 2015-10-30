@@ -37,6 +37,7 @@ services:
             - @tagcade.domain_manager.ron_ad_slot
             - @tagcade.repository.library_expression
             - @tagcade.repository.library_dynamic_ad_slot
+            - @tagcade_api.service.expression_in_js_generator
 
     tagcade.cache.tag_cache_manager:
         class: Tagcade\Cache\TagCacheManager

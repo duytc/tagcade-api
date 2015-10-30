@@ -167,8 +167,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
                     function (array $expElement) use (&$vars){
 
                         $exp = $this->createExpressionObject($expElement);
-                        array_push($vars, $exp['vars']);
-
+                        $vars = array_merge($vars, $exp['vars']);
                         return $exp['expression'];
                     },
                     $expressionAsGroup
@@ -178,6 +177,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         // filter unique
         $vars = array_unique($vars, SORT_REGULAR);
+        $vars = array_values($vars);
 
         return ['vars'=>$vars, 'expression'=>$expString];
 
@@ -206,7 +206,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         $exp = $this->getConditionInJS($expressionDescriptor[self::KEY_EXPRESSION_VAR], $expressionDescriptor[self::KEY_EXPRESSION_CMP], $val);
 
-        return ['vars'=>['name'=>$expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type'=>$type], 'expression'=>$exp];
+        return ['vars'=>[['name'=>$expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type'=>$type]], 'expression'=>$exp];
     }
 
     /**

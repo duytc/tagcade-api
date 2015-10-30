@@ -45,4 +45,9 @@ interface SegmentInterface extends ModelInterface
      * @return array
      */
     public function getRonAdSlots();
+
+    /**
+     * @return mixed
+     */
+    public function getReportableRonAdSlots();
 }

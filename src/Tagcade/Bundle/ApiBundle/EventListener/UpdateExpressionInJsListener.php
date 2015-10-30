@@ -10,10 +10,12 @@ use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Form\Type\ExpressionFormType;
 use Tagcade\Form\Type\LibraryExpressionFormType;
+use Tagcade\Form\Type\RonAdSlotFormType;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Entity\Core\Expression;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 
 class UpdateExpressionInJsListener {
 
