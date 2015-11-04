@@ -157,14 +157,7 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
      */
     public function getLibraryAdSlotsUnusedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        $result = [];
-        $libraryAdSlots = $this->libraryAdSlotRepository->getLibraryAdSlotsForPublisher($publisher, $limit, $offset);
-        foreach($libraryAdSlots as $libraryAdSlot) {
-            if ($libraryAdSlot->getRonAdSlot() === null) {
-                $result[] = $libraryAdSlot;
-            }
-        }
-        return $result;
+        return $this->libraryAdSlotRepository->getAllLibraryAdSlotsUnusedInRon($publisher->getId(), $limit, $offset);
     }
 
     /**
@@ -175,16 +168,7 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
      */
     public function getLibraryAdSlotsUsedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        $result = [];
-        $libraryAdSlots = $this->libraryAdSlotRepository->getLibraryAdSlotsForPublisher($publisher, $limit, $offset);
-
-        foreach($libraryAdSlots as $libraryAdSlot) {
-            if ($libraryAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
-                $result[] = $libraryAdSlot;
-            }
-        }
-
-        return $result;
+        return $this->libraryAdSlotRepository->getAllLibraryAdSlotsUsedInRon($publisher->getId(), $limit, $offset);
     }
 
 
@@ -195,16 +179,7 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
      */
     public function getAllLibraryAdSlotsUnusedInRon($limit = null, $offset = null)
     {
-        $result = [];
-        $libraryAdSlots = $this->libraryAdSlotRepository->findAll($limit, $offset);
-
-        foreach ($libraryAdSlots as $libraryAdSlot) {
-            if ($libraryAdSlot->getRonAdSlot() === null) {
-                $result[] = $libraryAdSlot;
-            }
-        }
-
-        return $result;
+        return $this->libraryAdSlotRepository->getAllLibraryAdSlotsUnusedInRon($limit, $offset);
     }
 
     /**
@@ -214,16 +189,7 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
      */
     public function getAllLibraryAdSlotsUsedInRon($limit = null, $offset = null)
     {
-        $result = [];
-        $libraryAdSlots = $this->libraryAdSlotRepository->findAll($limit, $offset);
-
-        foreach($libraryAdSlots as $libraryAdSlot) {
-            if ($libraryAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
-                $result[] = $libraryAdSlot;
-            }
-        }
-
-        return $result;
+        return $this->libraryAdSlotRepository->getAllLibraryAdSlotsUsedInRon($limit, $offset);
     }
 
 

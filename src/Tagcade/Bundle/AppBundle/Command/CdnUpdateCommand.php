@@ -3,6 +3,7 @@
 namespace Tagcade\Bundle\AppBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,7 +41,7 @@ class CdnUpdateCommand extends ContainerAwareCommand
             ->addArgument(
                 'ids',
                 InputArgument::IS_ARRAY,
-                'The ids of list ad slots to be pushed'
+                'The ids of list ad slots to be pushed. Example: tc:cdn:update id1, id2, id3'
             )
             ->addOption(
                 'all',
@@ -103,7 +104,7 @@ class CdnUpdateCommand extends ContainerAwareCommand
 
         try {
             
-            $count = $this->doPushCdn($type, $ronAdSlots, $regularAdSlots);
+            $count = $this->doPushCdn($type, $ronAdSlots, $regularAdSlots, $output);
             $output->writeln(sprintf('%d items get pushed to cdn.', $count));
         }
         catch(\RuntimeException $ex) {
@@ -111,24 +112,41 @@ class CdnUpdateCommand extends ContainerAwareCommand
         }
     }
 
-    protected function doPushCdn($type, array $ronAdSlots, array $adSlots)
+    protected function doPushCdn($type, array $ronAdSlots, array $adSlots, OutputInterface $output)
+    {
+        switch ($type) {
+            case self::RON_AD_SLOT:
+                return $this->doPushSlots(self::RON_AD_SLOT, $ronAdSlots, $output);
+            case self::REGULAR_AD_SLOT:
+                return $this->doPushSlots(self::REGULAR_AD_SLOT, $adSlots, $output);
+            default:
+                $count = $this->doPushSlots(self::RON_AD_SLOT, $ronAdSlots, $output);
+                $count += $this->doPushSlots(self::REGULAR_AD_SLOT, $adSlots, $output);
+                return $count;
+        }
+    }
+
+    protected function doPushSlots($type, array $slots, OutputInterface $output)
     {
         /**  @var CDNUpdaterInterface $cdnUpdater */
         $cdnUpdater = $this->getContainer()->get('tagcade.service.cdn.cdn_updater');
-        $count = 0;
-        switch ($type) {
-            case self::RON_AD_SLOT:
-                $count = $cdnUpdater->pushMultipleRonSlots($ronAdSlots);
-                break;
-            case self::REGULAR_AD_SLOT:
-                $count = $cdnUpdater->pushMultipleAdSlots($adSlots);
-                break;
-            default:
-                $count = $cdnUpdater->pushMultipleRonSlots($ronAdSlots);
-                $count += $cdnUpdater->pushMultipleAdSlots($adSlots);
-                break;
-        }
+        $progress = new ProgressBar($output, count($slots));
+        $progress->start();
+        $completed = 0;
+        foreach($slots as $slot) {
+            $status = $type == self::RON_AD_SLOT ? $cdnUpdater->pushRonSlot($slot, $closeConnection = false) : $cdnUpdater->pushAdSlot($slot, $closeConnection = false);
+            if ($status) {
+                $completed++;
+            }
 
-        return $count;
+            if ($completed % 20 == 0) {
+                $progress->setCurrent($completed);
+            }
+        }
+        $progress->finish();
+        $output->writeln('');
+        $cdnUpdater->closeFtpConnection();
+
+        return $completed;
     }
 }

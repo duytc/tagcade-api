@@ -18,12 +18,14 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Service\StringUtil;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Service\StringUtilTrait;
 
 /**
  * @Rest\RouteResource("RonAdslot")
  */
 class RonAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use StringUtilTrait;
     /**
      *
      * @Rest\View(
@@ -86,7 +88,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      *      serializerGroups={"dynamicadslot.minimum", "nativeadslot.summary", "displayadslot.summary", "site.minimum"}
      * )
      *
-     * @Rest\QueryParam(name="domain", description="domain for search")
+     * @Rest\QueryParam(name="domain", description="domain for search", nullable=true)
      *
      * @param int $id
      * @return FormTypeInterface|View
@@ -104,11 +106,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $domain = $paramFetcher->get('domain');
 
-        $urlParsed = parse_url(strtolower($domain));
-        if (!$urlParsed) {
-            throw new LogicException('invalid domain');
-        }
-        $domain = $urlParsed['path'] === null ? $urlParsed['host'] : $urlParsed['path'];
+        $domain = $this->extractDomain($domain);
 
         $adSlot = $this->get('tagcade.repository.ad_slot')->getAdSlotForPublisherAndDomainAndLibraryAdSlot($libraryAdSlot->getPublisher(), $libraryAdSlot, $domain);
         if (!$adSlot instanceof BaseAdSlotInterface) {
@@ -138,12 +136,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
 
         $domain = $request->get('domain');
 
-        $urlParsed = parse_url(strtolower($domain));
-        if (!$urlParsed) {
-            throw new LogicException('invalid domain');
-        }
-        $domain = $urlParsed['path'] === null ? $urlParsed['host'] : $urlParsed['path'];
-
+        $domain = $this->extractDomain($domain);
         $adSlot =  $this->get('tagcade.domain_manager.ron_ad_slot')->createAdSlotFromRonAdSlotAndDomain($ronAdSlot, $domain);
 
         $routeOptions = array(

@@ -18,19 +18,23 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 class TagGenerator
 {
-    protected $baseTagUrl;
+    const HTTP_PROTOCOL = 'http://';
+    const HTTPS_PROTOCOL = 'https://';
+    const PARAMETER_DOMAIN = 'domain';
+    const PARAMETER_SECURE = 'secure';
+    protected $defaultTagUrl;
     /**
      * @var RonAdSlotManagerInterface
      */
     private $ronAdSlotManager;
 
     /**
-     * @param string $baseUrl
+     * @param array $defaultTagUrl
      * @param RonAdSlotManagerInterface $ronAdSlotManager
      */
-    public function __construct($baseUrl, RonAdSlotManagerInterface $ronAdSlotManager)
+    public function __construct($defaultTagUrl, RonAdSlotManagerInterface $ronAdSlotManager)
     {
-        $this->baseTagUrl = rtrim($baseUrl, '/');
+        $this->defaultTagUrl = $defaultTagUrl;
         $this->ronAdSlotManager = $ronAdSlotManager;
     }
 
@@ -462,10 +466,14 @@ class TagGenerator
     protected function getBaseTagUrlForPublisher(PublisherInterface $publisher)
     {
         $tagDomain = $publisher->getTagDomain();
-        if ($tagDomain === null || strlen($tagDomain) < 1) {
-            return $this->baseTagUrl;
+        if ($tagDomain === null || empty($tagDomain)) {
+            return $this->defaultTagUrl[self::PARAMETER_SECURE] ? self::HTTPS_PROTOCOL . $this->defaultTagUrl[self::PARAMETER_DOMAIN] : self::HTTP_PROTOCOL . $this->defaultTagUrl[self::PARAMETER_DOMAIN];
         }
 
-        return '//' . $tagDomain;
+        if (!isset($tagDomain[self::PARAMETER_SECURE]) || false === $tagDomain[self::PARAMETER_SECURE]) {
+            return self::HTTP_PROTOCOL . $tagDomain[self::PARAMETER_DOMAIN];
+        }
+
+        return self::HTTPS_PROTOCOL . $tagDomain[self::PARAMETER_DOMAIN];
     }
 } 

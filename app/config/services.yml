@@ -126,7 +126,7 @@ services:
     tagcade.service.tag_generator:
         class: Tagcade\Service\TagGenerator
         arguments:
-            - %tc.base_tag_url%
+            - %tc.default_tag_url%
             - @tagcade.domain_manager.ron_ad_slot
 
     tagcade.service.console_output:

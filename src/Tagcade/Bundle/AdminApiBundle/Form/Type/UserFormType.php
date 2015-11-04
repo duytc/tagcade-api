@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -97,9 +98,24 @@ class UserFormType extends AbstractRoleSpecificFormType
                 $form = $event->getForm();
                 //validate tag domain if there's
                 $tagDomain = $publisher->getTagDomain();
-                if ($tagDomain !== null && !$this->validateDomain($tagDomain)) {
-                    $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain)));
-                    return;
+
+                if (!is_array($tagDomain) && $tagDomain !== null) {
+                    throw new InvalidArgumentException('expect array object');
+                }
+
+                if (is_array($tagDomain)) {
+                    if (!isset($tagDomain['domain'])) {
+                        throw new InvalidArgumentException('domain is missing');
+                    }
+
+                    if (!$this->validateDomain($tagDomain['domain'])) {
+                        $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain['domain'])));
+                        return;
+                    }
+
+                    if (isset($tagDomain['secure']) && !is_bool($tagDomain['secure'])) {
+                        throw new InvalidArgumentException('expect true or false');
+                    }
                 }
 
                 if ($this->userRole instanceof AdminInterface) {

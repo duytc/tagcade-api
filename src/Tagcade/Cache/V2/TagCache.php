@@ -111,7 +111,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
      */
     public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
-        return $this->adSlotCache->refreshCacheForDisplayAdSlot($adSlot, $alsoRefreshRelatedDynamicAdSlot);
+       return $this->adSlotCache->refreshCacheForDisplayAdSlot($adSlot, $alsoRefreshRelatedDynamicAdSlot);
     }
 
     /**

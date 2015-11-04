@@ -15,7 +15,7 @@ use Touki\FTP\FTPWrapper;
 class CDNUpdater implements CDNUpdaterInterface
 {
     /**
-     * @var ConnectionInterface
+     * @var ConnectionInterface|Connection
      */
     private $ftpConnection;
 
@@ -49,7 +49,7 @@ class CDNUpdater implements CDNUpdaterInterface
         $this->tagCache = $tagCache;
     }
 
-    public function pushAdSlot($adSlotId)
+    public function pushAdSlot($adSlotId, $closeConnection = true)
     {
         // Creating stream resource
         $adTags = $this->tagCache->getAdTagsForAdSlot($adSlotId);
@@ -59,28 +59,30 @@ class CDNUpdater implements CDNUpdaterInterface
 
         $remotePath = sprintf('%s/%d', $this->config[self::AD_SLOT_DIR], $adSlotId);
 
-        return $this->doPushToCdn($remotePath, $adTags);
+        return $this->doPushToCdn($remotePath, $adTags, $closeConnection);
     }
 
     public function pushMultipleAdSlots(array $adSlots)
     {
         $adSlotPushedCount = 0;
         $adSlots = array_filter($adSlots, function($adSlot){
-            return is_int($adSlot);
+            return is_numeric($adSlot) && (int)$adSlot > 0;
         });
 
         foreach ($adSlots as $adSlotId) {
-            if ($this->pushAdSlot($adSlotId)) {
+            if ($this->pushAdSlot($adSlotId, $closeConnection = false)) {
                 $adSlotPushedCount ++;
             }
 
             usleep(50);
         }
 
+        $this->closeFtpConnection();
+
         return $adSlotPushedCount;
     }
 
-    public function pushRonSlot($ronSlotId)
+    public function pushRonSlot($ronSlotId, $closeConnection = true)
     {
         // Creating stream resource
         $ronAdTags = $this->tagCache->getAdTagsForRonAdSlot($ronSlotId);
@@ -90,37 +92,60 @@ class CDNUpdater implements CDNUpdaterInterface
 
         $remotePath = sprintf('%s/%d', $this->config[self::RON_AD_SLOT_DIR], $ronSlotId);
 
-        return $this->doPushToCdn($remotePath, $ronAdTags);
+        return $this->doPushToCdn($remotePath, $ronAdTags, $closeConnection);
     }
 
     public function pushMultipleRonSlots(array $ronSlots)
     {
         $ronAdSlotPushedCount = 0;
         $ronSlots = array_filter($ronSlots, function($ronSlot) {
-            return is_int($ronSlot);
+            return is_numeric($ronSlot) && (int)$ronSlot > 0;
         });
 
         foreach ($ronSlots as $ronSlot) {
-            if ($this->pushRonSlot($ronSlot)) {
+            if ($this->pushRonSlot($ronSlot, $closeConnection = false)) {
                 $ronAdSlotPushedCount ++;
             }
 
             usleep(50);
         }
 
+        $this->closeFtpConnection();
+
         return $ronAdSlotPushedCount;
     }
 
-    protected function doPushToCdn($remotePath, array $data) {
+    public function closeFtpConnection()
+    {
+        if (!$this->ftpConnection instanceof ConnectionInterface) {
+            return;
+        }
+
+        if (!$this->ftpConnection->isConnected()) {
+            return;
+        }
+
+        $this->ftpConnection->close();
+    }
+
+    protected function doPushToCdn($remotePath, array $data, $closeConnection = false) {
         try {
             $stream = $this->createFtpStreamFromArray(self::CDN_TEMPLATE, $data);
             $ftpWrapper = new FTPWrapper($this->ftpConnection);
-            $this->ftpConnection->open();
+            if (!$this->ftpConnection->isConnected()) {
+                $this->ftpConnection->open();
+            }
+
             $result = $ftpWrapper->fput($remotePath , $stream);
-            $this->ftpConnection->close();
+
+            if (true === $closeConnection) {
+                $this->closeFtpConnection();
+            }
         }
         catch(\Exception $e) {
             $result = false;
+
+            $this->closeFtpConnection();
         }
 
         if (true !== $result) {

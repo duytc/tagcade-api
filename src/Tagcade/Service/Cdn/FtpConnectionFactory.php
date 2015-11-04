@@ -11,7 +11,7 @@ class FtpConnectionFactory implements FtpConnectionFactoryInterface
     const ENABLE_SECURITY = 'secured';
     const HOST = 'host';
     const USER_NAME = 'username';
-    const PASSWORD = 'username';
+    const PASSWORD = 'password';
     const PORT = 'port';
     const TIME_OUT = 'timeout';
     /**

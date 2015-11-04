@@ -41,5 +41,5 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             type: json_array
             nullable: true
         tagDomain:
-            type: string
+            type: json_array
             nullable: true
