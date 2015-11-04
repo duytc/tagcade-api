@@ -21,7 +21,7 @@ parameters:
 
     tc.default_tag_url:
         domain: 'tags.tagcade.dev'
-        secure: false
+        secure: true
 
     tc.legacy.live_performance_report.redis_hosts: [127.0.0.1:6379] # host:port pairs
 
