@@ -2,6 +2,7 @@
 
 namespace Tagcade\Entity\Core;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Core\AdNetwork as AdNetworkModel;
 
 class AdNetwork extends AdNetworkModel
@@ -16,5 +17,9 @@ class AdNetwork extends AdNetworkModel
     protected $libraryAdTags;
 
     public function __construct()
-    {}
+    {
+        $this->activeAdTagsCount = 0;
+        $this->pausedAdTagsCount = 0;
+        $this->libraryAdTags = new ArrayCollection();
+    }
 }

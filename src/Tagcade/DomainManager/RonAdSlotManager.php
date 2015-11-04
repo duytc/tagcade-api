@@ -249,17 +249,8 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         if (!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) {
             throw new LogicException('Invalid RonAdSlot');
         }
-
-        $urlParsed = parse_url(strtolower($domain));
-        if (!$urlParsed) {
-            throw new LogicException('invalid domain');
-        }
-        $domain = $urlParsed['path'] === null ? $urlParsed['host'] : $urlParsed['path'];
-
-        if (!$this->validateDomain($domain)) {
-            throw new InvalidArgumentException('invalid domain');
-        }
-
+        
+        $domain = $this->extractDomain($domain);
         $site = $this->siteRepository->getSiteByDomainAndPublisher($libraryAdSlot->getPublisher(), $domain);
         // if site with $domain not yet created
         if (!$site instanceof SiteInterface) {

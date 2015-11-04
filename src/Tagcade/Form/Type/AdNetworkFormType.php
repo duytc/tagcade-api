@@ -30,19 +30,6 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                     )
             );
         }
-
-        $builder->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function(FormEvent $event) {
-                /** @var AdNetworkInterface $adNetwork */
-                $adNetwork = $event->getData();
-                // initialize adtags count when creating new ad network;
-                if ($adNetwork->getId() === null) {
-                    $adNetwork->setActiveAdTagsCount(0);
-                    $adNetwork->setPausedAdTagsCount(0);
-                }
-            }
-        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

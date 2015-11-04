@@ -30,9 +30,6 @@ class AdNetwork implements AdNetworkInterface
 
     public function __construct()
     {
-        // we use reflection class to create new object, there's no need to initialize $activeAdTagsCount
-        // and $pausedAdTagsCount here
-        $this->libraryAdTags = new ArrayCollection();
     }
 
     /**

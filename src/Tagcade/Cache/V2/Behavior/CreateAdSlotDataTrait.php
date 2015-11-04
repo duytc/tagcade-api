@@ -252,7 +252,7 @@ trait CreateAdSlotDataTrait
         foreach($groupVals as $groupVal) {
             if(!array_key_exists('groupVal', $groupVal)) {
                 $varName = $groupVal['var'];
-                if (in_array($varName, ExpressionInJsGenerator::$SERVER_VARS)) {
+                if (in_array($varName, ExpressionInJsGenerator::$SERVER_VARS) && (!isset($data['serverVars']) || !in_array($varName, $data['serverVars']))) {
                     $data['serverVars'][] = $varName;
                 }
             }
