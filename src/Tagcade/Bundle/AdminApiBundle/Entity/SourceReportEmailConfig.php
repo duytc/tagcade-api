@@ -23,6 +23,12 @@ class SourceReportEmailConfig implements SourceReportEmailConfigInterface
     protected $includedAll = false;
 
     /**
+     * A json_array contains all publishers which this config includes all sites belong to
+     * @var mixed
+     */
+    protected $includedAllSitesOfPublishers = null;
+
+    /**
      * @var bool
      */
     protected $active = true;
@@ -81,12 +87,30 @@ class SourceReportEmailConfig implements SourceReportEmailConfigInterface
     }
 
     /**
-     * @param bool $includedAll
+     * @param bool $includedAllSites
      * @return $this
      */
-    public function setIncludedAll($includedAll)
+    public function setIncludedAll($includedAllSites)
     {
-        $this->includedAll = $includedAll;
+        $this->includedAll = $includedAllSites;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getIncludedAllSitesOfPublishers()
+    {
+        return $this->includedAllSitesOfPublishers;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setIncludedAllSitesOfPublishers($includedAllSitesOfPublishers)
+    {
+        $this->includedAllSitesOfPublishers = $includedAllSitesOfPublishers;
 
         return $this;
     }

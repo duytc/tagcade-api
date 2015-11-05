@@ -21,6 +21,9 @@ Tagcade\Bundle\AdminApiBundle\Entity\SourceReportEmailConfig:
             type: boolean
             options:
                 default: false
+        includedAllSitesOfPublishers:
+            type: json_array
+            nullable: true
         active:
             type: boolean
             options:

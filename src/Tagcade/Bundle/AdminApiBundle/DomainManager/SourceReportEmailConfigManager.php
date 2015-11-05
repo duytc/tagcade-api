@@ -107,7 +107,7 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
 
         foreach ($emails as $email) {
 
-            $emailConfigs = $this->repository->findBy(['email'=>$email]);
+            $emailConfigs = $this->repository->findBy(['email' => $email]);
 
             $emailConfig = current($emailConfigs);
 
@@ -127,7 +127,7 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
             /**
              * @var array $siteConfigs
              */
-            $existedSites = array_map(function (SourceReportSiteConfigInterface $siteConfig){
+            $existedSites = array_map(function (SourceReportSiteConfigInterface $siteConfig) {
                 return $siteConfig->getSite();
             }, $siteConfigs);
 
@@ -157,7 +157,8 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
      *
      * @throws InvalidArgumentException if $emails null or format is invalid
      */
-    public function saveSourceReportConfigIncludedAll(array $emails) {
+    public function saveSourceReportConfigIncludedAll(array $emails)
+    {
         if (null === $emails) {
             throw new InvalidArgumentException('expect emails');
         }
@@ -188,6 +189,129 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
         $this->om->flush();
     }
 
+    /**
+     * Save SourceReportConfigIncludedAllSites
+     *
+     * @param array|string[] $emails all emails need received source reports
+     * @param array|int[] $publisherIds special publishers include sites need to be reported to emails
+     * @throws InvalidArgumentException if $emails null or format is invalid
+     */
+    public function saveSourceReportConfigIncludedAllSites(array $emails, array $publisherIds)
+    {
+        if (null === $emails) {
+            throw new InvalidArgumentException('expect emails');
+        }
+
+        if (null === $publisherIds || sizeof($publisherIds) < 1) {
+            throw new InvalidArgumentException('expect publisherIds at least one publisherId');
+        }
+
+        //validate emails format
+        foreach ($emails as $email) {
+            $this->validateEmailFormat($email);
+        }
+
+        // unique emails
+        $emails = array_unique($emails);
+
+        // filter all existed emailConfigs
+        $emails = array_filter($emails, function ($email) {
+            $emailConfig = current($this->repository->findBy(['email' => $email]));
+            return !$emailConfig instanceof SourceReportEmailConfigInterface;
+        });
+
+        if (sizeof($emails) < 1) {
+            // ignore flush()
+            return;
+        }
+
+        // unique emails
+        $publisherIds = array_unique($publisherIds);
+
+        if (sizeof($publisherIds) < 1) {
+            // ignore flush()
+            return;
+        }
+
+        //do save
+        foreach ($emails as $email) {
+            /**
+             * @var SourceReportEmailConfigInterface $emailConfig
+             */
+            $emailConfig = $this->createNew();
+            $emailConfig->setEmail($email);
+            $emailConfig->setIncludedAll(false);
+            $emailConfig->setIncludedAllSitesOfPublishers($publisherIds);
+
+            $this->om->persist($emailConfig);
+        }
+
+        $this->om->flush();
+    }
+
+    /**
+     * Clone SourceReportConfig
+     *
+     * @param SourceReportEmailConfigInterface $originalEmailConfig original source report email config be used to clone
+     * @param array|string[] $emails all new emails need to be cloned from originalEmailConfig
+     * @throws InvalidArgumentException if $emails null or format is invalid
+     */
+    public function cloneSourceReportConfig(SourceReportEmailConfigInterface $originalEmailConfig, array $emails)
+    {
+        if (null === $emails) {
+            throw new InvalidArgumentException('expect emails');
+        }
+
+        // validate emails format
+        foreach ($emails as $email) {
+            $this->validateEmailFormat($email);
+        }
+
+        // unique emails
+        $emails = array_unique($emails);
+
+        // filter all existed emailConfigs
+        $emails = array_filter($emails, function ($email) {
+            $emailConfig = current($this->repository->findBy(['email' => $email]));
+            return !$emailConfig instanceof SourceReportEmailConfigInterface;
+        });
+
+        if (sizeof($emails) < 1) {
+            // ignore flush()
+            return;
+        }
+
+        //current siteConfigs of originalEmailConfig
+        $siteConfigs = $originalEmailConfig->getSourceReportSiteConfigs();
+
+        //do clone
+        foreach ($emails as $email) {
+            /**
+             * @var SourceReportEmailConfigInterface $emailConfig
+             */
+            $emailConfig = clone $originalEmailConfig;
+            $emailConfig->setId(null);
+            $emailConfig->setEmail($email);
+            $emailConfig->setSourceReportSiteConfigs([]);
+
+            // clone all siteConfigs of originalEmailConfig to new emails
+            foreach ($siteConfigs as $siteConfig) {
+                $clonedSiteConfig = clone $siteConfig;
+                $clonedSiteConfig->setId(null);
+                $clonedSiteConfig->setSourceReportEmailConfig($emailConfig);
+                // cascade persist
+                /** @var SourceReportSiteConfigInterface[] $scf */
+                $scf = $emailConfig->getSourceReportSiteConfigs();
+                $scf[] = $clonedSiteConfig;
+                $emailConfig->setSourceReportSiteConfigs($scf);
+            }
+
+            $this->om->persist($emailConfig);
+        }
+
+        $this->om->flush();
+    }
+
     public function getActiveConfig()
     {
         return $this->repository->getActiveConfig();
@@ -201,7 +325,8 @@ class SourceReportEmailConfigManager implements SourceReportEmailConfigManagerIn
      *
      * @throws InvalidArgumentException if format of $email is invalid
      */
-    private function validateEmailFormat($email){
+    private function validateEmailFormat($email)
+    {
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Invalid email format at ' . $email);
         }

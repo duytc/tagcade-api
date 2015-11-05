@@ -28,6 +28,7 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
     const KEY_EMAILS = 'emails';
     const KEY_SITES = 'sites';
     const KEY_INCLUDED_ALL = 'includedAll';
+    const KEY_PUBLISHERS = 'includedAllSitesOfPublishers';
 
     /**
      * Get all source report configurations
@@ -44,7 +45,18 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      */
     public function cgetAction()
     {
-        return $this->getHandler()->all();
+        /** @var SourceReportEmailConfigInterface[] $emailConfigs */
+        $emailConfigs = $this->getHandler()->all();
+
+        return array_map(function (SourceReportEmailConfigInterface $emailConfig) {
+            $includedAllSitesOfPublishers = $emailConfig->getIncludedAllSitesOfPublishers();
+
+            if (is_array($includedAllSitesOfPublishers) && sizeof($includedAllSitesOfPublishers) > 0) {
+                $emailConfig->setIncludedAllSitesOfPublishers($this->mapDetailIncludedAllSites($includedAllSitesOfPublishers));
+            }
+
+            return $emailConfig;
+        }, $emailConfigs);
     }
 
     /**
@@ -55,7 +67,16 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      */
     public function getAction($id)
     {
-        return $this->one($id);
+        /** @var SourceReportEmailConfigInterface $emailConfig */
+        $emailConfig = $this->one($id);
+
+        $includedAllSitesOfPublishers = $emailConfig->getIncludedAllSitesOfPublishers();
+
+        if (is_array($includedAllSitesOfPublishers) && sizeof($includedAllSitesOfPublishers) > 0) {
+            $emailConfig->setIncludedAllSitesOfPublishers($this->mapDetailIncludedAllSites($includedAllSitesOfPublishers));
+        }
+
+        return $emailConfig;
     }
 
     /**
@@ -144,6 +165,68 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
     }
 
     /**
+     * Include all reports of sites to the email where sites belong to special publishers
+     *
+     * @Rest\Post("/sourcereportemailconfigs/emailIncludedAllSites")
+     *
+     * @param Request $request
+     * @return View|FormTypeInterface
+     */
+    public function postSourceReportConfigIncludeAllSitesAction(Request $request)
+    {
+        //get all emails and publishers from all params
+        $params = $request->request->all();
+        $defaultParams = array_fill_keys([
+            self::KEY_EMAILS,
+            self::KEY_PUBLISHERS
+        ], null);
+        $params = array_merge($defaultParams, $params);
+
+        //all emails only email_values
+        $emails = $params[self::KEY_EMAILS];
+
+        //all publishers only publisher_ids
+        $publishers = $params[self::KEY_PUBLISHERS];
+
+        if (!is_array($emails)) {
+            return $this->view('Expected emails as array', Codes::HTTP_BAD_REQUEST);
+        }
+
+        if (!is_array($publishers)) {
+            return $this->view('Expected includedAllSitesOfPublishers as array', Codes::HTTP_BAD_REQUEST);
+        }
+
+        //filter all valid publishers
+        $publisherManager = $this->get('tagcade_user_system_publisher.user_manager');
+        $publishers = array_filter($publishers, function ($publisherId) use ($publisherManager) {
+            if (!is_integer($publisherId)) {
+                return false;
+            }
+
+            $publisher = $publisherManager->findUserBy(['id' => $publisherId]);
+            return $publisher instanceof PublisherInterface;
+        });
+        //re-index publishers
+        $publishers = array_values($publishers);
+
+        try {
+            $sourceReportEmailConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_email_config');
+            $sourceReportEmailConfigManager->saveSourceReportConfigIncludedAllSites($emails, $publishers);
+
+            // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+            $event = new UpdateSourceReportEmailConfigEventLog('PUT');
+            $event->addChangedFields('includedAll', 'false', 'true');
+            $this->getHandler()->dispatchEvent($event);
+        } catch (InvalidArgumentException $e) {
+            return $this->view($e->getMessage(), Codes::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            return $this->view(null, Codes::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->view(null, Codes::HTTP_CREATED);
+    }
+
+    /**
      * Create new source report config for publisher
      *
      * @param Request $request
@@ -204,6 +287,42 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
     }
 
     /**
+     * Clone all site configs of existed email for other emails
+     *
+     * @Rest\Post("/sourcereportemailconfigs/{id}/clone", requirements={"id" = "\d+"})
+     *
+     * @param int $id
+     * @param Request $request
+     * @return View
+     * @throws NotFoundHttpException if publisher not existed
+     */
+    public function cloneAction($id, Request $request)
+    {
+        //get all emails and all params
+        $params = $request->request->all();
+        $defaultParams = array_fill_keys([
+            self::KEY_EMAILS
+        ], null);
+        $params = array_merge($defaultParams, $params);
+        //all emails only email_values
+        $emails = $params[self::KEY_EMAILS];
+
+        if (!is_array($emails)) {
+            return $this->view('Expected emails as array', Codes::HTTP_BAD_REQUEST);
+        }
+
+        /** @var SourceReportEmailConfigInterface $originalEmailConfig */
+        $originalEmailConfig = $this->one($id);
+
+        //calling domain manager to clone SourceReportEmailConfig
+        $sourceReportEmailConfigManager = $this->get('tagcade_admin_api.domain_manager.source_report_email_config');
+
+        $sourceReportEmailConfigManager->cloneSourceReportConfig($originalEmailConfig, $emails);
+
+        return $this->view(null, Codes::HTTP_CREATED);
+    }
+
+    /**
      * Delete SourceReportConfig by id
      *
      * @param $id
@@ -231,6 +350,38 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
         }
 
         return $publisher;
+    }
+
+    /**
+     * map Detail IncludedAllSites, as [{'id' => <id>, 'company' => <company>}, {'id'..., 'company'...}, ...]
+     *
+     * @param array $includedAllSitesOfPublishers
+     * @return array
+     */
+    private function mapDetailIncludedAllSites (array $includedAllSitesOfPublishers)
+    {
+        if (null === $includedAllSitesOfPublishers) {
+            return [];
+        }
+
+        $detailIncludedAllSites = [];
+
+        $publisherManager = $this->get('tagcade_user_system_publisher.user_manager');
+
+        // map details for all publishers in IncludedAllSitesOfPublishers
+        array_walk($includedAllSitesOfPublishers,
+            function ($publisherId) use ($publisherManager, &$detailIncludedAllSites) {
+                $publisher = $publisherManager->findUserBy(['id' => $publisherId]);
+                if ($publisher instanceof PublisherInterface) {
+                    $detailIncludedAllSites[] = [
+                        'id' => $publisher->getId(),
+                        'company' => $publisher->getCompany(),
+                    ];
+                }
+            }
+        );
+
+        return $detailIncludedAllSites;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
+use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;

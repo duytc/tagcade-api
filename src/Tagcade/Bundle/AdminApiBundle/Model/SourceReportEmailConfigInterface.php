@@ -40,6 +40,17 @@ interface SourceReportEmailConfigInterface extends ModelInterface
     public function setIncludedAll($includedAll);
 
     /**
+     * @return mixed
+     */
+    public function getIncludedAllSitesOfPublishers();
+
+    /**
+     * @param mixed $includedAllSitesOfPublishers
+     * @return $this
+     */
+    public function setIncludedAllSitesOfPublishers($includedAllSitesOfPublishers);
+
+    /**
      * @return SourceReportSiteConfigInterface[]
      */
     public function getSourceReportSiteConfigs();
