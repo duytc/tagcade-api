@@ -19,7 +19,7 @@ use Tagcade\Model\User\Role\PublisherInterface;
 class TagGenerator
 {
     const HTTP_PROTOCOL = 'http://';
-    const HTTPS_PROTOCOL = 'https://';
+    const HTTPS_PROTOCOL = '//';
     const PARAMETER_DOMAIN = 'domain';
     const PARAMETER_SECURE = 'secure';
     protected $defaultTagUrl;
