@@ -57,11 +57,11 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('postalCode')
             ->add('country')
             ->add('settings')
-            ->add('tagDomain')
         ;
 
         if($this->userRole instanceof AdminInterface){
             $builder
+                ->add('tagDomain')
                 ->add('enabled')
                 ->add('enabledModules', 'choice', [
                     'mapped' => false,
@@ -96,27 +96,7 @@ class UserFormType extends AbstractRoleSpecificFormType
                 /** @var UserEntityInterface $publisher */
                 $publisher = $event->getData();
                 $form = $event->getForm();
-                //validate tag domain if there's
-                $tagDomain = $publisher->getTagDomain();
 
-                if (!is_array($tagDomain) && $tagDomain !== null) {
-                    throw new InvalidArgumentException('expect array object');
-                }
-
-                if (is_array($tagDomain)) {
-                    if (!isset($tagDomain['domain'])) {
-                        throw new InvalidArgumentException('domain is missing');
-                    }
-
-                    if (!$this->validateDomain($tagDomain['domain'])) {
-                        $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain['domain'])));
-                        return;
-                    }
-
-                    if (isset($tagDomain['secure']) && !is_bool($tagDomain['secure'])) {
-                        throw new InvalidArgumentException('expect true or false');
-                    }
-                }
 
                 if ($this->userRole instanceof AdminInterface) {
                     if ($publisher->getId() === null) {
@@ -127,6 +107,28 @@ class UserFormType extends AbstractRoleSpecificFormType
 
                     if (null !== $modules && is_array($modules)) {
                         $publisher->setEnabledModules($modules);
+                    }
+
+                    //validate tag domain if there's
+                    $tagDomain = $publisher->getTagDomain();
+
+                    if (!is_array($tagDomain) && $tagDomain !== null) {
+                        throw new InvalidArgumentException('expect array object');
+                    }
+
+                    if (is_array($tagDomain)) {
+                        if (!isset($tagDomain['domain'])) {
+                            throw new InvalidArgumentException('domain is missing');
+                        }
+
+                        if (!$this->validateDomain($tagDomain['domain'])) {
+                            $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain['domain'])));
+                            return;
+                        }
+
+                        if (isset($tagDomain['secure']) && !is_bool($tagDomain['secure'])) {
+                            throw new InvalidArgumentException('expect true or false');
+                        }
                     }
                 }
                 else if ($this->userRole instanceof PublisherInterface) {
