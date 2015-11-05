@@ -3,7 +3,6 @@
 namespace Tagcade\Entity\Core;
 
 use Tagcade\Model\Core\DynamicAdSlot as DynamicAdSlotModel;
-use Tagcade\Model\Core\ExpressionInterface;
 
 class DynamicAdSlot extends DynamicAdSlotModel
 {

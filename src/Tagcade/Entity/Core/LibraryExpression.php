@@ -1,9 +1,7 @@
 <?php
 
 namespace Tagcade\Entity\Core;
-use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\ExpressionInterface;
-use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+
 use Tagcade\Model\Core\LibraryExpression as LibraryExpressionModel;
 
 class LibraryExpression extends LibraryExpressionModel {

@@ -4,7 +4,6 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hi
 
 use DateTime;
 use Tagcade\Model\Core\SegmentInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\Segment;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Segment\RonAdSlotReportRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\AbstractSelector;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;

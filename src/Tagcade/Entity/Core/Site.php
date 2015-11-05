@@ -2,7 +2,6 @@
 
 namespace Tagcade\Entity\Core;
 
-use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\Site as SiteModel;
 
 class Site extends SiteModel

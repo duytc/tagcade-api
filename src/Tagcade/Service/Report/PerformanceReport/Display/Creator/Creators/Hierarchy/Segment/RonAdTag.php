@@ -4,7 +4,6 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdTagReport;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag as RonAdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
@@ -31,7 +30,7 @@ class RonAdTag extends CreatorAbstract implements RonAdTagInterface
 
         $ronAdTag = $reportType->getRonAdTag();
         $segment = $reportType->getSegment();
-        $segmentId = $segment instanceof SegmentInterface ? $segment->getId(): null;
+        $segmentId = null !== $segment ? $segment->getId(): null;
         $totalOpportunities = $this->eventCounter->getRonOpportunityCount($ronAdTag->getId(), $segmentId);
         $impressions = $this->eventCounter->getRonImpressionCount($ronAdTag->getId(), $segmentId);
         $isNativeAdSlot = $reportType->getRonAdTag()->getLibraryAdSlot() instanceof LibraryNativeAdSlotInterface;

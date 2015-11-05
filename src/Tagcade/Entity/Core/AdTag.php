@@ -3,7 +3,6 @@
 namespace Tagcade\Entity\Core;
 
 use Tagcade\Model\Core\AdTag as AdTagModel;
-use Tagcade\Model\Core\LibraryAdTagInterface;
 
 class AdTag extends AdTagModel
 {
