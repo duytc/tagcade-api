@@ -19,4 +19,7 @@ interface LibraryAdSlotRepositoryInterface extends ObjectRepository {
     public function getAllLibraryAdSlotsUnusedInRon($publisherId = null, $limit = null, $offset = null);
 
     public function getAllLibraryAdSlotsUsedInRon($publisherId = null, $limit = null, $offset = null);
+
+    public function getAllActiveLibraryAdSlots($limit = null, $offset = null);
+
 }

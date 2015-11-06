@@ -84,6 +84,12 @@ class LibraryAdSlotRepository extends EntityRepository implements LibraryAdSlotR
         return $qb->getQuery()->getResult();
     }
 
+    public function getAllActiveLibraryAdSlots($limit = null, $offset = null)
+    {
+        $qb = $this->createGetLibraryAdSlotsQuery($limit, $offset);
+
+        return $qb->getQuery()->getResult();
+    }
 
     protected function createGetLibraryAdSlotsQuery($limit = null, $offset = null)
     {
