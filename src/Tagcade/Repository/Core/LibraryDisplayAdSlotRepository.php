@@ -52,5 +52,11 @@ class LibraryDisplayAdSlotRepository extends EntityRepository implements Library
         return $qb->getQuery()->getResult();
     }
 
-
+    public function getAllLibraryDisplayAdSlotsForPublisherQuery(PublisherInterface $publisher)
+    {
+        return $this->createQueryBuilder('sl')
+            ->where('sl.publisher = :publisher_id')
+            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+        ;
+    }
 }

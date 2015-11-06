@@ -10,4 +10,6 @@ interface LibraryDisplayAdSlotRepositoryInterface extends ObjectRepository
     public function getLibraryDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getLibraryDisplayAdSlotsUnusedInRonForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getAllLibraryDisplayAdSlotsForPublisherQuery(PublisherInterface $publisher);
 }

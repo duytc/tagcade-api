@@ -137,7 +137,6 @@ class LibraryAdSlotRepository extends EntityRepository implements LibraryAdSlotR
         return $this->createQueryBuilder('sl')
             ->where('sl.publisher = :publisher_id')
             ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
-            ->orderBy('sl.id', 'asc')
         ;
     }
 } 

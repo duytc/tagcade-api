@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DisplayAdSlot;
+use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\LogicException;
@@ -18,6 +19,8 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibraryDisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class AdSlotFormType extends AbstractRoleSpecificFormType
@@ -43,7 +46,11 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
                     'class' => Site::class,
                     'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
                 )
-            );
+            )
+            ->add('libraryAdSlot', 'entity', array(
+                'class' => LibraryDisplayAdSlot::class,
+                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
+            ));
 
         } else if ($this->userRole instanceof PublisherInterface) {
 
@@ -57,18 +64,19 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
 
                         return $repository->getSitesForPublisherQuery($publisher);
                     }
-                ]);
+                ])
+                ->add('libraryAdSlot', 'entity', array(
+                    'class' => LibraryDisplayAdSlot::class,
+                    'query_builder' => function (LibraryDisplayAdSlotRepositoryInterface $er) {
+                        /** @var PublisherInterface $publisher */
+                        $publisher = $this->userRole;
+                        return $er->getAllLibraryDisplayAdSlotsForPublisherQuery($publisher);
+                    }
+                ));
 
         } else {
             throw new LogicException('A valid user role is required by AdSlotFormType');
         }
-
-        $builder
-            ->add('libraryAdSlot', 'entity', array(
-                    'class' => LibraryDisplayAdSlot::class,
-                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
-                ))
-        ;
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,

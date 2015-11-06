@@ -18,6 +18,7 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\LibraryNativeAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\NativeAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
@@ -43,13 +44,16 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
             $builder->add('site', 'entity', array(
                     'class' => Site::class,
                     'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
-                ));
+            ))
+            ->add('libraryAdSlot', 'entity', array(
+                'class' => LibraryNativeAdSlot::class,
+                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
+            ));
 
         } else if ($this->userRole instanceof PublisherInterface) {
 
             // for publishers, only allow their sites
-            $builder
-                ->add('site', 'entity', [
+            $builder->add('site', 'entity', [
                     'class' => Site::class,
                     'query_builder' => function (SiteRepositoryInterface $repository) {
                         /** @var PublisherInterface $publisher */
@@ -57,18 +61,19 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
 
                         return $repository->getSitesForPublisherQuery($publisher);
                     }
-                ]);
+            ])
+            ->add('libraryAdSlot', 'entity', array(
+                'class' => LibraryNativeAdSlot::class,
+                'query_builder' => function (LibraryNativeAdSlotRepositoryInterface $er) {
+                    /** @var PublisherInterface $publisher */
+                    $publisher = $this->userRole;
+                    return $er->getAllLibraryNativeAdSlotsForPublisherQuery($publisher);
+                }
+            ));
 
         } else {
             throw new LogicException('A valid user role is required by NativeAdSlotFormType');
         }
-
-        $builder
-            ->add('libraryAdSlot', 'entity', array(
-                    'class' => LibraryNativeAdSlot::class,
-                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libSlot')->select('libSlot'); }
-                ))
-        ;
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
