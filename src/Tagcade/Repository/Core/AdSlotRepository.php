@@ -127,7 +127,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
     /**
      * @inheritdoc
      */
-    protected function getAdSlotsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
+    public function getAdSlotsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('sl')
             ->leftJoin('sl.site', 'st')

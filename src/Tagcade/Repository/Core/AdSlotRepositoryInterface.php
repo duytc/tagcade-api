@@ -58,4 +58,6 @@ interface AdSlotRepositoryInterface extends ObjectRepository {
      * @return array
      */
     public function getByRonAdSlot(RonAdSlotInterface $ronAdSlot, $limit = null, $offset = null);
+
+    public function getAdSlotsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null);
 } 

@@ -3,12 +3,14 @@
 namespace Tagcade\Form\Type;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
+use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
@@ -19,6 +21,7 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
 
 class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
 {
@@ -37,7 +40,6 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('name')
-            ->add('defaultLibraryAdSlot')
             ->add('visible')
             ->add('id')
             ->add('libraryExpressions', 'collection',  array(
@@ -55,7 +57,22 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     ->addModelTransformer(
                         new RoleToUserEntityTransformer(), false
                     )
-            );
+            )
+            ->add('defaultLibraryAdSlot', 'entity', array(
+                'class' => LibraryAdSlotAbstract::class,
+                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libadslot')->select('libadslot'); }
+            ))
+            ;
+        }
+        else if ($this->userRole instanceof PublisherInterface) {
+            $builder->add('defaultLibraryAdSlot', 'entity', array(
+                'class' => LibraryAdSlotAbstract::class,
+                'query_builder' => function (LibraryAdSlotRepositoryInterface $er) {
+                    /** @var PublisherInterface $publisher */
+                    $publisher = $this->userRole;
+                    return $er->getAllLibraryAdSlotsForPublisherQuery($publisher);
+                }
+            ));
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA,

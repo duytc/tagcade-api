@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\Site;
@@ -25,6 +26,7 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
@@ -51,7 +53,12 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     'class' => Site::class,
                     'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
 
-                ));
+            ))
+            ->add('defaultAdSlot', 'entity', array(
+                'class' => AdSlotAbstract::class,
+                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('adslot')->select('adslot'); }
+            ))
+            ;
 
         } else if ($this->userRole instanceof PublisherInterface) {
 
@@ -65,7 +72,16 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
                         return $repository->getSitesForPublisherQuery($publisher);
                     }
-                ]);
+                ])
+                ->add('defaultAdSlot', 'entity', array(
+                    'class' => AdSlotAbstract::class,
+                    'query_builder' => function (AdSlotRepositoryInterface $er) {
+                        /** @var PublisherInterface $publisher */
+                        $publisher = $this->userRole;
+                        return $er->getAdSlotsForPublisherQuery($publisher);
+                    }
+                ))
+            ;
 
         } else {
             throw new LogicException('A valid user role is required by AdSlotFormType');
@@ -73,7 +89,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
         $builder
             ->add('libraryAdSlot', 'entity', array('class' => LibraryDynamicAdSlot::class))
-            ->add('defaultAdSlot')
             ->add('expressions', 'collection',  array(
                     'mapped' => true,
                     'type' => new ExpressionFormType(),
