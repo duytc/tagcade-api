@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment;
 
 use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport;
+use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -40,7 +41,7 @@ class RonAdSlot extends CreatorAbstract implements RonAdSlotInterface
             ->setRonAdSlot($ronAdSlot)
             ->setSegment($segment)
             ->setDate($this->getDate())
-            ->setSlotOpportunities($this->eventCounter->getRonSlotOpportunityCount($ronAdSlot->getId(), $segment !== null ? $segment->getId(): null));
+            ->setSlotOpportunities($this->eventCounter->getRonSlotOpportunityCount($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId(): null));
 
             $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($ronAdSlot->getLibraryAdSlot()->getPublisher(), $report->getSlotOpportunities());
             $report->setBilledAmount($rateAmount->getAmount());
