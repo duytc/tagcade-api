@@ -34,7 +34,7 @@ function xrange($max = 1000) {
 
 /** @var EntityManagerInterface $em */
 $em = $container->get('doctrine.orm.entity_manager');
-
+$em->getConnection()->getConfiguration()->setSQLLogger(null);
 /** @var PublisherManagerInterface $publisherManager */
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
 
