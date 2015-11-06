@@ -23,7 +23,7 @@ $kernel->boot();
 $container = $kernel->getContainer();
 
 const NUM_PUBLISHER = 5;
-const NUM_SITES = 5;
+const NUM_SITES = 2;
 const NUM_AD_SLOTS_PER_SITE = 5;
 
 function xrange($max = 1000) {
@@ -42,9 +42,9 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
     //create publisher
     $publisher = new User();
     $publisher
-        ->setUsername('tctest'.$userId)
+        ->setUsername('tagcade'.$userId)
         ->setPlainPassword('123456')
-        ->setEmail('tctest@localhost')
+        ->setEmail(sprintf('tctest%d@tagcade.com', $userId))
         ->setEnabled(true)
     ;
 
@@ -79,7 +79,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                     (new LibraryDisplayAdSlot())
                         ->setName("Display AdSlot " . $slotId)
                         ->setType('display')
-                        ->setVisible(true)
+                        ->setVisible(false)
                         ->setPublisher($publisher)
                 )
                 ->setAutoFit(true)
@@ -92,7 +92,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             $adTag = (new AdTag())
                 ->setLibraryAdTag(
                     (new LibraryAdTag())->setName('AdTag 1')
-                        ->setVisible(true)
+                        ->setVisible(false)
                         ->setHtml('ad tag 1 html')
                         ->setAdType(0)
                         ->setAdNetwork($adNetwork)
@@ -106,7 +106,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             $adTag = (new AdTag())
                 ->setLibraryAdTag(
                     (new LibraryAdTag())->setName('AdTag 2')
-                        ->setVisible(true)
+                        ->setVisible(false)
                         ->setHtml('ad tag 2 html')
                         ->setAdType(0)
                         ->setAdNetwork($adNetwork)
@@ -121,7 +121,10 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         }
 
         $em->flush();
+
+        echo sprintf('finish inserting site "%s"'. "\n", $site->getName()) ;
     }
+    echo sprintf('finish inserting publisher "%s"' . "\n", $publisher->getUsername()) ;
 }
 
 
