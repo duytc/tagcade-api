@@ -14,6 +14,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
 
 class AdTagFormType extends AbstractRoleSpecificFormType
 {
@@ -41,7 +42,11 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             $builder
                 ->add('adSlot', 'entity', array(
                     'class' => AdSlotAbstract::class,
-                    'choices' => $this->getReportableAdSlotsForPublisher($this->userRole)
+                    'query_builder' => function (AdSlotRepositoryInterface $er) {
+                        /** @var PublisherInterface $publisher */
+                        $publisher = $this->userRole;
+                        return $er->getAdSlotsForPublisherQuery($publisher);
+                    }
                 ));
 
         } else {
