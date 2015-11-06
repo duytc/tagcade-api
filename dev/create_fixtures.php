@@ -22,9 +22,9 @@ $kernel->boot();
 /** @var ContainerInterface $container */
 $container = $kernel->getContainer();
 
-const NUM_PUBLISHER = 5;
-const NUM_SITES = 2;
-const NUM_AD_SLOTS_PER_SITE = 5;
+const NUM_PUBLISHER = 3;
+const NUM_SITES = 50;
+const NUM_AD_SLOTS_PER_SITE = 100;
 
 function xrange($max = 1000) {
     for ($i = 1; $i <= $max; $i++) {

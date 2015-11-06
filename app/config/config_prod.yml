@@ -1,18 +1,10 @@
 imports:
     - { resource: config.yml }
 
-framework:
-    validation:
-        cache: apc
-
 doctrine:
     orm:
-        metadata_cache_driver: apc
-        query_cache_driver: apc
-
-jms_serializer:
-    metadata:
-        cache: "jms_serializer.metadata_cache.apc" # note this is a string
+        metadata_cache_driver: redis
+        query_cache_driver: redis
 
 monolog:
     handlers:

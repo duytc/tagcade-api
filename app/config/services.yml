@@ -140,19 +140,6 @@ services:
             - [setEventDispatcher, ["@event_dispatcher"]]
             - [setEvent, [%tagcade.events.handler_event%]]
 
-    # jms serializer cache
-
-    cache.apc.jms_serializer:
-        class: Doctrine\Common\Cache\ApcCache
-        calls:
-            - [setNamespace, ["jms_serializer"]]
-
-    jms_serializer.metadata_cache.apc:
-        class: Metadata\Cache\DoctrineCacheAdapter
-        arguments:
-            - ""
-            - @cache.apc.jms_serializer
-
     tagcade.service.date_util:
         class: Tagcade\Service\DateUtil
 
