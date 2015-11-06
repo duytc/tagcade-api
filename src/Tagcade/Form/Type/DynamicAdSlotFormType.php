@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -46,7 +47,11 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
         if ($this->userRole instanceof AdminInterface) {
 
             // allow all sites, default is fine
-            $builder->add('site');
+            $builder->add('site', 'entity', array(
+                    'class' => Site::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
+
+                ));
 
         } else if ($this->userRole instanceof PublisherInterface) {
 

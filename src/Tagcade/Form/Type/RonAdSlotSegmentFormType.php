@@ -2,11 +2,13 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\RonAdSlotSegment;
+use Tagcade\Entity\Core\Segment;
 
 class RonAdSlotSegmentFormType extends AbstractRoleSpecificFormType
 {
@@ -20,7 +22,10 @@ class RonAdSlotSegmentFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('segment')
+            ->add('segment', 'entity', array(
+                    'class' => Segment::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('seg')->select('seg'); }
+                ))
         ;
 
         $builder->addEventListener(

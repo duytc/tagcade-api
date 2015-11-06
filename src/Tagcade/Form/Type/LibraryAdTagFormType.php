@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -38,7 +39,10 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
     {
         if ($this->userRole instanceof AdminInterface) {
             // allow all sites, default is fine
-            $builder->add('adNetwork');
+            $builder->add('adNetwork', 'entity', array(
+                    'class' => AdNetwork::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('nw')->select('nw'); }
+                ));
 
         } else if ($this->userRole instanceof PublisherInterface) {
             $publisher = $this->userRole;

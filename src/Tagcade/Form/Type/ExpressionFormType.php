@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -16,8 +17,14 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('expectAdSlot', 'entity', ['class' => AdSlotAbstract::class])
-            ->add('libraryExpression', 'entity', ['class' => LibraryExpression::class])
+            ->add('expectAdSlot', 'entity', array(
+                    'class' => AdSlotAbstract::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
+                ))
+            ->add('libraryExpression', 'entity', array(
+                    'class' => LibraryExpression::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libEx')->select('libEx'); }
+                ))
         ;
     }
 

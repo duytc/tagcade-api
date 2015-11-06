@@ -68,6 +68,9 @@ doctrine:
             default:
                 connection:         default
                 naming_strategy:    doctrine.orm.naming_strategy.underscore
+#                metadata_cache_driver: redis
+#                query_cache_driver: redis
+#                result_cache_driver: redis
                 filters:
                     softdeleteable:
                         class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

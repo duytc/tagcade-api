@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\Channel;
@@ -13,8 +14,15 @@ class ChannelSiteFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('channel', 'entity', ['class' => Channel::class])
-            ->add('site', 'entity', ['class' => Site::class]);
+            ->add('channel', 'entity', array(
+                    'class' => Channel::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('cn')->select('cn'); }
+                ))
+            ->add('site', 'entity', array(
+                    'class' => Site::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
+                )
+            );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

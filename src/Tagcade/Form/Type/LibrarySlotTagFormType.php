@@ -2,10 +2,12 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
@@ -19,8 +21,15 @@ class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
             ->add('active')
             ->add('frequencyCap')
             ->add('rotation')
-            ->add('libraryAdTag', 'entity', array('class' => LibraryAdTag::class))
-            ->add('libraryAdSlot')
+            ->add('libraryAdTag', 'entity', array(
+                    'class' => LibraryAdTag::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libTag')->select('libTag'); }
+                ))
+            ->add('libraryAdSlot', 'entity', array (
+                    'class' => LibraryAdSlotAbstract::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libSlot')->select('libSlot'); }
+                )
+            )
             ->add('refId')
         ;
 

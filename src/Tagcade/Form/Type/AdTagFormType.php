@@ -2,6 +2,7 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -30,8 +31,10 @@ class AdTagFormType extends AbstractRoleSpecificFormType
         if ($this->userRole instanceof AdminInterface) {
 
             // admins can add adSlots for any publisher
-            $builder->add('adSlot');
-
+            $builder->add('adSlot', 'entity', array(
+                    'class' => AdSlotAbstract::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
+                ));
         }
         else if ($this->userRole instanceof PublisherInterface) {
 
@@ -50,7 +53,10 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             ->add('frequencyCap')
             ->add('active')
             ->add('rotation')
-            ->add('libraryAdTag', 'entity', array('class' => LibraryAdTag::class))
+            ->add('libraryAdTag', 'entity', array(
+                    'class' => LibraryAdTag::class,
+                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libAdTag')->select('libAdTag'); }
+                ))
         ;
 
         $builder->addEventListener(

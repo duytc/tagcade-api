@@ -2,11 +2,13 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Entity\Core\RonAdSlot;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
@@ -23,7 +25,10 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
         $builder
 //        ->add('type', null, array('mapped' => false))
         ->add('publisher', null, array('mapped' => false))
-        ->add('libraryAdSlot')
+        ->add('libraryAdSlot', 'entity', array(
+                'class' => LibraryAdSlotAbstract::class,
+                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libSlot')->select('libSlot'); }
+            ))
         ->add('ronAdSlotSegments', 'collection', array(
             'mapped' => true,
             'allow_add' => true,
