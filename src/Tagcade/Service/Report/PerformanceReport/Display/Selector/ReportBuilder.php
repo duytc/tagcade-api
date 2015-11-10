@@ -87,7 +87,7 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAllPublishersReport(Params $params)
     {
-        $publishers = $this->userManager->allPublishers();
+        $publishers = $this->userManager->allActivePublishers();
 
         $reportTypes = array_map(function(PublisherInterface $publisher) {
             return new PlatformReportTypes\Account($publisher);

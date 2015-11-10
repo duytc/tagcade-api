@@ -41,16 +41,13 @@ class AdSlotCloner implements AdSlotClonerInterface {
         //clone adSlot
         $newAdSlot = clone $originAdSlot;
         $newAdSlot->setId(null);
-        $libraryVisible = $originAdSlot->getLibraryAdSlot()->isVisible();
 
         $newLibraryAdSlot = clone $originAdSlot->getLibraryAdSlot();
         $newLibraryAdSlot->setVisible(false);
         $newLibraryAdSlot->setId(null);
-        $newLibraryAdSlot->setRonAdSlot(null); // new library should not contain any RON
         $newLibraryAdSlot->setName($newName);
 
         $newAdSlot->setLibraryAdSlot($newLibraryAdSlot);
-        $newAdSlot->setName($newName);
 
         $newAdSlot->setAdTags(new ArrayCollection()); // remove referencing ad tags dues to current ad slot clone
         //now clone adTags
@@ -59,21 +56,17 @@ class AdSlotCloner implements AdSlotClonerInterface {
 
             array_walk(
                 $oldAdTags,
-                function (AdTagInterface $adTag) use(&$newAdSlot, $libraryVisible){
+                function (AdTagInterface $adTag) use(&$newAdSlot){
                     $newAdTag = clone $adTag;
                     $newAdTag->setId(null);
                     $newAdTag->setAdSlot($newAdSlot);
+                    $newAdTag->setRefId(uniqid('', true));
 
-                    if(!$libraryVisible){
-                        $newAdTag->setRefId(uniqid('', true));
-                    }
-
-                    if(!$adTag->getLibraryAdTag()->getVisible()){
-                        // clone the LibraryAdTag itself
-                        $newLibraryAdTag = clone $adTag->getLibraryAdTag();
-                        $newLibraryAdTag->setId(null);
-                        $newAdTag->setLibraryAdTag($newLibraryAdTag);
-                    }
+                    // clone the LibraryAdTag itself
+                    $newLibraryAdTag = clone $adTag->getLibraryAdTag();
+                    $newLibraryAdTag->setId(null);
+                    $newLibraryAdTag->setVisible(false);
+                    $newAdTag->setLibraryAdTag($newLibraryAdTag);
 
                     $newAdSlot->getAdTags()->add($newAdTag);
                 }

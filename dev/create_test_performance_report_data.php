@@ -37,7 +37,7 @@ $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\R
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 
 $begin = new DateTime('2015-10-01');
-$end = new DateTime('2015-10-18');
+$end = new DateTime('2015-10-31');
 
 $end = $end->modify('+1 day');
 $interval = new DateInterval('P1D');
@@ -53,7 +53,7 @@ foreach($dateRange as $date){
     $dailyReportCreator
         ->setReportDate($date)
         ->createAndSave(
-        $userManager->allPublishers(),
+        $userManager->allActivePublishers(),
         $adNetworkManager->all()
     );
 

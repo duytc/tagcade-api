@@ -3,6 +3,7 @@
 namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
@@ -23,7 +24,7 @@ abstract class LibraryAdSlotAbstract
     protected $libType;
     protected $type; // a hack to have type in output json
 
-    /** @var RonAdSlotInterface */
+    /** @var ArrayCollection */
     protected $ronAdSlot;
     /**
      * @var LibrarySlotTagInterface[]
@@ -58,8 +59,9 @@ abstract class LibraryAdSlotAbstract
     /**
      * @return bool
      */
-    public function isBelongedToRonAdSlot() {
-        return $this->ronAdSlot !== null;
+    public function isBelongedToRonAdSlot()
+    {
+        return $this->getRonAdSlot() instanceof RonAdSlotInterface;
     }
     /**
      * @return boolean
@@ -117,7 +119,8 @@ abstract class LibraryAdSlotAbstract
     /**
      * @return int|null
      */
-    public function getPublisherId(){
+    public function getPublisherId()
+    {
         return $this->publisher->getId();
     }
 
@@ -202,10 +205,11 @@ abstract class LibraryAdSlotAbstract
         return $this;
     }
 
-    public function isRonAdSlot() {
-        if ($this->ronAdSlot instanceof RonAdSlotInterface) {
+    public function isRonAdSlot()
+    {
+        if ($this->getRonAdSlot() instanceof RonAdSlotInterface) {
             return array(
-                'id' => $this->ronAdSlot->getId()
+                'id' => $this->getRonAdSlot()->getId()
             );
         }
 
@@ -248,7 +252,8 @@ abstract class LibraryAdSlotAbstract
     /**
      * return int
      */
-    public function getAssociatedSlotCount() {
+    public function getAssociatedSlotCount()
+    {
         return count($this->getAdSlots());
     }
 
@@ -257,7 +262,15 @@ abstract class LibraryAdSlotAbstract
      */
     public function getRonAdSlot()
     {
-        return $this->ronAdSlot;
+        if ($this->ronAdSlot === null) {
+            $this->ronAdSlot = new ArrayCollection();
+        }
+
+        if (count($this->ronAdSlot->toArray()) > 0) {
+            return $this->ronAdSlot->current();
+        }
+
+        return null;
     }
 
     /**
@@ -266,14 +279,20 @@ abstract class LibraryAdSlotAbstract
      */
     public function setRonAdSlot($ronAdSlot)
     {
-        $this->ronAdSlot = $ronAdSlot;
+        if ($this->ronAdSlot === null) {
+            $this->ronAdSlot = new ArrayCollection();
+        }
+
+        if ($ronAdSlot instanceof RonAdSlotInterface) {
+            $this->ronAdSlot->clear();
+            $this->ronAdSlot->add($ronAdSlot);
+        }
+
         return $this;
     }
-
 
     function __toString()
     {
         return $this->id . $this->getName();
     }
-
 }

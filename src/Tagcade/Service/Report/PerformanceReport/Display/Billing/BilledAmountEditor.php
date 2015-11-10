@@ -128,7 +128,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             return $updatedPublisherCount; // nothing updated for first day of month, because update can only be done with yesterday of the same month
         }
 
-        $publishers = $this->userManager->allPublishers();
+        $publishers = $this->userManager->allActivePublishers();
 
         foreach ($publishers as $publisher) {
             $updatedPublisherCount += $this->updateBilledAmountThresholdForPublisher($publisher, $date);

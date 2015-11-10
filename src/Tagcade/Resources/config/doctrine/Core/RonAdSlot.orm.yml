@@ -6,6 +6,11 @@ Tagcade\Entity\Core\RonAdSlot:
         soft_deleteable:
             field_name: deletedAt
             time_aware: false
+    uniqueConstraints:
+        unique_library_ad_slot_id_constraint:
+            columns:
+                - library_ad_slot_id # underscore column name
+                - deleted_at
     id:
         id:
             type: integer
@@ -23,9 +28,9 @@ Tagcade\Entity\Core\RonAdSlot:
                 timestampable:
                     on: update
         deletedAt:
-            type: date
+            type: datetime
             nullable: true
-    oneToOne:
+    manyToOne:
         libraryAdSlot:
             targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract
             inversedBy: ronAdSlot
@@ -33,9 +38,6 @@ Tagcade\Entity\Core\RonAdSlot:
                 name: library_ad_slot_id
                 referencedColumnName: id
                 nullable: false
-            cascade: ['remove']
-            orphanRemoval: true
-
     oneToMany:
         ronAdSlotSegments:
             targetEntity: Tagcade\Entity\Core\RonAdSlotSegment

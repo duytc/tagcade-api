@@ -4,14 +4,9 @@ namespace Tagcade\Bundle\ReportApiBundle\Command;
 
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator;
 
 class DailyRotateCommand extends ContainerAwareCommand
 {
@@ -41,7 +36,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         $dailyReportCreator->setReportDate($reportDate);
         $eventCounter->refreshTestData();
         $dailyReportCreator->createAndSave(
-            $userManager->allPublishers(),
+            $userManager->allActivePublishers(),
             $adNetworkManager->all()
         );
 

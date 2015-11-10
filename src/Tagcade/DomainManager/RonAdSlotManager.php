@@ -117,7 +117,8 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         $this->em->flush();
     }
 
-    public function checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate(ReportableLibraryAdSlotInterface $libraryAdSlot, array $ronAdSlotSegments) {
+    public function checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate(ReportableLibraryAdSlotInterface $libraryAdSlot, array $ronAdSlotSegments)
+    {
         if ($libraryAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
             return;
         }

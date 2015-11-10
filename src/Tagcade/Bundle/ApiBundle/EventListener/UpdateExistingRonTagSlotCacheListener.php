@@ -70,7 +70,7 @@ class UpdateExistingRonTagSlotCacheListener
     public function postSoftDelete(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if ($entity instanceof AdTagInterface) {
+        if ($entity instanceof AdTagInterface && $entity->getAdSlot()->getLibraryAdSlot()->isVisible()) {
             /**
              * @var LibrarySlotTagRepositoryInterface $librarySlotTagRepository
              */

@@ -25,7 +25,10 @@ class Platform extends AbstractCalculatedReportType implements CalculatedReportT
                 throw new InvalidArgumentException('parameter must be an array of publishers');
             }
 
-            $this->publishers[] = $publisher;
+            if ($publisher->isEnabled()) {
+                $this->publishers[] = $publisher;
+            }
+
 
 //            if ($publisher->getUser()->hasDisplayModule()) {
 //                $this->publishers[] = $publisher;

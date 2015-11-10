@@ -117,11 +117,11 @@ class UserFormType extends AbstractRoleSpecificFormType
                     }
 
                     if (is_array($tagDomain)) {
-                        if (!isset($tagDomain['domain'])) {
+                        if (!isset($tagDomain['domain']) && isset($tagDomain['secure'])) {
                             throw new InvalidArgumentException('domain is missing');
                         }
 
-                        if (!$this->validateDomain($tagDomain['domain'])) {
+                        if (isset($tagDomain['domain']) && !$this->validateDomain($tagDomain['domain'])) {
                             $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain['domain'])));
                             return;
                         }
