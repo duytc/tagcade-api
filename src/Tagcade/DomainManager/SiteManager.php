@@ -92,6 +92,12 @@ class SiteManager implements SiteManagerInterface
         return $this->repository->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
     }
 
+    public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        return $this->repository->getSiteIdsThatHaveAdTagsBelongingToAdNetwork($adNetwork, $limit, $offset);
+    }
+
+
     public function getSitesThatHaveSourceReportConfigForPublisher(PublisherInterface $publisher, $hasSourceReportConfig = true)
     {
         return $this->repository->getSitesThatHastConfigSourceReportForPublisher($publisher, $hasSourceReportConfig);

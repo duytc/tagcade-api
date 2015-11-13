@@ -21,6 +21,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
 
+    public function getAdTagIdsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
+
     /**
      * @param BaseAdSlotInterface $adSlot
      * @param int|null $limit
@@ -37,6 +39,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null);
+
     /**
      * @param PublisherInterface $publisher
      * @param int|null $limit
@@ -44,6 +48,10 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return AdTagInterface[]
      */
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getActiveAdTagsIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getAllActiveAdTagIds();
 
     public function getAdTagsForAdNetworkQuery(AdNetworkInterface $adNetwork);
 
@@ -54,6 +62,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return AdTagInterface[]
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 

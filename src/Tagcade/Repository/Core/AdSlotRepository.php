@@ -5,9 +5,11 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\NativeAdSlot;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
@@ -16,6 +18,17 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInterface
 {
+    public function allReportableAdSlotIds()
+    {
+        $results = $this->getAllReportableAdSlotsQuery()->select('sl.id')->getQuery()->getResult();
+
+        return array_map(
+            function($adSlotData){
+                return $adSlotData['id'];
+            }, $results
+        );
+    }
+
     /**
      * @inheritdoc
      */
@@ -97,21 +110,38 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
     public function allReportableAdSlots($limit = null, $offset = null)
     {
+        return $this->getAllReportableAdSlotsQuery($limit, $offset)->getQuery()->getResult();
+    }
+
+    protected function getAllReportableAdSlotsQuery($limit = null, $offset = null)
+    {
         $qb = $this->createQueryBuilder('sl')
             ->where(sprintf('sl INSTANCE OF %s', NativeAdSlot::class))
             ->orWhere(sprintf('sl INSTANCE OF %s', DisplayAdSlot::class))
         ;
 
-        return $qb->getQuery()->getResult();
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb;
     }
 
-    protected function getAdSlotsForSiteQuery(SiteInterface $site, $limit = null, $offset = null)
+    protected function getAdSlotsForSiteQuery(SiteInterface $site, $limit = null, $offset = null, $orderById = true)
     {
         $qb = $this->createQueryBuilder('sl')
             ->where('sl.site = :site_id')
             ->setParameter('site_id', $site->getId(), Type::INTEGER)
             ->addOrderBy('sl.id', 'asc')
         ;
+
+        if (true === $orderById) {
+            $qb->addOrderBy('sl.id', 'asc');
+        }
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -216,5 +246,50 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset, $orderById = false);
+        $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
+
+        $results = $qb->select('sl.id')->getQuery()->getArrayResult();
+
+        return array_map(
+            function($adSlotData){
+                return $adSlotData['id'];
+            }, $results
+        );
+    }
+
+    public function getReportableAdSlotIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdSlotsForPublisherQuery($publisher, $limit, $offset, $orderById = false);
+        $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
+
+        $results = $qb->select('sl.id')->getQuery()->getArrayResult();
+
+        return array_map(
+            function($adSlotData){
+                return $adSlotData['id'];
+            }, $results
+        );
+    }
+
+    public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->join('sl.adTags', 't')
+            ->join('t.libraryAdTag', 'lt')
+            ->where('lt.adNetwork = :ad_network_id')
+            ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER);
+
+        $results = $qb->select('sl.id')->getQuery()->getArrayResult();
+
+        return array_map(
+            function($adSlotData){
+                return $adSlotData['id'];
+            }, $results
+        );
     }
 }

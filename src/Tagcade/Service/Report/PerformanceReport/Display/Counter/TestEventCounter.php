@@ -3,6 +3,8 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 
+use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
+use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
@@ -581,5 +583,74 @@ class TestEventCounter extends AbstractEventCounter
 
         mt_srand($seed);
     }
+
+    /**
+     *
+     * @param array $adSlotIds
+     *
+     * @return array('slotId' => AdSlotReportCount)
+     */
+    public function getAdSlotReports(array $adSlotIds)
+    {
+        $convertResults = [];
+        foreach($adSlotIds as $adSlotId) {
+            if (!is_int($adSlotId)) {
+                throw new RuntimeException(sprintf('expect int value, %s given', get_class($adSlotId)));
+            }
+
+            $convertResults[] = new AdSlotReportCount($this->adSlotData[$adSlotId]);
+        }
+
+        return $convertResults;
+    }
+
+    /**
+     * @param $tagId
+     * @param bool $nativeSlot whether ad slot containing this tag is native or not
+     *
+     * @return AdTagReportCount
+     */
+    public function getAdTagReport($tagId, $nativeSlot = false)
+    {
+        if (!is_int($tagId)) {
+            throw new RuntimeException(sprintf('expect int value, %s given', get_class($tagId)));
+        }
+
+        return new AdTagReportCount($this->adTagData[$tagId]);
+    }
+
+    /**
+     * Get reports for a list of ad tags
+     *
+     * @param array $tagIds
+     * @param bool $nativeSlot whether ad slot containing these tags is native or not
+     *
+     * @return array('tagId' => AdTagReportCount)
+     */
+    public function getAdTagReports(array $tagIds, $nativeSlot = false)
+    {
+        $convertedResults = [];
+        foreach($tagIds as $tagId) {
+            $convertedResults[] = $this->getAdTagReport($tagId);
+        }
+
+        return $convertedResults;
+    }
+
+    public function getRonAdTagReport($ronTagId, $segmentId = null, $hasNativeSlotContainer = false)
+    {
+        // TODO: Implement getRonAdTagReport() method.
+    }
+
+    public function getRonAdTagReports(array $tagIds, $segmentId = null, $nativeSlot = false)
+    {
+        // TODO: Implement getRonAdTagReports() method.
+    }
+
+    public function getRonAdSlotReport($ronAdSlotId, $segmentId = null)
+    {
+        // TODO: Implement getRonAdSlotReport() method.
+    }
+
 
 }

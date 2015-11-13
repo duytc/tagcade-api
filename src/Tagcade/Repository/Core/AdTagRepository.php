@@ -4,6 +4,8 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Internal\Hydration\HydrationException;
+use Doctrine\ORM\Query;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -37,6 +39,28 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdTagIdsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('t.id')
+            ->where('t.adSlot = :ad_slot_id')
+            ->andWhere('t.active = 1')
+            ->setParameter('ad_slot_id', $adSlot->getId(), Type::INTEGER)
+        ;
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
+
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
@@ -56,10 +80,66 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->createAdTagForSiteQueryBuilder($site, $limit, $offset);
+        $qb->andWhere('t.active = 1');
+
+        $results = $qb->select('t.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
+
+    protected function createAdTagForSiteQueryBuilder(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.adSlot', 'sl')
+            ->where('sl.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+        ;
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb;
+    }
+
+
     /**
      * @inheritdoc
      */
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->getAdTagsForPublisherQuery($publisher, $limit, $offset)->getQuery()->getResult();
+    }
+
+    public function getActiveAdTagsIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForPublisherQuery($publisher, $limit, $offset);
+        $qb->andWhere('t.active = 1');
+
+        $results = $qb->select('t.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
+
+    public function getAllActiveAdTagIds()
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->where('t.active = 1');
+
+        $results = $qb->select('t.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
+
+
+    protected function getAdTagsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
             ->join('t.adSlot', 'sl')
@@ -77,7 +157,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             $qb->setFirstResult($offset);
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 
     public function getAdTagsForAdNetworkQuery(AdNetworkInterface $adNetwork)
@@ -90,6 +170,13 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         ;
     }
 
+    public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork, $limit, $offset)->andWhere('t.active = 1');
+        $results = $qb->select('t.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
 
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {

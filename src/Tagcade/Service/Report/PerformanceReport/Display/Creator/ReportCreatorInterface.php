@@ -27,11 +27,6 @@ interface ReportCreatorInterface
     public function getEventCounter();
 
     /**
-     * @param CreatorInterface $creator
-     */
-    public function addCreator(CreatorInterface $creator);
-
-    /**
      * @param ReportTypeInterface $reportType
      * @return ReportTypeInterface
      * @throws InvalidArgumentException usually if the parameter is incorrect for the supplied report type or the

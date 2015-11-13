@@ -21,8 +21,18 @@ class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTa
     public function getByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null)
     {
         $qb = $this->getByLibraryAdSlotQuery($libraryAdSlot, $limit, $offset);
+        $qb->orderBy('lst.position', 'asc');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getLibrarySlotTagIdsByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null)
+    {
+        $qb = $this->getByLibraryAdSlotQuery($libraryAdSlot, $limit, $offset);
+
+        $results = $qb->select('lst.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
     }
 
     protected function getByLibraryAdSlotQuery(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null)
@@ -30,7 +40,6 @@ class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTa
         $qb = $this->createQueryBuilder('lst')
             ->where('lst.libraryAdSlot = :library_ad_slot_id')
             ->setParameter('library_ad_slot_id', $libraryAdSlot->getId(), Type::INTEGER)
-            ->orderBy('lst.position', 'asc')
         ;
 
         if (is_int($limit)) {

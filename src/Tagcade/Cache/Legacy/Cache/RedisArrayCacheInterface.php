@@ -29,4 +29,8 @@ interface RedisArrayCacheInterface extends Cache
       * @return  int     Number of deleted fields
       */
     public function hDelete($hash, $field);
+
+    public function mGet(array $keys);
+
+    public function hMGet($key, array $fields);
 }

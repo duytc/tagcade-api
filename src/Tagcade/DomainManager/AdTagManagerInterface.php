@@ -58,6 +58,8 @@ interface AdTagManagerInterface
      */
     public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
 
+    public function getAdTagIdsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
+
     /**
      * @param BaseAdSlotInterface $adSlot
      * @param int|null $limit
@@ -75,6 +77,8 @@ interface AdTagManagerInterface
      */
     public function getAdTagsForSite(SiteInterface $site, $filterActive = false, $limit = null, $offset = null);
 
+    public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null);
+
     /**
      * @param PublisherInterface $publisher
      * @param int|null $limit
@@ -82,6 +86,8 @@ interface AdTagManagerInterface
      * @return AdTagInterface[]
      */
     public function getAdTagsForPublisher(Publisherinterface $publisher, $limit = null, $offset = null);
+
+    public function getActiveAdTagsIdsForPublisher(Publisherinterface $publisher, $limit = null, $offset = null);
 
     /**
      * @param AdNetworkInterface $adNetwork
@@ -91,9 +97,13 @@ interface AdTagManagerInterface
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
+    public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
+
+    public function getAllActiveAdTagIds();
 
     /**
      * @param AdNetworkInterface $adNetwork

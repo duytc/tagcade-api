@@ -15,6 +15,8 @@ interface LibrarySlotTagRepositoryInterface extends ObjectRepository{
      */
     public function getByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null);
 
+    public function getLibrarySlotTagIdsByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null);
+
     /**
      * ReferenceId is unique in each library ad slot so this query always return only one entity or null
      *

@@ -104,9 +104,11 @@ abstract class AbstractReport implements ReportInterface
     /**
      * @inheritdoc
      */
-    protected function setFillRate()
+    public function setFillRate()
     {
         $this->fillRate = $this->calculateFillRate();
+
+        return $this;
     }
 
     /**

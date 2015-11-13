@@ -29,6 +29,8 @@ interface SiteRepositoryInterface extends ObjectRepository
 
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
+    public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
     /**
      * * Get all sites that have configured or not configured for source report by publisher
      *
