@@ -85,13 +85,13 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
     ];
 
     static $INTERNAL_VARIABLE_MAP = [
-        '${PAGE_URL}'=>'location.href',
+        '${PAGE_URL}'=>'${PAGE_URL}', // location.href
         '${USER_AGENT}'=>'navigator.userAgent',
         '${SCREEN_WIDTH}'=>'top.screen.width',
         '${SCREEN_HEIGHT}'=>'top.screen.height',
         '${WINDOW_WIDTH}'=>'top.outerWidth',
         '${WINDOW_HEIGHT}'=>'top.outerHeight',
-        '${DOMAIN}'=>'top.location.hostname'
+        '${DOMAIN}'=>'${DOMAIN}' // top.location.hostname
     ];
     static $SERVER_VARS = ['${COUNTRY}'];
 
