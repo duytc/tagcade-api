@@ -172,7 +172,6 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
 
     /**
      * @Rest\View(serializerGroups={"adtag.detail"})
-     * @Rest\View(serializerEnableMaxDepthChecks=false)
      * @param $id
      * @return array
      */
