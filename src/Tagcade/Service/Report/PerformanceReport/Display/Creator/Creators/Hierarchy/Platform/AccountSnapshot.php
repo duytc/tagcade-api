@@ -44,7 +44,7 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
     {
         $report = new AccountReport();
         $publisher = $reportType->getPublisher();
-        $publisherName = $publisher->getFirstName();
+        $publisherName = $publisher->getCompany();
         $report
             ->setPublisher($publisher)
             ->setName($publisherName === null ? $publisher->getUser()->getUsername() : $publisherName)
