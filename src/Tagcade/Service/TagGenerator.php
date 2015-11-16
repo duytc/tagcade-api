@@ -46,7 +46,6 @@ class TagGenerator
     public function getTagsForSingleRonAdSlot(RonAdSlotInterface $ronAdSlot)
     {
         $tags = [];
-        $tags['header'] = $this->createHeaderTagForPublisher($ronAdSlot->getLibraryAdSlot()->getPublisher());
         $tags['jstag'] = $this->createJsTags($ronAdSlot);
         $tags['name'] = $ronAdSlot->getName();
         $segments = [];
@@ -66,8 +65,6 @@ class TagGenerator
     public function getRonTagsForPublisher(PublisherInterface $publisher)
     {
         $tags = [];
-
-        $tags['header'] = $this->createHeaderTagForPublisher($publisher);
 
         $tags = array_merge($tags, [
             'display' => [
@@ -131,8 +128,6 @@ class TagGenerator
 
         $tags = [];
 
-        $tags['header'] = $this->createHeaderTagForSite($site);
-
         if ($publisher->hasDisplayModule()) {
             $tags = array_merge($tags, [
                 'display' => [
@@ -180,6 +175,26 @@ class TagGenerator
         }
 
         return $tags;
+    }
+
+    /**
+     * get header of tag for site
+     * @param SiteInterface $site
+     * @return array
+     */
+    public function getHeaderForSite(SiteInterface $site)
+    {
+        return ['header' => $this->createHeaderTagForSite($site)];
+    }
+
+    /**
+     * get header of tag for publisher
+     * @param PublisherInterface $publisher
+     * @return array
+     */
+    public function getHeaderForPublisher(PublisherInterface $publisher)
+    {
+        return ['header'=> $this->createHeaderTagForPublisher($publisher)];
     }
 
     public function createHeaderTagForSite(SiteInterface $site)

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
@@ -88,6 +89,23 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         /** @var PublisherInterface $publisher */
         $publisher = $this->one($id);
         return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher);
+    }
+
+    /**
+     * get header of tag for publisher
+     * @param $id
+     * @return array
+     */
+    public function getJsheadertagAction($id)
+    {
+        /** @var PublisherInterface $publisher */
+        $publisher = $this->one($id);
+
+        if (!$publisher->hasAnalyticsModule()) {
+            throw new BadRequestHttpException('That publisher is not enabled Analytics module');
+        }
+
+        return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher);
     }
 
     public function getAdnetworksAction($publisherId)

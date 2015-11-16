@@ -9,6 +9,7 @@ use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
@@ -281,6 +282,25 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
         return $this->get('tagcade.service.tag_generator')
             ->getTagsForSite($site);
+    }
+
+    /**
+     * Get the javascript header of tag for this site
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getJsheadertagAction($id)
+    {
+        /** @var SiteInterface $site */
+        $site = $this->one($id);
+
+        if (!$site->getPublisher()->hasAnalyticsModule()) {
+            throw new BadRequestHttpException('That publisher is not enabled Analytics module');
+        }
+
+        return $this->get('tagcade.service.tag_generator')
+            ->getHeaderForSite($site);
     }
 
     /**
