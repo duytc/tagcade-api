@@ -13,7 +13,7 @@ class AdTagReportCount implements BaseAdTagReportCountInterface
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
-    const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
+    const CACHE_KEY_PASSBACK               = 'fallbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
     private $firstOpportunities = 0;
