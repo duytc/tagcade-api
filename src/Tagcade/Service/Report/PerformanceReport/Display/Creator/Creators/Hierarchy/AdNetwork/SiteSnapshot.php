@@ -39,6 +39,7 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
     public function doCreateReport(AdNetworkSiteReportType $reportType)
     {
         $report = new SiteReport();
+        $adNetwork = $reportType->getAdNetwork();
         $site = $reportType->getSite();
         $report
             ->setSite($site)
@@ -46,15 +47,18 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setDate($this->getDate())
         ;
 
-        $reportableAdSlotIds = $this->adSlotManager->getReportableAdSlotIdsForSite($site);
-        $adSlotReportCounts = $this->eventCounter->getAdSlotReports($reportableAdSlotIds);
-        unset($reportableAdSlotIds);
+        // hotfix
+        // todo add getAdTagIdsForAdNetworkAndSite to manager and repository
+        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
+        $adTagIds = array_map(function($adTag) {
+            return $adTag->getId();
+        }, $adTags);
 
-        $adTagIdsForSite = $this->adTagManager->getAdTagIdsForSite($site);
-        $adTagReportCounts =  $this->eventCounter->getAdTagReports($adTagIdsForSite);
-        unset($adTagIdsForSite);
+        unset($adTags);
 
-        $this->parseRawReportData($report, array_merge($adSlotReportCounts, $adTagReportCounts));
+        $adTagReportCounts =  $this->eventCounter->getAdTagReports($adTagIds);
+
+        $this->parseRawReportData($report, $adTagReportCounts);
 
         return $report;
     }

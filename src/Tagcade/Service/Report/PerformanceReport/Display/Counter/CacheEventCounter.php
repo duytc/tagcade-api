@@ -370,7 +370,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
             $adTagReportKey = 0;
             for($i = $index; $i < $index + $tagKeyCount ; $i ++) {
-                $singleConvertedResults[static::$AD_TAG_REPORT_KEYS[$adTagReportKey]] = $results[$index];
+                $singleConvertedResults[static::$AD_TAG_REPORT_KEYS[$adTagReportKey]] = $results[$i];
                 $adTagReportKey ++;
             }
 
