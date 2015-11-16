@@ -5,6 +5,10 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 use DateTime;
 use Doctrine\Common\Cache\Cache;
 use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
+use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
+use Tagcade\Domain\DTO\Report\Performance\RonAdSlotReportCount;
+use Tagcade\Domain\DTO\Report\Performance\RonAdTagReportCount;
 
 class CacheEventCounter extends AbstractEventCounter implements CacheEventCounterInterface
 {
@@ -33,6 +37,19 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const NAMESPACE_APPEND_SEGMENT         = 'segment_%d';
 
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
+
+    private static $AD_TAG_REPORT_KEYS = [
+        0 => self::CACHE_KEY_OPPORTUNITY,
+        1 => self::CACHE_KEY_IMPRESSION,
+        2 => self::CACHE_KEY_FIRST_OPPORTUNITY,
+        3 => self::CACHE_KEY_VERIFIED_IMPRESSION,
+        4 => self::CACHE_KEY_PASSBACK,
+        5 => self::CACHE_KEY_UNVERIFIED_IMPRESSION,
+        6 => self::CACHE_KEY_BLANK_IMPRESSION,
+        7 => self::CACHE_KEY_VOID_IMPRESSION,
+        8 => self::CACHE_KEY_CLICK,
+    ];
+
     /**
      * @var RedisArrayCacheInterface
      */
@@ -301,7 +318,164 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     }
 
+    public function getAdSlotReports(array $adSlotIds)
+    {
+        $cacheKeys =[];
+        $convertedResults = [];
 
+        foreach ($adSlotIds as $id) {
+            $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $id);
+            $cacheKeys[] = $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, $namespace);
+        }
+
+        $results = $this->cache->mGet($cacheKeys); // sequence of output is sequence of slot ids
+        $index = 0;
+
+        foreach($adSlotIds as $id) {
+            $convertedResults[$id] = new AdSlotReportCount(array(self::CACHE_KEY_SLOT_OPPORTUNITY => $results[$index]));
+            $index ++;
+        }
+
+        return $convertedResults;
+    }
+
+
+    public function getAdTagReports(array $tagIds, $nativeSlot = false)
+    {
+        $convertedResults =[];
+        $adTagKeys = [];
+        $tagKeyCount = 0;
+
+        foreach ($tagIds as $id) {
+            $cacheKeysForThisTag = $this->createCacheKeysForAdTag($id, $nativeSlot);
+            if ($tagKeyCount === 0) {
+                $tagKeyCount = count($cacheKeysForThisTag);
+            }
+
+            foreach ($cacheKeysForThisTag as $k) {
+                $adTagKeys[] = $k;
+            }
+        }
+
+        $results = $this->cache->mGet($adTagKeys);
+        $totalResultCount = count($results);
+        $index = 0;
+
+        foreach($tagIds as $tagId) {
+            if ($index + $tagKeyCount > $totalResultCount) {
+                throw new \RuntimeException('something went wrong with redis fetching multiple keys');
+            }
+
+            $singleConvertedResults = [];
+
+            $adTagReportKey = 0;
+            for($i = $index; $i < $index + $tagKeyCount ; $i ++) {
+                $singleConvertedResults[static::$AD_TAG_REPORT_KEYS[$adTagReportKey]] = $results[$index];
+                $adTagReportKey ++;
+            }
+
+            $convertedResults[$tagId] = new AdTagReportCount($singleConvertedResults);
+            $index += $tagKeyCount;
+        }
+
+        return $convertedResults;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdTagReport($tagId, $nativeSlot = false)
+    {
+        $adTagKeys = $this->createCacheKeysForAdTag($tagId, $nativeSlot);
+        $results = $this->cache->mGet($adTagKeys);
+        $convertedResults = array();
+        foreach ($results as $index => $value) {
+            $convertedResults[static::$AD_TAG_REPORT_KEYS[$index]] = $value;
+        }
+
+        return new AdTagReportCount($convertedResults);
+    }
+
+    public function getRonAdTagReports(array $tagIds, $segmentId = null, $nativeSlot = false)
+    {
+        $ronTagKeys = [];
+        foreach ($tagIds as $id) {
+            $tmpCacheKeys = $this->createCacheKeysForRonTag($id, $segmentId, $nativeSlot);
+            foreach($tmpCacheKeys as $key) {
+                $ronTagKeys[] = $key; // note: should not use array_merge to reduce overhead of function call
+            }
+        }
+
+        $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronTagKeys);
+        $reports = [];
+        foreach($tagIds as $id) {
+            $reports[] = new RonAdTagReportCount($id, $results, $segmentId);
+        }
+
+        return $reports;
+    }
+
+    public function getRonAdTagReport($ronTagId, $segmentId = null, $hasNativeSlotContainer = false)
+    {
+        $ronTagKeys = $this->createCacheKeysForRonTag($ronTagId, $segmentId, $hasNativeSlotContainer);
+
+        $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronTagKeys);
+
+        return new RonAdTagReportCount($ronTagId, $results, $segmentId);
+    }
+
+    public function getRonAdSlotReport($ronAdSlotId, $segmentId = null)
+    {
+        $ronAdSlotKeys = $this->createCacheKeysForRonAdSlot($ronAdSlotId, $segmentId);
+
+        $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronAdSlotKeys);
+
+        return new RonAdSlotReportCount($ronAdSlotId, $results, $segmentId);
+    }
+
+
+    protected function createCacheKeysForAdTag($tagId, $hasNativeSlotContainer = false)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->createCacheKeysForTag($namespace, $hasNativeSlotContainer);
+    }
+
+    protected function createCacheKeysForRonTag($ronTagId, $segment = null, $hasNativeRonSlotContainer = false)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_TAG, $ronTagId, self::NAMESPACE_APPEND_SEGMENT, $segment);
+
+        return $this->createCacheKeysForTag($namespace, $hasNativeRonSlotContainer);
+    }
+
+    protected function createCacheKeysForRonAdSlot($ronSlotId, $segment = null)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $ronSlotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
+        $cacheKeys[] = $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, $namespace);
+
+        return $cacheKeys;
+    }
+
+    protected function createCacheKeysForTag($namespace, $hasNativeSlotContainer = false)
+    {
+        $adTagKeys = array(
+            $this->getCacheKey(self::CACHE_KEY_OPPORTUNITY, $namespace),
+            $this->getCacheKey(self::CACHE_KEY_IMPRESSION, $namespace),
+        );
+
+        if (false === $hasNativeSlotContainer) {
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_FIRST_OPPORTUNITY, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_VERIFIED_IMPRESSION, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_PASSBACK, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_UNVERIFIED_IMPRESSION, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_BLANK_IMPRESSION, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_VOID_IMPRESSION, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_CLICK, $namespace);
+        }
+
+        return $adTagKeys;
+    }
     /**
      * @param string $key
      * @return mixed

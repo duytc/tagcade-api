@@ -38,6 +38,9 @@ $em->getConnection()->getConfiguration()->setSQLLogger(null);
 /** @var PublisherManagerInterface $publisherManager */
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
 
+$siteIdx = 1;
+$adSlotIdx = 1;
+$adTagIdx = 1;
 foreach(xrange(NUM_PUBLISHER) as $userId) {
     //create publisher
     $publisher = new User();
@@ -56,7 +59,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
     foreach(xrange(NUM_SITES) as $id) {
         // create ad network
         $adNetwork = (new AdNetwork())
-            ->setName('Test Ad Network ' . $id)
+            ->setName('Test Ad Network ' . $siteIdx++)
             ->setActiveAdTagsCount(0) // why do I have to do this? it should default to 0
             ->setPausedAdTagsCount(0)
             ->setPublisher($publisher);
@@ -77,7 +80,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             $adSlot = (new DisplayAdSlot())
                 ->setLibraryAdSlot(
                     (new LibraryDisplayAdSlot())
-                        ->setName("Display AdSlot " . $slotId)
+                        ->setName("Display AdSlot " . $adSlotIdx++)
                         ->setType('display')
                         ->setVisible(false)
                         ->setPublisher($publisher)

@@ -228,6 +228,12 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdSlot($adSlot, $limit, $offset);
     }
 
+    public function getAdTagIdsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagIdsForAdSlot($adSlot, $limit, $offset);
+    }
+
+
     public function getAdTagsForSite(SiteInterface $site, $filterActive = false, $limit = null, $offset = null)
     {
         $adTags = $this->repository->getAdTagsForSite($site, $limit, $offset);
@@ -247,12 +253,27 @@ class AdTagManager implements AdTagManagerInterface
         return $adTags;
     }
 
+    public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagIdsForSite($site, $limit, $offset);
+    }
+
     /**
      * @inheritdoc
      */
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagsForPublisher($publisher, $limit, $offset);
+    }
+
+    public function getActiveAdTagsIdsForPublisher(Publisherinterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getActiveAdTagsIdsForPublisher($publisher, $limit, $offset);
+    }
+
+    public function getAllActiveAdTagIds()
+    {
+        return $this->repository->getAllActiveAdTagIds();
     }
 
     /**
@@ -262,6 +283,12 @@ class AdTagManager implements AdTagManagerInterface
     {
         return $this->repository->getAdTagsForAdNetwork($adNetwork, $limit, $offset);
     }
+
+    public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdTagIdsForAdNetwork($adNetwork, $limit, $offset);
+    }
+
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {

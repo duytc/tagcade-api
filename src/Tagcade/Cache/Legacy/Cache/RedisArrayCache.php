@@ -81,6 +81,15 @@ class RedisArrayCache implements RedisArrayCacheInterface
         return $this->redis->hDel($hash, $field);
     }
 
+    public function mGet(array $keys)
+    {
+        return $this->redis->mget($keys);
+    }
+
+    public function hMGet($key, array $fields)
+    {
+        return $this->redis->hMGet($key, $fields);
+    }
 
     /**
      * {@inheritdoc}

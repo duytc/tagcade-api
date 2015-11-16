@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -112,6 +113,10 @@ class AdSlotManager implements AdSlotManagerInterface
         return $this->adSlotRepository->allReportableAdSlots($limit, $offset);
     }
 
+    public function allReportableAdSlotIds()
+    {
+        return $this->adSlotRepository->allReportableAdSlotIds();
+    }
 
     /**
      * @inheritdoc
@@ -136,6 +141,17 @@ class AdSlotManager implements AdSlotManagerInterface
     {
         return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher, $limit, $offset);
     }
+
+    public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getReportableAdSlotIdsForSite($site, $limit, $offset);
+    }
+
+    public function getReportableAdSlotIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getReportableAdSlotIdsForPublisher($publisher, $limit, $offset);
+    }
+
 
     /**
      * @param BaseAdSlotInterface|BaseLibraryAdSlotInterface $adSlot
@@ -185,5 +201,10 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getAdSlotsForRonAdSlot(RonAdSlotInterface $ronAdSlot, $limit = null, $offset = null)
     {
         return $this->adSlotRepository->getByRonAdSlot($ronAdSlot, $limit, $offset);
+    }
+
+    public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork)
+    {
+        return $this->adSlotRepository->getReportableAdSlotIdsRelatedAdNetwork($adNetwork);
     }
 }

@@ -64,4 +64,8 @@ interface ReportInterface extends ReportDataInterface
      */
     public function setCalculatedFields();
 
+    /**
+     * @return $this
+     */
+    public function setFillRate();
 }

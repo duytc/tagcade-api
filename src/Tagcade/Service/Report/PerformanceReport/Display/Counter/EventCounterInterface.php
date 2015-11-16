@@ -3,6 +3,8 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
+use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
+use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 
 interface EventCounterInterface
 {
@@ -146,4 +148,39 @@ interface EventCounterInterface
      * @return mixed
      */
     public function getRonClickCount($ronTagId, $segment = null);
+
+    /**
+     *
+     * @param array $adSlotIds
+     *
+     * @return array('slotId' => AdSlotReportCount)
+     */
+    public function getAdSlotReports(array $adSlotIds);
+
+    /**
+     * @param $tagId
+     * @param bool $nativeSlot whether ad slot containing this tag is native or not
+     *
+     * @return AdTagReportCount
+     */
+    public function getAdTagReport($tagId, $nativeSlot = false);
+
+    /**
+     * Get reports for a list of ad tags
+     *
+     * @param array $tagIds
+     * @param bool $nativeSlot  whether ad slot containing these tags is native or not
+     *
+     * @return array('tagId' => AdTagReportCount)
+     */
+    public function getAdTagReports(array $tagIds, $nativeSlot = false);
+
+
+    public function getRonAdTagReport($ronTagId, $segmentId = null, $hasNativeSlotContainer = false);
+
+    public function getRonAdTagReports(array $tagIds, $segmentId = null, $nativeSlot = false);
+
+    public function getRonAdSlotReport($ronAdSlotId, $segmentId = null);
+
+
 }

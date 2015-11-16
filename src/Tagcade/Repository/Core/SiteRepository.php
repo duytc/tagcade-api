@@ -44,6 +44,20 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
+        return $this->getSitesThatHaveAdTagsBelongingToAdNetworkQuery($adNetwork, $limit, $offset)->getQuery()->getResult();
+    }
+
+    public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesThatHaveAdTagsBelongingToAdNetworkQuery($adNetwork, $limit, $offset);
+        $results = $qb->select('st.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
+
+
+    protected function getSitesThatHaveAdTagsBelongingToAdNetworkQuery(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
         $qb = $this->createQueryBuilder('st')
             ->join('st.adSlots', 'sl')
             ->join('sl.adTags', 't')
@@ -60,7 +74,7 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
             $qb->setFirstResult($offset);
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 
     public function getSitesThatHastConfigSourceReportForPublisher(PublisherInterface $publisher, $hasSourceReportConfig = true)

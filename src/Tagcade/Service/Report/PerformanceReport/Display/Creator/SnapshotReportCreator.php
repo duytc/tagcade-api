@@ -2,14 +2,13 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 
-use DateTime;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use \Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;
 
-class ReportCreator extends ReportCreatorAbstract implements ReportCreatorInterface
+class SnapshotReportCreator extends ReportCreatorAbstract implements SnapshotReportCreatorInterface
 {
     /**
      * @param CreatorInterface[] $creators
@@ -20,14 +19,12 @@ class ReportCreator extends ReportCreatorAbstract implements ReportCreatorInterf
         parent::__construct($creators, $eventCounter);
     }
 
-
-    public function getReport(ReportTypeInterface $reportType)
+    protected function addCreator(CreatorInterface $creator)
     {
-       $report = parent::getReport($reportType);
-        // very important!!!
-        // will set off a chain reaction and calculate all fields for the entire report graph
-       $report->setCalculatedFields();
+        if (!$creator instanceof SnapshotCreatorInterface) {
+            throw new InvalidArgumentException('Require SnapshotCreatorInterface for SnapshotReportCreator');
+        }
 
-       return $report;
+        parent::addCreator($creator);
     }
 }
