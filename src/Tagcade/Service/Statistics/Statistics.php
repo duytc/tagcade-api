@@ -279,14 +279,14 @@ class Statistics implements StatisticsInterface
      */
     private function _getDashboardParams(DateTime $startDate = null, DateTime $endDate = null)
     {
-        $today = new DateTime('today');
-
-        if (null === $endDate || $endDate >= $today) {
+        if (null === $endDate && null === $startDate) {
             $endDate = new DateTime('yesterday');
-        }
-
-        if (null === $startDate) {
-            $startDate = $endDate->modify(sprintf('-%d days', $this->numberOfPreviousDays));
+            // if we just modify endDate, both date objects point to the same object
+            $startDate = (new DateTime('yesterday'))->modify(sprintf('-%d days', $this->numberOfPreviousDays));
+        } elseif (null === $endDate) {
+            // start date is set, so set end date to be the same date
+            // this is very important, we want separate date objects, otherwise the call to setTime below will affect both dates
+            $endDate = clone $startDate;
         }
 
         $endDate->setTime(23, 59, 59);

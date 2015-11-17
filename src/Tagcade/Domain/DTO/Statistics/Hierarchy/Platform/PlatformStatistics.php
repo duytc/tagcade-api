@@ -16,7 +16,7 @@ class PlatformStatistics
 
         $historicalReports = $reportGroup != null ? $reportGroup->getReports() : array();
         if (true === $includedToday) {
-            array_shift($historicalReports); // Ignore today statistics
+//            array_shift($historicalReports); // Ignore today statistics
         }
 
         $this->reports = $historicalReports;

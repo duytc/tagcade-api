@@ -16,7 +16,7 @@ class AccountStatistics
 
         $historicalReports = $reportGroup != null ? $reportGroup->getReports() : array();
         if ($includedToday) {
-            array_shift($historicalReports); // Ignore today statistics
+//            array_shift($historicalReports); // Ignore today statistics
         }
 
         $this->reports = $historicalReports;
