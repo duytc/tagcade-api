@@ -336,4 +336,17 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getActiveAdTagIdsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork, $limit, $offset)
+            ->join('t.adSlot', 'sl')
+            ->andWhere('sl.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+            ->andWhere('t.active = 1');
+
+        $results = $qb->select('t.id')->getQuery()->getArrayResult();
+
+        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
 }

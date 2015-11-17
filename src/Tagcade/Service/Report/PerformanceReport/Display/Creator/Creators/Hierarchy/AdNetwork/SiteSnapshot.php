@@ -47,16 +47,9 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setDate($this->getDate())
         ;
 
-        // hotfix
-        // todo add getAdTagIdsForAdNetworkAndSite to manager and repository
-        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
-        $adTagIds = array_map(function($adTag) {
-            return $adTag->getId();
-        }, $adTags);
-
-        unset($adTags);
-
+        $adTagIds = $this->adTagManager->getAdTagIdsForAdNetworkAndSite($adNetwork, $site);
         $adTagReportCounts =  $this->eventCounter->getAdTagReports($adTagIds);
+        unset($adTagIds);
 
         $this->parseRawReportData($report, $adTagReportCounts);
 

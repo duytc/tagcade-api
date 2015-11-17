@@ -36,6 +36,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
 
         $report
             ->setAdTag($adTag)
+            ->setName($adTag->getName())
             ->setDate($this->getDate());
 
         $adTagReportCount = $this->eventCounter->getAdTagReport($adTag->getId(), $isNativeAdSlot);

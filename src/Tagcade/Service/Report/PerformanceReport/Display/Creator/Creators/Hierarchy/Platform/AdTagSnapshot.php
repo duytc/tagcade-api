@@ -35,6 +35,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
 
         $report
             ->setAdTag($adTag)
+            ->setName($adTag->getName())
             ->setDate($this->getDate())
             ->setPosition($adTag->getPosition())
         ;

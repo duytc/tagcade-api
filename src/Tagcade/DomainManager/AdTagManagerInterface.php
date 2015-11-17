@@ -103,6 +103,8 @@ interface AdTagManagerInterface
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
+    public function getAdTagIdsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
+
     public function getAllActiveAdTagIds();
 
     /**
