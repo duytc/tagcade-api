@@ -100,7 +100,7 @@ class Statistics implements StatisticsInterface
             return new AdminDashboard();
         }
 
-        $platformStatistics = new PlatformStatisticsDTO($platformReports, $isTodayInRange);
+        $platformStatistics = new PlatformStatisticsDTO($platformReports);
 
         $topPublishers      = $this->accountStatistics->getTopPublishersByBilledAmount($params);
         $topSites           = $this->siteStatistics->getTopSitesByBilledAmount($params);
@@ -137,7 +137,7 @@ class Statistics implements StatisticsInterface
         if (false === $accountReports) {
             return new PublisherDashboard();
         }
-        $accountStatistics  = new AccountStatisticsDTO($accountReports, $isTodayInRange);
+        $accountStatistics  = new AccountStatisticsDTO($accountReports);
 
         $todayReport = null;
         $yesterdayReport = null;

@@ -10,16 +10,11 @@ class PlatformStatistics
 
     protected $reports;
 
-    function __construct(ReportGroup $reportGroup = null, $includedToday = false)
+    function __construct(ReportGroup $reportGroup = null)
     {
         $this->reportGroup = $reportGroup;
 
-        $historicalReports = $reportGroup != null ? $reportGroup->getReports() : array();
-        if (true === $includedToday) {
-//            array_shift($historicalReports); // Ignore today statistics
-        }
-
-        $this->reports = $historicalReports;
+        $this->reports = $reportGroup != null ? $reportGroup->getReports() : array();
     }
 
     public function getReportGroup()
