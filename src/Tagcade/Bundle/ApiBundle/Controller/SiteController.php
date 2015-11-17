@@ -15,6 +15,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("Site")
@@ -295,7 +296,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
-        if (!$site->getPublisher()->hasAnalyticsModule()) {
+        if ($this->getUser() instanceof PublisherInterface && !$site->getPublisher()->hasAnalyticsModule()) {
             throw new BadRequestHttpException('That publisher is not enabled Analytics module');
         }
 
