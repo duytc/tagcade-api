@@ -101,10 +101,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         /** @var PublisherInterface $publisher */
         $publisher = $this->one($id);
 
-        if (!$publisher->hasAnalyticsModule()) {
-            throw new BadRequestHttpException('That publisher is not enabled Analytics module');
-        }
-
         return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher);
     }
 
