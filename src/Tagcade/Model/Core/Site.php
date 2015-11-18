@@ -129,6 +129,12 @@ class Site implements SiteInterface
         return $this->adSlots;
     }
 
+    public function setAdSlots($adSlots)
+    {
+        $this->adSlots = $adSlots;
+        return $this;
+    }
+
     /**
      * @inheritdoc
      */

@@ -48,6 +48,7 @@ interface SiteInterface extends ModelInterface
 
     public function getReportableAdSlots();
 
+    public function setAdSlots($adSlots);
 
     public function getAllAdSlots();
 
