@@ -25,12 +25,11 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
-    const CACHE_KEY_PASSBACK               = 'fallbacks'; // legacy name is fallbacks
+    const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
     const NAMESPACE_AD_SLOT                = 'adslot_%d';
     const NAMESPACE_AD_TAG                 = 'adtag_%d';
-
 
     const NAMESPACE_RON_AD_SLOT            = 'ron_slot_%d';
     const NAMESPACE_RON_AD_TAG             = 'ron_tag_%d';
@@ -38,7 +37,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
 
-    private static $AD_TAG_REPORT_KEYS = [
+    private static $adTagReportKeys = [
         0 => self::CACHE_KEY_OPPORTUNITY,
         1 => self::CACHE_KEY_IMPRESSION,
         2 => self::CACHE_KEY_FIRST_OPPORTUNITY,
@@ -48,6 +47,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         6 => self::CACHE_KEY_BLANK_IMPRESSION,
         7 => self::CACHE_KEY_VOID_IMPRESSION,
         8 => self::CACHE_KEY_CLICK,
+        9 => self::CACHE_KEY_FALLBACK,
     ];
 
     /**
@@ -370,7 +370,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
             $adTagReportKey = 0;
             for($i = $index; $i < $index + $tagKeyCount ; $i ++) {
-                $singleConvertedResults[static::$AD_TAG_REPORT_KEYS[$adTagReportKey]] = $results[$i];
+                $singleConvertedResults[static::$adTagReportKeys[$adTagReportKey]] = $results[$i];
                 $adTagReportKey ++;
             }
 
@@ -391,7 +391,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $results = $this->cache->mGet($adTagKeys);
         $convertedResults = array();
         foreach ($results as $index => $value) {
-            $convertedResults[static::$AD_TAG_REPORT_KEYS[$index]] = $value;
+            $convertedResults[static::$adTagReportKeys[$index]] = $value;
         }
 
         return new AdTagReportCount($convertedResults);
@@ -472,6 +472,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_BLANK_IMPRESSION, $namespace);
             $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_VOID_IMPRESSION, $namespace);
             $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_CLICK, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_FALLBACK, $namespace);
         }
 
         return $adTagKeys;

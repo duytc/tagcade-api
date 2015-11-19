@@ -13,7 +13,8 @@ class AdTagReportCount implements BaseAdTagReportCountInterface
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
-    const CACHE_KEY_PASSBACK               = 'fallbacks'; // legacy name is fallbacks
+    const CACHE_KEY_PASSBACK               = 'passbacks';
+    const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy name for passbacks is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
     private $firstOpportunities = 0;
@@ -62,7 +63,11 @@ class AdTagReportCount implements BaseAdTagReportCountInterface
         }
 
         if (array_key_exists(self::CACHE_KEY_PASSBACK, $reportCounts)) {
-            $this->passbacks = $reportCounts[self::CACHE_KEY_PASSBACK];
+            $this->passbacks += $reportCounts[self::CACHE_KEY_PASSBACK];
+        }
+
+        if (array_key_exists(self::CACHE_KEY_FALLBACK, $reportCounts)) {
+            $this->passbacks += $reportCounts[self::CACHE_KEY_FALLBACK];
         }
 
         if (array_key_exists(self::CACHE_KEY_FORCED_PASSBACK, $reportCounts)) {
