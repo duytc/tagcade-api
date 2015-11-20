@@ -171,6 +171,7 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
          * @var LibraryExpressionRepositoryInterface $libraryExpressionRepository
          */
         $libraryExpressionRepository = $this->em->getRepository(LibraryExpression::class);
+        /** @var LibraryExpressionInterface[] $libraryExpressions */
         $libraryExpressions = $libraryExpressionRepository->getByExpectLibraryAdSlot($libraryAdSlot);
         /**
          * @var LibraryDynamicAdSlotRepositoryInterface $libraryDynamicAdSlotRepository
@@ -178,8 +179,16 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         $libraryDynamicAdSlotRepository = $this->em->getRepository(LibraryDynamicAdSlot::class);
         $libraryDynamicAdSlots = $libraryDynamicAdSlotRepository->getByDefaultLibraryAdSlot($libraryAdSlot);
 
-        if (!empty($libraryExpressions) || !empty($libraryDynamicAdSlots)) {
-            return true;
+        foreach($libraryExpressions as $libraryExpression) {
+            if ($libraryExpression->getLibraryDynamicAdSlot()->getRonAdSlot() instanceof RonAdSlotInterface) {
+                return true;
+            }
+        }
+
+        foreach($libraryDynamicAdSlots as $libraryDynamicAdSlot) {
+            if ($libraryDynamicAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
+                return true;
+            }
         }
 
         return false;
