@@ -279,7 +279,7 @@ abstract class LibraryAdSlotAbstract
      */
     public function setRonAdSlot($ronAdSlot)
     {
-        if ($this->ronAdSlot === null) {
+        if ($ronAdSlot === null) {
             $this->ronAdSlot = new ArrayCollection();
         }
 
