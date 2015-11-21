@@ -9,6 +9,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -65,7 +66,7 @@ class DynamicAdSlotManager implements DynamicAdSlotManagerInterface
 
         $libraryDynamicAdSlot = $dynamicAdSlot->getLibraryAdSlot();
         //1. Remove library this ad slot is the only one that refer to the library
-        if(count($dynamicAdSlot->getCoReferencedAdSlots()) < 2 ) {
+        if((count($dynamicAdSlot->getCoReferencedAdSlots()) < 2 ) && !$dynamicAdSlot->getLibraryAdSlot()->getRonAdSlot() instanceof RonAdSlotInterface) {
             $this->om->remove($libraryDynamicAdSlot); // resulting cascade remove this ad slot
         }
         else {
