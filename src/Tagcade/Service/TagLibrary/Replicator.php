@@ -251,7 +251,10 @@ class Replicator implements ReplicatorInterface
 
             // if there no any more AdTag refer to this LibraryAdTag then it should be removed as well
             $libraryAdTag = $librarySlotTag->getLibraryAdTag();
-            if(true === $remove && $libraryAdTag->getAssociatedTagCount() < 1) {
+
+            if(true === $remove &&
+                $libraryAdTag->getAssociatedTagCount() < 1 &&
+                count($libraryAdTag->getLibSlotTags()) < 2) {
                 $this->em->remove($libraryAdTag);
             }
 
