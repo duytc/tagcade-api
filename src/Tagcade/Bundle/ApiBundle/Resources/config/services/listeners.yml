@@ -46,8 +46,10 @@ services:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagCountForAdNetworkListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: preSoftDelete }
-            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: onFlush}
+            - { name: doctrine.event_listener, event: postFlush}
 
     tagcade_api.event_listener.UpdateExistingRonSlotDomainCacheListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonSlotDomainCacheListener
