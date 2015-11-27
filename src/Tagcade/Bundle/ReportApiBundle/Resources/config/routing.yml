@@ -14,7 +14,7 @@ report_api_unified_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\UnifiedReportController
     name_prefix: report_api_1_
-    prefix: /unifiedreports
+    prefix: /unifiedreports/pulsepoint
 
 # functional api calls
 
