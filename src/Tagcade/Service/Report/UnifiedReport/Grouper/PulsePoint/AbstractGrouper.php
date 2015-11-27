@@ -2,11 +2,9 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Grouper\PulsePoint;
 
-use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\PulsePoint\PulsePointUnifiedReportModelInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
 
 
@@ -19,19 +17,19 @@ use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
  *
  * For this service, we need to create a new one and return it every time the service is requested
  */
-
 abstract class AbstractGrouper implements GrouperInterface
 {
-    private $reportType;
-    private $reports;
-    private $reportName;
-    private $startDate;
-    private $endDate;
+    protected $reportType;
+    protected $reports;
+    protected $reportName;
+    protected $startDate;
+    protected $endDate;
 
     protected $paidImps;
     protected $totalImps;
 
     protected $fillRate;
+
     /**
      * @param ReportResultInterface $reportResult
      */
@@ -70,7 +68,7 @@ abstract class AbstractGrouper implements GrouperInterface
      */
     protected function groupReports(array $reports)
     {
-        foreach($reports as $report) {
+        foreach ($reports as $report) {
             $this->doGroupReport($report);
         }
 

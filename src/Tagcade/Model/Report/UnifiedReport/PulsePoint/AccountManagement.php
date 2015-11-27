@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\Report\UnifiedReport\PulsePoint;
 
-class AccountManagement implements PulsePointUnifiedReportModelInterface
+class AccountManagement implements PulsePointUnifiedReportRevenueInterface
 {
     protected $id;
     protected $publisherId;

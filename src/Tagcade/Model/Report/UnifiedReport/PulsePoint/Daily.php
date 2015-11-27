@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\Report\UnifiedReport\PulsePoint;
 
-class Daily implements PulsePointUnifiedReportModelInterface
+class Daily implements PulsePointUnifiedReportRevenueInterface
 {
     protected $id;
     protected $publisherId;

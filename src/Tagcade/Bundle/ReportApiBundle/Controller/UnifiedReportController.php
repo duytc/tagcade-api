@@ -37,7 +37,7 @@ class UnifiedReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN')")
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
      *
      * @Rest\Get("/daily")
      *

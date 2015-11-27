@@ -2,7 +2,10 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Grouper;
 
-use Tagcade\Service\Report\UnifiedReport\Grouper\PulsePoint\DefaultGrouper as PulsePointDefaultGrouper;
+use Tagcade\Exception\NotSupportedException;
+use Tagcade\Model\Report\UnifiedReport\PulsePoint\PulsePointUnifiedReportRevenueInterface;
+use Tagcade\Model\Report\UnifiedReport\UnifiedReportModelInterface;
+use Tagcade\Service\Report\UnifiedReport\Grouper\PulsePoint;
 use Tagcade\Service\Report\UnifiedReport\Grouper\PulsePoint\GrouperInterface;
 use Tagcade\Service\Report\UnifiedReport\Result\UnifiedReportResultInterface;
 
@@ -19,15 +22,23 @@ class ReportGrouper implements ReportGrouperInterface
      * Factory pattern to return a grouper
      *
      * @param UnifiedReportResultInterface $reportCollection
+     * @throws NotSupportedException
      * @return GrouperInterface
      */
     public static function group(UnifiedReportResultInterface $reportCollection)
     {
         $reports = $reportCollection->getReports();
 
-        // get first report in array, use it to determine the grouper method
-        // TODO pick report grouper base on report type or report item
+        $report = current($reports);
 
-        return new PulsePointDefaultGrouper($reportCollection);
+        //TODO check if reports empty!!!
+
+        if ($report instanceof PulsePointUnifiedReportRevenueInterface) {
+            return new PulsePoint\RevenueGrouper($reportCollection);
+        } elseif ($report instanceof UnifiedReportModelInterface) {
+            return new PulsePoint\DefaultGrouper($reportCollection);
+        }
+
+        throw new NotSupportedException(sprintf('Not support grouping for this report result %s', get_class($report)));
     }
 } 
