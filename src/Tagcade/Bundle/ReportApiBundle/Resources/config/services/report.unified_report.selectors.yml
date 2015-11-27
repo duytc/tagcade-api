@@ -41,7 +41,11 @@ services:
             - @tagcade.repository.report.unified_report.pulse_point.domain_impression
 
     ### Unified selector service ###
-    tagcade.service.report.unified_report.pulse_point.selector.report_selector:
+    tagcade.service.report.unified_report.report_grouper:
+        class: Tagcade\Service\Report\UnifiedReport\Grouper\ReportGrouper
+
+    ### Unified selector service ###
+    tagcade.service.report.unified_report.selector.report_selector:
         class: Tagcade\Service\Report\UnifiedReport\Selector\ReportSelector
         arguments:
             -
@@ -51,3 +55,4 @@ services:
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.daily
                 # domain_impression selectors
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression
+            - @tagcade.service.report.unified_report.report_grouper

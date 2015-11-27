@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\User\Role\AdminInterface;
@@ -40,15 +41,16 @@ class UnifiedReportController extends FOSRestController
      *
      * @Rest\Get("/daily")
      *
-     * @Rest\QueryParam(name="publisherId", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
      *
      * @return array
      */
-    public function getDailyReportAction()
+    public function getDailyReportAction(Request $request)
     {
-        $service = $this->get('tagcade.service.report.unified_report.pulse_point.selector.report_selector');
+        $service = $this->get('tagcade.service.report.unified_report.selector.report_selector');
 
         $user = $this->getUser();
 
@@ -59,11 +61,13 @@ class UnifiedReportController extends FOSRestController
         }
 
         if ($this->getUser() instanceof AdminInterface) {
-            // get for multiple...
-            //return [];
+            $publisherId = $request->query->get('publisher', null);
 
-            /** @var PublisherInterface $publisher */
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find(12);
+            if (null === $publisherId) {
+                return $this->view(null, Codes::HTTP_BAD_REQUEST);
+            }
+
+            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
             return $this->getResult($service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams()));
         }
 
@@ -104,7 +108,8 @@ class UnifiedReportController extends FOSRestController
         // create a params array with all values set to null
         $defaultParams = array_fill_keys([
             UnifiedReportParams::PARAM_START_DATE,
-            UnifiedReportParams::PARAM_END_DATE
+            UnifiedReportParams::PARAM_END_DATE,
+            UnifiedReportParams::PARAM_GROUP
         ], null);
 
         $params = array_merge($defaultParams, $params);
@@ -112,8 +117,9 @@ class UnifiedReportController extends FOSRestController
         $dateUtil = $this->get('tagcade.service.date_util');
         $startDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_START_DATE], true);
         $endDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_END_DATE]);
+        $group = $params[UnifiedReportParams::PARAM_GROUP];
 
-        return new UnifiedReportParams($startDate, $endDate);
+        return new UnifiedReportParams($startDate, $endDate, $group);
     }
 
     /**

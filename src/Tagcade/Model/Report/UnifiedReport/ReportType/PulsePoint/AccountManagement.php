@@ -23,10 +23,18 @@ class AccountManagement implements ReportTypeInterface
     }
 
     /**
-     * @return PublisherInterface
+     * @inheritdoc
      */
     public function getPublisherId()
     {
         return $this->publisher->getId();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
     }
 }

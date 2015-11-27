@@ -5,14 +5,20 @@ namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
+use Tagcade\Service\Report\UnifiedReport\Grouper\ReportGrouperInterface;
+use Tagcade\Service\Report\UnifiedReport\Result\UnifiedReportCollection;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReportSelectorInterface;
 
 class ReportSelector implements UnifiedReportSelectorInterface
 {
     /** @var SelectorInterface[] */
     protected $selectors = [];
+    /**
+     * @var ReportGrouperInterface
+     */
+    private $reportGrouper;
 
-    function __construct($selectors)
+    function __construct($selectors, ReportGrouperInterface $reportGrouper)
     {
         foreach ($selectors as $selector) {
             if (!$selector instanceof SelectorInterface) {
@@ -21,6 +27,8 @@ class ReportSelector implements UnifiedReportSelectorInterface
 
             $this->addSelector($selector);
         }
+
+        $this->reportGrouper = $reportGrouper;
     }
 
     /**
@@ -35,7 +43,13 @@ class ReportSelector implements UnifiedReportSelectorInterface
 
         $reports = $selector->getReports($reportType, $params);
 
-        return $reports;
+        $result = new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reports);
+
+        if ($params->getGrouped()) {
+            $result = $this->reportGrouper->groupReports($result);
+        }
+
+        return $result;
     }
 
     protected function addSelector(SelectorInterface $selector)

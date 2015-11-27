@@ -2,9 +2,7 @@
 
 namespace Tagcade\Model\Report\UnifiedReport\PulsePoint;
 
-use Tagcade\Model\Report\UnifiedReport\UnifiedReportModelInterface;
-
-class DomainImpression implements UnifiedReportModelInterface
+class DomainImpression implements PulsePointUnifiedReportModelInterface
 {
     protected $id;
     protected $publisherId;
