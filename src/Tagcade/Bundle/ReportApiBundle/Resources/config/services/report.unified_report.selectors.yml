@@ -5,21 +5,21 @@ services:
     ### Unified report repositories ###
     tagcade.repository.report.unified_report.pulse_point.account_management:
         class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface
-        factory_service: doctrine.orm.entity_manager
+        factory_service: doctrine.orm.unifiedreport_entity_manager
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement
 
     tagcade.repository.report.unified_report.pulse_point.daily:
         class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DailyReportRepositoryInterface
-        factory_service: doctrine.orm.entity_manager
+        factory_service: doctrine.orm.unifiedreport_entity_manager
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\PulsePoint\Daily
 
     tagcade.repository.report.unified_report.pulse_point.domain_impression:
         class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DomainReportRepositoryInterface
-        factory_service: doctrine.orm.entity_manager
+        factory_service: doctrine.orm.unifiedreport_entity_manager
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\PulsePoint\DomainImpression
