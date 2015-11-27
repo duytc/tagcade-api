@@ -3,9 +3,10 @@
 
 namespace Tagcade\Repository\Report\UnifiedReport\PulsePoint;
 
-use Doctrine\Common\Persistence\ObjectRepository;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Report\UnifiedReport\UnifiedReportRepositoryInterface;
 
-interface DailyReportRepositoryInterface extends ObjectRepository
+interface DailyReportRepositoryInterface extends UnifiedReportRepositoryInterface
 {
-    public function getReports();
+    public function getReportFor(PublisherInterface $publisher, \DateTime $startDate, \DateTime $endDate);
 }

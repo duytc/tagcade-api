@@ -1,0 +1,44 @@
+Tagcade\Entity\Report\UnifiedReport\PulsePoint\Daily:
+    type: entity
+    table: report_pulse_point_daily
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DailyReportRepository
+    uniqueConstraints:
+        daily_unique_key:
+            columns: # underscore column name
+                - publisher_id
+                - date
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        publisherId:
+            type: integer
+        date:
+            type: date
+        size:
+            type: string
+            length: 50
+            nullable: true
+        revenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        fillRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        paidImps:
+            type: integer
+            nullable: true
+        totalImps:
+            type: integer
+            nullable: true
+        backupImpression:
+            type: integer
+            nullable: true
+        avgCpm:
+            type: decimal
+            scale: 4
+            nullable: true

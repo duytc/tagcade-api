@@ -4,31 +4,47 @@ namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
 
 use Tagcade\Exception\NotSupportedException;
-use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReport_ReportSelectorInterface;
-use Tagcade\Service\Report\UnifiedReport\Selector\Selectors\AdNetworkPartnerSelector;
-use Tagcade\Service\Report\UnifiedReport\Selector\Selectors\AdTagSelector;
-use Tagcade\Service\Report\UnifiedReport\Selector\Selectors\SelectorInterface as UnifiedReportSelectorInterface;
-use Tagcade\Service\Report\UnifiedReport\Selector\Selectors\SiteSelector;
+use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
+use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReportSelectorInterface;
 
-class ReportSelector implements UnifiedReport_ReportSelectorInterface
+class ReportSelector implements UnifiedReportSelectorInterface
 {
-    protected $selectors;
+    /** @var SelectorInterface[] */
+    protected $selectors = [];
 
     function __construct($selectors)
     {
-        $this->selectors = $selectors;
+        foreach ($selectors as $selector) {
+            if (!$selector instanceof SelectorInterface) {
+                continue;
+            }
+
+            $this->addSelector($selector);
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function getReports($reportType, $params)
+    public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
     {
+        /**
+         * @var SelectorInterface $selector
+         */
         $selector = $this->getSelectorFor($reportType);
 
         $reports = $selector->getReports($reportType, $params);
 
         return $reports;
+    }
+
+    protected function addSelector(SelectorInterface $selector)
+    {
+        if (!in_array($selector, $this->selectors)) {
+            $this->selectors [] = $selector;
+        }
+
+        return $this;
     }
 
     /**
@@ -37,16 +53,17 @@ class ReportSelector implements UnifiedReport_ReportSelectorInterface
      * @return UnifiedReportSelectorInterface
      * @throws NotSupportedException
      */
-    private function getSelectorFor($reportType)
+    private function getSelectorFor(ReportTypeInterface $reportType)
     {
-        if ($reportType === 1) {
-            return AdNetworkPartnerSelector();
-        } elseif ($reportType === 2) {
-            return new AdTagSelector([]);
-        } elseif ($reportType === 3) {
-            return new SiteSelector([]);
+        foreach ($this->selectors as $selector) {
+            /**
+             * @var SelectorInterface $selector
+             */
+            if ($selector->supportReport($reportType)) {
+                return $selector;
+            }
         }
 
-        throw new NotSupportedException(sprintf('Not supported report type %s', $reportType));
+        throw new NotSupportedException(sprintf('Not found any selector that supports this report type %s', $reportType));
     }
 }

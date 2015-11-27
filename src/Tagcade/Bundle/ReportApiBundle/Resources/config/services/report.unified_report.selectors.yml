@@ -1,0 +1,53 @@
+#parameters:
+# ...
+
+services:
+    ### Unified report repositories ###
+    tagcade.repository.report.unified_report.pulse_point.account_management:
+        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement
+
+    tagcade.repository.report.unified_report.pulse_point.daily:
+        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DailyReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\Daily
+
+    tagcade.repository.report.unified_report.pulse_point.domain_impression:
+        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DomainReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\DomainImpression
+
+    ### Unified report selectors ###
+    tagcade.service.report.unified_report.pulse_point.selector.selectors.account_management:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AccountManagement
+        arguments:
+            - @tagcade.repository.report.unified_report.pulse_point.account_management
+
+    tagcade.service.report.unified_report.pulse_point.selector.selectors.daily:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\Daily
+        arguments:
+            - @tagcade.repository.report.unified_report.pulse_point.daily
+
+    tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\DomainImpression
+        arguments:
+            - @tagcade.repository.report.unified_report.pulse_point.domain_impression
+
+    ### Unified selector service ###
+    tagcade.service.report.unified_report.pulse_point.selector.report_selector:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\ReportSelector
+        arguments:
+            -
+                # account_management selectors
+                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.account_management
+                # daily selectors
+                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.daily
+                # domain_impression selectors
+                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression

@@ -5,3 +5,4 @@ imports:
     - { resource: services/report.performance.selectors.yml }
     - { resource: services/report.source.selector.yml }
     - { resource: services/report.billing.yml }
+    - { resource: services/report.unified_report.selectors.yml }

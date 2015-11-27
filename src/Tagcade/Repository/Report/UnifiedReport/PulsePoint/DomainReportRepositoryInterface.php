@@ -3,9 +3,8 @@
 
 namespace Tagcade\Repository\Report\UnifiedReport\PulsePoint;
 
-use Doctrine\Common\Persistence\ObjectRepository;
+use Tagcade\Repository\Report\UnifiedReport\UnifiedReportRepositoryInterface;
 
-interface DomainReportRepositoryInterface extends ObjectRepository
+interface DomainReportRepositoryInterface extends UnifiedReportRepositoryInterface
 {
-    public function getReports();
 }
