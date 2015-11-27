@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -63,10 +64,10 @@ class UnifiedReportController extends FOSRestController
 
             /** @var PublisherInterface $publisher */
             $publisher = $this->get('tagcade_user.domain_manager.publisher')->find(12);
-            return $service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
+            return $this->getResult($service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams()));
         }
 
-        return $service->getReports(new DailyReportType($publisher = $user, $date = new \DateTime()), $this->getParams());
+        return $this->getResult($service->getReports(new DailyReportType($publisher = $user, $date = new \DateTime()), $this->getParams()));
     }
 
     /**
@@ -113,5 +114,22 @@ class UnifiedReportController extends FOSRestController
         $endDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_END_DATE]);
 
         return new UnifiedReportParams($startDate, $endDate);
+    }
+
+    /**
+     * get Result
+     * @param $result
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    private function getResult($result)
+    {
+        if ($result === false
+            || (is_array($result) && count($result) < 1)
+        ) {
+            throw new NotFoundHttpException('No reports found for that query');
+        }
+
+        return $result;
     }
 }
