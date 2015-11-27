@@ -27,7 +27,7 @@ class Daily implements SelectorInterface
             throw new InvalidArgumentException('Expect instance of DailyReportType');
         }
 
-        return $this->dailyRepository->getReportFor($reportType->getPublisherId(), $params->getStartDate(), $params->getEndDate());
+        return $this->dailyRepository->getReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
     }
 
 

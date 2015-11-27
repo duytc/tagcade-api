@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 /**
  * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_UNIFIED_REPORT') )")
@@ -58,10 +59,14 @@ class UnifiedReportController extends FOSRestController
 
         if ($this->getUser() instanceof AdminInterface) {
             // get for multiple...
-            return [];
+            //return [];
+
+            /** @var PublisherInterface $publisher */
+            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find(12);
+            return $service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
         }
 
-        return $service->getReports(new DailyReportType($publisher = $user, $date = null), $params = null);
+        return $service->getReports(new DailyReportType($publisher = $user, $date = new \DateTime()), $this->getParams());
     }
 
     /**
@@ -78,5 +83,35 @@ class UnifiedReportController extends FOSRestController
     public function getDomainImpressionReportAction()
     {
         return $this->view(null, Codes::HTTP_NOT_IMPLEMENTED);
+    }
+
+    /**
+     * @return UnifiedReportParams
+     */
+    private function getParams()
+    {
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        return $this->_createParams($params);
+    }
+
+    /**
+     * @var array $params
+     * @return UnifiedReportParams
+     */
+    private function _createParams(array $params)
+    {
+        // create a params array with all values set to null
+        $defaultParams = array_fill_keys([
+            UnifiedReportParams::PARAM_START_DATE,
+            UnifiedReportParams::PARAM_END_DATE
+        ], null);
+
+        $params = array_merge($defaultParams, $params);
+
+        $dateUtil = $this->get('tagcade.service.date_util');
+        $startDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_START_DATE], true);
+        $endDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_END_DATE]);
+
+        return new UnifiedReportParams($startDate, $endDate);
     }
 }

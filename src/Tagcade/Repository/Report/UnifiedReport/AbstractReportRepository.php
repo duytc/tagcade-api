@@ -23,8 +23,8 @@ abstract class AbstractReportRepository extends EntityRepository
     public function getReportFor(PublisherInterface $publisher, \DateTime $startDate, \DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
-            ->andWhere('r.publisher = :publisher')
-            ->setParameter('publisher', $publisher->getUser())
+            ->andWhere('r.publisherId = :publisherId')
+            ->setParameter('publisherId', $publisher->getId())
             ->getQuery()
             ->getResult()
         ;

@@ -23,7 +23,15 @@ class Daily implements ReportTypeInterface
     }
 
     /**
-     * @return PublisherInterface
+     * @inheritdoc
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getPublisherId()
     {
