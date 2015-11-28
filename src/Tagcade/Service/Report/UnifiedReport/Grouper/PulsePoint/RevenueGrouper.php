@@ -25,6 +25,7 @@ class RevenueGrouper extends DefaultGrouper
             $this->reportName,
             $this->paidImps,
             $this->totalImps,
+            $this->averageFillRate,
             $this->revenue,
             $this->backupImpression,
             $this->avgCpm

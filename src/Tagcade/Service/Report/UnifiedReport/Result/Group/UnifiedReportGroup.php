@@ -12,7 +12,9 @@ class UnifiedReportGroup
     private $paidImps;
     private $totalImps;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name, $paidImps, $totalImps)
+    private $averageFillRate;
+
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name, $paidImps, $totalImps, $averageFillRate)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
@@ -20,8 +22,12 @@ class UnifiedReportGroup
         $this->reports = $reports;
         $this->name = $name;
 
+        // total report
         $this->paidImps = $paidImps;
         $this->totalImps = $totalImps;
+
+        // average report
+        $this->averageFillRate = round($averageFillRate, 4);
     }
 
     /**
@@ -80,5 +86,11 @@ class UnifiedReportGroup
         return $this->totalImps;
     }
 
-
-} 
+    /**
+     * @return mixed
+     */
+    public function getAverageFillRate()
+    {
+        return $this->averageFillRate;
+    }
+}

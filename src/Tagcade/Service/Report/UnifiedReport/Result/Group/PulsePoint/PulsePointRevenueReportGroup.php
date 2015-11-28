@@ -12,9 +12,9 @@ class PulsePointRevenueReportGroup extends UnifiedReportGroup
     protected $avgCpm;
 
     public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name,
-                                $paidImps, $totalImps, $revenue, $backupImpression, $avgCpm)
+                                $paidImps, $totalImps, $averageFillRate, $revenue, $backupImpression, $avgCpm)
     {
-        parent::__construct($reportType, $startDate, $endDate, $reports, $name, $paidImps, $totalImps);
+        parent::__construct($reportType, $startDate, $endDate, $reports, $name, $paidImps, $totalImps, $averageFillRate);
 
         $this->revenue = $revenue;
         $this->backupImpression = $backupImpression;
