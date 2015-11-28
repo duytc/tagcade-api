@@ -2,19 +2,37 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Report\UnifiedReport\PulsePoint\DomainReportRepositoryInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\DomainImpression as DomainImpressionReportType;
 
 class DomainImpression implements SelectorInterface
 {
-    public function supportReport(ReportTypeInterface $reportType)
+    /**
+     * @var DomainReportRepositoryInterface
+     */
+    private $domainReportRepository;
+
+    function __construct(DomainReportRepositoryInterface $domainReportRepository)
     {
-        // TODO: Implement supportReport() method.
+        $this->domainReportRepository = $domainReportRepository;
     }
 
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
     {
-        // TODO: Implement getReports() method.
+        if (!$reportType instanceof DomainImpressionReportType) {
+            throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
+        }
+
+        return $this->domainReportRepository->getReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
+    }
+
+
+    public function supportReport(ReportTypeInterface $reportType)
+    {
+        return $reportType instanceof DomainImpressionReportType;
     }
 }

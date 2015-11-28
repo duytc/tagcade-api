@@ -2,19 +2,37 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
 
 class AccountManagement implements SelectorInterface
 {
-    public function supportReport(ReportTypeInterface $reportType)
+    /**
+     * @var AccountManagementRepositoryInterface
+     */
+    private $accMngRepository;
+
+    function __construct(AccountManagementRepositoryInterface $accMngRepository)
     {
-        // TODO: Implement supportReport() method.
+        $this->accMngRepository = $accMngRepository;
     }
 
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
     {
-        // TODO: Implement getReports() method.
+        if (!$reportType instanceof AccountManagementReportType) {
+            throw new InvalidArgumentException('Expect instance of AccountManagementReportType');
+        }
+
+        return $this->accMngRepository->getReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
+    }
+
+
+    public function supportReport(ReportTypeInterface $reportType)
+    {
+        return $reportType instanceof AccountManagementReportType;
     }
 }

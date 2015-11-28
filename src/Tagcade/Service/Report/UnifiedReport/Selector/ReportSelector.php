@@ -78,6 +78,6 @@ class ReportSelector implements UnifiedReportSelectorInterface
             }
         }
 
-        throw new NotSupportedException(sprintf('Not found any selector that supports this report type %s', $reportType));
+        throw new NotSupportedException(sprintf('Not found any selector that supports this report type %s', get_class($reportType)));
     }
 }
