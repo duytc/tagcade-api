@@ -119,7 +119,7 @@ abstract class AbstractGrouper implements GrouperInterface
 
         // Calculate weighted value for fillRate
         // TODO calculate fillRate using weighted value
-        $this->fillRate = $this->calculateWeightedValue($reports, 'fillRate', 'totalImps');
+        $this->fillRate = $this->calculateWeightedValue($reports, 'fillRate', 'paidImps');
     }
 
     protected function doGroupReport(PulsePointUnifiedReportModelInterface $report)
