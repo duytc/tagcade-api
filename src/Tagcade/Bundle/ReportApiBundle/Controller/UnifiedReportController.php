@@ -54,24 +54,18 @@ class UnifiedReportController extends FOSRestController
 
         $user = $this->getUser();
 
-        if (!$user instanceof AdminInterface
-            && !$user instanceof PublisherInterface
-        ) {
-            return $this->view(null, Codes::HTTP_FORBIDDEN);
-        }
+        $publisher = $user;
 
         if ($this->getUser() instanceof AdminInterface) {
             $publisherId = $request->query->get('publisher', null);
-
-            if (null === $publisherId) {
-                return $this->view(null, Codes::HTTP_BAD_REQUEST);
-            }
-
             $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
-            return $this->getResult($service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams()));
+
+            if (!$publisher instanceof PublisherInterface) {
+                throw new NotFoundHttpException('Not found that publisher');
+            }
         }
 
-        return $this->getResult($service->getReports(new DailyReportType($publisher = $user, $date = new \DateTime()), $this->getParams()));
+        return $this->getResult($service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams()));
     }
 
     /**
