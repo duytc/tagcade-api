@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Grouper;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Report\UnifiedReport\PulsePoint\PulsePointUnifiedReportRevenueInterface;
 use Tagcade\Model\Report\UnifiedReport\UnifiedReportModelInterface;
@@ -29,9 +30,11 @@ class ReportGrouper implements ReportGrouperInterface
     {
         $reports = $reportCollection->getReports();
 
-        $report = current($reports);
+        $report = current($reports); // current() return false if $reports is empty!!!
 
-        //TODO check if reports empty!!!
+        if (!$report) {
+            throw new NotFoundHttpException('No reports found for that query');
+        }
 
         if ($report instanceof PulsePointUnifiedReportRevenueInterface) {
             return new PulsePoint\RevenueGrouper($reportCollection);
