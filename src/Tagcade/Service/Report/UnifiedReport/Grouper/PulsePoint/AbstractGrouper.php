@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\UnifiedReport\Grouper\PulsePoint;
 
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\UnifiedReport\PulsePoint\PulsePointUnifiedReportModelInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
@@ -21,6 +22,7 @@ use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
 abstract class AbstractGrouper implements GrouperInterface
 {
     use CalculateRatiosTrait;
+    use CalculateWeightedValueTrait;
 
     protected $reportType;
     protected $reports;
@@ -28,12 +30,17 @@ abstract class AbstractGrouper implements GrouperInterface
     protected $startDate;
     protected $endDate;
 
+    // as total value
     protected $paidImps;
     protected $totalImps;
 
+    // as weighted value
     protected $fillRate;
 
+    // as average value
     protected $averageFillRate;
+    protected $averageTotalImps;
+    protected $averagePaidImps;
 
     /**
      * @param ReportResultInterface $reportResult
@@ -63,9 +70,14 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->endDate,
             $this->reports,
             $this->reportName,
+
             $this->paidImps,
             $this->totalImps,
-            $this->averageFillRate
+            $this->fillRate,
+
+            $this->averageFillRate,
+            $this->averagePaidImps,
+            $this->averageTotalImps
         );
     }
 
@@ -91,13 +103,23 @@ abstract class AbstractGrouper implements GrouperInterface
     protected function groupReports(array $reports)
     {
         // do the total
+        $totalFillRage = 0;
+
         foreach ($reports as $report) {
             $this->doGroupReport($report);
+
+            $totalFillRage += $report->getFillRate();
         }
 
-        // Calculate average for fillRate
+        // Calculate average
         $reportCount = count($this->getReports());
-        $this->averageFillRate = $this->getRatio($this->getFillRate(), $reportCount);
+        $this->averageFillRate = $this->getRatio($totalFillRage, $reportCount);
+        $this->averagePaidImps = $this->getRatio($this->paidImps, $reportCount);
+        $this->averageTotalImps = $this->getRatio($this->totalImps, $reportCount);
+
+        // Calculate weighted value for fillRate
+        // TODO calculate fillRate using weighted value
+        $this->fillRate = $this->calculateWeightedValue($reports, 'fillRate', 'totalImps');
     }
 
     protected function doGroupReport(PulsePointUnifiedReportModelInterface $report)
@@ -105,9 +127,6 @@ abstract class AbstractGrouper implements GrouperInterface
         // for calculating total
         $this->addPaidImps($report->getPaidImps());
         $this->addTotalImps($report->getTotalImps());
-
-        // for calculating average
-        $this->addFillRate($report->getFillRate());
     }
 
     protected function addPaidImps($paidImps)
@@ -118,10 +137,5 @@ abstract class AbstractGrouper implements GrouperInterface
     protected function addTotalImps($totalImps)
     {
         $this->totalImps += (int)$totalImps;
-    }
-
-    protected function addFillRate($fillRate)
-    {
-        $this->fillRate += (float)$fillRate;
     }
 }

@@ -9,12 +9,21 @@ class UnifiedReportGroup
     protected $name;
     protected $startDate;
     protected $endDate;
-    private $paidImps;
-    private $totalImps;
 
-    private $averageFillRate;
+    // as total value
+    protected $paidImps;
+    protected $totalImps;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name, $paidImps, $totalImps, $averageFillRate)
+    // as weighted value
+    protected $fillRate;
+
+    // as average value
+    protected $averageFillRate;
+    protected $averageTotalImps;
+    protected $averagePaidImps;
+
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name, $paidImps, $totalImps, $fillRate,
+                                $averageFillRate, $averagePaidImps, $averageTotalImps)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
@@ -26,8 +35,13 @@ class UnifiedReportGroup
         $this->paidImps = $paidImps;
         $this->totalImps = $totalImps;
 
+        // weighted report
+        $this->fillRate = $fillRate;
+
         // average report
         $this->averageFillRate = round($averageFillRate, 4);
+        $this->averagePaidImps = round($averagePaidImps, 4);
+        $this->averageTotalImps = round($averageTotalImps, 4);
     }
 
     /**
@@ -92,5 +106,21 @@ class UnifiedReportGroup
     public function getAverageFillRate()
     {
         return $this->averageFillRate;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAveragePaidImps()
+    {
+        return $this->averagePaidImps;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageTotalImps()
+    {
+        return $this->averageTotalImps;
     }
 }
