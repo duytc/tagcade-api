@@ -24,7 +24,7 @@ class UnifiedReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/accountManagement")
+     * @Rest\Get("/adtag")
      *
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -90,7 +90,7 @@ class UnifiedReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
      *
-     * @Rest\Get("/domainImpression")
+     * @Rest\Get("/site")
      *
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
