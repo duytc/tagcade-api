@@ -24,6 +24,13 @@ services:
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\PulsePoint\DomainImpression
 
+    tagcade.repository.report.unified_report.pulse_point.country_daily:
+        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\CountryDailyRepositoryInterface
+        factory_service: doctrine.orm.unifiedreport_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\CountryDaily
+
     ### Unified report selectors ###
     tagcade.service.report.unified_report.pulse_point.selector.selectors.account_management:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AccountManagement
@@ -40,6 +47,11 @@ services:
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.domain_impression
 
+    tagcade.service.report.unified_report.pulse_point.selector.selectors.country_daily:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\CountryDaily
+        arguments:
+            - @tagcade.repository.report.unified_report.pulse_point.country_daily
+
     ### Unified selector service ###
     tagcade.service.report.unified_report.report_grouper:
         class: Tagcade\Service\Report\UnifiedReport\Grouper\ReportGrouper
@@ -55,4 +67,6 @@ services:
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.daily
                 # domain_impression selectors
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression
+                # country_daily selectors
+                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.country_daily
             - @tagcade.service.report.unified_report.report_grouper
