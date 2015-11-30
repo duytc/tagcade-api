@@ -8,8 +8,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Entity\Core\AdNetworkPartner;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\Core\PublisherPartner;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\DomainImpression as DomainImpressionReportType;
@@ -65,12 +67,23 @@ class UnifiedReportController extends FOSRestController
         }
 
         /* validate publisherId */
+        $publisherId = $request->query->get('publisher', null);
+
+        $publisherPartners = $adNetworkPartner->getPublisherPartners()->toArray();
+
+        $existedPublisherIds = array_map(function(PublisherPartner $publisherPartner){
+            return $publisherPartner->getPublisherId();
+        }, $publisherPartners);
+
+        if (!in_array($publisherId, $existedPublisherIds)) {
+            throw new InvalidArgumentException('That AdNetwork is not a partner of this Publisher');
+        }
+
         $user = $this->getUser();
 
         $publisher = $user;
 
-        if ($this->getUser() instanceof AdminInterface) {
-            $publisherId = $request->query->get('publisher', null);
+        if ($user instanceof AdminInterface) {
             $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
 
             if (!$publisher instanceof PublisherInterface) {

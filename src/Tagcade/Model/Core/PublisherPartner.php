@@ -35,6 +35,7 @@ class PublisherPartner implements ModelInterface
 
     /**
      * @param AdNetworkPartner $adNetworkPartner
+     * @return $this
      */
     public function setAdNetworkPartner($adNetworkPartner)
     {
@@ -53,6 +54,7 @@ class PublisherPartner implements ModelInterface
 
     /**
      * @param int $publisherId
+     * @return $this
      */
     public function setPublisherId($publisherId)
     {
