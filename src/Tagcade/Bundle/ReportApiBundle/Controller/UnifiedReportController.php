@@ -91,7 +91,7 @@ class UnifiedReportController extends FOSRestController
             }
         }
 
-        return $this->getReports($publisher, $breakDown);
+        return $this->getResult($this->getReports($publisher, $breakDown));
     }
 
     /**
@@ -138,9 +138,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getAccountManagementReportAction(PublisherInterface $publisher)
     {
-        $service = $this->get('tagcade.service.report.unified_report.selector.report_selector');
-
-        return $this->getResult($service->getReports(new AccountManagementReportType($publisher, $tagId = null), $this->getParams()));
+        return $this->getReportSelectorService()->getReports(new AccountManagementReportType($publisher, $tagId = null), $this->getParams());
     }
 
     /**
@@ -149,9 +147,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getDailyReportAction(PublisherInterface $publisher)
     {
-        $service = $this->get('tagcade.service.report.unified_report.selector.report_selector');
-
-        return $this->getResult($service->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams()));
+        return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
     }
 
     /**
@@ -160,9 +156,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getDomainImpressionReportAction(PublisherInterface $publisher)
     {
-        $service = $this->get('tagcade.service.report.unified_report.selector.report_selector');
-
-        return $this->getResult($service->getReports(new DomainImpressionReportType($publisher, $date = new \DateTime()), $this->getParams()));
+        return $this->getReportSelectorService()->getReports(new DomainImpressionReportType($publisher, $date = new \DateTime()), $this->getParams());
     }
 
     /**
@@ -171,9 +165,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getCountryDailyReportAction(PublisherInterface $publisher)
     {
-        $service = $this->get('tagcade.service.report.unified_report.selector.report_selector');
-
-        return $this->getResult($service->getReports(new CountryDailyReportType($publisher, $country = null, $tagId = null), $this->getParams()));
+        return $this->getReportSelectorService()->getReports(new CountryDailyReportType($publisher, $country = null, $tagId = null), $this->getParams());
     }
 
     /**
@@ -223,5 +215,13 @@ class UnifiedReportController extends FOSRestController
         }
 
         return $result;
+    }
+
+    /**
+     * @return \Tagcade\Service\Report\UnifiedReport\Selector\ReportSelector
+     */
+    private function getReportSelectorService()
+    {
+        return $this->get('tagcade.service.report.unified_report.selector.report_selector');
     }
 }
