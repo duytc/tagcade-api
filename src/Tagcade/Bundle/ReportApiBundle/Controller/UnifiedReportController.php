@@ -29,10 +29,10 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 class UnifiedReportController extends FOSRestController
 {
     static $REPORT_TYPE_MAP = [
-        'adtag' => ['Pulse Point'],
-        'daily' => ['Pulse Point'],
-        'site' => ['Pulse Point'],
-        'country' => ['Pulse Point']
+        'adtag' => ['pulse-point'],
+        'daily' => ['pulse-point'],
+        'site' => ['pulse-point'],
+        'country' => ['pulse-point']
     ];
 
     /**
@@ -101,7 +101,7 @@ class UnifiedReportController extends FOSRestController
     private function isSupportedReportType(AdNetworkPartner $adNetworkPartner, $breakDown)
     {
         if(!array_key_exists($breakDown, self::$REPORT_TYPE_MAP)
-            || !in_array($adNetworkPartner->getName(), self::$REPORT_TYPE_MAP[$breakDown])
+            || !in_array($adNetworkPartner->getNameCanonical(), self::$REPORT_TYPE_MAP[$breakDown])
         ) {
             return false;
         }
