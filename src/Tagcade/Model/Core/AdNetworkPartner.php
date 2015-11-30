@@ -5,9 +5,8 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Model\ModelInterface;
 
-class AdNetworkPartner implements ModelInterface
+class AdNetworkPartner implements AdNetworkPartnerInterface
 {
     protected $id;
     protected $name;

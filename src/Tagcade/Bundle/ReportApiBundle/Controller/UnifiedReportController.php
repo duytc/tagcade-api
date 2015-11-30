@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Entity\Core\AdNetworkPartner;
 use Tagcade\Exception\NotSupportedException;
+use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\DomainImpression as DomainImpressionReportType;
@@ -40,7 +41,7 @@ class UnifiedReportController extends FOSRestController
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="breakDown", requirements="\s", nullable=true)
+     * @Rest\QueryParam(name="breakDown")
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
      *
      * @param $id
@@ -77,7 +78,7 @@ class UnifiedReportController extends FOSRestController
             }
         }
 
-        return $this->getReports($request, $publisher, $breakDown);
+        return $this->getReports($publisher, $breakDown);
     }
 
     /**
@@ -88,9 +89,8 @@ class UnifiedReportController extends FOSRestController
      */
     private function isSupportedReportType(AdNetworkPartner $adNetworkPartner, $breakDown)
     {
-        if(!$adNetworkPartner instanceof AdNetworkPartner
-            || !array_key_exists($breakDown, self::$REPORT_TYPE_MAP)
-            || self::$REPORT_TYPE_MAP[$breakDown] !== $adNetworkPartner->getName()
+        if(!array_key_exists($breakDown, self::$REPORT_TYPE_MAP)
+            || !in_array($adNetworkPartner->getName(), self::$REPORT_TYPE_MAP[$breakDown])
         ) {
             return false;
         }
