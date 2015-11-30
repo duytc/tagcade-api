@@ -66,8 +66,17 @@ class UnifiedReportController extends FOSRestController
             throw new NotSupportedException('Not support that breakDown as ' . $breakDown);
         }
 
-        /* validate publisherId */
-        $publisherId = $request->query->get('publisher', null);
+        $user = $this->getUser();
+        $publisher = $user;
+
+        if ($user instanceof AdminInterface) {
+            $publisherId = $request->query->get('publisher', null);
+            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+
+            if (!$publisher instanceof PublisherInterface) {
+                throw new NotFoundHttpException('Not found that publisher');
+            }
+        }
 
         $publisherPartners = $adNetworkPartner->getPublisherPartners()->toArray();
 
@@ -75,21 +84,10 @@ class UnifiedReportController extends FOSRestController
             return $publisherPartner->getPublisherId();
         }, $publisherPartners);
 
-        if (!in_array($publisherId, $existedPublisherIds)) {
+        if (!in_array($publisher->getId(), $existedPublisherIds)) {
             throw new InvalidArgumentException('That AdNetwork is not a partner of this Publisher');
         }
 
-        $user = $this->getUser();
-
-        $publisher = $user;
-
-        if ($user instanceof AdminInterface) {
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
-
-            if (!$publisher instanceof PublisherInterface) {
-                throw new NotFoundHttpException('Not found that publisher');
-            }
-        }
 
         return $this->getResult($this->getReports($publisher, $breakDown));
     }
