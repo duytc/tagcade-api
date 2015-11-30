@@ -102,3 +102,8 @@ api_reset_password_reset:
     path: /resetting/reset/{token}
     defaults: { _controller: TagcadeApiBundle:ResetPassword:reset }
     methods: [POST]
+
+api_partner:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\PartnerController
+    name_prefix:  api_1_

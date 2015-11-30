@@ -120,13 +120,18 @@ doctrine:
                         prefix:     Tagcade\Entity\Report\UnifiedReport\PulsePoint
                         alias:      TagcadeUnifiedReportPulsePointEntity
                         is_bundle:  false
-                    UnifiedReportAdMetaEntities:
+#                    UnifiedReportAdMetaEntities:
+#                        type:       yml
+#                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/AdMeta
+#                        prefix:     Tagcade\Entity\Report\UnifiedReport\AdMeta
+#                        alias:      TagcadeUnifiedReportAdMetaEntity
+#                        is_bundle:  false
+                    CoreEntities:
                         type:       yml
-                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/AdMeta
-                        prefix:     Tagcade\Entity\Report\UnifiedReport\AdMeta
-                        alias:      TagcadeUnifiedReportAdMetaEntity
+                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/Core
+                        prefix:     Tagcade\Entity\Core
+                        alias:      TagcadeCoreEntity
                         is_bundle:  false
-
             #
             # This is the config for multiple entity managers, for now, we will put all entities in one database
             #

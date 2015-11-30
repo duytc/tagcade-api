@@ -1,0 +1,73 @@
+<?php
+
+namespace Tagcade\Model\Core;
+
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
+use Tagcade\Model\ModelInterface;
+
+class AdNetworkPartner implements ModelInterface
+{
+    protected $id;
+    protected $name;
+    protected $nameCanonical;
+
+    /**
+     * @var PersistentCollection
+     */
+    protected $publisherPartners;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->getId();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNameCanonical()
+    {
+        return $this->nameCanonical;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        $this->nameCanonical = strtolower($name);
+    }
+
+    /**
+     * @return PersistentCollection
+     */
+    public function getPublisherPartners()
+    {
+        if (null === $this->publisherPartners) {
+            $this->publisherPartners = new ArrayCollection();
+        }
+
+        return $this->publisherPartners;
+    }
+
+    /**
+     * @param PublisherPartner[] $publisherPartners
+     */
+    public function setPublisherPartners($publisherPartners)
+    {
+        $this->publisherPartners = $publisherPartners;
+    }
+
+
+
+}
