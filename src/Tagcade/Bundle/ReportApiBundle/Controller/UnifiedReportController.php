@@ -12,10 +12,10 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\PublisherPartner;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\CountryDaily as CountryDailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\DomainImpression as DomainImpressionReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -28,12 +28,14 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
  */
 class UnifiedReportController extends FOSRestController
 {
+    const PARAM_DRILL_BY_AD_TAG = 'drillByAdTag';
+    const PARAM_DRILL_BY_DATE = 'drillByDate';
+
     static $REPORT_TYPE_MAP = [
         'adtag' => ['pulse-point'],
         'daily' => ['pulse-point'],
         'site' => ['pulse-point'],
-        'country' => ['pulse-point'],
-        'adtagdomain' => ['pulse-point']
+        'country' => ['pulse-point']
     ];
 
     /**
@@ -46,6 +48,8 @@ class UnifiedReportController extends FOSRestController
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="breakDown")
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="drillByAdTag", nullable=true)
+     * @Rest\QueryParam(name="drillByDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      *
      * @param $id
      * @param Request $request
@@ -127,8 +131,6 @@ class UnifiedReportController extends FOSRestController
             return $this->getDomainImpressionReportAction($publisher);
         } elseif ('country' === $breakDown) {
             return $this->getCountryDailyReportAction($publisher);
-        } elseif ('adtagdomain' === $breakDown) {
-            return $this->getAdTagDomainImpressionReportAction($publisher);
         }
 
         throw new NotSupportedException('Not support that breakDown as ' . $breakDown);
@@ -140,6 +142,12 @@ class UnifiedReportController extends FOSRestController
      */
     private function getAccountManagementReportAction(PublisherInterface $publisher)
     {
+        // check if has drill down for Ad Tag
+        $drillParams = $this->getDrillParams();
+        if ($this->hasDrillParams($drillParams)) {
+            return $this->getAdTagDomainImpressionReportAction($publisher, $drillParams);
+        }
+
         return $this->getReportSelectorService()->getReports(new AccountManagementReportType($publisher, $tagId = null), $this->getParams());
     }
 
@@ -172,11 +180,12 @@ class UnifiedReportController extends FOSRestController
 
     /**
      * @param PublisherInterface $publisher
+     * @param array|null $drillParams
      * @return mixed
      */
-    private function getAdTagDomainImpressionReportAction(PublisherInterface $publisher)
+    private function getAdTagDomainImpressionReportAction(PublisherInterface $publisher, array $drillParams = null)
     {
-        return $this->getReportSelectorService()->getReports(new AdTagDomainImpressionReportType($publisher, $adTag = null, $domain = null), $this->getParams());
+        return $this->getReportSelectorService()->getReports(new AdTagDomainImpressionReportType($publisher, $adTag = $drillParams[self::PARAM_DRILL_BY_AD_TAG], $domain = null, $date = $drillParams[self::PARAM_DRILL_BY_DATE]), $this->getParams());
     }
 
     /**
@@ -209,6 +218,38 @@ class UnifiedReportController extends FOSRestController
         $group = $params[UnifiedReportParams::PARAM_GROUP];
 
         return new UnifiedReportParams($startDate, $endDate, $group);
+    }
+
+    /**
+     * check if has drill params
+     * @param array $drillParams
+     * @return bool
+     */
+    private function hasDrillParams(array $drillParams)
+    {
+        return (isset($drillParams[self::PARAM_DRILL_BY_AD_TAG])
+            || isset($drillParams[self::PARAM_DRILL_BY_DATE])
+        );
+    }
+
+    /**
+     * @return array
+     */
+    private function getDrillParams()
+    {
+        $allParams = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        $allowedParams = array_fill_keys([
+            self::PARAM_DRILL_BY_AD_TAG,
+            self::PARAM_DRILL_BY_DATE
+        ], null);
+
+        $drillParams = array_intersect_key($allParams, $allowedParams);
+        if (isset($drillParams[self::PARAM_DRILL_BY_DATE])) {
+            $dateUtil = $this->get('tagcade.service.date_util');
+            $drillParams[self::PARAM_DRILL_BY_DATE] = $dateUtil->getDateTime($drillParams[self::PARAM_DRILL_BY_DATE], false);
+        }
+
+        return $drillParams;
     }
 
     /**

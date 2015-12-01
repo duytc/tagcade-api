@@ -9,16 +9,18 @@ class AdTagDomainImpression implements ReportTypeInterface
 {
     protected $adTag;
     protected $domain;
+    protected $date;
     /**
      * @var PublisherInterface
      */
     private $publisher;
 
-    public function __construct(PublisherInterface $publisher, $adTag, $domain)
+    public function __construct(PublisherInterface $publisher, $adTag, $domain, $date)
     {
         $this->publisher = $publisher;
         $this->adTag = $adTag;
         $this->domain = $domain;
+        $this->date = $date;
     }
 
     /**
@@ -35,5 +37,21 @@ class AdTagDomainImpression implements ReportTypeInterface
     public function getPublisher()
     {
         return $this->publisher;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAdTag()
+    {
+        return $this->adTag;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }
