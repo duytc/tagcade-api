@@ -10,12 +10,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Entity\Core\AdNetworkPartner;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\NotSupportedException;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\PublisherPartner;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\CountryDaily as CountryDailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\DomainImpression as DomainImpressionReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\CountryDaily as CountryDailyReportType;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -32,7 +32,8 @@ class UnifiedReportController extends FOSRestController
         'adtag' => ['pulse-point'],
         'daily' => ['pulse-point'],
         'site' => ['pulse-point'],
-        'country' => ['pulse-point']
+        'country' => ['pulse-point'],
+        'adtagdomain' => ['pulse-point']
     ];
 
     /**
@@ -56,7 +57,7 @@ class UnifiedReportController extends FOSRestController
         /* validate adNetworkPartner by $id */
         $adNetworkPartner = $this->get('tagcade.repository.ad_network_partner')->find($id);
 
-        if(!$adNetworkPartner instanceof AdNetworkPartner) {
+        if (!$adNetworkPartner instanceof AdNetworkPartner) {
             throw new NotFoundHttpException('Not found that AdNetwork Partner');
         }
 
@@ -80,7 +81,7 @@ class UnifiedReportController extends FOSRestController
 
         $publisherPartners = $adNetworkPartner->getPublisherPartners()->toArray();
 
-        $existedPublisherIds = array_map(function(PublisherPartner $publisherPartner){
+        $existedPublisherIds = array_map(function (PublisherPartner $publisherPartner) {
             return $publisherPartner->getPublisherId();
         }, $publisherPartners);
 
@@ -100,7 +101,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function isSupportedReportType(AdNetworkPartner $adNetworkPartner, $breakDown)
     {
-        if(!array_key_exists($breakDown, self::$REPORT_TYPE_MAP)
+        if (!array_key_exists($breakDown, self::$REPORT_TYPE_MAP)
             || !in_array($adNetworkPartner->getNameCanonical(), self::$REPORT_TYPE_MAP[$breakDown])
         ) {
             return false;
@@ -113,6 +114,7 @@ class UnifiedReportController extends FOSRestController
      * get Reports by publisher and breakDown
      * @param $publisher
      * @param $breakDown
+     * @return array
      * @throws NotSupportedException
      */
     private function getReports($publisher, $breakDown)
@@ -125,6 +127,8 @@ class UnifiedReportController extends FOSRestController
             return $this->getDomainImpressionReportAction($publisher);
         } elseif ('country' === $breakDown) {
             return $this->getCountryDailyReportAction($publisher);
+        } elseif ('adtagdomain' === $breakDown) {
+            return $this->getAdTagDomainImpressionReportAction($publisher);
         }
 
         throw new NotSupportedException('Not support that breakDown as ' . $breakDown);
@@ -145,7 +149,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getDailyReportAction(PublisherInterface $publisher)
     {
-        return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
+        return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = null), $this->getParams());
     }
 
     /**
@@ -154,7 +158,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getDomainImpressionReportAction(PublisherInterface $publisher)
     {
-        return $this->getReportSelectorService()->getReports(new DomainImpressionReportType($publisher, $date = new \DateTime()), $this->getParams());
+        return $this->getReportSelectorService()->getReports(new DomainImpressionReportType($publisher, $domain = null), $this->getParams());
     }
 
     /**
@@ -164,6 +168,15 @@ class UnifiedReportController extends FOSRestController
     private function getCountryDailyReportAction(PublisherInterface $publisher)
     {
         return $this->getReportSelectorService()->getReports(new CountryDailyReportType($publisher, $country = null, $tagId = null), $this->getParams());
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    private function getAdTagDomainImpressionReportAction(PublisherInterface $publisher)
+    {
+        return $this->getReportSelectorService()->getReports(new AdTagDomainImpressionReportType($publisher, $adTag = null, $domain = null), $this->getParams());
     }
 
     /**
