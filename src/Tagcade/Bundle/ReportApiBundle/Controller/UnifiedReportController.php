@@ -149,7 +149,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function getDailyReportAction(PublisherInterface $publisher)
     {
-        return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = null), $this->getParams());
+        return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
     }
 
     /**
