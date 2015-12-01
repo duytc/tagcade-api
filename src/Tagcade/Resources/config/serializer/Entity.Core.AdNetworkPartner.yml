@@ -7,4 +7,6 @@ Tagcade\Entity\Core\AdNetworkPartner:
         name:
             expose: true
             groups: [partner.detail, partner.summary]
-
+        reportTypes:
+            expose: true
+            groups: [partner.detail, partner.summary]

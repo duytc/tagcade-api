@@ -11,6 +11,10 @@ class AdNetworkPartner implements AdNetworkPartnerInterface
     protected $id;
     protected $name;
     protected $nameCanonical;
+    /**
+     * @var array
+     */
+    protected $reportTypes;
 
     /**
      * @var PersistentCollection
@@ -67,6 +71,20 @@ class AdNetworkPartner implements AdNetworkPartnerInterface
         $this->publisherPartners = $publisherPartners;
     }
 
+    /**
+     * @return array
+     */
+    public function getReportTypes()
+    {
+        return $this->reportTypes;
+    }
 
+    /**
+     * @param array $reportTypes
+     */
+    public function setReportTypes($reportTypes)
+    {
+        $this->reportTypes = $reportTypes;
+    }
 
 }

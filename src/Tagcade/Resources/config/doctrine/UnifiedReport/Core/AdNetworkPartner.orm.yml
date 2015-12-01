@@ -18,7 +18,9 @@ Tagcade\Entity\Core\AdNetworkPartner:
         nameCanonical:
             type: string
             nullable: false
-
+        reportTypes:
+            type: json_array
+            nullable: true
     oneToMany:
         publisherPartners:
             targetEntity: Tagcade\Entity\Core\PublisherPartner
