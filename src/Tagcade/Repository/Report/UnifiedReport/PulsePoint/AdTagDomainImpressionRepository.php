@@ -14,7 +14,7 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
         $qb = parent::getReportsInRange($startDate, $endDate);
 
         return $qb
-            ->addOrderBy('r.adTag', 'ASC')
+            ->addOrderBy('r.adTagId', 'ASC')
             ->addOrderBy('r.domain', 'ASC')
             ->addOrderBy('r.date', 'ASC');
     }

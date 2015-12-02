@@ -12,6 +12,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     protected $fillRate;
     protected $domainStatus;
     protected $adTag;
+    protected $adTagId;
     protected $date;
 
     function __construct()
@@ -177,5 +178,21 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
         $this->publisherId = $publisherId;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAdTagId()
+    {
+        return $this->adTagId;
+    }
+
+    /**
+     * @param mixed $adTagId
+     */
+    public function setAdTagId($adTagId)
+    {
+        $this->adTagId = $adTagId;
     }
 }

@@ -8,7 +8,7 @@ Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression:
                 - publisher_id
                 - domain
                 - date
-                - ad_tag
+                - ad_tag_id
     id:
         id:
             type: integer
@@ -27,7 +27,7 @@ Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression:
             type: integer
             nullable: true
         fillRate:
-            type: decimal
+            type: float
             scale: 4
             nullable: true
         domainStatus:
@@ -35,6 +35,8 @@ Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression:
             nullable: true
             nullable: true
         adTag:
+            type: string
+        adTagId:
             type: integer
         date:
             type: date
