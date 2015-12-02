@@ -9,6 +9,16 @@ use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 
 class AdTagDomainImpressionRepository extends AbstractReportRepository implements AdTagDomainImpressionRepositoryInterface
 {
+    protected function getReportsInRange(\DateTime $startDate, \DateTime $endDate)
+    {
+        $qb = parent::getReportsInRange($startDate, $endDate);
+
+        return $qb
+            ->addOrderBy('r.adTagId', 'ASC')
+            ->addOrderBy('r.domain', 'ASC')
+            ->addOrderBy('r.date', 'ASC');
+    }
+
     public function getReportWithDrillDown(PublisherInterface $publisher, $adTag = null, $date = null)
     {
         $qb = $this->createQueryBuilder('r');

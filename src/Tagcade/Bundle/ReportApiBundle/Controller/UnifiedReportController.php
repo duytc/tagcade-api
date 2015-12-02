@@ -4,11 +4,11 @@ namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use FOS\RestBundle\Util\Codes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Entity\Core\AdNetworkPartner;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\PublisherPartner;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
@@ -28,14 +28,22 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
  */
 class UnifiedReportController extends FOSRestController
 {
+    /* report types */
+    const REPORT_TYPE_KEY_AD_TAG = 'adtag';
+    const REPORT_TYPE_KEY_DAILY = 'daily';
+
+    /* breakdown types */
+    const BREAK_DOWN_KEY_DAY = 'day';
+    const BREAK_DOWN_KEY_SITE = 'site';
+    const BREAK_DOWN_KEY_COUNTRY = 'country';
+
+    /* drill down types */
     const PARAM_DRILL_BY_AD_TAG = 'drillByAdTag';
     const PARAM_DRILL_BY_DATE = 'drillByDate';
 
-    static $REPORT_TYPE_MAP = [
-        'adtag' => ['pulse-point'],
-        'daily' => ['pulse-point'],
-        'site' => ['pulse-point'],
-        'country' => ['pulse-point']
+    static $BREAKDOWN_MAP = [
+        self::REPORT_TYPE_KEY_DAILY => [self::BREAK_DOWN_KEY_DAY],
+        self::REPORT_TYPE_KEY_AD_TAG => [self::BREAK_DOWN_KEY_DAY, self::BREAK_DOWN_KEY_SITE, self::BREAK_DOWN_KEY_COUNTRY]
     ];
 
     /**
@@ -46,8 +54,9 @@ class UnifiedReportController extends FOSRestController
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="breakDown")
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="reportType")
+     * @Rest\QueryParam(name="breakDown")
      * @Rest\QueryParam(name="drillByAdTag", nullable=true)
      * @Rest\QueryParam(name="drillByDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      *
@@ -62,15 +71,17 @@ class UnifiedReportController extends FOSRestController
         $adNetworkPartner = $this->get('tagcade.repository.ad_network_partner')->find($id);
 
         if (!$adNetworkPartner instanceof AdNetworkPartner) {
-            throw new NotFoundHttpException('Not found that AdNetwork Partner');
+            return $this->view('Not found that AdNetwork Partner', Codes::HTTP_NOT_FOUND);
         }
 
-        /* validate breakDown */
+        /* validate reportType and breakDown */
+        $reportType = $request->query->get('reportType', null);
         $breakDown = $request->query->get('breakDown', null);
-        if (!$this->isSupportedReportType($adNetworkPartner, $breakDown)) {
-            throw new NotSupportedException('Not support that breakDown as ' . $breakDown);
+        if (!$this->isSupportedReport($adNetworkPartner, $reportType, $breakDown)) {
+            return $this->view(sprintf('Not support that reportType-breakDown as %s-%s', $reportType, $breakDown), Codes::HTTP_BAD_REQUEST);
         }
 
+        /* validate and get Publisher */
         $user = $this->getUser();
         $publisher = $user;
 
@@ -79,7 +90,7 @@ class UnifiedReportController extends FOSRestController
             $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
 
             if (!$publisher instanceof PublisherInterface) {
-                throw new NotFoundHttpException('Not found that publisher');
+                return $this->view('Not found that publisher', Codes::HTTP_NOT_FOUND);
             }
         }
 
@@ -90,24 +101,28 @@ class UnifiedReportController extends FOSRestController
         }, $publisherPartners);
 
         if (!in_array($publisher->getId(), $existedPublisherIds)) {
-            throw new InvalidArgumentException('That AdNetwork is not a partner of this Publisher');
+            return $this->view('That AdNetwork is not a partner of this Publisher', Codes::HTTP_BAD_REQUEST);
         }
 
-
-        return $this->getResult($this->getReports($publisher, $breakDown));
+        return $this->getResult($this->getReports($publisher, $reportType, $breakDown));
     }
 
     /**
      * check if supported breakDown
      * @param AdNetworkPartner $adNetworkPartner
+     * @param $reportType
      * @param $breakDown
      * @return bool|ReportTypeInterface
      */
-    private function isSupportedReportType(AdNetworkPartner $adNetworkPartner, $breakDown)
+    private function isSupportedReport(AdNetworkPartner $adNetworkPartner, $reportType, $breakDown)
     {
-        if (!array_key_exists($breakDown, self::$REPORT_TYPE_MAP)
-            || !in_array($adNetworkPartner->getNameCanonical(), self::$REPORT_TYPE_MAP[$breakDown])
+        if (!is_array($adNetworkPartner->getReportTypes()) || !in_array($reportType, $adNetworkPartner->getReportTypes())
+            || !array_key_exists($reportType, self::$BREAKDOWN_MAP)
         ) {
+            return false;
+        }
+
+        if (!in_array($breakDown, self::$BREAKDOWN_MAP[$reportType])) {
             return false;
         }
 
@@ -117,35 +132,46 @@ class UnifiedReportController extends FOSRestController
     /**
      * get Reports by publisher and breakDown
      * @param $publisher
+     * @param $reportType
      * @param $breakDown
      * @return array
      * @throws NotSupportedException
      */
-    private function getReports($publisher, $breakDown)
+    private function getReports($publisher, $reportType, $breakDown)
     {
-        if ('adtag' === $breakDown) {
-            return $this->getAccountManagementReportAction($publisher);
-        } elseif ('daily' === $breakDown) {
-            return $this->getDailyReportAction($publisher);
-        } elseif ('site' === $breakDown) {
-            return $this->getDomainImpressionReportAction($publisher);
-        } elseif ('country' === $breakDown) {
-            return $this->getCountryDailyReportAction($publisher);
+        if (self::REPORT_TYPE_KEY_AD_TAG === $reportType) {
+            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
+                return $this->getAccountManagementReport($publisher);
+            }
+
+            if (self::BREAK_DOWN_KEY_SITE === $breakDown) {
+                return $this->getAdTagDomainImpressionReport($publisher);
+            }
+
+            if (self::BREAK_DOWN_KEY_COUNTRY === $breakDown) {
+                return $this->getCountryDailyReport($publisher);
+            }
         }
 
-        throw new NotSupportedException('Not support that breakDown as ' . $breakDown);
+        if (self::REPORT_TYPE_KEY_DAILY === $reportType) {
+            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
+                return $this->getDailyReport($publisher);
+            }
+        }
+
+        throw new NotSupportedException(sprintf('Not support that reportType-breakDown as %s-%s', $reportType, $breakDown));
     }
 
     /**
      * @param PublisherInterface $publisher
      * @return mixed
      */
-    private function getAccountManagementReportAction(PublisherInterface $publisher)
+    private function getAccountManagementReport(PublisherInterface $publisher)
     {
         // check if has drill down for Ad Tag
         $drillParams = $this->getDrillParams();
         if ($this->hasDrillParams($drillParams)) {
-            return $this->getAdTagDomainImpressionReportAction($publisher, $drillParams);
+            return $this->getAdTagDomainImpressionReport($publisher, $drillParams);
         }
 
         return $this->getReportSelectorService()->getReports(new AccountManagementReportType($publisher, $tagId = null), $this->getParams());
@@ -155,7 +181,7 @@ class UnifiedReportController extends FOSRestController
      * @param PublisherInterface $publisher
      * @return mixed
      */
-    private function getDailyReportAction(PublisherInterface $publisher)
+    private function getDailyReport(PublisherInterface $publisher)
     {
         return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
     }
@@ -164,7 +190,7 @@ class UnifiedReportController extends FOSRestController
      * @param PublisherInterface $publisher
      * @return mixed
      */
-    private function getDomainImpressionReportAction(PublisherInterface $publisher)
+    private function getDomainImpressionReport(PublisherInterface $publisher)
     {
         return $this->getReportSelectorService()->getReports(new DomainImpressionReportType($publisher, $domain = null), $this->getParams());
     }
@@ -173,7 +199,7 @@ class UnifiedReportController extends FOSRestController
      * @param PublisherInterface $publisher
      * @return mixed
      */
-    private function getCountryDailyReportAction(PublisherInterface $publisher)
+    private function getCountryDailyReport(PublisherInterface $publisher)
     {
         return $this->getReportSelectorService()->getReports(new CountryDailyReportType($publisher, $country = null, $tagId = null), $this->getParams());
     }
@@ -183,7 +209,7 @@ class UnifiedReportController extends FOSRestController
      * @param array|null $drillParams
      * @return mixed
      */
-    private function getAdTagDomainImpressionReportAction(PublisherInterface $publisher, array $drillParams = null)
+    private function getAdTagDomainImpressionReport(PublisherInterface $publisher, array $drillParams = null)
     {
         return $this->getReportSelectorService()->getReports(new AdTagDomainImpressionReportType($publisher, $adTag = $drillParams[self::PARAM_DRILL_BY_AD_TAG], $domain = null, $date = $drillParams[self::PARAM_DRILL_BY_DATE]), $this->getParams());
     }
@@ -198,6 +224,7 @@ class UnifiedReportController extends FOSRestController
     }
 
     /**
+     * create params from query params of request, only startDate + endDate + group
      * @var array $params
      * @return UnifiedReportParams
      */

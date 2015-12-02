@@ -14,5 +14,6 @@ class AdTagDomainImpression extends AdTagDomainImpressionModel
     protected $fillRate;
     protected $domainStatus;
     protected $adTag;
+    protected $adTagId;
     protected $date;
 }
