@@ -9,7 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Entity\Core\AdNetworkPartner;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\PublisherPartner;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
@@ -38,17 +37,9 @@ class UnifiedReportController extends FOSRestController
     const BREAK_DOWN_KEY_SITE = 'site';
     const BREAK_DOWN_KEY_COUNTRY = 'country';
 
-    /* ad network partner name_canonicals */
-    const AD_NETWORK_PARTNER_PULSE_POINT = 'pulse-point';
-
     /* drill down types */
     const PARAM_DRILL_BY_AD_TAG = 'drillByAdTag';
     const PARAM_DRILL_BY_DATE = 'drillByDate';
-
-    static $REPORT_TYPE_MAP = [
-        self::REPORT_TYPE_KEY_AD_TAG => [self::AD_NETWORK_PARTNER_PULSE_POINT],
-        self::REPORT_TYPE_KEY_DAILY => [self::AD_NETWORK_PARTNER_PULSE_POINT]
-    ];
 
     static $BREAKDOWN_MAP = [
         self::REPORT_TYPE_KEY_DAILY => [self::BREAK_DOWN_KEY_DAY],
@@ -87,7 +78,7 @@ class UnifiedReportController extends FOSRestController
         $reportType = $request->query->get('reportType', null);
         $breakDown = $request->query->get('breakDown', null);
         if (!$this->isSupportedReport($adNetworkPartner, $reportType, $breakDown)) {
-            return $this->view('Not support that breakDown as ' . $breakDown, Codes::HTTP_BAD_REQUEST);
+            return $this->view(sprintf('Not support that reportType-breakDown as %s-%s', $reportType, $breakDown), Codes::HTTP_BAD_REQUEST);
         }
 
         /* validate and get Publisher */
@@ -125,8 +116,7 @@ class UnifiedReportController extends FOSRestController
      */
     private function isSupportedReport(AdNetworkPartner $adNetworkPartner, $reportType, $breakDown)
     {
-        if (!array_key_exists($reportType, self::$REPORT_TYPE_MAP)
-            || !in_array($adNetworkPartner->getNameCanonical(), self::$REPORT_TYPE_MAP[$reportType])
+        if (!is_array($adNetworkPartner->getReportTypes()) || !in_array($reportType, $adNetworkPartner->getReportTypes())
             || !array_key_exists($reportType, self::$BREAKDOWN_MAP)
         ) {
             return false;
