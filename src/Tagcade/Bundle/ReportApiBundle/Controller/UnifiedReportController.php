@@ -29,8 +29,8 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 class UnifiedReportController extends FOSRestController
 {
     /* report types */
-    const REPORT_TYPE_KEY_AD_TAG = 'adtag';
-    const REPORT_TYPE_KEY_DAILY = 'daily';
+    const REPORT_TYPE_KEY_AD_TAG = 'pp-ad-tag';
+    const REPORT_TYPE_KEY_DAILY = 'pp-daily-stats';
 
     /* breakdown types */
     const BREAK_DOWN_KEY_DAY = 'day';
