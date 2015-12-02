@@ -10,6 +10,7 @@ use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 class CountryDailyRepository extends AbstractReportRepository implements CountryDailyRepositoryInterface
 {
     /**
+     * override because differ from r.day (parents: r.date)
      * @param \DateTime $startDate
      * @param \DateTime $endDate
      * @return \Doctrine\ORM\QueryBuilder
@@ -22,6 +23,8 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->andWhere($qb->expr()->between('r.day', ':start_date', ':end_date'))
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
-            ;
+            ->addOrderBy('r.tagId', 'ASC')
+            ->addOrderBy('r.country', 'ASC')
+            ->addOrderBy('r.day', 'ASC');
     }
 }

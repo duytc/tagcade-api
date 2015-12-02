@@ -145,7 +145,7 @@ class UnifiedReportController extends FOSRestController
             }
 
             if (self::BREAK_DOWN_KEY_SITE === $breakDown) {
-                return $this->getDomainImpressionReport($publisher);
+                return $this->getAdTagDomainImpressionReport($publisher);
             }
 
             if (self::BREAK_DOWN_KEY_COUNTRY === $breakDown) {
@@ -171,7 +171,7 @@ class UnifiedReportController extends FOSRestController
         // check if has drill down for Ad Tag
         $drillParams = $this->getDrillParams();
         if ($this->hasDrillParams($drillParams)) {
-            return $this->getAdTagDomainImpressionReportAction($publisher, $drillParams);
+            return $this->getAdTagDomainImpressionReport($publisher, $drillParams);
         }
 
         return $this->getReportSelectorService()->getReports(new AccountManagementReportType($publisher, $tagId = null), $this->getParams());
@@ -209,7 +209,7 @@ class UnifiedReportController extends FOSRestController
      * @param array|null $drillParams
      * @return mixed
      */
-    private function getAdTagDomainImpressionReportAction(PublisherInterface $publisher, array $drillParams = null)
+    private function getAdTagDomainImpressionReport(PublisherInterface $publisher, array $drillParams = null)
     {
         return $this->getReportSelectorService()->getReports(new AdTagDomainImpressionReportType($publisher, $adTag = $drillParams[self::PARAM_DRILL_BY_AD_TAG], $domain = null, $date = $drillParams[self::PARAM_DRILL_BY_DATE]), $this->getParams());
     }
