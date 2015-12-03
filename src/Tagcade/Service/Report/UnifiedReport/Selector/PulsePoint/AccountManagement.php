@@ -14,7 +14,7 @@ class AccountManagement implements SelectorInterface
     /**
      * @var AccountManagementRepositoryInterface
      */
-    private $accMngRepository;
+    protected $accMngRepository;
 
     function __construct(AccountManagementRepositoryInterface $accMngRepository)
     {

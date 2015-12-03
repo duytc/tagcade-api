@@ -14,7 +14,7 @@ class CountryDaily implements SelectorInterface
     /**
      * @var CountryDailyRepositoryInterface
      */
-    private $countryDailyRepository;
+    protected $countryDailyRepository;
 
     function __construct(CountryDailyRepositoryInterface $countryDailyRepository)
     {

@@ -29,6 +29,17 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
+     * @param mixed $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getDomain()
@@ -190,9 +201,12 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
 
     /**
      * @param mixed $adTagId
+     * @return $this
      */
     public function setAdTagId($adTagId)
     {
         $this->adTagId = $adTagId;
+
+        return $this;
     }
 }

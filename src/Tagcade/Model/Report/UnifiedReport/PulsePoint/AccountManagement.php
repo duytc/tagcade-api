@@ -34,6 +34,17 @@ class AccountManagement implements PulsePointUnifiedReportRevenueInterface
     }
 
     /**
+     * @param mixed $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getAdTag()
@@ -291,9 +302,12 @@ class AccountManagement implements PulsePointUnifiedReportRevenueInterface
 
     /**
      * @param mixed $publisherId
+     * @return $this
      */
     public function setPublisherId($publisherId)
     {
         $this->publisherId = $publisherId;
+
+        return $this;
     }
 }

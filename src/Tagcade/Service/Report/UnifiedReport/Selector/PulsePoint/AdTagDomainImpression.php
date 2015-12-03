@@ -27,12 +27,6 @@ class AdTagDomainImpression implements SelectorInterface
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        if (!is_null($reportType->getAdTag())
-            || !is_null($reportType->getDate())
-        ) {
-            return $this->adTagDomainImpRepository->getReportWithDrillDown($reportType->getPublisher(), $reportType->getAdTag(), $reportType->getDate());
-        }
-
         return $this->adTagDomainImpRepository->getReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
     }
 
