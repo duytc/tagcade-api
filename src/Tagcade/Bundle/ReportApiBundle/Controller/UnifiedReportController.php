@@ -31,6 +31,7 @@ class UnifiedReportController extends FOSRestController
     /* report types */
     const REPORT_TYPE_KEY_AD_TAG = 'pp-ad-tag';
     const REPORT_TYPE_KEY_DAILY = 'pp-daily-stats';
+    const REPORT_TYPE_KEY_SITE = 'pp-site';
 
     /* breakdown types */
     const BREAK_DOWN_KEY_DAY = 'day';
@@ -43,7 +44,8 @@ class UnifiedReportController extends FOSRestController
 
     static $BREAKDOWN_MAP = [
         self::REPORT_TYPE_KEY_DAILY => [self::BREAK_DOWN_KEY_DAY],
-        self::REPORT_TYPE_KEY_AD_TAG => [self::BREAK_DOWN_KEY_DAY, self::BREAK_DOWN_KEY_SITE, self::BREAK_DOWN_KEY_COUNTRY]
+        self::REPORT_TYPE_KEY_AD_TAG => [self::BREAK_DOWN_KEY_DAY, self::BREAK_DOWN_KEY_SITE, self::BREAK_DOWN_KEY_COUNTRY],
+        self::REPORT_TYPE_KEY_SITE => [self::BREAK_DOWN_KEY_DAY]
     ];
 
     /**
@@ -156,6 +158,12 @@ class UnifiedReportController extends FOSRestController
         if (self::REPORT_TYPE_KEY_DAILY === $reportType) {
             if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
                 return $this->getDailyReport($publisher);
+            }
+        }
+
+        if (self::REPORT_TYPE_KEY_SITE === $reportType) {
+            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
+                return $this->getDomainImpressionReport($publisher);
             }
         }
 
