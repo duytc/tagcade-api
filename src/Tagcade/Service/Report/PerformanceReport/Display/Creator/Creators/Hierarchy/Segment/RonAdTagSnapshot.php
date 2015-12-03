@@ -34,7 +34,7 @@ class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterf
             ->setDate($this->getDate())
         ;
 
-        $ronTagReportCounts = $this->eventCounter->getRonTagReport($ronAdTag->getId(), $segmentId, $isNativeAdSlot);
+        $ronTagReportCounts = $this->eventCounter->getRonAdTagReport($ronAdTag->getId(), $segmentId, $isNativeAdSlot);
 
         $this->parseRawReportData($report, array($ronTagReportCounts));
 
