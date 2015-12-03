@@ -4,6 +4,7 @@
 namespace Tagcade\Repository\Report\UnifiedReport\PulsePoint;
 
 
+use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagGroupDaily as AdTagGroupDailyDTO;
 use Tagcade\Model\Report\UnifiedReport\PulsePoint\AccountManagement;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
@@ -49,21 +50,16 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
         if (is_array($result)) {
             $result = array_map(function ($rst) {
                 return (is_array($rst) && count($rst) > 10)
-                    ? (new AccountManagement())
+                    ? (new AdTagGroupDailyDTO())
                         ->setId($rst['id'])
                         ->setPublisherId($rst['publisherId'])
                         ->setAdTagGroup($rst['adTagGroup'])
-                        ->setAdTag($rst['adTag'])
-                        ->setAdTagId($rst['adTagId'])
-                        ->setStatus($rst['status'])
-                        ->setSize($rst['size'])
-                        ->setAskPrice($rst['askPrice'])
-                        ->setRevenue($rst['revenue'])
-                        ->setFillRate($rst['fillRate'])
+                        ->setRevenue(is_numeric($rst['revenue']) ? round($rst['revenue'], 4) : null)
+                        ->setFillRate(is_numeric($rst['fillRate']) ? round($rst['fillRate'], 4) : null)
                         ->setPaidImps($rst['paidImps'])
                         ->setBackupImpression($rst['backupImpression'])
                         ->setTotalImps($rst['totalImps'])
-                        ->setAvgCpm($rst['avgCpm'])
+                        ->setAvgCpm(is_numeric($rst['avgCpm']) ? round($rst['avgCpm'], 4) : null)
                         ->setDate($rst['date'])
                     : null;
             }, $result);

@@ -5,7 +5,8 @@ namespace Tagcade\Repository\Report\UnifiedReport\PulsePoint;
 
 
 use Doctrine\DBAL\Types\Type;
-use Tagcade\Model\Report\UnifiedReport\PulsePoint\CountryDaily;
+use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagCountry as AdTagCountryDTO;
+use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagGroupCountry as AdTagGroupCountryDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 
@@ -58,14 +59,13 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->getQuery()
             ->getResult();
 
-        // TODO: get result as array of DailyCountry objects, not mixed array ([Original CountryDaily, id, publisherId, ...]
+        // TODO: get result as array of CountryDaily objects, not mixed array ([Original CountryDaily, id, publisherId, ...]
         if (is_array($result)) {
             $result = array_map(function ($rst) {
                 return (is_array($rst) && count($rst) > 14)
-                    ? (new CountryDaily())
+                    ? (new AdTagCountryDTO())
                         ->setId($rst['id'])
                         ->setPublisherId($rst['publisherId'])
-                        ->setDay($rst['day'])
                         ->setTagId($rst['tagId'])
                         ->setAdTagName($rst['adTagName'])
                         ->setAdTagGroupId($rst['adTagGroupId'])
@@ -75,8 +75,8 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                         ->setPaidImps($rst['paidImpressions'])
                         ->setTotalImps($rst['allImpressions'])
                         ->setPubPayout($rst['pubPayout'])
-                        ->setFillRate($rst['fillRate'])
-                        ->setCpm($rst['cpm'])
+                        ->setFillRate(is_numeric($rst['fillRate']) ? round($rst['fillRate'], 4) : null)
+                        ->setCpm(is_numeric($rst['cpm']) ? round($rst['cpm'], 4) : null)
                     : null;
             }, $result);
         }
@@ -119,16 +119,13 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->getQuery()
             ->getResult();
 
-        // TODO: get result as array of DailyCountry objects, not mixed array ([Original CountryDaily, id, publisherId, ...]
+        // TODO: get result as array of CountryDaily objects, not mixed array ([Original CountryDaily, id, publisherId, ...]
         if (is_array($result)) {
             $result = array_map(function ($rst) {
                 return (is_array($rst) && count($rst) > 14)
-                    ? (new CountryDaily())
+                    ? (new AdTagGroupCountryDTO())
                         ->setId($rst['id'])
                         ->setPublisherId($rst['publisherId'])
-                        ->setDay($rst['day'])
-                        ->setTagId($rst['tagId'])
-                        ->setAdTagName($rst['adTagName'])
                         ->setAdTagGroupId($rst['adTagGroupId'])
                         ->setAdTagGroupName($rst['adTagGroupName'])
                         ->setCountry($rst['country'])
@@ -136,8 +133,8 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                         ->setPaidImps($rst['paidImpressions'])
                         ->setTotalImps($rst['allImpressions'])
                         ->setPubPayout($rst['pubPayout'])
-                        ->setFillRate($rst['fillRate'])
-                        ->setCpm($rst['cpm'])
+                        ->setFillRate(is_numeric($rst['fillRate']) ? round($rst['fillRate'], 4) : null)
+                        ->setCpm(is_numeric($rst['cpm']) ? round($rst['cpm'], 4) : null)
                     : null;
             }, $result);
         }

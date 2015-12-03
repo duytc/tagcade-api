@@ -41,7 +41,7 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
                         ->setDomain($rst['domain'])
                         ->setTotalImps($rst['totalImps'])
                         ->setPaidImps($rst['paidImps'])
-                        ->setFillRate($rst['fillRate'])
+                        ->setFillRate(is_numeric($rst['fillRate']) ? round($rst['fillRate'], 4) : null)
                         ->setDomainStatus($rst['domainStatus'])
                         ->setAdTag($rst['adTag'])
                         ->setAdTagId($rst['adTagId'])

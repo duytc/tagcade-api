@@ -36,7 +36,7 @@ class UnifiedReportGroup
         $this->totalImps = $totalImps;
 
         // weighted report
-        $this->fillRate = $fillRate;
+        $this->fillRate = round($fillRate, 4);
 
         // average report
         $this->averageFillRate = round($averageFillRate, 4);
