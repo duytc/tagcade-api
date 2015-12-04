@@ -78,6 +78,10 @@ class UpdateExistingRonTagSlotCacheListener
             $libraryAdSlot = $entity->getAdSlot()->getLibraryAdSlot();
             $ronAdTag = $librarySlotTagRepository->getByLibraryAdSlotAndRefId($libraryAdSlot, $entity->getRefId());
 
+            if (!$ronAdTag instanceof RonAdTagInterface) {
+                return;
+            }
+
             $this->configCache->removeRonTagSlotCacheForAdTag($entity, $ronAdTag);
 
             return;
