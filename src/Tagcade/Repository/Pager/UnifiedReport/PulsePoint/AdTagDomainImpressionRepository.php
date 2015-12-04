@@ -29,7 +29,9 @@ class AdTagDomainImpressionRepository extends EntityRepository implements AdTagD
     const AD_TAG_DOMAIN_IMP_TOTAL_IMPS_FIELD = "totalImps";
     const AD_TAG_DOMAIN_IMP_DATE_FIELD = "date";
     // sort direction
-    const SORT_DIRECTION = ["asc", "desc"];
+    // sort direction
+    const SORT_DIRECTION_ASC = "asc";
+    const SORT_DIRECTION_DESC = "desc";
 
     /**
      * @var PaginatorInterface
@@ -139,7 +141,7 @@ class AdTagDomainImpressionRepository extends EntityRepository implements AdTagD
             }
         }
 
-        if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, self::SORT_DIRECTION)) {
+        if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {
             switch ($sortField) {
                 case self::AD_TAG_DOMAIN_IMP_FILL_RATE_FIELD:
                     $qb->addOrderBy('r.fillRate', $sortDirection);

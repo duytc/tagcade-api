@@ -32,7 +32,8 @@ class AccountManagementRepository extends EntityRepository implements AccountMan
     const ACC_MNG_AVG_CPM_FIELD = "avgCpm";
     const ACC_MNG_DATE_FIELD = "date";
     // sort direction
-    const SORT_DIRECTION = ["asc", "desc"];
+    const SORT_DIRECTION_ASC = "asc";
+    const SORT_DIRECTION_DESC = "desc";
 
     /**
      * @var PaginatorInterface
@@ -101,7 +102,7 @@ class AccountManagementRepository extends EntityRepository implements AccountMan
             }
         }
 
-        if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, self::SORT_DIRECTION)) {
+        if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {
             switch ($sortField) {
                 case self::ACC_MNG_REVENUE_FIELD :
                     $qb->addOrderBy('r.revenue', $sortDirection);
