@@ -1,7 +1,7 @@
 Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement:
     type: entity
     table: report_pulse_point_account_management
-    repositoryClass: Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepository
+    repositoryClass: Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AccountManagementRepository
     uniqueConstraints:
         account_management_unique_key:
             columns: # underscore column name

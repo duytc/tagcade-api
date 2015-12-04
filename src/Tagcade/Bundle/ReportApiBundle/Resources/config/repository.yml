@@ -1,0 +1,12 @@
+parameters:
+#    tagcade.bundle.reportapi.example.class: Tagcade\Bundle\ReportApiBundle\Example
+    tagcade.repository.class: Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AccountManagementRepository
+services:
+    tagcade.bundle.reportapi.example:
+        class: %tagcade.repository.class%
+        factory_service: doctrine.orm.unifiedreport_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }

@@ -5,7 +5,7 @@ namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
-use Tagcade\Repository\Report\UnifiedReport\PulsePoint\AdTagDomainImpressionRepositoryInterface;
+use Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AdTagDomainImpressionRepositoryInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 

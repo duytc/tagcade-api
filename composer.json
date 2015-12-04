@@ -36,7 +36,8 @@
         "doctrine/migrations": "1.0.*@dev",
         "doctrine/doctrine-migrations-bundle": "1.0.*",
         "ramsey/uuid": "^3.0",
-        "touki/ftp": "1.1.*"
+        "touki/ftp": "1.1.*",
+        "knplabs/knp-paginator-bundle": "^2.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

@@ -4,8 +4,8 @@
 namespace Tagcade\Repository\Report\UnifiedReport\PulsePoint;
 
 
+use Doctrine\ORM\Mapping;
 use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagGroupDaily as AdTagGroupDailyDTO;
-use Tagcade\Model\Report\UnifiedReport\PulsePoint\AccountManagement;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 

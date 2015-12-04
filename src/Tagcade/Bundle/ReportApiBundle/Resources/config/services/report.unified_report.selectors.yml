@@ -38,11 +38,28 @@ services:
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression
 
+    tagcade.repository.pager.report.unified_report.pulse_point.account_management:
+        class: Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AccountManagementRepository
+        factory_service: doctrine.orm.unifiedreport_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
+
+    tagcade.repository.pager.report.unified_report.pulse_point.ad_tag_domain_impression:
+        class: Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AdTagDomainImpressionRepository
+        factory_service: doctrine.orm.unifiedreport_entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
     ### Unified report selectors ###
     tagcade.service.report.unified_report.pulse_point.selector.selectors.account_management:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AccountManagement
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.account_management
+            - @tagcade.repository.pager.report.unified_report.pulse_point.account_management
 
     tagcade.service.report.unified_report.pulse_point.selector.selectors.daily:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\Daily
@@ -62,7 +79,7 @@ services:
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_domain_impression:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagDomainImpression
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.ad_tag_domain_impression
+            - @tagcade.repository.pager.report.unified_report.pulse_point.ad_tag_domain_impression
 
     # custom for adTag-country
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_country:
