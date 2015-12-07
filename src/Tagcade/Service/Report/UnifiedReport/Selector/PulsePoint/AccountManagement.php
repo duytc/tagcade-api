@@ -2,8 +2,10 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 
+use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\Paginator;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface;
@@ -11,8 +13,13 @@ use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
 
-class AccountManagement implements SelectorInterface
+class AccountManagement implements SelectorInterface, PaginatorAwareInterface
 {
+    /**
+     * @var Paginator
+     */
+    protected $paginator;
+
     /**
      * @var AccountManagementRepositoryInterface
      */
@@ -29,12 +36,38 @@ class AccountManagement implements SelectorInterface
             throw new InvalidArgumentException('Expect instance of AccountManagementReportType');
         }
 
-        return $this->accMngRepository->getReportFor($reportType->getPublisher(), $params);
+        if ($params->getSize() > 0) {
+            $pagination = $this->paginator->paginate(
+                $this->accMngRepository->getQueryForPaginator($params), /* query NOT result */
+                $params->getPage(),
+                $params->getSize()
+            );
+        }
+        else {
+            $pagination = $this->paginator->paginate(
+                $this->accMngRepository->getQueryForPaginator($params), /* query NOT result */
+                $params->getPage()
+            );
+        }
+
+        return $pagination;
     }
 
 
     public function supportReport(ReportTypeInterface $reportType)
     {
         return $reportType instanceof AccountManagementReportType;
+    }
+
+    /**
+     * Sets the KnpPaginator instance.
+     *
+     * @param Paginator $paginator
+     *
+     * @return mixed
+     */
+    public function setPaginator(Paginator $paginator)
+    {
+        $this->paginator = $paginator;
     }
 }

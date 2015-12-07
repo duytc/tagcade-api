@@ -43,6 +43,8 @@ services:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AccountManagement
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.account_management
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
 
     tagcade.service.report.unified_report.pulse_point.selector.selectors.daily:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\Daily

@@ -13,9 +13,8 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
      * @param UnifiedReportParams $params
      * @return mixed
      */
-    protected function getQueryForPaginator(UnifiedReportParams $params)
+    public function getQueryForPaginator(UnifiedReportParams $params)
     {
         // TODO: Implement getQueryForPaginator() method.
     }
-
 }

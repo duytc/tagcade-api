@@ -13,6 +13,24 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 class CountryDailyRepository extends AbstractReportRepository implements CountryDailyRepositoryInterface
 {
+    // search fields
+    const COUNTRY_DAILY_PUBLISHER_FIELD = "publisherId";
+    const COUNTRY_DAILY_TAG_ID_FIELD = "tagId";
+    const COUNTRY_DAILY_AD_TAG_NAME_FIELD = "adTagName";
+    const COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD = "adTagGroupId";
+    const COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD = "adTagGroupName";
+    const COUNTRY_DAILY_COUNTRY_FIELD = "country";
+    const COUNTRY_DAILY_COUNTRY_NAME_FIELD = "countryName";
+    // sort fields
+    const COUNTRY_DAILY_FILL_RATE_FIELD = "fillRate";
+    const COUNTRY_DAILY_PAID_IMPS_FIELD = "paidImpressions";
+    const COUNTRY_DAILY_ALL_IMPS_FIELD = "allImpressions";
+    const COUNTRY_DAILY_PUB_PAYOUT_FIELD = "pubPayout";
+    const COUNTRY_DAILY_CPM_FIELD = "cpm";
+    // sort direction
+    // sort direction
+    const SORT_DIRECTION_ASC = "asc";
+    const SORT_DIRECTION_DESC = "desc";
     /**
      * override because differ from r.day (parents: r.date)
      * @param \DateTime $startDate
@@ -147,10 +165,63 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
      * @param UnifiedReportParams $params
      * @return mixed
      */
-    protected function getQueryForPaginator(UnifiedReportParams $params)
+    public function getQueryForPaginator(UnifiedReportParams $params)
     {
-        // TODO: Implement getQueryForPaginator() method.
+        $searchField = $params->getSearchField();
+        $searchKey = $params->getSearchKey();
+        $sortField = $params->getSortField();
+        $sortDirection = $params->getSortDirection();
+
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $params->getStartDate(), Type::DATE)
+            ->setParameter('end_date', $params->getEndDate(), Type::DATE)
+        ;
+
+        if ($searchField !== null && $searchKey !== null) {
+            switch ($searchField) {
+                case self::COUNTRY_DAILY_AD_TAG_FIELD :
+                    $qb->andWhere($qb->expr()->like('r.adTag', $searchKey));
+                    break;
+                case self::COUNTRY_DAILY_DOMAIN_FIELD:
+                    $qb->andWhere($qb->expr()->like('r.domain', $searchKey));
+                    break;
+                case self::COUNTRY_DAILY_AD_TAG_ID_FIELD:
+                    $qb->andWhere($qb->expr()->like('r.adTagId', $searchKey));
+                    break;
+                case self::COUNTRY_DAILY_PUBLISHER_FIELD:
+                    $qb->andWhere('r.publisherId = :publisher_id')
+                        ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                    break;
+                case self::COUNTRY_DAILY_DOMAIN_STATUS_FIELD:
+                    $qb->andWhere('r.domainStatus = :status')
+                        ->setParameter('status', $searchKey, Type::STRING);
+                    break;
+            }
+        }
+
+        if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {
+            switch ($sortField) {
+                case self::COUNTRY_DAILY_FILL_RATE_FIELD:
+                    $qb->addOrderBy('r.fillRate', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_PAID_IMPS_FIELD:
+                    $qb->addOrderBy('r.paidImps', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_TOTAL_IMPS_FIELD:
+                    $qb->addOrderBy('r.totalImps', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_DATE_FIELD:
+                    $qb->addOrderBy('r.date', $sortDirection);
+                    break;
+            }
+        }
+        else {
+            $qb->addOrderBy('r.id', 'asc');
+        }
+
+        return $qb->getQuery();
     }
-
-
 }

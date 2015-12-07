@@ -94,13 +94,16 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
         if ($searchField !== null && $searchKey !== null) {
             switch ($searchField) {
                 case self::AD_TAG_DOMAIN_IMP_AD_TAG_FIELD :
-                    $qb->andWhere($qb->expr()->like('r.adTag', $searchKey));
+                    $qb->andWhere('r.adTag LIKE :ad_tag')
+                    ->setParameter('ad_tag', '%'.$searchKey.'%', Type::STRING);
                     break;
                 case self::AD_TAG_DOMAIN_IMP_DOMAIN_FIELD:
-                    $qb->andWhere($qb->expr()->like('r.domain', $searchKey));
+                    $qb->andWhere('r.domain LIKE :domain')
+                    ->setParameter('domain', '%'.$searchKey.'%', Type::STRING);
                     break;
                 case self::AD_TAG_DOMAIN_IMP_AD_TAG_ID_FIELD:
-                    $qb->andWhere($qb->expr()->like('r.adTagId', $searchKey));
+                    $qb->andWhere('r.adTagId = :ad_tag_id')
+                    ->setParameter('ad_tag_id', intval($searchKey), Type::INTEGER);
                     break;
                 case self::AD_TAG_DOMAIN_IMP_PUBLISHER_FIELD:
                     $qb->andWhere('r.publisherId = :publisher_id')
@@ -135,6 +138,4 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
 
         return $qb->getQuery();
     }
-
-
 }

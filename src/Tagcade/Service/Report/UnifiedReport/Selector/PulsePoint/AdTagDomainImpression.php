@@ -32,6 +32,7 @@ class AdTagDomainImpression implements SelectorInterface, PaginatorAwareInterfac
         if (!$reportType instanceof AdTagDomainImpressionReportType) {
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
+
         if ($params->getSize() > 0) {
             $pagination = $this->paginator->paginate(
                 $this->adTagDomainImpRepository->getQueryForPaginator($params), /* query NOT result */

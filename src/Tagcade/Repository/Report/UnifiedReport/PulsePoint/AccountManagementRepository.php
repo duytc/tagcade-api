@@ -4,6 +4,7 @@
 namespace Tagcade\Repository\Report\UnifiedReport\PulsePoint;
 
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Mapping;
 use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagGroupDaily as AdTagGroupDailyDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -14,14 +15,17 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
 {
     // search fields
     const ACC_MNG_PUBLISHER_FIELD = "publisherId";
-    const ACC_MNG_DOMAIN_FIELD = "domain";
+    const ACC_MNG_AD_TAG_GROUP = "adTagGroup";
     const ACC_MNG_AD_TAG_ID_FIELD = "adTagId";
     const ACC_MNG_AD_TAG_FIELD = "adTag";
-    const ACC_MNG_DOMAIN_STATUS_FIELD = "domainStatus";
+    const ACC_MNG_STATUS_FIELD = "status";
     // sort fields
     const ACC_MNG_FILL_RATE_FIELD = "fillRate";
     const ACC_MNG_PAID_IMPS_FIELD = "paidImps";
     const ACC_MNG_TOTAL_IMPS_FIELD = "totalImps";
+    const ACC_MNG_REVENUE_FIELD = "revenue";
+    const ACC_MNG_BACKUP_IMPRESSION_FIELD = "backupImpression";
+    const ACC_MNG_AVG_CPM_FIELD = "avCpm";
     const ACC_MNG_DATE_FIELD = "date";
     // sort direction
     // sort direction
@@ -89,8 +93,72 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
      * @param UnifiedReportParams $params
      * @return mixed
      */
-    protected function getQueryForPaginator(UnifiedReportParams $params)
+    public function getQueryForPaginator(UnifiedReportParams $params)
     {
-        // TODO: Implement getQueryForPaginator() method.
+        $searchField = $params->getSearchField();
+        $searchKey = $params->getSearchKey();
+        $sortField = $params->getSortField();
+        $sortDirection = $params->getSortDirection();
+
+        $qb = $this->createQueryBuilder('r');
+
+        $qb
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $params->getStartDate(), Type::DATE)
+            ->setParameter('end_date', $params->getEndDate(), Type::DATE)
+        ;
+
+        if ($searchField !== null && $searchKey !== null) {
+            switch ($searchField) {
+                case self::ACC_MNG_AD_TAG_GROUP :
+                    $qb->andWhere($qb->expr()->like('r.adTagGroup', $searchKey));
+                    break;
+                case self::ACC_MNG_AD_TAG_FIELD:
+                    $qb->andWhere($qb->expr()->like('r.adTag', $searchKey));
+                    break;
+                case self::ACC_MNG_AD_TAG_ID_FIELD:
+                    $qb->andWhere($qb->expr()->like('r.adTagId', $searchKey));
+                    break;
+                case self::ACC_MNG_PUBLISHER_FIELD:
+                    $qb->andWhere('r.publisherId = :publisher_id')
+                        ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                    break;
+                case self::ACC_MNG_STATUS_FIELD:
+                    $qb->andWhere('r.status = :status')
+                        ->setParameter('status', $searchKey, Type::STRING);
+                    break;
+            }
+        }
+
+        if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {
+            switch ($sortField) {
+                case self::ACC_MNG_FILL_RATE_FIELD:
+                    $qb->addOrderBy('r.fillRate', $sortDirection);
+                    break;
+                case self::ACC_MNG_PAID_IMPS_FIELD:
+                    $qb->addOrderBy('r.paidImps', $sortDirection);
+                    break;
+                case self::ACC_MNG_TOTAL_IMPS_FIELD:
+                    $qb->addOrderBy('r.totalImps', $sortDirection);
+                    break;
+                case self::ACC_MNG_AVG_CPM_FIELD:
+                    $qb->addOrderBy('r.avgCpm', $sortDirection);
+                    break;
+                case self::ACC_MNG_BACKUP_IMPRESSION_FIELD:
+                    $qb->addOrderBy('r.backupImpression', $sortDirection);
+                    break;
+                case self::ACC_MNG_REVENUE_FIELD:
+                    $qb->addOrderBy('r.revenue', $sortDirection);
+                    break;
+                case self::ACC_MNG_DATE_FIELD:
+                    $qb->addOrderBy('r.date', $sortDirection);
+                    break;
+            }
+        }
+        else {
+            $qb->addOrderBy('r.id', 'asc');
+        }
+
+        return $qb->getQuery();
     }
 }
