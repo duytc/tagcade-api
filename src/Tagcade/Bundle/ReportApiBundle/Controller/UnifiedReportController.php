@@ -65,7 +65,7 @@ class UnifiedReportController extends FOSRestController
      * @Rest\QueryParam(name="searchField", nullable=true)
      * @Rest\QueryParam(name="searchKey", nullable=true)
      * @Rest\QueryParam(name="sortField", nullable=true)
-     * @Rest\QueryParam(name="sortDirection", nullable=true)
+     * @Rest\QueryParam(name="orderBy", nullable=true)
      *
      * @param $id
      * @param Request $request

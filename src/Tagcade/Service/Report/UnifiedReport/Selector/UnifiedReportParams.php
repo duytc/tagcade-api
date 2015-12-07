@@ -13,7 +13,7 @@ class UnifiedReportParams extends Params
     const PARAM_SEARCH_FIELD = 'searchField';
     const PARAM_SEARCH_KEY = 'searchKey';
     const PARAM_SORT_FIELD = 'sortField';
-    const PARAM_SORT_DIRECTION = 'sortDirection';
+    const PARAM_SORT_DIRECTION = 'orderBy';
 
     /**
      * @var int
