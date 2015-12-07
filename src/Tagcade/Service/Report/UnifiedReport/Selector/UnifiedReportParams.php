@@ -96,11 +96,11 @@ class UnifiedReportParams extends Params
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getSearchField()
     {
-        return $this->searchField;
+        return explode(',', $this->searchField);
     }
 
     /**

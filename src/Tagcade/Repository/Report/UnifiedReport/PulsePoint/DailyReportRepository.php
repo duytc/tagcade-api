@@ -51,15 +51,17 @@ class DailyReportRepository extends AbstractReportRepository implements DailyRep
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
-        if ($searchField !== null && $searchKey !== null) {
-            switch ($searchField) {
-                case self::DAILY_REPORT_SIZE_FIELD:
-                    $qb->andWhere('r.size LIKE :size')->setParameter('size', '%'.$searchKey.'%');
-                    break;
-                case self::DAILY_REPORT_PUBLISHER_FIELD:
-                    $qb->andWhere('r.publisherId = :publisher_id')
-                        ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
-                    break;
+        if (is_array($searchField) && $searchKey !== null) {
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::DAILY_REPORT_SIZE_FIELD:
+                        $qb->andWhere('r.size LIKE :size')->setParameter('size', '%'.$searchKey.'%');
+                        break;
+                    case self::DAILY_REPORT_PUBLISHER_FIELD:
+                        $qb->andWhere('r.publisherId = :publisher_id')
+                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                }
             }
         }
 

@@ -108,25 +108,27 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
-        if ($searchField !== null && $searchKey !== null) {
-            switch ($searchField) {
-                case self::ACC_MNG_AD_TAG_GROUP :
-                    $qb->andWhere('r.adTagGroup LIKE :ad_tag_group')->setParameter('ad_tag_group', '%'.$searchKey.'%');
-                    break;
-                case self::ACC_MNG_AD_TAG_FIELD:
-                    $qb->andWhere('r.adTag LIKE :ad_tag')->setParameter('ad_tag', '%'.$searchKey.'%');
-                    break;
-                case self::ACC_MNG_AD_TAG_ID_FIELD:
-                    $qb->andWhere('r.adTagId = :ad_tag_id')->setParameter('ad_tag_id', $searchKey, Type::STRING);
-                    break;
-                case self::ACC_MNG_PUBLISHER_FIELD:
-                    $qb->andWhere('r.publisherId = :publisher_id')
-                        ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
-                    break;
-                case self::ACC_MNG_STATUS_FIELD:
-                    $qb->andWhere('r.status = :status')
-                        ->setParameter('status', $searchKey, Type::STRING);
-                    break;
+        if (is_array($searchField) && $searchKey !== null) {
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::ACC_MNG_AD_TAG_GROUP :
+                        $qb->andWhere('r.adTagGroup LIKE :ad_tag_group')->setParameter('ad_tag_group', '%'.$searchKey.'%');
+                        break;
+                    case self::ACC_MNG_AD_TAG_FIELD:
+                        $qb->andWhere('r.adTag LIKE :ad_tag')->setParameter('ad_tag', '%'.$searchKey.'%');
+                        break;
+                    case self::ACC_MNG_AD_TAG_ID_FIELD:
+                        $qb->andWhere('r.adTagId = :ad_tag_id')->setParameter('ad_tag_id', $searchKey, Type::STRING);
+                        break;
+                    case self::ACC_MNG_PUBLISHER_FIELD:
+                        $qb->andWhere('r.publisherId = :publisher_id')
+                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::ACC_MNG_STATUS_FIELD:
+                        $qb->andWhere('r.status = :status')
+                            ->setParameter('status', $searchKey, Type::STRING);
+                        break;
+                }
             }
         }
 

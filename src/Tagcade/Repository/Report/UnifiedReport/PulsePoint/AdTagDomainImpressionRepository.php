@@ -91,28 +91,30 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
-        if ($searchField !== null && $searchKey !== null) {
-            switch ($searchField) {
-                case self::AD_TAG_DOMAIN_IMP_AD_TAG_FIELD :
-                    $qb->andWhere('r.adTag LIKE :ad_tag')
-                    ->setParameter('ad_tag', '%'.$searchKey.'%', Type::STRING);
-                    break;
-                case self::AD_TAG_DOMAIN_IMP_DOMAIN_FIELD:
-                    $qb->andWhere('r.domain LIKE :domain')
-                    ->setParameter('domain', '%'.$searchKey.'%', Type::STRING);
-                    break;
-                case self::AD_TAG_DOMAIN_IMP_AD_TAG_ID_FIELD:
-                    $qb->andWhere('r.adTagId = :ad_tag_id')
-                    ->setParameter('ad_tag_id', intval($searchKey), Type::INTEGER);
-                    break;
-                case self::AD_TAG_DOMAIN_IMP_PUBLISHER_FIELD:
-                    $qb->andWhere('r.publisherId = :publisher_id')
-                        ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
-                    break;
-                case self::AD_TAG_DOMAIN_IMP_DOMAIN_STATUS_FIELD:
-                    $qb->andWhere('r.domainStatus = :status')
-                        ->setParameter('status', $searchKey, Type::STRING);
-                    break;
+        if (is_array($searchField) && $searchKey !== null) {
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::AD_TAG_DOMAIN_IMP_AD_TAG_FIELD :
+                        $qb->andWhere('r.adTag LIKE :ad_tag')
+                        ->setParameter('ad_tag', '%'.$searchKey.'%', Type::STRING);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_DOMAIN_FIELD:
+                        $qb->andWhere('r.domain LIKE :domain')
+                        ->setParameter('domain', '%'.$searchKey.'%', Type::STRING);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_AD_TAG_ID_FIELD:
+                        $qb->andWhere('r.adTagId = :ad_tag_id')
+                        ->setParameter('ad_tag_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_PUBLISHER_FIELD:
+                        $qb->andWhere('r.publisherId = :publisher_id')
+                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_DOMAIN_STATUS_FIELD:
+                        $qb->andWhere('r.domainStatus = :status')
+                            ->setParameter('status', $searchKey, Type::STRING);
+                        break;
+                }
             }
         }
 

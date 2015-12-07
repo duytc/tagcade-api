@@ -180,30 +180,32 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
-        if ($searchField !== null && $searchKey !== null) {
-            switch ($searchField) {
-                case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
-                    $qb->andWhere('r.adTagName LIKE :ad_tag_name')->setParameter('ad_tag_name', '%'.$searchKey.'%');
-                    break;
-                case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
-                    $qb->andWhere('r.adTagGroupName LIKE :ad_tag_group_name')->setParameter('ad_tag_group_name', '%'.$searchKey.'%');
-                    break;
-                case self::COUNTRY_DAILY_TAG_ID_FIELD:
-                    $qb->andWhere('r.tagId = :tag_id')->setParameter('tag_id', intval($searchKey), Type::INTEGER);
-                    break;
-                case self::COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD:
-                    $qb->andWhere('r.adTagGroupId = :ad_tag_group_id')->setParameter('ad_tag_group_id', intval($searchKey), Type::INTEGER);
-                    break;
-                case self::COUNTRY_DAILY_PUBLISHER_FIELD:
-                    $qb->andWhere('r.publisherId = :publisher_id')
-                        ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
-                    break;
-                case self::COUNTRY_DAILY_COUNTRY_FIELD:
-                    $qb->andWhere('r.country LIKE :country')->setParameter('country', '%'.$searchKey.'%');
-                    break;
-                case self::COUNTRY_DAILY_COUNTRY_NAME_FIELD:
-                    $qb->andWhere('r.countryName LIKE :country_name')->setParameter('country_name', '%'.$searchKey.'%');
-                    break;
+        if (is_array($searchField) && $searchKey !== null) {
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
+                        $qb->andWhere('r.adTagName LIKE :ad_tag_name')->setParameter('ad_tag_name', '%'.$searchKey.'%');
+                        break;
+                    case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
+                        $qb->andWhere('r.adTagGroupName LIKE :ad_tag_group_name')->setParameter('ad_tag_group_name', '%'.$searchKey.'%');
+                        break;
+                    case self::COUNTRY_DAILY_TAG_ID_FIELD:
+                        $qb->andWhere('r.tagId = :tag_id')->setParameter('tag_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD:
+                        $qb->andWhere('r.adTagGroupId = :ad_tag_group_id')->setParameter('ad_tag_group_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::COUNTRY_DAILY_PUBLISHER_FIELD:
+                        $qb->andWhere('r.publisherId = :publisher_id')
+                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::COUNTRY_DAILY_COUNTRY_FIELD:
+                        $qb->andWhere('r.country LIKE :country')->setParameter('country', '%'.$searchKey.'%');
+                        break;
+                    case self::COUNTRY_DAILY_COUNTRY_NAME_FIELD:
+                        $qb->andWhere('r.countryName LIKE :country_name')->setParameter('country_name', '%'.$searchKey.'%');
+                        break;
+                }
             }
         }
 
