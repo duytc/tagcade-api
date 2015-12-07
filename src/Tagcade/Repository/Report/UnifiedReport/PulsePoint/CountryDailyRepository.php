@@ -182,22 +182,27 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
 
         if ($searchField !== null && $searchKey !== null) {
             switch ($searchField) {
-                case self::COUNTRY_DAILY_AD_TAG_FIELD :
-                    $qb->andWhere($qb->expr()->like('r.adTag', $searchKey));
+                case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
+                    $qb->andWhere('r.adTagName LIKE :ad_tag_name')->setParameter('ad_tag_name', '%'.$searchKey.'%');
                     break;
-                case self::COUNTRY_DAILY_DOMAIN_FIELD:
-                    $qb->andWhere($qb->expr()->like('r.domain', $searchKey));
+                case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
+                    $qb->andWhere('r.adTagGroupName LIKE :ad_tag_group_name')->setParameter('ad_tag_group_name', '%'.$searchKey.'%');
                     break;
-                case self::COUNTRY_DAILY_AD_TAG_ID_FIELD:
-                    $qb->andWhere($qb->expr()->like('r.adTagId', $searchKey));
+                case self::COUNTRY_DAILY_TAG_ID_FIELD:
+                    $qb->andWhere('r.tagId = :tag_id')->setParameter('tag_id', intval($searchKey), Type::INTEGER);
+                    break;
+                case self::COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD:
+                    $qb->andWhere('r.adTagGroupId = :ad_tag_group_id')->setParameter('ad_tag_group_id', intval($searchKey), Type::INTEGER);
                     break;
                 case self::COUNTRY_DAILY_PUBLISHER_FIELD:
                     $qb->andWhere('r.publisherId = :publisher_id')
                         ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
                     break;
-                case self::COUNTRY_DAILY_DOMAIN_STATUS_FIELD:
-                    $qb->andWhere('r.domainStatus = :status')
-                        ->setParameter('status', $searchKey, Type::STRING);
+                case self::COUNTRY_DAILY_COUNTRY_FIELD:
+                    $qb->andWhere('r.country LIKE :country')->setParameter('country', '%'.$searchKey.'%');
+                    break;
+                case self::COUNTRY_DAILY_COUNTRY_NAME_FIELD:
+                    $qb->andWhere('r.countryName LIKE :country_name')->setParameter('country_name', '%'.$searchKey.'%');
                     break;
             }
         }
@@ -210,11 +215,14 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                 case self::COUNTRY_DAILY_PAID_IMPS_FIELD:
                     $qb->addOrderBy('r.paidImps', $sortDirection);
                     break;
-                case self::COUNTRY_DAILY_TOTAL_IMPS_FIELD:
-                    $qb->addOrderBy('r.totalImps', $sortDirection);
+                case self::COUNTRY_DAILY_ALL_IMPS_FIELD:
+                    $qb->addOrderBy('r.allImpressions', $sortDirection);
                     break;
-                case self::COUNTRY_DAILY_DATE_FIELD:
-                    $qb->addOrderBy('r.date', $sortDirection);
+                case self::COUNTRY_DAILY_PUB_PAYOUT_FIELD:
+                    $qb->addOrderBy('r.pubPayout', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_CPM_FIELD:
+                    $qb->addOrderBy('r.cpm', $sortDirection);
                     break;
             }
         }

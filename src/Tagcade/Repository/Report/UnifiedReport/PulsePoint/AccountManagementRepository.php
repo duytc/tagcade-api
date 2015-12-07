@@ -111,13 +111,13 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
         if ($searchField !== null && $searchKey !== null) {
             switch ($searchField) {
                 case self::ACC_MNG_AD_TAG_GROUP :
-                    $qb->andWhere($qb->expr()->like('r.adTagGroup', $searchKey));
+                    $qb->andWhere('r.adTagGroup LIKE :ad_tag_group')->setParameter('ad_tag_group', '%'.$searchKey.'%');
                     break;
                 case self::ACC_MNG_AD_TAG_FIELD:
-                    $qb->andWhere($qb->expr()->like('r.adTag', $searchKey));
+                    $qb->andWhere('r.adTag LIKE :ad_tag')->setParameter('ad_tag', '%'.$searchKey.'%');
                     break;
                 case self::ACC_MNG_AD_TAG_ID_FIELD:
-                    $qb->andWhere($qb->expr()->like('r.adTagId', $searchKey));
+                    $qb->andWhere('r.adTagId = :ad_tag_id')->setParameter('ad_tag_id', $searchKey, Type::STRING);
                     break;
                 case self::ACC_MNG_PUBLISHER_FIELD:
                     $qb->andWhere('r.publisherId = :publisher_id')
