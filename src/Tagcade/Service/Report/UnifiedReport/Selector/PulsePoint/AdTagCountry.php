@@ -15,7 +15,21 @@ class AdTagCountry extends CountryDaily
             throw new InvalidArgumentException('Expect instance of AdTagDomainReportType');
         }
 
-        return $this->countryDailyRepository->getAdTagCountryReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
+        if ($params->getSize() > 0) {
+            $pagination = $this->paginator->paginate(
+                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
+                $params->getPage(),
+                $params->getSize()
+            );
+        }
+        else {
+            $pagination = $this->paginator->paginate(
+                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
+                $params->getPage()
+            );
+        }
+
+        return $pagination;
     }
 
     public function supportReport(ReportTypeInterface $reportType)

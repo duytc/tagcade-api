@@ -15,7 +15,21 @@ class AdTagGroupCountry extends CountryDaily
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        return $this->countryDailyRepository->getAdTagGroupCountryReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
+        if ($params->getSize() > 0) {
+            $pagination = $this->paginator->paginate(
+                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
+                $params->getPage(),
+                $params->getSize()
+            );
+        }
+        else {
+            $pagination = $this->paginator->paginate(
+                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
+                $params->getPage()
+            );
+        }
+
+        return $pagination;
     }
 
 
