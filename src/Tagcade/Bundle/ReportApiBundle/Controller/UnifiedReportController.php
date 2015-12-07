@@ -60,6 +60,12 @@ class UnifiedReportController extends FOSRestController
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
      * @Rest\QueryParam(name="reportType")
      * @Rest\QueryParam(name="breakDown")
+     * @Rest\QueryParam(name="page")
+     * @Rest\QueryParam(name="size", nullable=true)
+     * @Rest\QueryParam(name="searchField", nullable=true)
+     * @Rest\QueryParam(name="searchKey", nullable=true)
+     * @Rest\QueryParam(name="sortField", nullable=true)
+     * @Rest\QueryParam(name="sortDirection", nullable=true)
      *
      * @param $id
      * @param Request $request
@@ -262,7 +268,13 @@ class UnifiedReportController extends FOSRestController
         $defaultParams = array_fill_keys([
             UnifiedReportParams::PARAM_START_DATE,
             UnifiedReportParams::PARAM_END_DATE,
-            UnifiedReportParams::PARAM_GROUP
+            UnifiedReportParams::PARAM_GROUP,
+            UnifiedReportParams::PARAM_PAGE,
+            UnifiedReportParams::PARAM_SIZE,
+            UnifiedReportParams::PARAM_SEARCH_FIELD,
+            UnifiedReportParams::PARAM_SEARCH_KEY,
+            UnifiedReportParams::PARAM_SORT_FIELD,
+            UnifiedReportParams::PARAM_SORT_DIRECTION,
         ], null);
 
         $params = array_merge($defaultParams, $params);
@@ -271,8 +283,14 @@ class UnifiedReportController extends FOSRestController
         $startDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_START_DATE], true);
         $endDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_END_DATE]);
         $group = $params[UnifiedReportParams::PARAM_GROUP];
+        $page = intval($params[UnifiedReportParams::PARAM_PAGE]);
+        $size = intval($params[UnifiedReportParams::PARAM_SIZE]);
+        $searchField = $params[UnifiedReportParams::PARAM_SEARCH_FIELD];
+        $searchKey = $params[UnifiedReportParams::PARAM_SEARCH_KEY];
+        $sortField = $params[UnifiedReportParams::PARAM_SORT_FIELD];
+        $sortDirection = $params[UnifiedReportParams::PARAM_SORT_DIRECTION];
 
-        return new UnifiedReportParams($startDate, $endDate, $group);
+        return new UnifiedReportParams($startDate, $endDate, $group, $page, $size, $searchField, $searchKey, $sortField, $sortDirection);
     }
 
     /**

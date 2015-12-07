@@ -8,6 +8,13 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 class UnifiedReportParams extends Params
 {
+    const PARAM_PAGE = 'page';
+    const PARAM_SIZE = 'size';
+    const PARAM_SEARCH_FIELD = 'searchField';
+    const PARAM_SEARCH_KEY = 'searchKey';
+    const PARAM_SORT_FIELD = 'sortField';
+    const PARAM_SORT_DIRECTION = 'sortDirection';
+
     /**
      * @var int
      */

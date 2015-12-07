@@ -9,6 +9,7 @@ use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagCountry as AdTagCountryDTO;
 use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagGroupCountry as AdTagGroupCountryDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
+use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 class CountryDailyRepository extends AbstractReportRepository implements CountryDailyRepositoryInterface
 {
@@ -141,4 +142,15 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
 
         return $result;
     }
+
+    /**
+     * @param UnifiedReportParams $params
+     * @return mixed
+     */
+    protected function getQueryForPaginator(UnifiedReportParams $params)
+    {
+        // TODO: Implement getQueryForPaginator() method.
+    }
+
+
 }

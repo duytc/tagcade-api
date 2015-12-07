@@ -8,9 +8,26 @@ use Doctrine\ORM\Mapping;
 use Tagcade\Domain\DTO\Report\UnifiedReport\AdTagGroupDaily as AdTagGroupDailyDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
+use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 class AccountManagementRepository extends AbstractReportRepository implements AccountManagementRepositoryInterface
 {
+    // search fields
+    const ACC_MNG_PUBLISHER_FIELD = "publisherId";
+    const ACC_MNG_DOMAIN_FIELD = "domain";
+    const ACC_MNG_AD_TAG_ID_FIELD = "adTagId";
+    const ACC_MNG_AD_TAG_FIELD = "adTag";
+    const ACC_MNG_DOMAIN_STATUS_FIELD = "domainStatus";
+    // sort fields
+    const ACC_MNG_FILL_RATE_FIELD = "fillRate";
+    const ACC_MNG_PAID_IMPS_FIELD = "paidImps";
+    const ACC_MNG_TOTAL_IMPS_FIELD = "totalImps";
+    const ACC_MNG_DATE_FIELD = "date";
+    // sort direction
+    // sort direction
+    const SORT_DIRECTION_ASC = "asc";
+    const SORT_DIRECTION_DESC = "desc";
+
     protected function getReportsInRange(\DateTime $startDate, \DateTime $endDate)
     {
         $qb = parent::getReportsInRange($startDate, $endDate);
@@ -66,5 +83,14 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
         }
 
         return $result;
+    }
+
+    /**
+     * @param UnifiedReportParams $params
+     * @return mixed
+     */
+    protected function getQueryForPaginator(UnifiedReportParams $params)
+    {
+        // TODO: Implement getQueryForPaginator() method.
     }
 }

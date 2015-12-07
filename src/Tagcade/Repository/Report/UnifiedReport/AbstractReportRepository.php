@@ -6,6 +6,7 @@ namespace Tagcade\Repository\Report\UnifiedReport;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 abstract class AbstractReportRepository extends EntityRepository
 {
@@ -29,4 +30,10 @@ abstract class AbstractReportRepository extends EntityRepository
             ->getResult()
         ;
     }
+
+    /**
+     * @param UnifiedReportParams $params
+     * @return mixed
+     */
+    protected abstract function getQueryForPaginator(UnifiedReportParams $params);
 }

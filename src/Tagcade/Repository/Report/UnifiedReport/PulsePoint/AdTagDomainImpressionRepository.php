@@ -129,6 +129,9 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
                     break;
             }
         }
+        else {
+            $qb->addOrderBy('r.id', 'asc');
+        }
 
         return $qb->getQuery();
     }
