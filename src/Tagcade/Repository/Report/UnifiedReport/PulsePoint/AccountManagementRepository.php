@@ -155,6 +155,12 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
                 case self::ACC_MNG_DATE_FIELD:
                     $qb->addOrderBy('r.date', $sortDirection);
                     break;
+                case self::ACC_MNG_AD_TAG_FIELD:
+                    $qb->addOrderBy('r.adTag', $sortDirection);
+                    break;
+                case self::ACC_MNG_AD_TAG_GROUP:
+                    $qb->addOrderBy('r.adTagGroup', $sortDirection);
+                    break;
             }
         }
         else {

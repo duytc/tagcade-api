@@ -175,7 +175,7 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
         $qb = $this->createQueryBuilder('r');
 
         $qb
-            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->andWhere($qb->expr()->between('r.day', ':start_date', ':end_date'))
             ->setParameter('start_date', $params->getStartDate(), Type::DATE)
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
@@ -225,6 +225,12 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                     break;
                 case self::COUNTRY_DAILY_CPM_FIELD:
                     $qb->addOrderBy('r.cpm', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
+                    $qb->addOrderBy('r.adTagName', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
+                    $qb->addOrderBy('r.adTagGroupName', $sortDirection);
                     break;
             }
         }

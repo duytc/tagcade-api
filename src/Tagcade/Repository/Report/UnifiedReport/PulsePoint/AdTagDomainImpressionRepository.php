@@ -132,6 +132,9 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
                 case self::AD_TAG_DOMAIN_IMP_DATE_FIELD:
                     $qb->addOrderBy('r.date', $sortDirection);
                     break;
+                case self::AD_TAG_DOMAIN_IMP_AD_TAG_FIELD:
+                    $qb->addOrderBy('r.adTag', $sortDirection);
+                    break;
             }
         }
         else {

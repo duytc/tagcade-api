@@ -79,18 +79,24 @@ services:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagCountry
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.country_daily
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
 
     # custom for adTagGroup-daily
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_daily:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagGroupDaily
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.account_management
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
 
     # custom for adTagGroup-country
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_country:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagGroupCountry
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.country_daily
+        tags:
+            - { name: knp_paginator.injectable, paginator: knp_paginator }
 
     ### Unified selector service ###
     tagcade.service.report.unified_report.report_grouper:
