@@ -60,6 +60,17 @@ doctrine:
                 mapping_types:
                     enum: string
 
+            unifiedReport:
+                driver:     "%database_driver_unifiedreport%"
+                host:       "%database_host_unifiedreport%"
+                port:       "%database_port_unifiedreport%"
+                dbname:     "%database_name_unifiedreport%"
+                user:       "%database_user_unifiedreport%"
+                password:   "%database_password_unifiedreport%"
+                charset:    UTF8
+                mapping_types:
+                    enum: string
+
     orm:
         default_entity_manager:         default
         auto_generate_proxy_classes:    "%kernel.debug%"
@@ -96,6 +107,31 @@ doctrine:
                         alias:      TagcadeReportEntity
                         is_bundle:  false
 
+            unifiedReport:
+                connection:         unifiedReport
+                naming_strategy:    doctrine.orm.naming_strategy.underscore
+                mappings:
+                    # bundles
+                    # ...current no bundle...
+                    # custom
+                    UnifiedReportPulsePointEntities:
+                        type:       yml
+                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/PulsePoint
+                        prefix:     Tagcade\Entity\Report\UnifiedReport\PulsePoint
+                        alias:      TagcadeUnifiedReportPulsePointEntity
+                        is_bundle:  false
+#                    UnifiedReportAdMetaEntities:
+#                        type:       yml
+#                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/AdMeta
+#                        prefix:     Tagcade\Entity\Report\UnifiedReport\AdMeta
+#                        alias:      TagcadeUnifiedReportAdMetaEntity
+#                        is_bundle:  false
+                    CoreEntities:
+                        type:       yml
+                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/Core
+                        prefix:     Tagcade\Entity\Core
+                        alias:      TagcadeCoreEntity
+                        is_bundle:  false
             #
             # This is the config for multiple entity managers, for now, we will put all entities in one database
             #
@@ -242,3 +278,14 @@ doctrine_migrations:
 
 parameters:
     jms_serializer.json_serialization_visitor.class: Tagcade\Behaviors\JsonSerializationVisitor
+
+knp_paginator:
+    page_range: 10                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template

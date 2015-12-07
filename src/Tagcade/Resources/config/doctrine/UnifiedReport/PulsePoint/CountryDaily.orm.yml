@@ -1,0 +1,54 @@
+Tagcade\Entity\Report\UnifiedReport\PulsePoint\CountryDaily:
+    type: entity
+    table: report_pulse_point_country_daily
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\PulsePoint\CountryDailyRepository
+    uniqueConstraints:
+        daily_unique_key:
+            columns: # underscore column name
+                - publisher_id
+                - day
+                - tag_id
+                - country
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        publisherId:
+            type: integer
+        day:
+            type: date
+        tagId:
+            type: integer
+        adTagName:
+            type: string
+            nullable: true
+        adTagGroupId:
+            type: integer
+            nullable: true
+        adTagGroupName:
+            type: string
+            nullable: true
+        country:
+            type: string
+        countryName:
+            type: string
+        paidImpressions:
+            type: integer
+            nullable: true
+        allImpressions:
+            type: integer
+            nullable: true
+        pubPayout:
+            type: decimal
+            scale: 4
+            nullable: true
+        fillRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        cpm:
+            type: decimal
+            scale: 4
+            nullable: true

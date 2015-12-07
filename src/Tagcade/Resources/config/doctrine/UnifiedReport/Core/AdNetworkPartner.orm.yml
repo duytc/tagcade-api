@@ -1,0 +1,30 @@
+Tagcade\Entity\Core\AdNetworkPartner:
+    type: entity
+    table: core_ad_network_partner
+    repositoryClass: Tagcade\Repository\Core\AdNetworkPartnerRepository
+    uniqueConstraints:
+        ad_network_partner_name_unique_key:
+            columns:
+                - name_canonical
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            nullable: false
+        nameCanonical:
+            type: string
+            nullable: false
+        reportTypes:
+            type: json_array
+            nullable: true
+    oneToMany:
+        publisherPartners:
+            targetEntity: Tagcade\Entity\Core\PublisherPartner
+            mappedBy: adNetworkPartner
+            cascade: ["persist"]
+
+

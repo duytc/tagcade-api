@@ -6,6 +6,13 @@ parameters:
     database_user:     root
     database_password: ~
 
+    database_driver_unifiedReport:   pdo_mysql
+    database_host_unifiedReport:     127.0.0.1
+    database_port_unifiedReport:     ~
+    database_name_unifiedReport:     symfony
+    database_user_unifiedReport:     root
+    database_password_unifiedReport: ~
+
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
     mailer_user:       ~

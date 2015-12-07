@@ -18,6 +18,7 @@ imports:
     - { resource: services/service.expression.yml }
     - { resource: services/service.expressionlib.yml }
     - { resource: services/cdn.yml }
+    - { resource: services/service.adnetwork.partner.yml }
 
 parameters:
     # jwt

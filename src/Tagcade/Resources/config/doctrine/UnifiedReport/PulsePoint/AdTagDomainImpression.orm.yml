@@ -1,0 +1,42 @@
+Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression:
+    type: entity
+    table: report_pulse_point_ad_tag_domain_impression
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\PulsePoint\AdTagDomainImpressionRepository
+    uniqueConstraints:
+        domain_impression_unique_key:
+            columns: # underscore column name
+                - publisher_id
+                - domain
+                - date
+                - ad_tag_id
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        publisherId:
+            type: integer
+        domain:
+            type: string
+            length: 100
+        totalImps:
+            type: integer
+            nullable: true
+        paidImps:
+            type: integer
+            nullable: true
+        fillRate:
+            type: float
+            scale: 4
+            nullable: true
+        domainStatus:
+            type: string
+            nullable: true
+            nullable: true
+        adTag:
+            type: string
+        adTagId:
+            type: integer
+        date:
+            type: date

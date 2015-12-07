@@ -69,9 +69,10 @@ class UserFormType extends AbstractRoleSpecificFormType
                     'multiple' => true,
                     'choices' => [
                         'MODULE_DISPLAY'         => 'Display',
-                        'MODULE_VIDEO_ANALYTICS'           => 'Video',
+                        'MODULE_VIDEO_ANALYTICS' => 'Video',
                         'MODULE_ANALYTICS'       => 'Analytics',
-                        'MODULE_FRAUD_DETECTION' => 'Fraud Detection'
+                        'MODULE_FRAUD_DETECTION' => 'Fraud Detection',
+                        'MODULE_UNIFIED_REPORT'  => 'Unified Report'
                     ],
                 ])
                 ->add('billingRate');

@@ -15,6 +15,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     const MODULE_VIDEO = 'MODULE_VIDEO_ANALYTICS';
     const MODULE_ANALYTICS = 'MODULE_ANALYTICS';
     const MODULE_FRAUD_DETECTION = 'MODULE_FRAUD_DETECTION';
+    const MODULE_UNIFIED_REPORT = 'MODULE_UNIFIED_REPORT';
 
     // we have to redefine the properties we wish to expose with JMS Serializer Bundle
 
@@ -50,6 +51,14 @@ abstract class User extends BaseUser implements UserEntityInterface
     public function hasVideoModule()
     {
         return in_array(static::MODULE_VIDEO, $this->getEnabledModules());
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasUnifiedReportModule()
+    {
+        return in_array(static::MODULE_UNIFIED_REPORT, $this->getEnabledModules());
     }
 
     /**

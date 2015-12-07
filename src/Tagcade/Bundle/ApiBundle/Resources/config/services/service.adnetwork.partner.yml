@@ -1,0 +1,16 @@
+parameters:
+    # entity class
+    tagcade.entity.core.ad_network_partner.class: Tagcade\Entity\Core\AdNetworkPartner
+
+services:
+
+    tagcade.repository.ad_network_partner:
+        class: Tagcade\Repository\Core\AdNetworkPartnerRepositoryInterface
+        factory_service: doctrine.orm.unifiedreport_entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.ad_network_partner.class%
+
+
+
+    # end ad network #####################################################

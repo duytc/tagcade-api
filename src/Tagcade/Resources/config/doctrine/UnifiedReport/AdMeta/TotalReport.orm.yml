@@ -1,0 +1,75 @@
+Tagcade\Entity\Report\UnifiedReport\AdMeta\TotalReport:
+    type: entity
+    table: report_ad_meta_total_report
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\AdMeta\TotalReportRepository
+    uniqueConstraints:
+        report_ad_meta_total_report_unique_key:
+            columns: # underscore column name
+                - publisher_id
+                - order_id
+                - order_number
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        publisherId:
+            type: integer
+        date:
+            type: date
+        website:
+            type: string
+            nullable: true
+        webpage:
+            type: string
+            nullable: true
+        placement:
+            type: string
+            nullable: true
+        orderId:
+            type: integer
+        orderNumber:
+            type: integer
+        campaignName:
+            type: string
+            nullable: true
+        orderType:
+            type: string
+            nullable: true
+        clicks:
+            type: integer
+            nullable: true
+        impressions:
+            type: integer
+            nullable: true
+        placementImpressions:
+            type: integer
+            nullable: true
+        actions:
+            type: integer
+            nullable: true
+        revenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        impressionsRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        clicksRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        actionsRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        ctr:
+            type: decimal
+            scale: 4
+            nullable: true
+        ecpm:
+            type: decimal
+            scale: 4
+            nullable: true
