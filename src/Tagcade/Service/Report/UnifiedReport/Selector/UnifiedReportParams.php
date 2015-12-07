@@ -44,7 +44,7 @@ class UnifiedReportParams extends Params
      * @param string $sortField
      * @param string $sortDirection
      */
-    function __construct(DateTime $startDate, DateTime $endDate = null, $group = false, $page = 1, $size = 10, $searchField, $searchKey, $sortField, $sortDirection)
+    function __construct(DateTime $startDate, DateTime $endDate = null, $group = false, $page = 1, $size = 10, $searchField = null, $searchKey = null, $sortField = null, $sortDirection = null)
     {
         parent::__construct($startDate, $endDate, false, $group);
 

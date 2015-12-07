@@ -2,15 +2,21 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 
+use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
+use Knp\Component\Pager\Paginator;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
-use Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AdTagDomainImpressionRepositoryInterface;
+use Tagcade\Repository\Report\UnifiedReport\PulsePoint\AdTagDomainImpressionRepositoryInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
-class AdTagDomainImpression implements SelectorInterface
+class AdTagDomainImpression implements SelectorInterface, PaginatorAwareInterface
 {
+    /**
+     * @var Paginator
+     */
+    protected $paginator;
     /**
      * @var AdTagDomainImpressionRepositoryInterface
      */
@@ -27,12 +33,31 @@ class AdTagDomainImpression implements SelectorInterface
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        return $this->adTagDomainImpRepository->getReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
+        $pagination = $this->paginator->paginate(
+            $this->adTagDomainImpRepository->getQueryForPaginator($params), /* query NOT result */
+            $params->getPage()/*page number*/,
+            $params->getSize()/*limit per page*/
+        );
+
+        return $pagination;
+//        return $this->adTagDomainImpRepository->getReportFor($reportType->getPublisher(), $params->getStartDate(), $params->getEndDate());
     }
 
 
     public function supportReport(ReportTypeInterface $reportType)
     {
         return $reportType instanceof AdTagDomainImpressionReportType;
+    }
+
+    /**
+     * Sets the KnpPaginator instance.
+     *
+     * @param Paginator $paginator
+     *
+     * @return mixed
+     */
+    public function setPaginator(Paginator $paginator)
+    {
+        $this->paginator = $paginator;
     }
 }

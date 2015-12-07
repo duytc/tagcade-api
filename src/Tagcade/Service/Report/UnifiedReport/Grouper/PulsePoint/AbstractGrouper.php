@@ -6,8 +6,8 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\UnifiedReport\PulsePoint\PulsePointUnifiedReportModelInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
+use Tagcade\Service\Report\UnifiedReport\Result\ReportResultInterface;
 
 
 /**
@@ -26,6 +26,8 @@ abstract class AbstractGrouper implements GrouperInterface
 
     protected $reportType;
     protected $reports;
+    protected $totalRecord;
+    protected $pagination;
     protected $reportName;
     protected $startDate;
     protected $endDate;
@@ -58,6 +60,8 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->startDate = $reportResult->getStartDate();
         $this->endDate = $reportResult->getEndDate();
         $this->reports = $reports;
+        $this->totalRecord = $reportResult->getTotalRecord();
+        $this->pagination = $reportResult->getPagination();
 
         $this->groupReports($reports);
     }
@@ -68,7 +72,7 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->reportType,
             $this->startDate,
             $this->endDate,
-            $this->reports,
+            $this->pagination,
             $this->reportName,
 
             $this->paidImps,

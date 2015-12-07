@@ -6,7 +6,7 @@ use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
-use Tagcade\Repository\Pager\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface;
+use Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;

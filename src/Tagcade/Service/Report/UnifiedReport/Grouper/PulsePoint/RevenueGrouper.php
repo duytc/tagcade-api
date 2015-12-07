@@ -28,7 +28,7 @@ class RevenueGrouper extends DefaultGrouper
             $this->reportType,
             $this->startDate,
             $this->endDate,
-            $this->reports,
+            $this->pagination,
             $this->reportName,
 
             $this->paidImps,

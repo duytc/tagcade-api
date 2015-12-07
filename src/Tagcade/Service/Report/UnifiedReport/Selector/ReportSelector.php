@@ -41,9 +41,9 @@ class ReportSelector implements UnifiedReportSelectorInterface
          */
         $selector = $this->getSelectorFor($reportType);
 
-        $reports = $selector->getReports($reportType, $params);
+        $pagination = $selector->getReports($reportType, $params);
 
-        $result = new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $reports);
+        $result = new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $pagination);
 
         if ($params->getGrouped()) {
             $result = $this->reportGrouper->groupReports($result);

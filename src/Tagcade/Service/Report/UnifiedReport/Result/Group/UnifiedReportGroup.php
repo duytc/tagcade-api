@@ -2,10 +2,13 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Result\Group;
 
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+
 class UnifiedReportGroup
 {
     protected $reportType;
     protected $reports;
+    protected $totalRecord;
     protected $name;
     protected $startDate;
     protected $endDate;
@@ -22,13 +25,14 @@ class UnifiedReportGroup
     protected $averageTotalImps;
     protected $averagePaidImps;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name, $paidImps, $totalImps, $fillRate,
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name, $paidImps, $totalImps, $fillRate,
                                 $averageFillRate, $averagePaidImps, $averageTotalImps)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->reports = $reports;
+        $this->reports = $pagination->getItems();
+        $this->totalRecord = $pagination->getTotalItemCount();
         $this->name = $name;
 
         // total report

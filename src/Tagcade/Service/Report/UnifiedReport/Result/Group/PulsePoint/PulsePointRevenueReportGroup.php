@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Result\Group\PulsePoint;
 
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
 
 class PulsePointRevenueReportGroup extends UnifiedReportGroup
@@ -18,13 +19,13 @@ class PulsePointRevenueReportGroup extends UnifiedReportGroup
     protected $averageRevenue;
     protected $averageBackupImpression;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, array $reports, $name,
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name,
                                 $paidImps, $totalImps, $fillRate,
                                 $averageFillRate, $averagePaidImps, $averageTotalImps,
                                 $revenue, $backupImpression, $avgCpm,
                                 $averageAvgCpm, $averageRevenue, $averageBackupImpression)
     {
-        parent::__construct($reportType, $startDate, $endDate, $reports, $name, $paidImps, $totalImps, $fillRate,
+        parent::__construct($reportType, $startDate, $endDate, $pagination, $name, $paidImps, $totalImps, $fillRate,
             $averageFillRate, $averagePaidImps, $averageTotalImps);
 
         // total report
