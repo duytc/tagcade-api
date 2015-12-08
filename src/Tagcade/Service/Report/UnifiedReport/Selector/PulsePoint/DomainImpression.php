@@ -17,14 +17,16 @@ class DomainImpression implements SelectorInterface, PaginatorAwareInterface
      * @var Paginator
      */
     protected $paginator;
+    protected $defaultPageRange;
     /**
      * @var DomainReportRepositoryInterface
      */
     private $domainReportRepository;
 
-    function __construct(DomainReportRepositoryInterface $domainReportRepository)
+    function __construct(DomainReportRepositoryInterface $domainReportRepository, $defaultPageRange)
     {
         $this->domainReportRepository = $domainReportRepository;
+        $this->defaultPageRange = $defaultPageRange;
     }
 
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
@@ -33,21 +35,13 @@ class DomainImpression implements SelectorInterface, PaginatorAwareInterface
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        if ($params->getSize() > 0) {
-            $pagination = $this->paginator->paginate(
-                $this->domainReportRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage(),
-                $params->getSize()
-            );
-        }
-        else {
-            $pagination = $this->paginator->paginate(
-                $this->domainReportRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage()
-            );
-        }
+        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
 
-        return $pagination;
+        return $this->paginator->paginate(
+            $this->domainReportRepository->getQueryForPaginator($params),
+            $params->getPage(),
+            $pageSize
+        );
     }
 
 

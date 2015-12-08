@@ -15,21 +15,13 @@ class AdTagGroupDaily extends AccountManagement
             throw new InvalidArgumentException('Expect instance of AdTagGroupDailyReportType');
         }
 
-        if ($params->getSize() > 0) {
-            $pagination = $this->paginator->paginate(
-                $this->accMngRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage(),
-                $params->getSize()
-            );
-        }
-        else {
-            $pagination = $this->paginator->paginate(
-                $this->accMngRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage()
-            );
-        }
+        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
 
-        return $pagination;
+        return $this->paginator->paginate(
+            $this->accMngRepository->getQueryForPaginator($params),
+            $params->getPage(),
+            $pageSize
+        );
     }
 
 

@@ -215,7 +215,7 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                     $qb->addOrderBy('r.fillRate', $sortDirection);
                     break;
                 case self::COUNTRY_DAILY_PAID_IMPS_FIELD:
-                    $qb->addOrderBy('r.paidImps', $sortDirection);
+                    $qb->addOrderBy('r.paidImpressions', $sortDirection);
                     break;
                 case self::COUNTRY_DAILY_ALL_IMPS_FIELD:
                     $qb->addOrderBy('r.allImpressions', $sortDirection);
@@ -229,8 +229,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                 case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
                     $qb->addOrderBy('r.adTagName', $sortDirection);
                     break;
-                case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
-                    $qb->addOrderBy('r.adTagGroupName', $sortDirection);
+                case self::COUNTRY_DAILY_TAG_ID_FIELD:
+                    $qb->addOrderBy('r.tagId', $sortDirection);
+                    break;
+                case self::COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD:
+                    $qb->addOrderBy('r.adTagGroupId', $sortDirection);
                     break;
             }
         }

@@ -73,6 +73,9 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
                 case self::DOMAIN_REPORT_DATE_FIELD:
                     $qb->addOrderBy('r.date', $sortDirection);
                     break;
+                case self::DOMAIN_REPORT_DOMAIN_FIELD:
+                    $qb->addOrderBy('r.domain', $sortDirection);
+                    break;
             }
         }
         else {

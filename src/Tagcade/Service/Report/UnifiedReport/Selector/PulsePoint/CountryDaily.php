@@ -17,14 +17,16 @@ class CountryDaily implements SelectorInterface, PaginatorAwareInterface
      * @var Paginator
      */
     protected $paginator;
+    protected $defaultPageRange;
     /**
      * @var CountryDailyRepositoryInterface
      */
     protected $countryDailyRepository;
 
-    function __construct(CountryDailyRepositoryInterface $countryDailyRepository)
+    function __construct(CountryDailyRepositoryInterface $countryDailyRepository, $defaultPageRange)
     {
         $this->countryDailyRepository = $countryDailyRepository;
+        $this->defaultPageRange = $defaultPageRange;
     }
 
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
@@ -33,21 +35,13 @@ class CountryDaily implements SelectorInterface, PaginatorAwareInterface
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        if ($params->getSize() > 0) {
-            $pagination = $this->paginator->paginate(
-                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage(),
-                $params->getSize()
-            );
-        }
-        else {
-            $pagination = $this->paginator->paginate(
-                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage()
-            );
-        }
+        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
 
-        return $pagination;
+        return $this->paginator->paginate(
+            $this->countryDailyRepository->getQueryForPaginator($params),
+            $params->getPage(),
+            $pageSize
+        );
     }
 
 

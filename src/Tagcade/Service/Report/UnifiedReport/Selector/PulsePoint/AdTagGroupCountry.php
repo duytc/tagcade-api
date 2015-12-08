@@ -15,21 +15,13 @@ class AdTagGroupCountry extends CountryDaily
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        if ($params->getSize() > 0) {
-            $pagination = $this->paginator->paginate(
-                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage(),
-                $params->getSize()
-            );
-        }
-        else {
-            $pagination = $this->paginator->paginate(
-                $this->countryDailyRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage()
-            );
-        }
+        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
 
-        return $pagination;
+        return $this->paginator->paginate(
+            $this->countryDailyRepository->getQueryForPaginator($params),
+            $params->getPage(),
+            $pageSize
+        );
     }
 
 

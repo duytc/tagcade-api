@@ -17,14 +17,16 @@ class Daily implements SelectorInterface, PaginatorAwareInterface
      * @var Paginator
      */
     protected $paginator;
+    protected $defaultPageRange;
     /**
      * @var DailyReportRepositoryInterface
      */
     private $dailyRepository;
 
-    function __construct(DailyReportRepositoryInterface $dailyRepository)
+    function __construct(DailyReportRepositoryInterface $dailyRepository, $defaultPageRange)
     {
         $this->dailyRepository = $dailyRepository;
+        $this->defaultPageRange = $defaultPageRange;
     }
 
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
@@ -33,21 +35,13 @@ class Daily implements SelectorInterface, PaginatorAwareInterface
             throw new InvalidArgumentException('Expect instance of DailyReportType');
         }
 
-        if ($params->getSize() > 0) {
-            $pagination = $this->paginator->paginate(
-                $this->dailyRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage(),
-                $params->getSize()
-            );
-        }
-        else {
-            $pagination = $this->paginator->paginate(
-                $this->dailyRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage()
-            );
-        }
+        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
 
-        return $pagination;
+        return $this->paginator->paginate(
+            $this->dailyRepository->getQueryForPaginator($params),
+            $params->getPage(),
+            $pageSize
+        );
     }
 
 

@@ -17,15 +17,17 @@ class AccountManagement implements SelectorInterface, PaginatorAwareInterface
      * @var Paginator
      */
     protected $paginator;
+    protected $defaultPageRange;
 
     /**
      * @var AccountManagementRepositoryInterface
      */
     protected $accMngRepository;
 
-    function __construct(AccountManagementRepositoryInterface $accMngRepository)
+    function __construct(AccountManagementRepositoryInterface $accMngRepository, $defaultPageRange)
     {
         $this->accMngRepository = $accMngRepository;
+        $this->defaultPageRange = $defaultPageRange;
     }
 
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
@@ -34,21 +36,13 @@ class AccountManagement implements SelectorInterface, PaginatorAwareInterface
             throw new InvalidArgumentException('Expect instance of AccountManagementReportType');
         }
 
-        if ($params->getSize() > 0) {
-            $pagination = $this->paginator->paginate(
-                $this->accMngRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage(),
-                $params->getSize()
-            );
-        }
-        else {
-            $pagination = $this->paginator->paginate(
-                $this->accMngRepository->getQueryForPaginator($params), /* query NOT result */
-                $params->getPage()
-            );
-        }
+        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
 
-        return $pagination;
+        return $this->paginator->paginate(
+                $this->accMngRepository->getQueryForPaginator($params),
+                $params->getPage(),
+                $pageSize
+        );
     }
 
 
