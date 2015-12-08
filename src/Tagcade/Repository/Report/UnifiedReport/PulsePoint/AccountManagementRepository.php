@@ -108,29 +108,57 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
+        $nestedQuery = '';
+
         if (is_array($searchField) && $searchKey !== null) {
             foreach($searchField as $field) {
                 switch ($field) {
                     case self::ACC_MNG_AD_TAG_GROUP :
-                        $qb->andWhere('r.adTagGroup LIKE :ad_tag_group')->setParameter('ad_tag_group', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.adTagGroup LIKE :ad_tag_group' : ' OR r.adTagGroup LIKE :ad_tag_group';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::ACC_MNG_AD_TAG_FIELD:
-                        $qb->andWhere('r.adTag LIKE :ad_tag')->setParameter('ad_tag', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.adTag LIKE :ad_tag' : ' OR r.adTag LIKE :ad_tag';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::ACC_MNG_AD_TAG_ID_FIELD:
-                        $qb->andWhere('r.adTagId = :ad_tag_id')->setParameter('ad_tag_id', $searchKey, Type::STRING);
+                        $query = empty($nestedQuery) ? ' r.adTagId = :ad_tag_id' : ' OR r.adTagId = :ad_tag_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::ACC_MNG_PUBLISHER_FIELD:
-                        $qb->andWhere('r.publisherId = :publisher_id')
-                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.publisherId = :publisher_id' : ' OR r.publisherId = :publisher_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::ACC_MNG_STATUS_FIELD:
-                        $qb->andWhere('r.status = :status')
-                            ->setParameter('status', $searchKey, Type::STRING);
+                        $query = empty($nestedQuery) ? ' (r.status = :status' : ' OR r.status = :status';
+                        $nestedQuery = $nestedQuery . $query;
+                        break;
+                }
+            }
+
+            $qb->andWhere($nestedQuery);
+
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::ACC_MNG_AD_TAG_GROUP :
+                        $qb->setParameter('ad_tag_group', '%'.$searchKey.'%');
+                        break;
+                    case self::ACC_MNG_AD_TAG_FIELD:
+                        $qb->setParameter('ad_tag', '%'.$searchKey.'%');
+                        break;
+                    case self::ACC_MNG_AD_TAG_ID_FIELD:
+                        $qb->setParameter('ad_tag_id', $searchKey, Type::STRING);
+                        break;
+                    case self::ACC_MNG_PUBLISHER_FIELD:
+                        $qb->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::ACC_MNG_STATUS_FIELD:
+                        $qb->setParameter('status', $searchKey, Type::STRING);
                         break;
                 }
             }
         }
+
 
         if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {
             switch ($sortField) {

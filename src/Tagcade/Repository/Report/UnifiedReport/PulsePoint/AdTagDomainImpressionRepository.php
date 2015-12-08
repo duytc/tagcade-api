@@ -91,31 +91,56 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
+        $nestedQuery = '';
+
         if (is_array($searchField) && $searchKey !== null) {
             foreach($searchField as $field) {
                 switch ($field) {
                     case self::AD_TAG_DOMAIN_IMP_AD_TAG_FIELD :
-                        $qb->andWhere('r.adTag LIKE :ad_tag')
-                        ->setParameter('ad_tag', '%'.$searchKey.'%', Type::STRING);
+                        $query = empty($nestedQuery) ? ' r.adTag LIKE :ad_tag' : ' OR r.adTag LIKE :ad_tag';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::AD_TAG_DOMAIN_IMP_DOMAIN_FIELD:
-                        $qb->andWhere('r.domain LIKE :domain')
-                        ->setParameter('domain', '%'.$searchKey.'%', Type::STRING);
+                        $query = empty($nestedQuery) ? ' r.domain LIKE :domain' : ' OR r.domain LIKE :domain';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::AD_TAG_DOMAIN_IMP_AD_TAG_ID_FIELD:
-                        $qb->andWhere('r.adTagId = :ad_tag_id')
-                        ->setParameter('ad_tag_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.adTagId = :ad_tag_id' : ' OR r.adTagId = :ad_tag_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::AD_TAG_DOMAIN_IMP_PUBLISHER_FIELD:
-                        $qb->andWhere('r.publisherId = :publisher_id')
-                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.publisherId = :publisher_id' : ' OR r.publisherId = :publisher_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::AD_TAG_DOMAIN_IMP_DOMAIN_STATUS_FIELD:
-                        $qb->andWhere('r.domainStatus = :status')
-                            ->setParameter('status', $searchKey, Type::STRING);
+                        $query = empty($nestedQuery) ? ' r.domainStatus = :status' : ' OR r.domainStatus = :status';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                 }
             }
+
+            $qb->andWhere($nestedQuery);
+
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::AD_TAG_DOMAIN_IMP_AD_TAG_FIELD :
+                        $qb->setParameter('ad_tag', '%'.$searchKey.'%', Type::STRING);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_DOMAIN_FIELD:
+                        $qb->setParameter('domain', '%'.$searchKey.'%', Type::STRING);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_AD_TAG_ID_FIELD:
+                        $qb->setParameter('ad_tag_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_PUBLISHER_FIELD:
+                        $qb->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::AD_TAG_DOMAIN_IMP_DOMAIN_STATUS_FIELD:
+                        $qb->setParameter('status', $searchKey, Type::STRING);
+                        break;
+                }
+            }
+
         }
 
         if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {

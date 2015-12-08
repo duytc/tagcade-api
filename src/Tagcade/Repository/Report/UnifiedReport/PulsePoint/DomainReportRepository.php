@@ -42,21 +42,42 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
+        $nestedQuery = '';
+
         if (is_array($searchField) && $searchKey !== null) {
             foreach($searchField as $field) {
                 switch ($field) {
                     case self::DOMAIN_REPORT_DOMAIN_FIELD:
-                        $qb->andWhere('r.domain LIKE :domain')->setParameter('domain', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.domain LIKE :domain' : ' OR r.domain LIKE :domain';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::DOMAIN_REPORT_DOMAIN_STATUS_FIELD:
-                        $qb->andWhere('r.domainStatus = :domain_status')->setParameter('domain_status', $searchKey);
+                        $query = empty($nestedQuery) ? ' r.domainStatus = :domain_status' : ' OR r.domainStatus = :domain_status';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::DOMAIN_REPORT_PUBLISHER_FIELD:
-                        $qb->andWhere('r.publisherId = :publisher_id')
-                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.publisherId = :publisher_id' : ' OR r.publisherId = :publisher_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                 }
             }
+
+            $qb->andWhere($nestedQuery);
+
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::DOMAIN_REPORT_DOMAIN_FIELD:
+                        $qb->setParameter('domain', '%'.$searchKey.'%');
+                        break;
+                    case self::DOMAIN_REPORT_DOMAIN_STATUS_FIELD:
+                        $qb->setParameter('domain_status', $searchKey);
+                        break;
+                    case self::DOMAIN_REPORT_PUBLISHER_FIELD:
+                        $qb->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                }
+            }
+
         }
 
         if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {

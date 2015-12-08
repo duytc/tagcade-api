@@ -180,33 +180,70 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->setParameter('end_date', $params->getEndDate(), Type::DATE)
         ;
 
+        $nestedQuery = '';
+
         if (is_array($searchField) && $searchKey !== null) {
             foreach($searchField as $field) {
                 switch ($field) {
                     case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
-                        $qb->andWhere('r.adTagName LIKE :ad_tag_name')->setParameter('ad_tag_name', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.adTagName LIKE :ad_tag_name' : ' OR r.adTagName LIKE :ad_tag_name';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
-                        $qb->andWhere('r.adTagGroupName LIKE :ad_tag_group_name')->setParameter('ad_tag_group_name', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.adTagGroupName LIKE :ad_tag_group_name' : ' OR r.adTagGroupName LIKE :ad_tag_group_name';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::COUNTRY_DAILY_TAG_ID_FIELD:
-                        $qb->andWhere('r.tagId = :tag_id')->setParameter('tag_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.tagId = :tag_id' : ' OR r.tagId = :tag_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD:
-                        $qb->andWhere('r.adTagGroupId = :ad_tag_group_id')->setParameter('ad_tag_group_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.adTagGroupId = :ad_tag_group_id' : ' OR r.adTagGroupId = :ad_tag_group_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::COUNTRY_DAILY_PUBLISHER_FIELD:
-                        $qb->andWhere('r.publisherId = :publisher_id')
-                            ->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        $query = empty($nestedQuery) ? ' r.publisherId = :publisher_id' : ' OR r.publisherId = :publisher_id';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::COUNTRY_DAILY_COUNTRY_FIELD:
-                        $qb->andWhere('r.country LIKE :country')->setParameter('country', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.country LIKE :country' : ' OR r.country LIKE :country';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                     case self::COUNTRY_DAILY_COUNTRY_NAME_FIELD:
-                        $qb->andWhere('r.countryName LIKE :country_name')->setParameter('country_name', '%'.$searchKey.'%');
+                        $query = empty($nestedQuery) ? ' r.countryName LIKE :country_name' : ' OR r.countryName LIKE :country_name';
+                        $nestedQuery = $nestedQuery . $query;
                         break;
                 }
             }
+
+            $qb->andWhere($nestedQuery);
+
+            foreach($searchField as $field) {
+                switch ($field) {
+                    case self::COUNTRY_DAILY_AD_TAG_NAME_FIELD:
+                        $qb->setParameter('ad_tag_name', '%'.$searchKey.'%');
+                        break;
+                    case self::COUNTRY_DAILY_AD_TAG_GROUP_NAME_FIELD:
+                        $qb->setParameter('ad_tag_group_name', '%'.$searchKey.'%');
+                        break;
+                    case self::COUNTRY_DAILY_TAG_ID_FIELD:
+                        $qb->setParameter('tag_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::COUNTRY_DAILY_AD_TAG_GROUP_ID_FIELD:
+                        $qb->setParameter('ad_tag_group_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::COUNTRY_DAILY_PUBLISHER_FIELD:
+                        $qb->setParameter('publisher_id', intval($searchKey), Type::INTEGER);
+                        break;
+                    case self::COUNTRY_DAILY_COUNTRY_FIELD:
+                        $qb->setParameter('country', '%'.$searchKey.'%');
+                        break;
+                    case self::COUNTRY_DAILY_COUNTRY_NAME_FIELD:
+                        $qb->setParameter('country_name', '%'.$searchKey.'%');
+                        break;
+                }
+            }
+
         }
 
         if ($sortField !== null && $sortDirection !== null && in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC])) {
