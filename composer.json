@@ -10,7 +10,7 @@
         { "type": "vcs", "url": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle" }
     ],
     "require": {
-        "php": "~5.5.0",
+        "php": ">=5.5.0",
 
         "symfony/symfony": "2.5.*",
         "doctrine/orm": "~2.2,>=2.2.3",
