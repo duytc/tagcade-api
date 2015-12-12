@@ -27,11 +27,12 @@ composer install
 
 Enter your database connection details when prompted.
 
-Then create your database tables and an existing user:
+Then create your database tables and an existing user(as admin user):
 
 ```
-php app/console doctrine:schema:create 
-php app/console fos:user:create
+php app/console doctrine:schema:create
+php app/console fos:user:create --user-system=tagcade_user_system_admin tcadmin admin@tagcade.dev 123456
+php app/console fos:user:promote --user-system=tagcade_user_system_admin tcadmin ROLE_ADMIN
 ```
 
 Remember your user details and also note there are two test users built-in for testing. user:userpass and admin:adminpass (user and pass separated by a colon).
