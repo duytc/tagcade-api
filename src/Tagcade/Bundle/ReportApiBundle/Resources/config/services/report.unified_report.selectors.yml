@@ -132,3 +132,9 @@ services:
                 # ad_tag_group_country selectors (custom)
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_country
             - @tagcade.service.report.unified_report.report_grouper
+
+    ### knp paginator subscribers
+    tagcade.service.report.unified_report.paginator.subscriber:
+        class: Tagcade\Bundle\ReportApiBundle\Subscriber\UnifiedReportPaginationSubscriber
+        tags:
+            - { name: knp_paginator.subscriber }

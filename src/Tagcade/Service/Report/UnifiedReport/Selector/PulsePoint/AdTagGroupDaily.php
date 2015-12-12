@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\UnifiedReport\Pagination\CompoundResult;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagGroupDaily as AdTagGroupDailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
@@ -15,12 +16,17 @@ class AdTagGroupDaily extends AccountManagement
             throw new InvalidArgumentException('Expect instance of AdTagGroupDailyReportType');
         }
 
-        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
+        $averageValues = $this->accMngRepository->getAverageValuesForAdTagGroupDay($reportType->getPublisher(), $params);
+        $items = $this->accMngRepository->getItemsForAdTagGroupDay($reportType->getPublisher(), $params, $this->defaultPageRange);
+        $count = $this->accMngRepository->getCountForAdTagGroupDay($reportType->getPublisher(), $params);
 
-        return $this->paginator->paginate(
-            $this->accMngRepository->getQueryForPaginator($params),
-            $params->getPage(),
-            $pageSize
+        $pagination =  $this->paginator->paginate(
+            new CompoundResult($items, $count)
+        );
+
+        return array(
+            'pagination' => $pagination,
+            'avg' => $averageValues
         );
     }
 

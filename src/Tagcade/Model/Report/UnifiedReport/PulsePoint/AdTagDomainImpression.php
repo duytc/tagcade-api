@@ -4,15 +4,46 @@ namespace Tagcade\Model\Report\UnifiedReport\PulsePoint;
 
 class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
 {
+    /**
+     * @var int
+     */
     protected $id;
+    /**
+     * @var int
+     */
     protected $publisherId;
+    /**
+     * @var string
+     */
     protected $domain;
+    /**
+     * @var int
+     */
     protected $totalImps;
+    /**
+     * @var int
+     */
     protected $paidImps;
+    /**
+     * @var float
+     */
     protected $fillRate;
+    /**
+     * @var string
+     */
     protected $domainStatus;
+    /**
+     * @var string
+     */
     protected $adTag;
+    /**
+     * @var int
+     */
     protected $adTagId;
+
+    /**
+     * @var \DateTime
+     */
     protected $date;
 
     function __construct()
@@ -21,7 +52,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @inheritdoc
+     * @return int
      */
     public function getId()
     {
@@ -29,7 +60,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      * @return $this
      */
     public function setId($id)
@@ -40,7 +71,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDomain()
     {
@@ -48,7 +79,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $domain
+     * @param string $domain
      * @return $this
      */
     public function setDomain($domain)
@@ -59,7 +90,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getTotalImps()
     {
@@ -67,7 +98,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $totalImps
+     * @param int $totalImps
      * @return $this
      */
     public function setTotalImps($totalImps)
@@ -78,7 +109,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getPaidImps()
     {
@@ -86,7 +117,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $paidImps
+     * @param int $paidImps
      * @return $this
      */
     public function setPaidImps($paidImps)
@@ -97,7 +128,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return float
      */
     public function getFillRate()
     {
@@ -105,7 +136,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $fillRate
+     * @param float $fillRate
      * @return $this
      */
     public function setFillRate($fillRate)
@@ -116,7 +147,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDomainStatus()
     {
@@ -124,7 +155,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $domainStatus
+     * @param string $domainStatus
      * @return $this
      */
     public function setDomainStatus($domainStatus)
@@ -135,7 +166,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getAdTag()
     {
@@ -143,7 +174,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $adTag
+     * @param string $adTag
      * @return $this
      */
     public function setAdTag($adTag)
@@ -154,7 +185,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getDate()
     {
@@ -162,7 +193,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $date
+     * @param \DateTime $date
      * @return $this
      */
     public function setDate($date)
@@ -173,7 +204,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getPublisherId()
     {
@@ -181,7 +212,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $publisherId
+     * @param int $publisherId
      * @return $this
      */
     public function setPublisherId($publisherId)
@@ -192,7 +223,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getAdTagId()
     {
@@ -200,7 +231,7 @@ class AdTagDomainImpression implements PulsePointUnifiedReportModelInterface
     }
 
     /**
-     * @param mixed $adTagId
+     * @param int $adTagId
      * @return $this
      */
     public function setAdTagId($adTagId)

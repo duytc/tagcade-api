@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\UnifiedReport\Result\Group;
 
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Tagcade\Domain\DTO\Report\UnifiedReport\AverageValue;
 
 class UnifiedReportGroup
 {
@@ -14,6 +15,9 @@ class UnifiedReportGroup
     protected $endDate;
 
     // as total value
+    /**
+     * @var float
+     */
     protected $paidImps;
     protected $totalImps;
 
@@ -25,8 +29,7 @@ class UnifiedReportGroup
     protected $averageTotalImps;
     protected $averagePaidImps;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name, $paidImps, $totalImps, $fillRate,
-                                $averageFillRate, $averagePaidImps, $averageTotalImps)
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name, AverageValue $avg)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
@@ -36,16 +39,16 @@ class UnifiedReportGroup
         $this->name = $name;
 
         // total report
-        $this->paidImps = $paidImps;
-        $this->totalImps = $totalImps;
+        $this->paidImps = round($avg->getPaidImps(), 0);
+        $this->totalImps = round($avg->getTotalImps(), 0);
 
         // weighted report
-        $this->fillRate = round($fillRate, 4);
+        $this->fillRate = round($avg->getFillRate(), 4);
 
         // average report
-        $this->averageFillRate = round($averageFillRate, 4);
-        $this->averagePaidImps = round($averagePaidImps, 4);
-        $this->averageTotalImps = round($averageTotalImps, 4);
+        $this->averageFillRate = round($avg->getAverageFillRate(), 4);
+        $this->averagePaidImps = round($avg->getAveragePaidImps(), 4);
+        $this->averageTotalImps = round($avg->getAverageTotalImps(), 4);
     }
 
     /**

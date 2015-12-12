@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Knp\Component\Pager\Paginator;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\UnifiedReport\Pagination\CompoundResult;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Report\UnifiedReport\PulsePoint\DailyReportRepositoryInterface;
@@ -35,12 +36,18 @@ class Daily implements SelectorInterface, PaginatorAwareInterface
             throw new InvalidArgumentException('Expect instance of DailyReportType');
         }
 
-        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
+        $averageValues = $this->dailyRepository->getAverageValues($reportType->getPublisher(), $params);
 
-        return $this->paginator->paginate(
-            $this->dailyRepository->getQueryForPaginator($params),
-            $params->getPage(),
-            $pageSize
+        $items = $this->dailyRepository->getItems($reportType->getPublisher(), $params, $this->defaultPageRange);
+        $count = $this->dailyRepository->getCount($reportType->getPublisher(), $params);
+
+        $pagination =  $this->paginator->paginate(
+            new CompoundResult($items, $count)
+        );
+
+        return array(
+            'pagination' => $pagination,
+            'avg' => $averageValues
         );
     }
 

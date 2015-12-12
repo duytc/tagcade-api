@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Knp\Component\Pager\Paginator;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\UnifiedReport\Pagination\CompoundResult;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Report\UnifiedReport\PulsePoint\AdTagDomainImpressionRepositoryInterface;
@@ -38,13 +39,20 @@ class AdTagDomainImpression implements SelectorInterface, PaginatorAwareInterfac
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
+        $averageValues = $this->adTagDomainImpRepository->getAverageValues($reportType->getPublisher(), $params);
 
-        return $this->paginator->paginate(
-            $this->adTagDomainImpRepository->getQueryForPaginator($params),
-            $params->getPage(),
-            $pageSize
+        $items = $this->adTagDomainImpRepository->getItems($reportType->getPublisher(), $params, $this->defaultPageRange);
+        $count = $this->adTagDomainImpRepository->getCount($reportType->getPublisher(), $params);
+
+        $pagination =  $this->paginator->paginate(
+            new CompoundResult($items, $count)
         );
+
+        return array(
+            'pagination' => $pagination,
+            'avg' => $averageValues
+        );
+
     }
 
 

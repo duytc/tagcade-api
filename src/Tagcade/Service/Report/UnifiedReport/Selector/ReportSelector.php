@@ -3,11 +3,17 @@
 namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
 
+use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Tagcade\Domain\DTO\Report\UnifiedReport\AverageValue as AverageValueDTO;
 use Tagcade\Exception\NotSupportedException;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AbstractAccountManagement;
+use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\UnifiedReport\Grouper\ReportGrouperInterface;
+use Tagcade\Service\Report\UnifiedReport\Result\Group\PulsePoint\PulsePointRevenueReportGroup;
 use Tagcade\Service\Report\UnifiedReport\Result\UnifiedReportCollection;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReportSelectorInterface;
+
 
 class ReportSelector implements UnifiedReportSelectorInterface
 {
@@ -41,15 +47,27 @@ class ReportSelector implements UnifiedReportSelectorInterface
          */
         $selector = $this->getSelectorFor($reportType);
 
-        $pagination = $selector->getReports($reportType, $params);
+        $reports = $selector->getReports($reportType, $params);
+        /**
+         * @var SlidingPagination $pagination
+         */
+        $pagination = $reports['pagination'];
+        /**
+         * @var AverageValueDTO $avg
+         */
+        $avg = $reports['avg'];
 
-        $result = new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $pagination);
-
-        if ($params->getGrouped()) {
-            $result = $this->reportGrouper->groupReports($result);
+        if (!$pagination instanceof SlidingPagination
+            || !$avg instanceof AverageValueDTO
+        ) {
+            return false;
         }
 
-        return $result;
+        if ($reportType instanceof AbstractAccountManagement || $reportType instanceof Daily) {
+            return new PulsePointRevenueReportGroup($reportType, $params->getStartDate(), $params->getEndDate(), $pagination, null, $avg);
+        }
+
+        return new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $pagination, null, $avg);
     }
 
     protected function addSelector(SelectorInterface $selector)

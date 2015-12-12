@@ -13,7 +13,7 @@ interface SelectorInterface {
     /**
      * @param ReportTypeInterface $reportType
      * @param UnifiedReportParams $params
-     * @return PaginationInterface
+     * @return array
      */
     public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params);
 

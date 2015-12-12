@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\UnifiedReport\Result\Group\PulsePoint;
 
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
+use Tagcade\Domain\DTO\Report\UnifiedReport\AverageValue;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
 
 class PulsePointRevenueReportGroup extends UnifiedReportGroup
@@ -19,26 +20,21 @@ class PulsePointRevenueReportGroup extends UnifiedReportGroup
     protected $averageRevenue;
     protected $averageBackupImpression;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name,
-                                $paidImps, $totalImps, $fillRate,
-                                $averageFillRate, $averagePaidImps, $averageTotalImps,
-                                $revenue, $backupImpression, $avgCpm,
-                                $averageAvgCpm, $averageRevenue, $averageBackupImpression)
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name, AverageValue $avg)
     {
-        parent::__construct($reportType, $startDate, $endDate, $pagination, $name, $paidImps, $totalImps, $fillRate,
-            $averageFillRate, $averagePaidImps, $averageTotalImps);
+        parent::__construct($reportType, $startDate, $endDate, $pagination, $name, $avg);
 
         // total report
-        $this->revenue = $revenue;
-        $this->backupImpression = $backupImpression;
+        $this->revenue = floatval($avg->getRevenue());
+        $this->backupImpression = intval($avg->getBackupImpression());
 
         // average report
-        $this->averageAvgCpm = round($averageAvgCpm, 4);
-        $this->averageRevenue = round($averageRevenue, 4);
-        $this->averageBackupImpression = round($averageBackupImpression, 4);
+        $this->averageAvgCpm = round($avg->getAverageAvgCpm(), 4);
+        $this->averageRevenue = round($avg->getAverageRevenue(), 4);
+        $this->averageBackupImpression = round($avg->getAverageBackupImpression(), 4);
 
         // weighted report
-        $this->avgCpm = round($avgCpm, 4);
+        $this->avgCpm = round($avg->getAvgCpm(), 4);
     }
 
     /**

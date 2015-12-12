@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Knp\Component\Pager\Paginator;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\UnifiedReport\Pagination\CompoundResult;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Report\UnifiedReport\PulsePoint\CountryDailyRepositoryInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\SelectorInterface;
@@ -35,12 +36,18 @@ class CountryDaily implements SelectorInterface, PaginatorAwareInterface
             throw new InvalidArgumentException('Expect instance of DomainImpressionReportType');
         }
 
-        $pageSize = $params->getSize() > 0 ? : $this->defaultPageRange;
+        $averageValues = $this->countryDailyRepository->getAverageValues($reportType->getPublisher(), $params);
 
-        return $this->paginator->paginate(
-            $this->countryDailyRepository->getQueryForPaginator($params),
-            $params->getPage(),
-            $pageSize
+        $items = $this->countryDailyRepository->getItems($reportType->getPublisher(), $params, $this->defaultPageRange);
+        $count = $this->countryDailyRepository->getCount($reportType->getPublisher(), $params);
+
+        $pagination =  $this->paginator->paginate(
+            new CompoundResult($items, $count)
+        );
+
+        return array(
+            'pagination' => $pagination,
+            'avg' => $averageValues
         );
     }
 

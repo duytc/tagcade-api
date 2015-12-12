@@ -24,7 +24,7 @@ Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement:
             length: 100
             nullable: true
         adTagId:
-            type: string
+            type: integer
         status:
             type: string
             nullable: true
@@ -32,7 +32,7 @@ Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement:
             type: string
             nullable: true
         askPrice:
-            type: string
+            type: float
             nullable: true
         revenue:
             type: float

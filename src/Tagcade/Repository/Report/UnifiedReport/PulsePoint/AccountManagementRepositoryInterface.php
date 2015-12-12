@@ -10,16 +10,27 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 interface AccountManagementRepositoryInterface extends UnifiedReportRepositoryInterface
 {
     /**
+     * get Items For AdTagGroup-Day report
      * @param PublisherInterface $publisher
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
      * @return mixed
      */
-    public function getAdTagGroupDailyReportFor(PublisherInterface $publisher, \DateTime $startDate, \DateTime $endDate);
+    public function getItemsForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10);
 
     /**
+     * get Average Values For AdTagGroup-Day report
+     * @param PublisherInterface $publisher
      * @param UnifiedReportParams $params
      * @return mixed
      */
-    public function getQueryForPaginator(UnifiedReportParams $params);
+    public function getAverageValuesForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params);
+
+    /**
+     * get Count For AdTagGroup-Day
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
+     */
+    public function getCountForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params);
 }

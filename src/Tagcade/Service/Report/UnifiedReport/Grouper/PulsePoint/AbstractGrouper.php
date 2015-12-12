@@ -62,8 +62,12 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->reports = $reports;
         $this->totalRecord = $reportResult->getTotalRecord();
         $this->pagination = $reportResult->getPagination();
-
-        $this->groupReports($reports);
+        $this->paidImps = $reportResult->getPaidImps();
+        $this->totalImps = $reportResult->getTotalImps();
+        $this->fillRate = $reportResult->getFillRate();
+        $this->averageFillRate = $reportResult->getAverageFillRate();
+        $this->averagePaidImps = $reportResult->getAveragePaidImps();
+        $this->averageTotalImps = $reportResult->getAverageTotalImps();
     }
 
     public function getGroupedReport()
@@ -99,47 +103,5 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getFillRate()
     {
         return $this->fillRate;
-    }
-
-    /**
-     * @param PulsePointUnifiedReportModelInterface[] $reports
-     */
-    protected function groupReports(array $reports)
-    {
-        // do the total
-        $totalFillRage = 0;
-
-        foreach ($reports as $report) {
-            $this->doGroupReport($report);
-
-            $totalFillRage += $report->getFillRate();
-        }
-
-        // Calculate average
-        $reportCount = count($this->getReports());
-        $this->averageFillRate = $this->getRatio($totalFillRage, $reportCount);
-        $this->averagePaidImps = $this->getRatio($this->paidImps, $reportCount);
-        $this->averageTotalImps = $this->getRatio($this->totalImps, $reportCount);
-
-        // Calculate weighted value for fillRate
-        // TODO calculate fillRate using weighted value
-        $this->fillRate = $this->calculateWeightedValue($reports, 'fillRate', 'paidImps');
-    }
-
-    protected function doGroupReport(PulsePointUnifiedReportModelInterface $report)
-    {
-        // for calculating total
-        $this->addPaidImps($report->getPaidImps());
-        $this->addTotalImps($report->getTotalImps());
-    }
-
-    protected function addPaidImps($paidImps)
-    {
-        $this->paidImps += (int)$paidImps;
-    }
-
-    protected function addTotalImps($totalImps)
-    {
-        $this->totalImps += (int)$totalImps;
     }
 }

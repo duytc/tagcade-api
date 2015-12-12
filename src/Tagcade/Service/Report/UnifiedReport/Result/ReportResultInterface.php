@@ -40,8 +40,34 @@ interface ReportResultInterface extends IteratorAggregate
      */
     public function getTotalRecord();
 
+
     /**
-     * @return SlidingPagination
+     * @return mixed
      */
-    public function getPagination();
+    public function getPaidImps();
+
+    /**
+     * @return mixed
+     */
+    public function getTotalImps();
+
+    /**
+     * @return mixed
+     */
+    public function getFillRate();
+
+    /**
+     * @return mixed
+     */
+    public function getAverageFillRate();
+
+    /**
+     * @return mixed
+     */
+    public function getAverageTotalImps();
+
+    /**
+     * @return mixed
+     */
+    public function getAveragePaidImps();
 }

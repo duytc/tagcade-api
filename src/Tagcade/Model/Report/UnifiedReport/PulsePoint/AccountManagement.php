@@ -64,7 +64,7 @@ class AccountManagement implements PulsePointUnifiedReportRevenueInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getAdTagId()
     {
@@ -72,7 +72,7 @@ class AccountManagement implements PulsePointUnifiedReportRevenueInterface
     }
 
     /**
-     * @param mixed $adTagId
+     * @param int $adTagId
      * @return self
      */
     public function setAdTagId($adTagId)
@@ -141,7 +141,7 @@ class AccountManagement implements PulsePointUnifiedReportRevenueInterface
     }
 
     /**
-     * @return string
+     * @return float
      */
     public function getAskPrice()
     {
@@ -149,7 +149,7 @@ class AccountManagement implements PulsePointUnifiedReportRevenueInterface
     }
 
     /**
-     * @param string $askPrice
+     * @param float $askPrice
      * @return self
      */
     public function setAskPrice($askPrice)

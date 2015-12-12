@@ -5,8 +5,6 @@ namespace Tagcade\Repository\Report\UnifiedReport;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 abstract class AbstractReportRepository extends EntityRepository
 {
@@ -17,23 +15,32 @@ abstract class AbstractReportRepository extends EntityRepository
         return $qb
             ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('start_date', $startDate, Type::DATE)
-            ->setParameter('end_date', $endDate, Type::DATE)
-        ;
-    }
-
-    public function getReportFor(PublisherInterface $publisher, \DateTime $startDate, \DateTime $endDate)
-    {
-        return $this->getReportsInRange($startDate, $endDate)
-            ->andWhere('r.publisherId = :publisherId')
-            ->setParameter('publisherId', $publisher->getId())
-            ->getQuery()
-            ->getResult()
-        ;
+            ->setParameter('end_date', $endDate, Type::DATE);
     }
 
     /**
-     * @param UnifiedReportParams $params
-     * @return mixed
+     * Convert CamelCase to Underscore
+     * @param $input
+     * @return string
      */
-    protected abstract function getQueryForPaginator(UnifiedReportParams $params);
+    protected function underscoreTransform($input)
+    {
+        preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
+        $ret = $matches[0];
+        foreach ($ret as &$match) {
+            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+        }
+        return implode('_', $ret);
+    }
+
+    /**
+     * @param $field
+     * @param $direction
+     * @param $underscoreTransform
+     * @return string
+     */
+    protected function appendOrderBy($field, $direction, $underscoreTransform = true)
+    {
+        return sprintf(" ORDER BY %s %s", $underscoreTransform ? $this->underscoreTransform($field) : $field, $direction);
+    }
 }
