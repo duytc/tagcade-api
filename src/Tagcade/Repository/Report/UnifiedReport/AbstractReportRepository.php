@@ -8,6 +8,9 @@ use Doctrine\ORM\EntityRepository;
 
 abstract class AbstractReportRepository extends EntityRepository
 {
+    const REPORT_AVERAGE_VALUES = 'averageValues';
+    const REPORT_TOTAL_RECORDS = 'totalRecords';
+    const REPORT_PAGINATION_RECORDS = 'paginationRecords';
     protected function getReportsInRange(\DateTime $startDate, \DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');

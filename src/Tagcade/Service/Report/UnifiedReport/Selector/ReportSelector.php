@@ -3,28 +3,21 @@
 namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
 
-use Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination;
-use Tagcade\Domain\DTO\Report\UnifiedReport\AverageValue as AverageValueDTO;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AbstractAccountManagement;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\UnifiedReport\Grouper\ReportGrouperInterface;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\PulsePoint\PulsePointRevenueReportGroup;
 use Tagcade\Service\Report\UnifiedReport\Result\UnifiedReportCollection;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReportSelectorInterface;
+use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 
 
 class ReportSelector implements UnifiedReportSelectorInterface
 {
     /** @var SelectorInterface[] */
     protected $selectors = [];
-    /**
-     * @var ReportGrouperInterface
-     */
-    private $reportGrouper;
-
-    function __construct($selectors, ReportGrouperInterface $reportGrouper)
+    function __construct($selectors)
     {
         foreach ($selectors as $selector) {
             if (!$selector instanceof SelectorInterface) {
@@ -33,8 +26,6 @@ class ReportSelector implements UnifiedReportSelectorInterface
 
             $this->addSelector($selector);
         }
-
-        $this->reportGrouper = $reportGrouper;
     }
 
     /**
@@ -48,26 +39,23 @@ class ReportSelector implements UnifiedReportSelectorInterface
         $selector = $this->getSelectorFor($reportType);
 
         $reports = $selector->getReports($reportType, $params);
-        /**
-         * @var SlidingPagination $pagination
-         */
-        $pagination = $reports['pagination'];
-        /**
-         * @var AverageValueDTO $avg
-         */
-        $avg = $reports['avg'];
 
-        if (!$pagination instanceof SlidingPagination
-            || !$avg instanceof AverageValueDTO
+        if (!array_key_exists(AbstractReportRepository::REPORT_PAGINATION_RECORDS, $reports)
+            || !array_key_exists(AbstractReportRepository::REPORT_TOTAL_RECORDS, $reports)
+            || !array_key_exists(AbstractReportRepository::REPORT_AVERAGE_VALUES, $reports)
         ) {
             return false;
         }
 
         if ($reportType instanceof AbstractAccountManagement || $reportType instanceof Daily) {
-            return new PulsePointRevenueReportGroup($reportType, $params->getStartDate(), $params->getEndDate(), $pagination, null, $avg);
+            return new PulsePointRevenueReportGroup($reportType, $params->getStartDate(), $params->getEndDate(),
+                $reports[AbstractReportRepository::REPORT_PAGINATION_RECORDS], $reports[AbstractReportRepository::REPORT_TOTAL_RECORDS],
+                null, $reports[AbstractReportRepository::REPORT_AVERAGE_VALUES]);
         }
 
-        return new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $pagination, null, $avg);
+        return new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(),
+            $reports[AbstractReportRepository::REPORT_PAGINATION_RECORDS], $reports[AbstractReportRepository::REPORT_TOTAL_RECORDS],
+            null, $reports[AbstractReportRepository::REPORT_AVERAGE_VALUES]);
     }
 
     protected function addSelector(SelectorInterface $selector)

@@ -29,13 +29,13 @@ class UnifiedReportGroup
     protected $averageTotalImps;
     protected $averagePaidImps;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name, AverageValue $avg)
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, $reports, $totalRecord, $name, AverageValue $avg)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
-        $this->reports = $pagination->getItems();
-        $this->totalRecord = $pagination->getTotalItemCount();
+        $this->reports = $reports;
+        $this->totalRecord = $totalRecord;
         $this->name = $name;
 
         // total report

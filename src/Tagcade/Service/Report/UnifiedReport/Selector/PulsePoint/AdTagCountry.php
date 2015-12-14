@@ -6,6 +6,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\UnifiedReport\Pagination\CompoundResult;
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagCountry as AdTagCountryReportType;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 
 class AdTagCountry extends CountryDaily
@@ -16,19 +17,7 @@ class AdTagCountry extends CountryDaily
             throw new InvalidArgumentException('Expect instance of AdTagCountryReportType');
         }
 
-        $averageValues = $this->countryDailyRepository->getAverageValuesForAdTagCountry($reportType->getPublisher(), $params);
-
-        $items = $this->countryDailyRepository->getItemsForAdTagCountry($reportType->getPublisher(), $params, $this->defaultPageRange);
-        $count = $this->countryDailyRepository->getCountForAdTagCountry($reportType->getPublisher(), $params);
-
-        $pagination =  $this->paginator->paginate(
-            new CompoundResult($items, $count)
-        );
-
-        return array(
-            'pagination' => $pagination,
-            'avg' => $averageValues
-        );
+        return $this->countryDailyRepository->getReportsForAdTagCountry($reportType->getPublisher(), $params, $this->defaultPageRange);
     }
 
     public function supportReport(ReportTypeInterface $reportType)

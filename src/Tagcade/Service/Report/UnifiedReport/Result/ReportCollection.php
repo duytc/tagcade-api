@@ -65,18 +65,19 @@ class ReportCollection implements ReportResultInterface
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
-     * @param SlidingPagination $pagination
+     * @param array $reports
+     * @param int $totalRecord
      * @param string $name
      * @param AverageValue $avg
      */
-    public function __construct($reportType, DateTime $startDate, DateTime $endDate, SlidingPagination $pagination, $name = null, AverageValue $avg)
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, $reports, $totalRecord, $name = null, AverageValue $avg)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->name = $name;
-        $this->reports = $pagination->getItems();
-        $this->totalRecord = intval($pagination->getTotalItemCount());
+        $this->reports = $reports;
+        $this->totalRecord = intval($totalRecord);
         $this->paidImps = intval($avg->getPaidImps());
         $this->totalImps = intval($avg->getTotalImps());
         $this->fillRate = floatval($avg->getFillRate());

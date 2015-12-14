@@ -47,9 +47,12 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array|bool
      */
-    public function getItemsForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    protected function getPaginationRecordsForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -231,9 +234,11 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return bool|AverageValueDTO
      */
-    public function getAverageValuesForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getAverageValuesForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('id', 'id');
@@ -302,9 +307,11 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return int
      */
-    public function getCountForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getTotalRecordsForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -371,9 +378,11 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
 
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
      */
-    public function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $qb = parent::getReportsInRange($params->getStartDate(), $params->getEndDate());
 
@@ -419,9 +428,11 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
      */
-    public function getCount(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getTotalRecords(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -485,9 +496,12 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
      */
-    public function getItems(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    protected function getPaginationRecords(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -594,5 +608,35 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
         $query->setParameter('publisher_id', $publisher->getId());
 
         return $query->getResult();
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
+     */
+    public function getReportsForAdTagGroupDay(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    {
+        return array(
+            self::REPORT_AVERAGE_VALUES => $this->getAverageValuesForAdTagGroupDay($publisher, $params),
+            self::REPORT_PAGINATION_RECORDS => $this->getPaginationRecordsForAdTagGroupDay($publisher, $params, $defaultPageSize),
+            self::REPORT_TOTAL_RECORDS => $this->getTotalRecordsForAdTagGroupDay($publisher, $params)
+        );
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
+     */
+    public function getReports(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    {
+        return array(
+            self::REPORT_AVERAGE_VALUES => $this->getAverageValues($publisher, $params),
+            self::REPORT_PAGINATION_RECORDS => $this->getPaginationRecords($publisher, $params, $defaultPageSize),
+            self::REPORT_TOTAL_RECORDS => $this->getTotalRecords($publisher, $params)
+        );
     }
 }

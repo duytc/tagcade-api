@@ -29,9 +29,11 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
     const SORT_DIRECTION_DESC = "desc";
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
      */
-    public function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $qb = parent::getReportsInRange($params->getStartDate(), $params->getEndDate());
 
@@ -65,9 +67,11 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
      */
-    public function getCount(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getTotalRecords(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -120,9 +124,12 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
      */
-    public function getItems(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    protected function getPaginationRecords(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -175,7 +182,7 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
 
         if ($sortField !== null && $sortDirection !== null &&
             in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC]) &&
-            in_array($sortDirection, [self::DOMAIN_REPORT_FILL_RATE_FIELD, self::DOMAIN_REPORT_PAID_IMPS_FIELD, self::DOMAIN_REPORT_TOTAL_IMPS_FIELD, self::DOMAIN_REPORT_DATE_FIELD, self::DOMAIN_REPORT_DOMAIN_FIELD, self::DOMAIN_REPORT_DOMAIN_STATUS_FIELD])
+            in_array($sortField, [self::DOMAIN_REPORT_FILL_RATE_FIELD, self::DOMAIN_REPORT_PAID_IMPS_FIELD, self::DOMAIN_REPORT_TOTAL_IMPS_FIELD, self::DOMAIN_REPORT_DATE_FIELD, self::DOMAIN_REPORT_DOMAIN_FIELD, self::DOMAIN_REPORT_DOMAIN_STATUS_FIELD])
         ) {
             $mainQuery .= $this->appendOrderBy($sortField, $sortDirection);
         }
@@ -210,5 +217,20 @@ class DomainReportRepository extends AbstractReportRepository implements DomainR
         $query->setParameter('publisher_id', $publisher->getId());
 
         return $query->getResult();
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
+     */
+    public function getReports(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    {
+        return array(
+            self::REPORT_AVERAGE_VALUES => $this->getAverageValues($publisher, $params),
+            self::REPORT_PAGINATION_RECORDS => $this->getPaginationRecords($publisher, $params, $defaultPageSize),
+            self::REPORT_TOTAL_RECORDS => $this->getTotalRecords($publisher, $params)
+        );
     }
 }

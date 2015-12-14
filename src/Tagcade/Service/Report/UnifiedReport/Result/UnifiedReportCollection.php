@@ -7,8 +7,8 @@ use Tagcade\Service\Report\UnifiedReport\Result\ReportCollection as BaseReportCo
 class UnifiedReportCollection extends BaseReportCollection implements UnifiedReportResultInterface
 {
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, $pagination, $name = null, $avg)
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, $reports, $totalRecord, $name = null, $avg)
     {
-       parent::__construct($reportType, $startDate, $endDate, $pagination, $name, $avg);
+       parent::__construct($reportType, $startDate, $endDate, $reports, $totalRecord, $name, $avg);
     }
 }

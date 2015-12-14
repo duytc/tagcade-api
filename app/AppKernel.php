@@ -27,7 +27,6 @@ class AppKernel extends Kernel
             new Nelmio\CorsBundle\NelmioCorsBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new Leezy\PheanstalkBundle\LeezyPheanstalkBundle(),
-            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
 
             new Tagcade\Bundle\UserBundle\TagcadeUserBundle(),
             new Tagcade\Bundle\ApiBundle\TagcadeApiBundle(),

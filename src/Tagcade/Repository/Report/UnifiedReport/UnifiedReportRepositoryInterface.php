@@ -10,27 +10,10 @@ use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
 interface UnifiedReportRepositoryInterface extends ObjectRepository
 {
     /**
-     * get Average Values
-     * @param PublisherInterface $publisher
-     * @param UnifiedReportParams $params
-     * @return mixed
-     */
-    public function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params);
-
-    /**
-     * get Count
-     * @param PublisherInterface $publisher
-     * @param UnifiedReportParams $params
-     * @return int
-     */
-    public function getCount(PublisherInterface $publisher, UnifiedReportParams $params);
-
-    /**
-     * get Items
      * @param PublisherInterface $publisher
      * @param UnifiedReportParams $params
      * @param int $defaultPageSize
      * @return array
      */
-    public function getItems(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10);
+    public function getReports(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10);
 }

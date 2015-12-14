@@ -20,9 +20,9 @@ class PulsePointRevenueReportGroup extends UnifiedReportGroup
     protected $averageRevenue;
     protected $averageBackupImpression;
 
-    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, SlidingPagination $pagination, $name, AverageValue $avg)
+    public function __construct($reportType, \DateTime $startDate, \DateTime $endDate, $reports, $totalRecord, $name, AverageValue $avg)
     {
-        parent::__construct($reportType, $startDate, $endDate, $pagination, $name, $avg);
+        parent::__construct($reportType, $startDate, $endDate, $reports, $totalRecord, $name, $avg);
 
         // total report
         $this->revenue = floatval($avg->getRevenue());

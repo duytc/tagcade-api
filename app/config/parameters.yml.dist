@@ -26,6 +26,7 @@ parameters:
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
 
+    tc.default_page_size: 10
     tc.default_tag_url:
         domain: 'tags.tagcade.dev'
         secure: true

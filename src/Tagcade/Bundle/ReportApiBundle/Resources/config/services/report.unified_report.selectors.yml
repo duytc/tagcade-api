@@ -43,72 +43,52 @@ services:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AccountManagement
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.account_management
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     tagcade.service.report.unified_report.pulse_point.selector.selectors.daily:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\Daily
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.daily
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\DomainImpression
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.domain_impression
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     tagcade.service.report.unified_report.pulse_point.selector.selectors.country_daily:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\CountryDaily
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.country_daily
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_domain_impression:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagDomainImpression
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.ad_tag_domain_impression
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     # custom for adTag-country
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_country:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagCountry
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.country_daily
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     # custom for adTagGroup-daily
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_daily:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagGroupDaily
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.account_management
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
+            - %tc.default_page_size%
 
     # custom for adTagGroup-country
     tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_country:
         class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagGroupCountry
         arguments:
             - @tagcade.repository.report.unified_report.pulse_point.country_daily
-            - %knp_paginator.page_range%
-        tags:
-            - { name: knp_paginator.injectable, paginator: knp_paginator }
-
-    ### Unified selector service ###
-    tagcade.service.report.unified_report.report_grouper:
-        class: Tagcade\Service\Report\UnifiedReport\Grouper\ReportGrouper
+            - %tc.default_page_size%
 
     ### Unified selector service ###
     tagcade.service.report.unified_report.selector.report_selector:
@@ -131,10 +111,3 @@ services:
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_daily
                 # ad_tag_group_country selectors (custom)
                 - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_country
-            - @tagcade.service.report.unified_report.report_grouper
-
-    ### knp paginator subscribers
-    tagcade.service.report.unified_report.paginator.subscriber:
-        class: Tagcade\Bundle\ReportApiBundle\Subscriber\UnifiedReportPaginationSubscriber
-        tags:
-            - { name: knp_paginator.subscriber }

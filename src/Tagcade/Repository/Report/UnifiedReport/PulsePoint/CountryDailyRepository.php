@@ -53,9 +53,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return int
      */
-    public function getCountForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getTotalRecordsForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -127,9 +129,12 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array|bool
      */
-    public function getItemsForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    protected function getPaginationRecordsForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -310,9 +315,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return $this|bool
      */
-    public function getAverageValuesForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getAverageValuesForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('id', 'id');
@@ -375,9 +382,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
 
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
      */
-    public function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getAverageValues(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $qb = $this->getReportsInRange($params->getStartDate(), $params->getEndDate());
 
@@ -417,9 +426,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return mixed
      */
-    public function getCount(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getTotalRecords(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -495,9 +506,12 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
      */
-    public function getItems(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    protected function getPaginationRecords(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -620,9 +634,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return $this|bool
      */
-    public function getAverageValuesForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getAverageValuesForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $rsm = new ResultSetMapping();
         $rsm->addScalarResult('id', 'id');
@@ -687,9 +703,11 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @return int
      */
-    public function getCountForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params)
+    protected function getTotalRecordsForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -761,9 +779,12 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
     }
 
     /**
-     * @inheritdoc
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array|bool
      */
-    public function getItemsForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    protected function getPaginationRecordsForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
     {
         $searchField = $params->getSearchField();
         $searchKey = $params->getSearchKey();
@@ -951,5 +972,50 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
                     ->setPubPayout(is_numeric($rst['pubPayout']) ? round($rst['pubPayout'], 4) : 0)
                 : null;
         }, $result);
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
+     */
+    public function getReportsForAdTagGroupCountry(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    {
+        return array(
+            self::REPORT_AVERAGE_VALUES => $this->getAverageValuesForAdTagGroupCountry($publisher, $params),
+            self::REPORT_PAGINATION_RECORDS => $this->getPaginationRecordsForAdTagGroupCountry($publisher, $params, $defaultPageSize),
+            self::REPORT_TOTAL_RECORDS => $this->getTotalRecordsForAdTagGroupCountry($publisher, $params)
+        );
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
+     */
+    public function getReportsForAdTagCountry(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    {
+        return array(
+            self::REPORT_AVERAGE_VALUES => $this->getAverageValuesForAdTagCountry($publisher, $params),
+            self::REPORT_PAGINATION_RECORDS => $this->getPaginationRecordsForAdTagCountry($publisher, $params, $defaultPageSize),
+            self::REPORT_TOTAL_RECORDS => $this->getTotalRecordsForAdTagCountry($publisher, $params)
+        );
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param UnifiedReportParams $params
+     * @param int $defaultPageSize
+     * @return array
+     */
+    public function getReports(PublisherInterface $publisher, UnifiedReportParams $params, $defaultPageSize = 10)
+    {
+        return array(
+            self::REPORT_AVERAGE_VALUES => $this->getAverageValues($publisher, $params),
+            self::REPORT_PAGINATION_RECORDS => $this->getPaginationRecords($publisher, $params, $defaultPageSize),
+            self::REPORT_TOTAL_RECORDS => $this->getTotalRecords($publisher, $params)
+        );
     }
 }
