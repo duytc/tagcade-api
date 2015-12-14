@@ -63,6 +63,27 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
         return $this->ronAdSlotCache->refreshCacheForRonAdSlot($ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot);
     }
 
+    /**
+     * This refresh is after namespacecache key version has been increased for ad slot,
+     * hence we don't need to increase version for cdn. We just save cdn data with current version and remove last version
+     *
+     * @param $id
+     * @param $cndCacheData
+     * @param bool $ron
+     * @return $this|mixed
+     */
+    public function refreshCacheForCdn($id, $cndCacheData, $ron = false)
+    {
+        $namespace = $ron ? $this->ronAdSlotCache->getNamespace($id) : $this->adSlotCache->getNamespace($id);
+        $this->cache->setNamespace($namespace);
+        $currentVersion = (int) $this->cache->getNamespaceVersion(true);
+//        $newVersion = $oldVersion + 1;
+        $this->cache->setNamespaceVersion($currentVersion);
+
+        $this->cache->save(static::CACHE_KEY_CDN_AD_SLOT, $cndCacheData);
+
+        return $this;
+    }
 
     /**
      *
