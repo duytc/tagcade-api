@@ -100,7 +100,11 @@ class UnifiedReportParams extends Params
      */
     public function getSearchField()
     {
-        return explode(',', $this->searchField);
+        if (is_string($this->searchField)) {
+            $this->searchField = explode(',', $this->searchField);
+        }
+
+        return $this->searchField;
     }
 
     /**
