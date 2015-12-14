@@ -59,7 +59,7 @@ class CDNUpdater implements CDNUpdaterInterface
 
         $remotePath = sprintf('%s/%d', $this->config[self::AD_SLOT_DIR], $adSlotId);
 
-        return $this->doPushToCdn($remotePath, $adTags, $closeConnection);
+        return $this->doPushToCdn($adSlotId, $remotePath, $adTags, $ronSlot = false, $closeConnection);
     }
 
     public function pushMultipleAdSlots(array $adSlots)
@@ -92,7 +92,7 @@ class CDNUpdater implements CDNUpdaterInterface
 
         $remotePath = sprintf('%s/%d', $this->config[self::RON_AD_SLOT_DIR], $ronSlotId);
 
-        return $this->doPushToCdn($remotePath, $ronAdTags, $closeConnection);
+        return $this->doPushToCdn($ronSlotId, $remotePath, $ronAdTags, $ronSlot = true, $closeConnection);
     }
 
     public function pushMultipleRonSlots(array $ronSlots)
@@ -117,26 +117,36 @@ class CDNUpdater implements CDNUpdaterInterface
 
     public function closeFtpConnection()
     {
-        if (!$this->ftpConnection instanceof ConnectionInterface) {
-            return;
-        }
+        try {
+            if (!$this->ftpConnection instanceof ConnectionInterface) {
+                return;
+            }
 
-        if (!$this->ftpConnection->isConnected()) {
-            return;
-        }
+            if (!$this->ftpConnection->isConnected()) {
+                return;
+            }
 
-        $this->ftpConnection->close();
+            $this->ftpConnection->close();
+        }
+        catch(\Exception $e) {
+        }
     }
 
-    protected function doPushToCdn($remotePath, array $data, $closeConnection = false) {
+    protected function doPushToCdn($id, $remotePath, array $data, $ronSlot = false, $closeConnection = false) {
         try {
-            $stream = $this->createFtpStreamFromArray(self::CDN_TEMPLATE, $data);
+
+            $cdnData = $this->createCdnTranslatedData($data);
+            $stream = $this->createFtpStreamFromString($cdnData);
+
             $ftpWrapper = new FTPWrapper($this->ftpConnection);
             if (!$this->ftpConnection->isConnected()) {
                 $this->ftpConnection->open();
             }
 
             $result = $ftpWrapper->fput($remotePath , $stream);
+            if ($result) {
+                $this->tagCache->refreshCacheForCdn($id, $cdnData, $ronSlot);
+            }
 
             if (true === $closeConnection) {
                 $this->closeFtpConnection();
@@ -144,25 +154,44 @@ class CDNUpdater implements CDNUpdaterInterface
         }
         catch(\Exception $e) {
             $result = false;
-
             $this->closeFtpConnection();
         }
 
-        if (true !== $result) {
+        if (true != $result) {
             throw new RuntimeException(sprintf('Could not push data to cdn server. Please make sure your connection or ad slot remote folder %s existence', $remotePath));
         }
 
         return $result;
     }
 
-    protected function createFtpStreamFromArray($templateFormat, array $data)
+    /**
+     * Convert string to stream
+     * @param $myData
+     * @return resource
+     */
+    protected function createFtpStreamFromString($myData)
     {
-        $myData = $this->replaceServerVarsToCdnVars($data);
+        if (!is_string($myData)) {
+            throw new InvalidArgumentException('Expect string data');
+        }
+
         $stream = fopen('php://memory','r+');
-        fwrite($stream, sprintf($templateFormat, json_encode($myData)));
+        fwrite($stream, $myData);
         rewind($stream);
 
         return $stream;
+    }
+
+    /**
+     * Translate data containing serverVars to Cnd vars
+     * @param array $data
+     * @return string
+     */
+    protected function createCdnTranslatedData(array $data)
+    {
+        $myData = $this->replaceServerVarsToCdnVars($data);
+
+        return sprintf(self::CDN_TEMPLATE, json_encode($myData));
     }
 
     protected function replaceServerVarsToCdnVars(array &$data)

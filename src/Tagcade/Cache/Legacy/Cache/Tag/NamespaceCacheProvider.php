@@ -49,9 +49,9 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
      *
      * @return string $namespaceVersion
      */
-    public function getNamespaceVersion()
+    public function getNamespaceVersion($forceFromCache = false)
     {
-        if (null !== $this->namespaceVersion) {
+        if (false === $forceFromCache && null !== $this->namespaceVersion) {
             return $this->namespaceVersion;
         }
 

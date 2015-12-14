@@ -21,5 +21,6 @@ interface RonAdSlotCacheInterface {
      */
     public function getAdTagsForRonAdSlot($ronAdSlotId);
 
+    public function getNamespace($ronSlotId);
 
 } 

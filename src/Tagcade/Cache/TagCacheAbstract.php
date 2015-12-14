@@ -11,6 +11,7 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 abstract class TagCacheAbstract {
 
     const CACHE_KEY_AD_SLOT = 'all_tags_array';
+    const CACHE_KEY_CDN_AD_SLOT = 'cdn_all_tags_array';
 
     protected $cache;
 
