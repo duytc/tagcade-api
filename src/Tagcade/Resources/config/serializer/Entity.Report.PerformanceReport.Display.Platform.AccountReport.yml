@@ -1,0 +1,49 @@
+Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        publisher:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]            
+        name:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        date:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+            type: DateTime<'Y-m-d'>
+        totalOpportunities:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        impressions:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        passbacks:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        fillRate:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        estRevenue:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]                                                                                    
+        estCpm:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]     
+        slotOpportunities:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]     
+        billedAmount:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]                             
+        billedRate:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]         
+        subReports:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]              
+        superReport:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]                        

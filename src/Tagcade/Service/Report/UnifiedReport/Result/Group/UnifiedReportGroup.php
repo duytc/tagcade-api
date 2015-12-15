@@ -20,11 +20,15 @@ class UnifiedReportGroup
      */
     protected $paidImps;
     protected $totalImps;
+    protected $cpm;
+    protected $pubPayout;
 
     // as weighted value
     protected $fillRate;
 
     // as average value
+    protected $averagePubPayout;
+    protected $averageCpm;
     protected $averageFillRate;
     protected $averageTotalImps;
     protected $averagePaidImps;
@@ -41,11 +45,15 @@ class UnifiedReportGroup
         // total report
         $this->paidImps = round($avg->getPaidImps(), 0);
         $this->totalImps = round($avg->getTotalImps(), 0);
+        $this->cpm = floatval($avg->getCpm());
+        $this->pubPayout = floatval($avg->getPubPayout());
 
         // weighted report
         $this->fillRate = round($avg->getFillRate(), 4);
 
         // average report
+        $this->averageCpm = floatval($avg->getAverageCpm());
+        $this->averagePubPayout = floatval($avg->getAveragePubPayout());
         $this->averageFillRate = round($avg->getAverageFillRate(), 4);
         $this->averagePaidImps = round($avg->getAveragePaidImps(), 4);
         $this->averageTotalImps = round($avg->getAverageTotalImps(), 4);
@@ -129,5 +137,53 @@ class UnifiedReportGroup
     public function getAverageTotalImps()
     {
         return $this->averageTotalImps;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCpm()
+    {
+        return $this->cpm;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPubPayout()
+    {
+        return $this->pubPayout;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAveragePubPayout()
+    {
+        return $this->averagePubPayout;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageCpm()
+    {
+        return $this->averageCpm;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFillRate()
+    {
+        return $this->fillRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTotalRecord()
+    {
+        return $this->totalRecord;
     }
 }

@@ -1,0 +1,46 @@
+Tagcade\Entity\Report\UnifiedReport\PulsePoint\CountryDaily:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        publisherId:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        tagId:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]           
+        adTagName:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        adTagGroupId:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        adTagGroupName:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]                                                 
+        country:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        countryName:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        fillRate:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        paidImpressions:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        allImpressions:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        pubPayout:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        cpm:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+        day:
+            expose: true
+            groups: [country_daily.detail, country_daily.summary]
+            type: DateTime<'Y-m-d'>

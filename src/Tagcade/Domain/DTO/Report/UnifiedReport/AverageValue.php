@@ -26,7 +26,10 @@ class AverageValue
      * @var float
      */
     protected $cpm;
-
+    /**
+     * @var float
+     */
+    protected $averageCpm;
     /**
      * @var float
      */
@@ -399,6 +402,26 @@ class AverageValue
     public function setAveragePubPayout($averagePubPayout)
     {
         $this->averagePubPayout = $averagePubPayout;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageCpm()
+    {
+        return $this->averageCpm;
+
+    }
+
+    /**
+     * @param float $averageCpm
+     * @return $this
+     */
+    public function setAverageCpm($averageCpm)
+    {
+        $this->averageCpm = $averageCpm;
 
         return $this;
     }

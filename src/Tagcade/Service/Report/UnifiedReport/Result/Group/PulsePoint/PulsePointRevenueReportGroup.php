@@ -26,6 +26,8 @@ class PulsePointRevenueReportGroup extends UnifiedReportGroup
 
         // total report
         $this->revenue = floatval($avg->getRevenue());
+        $this->pubPayout = floatval($avg->getPubPayout());
+        $this->averagePubPayout = floatval($avg->getAveragePubPayout());
         $this->backupImpression = intval($avg->getBackupImpression());
 
         // average report
@@ -59,5 +61,29 @@ class PulsePointRevenueReportGroup extends UnifiedReportGroup
     public function getRevenue()
     {
         return $this->revenue;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageAvgCpm()
+    {
+        return $this->averageAvgCpm;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageBackupImpression()
+    {
+        return $this->averageBackupImpression;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageRevenue()
+    {
+        return $this->averageRevenue;
     }
 }

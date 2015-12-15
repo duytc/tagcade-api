@@ -1,0 +1,49 @@
+Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        publisherId:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        adTagGroup:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        adTag:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        adTagId:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        status:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        size:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        askPrice:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        revenue:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        fillRate:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        paidImps:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        backupImpression:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        totalImps:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        avgCpm:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+        date:
+            expose: true
+            groups: [acc_mng.detail, acc_mng.summary]
+            type: DateTime<'Y-m-d'>

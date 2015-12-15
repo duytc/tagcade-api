@@ -21,9 +21,9 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInter
  */
 class PerformanceReportController extends FOSRestController
 {
+    //@Rest\View(serializerGroups={"billed_report_group.summary", "report_group.summary", "platform_platform_report.summary"})
     /**
      * @Security("has_role('ROLE_ADMIN')")
-     *
      * @Rest\Get("/platform")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -38,9 +38,9 @@ class PerformanceReportController extends FOSRestController
         );
     }
 
+    //@Rest\View(serializerGroups={"billed_report_group.summary", "report_group.summary", "platform_account_report.summary"})
     /**
      * @Security("has_role('ROLE_ADMIN')")
-     *
      * @Rest\Get("/platform/accounts")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -56,9 +56,9 @@ class PerformanceReportController extends FOSRestController
         );
     }
 
+    //@Rest\View(serializerGroups={"billed_report_group.summary", "report_group.summary", "platform_site_report.summary"})
     /**
      * @Security("has_role('ROLE_ADMIN')")
-     *
      * @Rest\Get("/platform/sites")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)

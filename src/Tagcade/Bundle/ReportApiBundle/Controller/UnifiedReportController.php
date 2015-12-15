@@ -52,6 +52,8 @@ class UnifiedReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
      *
+     * @Rest\View(serializerGroups={"acc_mng.summary", "revenue_unified_report.summary", "unified_report.summary", "daily.summary", "ad_tag_domain_impression.summary", "domain_impression.summary", "country_daily.summary"})
+     *
      * @Rest\Get("/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)

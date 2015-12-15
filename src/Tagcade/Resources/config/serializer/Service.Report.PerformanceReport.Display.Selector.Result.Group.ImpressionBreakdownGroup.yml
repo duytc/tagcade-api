@@ -1,0 +1,39 @@
+Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ImpressionBreakdownGroup:
+    exclusion_policy: ALL
+    properties:
+        firstOpportunities:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        verifiedImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        unverifiedImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        blankImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        voidImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        clicks:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]      
+        averageFirstOpportunities:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
+        averageVerifiedImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
+        averageUnverifiedImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
+        averageBlankImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
+        averageVoidImpressions:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
+        averageClicks:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]                                                                                

@@ -8,6 +8,7 @@ use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AbstractAccountMana
 use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily;
 use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\UnifiedReport\Result\Group\PulsePoint\PulsePointRevenueReportGroup;
+use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
 use Tagcade\Service\Report\UnifiedReport\Result\UnifiedReportCollection;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReportSelectorInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
@@ -53,7 +54,7 @@ class ReportSelector implements UnifiedReportSelectorInterface
                 null, $reports[AbstractReportRepository::REPORT_AVERAGE_VALUES]);
         }
 
-        return new UnifiedReportCollection($reportType, $params->getStartDate(), $params->getEndDate(),
+        return new UnifiedReportGroup($reportType, $params->getStartDate(), $params->getEndDate(),
             $reports[AbstractReportRepository::REPORT_PAGINATION_RECORDS], $reports[AbstractReportRepository::REPORT_TOTAL_RECORDS],
             null, $reports[AbstractReportRepository::REPORT_AVERAGE_VALUES]);
     }

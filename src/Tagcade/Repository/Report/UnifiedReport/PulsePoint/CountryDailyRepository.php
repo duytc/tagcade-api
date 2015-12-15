@@ -375,7 +375,7 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->setTotalImps(intval($rst['allImpressions']))
             ->setAverageTotalImps(is_numeric($rst['averageAllImpressions']) ? round($rst['averageAllImpressions'], 0) : 0)
             ->setCpm(is_numeric($rst['cpm']) ? round($rst['cpm'], 4) : 0)
-            ->setAvgCpm(is_numeric($rst['averageCpm']) ? round($rst['averageCpm'], 4) : 0)
+            ->setAverageCpm(is_numeric($rst['averageCpm']) ? round($rst['averageCpm'], 4) : 0)
             ->setPubPayout(is_numeric($rst['pubPayout']) ? round($rst['pubPayout'], 4) : 0)
             ->setAveragePubPayout(is_numeric($rst['averagePubPayout']) ? round($rst['averagePubPayout'], 4) : 0);
     }
@@ -693,12 +693,12 @@ class CountryDailyRepository extends AbstractReportRepository implements Country
             ->setFillRate(is_numeric($rst['fillRate']) ? round($rst['fillRate'], 4) : null)
             ->setPaidImps($rst['paidImpressions'])
             ->setTotalImps($rst['allImpressions'])
-            ->setAvgCpm($rst['cpm'])
+            ->setCpm($rst['cpm'])
             ->setPubPayout($rst['pubPayout'])
             ->setAverageFillRate(is_numeric($rst['averageFillRate']) ? round($rst['averageFillRate'], 4) : null)
             ->setAveragePaidImps(is_numeric($rst['averagePaidImpressions']) ? round($rst['averagePaidImpressions'], 0) : null)
             ->setAverageTotalImps(is_numeric($rst['averageAllImpressions']) ? round($rst['averageAllImpressions'], 0) : null)
-            ->setAverageAvgCpm(is_numeric($rst['averageCpm']) ? round($rst['averageCpm'], 4) : null)
+            ->setAverageCpm(is_numeric($rst['averageCpm']) ? round($rst['averageCpm'], 4) : null)
             ->setAveragePubPayout(is_numeric($rst['averagePubPayout']) ? round($rst['averagePubPayout'], 4) : null);
     }
 

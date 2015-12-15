@@ -1,0 +1,53 @@
+Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup:
+    exclusion_policy: ALL
+    properties:
+        reportType:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        startDate:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+            type: DateTime<'Y-m-d'>
+        endDate:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+            type: DateTime<'Y-m-d'>
+        totalRecord:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        reports:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        name:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        paidImps:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        totalImps:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        fillRate:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]         
+        averageFillRate:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]        
+        averageTotalImps:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]              
+        averagePaidImps:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        cpm:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        pubPayout:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        averageCpm:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]
+        averagePubPayout:
+            expose: true
+            groups: [unified_report.detail, unified_report.summary]

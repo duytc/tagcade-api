@@ -1,0 +1,31 @@
+Tagcade\Entity\Report\UnifiedReport\PulsePoint\DomainImpression:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        publisherId:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        domain:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        domainStatus:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        adTags:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        fillRate:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        paidImps:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        totalImps:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+        date:
+            expose: true
+            groups: [domain_impression.detail, domain_impression.summary]
+            type: DateTime<'Y-m-d'>
