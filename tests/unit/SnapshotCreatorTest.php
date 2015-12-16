@@ -12,11 +12,18 @@ use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Report\CalculateRatiosTrait;
+use Tagcade\Model\Report\CalculateRevenueTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 class SnapshotCreatorTest extends \Codeception\TestCase\Test
 {
+    use CalculateRatiosTrait;
+    use CalculateWeightedValueTrait;
+    use CalculateRevenueTrait;
+
     /** @var \UnitTester */
     protected $tester;
     /** @var EntityManagerInterface $em */
@@ -228,6 +235,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getPlatformReport($params);
+        $this->tester->assertNotNull($report);
 
         $slotOpportunities = 0;
         /** @var BaseAdSlotInterface $adSlot */
@@ -237,15 +245,31 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
 
         $impression = 0;
         $passBack = 0;
+        $totalOpportunities = 0;
         foreach($this->adTags as $adTag) {
+            $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
             $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
             $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-        }
 
-        $this->tester->assertNotNull($report);
+        }
+        $fillRate = round($this->getRatio($impression, $slotOpportunities), 4);
+
+        $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
         $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
+
+        $reportCount = count($report->getReports());
+        $averageTotalOpportunities = $this->getRatio($totalOpportunities, $reportCount);
+        $averageImpressions = $this->getRatio($impression, $reportCount);
+        $averagePassbacks = $this->getRatio($passBack, $reportCount);
+        $averageSlotOpportunities = $this->getRatio($slotOpportunities, $reportCount);
+
+        $this->tester->assertEquals($averageTotalOpportunities, $report->getAverageTotalOpportunities());
+        $this->tester->assertEquals($averageSlotOpportunities, $report->getAverageSlotOpportunities());
+        $this->tester->assertEquals($averageImpressions, $report->getAverageImpressions());
+        $this->tester->assertEquals($averagePassbacks, $report->getAveragePassbacks());
     }
 
     /**
@@ -273,11 +297,24 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
                 $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
             }
         }
+        $fillRate = round($this->getRatio($impression, $slotOpportunities), 4);
 
         $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
         $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
         $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
+
+        $reportCount = count($report->getReports());
+        $averageTotalOpportunities = $this->getRatio($totalOpportunities, $reportCount);
+        $averageImpressions = $this->getRatio($impression, $reportCount);
+        $averagePassbacks = $this->getRatio($passBack, $reportCount);
+        $averageSlotOpportunities = $this->getRatio($slotOpportunities, $reportCount);
+
+        $this->tester->assertEquals($averageTotalOpportunities, $report->getAverageTotalOpportunities());
+        $this->tester->assertEquals($averageSlotOpportunities, $report->getAverageSlotOpportunities());
+        $this->tester->assertEquals($averageImpressions, $report->getAverageImpressions());
+        $this->tester->assertEquals($averagePassbacks, $report->getAveragePassbacks());
     }
 
     /**
@@ -317,6 +354,8 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
                 $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
             }
 
+            $fillRate = round($this->getRatio($impression, $opportunities), 4);
+
             $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
             $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
             $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
@@ -326,6 +365,28 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $this->tester->assertEquals($click, $adNetworkReport->getClicks());
             $this->tester->assertEquals($blankImpressions, $adNetworkReport->getBlankImpressions());
             $this->tester->assertEquals($voidImpressions, $adNetworkReport->getVoidImpressions());
+            $this->tester->assertEquals($fillRate, $adNetworkReport->getFillRate());
+
+            $reportCount = count($report->getReports());
+            $averageTotalOpportunities = $this->getRatio($opportunities, $reportCount);
+            $averageImpressions = $this->getRatio($impression, $reportCount);
+            $averagePassbacks = $this->getRatio($passBack, $reportCount);
+            $averageFirstOpportunities = $this->getRatio($firstOpportunities, $reportCount);
+            $averageVoidImpressions = $this->getRatio($voidImpressions, $reportCount);
+            $averageBlankImpressions = $this->getRatio($blankImpressions, $reportCount);
+            $averageVerifiedImpressions = $this->getRatio($verifiedImpression, $reportCount);
+            $averageUnverifiedImpressions = $this->getRatio($unverifiedImpression, $reportCount);
+            $averageClicks = $this->getRatio($click, $reportCount);
+
+            $this->tester->assertEquals($averageTotalOpportunities, $report->getAverageTotalOpportunities());
+            $this->tester->assertEquals($averageImpressions, $report->getAverageImpressions());
+            $this->tester->assertEquals($averagePassbacks, $report->getAveragePassbacks());
+            $this->tester->assertEquals($averageFirstOpportunities, $report->getAverageFirstOpportunities());
+            $this->tester->assertEquals($averageVoidImpressions, $report->getAverageVoidImpressions());
+            $this->tester->assertEquals($averageBlankImpressions, $report->getAverageBlankImpressions());
+            $this->tester->assertEquals($averageVerifiedImpressions, $report->getAverageVerifiedImpressions());
+            $this->tester->assertEquals($averageUnverifiedImpressions, $report->getAverageUnverifiedImpressions());
+            $this->tester->assertEquals($averageClicks, $report->getAverageClicks());
         }
     }
 
@@ -360,6 +421,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $blankImpression += $this->testEventCounter->getBlankImpressionCount($adTag);
             $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
         }
+        $fillRate = round($this->getRatio($impression, $opportunities), 4);
 
         $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
@@ -370,6 +432,29 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->tester->assertEquals($click, $report->getClicks());
         $this->tester->assertEquals($blankImpression, $report->getBlankImpressions());
         $this->tester->assertEquals($voidImpressions, $report->getVoidImpressions());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
+
+
+        $reportCount = count($report->getReports());
+        $averageTotalOpportunities = $this->getRatio($opportunities, $reportCount);
+        $averageImpressions = $this->getRatio($impression, $reportCount);
+        $averagePassbacks = $this->getRatio($passBack, $reportCount);
+        $averageFirstOpportunities = $this->getRatio($firstOpportunities, $reportCount);
+        $averageVoidImpressions = $this->getRatio($voidImpressions, $reportCount);
+        $averageBlankImpressions = $this->getRatio($blankImpression, $reportCount);
+        $averageVerifiedImpressions = $this->getRatio($verifiedImpression, $reportCount);
+        $averageUnverifiedImpressions = $this->getRatio($unverifiedImpression, $reportCount);
+        $averageClicks = $this->getRatio($click, $reportCount);
+
+        $this->tester->assertEquals($averageTotalOpportunities, $report->getAverageTotalOpportunities());
+        $this->tester->assertEquals($averageImpressions, $report->getAverageImpressions());
+        $this->tester->assertEquals($averagePassbacks, $report->getAveragePassbacks());
+        $this->tester->assertEquals($averageFirstOpportunities, $report->getAverageFirstOpportunities());
+        $this->tester->assertEquals($averageVoidImpressions, $report->getAverageVoidImpressions());
+        $this->tester->assertEquals($averageVerifiedImpressions, $report->getAverageVerifiedImpressions());
+        $this->tester->assertEquals($averageUnverifiedImpressions, $report->getAverageUnverifiedImpressions());
+        $this->tester->assertEquals($averageClicks, $report->getAverageClicks());
+        $this->tester->assertEquals($averageBlankImpressions, $report->getAverageBlankImpressions());
     }
 
     /**
@@ -403,7 +488,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
             $blankImpressions += $this->testEventCounter->getBlankImpressionCount($adTag);
         }
-
+        $fillRate = round($this->getRatio($impression, $opportunities), 4);
 
         $this->tester->assertEquals($opportunities, $report->getTotalOpportunities(), "opportunities");
         $this->tester->assertEquals($impression, $report->getImpressions(), "impression");
@@ -414,6 +499,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->tester->assertEquals($click, $report->getClicks(), "click");
         $this->tester->assertEquals($voidImpressions, $report->getVoidImpressions(), "voidImpressions");
         $this->tester->assertEquals($blankImpressions, $report->getBlankImpressions(), "blankImpressions");
+        $this->tester->assertEquals($fillRate, $report->getFillRate(), "fillRate");
     }
 
     /**
@@ -451,6 +537,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
                 $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
                 $click += $this->testEventCounter->getClickCount($adTag);
             }
+            $fillRate = round($this->getRatio($impression, $opportunities), 4);
 
             $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
             $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
@@ -461,6 +548,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
             $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
             $this->tester->assertEquals($click, $adNetworkReport->getClicks());
+            $this->tester->assertEquals($fillRate, $adNetworkReport->getFillRate());
         }
     }
 
@@ -494,6 +582,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
             $click += $this->testEventCounter->getClickCount($adTag);
         }
+        $fillRate = round($this->getRatio($impression, $opportunities), 4);
 
         $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
@@ -504,6 +593,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
         $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
         $this->tester->assertEquals($click, $report->getClicks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
     }
 
     /**
@@ -536,6 +626,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
             $click += $this->testEventCounter->getClickCount($adTag);
         }
+        $fillRate = round($this->getRatio($impression, $opportunities), 4);
 
         $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
@@ -546,6 +637,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
         $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
         $this->tester->assertEquals($click, $report->getClicks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
     }
 
     /**
@@ -573,11 +665,13 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
                     $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
                 }
             }
+            $fillRate = round($this->getRatio($impression, $slotOpportunities), 4);
 
             $this->tester->assertEquals($slotOpportunities, $siteReport->getSlotOpportunities());
             $this->tester->assertEquals($totalOpportunities, $siteReport->getTotalOpportunities());
             $this->tester->assertEquals($impression, $siteReport->getImpressions());
             $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
+            $this->tester->assertEquals($fillRate, $siteReport->getFillRate());
 
         }
     }
@@ -604,11 +698,13 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
                 $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
             }
         }
+        $fillRate = round($this->getRatio($impression, $slotOpportunities), 4);
 
         $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
         $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
         $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
     }
 
     /**
@@ -631,10 +727,12 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
                 $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
                 $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
             }
+            $fillRate = round($this->getRatio($impression, $siteReport->getSlotOpportunities()), 4);
 
             $this->assertEquals($totalOpportunities, $siteReport->getTotalOpportunities());
             $this->assertEquals($impression, $siteReport->getImpressions());
             $this->assertEquals($passBack, $siteReport->getPassbacks());
+            $this->assertEquals($fillRate, $siteReport->getFillRate());
         }
     }
 
@@ -658,10 +756,12 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $impression += $this->testEventCounter->getImpressionCount($adTag);
             $passBack += $this->testEventCounter->getPassbackCount($adTag);
         }
+        $fillRate = round($this->getRatio($impression, $siteReport->getSlotOpportunities()), 4);
 
         $this->tester->assertEquals($totalOpportunities, $siteReport->getTotalOpportunities());
         $this->tester->assertEquals($impression, $siteReport->getImpressions());
         $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
+        $this->tester->assertEquals($fillRate, $siteReport->getFillRate());
     }
 
     /**
@@ -697,6 +797,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
             $click += $this->testEventCounter->getClickCount($adTag);
         }
+        $fillRate = round($this->getRatio($impression, $opportunities), 4);
 
         $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
@@ -707,6 +808,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
         $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
         $this->tester->assertEquals($click, $report->getClicks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
     }
 
     /**
@@ -730,11 +832,13 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
             $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
         }
+        $fillRate = round($this->getRatio($impression, $slotOpportunities), 4);
 
         $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
         $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
         $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
     }
 
     /**
@@ -758,11 +862,13 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
             $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
         }
+        $fillRate = round($this->getRatio($impression, $slotOpportunities), 4);
 
         $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
         $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
         $this->tester->assertEquals($impression, $report->getImpressions());
         $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($fillRate, $report->getFillRate());
     }
 
     /**
