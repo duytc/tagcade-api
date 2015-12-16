@@ -3,11 +3,16 @@
 
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
-use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\DomainManager\AdTagManagerInterface;
+use Tagcade\DomainManager\LibraryAdSlotManagerInterface;
+use Tagcade\DomainManager\LibrarySlotTagManagerInterface;
+use Tagcade\DomainManager\RonAdSlotManagerInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 class SnapshotCreatorTest extends \Codeception\TestCase\Test
@@ -20,6 +25,18 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     protected $publisherManager;
     /** @var AdSlotManagerInterface */
     protected $adSlotManager;
+    /** @var LibraryAdSlotManagerInterface */
+    protected $libraryAdSlotManager;
+    /** @var SiteManagerInterface */
+    protected $siteManager;
+    /** @var AdTagManagerInterface */
+    protected $adTagManager;
+    /** @var AdNetworkManagerInterface */
+    protected $adNetworkManager;
+    /** @var RonAdSlotManagerInterface */
+    protected $ronAdSlotManager;
+    /** @var LibrarySlotTagManagerInterface */
+    protected $librarySlotTagManager;
     /** @var ReportBuilderInterface */
     protected $reportBuilder;
     /** @var EventCounterInterface */
@@ -28,11 +45,17 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     protected $publisher;
     protected $adNetwork;
     protected $site;
+
+    /**
+     * @var array
+     */
+    protected $libraryAdSlots;
     /** @var array */
     protected $adSlots;
-
     /** @var array */
     protected $adTags;
+    /** @var array */
+    protected $ronAdSlots;
 
 
     protected function _before()
@@ -40,6 +63,9 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->em = $this->tester->grabServiceFromContainer('doctrine.orm.entity_manager');
         $this->publisherManager = $this->tester->grabServiceFromContainer('tagcade_user.domain_manager.publisher');
         $this->adSlotManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_slot');
+        $this->siteManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.site');
+        $this->adNetworkManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_network');
+        $this->adTagManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_tag');
         $this->reportBuilder = $this->tester->grabServiceFromContainer('tagcade.server.report.performance_report.display.selector.report_builder');
 
         //create publisher
@@ -203,8 +229,23 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getPlatformReport($params);
 
+        $slotOpportunities = 0;
+        /** @var BaseAdSlotInterface $adSlot */
+        foreach($this->adSlots as $adSlot) {
+            $slotOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
+        }
+
+        $impression = 0;
+        $passBack = 0;
+        foreach($this->adTags as $adTag) {
+            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
+            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+        }
+
         $this->tester->assertNotNull($report);
-        $this->tester->assertEquals($report->getReportType()->getReportType(), 'platform.platform');
+        $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
     }
 
     /**
@@ -214,27 +255,29 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getPublisherReport($this->publisher, $params);
-        $accountReport = current($report->getReports());
         $this->tester->assertNotNull($report);
         $this->tester->assertEquals($report->getReportType()->getReportType(), 'platform.account');
 
+        $adSlots = $this->adSlotManager->getAdSlotsForPublisher($this->publisher);
         //calculate report data
         $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        foreach($this->adSlots as $adSlot) {
-            $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
-        }
-
+        $slotOpportunities = 0;
         $impression = 0;
         $passBack = 0;
-        foreach($this->adTags as $adTag) {
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+        /** @var BaseAdSlotInterface $adSlot */
+        foreach($adSlots as $adSlot) {
+            $slotOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
+            foreach($adSlot->getAdTags() as $adTag) {
+                $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
+                $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+                $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
+            }
         }
 
-        $this->tester->assertEquals($totalOpportunities, $accountReport->getSlotOpportunities());
-        $this->tester->assertEquals($impression, $accountReport->getImpressions());
-        $this->tester->assertEquals($passBack, $accountReport->getPassbacks());
+        $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
+        $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
     }
 
     /**
@@ -244,35 +287,46 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getPublisherAdNetworksReport($this->publisher, $params);
-        $adNetworkReport = current($report->getReports());
+
         $this->tester->assertNotNull($report);
 
-        $impression = 0;
-        $passBack = 0;
-        $opportunities = 0;
-        $firstOpportunities = 0;
-        $verifiedImpression = 0;
-        $unverifiedImpression = 0;
-        $click = 0;
+        foreach($report->getReports() as $adNetworkReport) {
+            /** @var AdNetworkInterface $adNetwork */
+            $adNetwork = $this->adNetworkManager->find($adNetworkReport->getReportType()->getAdNetwork()->getId());
 
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+            $impression = 0;
+            $passBack = 0;
+            $opportunities = 0;
+            $firstOpportunities = 0;
+            $verifiedImpression = 0;
+            $unverifiedImpression = 0;
+            $click = 0;
+            $blankImpressions = 0;
+            $voidImpressions = 0;
+            $adTags = $this->adTagManager->getAdTagIdsForAdNetwork($adNetwork);
+
+            foreach($adTags as $adTag) {
+                $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+                $impression += $this->testEventCounter->getImpressionCount($adTag);
+                $passBack += $this->testEventCounter->getPassbackCount($adTag);
+                $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+                $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+                $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+                $click += $this->testEventCounter->getClickCount($adTag);
+                $blankImpressions += $this->testEventCounter->getBlankImpressionCount($adTag);
+                $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
+            }
+
+            $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
+            $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
+            $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
+            $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
+            $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
+            $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
+            $this->tester->assertEquals($click, $adNetworkReport->getClicks());
+            $this->tester->assertEquals($blankImpressions, $adNetworkReport->getBlankImpressions());
+            $this->tester->assertEquals($voidImpressions, $adNetworkReport->getVoidImpressions());
         }
-
-        $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $adNetworkReport->getClicks());
     }
 
     /**
@@ -282,7 +336,6 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getAdNetworkReport($this->adNetwork, $params);
-        $adNetworkReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
         $impression = 0;
@@ -291,26 +344,32 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $firstOpportunities = 0;
         $verifiedImpression = 0;
         $unverifiedImpression = 0;
+        $blankImpression = 0;
+        $voidImpressions= 0;
         $click = 0;
 
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+        $adTags = $this->adTagManager->getAdTagIdsForAdNetwork($this->adNetwork);
+        foreach($adTags as $adTag) {
+            $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+            $impression += $this->testEventCounter->getImpressionCount($adTag);
+            $passBack += $this->testEventCounter->getPassbackCount($adTag);
+            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+            $click += $this->testEventCounter->getClickCount($adTag);
+            $blankImpression += $this->testEventCounter->getBlankImpressionCount($adTag);
+            $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
         }
 
-        $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $adNetworkReport->getClicks());
+        $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($firstOpportunities, $report->getFirstOpportunities());
+        $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
+        $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
+        $this->tester->assertEquals($click, $report->getClicks());
+        $this->tester->assertEquals($blankImpression, $report->getBlankImpressions());
+        $this->tester->assertEquals($voidImpressions, $report->getVoidImpressions());
     }
 
     /**
@@ -320,7 +379,6 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getAdNetworkAdTagsReport($this->adNetwork, $params);
-        $adNetworkReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
         $impression = 0;
@@ -329,26 +387,33 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $firstOpportunities = 0;
         $verifiedImpression = 0;
         $unverifiedImpression = 0;
+        $voidImpressions = 0;
+        $blankImpressions = 0;
         $click = 0;
 
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+        $adTags = $this->adTagManager->getAdTagIdsForAdNetwork($this->adNetwork);
+        foreach($adTags as $adTag) {
+            $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+            $impression += $this->testEventCounter->getImpressionCount($adTag);
+            $passBack += $this->testEventCounter->getPassbackCount($adTag);
+            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+            $click += $this->testEventCounter->getClickCount($adTag);
+            $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
+            $blankImpressions += $this->testEventCounter->getBlankImpressionCount($adTag);
         }
 
-        $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $adNetworkReport->getClicks());
+
+        $this->tester->assertEquals($opportunities, $report->getTotalOpportunities(), "opportunities");
+        $this->tester->assertEquals($impression, $report->getImpressions(), "impression");
+        $this->tester->assertEquals($passBack, $report->getPassbacks(), "passBack");
+        $this->tester->assertEquals($firstOpportunities, $report->getFirstOpportunities(), "firstOpportunities");
+        $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions(), "verifiedImpression");
+        $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions(), "unverifiedImpression");
+        $this->tester->assertEquals($click, $report->getClicks(), "click");
+        $this->tester->assertEquals($voidImpressions, $report->getVoidImpressions(), "voidImpressions");
+        $this->tester->assertEquals($blankImpressions, $report->getBlankImpressions(), "blankImpressions");
     }
 
     /**
@@ -358,35 +423,45 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getAdNetworkSitesReport($this->adNetwork, $params);
-        $adNetworkReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
-        $impression = 0;
-        $passBack = 0;
-        $opportunities = 0;
-        $firstOpportunities = 0;
-        $verifiedImpression = 0;
-        $unverifiedImpression = 0;
-        $click = 0;
 
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+
+        foreach($report->getReports() as $adNetworkReport) {
+            $impression = 0;
+            $passBack = 0;
+            $opportunities = 0;
+            $firstOpportunities = 0;
+            $verifiedImpression = 0;
+            $unverifiedImpression = 0;
+            $blankImpressions = 0;
+            $voidImpressions = 0;
+            $click = 0;
+
+            $site = $this->siteManager->find($adNetworkReport->getReportType()->getSite()->getId());
+            $adTags = $this->adTagManager->getAdTagIdsForSite($site);
+            foreach($adTags as $adTag) {
+                $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+                $impression += $this->testEventCounter->getImpressionCount($adTag);
+                $blankImpressions += $this->testEventCounter->getBlankImpressionCount($adTag);
+                $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
+                $passBack += $this->testEventCounter->getPassbackCount($adTag);
+                $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+                $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+                $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+                $click += $this->testEventCounter->getClickCount($adTag);
+            }
+
+            $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
+            $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
+            $this->tester->assertEquals($blankImpressions, $adNetworkReport->getBlankImpressions());
+            $this->tester->assertEquals($voidImpressions, $adNetworkReport->getVoidImpressions());
+            $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
+            $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
+            $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
+            $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
+            $this->tester->assertEquals($click, $adNetworkReport->getClicks());
         }
-
-        $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $adNetworkReport->getClicks());
     }
 
     /**
@@ -396,35 +471,39 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getAdNetworkSiteReport($this->adNetwork, $this->site, $params);
-        $adNetworkReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
         $impression = 0;
+        $blankImpressions = 0;
+        $voidImpressions = 0;
         $passBack = 0;
         $opportunities = 0;
         $firstOpportunities = 0;
         $verifiedImpression = 0;
         $unverifiedImpression = 0;
         $click = 0;
-
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+        $adTags = $this->adTagManager->getAdTagIdsForSite($this->site);
+        foreach($adTags as $adTag) {
+            $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+            $impression += $this->testEventCounter->getImpressionCount($adTag);
+            $blankImpressions += $this->testEventCounter->getBlankImpressionCount($adTag);
+            $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
+            $passBack += $this->testEventCounter->getPassbackCount($adTag);
+            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+            $click += $this->testEventCounter->getClickCount($adTag);
         }
 
-        $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $adNetworkReport->getClicks());
+        $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($blankImpressions, $report->getBlankImpressions());
+        $this->tester->assertEquals($voidImpressions, $report->getVoidImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($firstOpportunities, $report->getFirstOpportunities());
+        $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
+        $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
+        $this->tester->assertEquals($click, $report->getClicks());
     }
 
     /**
@@ -434,35 +513,39 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getAdNetworkSiteAdTagsReport($this->adNetwork, $this->site, $params);
-        $adNetworkReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
         $impression = 0;
+        $blankImpressions = 0;
+        $voidImpressions = 0;
         $passBack = 0;
         $opportunities = 0;
         $firstOpportunities = 0;
         $verifiedImpression = 0;
         $unverifiedImpression = 0;
         $click = 0;
-
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+        $adTags = $this->adTagManager->getAdTagIdsForSite($this->site);
+        foreach($adTags as $adTag) {
+            $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+            $impression += $this->testEventCounter->getImpressionCount($adTag);
+            $blankImpressions += $this->testEventCounter->getBlankImpressionCount($adTag);
+            $voidImpressions += $this->testEventCounter->getVoidImpressionCount($adTag);
+            $passBack += $this->testEventCounter->getPassbackCount($adTag);
+            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+            $click += $this->testEventCounter->getClickCount($adTag);
         }
 
-        $this->tester->assertEquals($opportunities, $adNetworkReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $adNetworkReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adNetworkReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $adNetworkReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $adNetworkReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $adNetworkReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $adNetworkReport->getClicks());
+        $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($blankImpressions, $report->getBlankImpressions());
+        $this->tester->assertEquals($voidImpressions, $report->getVoidImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($firstOpportunities, $report->getFirstOpportunities());
+        $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
+        $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
+        $this->tester->assertEquals($click, $report->getClicks());
     }
 
     /**
@@ -472,26 +555,31 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getPublisherSitesReport($this->publisher, $params);
-        $siteReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
-        //calculate report data
-        $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        foreach($this->adSlots as $adSlot) {
-            $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
-        }
+        foreach($report->getReports() as $siteReport) {
+            /** @var BaseAdSlotInterface $adSlot */
+            $site = $this->siteManager->find($siteReport->getReportType()->getSite()->getId());
+            $adSlots = $this->adSlotManager->getAdSlotsForSite($site);
+            $slotOpportunities = 0;
+            $totalOpportunities= 0;
+            $impression = 0;
+            $passBack = 0;
+            foreach($adSlots as $adSlot) {
+                $slotOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
+                foreach($adSlot->getAdTags() as $adTag) {
+                    $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
+                    $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
+                    $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+                }
+            }
 
-        $impression = 0;
-        $passBack = 0;
-        foreach($this->adTags as $adTag) {
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-        }
+            $this->tester->assertEquals($slotOpportunities, $siteReport->getSlotOpportunities());
+            $this->tester->assertEquals($totalOpportunities, $siteReport->getTotalOpportunities());
+            $this->tester->assertEquals($impression, $siteReport->getImpressions());
+            $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
 
-        $this->tester->assertEquals($totalOpportunities, $siteReport->getSlotOpportunities());
-        $this->tester->assertEquals($impression, $siteReport->getImpressions());
-        $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
+        }
     }
 
     /**
@@ -501,26 +589,26 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getSiteReport($this->site, $params);
-        $siteReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
-        //calculate report data
-        $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        foreach($this->adSlots as $adSlot) {
-            $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
-        }
-
+        $adSlots = $this->adSlotManager->getAdSlotsForSite($this->site);
+        $slotOpportunities = 0;
+        $totalOpportunities= 0;
         $impression = 0;
         $passBack = 0;
-        foreach($this->adTags as $adTag) {
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+        foreach($adSlots as $adSlot) {
+            $slotOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
+            foreach($adSlot->getAdTags() as $adTag) {
+                $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
+                $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
+                $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+            }
         }
 
-        $this->tester->assertEquals($totalOpportunities, $siteReport->getSlotOpportunities());
-        $this->tester->assertEquals($impression, $siteReport->getImpressions());
-        $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
+        $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
+        $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
     }
 
     /**
@@ -530,26 +618,24 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
         $report = $this->reportBuilder->getSiteAdSlotsReport($this->site, $params);
-        $siteReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
-        //calculate report data
-        $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        foreach($this->adSlots as $adSlot) {
-            $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
-        }
+        foreach($report->getReports() as $siteReport) {
+            $adSlot = $siteReport->getReportType()->getAdSlot();
+            $this->tester->assertEquals($this->testEventCounter->getSlotOpportunityCount($adSlot->getId()), $siteReport->getSlotOpportunities());
+            $totalOpportunities = 0;
+            $impression = 0;
+            $passBack = 0;
+            foreach($adSlot->getAdTags() as $adTag) {
+                $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
+                $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
+                $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+            }
 
-        $impression = 0;
-        $passBack = 0;
-        foreach($this->adTags as $adTag) {
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+            $this->assertEquals($totalOpportunities, $siteReport->getTotalOpportunities());
+            $this->assertEquals($impression, $siteReport->getImpressions());
+            $this->assertEquals($passBack, $siteReport->getPassbacks());
         }
-
-        $this->tester->assertEquals($totalOpportunities, $siteReport->getSlotOpportunities());
-        $this->tester->assertEquals($impression, $siteReport->getImpressions());
-        $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
     }
 
     /**
@@ -559,24 +645,21 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, true, true);
         $report = $this->reportBuilder->getSiteAdTagsReport($this->site, $params);
-        $siteReport = current($report->getReports());
+        $siteReport = $report->getOriginalResult();
+
         $this->tester->assertNotNull($report);
+        $adTags = $this->adTagManager->getAdTagIdsForSite($siteReport->getReportType()->getSite());
 
-        //calculate report data
         $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        foreach($this->adSlots as $adSlot) {
-            $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
-        }
-
         $impression = 0;
         $passBack = 0;
-        foreach($this->adTags as $adTag) {
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
+        foreach($adTags as $adTag) {
+            $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag);
+            $impression += $this->testEventCounter->getImpressionCount($adTag);
+            $passBack += $this->testEventCounter->getPassbackCount($adTag);
         }
 
-        $this->tester->assertEquals($totalOpportunities, $siteReport->getSlotOpportunities());
+        $this->tester->assertEquals($totalOpportunities, $siteReport->getTotalOpportunities());
         $this->tester->assertEquals($impression, $siteReport->getImpressions());
         $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
     }
@@ -588,10 +671,11 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, true, true);
         $report = $this->reportBuilder->getSiteAdNetworksReport($this->site, $params);
-        $siteReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
         $impression = 0;
+        $voidImpression = 0;
+        $blankImpression = 0;
         $passBack = 0;
         $opportunities = 0;
         $firstOpportunities = 0;
@@ -599,24 +683,30 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $unverifiedImpression = 0;
         $click = 0;
 
-        /** @var AdTagInterface $adTag */
-        foreach($this->adTags as $adTag) {
-            $opportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
-            $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
-            $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
-            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag->getId());
-            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag->getId());
-            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag->getId());
-            $click += $this->testEventCounter->getClickCount($adTag->getId());
+        $reportType = current($report->getReportType());
+        $adTags = $this->adTagManager->getAdTagIdsForSite($reportType->getSite());
+
+        foreach($adTags as $adTag) {
+            $opportunities += $this->testEventCounter->getOpportunityCount($adTag);
+            $impression += $this->testEventCounter->getImpressionCount($adTag);
+            $voidImpression += $this->testEventCounter->getVoidImpressionCount($adTag);
+            $blankImpression += $this->testEventCounter->getBlankImpressionCount($adTag);
+            $passBack += $this->testEventCounter->getPassbackCount($adTag);
+            $firstOpportunities += $this->testEventCounter->getFirstOpportunityCount($adTag);
+            $verifiedImpression += $this->testEventCounter->getVerifiedImpressionCount($adTag);
+            $unverifiedImpression += $this->testEventCounter->getUnverifiedImpressionCount($adTag);
+            $click += $this->testEventCounter->getClickCount($adTag);
         }
 
-        $this->tester->assertEquals($opportunities, $siteReport->getTotalOpportunities());
-        $this->tester->assertEquals($impression, $siteReport->getImpressions());
-        $this->tester->assertEquals($passBack, $siteReport->getPassbacks());
-        $this->tester->assertEquals($firstOpportunities, $siteReport->getFirstOpportunities());
-        $this->tester->assertEquals($verifiedImpression, $siteReport->getVerifiedImpressions());
-        $this->tester->assertEquals($unverifiedImpression, $siteReport->getUnverifiedImpressions());
-        $this->tester->assertEquals($click, $siteReport->getClicks());
+        $this->tester->assertEquals($opportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($voidImpression, $report->getVoidImpressions());
+        $this->tester->assertEquals($blankImpression, $report->getBlankImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
+        $this->tester->assertEquals($firstOpportunities, $report->getFirstOpportunities());
+        $this->tester->assertEquals($verifiedImpression, $report->getVerifiedImpressions());
+        $this->tester->assertEquals($unverifiedImpression, $report->getUnverifiedImpressions());
+        $this->tester->assertEquals($click, $report->getClicks());
     }
 
     /**
@@ -626,25 +716,25 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, true, true);
         $report = $this->reportBuilder->getAdSlotReport($this->adSlots[0], $params);
-        $adSlotReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
+        $adSlot = $report->getReportType()->getAdSlot();
         //calculate report data
+        $slotOpportunities = $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
         $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        $adSlot = $this->adSlots[0];
-        $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
 
         $impression = 0;
         $passBack = 0;
         foreach($adSlot->getAdTags() as $adTag) {
+            $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
             $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
             $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
         }
 
-        $this->tester->assertEquals($totalOpportunities, $adSlotReport->getSlotOpportunities());
-        $this->tester->assertEquals($impression, $adSlotReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adSlotReport->getPassbacks());
+        $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
+        $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
     }
 
     /**
@@ -654,24 +744,44 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
     {
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, true, true);
         $report = $this->reportBuilder->getAdSlotReport($this->adSlots[0], $params);
-        $adSlotReport = current($report->getReports());
         $this->tester->assertNotNull($report);
 
+        $adSlot = $report->getReportType()->getAdSlot();
         //calculate report data
+        $slotOpportunities = $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
         $totalOpportunities = 0;
-        /** @var BaseAdSlotInterface $adSlot */
-        $adSlot = $this->adSlots[0];
-        $totalOpportunities += $this->testEventCounter->getSlotOpportunityCount($adSlot->getId());
 
         $impression = 0;
         $passBack = 0;
         foreach($adSlot->getAdTags() as $adTag) {
+            $totalOpportunities += $this->testEventCounter->getOpportunityCount($adTag->getId());
             $impression += $this->testEventCounter->getImpressionCount($adTag->getId());
             $passBack += $this->testEventCounter->getPassbackCount($adTag->getId());
         }
 
-        $this->tester->assertEquals($totalOpportunities, $adSlotReport->getSlotOpportunities());
-        $this->tester->assertEquals($impression, $adSlotReport->getImpressions());
-        $this->tester->assertEquals($passBack, $adSlotReport->getPassbacks());
+        $this->tester->assertEquals($slotOpportunities, $report->getSlotOpportunities());
+        $this->tester->assertEquals($totalOpportunities, $report->getTotalOpportunities());
+        $this->tester->assertEquals($impression, $report->getImpressions());
+        $this->tester->assertEquals($passBack, $report->getPassbacks());
+    }
+
+    /**
+     * @test
+     */
+    public function adTagReport()
+    {
+        $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('today'), null, false, true);
+        $report = $this->reportBuilder->getAdTagReport($this->adTags[0], $params);
+
+        $this->tester->assertNotNull($report);
+        $this->tester->assertEquals($this->testEventCounter->getOpportunityCount($this->adTags[0]->getId()), $report->getTotalOpportunities());
+        $this->tester->assertEquals($this->testEventCounter->getImpressionCount($this->adTags[0]->getId()), $report->getImpressions());
+        $this->tester->assertEquals($this->testEventCounter->getVoidImpressionCount($this->adTags[0]->getId()), $report->getVoidImpressions());
+        $this->tester->assertEquals($this->testEventCounter->getBlankImpressionCount($this->adTags[0]->getId()), $report->getBlankImpressions());
+        $this->tester->assertEquals($this->testEventCounter->getPassbackCount($this->adTags[0]->getId()), $report->getPassbacks());
+        $this->tester->assertEquals($this->testEventCounter->getFirstOpportunityCount($this->adTags[0]->getId()), $report->getFirstOpportunities());
+        $this->tester->assertEquals($this->testEventCounter->getVerifiedImpressionCount($this->adTags[0]->getId()), $report->getVerifiedImpressions());
+        $this->tester->assertEquals($this->testEventCounter->getUnverifiedImpressionCount($this->adTags[0]->getId()), $report->getUnverifiedImpressions());
+        $this->tester->assertEquals($this->testEventCounter->getClickCount($this->adTags[0]->getId()), $report->getClicks());
     }
 }
