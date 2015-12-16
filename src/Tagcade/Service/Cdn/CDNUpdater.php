@@ -21,7 +21,7 @@ class CDNUpdater implements CDNUpdaterInterface
 
     const AD_SLOT_DIR = 'ad_slot_path';
     const RON_AD_SLOT_DIR = 'ron_ad_slot_path';
-
+    const PUSH_FTP_ENABLED = 'push_ftp_enabled';
     const CDN_TEMPLATE = '[%%JSON_P_BEGIN%%]%s[%%JSON_P_END%%]';
 
     /**
@@ -132,20 +132,26 @@ class CDNUpdater implements CDNUpdaterInterface
         }
     }
 
-    protected function doPushToCdn($id, $remotePath, array $data, $ronSlot = false, $closeConnection = false) {
+    protected function doPushToCdn($id, $remotePath, array $data, $ronSlot = false, $closeConnection = false)
+    {
+        $result = false;
+        $pushFTPEnabled = array_key_exists(self::PUSH_FTP_ENABLED, $this->config) && true === filter_var($this->config[self::PUSH_FTP_ENABLED], FILTER_VALIDATE_BOOLEAN);
+
         try {
 
             $cdnData = $this->createCdnTranslatedData($data);
-            $stream = $this->createFtpStreamFromString($cdnData);
+            $this->tagCache->refreshCacheForCdn($id, $cdnData, $ronSlot);
 
-            $ftpWrapper = new FTPWrapper($this->ftpConnection);
-            if (!$this->ftpConnection->isConnected()) {
-                $this->ftpConnection->open();
-            }
+            if ($pushFTPEnabled === true) {
+                $stream = $this->createFtpStreamFromString($cdnData);
 
-            $result = $ftpWrapper->fput($remotePath , $stream);
-            if ($result) {
-                $this->tagCache->refreshCacheForCdn($id, $cdnData, $ronSlot);
+
+                $ftpWrapper = new FTPWrapper($this->ftpConnection);
+                if (!$this->ftpConnection->isConnected()) {
+                    $this->ftpConnection->open();
+                }
+
+                $result = $ftpWrapper->fput($remotePath , $stream);
             }
 
             if (true === $closeConnection) {
@@ -157,7 +163,7 @@ class CDNUpdater implements CDNUpdaterInterface
             $this->closeFtpConnection();
         }
 
-        if (true != $result) {
+        if (true != $result && $pushFTPEnabled) {
             throw new RuntimeException(sprintf('Could not push data to cdn server. Please make sure your connection or ad slot remote folder %s existence', $remotePath));
         }
 

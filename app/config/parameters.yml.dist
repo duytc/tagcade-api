@@ -57,3 +57,4 @@ parameters:
         timeout: 90
         ad_slot_path: adslot/
         ron_ad_slot_path: ronadslot/
+        push_ftp_enabled: true
