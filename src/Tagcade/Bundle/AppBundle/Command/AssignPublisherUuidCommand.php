@@ -25,7 +25,7 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:publisher:assign-uuid')
-            ->setDescription('Generate then assign uuid for those publishers which does not have one.')
+            ->setDescription('Assign a uuid to publishers who do not already have one')
             ->addArgument(
                 'id',
                 InputArgument::OPTIONAL,
@@ -64,7 +64,7 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
                     $publisherManager->save($publisher);
                 }
             }
-            $output->writeln(sprintf('<info>%d publisher(s) get updated !</info>', $count) );
+            $output->writeln(sprintf('<info>%d publisher(s) have been updated</info>', $count) );
             return;
         }
 
@@ -87,6 +87,6 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
             $publisher->setUuid($publisherManager->generateUuid($publisher));
             $publisherManager->save($publisher);
         }
-        $output->writeln(sprintf('<info>%d publisher(s) get updated !</info>', $count) );
+        $output->writeln(sprintf('<info>%d publisher(s) have been updated</info>', $count) );
     }
 }

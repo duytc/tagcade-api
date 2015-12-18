@@ -26,17 +26,17 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:ad-network:refresh-ad-tag-count')
-            ->setDescription('Recalculate active and paused ad tags for all ad network')
+            ->setDescription('Recalculate active and paused ad tags for ad networks')
             ->addArgument(
                 'id',
                 InputArgument::OPTIONAL,
-                'The AdNetwork\'s id to be updated'
+                'The ad network id to be updated'
             )
             ->addOption(
                 'all',
                 null,
                 InputOption::VALUE_NONE,
-                'If set, all AdNetworks will get updated'
+                'If set, all ad networks will be updated'
             )
         ;
     }
@@ -60,7 +60,7 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
                 $count++;
             }
 
-            $output->writeln(sprintf('%d AdNetwork(s) get updated !', $count));
+            $output->writeln(sprintf('%d ad network(s) have been updated', $count));
         }
         else {
             $id = $input->getArgument('id');
@@ -71,7 +71,7 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
                 if ($adNetwork instanceof AdNetworkInterface) {
                     $this->recalculateAdTagCountForAdNetwork($adNetwork);
                     $count++;
-                    $output->writeln(sprintf('%d AdNetwork(s) get updated !', $count));
+                    $output->writeln(sprintf('%d Ad Network(s) have been updated', $count));
                 }
                 else {
                     $output->writeln('<error>The AdNetwork does not exist</error>');
