@@ -95,7 +95,7 @@ class AdTagDomainImpressionRepository extends AbstractReportRepository implement
                         $nestedQuery .= empty($nestedQuery) ? ' r.adTag LIKE :ad_tag' : ' OR r.adTag LIKE :ad_tag';
                         break;
                     case self::AD_TAG_DOMAIN_IMP_DOMAIN_FIELD:
-                        $nestedQuery .= empty($nestedQuery) ? ' r.adTag LIKE :ad_tag' : ' OR r.adTag LIKE :ad_tag';
+                        $nestedQuery .= empty($nestedQuery) ? ' r.domain LIKE :domain' : ' OR r.domain LIKE :domain';
                         break;
                     case self::AD_TAG_DOMAIN_IMP_AD_TAG_ID_FIELD:
                         $nestedQuery .= empty($nestedQuery) ? ' r.adTagId = :ad_tag_id' : ' OR r.adTagId = :ad_tag_id';
