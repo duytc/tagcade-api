@@ -29,6 +29,7 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     const ACC_MNG_BACKUP_IMPRESSION_FIELD = "backupImpression";
     const ACC_MNG_AVG_CPM_FIELD = "avgCpm";
     const ACC_MNG_DATE_FIELD = "date";
+    const ACC_MNG_ASK_PRICE_FIELD = "askPrice";
     // sort direction
     // sort direction
     const SORT_DIRECTION_ASC = "asc";
@@ -164,7 +165,7 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
         // build sort query
         if ($sortField !== null && $sortDirection !== null &&
             in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC]) &&
-            in_array($sortField, [self::ACC_MNG_FILL_RATE_FIELD, self::ACC_MNG_TOTAL_IMPS_FIELD, self::ACC_MNG_PAID_IMPS_FIELD, self::ACC_MNG_REVENUE_FIELD, self::ACC_MNG_BACKUP_IMPRESSION_FIELD, self::ACC_MNG_DATE_FIELD, self::ACC_MNG_AVG_CPM_FIELD])
+            in_array($sortField, [self::ACC_MNG_ASK_PRICE_FIELD, self::ACC_MNG_FILL_RATE_FIELD, self::ACC_MNG_TOTAL_IMPS_FIELD, self::ACC_MNG_PAID_IMPS_FIELD, self::ACC_MNG_REVENUE_FIELD, self::ACC_MNG_BACKUP_IMPRESSION_FIELD, self::ACC_MNG_DATE_FIELD, self::ACC_MNG_AVG_CPM_FIELD])
         ) {
             $finalQuery .= sprintf(" ORDER BY r1.%s %s ", $sortField, $sortDirection);
         } else {
@@ -568,7 +569,7 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
 
         if ($sortField !== null && $sortDirection !== null &&
             in_array($sortDirection, [self::SORT_DIRECTION_ASC, self::SORT_DIRECTION_DESC]) &&
-            in_array($sortField, [self::ACC_MNG_FILL_RATE_FIELD, self::ACC_MNG_TOTAL_IMPS_FIELD, self::ACC_MNG_PAID_IMPS_FIELD, self::ACC_MNG_REVENUE_FIELD, self::ACC_MNG_BACKUP_IMPRESSION_FIELD, self::ACC_MNG_DATE_FIELD, self::ACC_MNG_AVG_CPM_FIELD])
+            in_array($sortField, [self::ACC_MNG_ASK_PRICE_FIELD, self::ACC_MNG_FILL_RATE_FIELD, self::ACC_MNG_TOTAL_IMPS_FIELD, self::ACC_MNG_PAID_IMPS_FIELD, self::ACC_MNG_REVENUE_FIELD, self::ACC_MNG_BACKUP_IMPRESSION_FIELD, self::ACC_MNG_DATE_FIELD, self::ACC_MNG_AVG_CPM_FIELD])
         ) {
             $mainQuery .= $this->appendOrderBy($sortField, $sortDirection);
         } else {

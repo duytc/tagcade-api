@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -44,10 +45,10 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
             ->setDate($this->getDate())
         ;
 
-        $ronAdSlotReportCounts[] = $this->eventCounter->getRonAdSlotReport($ronAdSlot->getId(), $segment);
+        $ronAdSlotReportCounts[] = $this->eventCounter->getRonAdSlotReport($ronAdSlot->getId(), $segment instanceof SegmentInterface ? $segment->getId() : null);
 
         $ronAdTagIds = $this->ronAdTagRepository->getLibrarySlotTagIdsByLibraryAdSlot($ronAdSlot->getLibraryAdSlot());
-        $ronAdTagCounts = $this->eventCounter->getRonAdTagReports($ronAdTagIds, $segment);
+        $ronAdTagCounts = $this->eventCounter->getRonAdTagReports($ronAdTagIds, $segment instanceof SegmentInterface ? $segment->getId() : null);
 
         $this->parseRawReportData($report, array_merge($ronAdSlotReportCounts, $ronAdTagCounts));
 

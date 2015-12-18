@@ -37,7 +37,7 @@ $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\R
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 
 $begin = new DateTime('2015-11-01');
-$end = new DateTime('2015-12-13');
+$end = new DateTime('2015-12-17');
 
 $end = $end->modify('+1 day');
 $interval = new DateInterval('P1D');

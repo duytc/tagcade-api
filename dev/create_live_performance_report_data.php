@@ -104,7 +104,7 @@ foreach($testEventCounter->getRonAdTagData() as $ronSlotId => $ronTagData) {
 // generate for ron ad tag segment
 foreach($testEventCounter->getRonAdTagSegmentData() as $ronSlotId => $segments) {
     foreach ($segments as $segmentId => $ronTagSegmentData) {
-        $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_RON_AD_TAG, $ronSlotId);
+        $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_RON_AD_TAG, $ronSlotId, $cacheEventCounter::NAMESPACE_APPEND_SEGMENT, $segmentId);
         $cache->hSave(
             $cacheEventCounter::REDIS_HASH_EVENT_COUNT,
             $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_OPPORTUNITY, $namespace),
@@ -166,9 +166,10 @@ foreach($testEventCounter->getRonAdTagSegmentData() as $ronSlotId => $segments) 
 }
 
 // generate for ron ad slot segment
+$a = $testEventCounter->getRonAdSlotSegmentData();
 foreach($testEventCounter->getRonAdSlotSegmentData() as $ronSlotId => $segments) {
     foreach ($segments as $segmentId => $segmentSlotData) {
-        $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_RON_AD_SLOT, $ronSlotId, $cacheEventCounter::NAMESPACE_APPEND_SEGMENT);
+        $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_RON_AD_SLOT, $ronSlotId, $cacheEventCounter::NAMESPACE_APPEND_SEGMENT, $segmentId);
         $cache->hSave($cacheEventCounter::REDIS_HASH_EVENT_COUNT,
             $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY, $namespace),
             $segmentSlotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
