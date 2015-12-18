@@ -27,7 +27,7 @@ class AccountManagementRepository extends AbstractReportRepository implements Ac
     const ACC_MNG_TOTAL_IMPS_FIELD = "totalImps";
     const ACC_MNG_REVENUE_FIELD = "revenue";
     const ACC_MNG_BACKUP_IMPRESSION_FIELD = "backupImpression";
-    const ACC_MNG_AVG_CPM_FIELD = "avCpm";
+    const ACC_MNG_AVG_CPM_FIELD = "avgCpm";
     const ACC_MNG_DATE_FIELD = "date";
     // sort direction
     // sort direction
