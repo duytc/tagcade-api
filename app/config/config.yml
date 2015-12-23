@@ -60,13 +60,13 @@ doctrine:
                 mapping_types:
                     enum: string
 
-            unifiedReport:
-                driver:     "%database_driver_unifiedreport%"
-                host:       "%database_host_unifiedreport%"
-                port:       "%database_port_unifiedreport%"
-                dbname:     "%database_name_unifiedreport%"
-                user:       "%database_user_unifiedreport%"
-                password:   "%database_password_unifiedreport%"
+            unified_report:
+                driver:     "%database_driver_unified_report%"
+                host:       "%database_host_unified_report%"
+                port:       "%database_port_unified_report%"
+                dbname:     "%database_name_unified_report%"
+                user:       "%database_user_unified_report%"
+                password:   "%database_password_unified_report%"
                 charset:    UTF8
                 mapping_types:
                     enum: string
@@ -107,8 +107,8 @@ doctrine:
                         alias:      TagcadeReportEntity
                         is_bundle:  false
 
-            unifiedReport:
-                connection:         unifiedReport
+            unified_report:
+                connection:         unified_report
                 naming_strategy:    doctrine.orm.naming_strategy.underscore
                 mappings:
                     # bundles

@@ -14,7 +14,7 @@ services:
     tagcade.service.report.performance_report.display.billing.cpm_rate_getter:
         class: %tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%
         arguments:
-            - %tc.billing.defaultCpmRate%
+            - %tc.billing.default_cpm_rate%
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
             - @tagcade.service.date_util

@@ -6,12 +6,12 @@ parameters:
     database_user:     root
     database_password: ~
 
-    database_driver_unifiedReport:   pdo_mysql
-    database_host_unifiedReport:     127.0.0.1
-    database_port_unifiedReport:     ~
-    database_name_unifiedReport:     symfony
-    database_user_unifiedReport:     root
-    database_password_unifiedReport: ~
+    database_driver_unified_report:   pdo_mysql
+    database_host_unified_report:     127.0.0.1
+    database_port_unified_report:     ~
+    database_name_unified_report:     symfony
+    database_user_unified_report:     root
+    database_password_unified_report: ~
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -38,7 +38,7 @@ parameters:
 
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
 
-    tc.billing.defaultCpmRate: 0.025
+    tc.billing.default_cpm_rate: 0.025
     tc.billing.thresholds:
         - {threshold: 100000000, cpmRate: 0.022}
         - {threshold: 250000000, cpmRate: 0.020}
