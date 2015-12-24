@@ -155,10 +155,9 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         }
 
         $qb = $this->createQueryBuilder('s');
-        $like = $qb->expr()->like('s.domain', '?1');
-        return $qb->where($like)
+        return $qb->where('s.domain = :domain')
             ->andWhere('s.publisher = :publisher_id')
-            ->setParameter(1, '%'. $domain . '%', TYPE::STRING)
+            ->setParameter('domain', $domain, TYPE::STRING)
             ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
             ->getQuery()->getOneOrNullResult();
     }

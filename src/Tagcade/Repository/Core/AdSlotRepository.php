@@ -199,6 +199,8 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
     }
 
     /**
+     * There is only one ad slot created from library ad slot and domain
+     *
      * @param PublisherInterface $publisher
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @param $domain
@@ -207,14 +209,12 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
     public function getAdSlotForPublisherAndDomainAndLibraryAdSlot(PublisherInterface $publisher, BaseLibraryAdSlotInterface $libraryAdSlot, $domain)
     {
         $qb = $this->createQueryBuilder('sl');
-        $like = $qb->expr()->like('st.domain', '?1');
-
         $qb->leftJoin('sl.site', 'st')
             ->where('sl.libraryAdSlot = :library_ad_slot_id')
-            ->andWhere($like)
+            ->andWhere('st.domain = :domain')
             ->andWhere('st.publisher = :publisher_id')
             ->setParameter('library_ad_slot_id', $libraryAdSlot->getId(), TYPE::INTEGER)
-            ->setParameter(1, '%//' . $domain . '%', TYPE::STRING)
+            ->setParameter('domain', $domain, TYPE::STRING)
             ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER);
 
         return $qb->getQuery()->getOneOrNullResult();
