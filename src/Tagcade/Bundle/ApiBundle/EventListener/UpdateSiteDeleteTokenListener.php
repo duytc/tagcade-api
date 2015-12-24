@@ -4,7 +4,6 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\SiteInterface;
 
 /**
@@ -13,23 +12,8 @@ use Tagcade\Model\Core\SiteInterface;
  * Class UpdateSiteDomainCanonicalListener
  * @package Tagcade\Bundle\ApiBundle\EventListener
  */
-class UpdateSiteDomainCanonicalListener {
-
-    const DOMAIN_CANONICAL_PATTERN = '%d_%s_%s';
-
-    public function preUpdate(PreUpdateEventArgs $args)
-    {
-        $entity = $args->getEntity();
-        if (!$entity instanceof SiteInterface) {
-            return;
-        }
-
-        if (($args->hasChangedField('domain') || $args->hasChangedField('publisher')) && !$args->hasChangedField('deletedAt')) {
-            $domainCanonical = sprintf(self::DOMAIN_CANONICAL_PATTERN, $entity->getPublisher()->getId(), $entity->getDomain(), '0');
-            $entity->setDomainCanonical($domainCanonical);
-        }
-    }
-
+class UpdateSiteDeleteTokenListener
+{
     /**
      * handle event prePersist to detect new ad tag is added, used for updating number of active|paused ad tags of ad network
      * @param LifecycleEventArgs $args
@@ -43,8 +27,8 @@ class UpdateSiteDomainCanonicalListener {
             return;
         }
 
-        $domainCanonical = sprintf(self::DOMAIN_CANONICAL_PATTERN, $entity->getPublisher()->getId(), $entity->getDomain(), uniqid('', true));
-        $entity->setDomainCanonical($domainCanonical);
+        $deleteToken = uniqid('', true);
+        $entity->setDeleteToken($deleteToken);
     }
 
     /**
@@ -59,7 +43,7 @@ class UpdateSiteDomainCanonicalListener {
             return;
         }
 
-        $domainCanonical = sprintf(self::DOMAIN_CANONICAL_PATTERN, $entity->getPublisher()->getId(), $entity->getDomain(), '0');
-        $entity->setDomainCanonical($domainCanonical);
+        $deleteToken = '0';
+        $entity->setDeleteToken($deleteToken);
     }
 } 

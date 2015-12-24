@@ -113,11 +113,10 @@ interface SiteInterface extends ModelInterface
     /**
      * @return mixed
      */
-    public function getDomainCanonical();
-
+    public function getDeleteToken();
     /**
-     * @param mixed $domainCanonical
+     * @param mixed $deleteToken
      */
-    public function setDomainCanonical($domainCanonical);
+    public function setDeleteToken($deleteToken);
 
 }

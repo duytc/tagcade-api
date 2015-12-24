@@ -15,7 +15,7 @@ class Site implements SiteInterface
     protected $publisher;
     protected $name;
     protected $domain;
-    protected $domainCanonical;
+    protected $deleteToken;
     /**
      * @var bool
      */
@@ -242,20 +242,18 @@ class Site implements SiteInterface
     /**
      * @return mixed
      */
-    public function getDomainCanonical()
+    public function getDeleteToken()
     {
-        return $this->domainCanonical;
+        return $this->deleteToken;
     }
 
     /**
-     * @param mixed $domainCanonical
+     * @param mixed $deleteToken
      */
-    public function setDomainCanonical($domainCanonical)
+    public function setDeleteToken($deleteToken)
     {
-        $this->domainCanonical = $domainCanonical;
+        $this->deleteToken = $deleteToken;
     }
-
-
 
     public function __toString()
     {

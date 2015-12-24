@@ -7,10 +7,11 @@ Tagcade\Entity\Core\Site:
             field_name: deletedAt
             time_aware: false
     uniqueConstraints:
-        site_compound_primary_key:
+        site_publisher_key:
             columns:
-                - domain_canonical
-
+                - publisher_id
+                - domain
+                - delete_token
     id:
         id:
             type: integer
@@ -23,9 +24,6 @@ Tagcade\Entity\Core\Site:
         domain:
             type: string
             length: 240
-        domainCanonical:
-            type: string
-            nullable: false
         autoCreate:
              type: boolean
              options:
@@ -33,6 +31,9 @@ Tagcade\Entity\Core\Site:
         deletedAt:
             type: datetime
             nullable: true
+        deleteToken:
+            type: string
+            nullable: false
         enableSourceReport:
             type: boolean
             options:
