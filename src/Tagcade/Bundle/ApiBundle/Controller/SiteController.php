@@ -85,7 +85,17 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      */
     public function postAction(Request $request)
     {
-        return $this->post($request);
+        try {
+
+            $result = $this->post($request);
+
+            return $result;
+        }
+        catch (\Exception $e) {
+
+        }
+
+        return $this->view('This site domain may have been created previously', Codes::HTTP_BAD_REQUEST);;
     }
 
     /**

@@ -6,6 +6,13 @@ Tagcade\Entity\Core\AdSlotAbstract:
         soft_deleteable:
             field_name: deletedAt
             time_aware: false
+
+    uniqueConstraints:
+        ad_slot_by_site_and_library_key:
+            columns:
+                - site_id
+                - library_ad_slot_id
+                - delete_token
     id:
         id:
             type: integer
@@ -19,6 +26,9 @@ Tagcade\Entity\Core\AdSlotAbstract:
         deletedAt:
             type: date
             nullable: true
+        deleteToken:
+            type: string
+            nullable: false
 
     inheritanceType: JOINED
 

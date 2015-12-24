@@ -76,4 +76,13 @@ interface BaseAdSlotInterface extends ModelInterface
      * @return self
      */
     public function setAutoCreate($autoCreate);
+
+    /**
+     * @return mixed
+     */
+    public function getDeleteToken();
+    /**
+     * @param mixed $deleteToken
+     */
+    public function setDeleteToken($deleteToken);
 }

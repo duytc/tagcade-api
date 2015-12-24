@@ -34,6 +34,8 @@ abstract class AdSlotAbstract
     protected $libraryAdSlot;
     protected $deletedAt;
 
+    protected $deleteToken;
+
     public function __construct()
     {
         $this->adTags = new ArrayCollection();
@@ -174,4 +176,22 @@ abstract class AdSlotAbstract
         $this->autoCreate = $autoCreate;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDeleteToken()
+    {
+        return $this->deleteToken;
+    }
+
+    /**
+     * @param mixed $deleteToken
+     */
+    public function setDeleteToken($deleteToken)
+    {
+        $this->deleteToken = $deleteToken;
+    }
+
+
 }

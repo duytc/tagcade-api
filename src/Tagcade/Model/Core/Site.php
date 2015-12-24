@@ -15,6 +15,7 @@ class Site implements SiteInterface
     protected $publisher;
     protected $name;
     protected $domain;
+    protected $domainCanonical;
     /**
      * @var bool
      */
@@ -27,6 +28,8 @@ class Site implements SiteInterface
     /** @var ChannelSiteInterface[] */
     protected $channelSites;
     protected $players;
+
+    protected $deletedAt;
 
     /**
      * @param string $name
@@ -227,6 +230,31 @@ class Site implements SiteInterface
         $this->autoCreate = $autoCreate;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDomainCanonical()
+    {
+        return $this->domainCanonical;
+    }
+
+    /**
+     * @param mixed $domainCanonical
+     */
+    public function setDomainCanonical($domainCanonical)
+    {
+        $this->domainCanonical = $domainCanonical;
+    }
+
 
 
     public function __toString()

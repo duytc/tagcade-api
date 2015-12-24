@@ -117,6 +117,8 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * This api is for event processor code invokes when it needs to create new ad slot
+     *
      * @Rest\View(
      *      serializerGroups={"dynamicadslot.minimum", "nativeadslot.summary", "displayadslot.summary", "site.minimum", "user.summary", "slotlib.summary"}
      * )
@@ -136,20 +138,29 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
 
         $domain = $request->get('domain');
 
-        $domain = $this->extractDomain($domain);
-        $adSlot =  $this->get('tagcade.domain_manager.ron_ad_slot')->createAdSlotFromRonAdSlotAndDomain($ronAdSlot, $domain);
+        try {
 
-        $routeOptions = array(
-            '_format' => $request->get('_format')
-        );
+            $domain = $this->extractDomain($domain);
+            $adSlot =  $this->get('tagcade.domain_manager.ron_ad_slot')->createAdSlotFromRonAdSlotAndDomain($ronAdSlot, $domain);
 
-        return view::create(array(
-            'id' => $adSlot->getId(),
-            'site' => array(
-                'id' => $adSlot->getSite()->getId(),
-                'domain' => $adSlot->getSite()->getDomain()
-            )
-        ), Codes::HTTP_CREATED, $routeOptions);
+            $routeOptions = array(
+                '_format' => $request->get('_format')
+            );
+
+            return view::create(array(
+                'id' => $adSlot->getId(),
+                'site' => array(
+                    'id' => $adSlot->getSite()->getId(),
+                    'domain' => $adSlot->getSite()->getDomain()
+                )
+            ), Codes::HTTP_CREATED, $routeOptions);
+
+        }
+        catch(\Exception $e) {
+
+        }
+
+        return View::create(array('ronAdSlot'=>$id, 'domain'=>$domain), Codes::HTTP_BAD_REQUEST);
     }
 
     /**

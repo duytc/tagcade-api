@@ -104,4 +104,20 @@ interface SiteInterface extends ModelInterface
      * @return self
      */
     public function setAutoCreate($autoCreate);
+
+    /**
+     * @return \DateTime
+     */
+    public function getDeletedAt();
+
+    /**
+     * @return mixed
+     */
+    public function getDomainCanonical();
+
+    /**
+     * @param mixed $domainCanonical
+     */
+    public function setDomainCanonical($domainCanonical);
+
 }

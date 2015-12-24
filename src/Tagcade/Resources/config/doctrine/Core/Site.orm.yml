@@ -9,9 +9,8 @@ Tagcade\Entity\Core\Site:
     uniqueConstraints:
         site_compound_primary_key:
             columns:
-                - domain
-                - publisher_id
-                - deleted_at
+                - domain_canonical
+
     id:
         id:
             type: integer
@@ -23,7 +22,10 @@ Tagcade\Entity\Core\Site:
             length: 100
         domain:
             type: string
-            length: 255
+            length: 240
+        domainCanonical:
+            type: string
+            nullable: false
         autoCreate:
              type: boolean
              options:

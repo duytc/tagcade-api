@@ -66,3 +66,16 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postSoftDelete }
+
+    tagcade_api.event_listener.UpdateSiteDomainCanonicalListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateSiteDomainCanonicalListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preSoftDelete }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.UpdateDeleteTokenForAdSlotListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateDeleteTokenForAdSlotListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preSoftDelete }
