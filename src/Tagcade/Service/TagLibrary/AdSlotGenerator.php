@@ -197,7 +197,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
         $sites = $this->arrayUtil->array_unique_object($sites);
 
         if (count($sites) < 1) {
-            return 0;
+            return false;
         }
 
         //filter all sites have no ad slots linked to library Ad Slot
@@ -207,6 +207,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
 
         //do create link
         $createdLinks = 0;
+        $createdAdSlots = [];
 
         foreach ($filteredSites as $site) {
             if ($libraryAdSlot instanceof LibraryDisplayAdSlotInterface || $libraryAdSlot instanceof LibraryNativeAdSlotInterface) {
@@ -214,6 +215,7 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
                 $adSlot = $this->createReportableAdSlotForSite($libraryAdSlot, $site);
 
                 $createdLinks++;
+                $createdAdSlots[] = $adSlot;
             } else if ($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
                 //this for library dynamic ad slot
                 $adSlot = $this->getProspectiveDynamicAdSlotForLibraryAndSite($libraryAdSlot, $site);
@@ -221,18 +223,11 @@ class AdSlotGenerator implements AdSlotGeneratorInterface
                 $this->adSlotManager->save($adSlot);
 
                 $createdLinks++;
-            }
-
-            if ($returnAdSlot === 1) {
-               return $adSlot;
+                $createdAdSlots[] = $adSlot;
             }
         }
-        //if no ad slot created
-        if ($createdLinks == 0 && $returnAdSlot === 1) {
-            throw new LogicException('An ad slot had already been created with the given domain');
-        }
 
-        return $createdLinks;
+        return $returnAdSlot === 1 ? ($createdLinks < 2 ? current($createdAdSlots) : $createdAdSlots) : $createdLinks;
     }
 
     /**

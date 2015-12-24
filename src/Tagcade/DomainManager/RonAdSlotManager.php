@@ -3,6 +3,7 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query\Expr\Base;
 use ReflectionClass;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\LibraryExpression;
@@ -277,6 +278,10 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
 
         /**@var BaseAdSlotInterface $adSlot */
         $adSlot = $this->adSlotGenerator->generateAdSlotFromLibraryForSites($libraryAdSlot, [$site], $returnAdSlot = 1);
+
+        if (!$adSlot instanceof BaseAdSlotInterface) {
+            throw new LogicException(sprintf('No ad slot is created for lib ad slot %d and site %s', $libraryAdSlot->getId(), $site));
+        }
 
         $adSlot->setAutoCreate(true);
         $this->em->merge($adSlot);
