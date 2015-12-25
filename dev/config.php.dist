@@ -1,0 +1,10 @@
+<?php
+// NOTE1: Make sure on the selected date, there are reports for ad tag in both hierarchy platform and network
+// NOTE2: Make sure on the selected date, there are reports for ad slot in platform hierarchy
+// Otherwise you have to create that report will all columns are zero or its default value
+
+define('START_DATE', '2015-12-01'); // format YYYY-MM-DD
+define('END_DATE', '2015-12-23'); // format YYY-MM-DD
+define('RON_SLOT_ID', 1); // id of ron slot that has linked slots in duplicated sites
+define('KEEP_SITE_ID',1);
+define('REMOVE_SITES', '2,3');
