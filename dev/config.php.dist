@@ -1,7 +1,7 @@
 <?php
 // NOTE1: Make sure on the selected date, there are reports for ad tag in both hierarchy platform and network
 // NOTE2: Make sure on the selected date, there are reports for ad slot in platform hierarchy
-// Otherwise you have to create that report will all columns are zero or its default value
+// Otherwise you have to create that report with all columns are zero or its default value
 
 define('START_DATE', '2015-12-01'); // format YYYY-MM-DD
 define('END_DATE', '2015-12-23'); // format YYY-MM-DD
