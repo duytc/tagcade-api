@@ -7,11 +7,10 @@ use Doctrine\DBAL\Schema\Schema;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
- * Add Auto fit property to Tag cache
  *
- * Commit at Master: cb7caec07171811d50234fef2be6f6604bac72ea
+ * Commit at Master: 0831cd1d2c51a55e9487fcd4d11b973652290d58
  */
-class Version20150929152100_AutoFit_For_Cache extends AbstractMigration
+class Version20151105103937_CloneConfig_For_SourceReport extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -21,7 +20,8 @@ class Version20150929152100_AutoFit_For_Cache extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE library_display_ad_slot ADD auto_fit TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE source_report_email_config ADD included_all_sites_of_publishers LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\'');
+        $this->addSql('ALTER TABLE core_user_publisher CHANGE tag_domain tag_domain LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\'');
     }
 
     /**
@@ -32,6 +32,7 @@ class Version20150929152100_AutoFit_For_Cache extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE library_display_ad_slot DROP auto_fit');
+        $this->addSql('ALTER TABLE core_user_publisher CHANGE tag_domain tag_domain VARCHAR(255) DEFAULT NULL COLLATE utf8_unicode_ci');
+        $this->addSql('ALTER TABLE source_report_email_config DROP included_all_sites_of_publishers');
     }
 }

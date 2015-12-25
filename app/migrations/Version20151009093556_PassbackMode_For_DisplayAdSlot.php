@@ -7,11 +7,10 @@ use Doctrine\DBAL\Schema\Schema;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
- * Add Auto fit property to Tag cache
  *
- * Commit at Master: cb7caec07171811d50234fef2be6f6604bac72ea
+ * Commit at Master: 2f83dfcf11922833f7c99fbf7e149d02b2a49e0d
  */
-class Version20150929152100_AutoFit_For_Cache extends AbstractMigration
+class Version20151009093556_PassbackMode_For_DisplayAdSlot extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -21,7 +20,10 @@ class Version20150929152100_AutoFit_For_Cache extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE library_display_ad_slot ADD auto_fit TINYINT(1) DEFAULT \'0\' NOT NULL');
+        $this->addSql('ALTER TABLE library_display_ad_slot ADD passback_mode VARCHAR(255) NOT NULL');
+
+        // update passback_mode default as 'position' for library display ad slot if NULL
+        $this->addSql('UPDATE library_display_ad_slot SET passback_mode = \'position\' WHERE passback_mode IS NULL OR passback_mode = \'\'');
     }
 
     /**
@@ -32,6 +34,6 @@ class Version20150929152100_AutoFit_For_Cache extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() != 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE library_display_ad_slot DROP auto_fit');
+        $this->addSql('ALTER TABLE library_display_ad_slot DROP passback_mode');
     }
 }
