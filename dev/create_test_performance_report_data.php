@@ -36,8 +36,8 @@ $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\Te
 $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 
-$begin = new DateTime('2015-11-01');
-$end = new DateTime('2015-12-17');
+$begin = new DateTime('2015-12-16');
+$end = new DateTime('2015-12-16');
 
 $end = $end->modify('+1 day');
 $interval = new DateInterval('P1D');

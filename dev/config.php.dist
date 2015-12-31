@@ -3,8 +3,16 @@
 // NOTE2: Make sure on the selected date, there are reports for ad slot in platform hierarchy
 // Otherwise you have to create that report with all columns are zero or its default value
 
+// common configuration for all tools
 define('START_DATE', '2015-12-01'); // format YYYY-MM-DD
-define('END_DATE', '2015-12-23'); // format YYY-MM-DD
+define('END_DATE', '2015-12-24'); // format YYY-MM-DD
+define('KEEP_SITE_ID',1); //
+
+// configuration for merging ad slot from duplicated sites to one site
+// this is used in merge_ad_slot_report.php tool
 define('RON_SLOT_ID', 1); // id of ron slot that has linked slots in duplicated sites
-define('KEEP_SITE_ID',1);
-define('REMOVE_SITES', '2,3');
+define('REMOVE_SITES', '15, 2'); // comma separated
+
+// configuration for moving ad slot from duplicated sites to one site
+// this is used in move_ad_slot_report.php tool
+define('MOVE_AD_SLOT_ID', 2); // this slot id must not be in the keep site
