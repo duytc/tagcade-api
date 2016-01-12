@@ -16,6 +16,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 /**
  * @Rest\RouteResource("Site")
@@ -28,6 +29,9 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\View(
      *      serializerGroups={"site.detail", "user.summary"}
      * )
+     *
+     * @Rest\QueryParam(name="createType", nullable=true)
+     *
      * @ApiDoc(
      *  resource = true,
      *  statusCodes = {
@@ -39,6 +43,19 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      */
     public function cgetAction()
     {
+        $createType = $this->get('fos_rest.request.param_fetcher')->get('createType');
+        /**
+         * @var SiteRepositoryInterface $siteRepository
+         */
+        $siteRepository = $this->get('tagcade.repository.site');
+
+        if ($createType === 'auto') {
+            return $siteRepository->getAutoCreatedSites($this->getUser());
+        }
+        else if ($createType === 'manual') {
+            return $siteRepository->getManualCreatedSites($this->getUser());
+        }
+
         return $this->all();
     }
 

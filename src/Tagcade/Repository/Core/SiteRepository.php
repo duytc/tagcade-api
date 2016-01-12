@@ -9,6 +9,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 {
@@ -19,6 +20,58 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
     {
         $qb = $this->getSitesForPublisherQuery($publisher, $limit, $offset);
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getAutoCreatedSites(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesForUserQuery($user, $limit, $offset);
+        $qb->andWhere('st.autoCreate = :autoCreate')
+            ->setParameter('autoCreate', true, Type::BOOLEAN);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getManualCreatedSites(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesForUserQuery($user, $limit, $offset);
+        $qb->andWhere('st.autoCreate = :autoCreate')
+            ->setParameter('autoCreate', false, Type::BOOLEAN);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    protected function getSitesForUserQuery(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('st')
+            ->where('1=1')
+        ;
+
+        if ($user instanceof PublisherInterface) {
+            $qb->andWhere('st.publisher = :publisher_id')
+                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb;
     }
 
     /**

@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\SiteInterface;
 
 interface SiteRepositoryInterface extends ObjectRepository
@@ -18,6 +19,22 @@ interface SiteRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getAutoCreatedSites(UserRoleInterface $user, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getManualCreatedSites(UserRoleInterface $user, $limit = null, $offset = null);
 
     /**
      * @param PublisherInterface $publisher
