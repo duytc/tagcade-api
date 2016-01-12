@@ -28,6 +28,12 @@ class Version20151224144305_UniqueConstraint_For_Site_n_AdSlot extends AbstractM
         // 2.add 'delete_token' and create unique constraint for ad slot (site, library_ad_slot, delete_token)
         $this->addSql('ALTER TABLE core_ad_slot ADD delete_token VARCHAR(255) NOT NULL');
         $this->addSql('CREATE UNIQUE INDEX ad_slot_by_site_and_library_key ON core_ad_slot (site_id, library_ad_slot_id, delete_token)');
+
+        // 3.update 'delete_token' bases on 'deleted_at' for site and ad slot
+        $this->addSql('UPDATE core_site set delete_token = 0 WHERE deleted_at IS NULL ');
+        $this->addSql('UPDATE core_site set delete_token = SUBSTRING(md5(deleted_at), 1, 23) WHERE deleted_at IS NOT NULL ');
+        $this->addSql('UPDATE core_ad_slot set delete_token = 0 WHERE deleted_at IS NULL ');
+        $this->addSql('UPDATE core_ad_slot set delete_token = SUBSTRING(md5(deleted_at), 1, 23) WHERE deleted_at IS NOT NULL ');
     }
 
     /**
