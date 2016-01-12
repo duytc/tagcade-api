@@ -14,6 +14,13 @@ git clone git@github.com:tagcade/tagcade-api.git
 
 Alternatively, you can click the "Download ZIP" link to the right to download the code manually.
 
+Generate your ssh keys to app/var/jwt (You can customize path to these files via setting in parameters.yml) 
+```
+$ mkdir -p app/var/jwt
+$ openssl genrsa -out app/var/jwt/private.pem -aes256 4096
+$ openssl rsa -pubout -in app/var/jwt/private.pem -out app/var/jwt/public.pem
+```
+
 Download and install composer:
 
 For linux: https://getcomposer.org/doc/00-intro.md#installation-nix

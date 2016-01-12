@@ -22,3 +22,4 @@ tests/unit/UnitTester.php
 tests/acceptance/AcceptanceTester.php
 
 tests/_output/*
+app/var/jwt/

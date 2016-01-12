@@ -58,3 +58,8 @@ parameters:
         ad_slot_path: adslot/
         ron_ad_slot_path: ronadslot/
         push_ftp_enabled: true
+
+    jwt_private_key_path: %kernel.root_dir%/var/jwt/private.pem   # ssh private key path
+    jwt_public_key_path:  %kernel.root_dir%/var/jwt/public.pem    # ssh public key path
+    jwt_key_pass_phrase:  'tagcade'                               # ssh key pass phrase
+    jwt_token_ttl:        86400
