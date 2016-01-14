@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -122,6 +123,10 @@ class Site implements SiteInterface
      */
     public function getReportableAdSlots()
     {
+        if (!$this->adSlots instanceof Collection) {
+            return [];
+        }
+
         return array_filter($this->adSlots->toArray(), function (BaseAdSlotInterface $adSlot) {
                 return $adSlot instanceof ReportableAdSlotInterface;
             });
