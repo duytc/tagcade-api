@@ -62,7 +62,10 @@ class Version20151224144305_UniqueConstraint_For_Site_n_AdSlot extends AbstractM
         $this->updateSiteToken();
 
         //// then create unique site_token_key on site_token
-        $this->addSql('CREATE UNIQUE INDEX site_token_key ON core_site (site_token)');
+        //// replace this auto-gen command "$this->addSql('CREATE UNIQUE INDEX site_token_key ON core_site (site_token)');" by:
+        $this->write('==creating unique site_token_key on site_token...');
+        $this->connection->executeQuery('CREATE UNIQUE INDEX site_token_key ON core_site (site_token)');
+        $this->write('==creating unique site_token_key on site_token... done!');
 
         $this->write('==postUp() executing... done!');
     }
