@@ -29,6 +29,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * Get all native ad slots
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -50,6 +51,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      *      serializerGroups={"librarynativeadslot.detail", "slotlib.summary", "user.summary", "nativeadslot.summary", "site.summary"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -71,6 +73,16 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * add an new adtag library to the current native ad slots
      *
      * @Rest\POST("/librarynativeadslots/{id}/adtag", requirements={"id" = "\d+"})
+     *
+     * @ApiDoc(
+     *  section = "Library Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
      * @param Request $request
      * @param int $id
      * @return View
@@ -101,6 +113,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * Create a native ad slots from the submitted data
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -126,6 +139,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * Update an existing native ad slots from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -152,6 +166,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      *      serializerGroups={"adslot.summary" , "slotlib.summary", "user.summary", "nativeadslot.summary", "librarynativeadslot.summary", "site.summary"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -176,6 +191,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * Get those AdTags which belong to the given AdSlot Library, also have been moved to AdTag Library
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -198,6 +214,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * Delete an existing adTag library
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

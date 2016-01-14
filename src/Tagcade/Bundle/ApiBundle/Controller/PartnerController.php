@@ -28,6 +28,7 @@ class PartnerController extends FOSRestController implements ClassResourceInterf
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      *
      * @ApiDoc(
+     *  section="Partners",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"

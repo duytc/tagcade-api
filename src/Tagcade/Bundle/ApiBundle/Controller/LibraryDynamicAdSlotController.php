@@ -27,6 +27,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.extra", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary" , "libraryexpression.detail"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -46,6 +47,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      *      serializerGroups={"librarydynamicadslot.detail" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "displayadslot.summary", "nativeadslot.summary", "adslot.summary", "libraryexpression.detail"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -67,6 +69,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Create a library dynamic adSlot from the submitted data
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -92,6 +95,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Update an existing library dynamic adSlot from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -132,6 +136,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      *      serializerGroups={"adslot.summary" , "slotlib.summary", "user.summary", "dynamicadslot.summary", "librarydynamicadslot.summary", "site.summary"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -156,6 +161,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Update an existing library dynamic adSlot from the submitted data or create a new one
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -180,6 +186,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Delete an existing adSlot
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

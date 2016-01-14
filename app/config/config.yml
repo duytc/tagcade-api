@@ -59,6 +59,8 @@ doctrine:
                 charset:    UTF8
                 mapping_types:
                     enum: string
+                logging: false
+                profiling: false
 
             unified_report:
                 driver:     "%database_driver_unified_report%"

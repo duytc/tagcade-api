@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\ReportApiBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Util\Codes;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -68,6 +69,15 @@ class UnifiedReportController extends FOSRestController
      * @Rest\QueryParam(name="searchKey", nullable=true)
      * @Rest\QueryParam(name="sortField", nullable=true)
      * @Rest\QueryParam(name="orderBy", nullable=true)
+     *
+     *
+     * @ApiDoc(
+     *  section = "Unified Reports",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
      *
      * @param $id
      * @param Request $request

@@ -33,6 +33,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\QueryParam(name="createType", nullable=true)
      *
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -68,6 +69,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      *      serializerGroups={"site.detail", "user.summary"}
      * )
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -89,6 +91,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Create a site from the submitted data
      *
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -119,6 +122,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Update an existing site from the submitted data or create a new site
      *
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -143,6 +147,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Update an existing site from the submitted data or create a new site at a specific location
      *
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -178,6 +183,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Delete an existing site
      *
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -200,6 +206,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Delete one channel in channels list for a existing site
      *
      * @ApiDoc(
+     *  section="Sites",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -231,6 +238,15 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Retrieve a list of ad slots for this site
      *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      * @param int $id
      * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
      */
@@ -243,6 +259,22 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
             ->getAdSlotsForSite($site);
     }
 
+    /**
+     *
+     * Retrieve a list of display ad slots for this site
+     *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return \Tagcade\Model\Core\DisplayAdSlotInterface[]
+     */
     public function getDisplayadslotsAction($id)
     {
         /** @var SiteInterface $site */
@@ -254,6 +286,15 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Retrieve a list of dynamic ad slots for this site
+     *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
      *
      * @param int $id
      * @return \Tagcade\Model\Core\DynamicAdSlotInterface[]
@@ -270,6 +311,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Retrieve a list of native ad slots for this site
      *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     *
      * @param int $id
      * @return \Tagcade\Model\Core\NativeAdSlotInterface[]
      */
@@ -284,6 +335,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Retrieve a list of active ad tags for this site
+     *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      *
      * @param int $id
      * @return \Tagcade\Model\Core\AdTagInterface[]
@@ -300,6 +361,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Get the javascript display ad tags for this site
      *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     *
      * @param int $id
      * @return array
      */
@@ -314,6 +385,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Get the javascript header of tag for this site
+     *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      *
      * @param int $id
      * @return array
@@ -338,6 +419,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      *      serializerGroups={"channel.summary", "user.summary"}
      * )
      *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     *
      * @param int $id
      * @return \Tagcade\Model\Core\ChannelInterface[]
      */
@@ -359,6 +450,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\Get("sites/noreference")
      *
      * @Rest\QueryParam(name="slotLibrary", requirements="\d+")
+     *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      *
      * @return array
      */

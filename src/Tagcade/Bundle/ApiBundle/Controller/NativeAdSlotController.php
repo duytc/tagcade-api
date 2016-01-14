@@ -33,6 +33,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * )
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -54,6 +55,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * )
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -72,6 +74,17 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
     }
 
     /**
+     * Get js tags for this ad slot
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
      * @param int $id
      * @return View
      */
@@ -88,6 +101,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * Create a native AdSlot from the submitted data
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -107,6 +121,15 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
     /**
      * clone the current native ad slot
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
      *
      * @Rest\POST("/nativeadslots/{id}/clone", requirements={"id" = "\d+"})
      * @param Request $request
@@ -141,6 +164,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * Update an existing native AdSlot from the submitted data or create a new native AdSlot
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -165,6 +189,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * Update an existing native AdSlot from the submitted data or create a new native AdSlot at a specific location
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -216,6 +241,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * Delete an existing native AdSlot
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -235,9 +261,21 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
     }
 
     /**
+     * Get ad tags for this ad slot
+     *
      * @Rest\View(
      *      serializerGroups={"adtag.detail", "adslot.summary", "nativeadslot.summary", "site.summary", "user.summary", "libraryadtag.summary", "adnetwork.summary"}
      * )
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      * @param $id
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */

@@ -29,6 +29,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * )
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -50,6 +51,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * Get a single library displays adslot for the given id
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -72,6 +74,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * Update an existing library displays adslot from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -93,6 +96,15 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
     /**
      * Update the position of all ad tags in an library displays adslot
+     *
+     * @ApiDoc(
+     *  section = "Library Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
      *
      * @param Request $request
      * @param int $id
@@ -121,6 +133,16 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * Update the position of all ad tags in an library displays adslot
      *
      * @Rest\POST("/librarydisplayadslots/{id}/adtag", requirements={"id" = "\d+"})
+     *
+     * @ApiDoc(
+     *  section = "Library Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      * @param Request $request
      * @param int $id
      * @return View
@@ -148,6 +170,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * Create a adSlot library from the submitted data
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -176,6 +199,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      *      serializerGroups={"adslot.summary" , "slotlib.summary", "user.summary", "displayadslot.summary", "librarydisplayadslot.summary", "site.summary"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -202,6 +226,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      *      serializerGroups={"libraryslottag.detail" , "slotlib.detail", "librarydisplayadslot.detail", "libraryadtag.detail", "user.summary"}
      * )
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -224,6 +249,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      * Delete an existing adTag library
      *
      * @ApiDoc(
+     *  section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

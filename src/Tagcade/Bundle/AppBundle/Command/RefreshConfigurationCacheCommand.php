@@ -28,7 +28,7 @@ class RefreshConfigurationCacheCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:cache:refresh-config')
-            ->setDescription('refresh configuration cache');
+            ->setDescription('refresh configuration cache for ron slots');
         ;
     }
 

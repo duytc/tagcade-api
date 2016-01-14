@@ -36,6 +36,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Get all display ad slots
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -56,6 +57,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Get a single display adSlot for the given id
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -74,6 +76,17 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * Get tag in js for an ad slot
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
      * @param int $id
      * @return View
      */
@@ -90,6 +103,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Create a display adSlot from the submitted data
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -108,6 +122,16 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * Update the position of all ad tags in an display ad slot
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      *
      * @param Request $request
      * @param int $id
@@ -135,7 +159,16 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * Update the position of all ad tags in an display ad slot
+     * Do cloning an ad slot
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
      *
      * @Rest\POST("/displayadslots/{id}/clone", requirements={"id" = "\d+"})
      * @param Request $request
@@ -170,6 +203,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Update an existing display adSlot from the submitted data or create a new display adSlot
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -194,6 +228,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Update an existing display adSlot from the submitted data or create a new display adSlot at a specific location
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -242,6 +277,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Delete an existing display adSlot
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -261,9 +297,21 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * Get Ad tags of an ad slot
+     *
      * @Rest\View(
      *      serializerGroups={"adtag.summary", "site.summary", "user.summary", "libraryadtag.summary", "adnetwork.summary"}
      * )
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      * @param $id
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */

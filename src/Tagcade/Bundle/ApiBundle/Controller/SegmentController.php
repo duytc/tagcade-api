@@ -15,12 +15,13 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class SegmentController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all segment
+     * Get all segments
      *
      * @Rest\View(
      *      serializerGroups={"segment.detail", "user.summary"}
      * )
      * @ApiDoc(
+     *  section="Segments",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -41,6 +42,7 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
      *      serializerGroups={"segment.detail", "user.summary"}
      * )
      * @ApiDoc(
+     *  section="Segments",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -63,6 +65,7 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
      * Delete an existing segment
      *
      * @ApiDoc(
+     *  section="Segments",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

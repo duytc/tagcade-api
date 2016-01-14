@@ -4,15 +4,18 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Behaviors\CreateSiteTokenTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 
 class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 {
+    use CreateSiteTokenTrait;
     /**
      * @inheritdoc
      */
@@ -195,23 +198,24 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
     }
 
     /**
-     * Check if a site with the given domain already existed
-     *
-     * @param $domain
-     * @param PublisherInterface $publisher
-     * @return bool
+     * @inheritdoc
      */
-    public function getSiteByDomainAndPublisher(PublisherInterface $publisher, $domain)
+    public function getSitesByDomainAndPublisher(PublisherInterface $publisher, $domain, $useHash = false)
     {
         if (!is_string($domain)) {
             throw new InvalidArgumentException('expect an object of string');
         }
 
         $qb = $this->createQueryBuilder('s');
+        if (true === $useHash) {
+            $hash = $this->createSiteHash($publisher->getId(), $domain);
+            return $qb->where('s.siteToken = :hash')->setParameter('hash', $hash)->getQuery()->getOneOrNullResult();
+        }
+
         return $qb->where('s.domain = :domain')
             ->andWhere('s.publisher = :publisher_id')
             ->setParameter('domain', $domain, TYPE::STRING)
             ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
-            ->getQuery()->getOneOrNullResult();
+            ->getQuery()->getResult();
     }
 }

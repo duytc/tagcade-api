@@ -1,15 +1,11 @@
 Tagcade\Model\Report\PerformanceReport\Display\AbstractReport:
-    exclusion_policy: ALL
+    exclusion_policy: NONE
     properties:
         id:
-            expose: true
-            groups: [abstract_report.detail, abstract_report.summary]
+            exclude: true
         fillRate:
-            expose: double
-            groups: [abstract_report.detail, abstract_report.summary]
+            type: double
         estRevenue:
-            expose: double
-            groups: [abstract_report.detail, abstract_report.summary]
+            type: double
         estCpm:
-            expose: double
-            groups: [abstract_report.detail, abstract_report.summary]
+            type: double

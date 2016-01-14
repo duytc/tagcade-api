@@ -15,7 +15,7 @@ class Site implements SiteInterface
     protected $publisher;
     protected $name;
     protected $domain;
-    protected $deleteToken;
+    protected $siteToken;
     /**
      * @var bool
      */
@@ -242,17 +242,17 @@ class Site implements SiteInterface
     /**
      * @return mixed
      */
-    public function getDeleteToken()
+    public function getSiteToken()
     {
-        return $this->deleteToken;
+        return $this->siteToken;
     }
 
     /**
-     * @param mixed $deleteToken
+     * @param mixed $siteToken
      */
-    public function setDeleteToken($deleteToken)
+    public function setSiteToken($siteToken)
     {
-        $this->deleteToken = $deleteToken;
+        $this->siteToken = $siteToken;
     }
 
     public function __toString()

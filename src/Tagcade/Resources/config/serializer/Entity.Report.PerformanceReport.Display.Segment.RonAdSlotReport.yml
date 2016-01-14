@@ -35,12 +35,12 @@ Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport:
         estCpm:
             expose: true
             groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
-        superReport:
-            expose: true
-            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
-        subReports:
-            expose: true
-            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]              
+#        superReport:
+#            expose: true
+#            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
+#        subReports:
+#            expose: true
+#            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
         customRate:
             expose: true
             groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]

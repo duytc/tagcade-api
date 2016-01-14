@@ -19,10 +19,13 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class LibraryAdTagController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
+     * Get all library ad tags
+     *
      * @Rest\View(serializerGroups={"libraryadtag.summary", "adnetwork.summary", "user.summary", "adtag.summary"})
      * Get all adtag library
      *
      * @ApiDoc(
+     *  section="Library ad tags",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -37,6 +40,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
     }
 
     /**
+     * Get single library ad tag
      *
      * @Rest\View(
      *      serializerGroups={"libraryadtag.detail", "adnetwork.summary", "user.summary", "adtag.summary"}
@@ -45,6 +49,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * Get a single adTag library for the given id
      *
      * @ApiDoc(
+     *  section="Library ad tags",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -66,6 +71,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * Create a adTag library from the submitted data
      *
      * @ApiDoc(
+     *  section="Library ad tags",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -91,6 +97,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * Update an existing adTag library from the submitted data or create a new adTag library
      *
      * @ApiDoc(
+     *  section="Library ad tags",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -115,6 +122,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * Update an existing adTag library from the submitted data or create a new adTag library at a specific location
      *
      * @ApiDoc(
+     *  section="Library ad tags",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -152,6 +160,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * Delete an existing adTag library
      *
      * @ApiDoc(
+     *  section="Library ad tags",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -171,6 +180,17 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
     }
 
     /**
+     * Get ad tags linked to this library ad tag
+     *
+     * @ApiDoc(
+     *  section="Library ad tags",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      * @Rest\View(serializerGroups={"adtag.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "libraryadtag.summary", "slotlib.summary", "site.summary"})
      * @param $id
      * @return array

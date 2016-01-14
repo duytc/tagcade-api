@@ -32,9 +32,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
         estCpm:
             expose: true
             groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]     
-        subReports:
-            expose: true
-            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]              
+#        subReports:
+#            expose: true
+#            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]
         firstOpportunities:
             expose: true
             groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]     

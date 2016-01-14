@@ -36,6 +36,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary"})
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -55,10 +56,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * @Rest\View(serializerGroups={"adnetwork.detail", "user.summary", "adtag.summary"})
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
-     *      200 = "Returned when successful",
-     *      404 = "Returned when the resource is not found"
+     *      200 = "Returned when successful"
      *  }
      * )
      *
@@ -76,6 +77,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Get all sites belonging to this ad network
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -113,6 +115,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Get all active ad tags belonging to this ad network and publisher
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -143,6 +146,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Get all active sites belonging to this ad network
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -180,6 +184,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Get all active ad tags belonging to this ad network and site filter publisher
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -212,6 +217,22 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         return $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site);
     }
 
+    /**
+     *
+     * Get all active ad tags belonging to this ad network
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return \Tagcade\Model\Core\AdTagInterface[]
+     */
     public function getAdtagsAction($id)
     {
         /** @var AdNetworkInterface $adNetwork */
@@ -224,6 +245,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Create a ad network from the submitted data
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -241,6 +263,17 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * Update ad tag status to active/paused for an ad network
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
      * @Rest\QueryParam(name="active", requirements="(true|false)", nullable=true)
      *
      * @param Request $request
@@ -267,6 +300,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update an existing ad network from the submitted data or create a new ad network
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -293,7 +327,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update revenue for ad network.
      *
      * @ApiDoc(
-     *  section = "adNetworks",
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful"
@@ -357,7 +391,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update revenue for ad network and site.
      *
      * @ApiDoc(
-     *  section = "adNetworks",
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful"
@@ -428,7 +462,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update active state of all at tags belonging to adNetwork $id and $siteId
      *
      * @ApiDoc(
-     *  section = "adNetworks",
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful"
@@ -502,7 +536,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update position of of all ad tags belonging to adNetwork
      *
      * @ApiDoc(
-     *  section = "adNetworks",
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful"
@@ -553,7 +587,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update position of of all ad tags belonging to adNetwork and filtered by site
      *
      * @ApiDoc(
-     *  section = "adNetworks",
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful"
@@ -611,6 +645,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Update an existing ad network from the submitted data or create a new ad network at a specific location
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -646,6 +681,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Delete an existing ad network
      *
      * @ApiDoc(
+     *  section = "Ad Networks",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

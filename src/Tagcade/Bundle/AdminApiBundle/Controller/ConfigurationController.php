@@ -27,6 +27,14 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
      * return list site configurations with site name and enabled modules of the
      * publisher which posses the given site
      *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @Rest\Get("/configurations/sites")
      * @return array
      */

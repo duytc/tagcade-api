@@ -1,0 +1,39 @@
+dummmyPublisher1:
+    id: 2
+    sites:
+        site1:
+            domain: site1.com
+            adSlots:
+                slot1:
+                    type: display
+                    width: 100
+                    height: 200
+                    adTags:
+                        tag1: { html: 'tag1', adNetwork: 'indexExchange'}
+
+                slot2:
+                    width: 150
+                    height: 250
+                    adTags:
+                        tag1: { html: 'tag2', adNetwork: 'google'}
+
+
+        site2:
+            domain: site2.com
+            adSlots:
+                slot21:
+                    width: 300
+                    height: 200
+                    adTags:
+                        tag1: { html: 'tag3', adNetwork: 'google'}
+    adNetworks:
+        google: { 'url': 'http://google.com' }
+        indexExchange: ~
+
+    reports:
+        performance:
+            startDate: "2015-01-01"
+            endDate: "2016-01-01"
+        source:
+            startDate: "2015-01-01"
+            endDate: "2016-01-01"

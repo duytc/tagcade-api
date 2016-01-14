@@ -21,6 +21,7 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      * Get all library ad slots ad tag
      * @Rest\View(serializerGroups={"libraryslottag.summary", "libraryadtag.summary", "adnetwork.summary", "slotlib.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "librarynativeadslot.summary", "user.summary"})
      * @ApiDoc(
+     *  section="Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -38,6 +39,7 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      * Get a single library ad slots ad tag for the given id
      * @Rest\View(serializerGroups={"libraryslottag.detail", "libraryadtag.summary", "adnetwork.summary", "slotlib.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "librarynativeadslot.summary", "user.summary"})
      * @ApiDoc(
+     *  section="Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -60,6 +62,7 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      * Create a library ad slots ad tag from the submitted data
      *
      * @ApiDoc(
+     *  section="Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -81,6 +84,7 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      * Update an existing library ad slots ad tag from the submitted data or create a new library ad slots ad tag
      *
      * @ApiDoc(
+     *  section="Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -105,6 +109,7 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      * Update an existing library ad slots ad tag from the submitted data or create a new library ad slots ad tag at a specific location
      *
      * @ApiDoc(
+     *  section="Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -128,6 +133,7 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      * Delete an existing library ad slots ad tag
      *
      * @ApiDoc(
+     *  section="Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

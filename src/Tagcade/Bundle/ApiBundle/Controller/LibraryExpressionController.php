@@ -17,9 +17,10 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class LibraryExpressionController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all adtag library
+     * Get all library expression
      *
      * @ApiDoc(
+     *  section="Library expressions",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -36,9 +37,10 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
     /**
      *
      *
-     * Get a single adTag library for the given id
+     * Get a single library expression for the given id
      *
      * @ApiDoc(
+     *  section="Library expressions",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -57,9 +59,10 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
     }
 
     /**
-     * Create a adTag library from the submitted data
+     * Create a library expression from the submitted data
      *
      * @ApiDoc(
+     *  section="Library expressions",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -82,9 +85,10 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
     }
 
     /**
-     * Update an existing adTag library from the submitted data or create a new adTag library
+     * Update an existing library expression from the submitted data or create a new adTag library
      *
      * @ApiDoc(
+     *  section="Library expressions",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -106,9 +110,10 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
     }
 
     /**
-     * Update an existing adTag library from the submitted data or create a new adTag library at a specific location
+     * Update an existing library expression from the submitted data or create a new adTag library at a specific location
      *
      * @ApiDoc(
+     *  section="Library expressions",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -129,9 +134,10 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
     }
 
     /**
-     * Delete an existing adTag library
+     * Delete an existing library expression
      *
      * @ApiDoc(
+     *  section="Library expressions",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

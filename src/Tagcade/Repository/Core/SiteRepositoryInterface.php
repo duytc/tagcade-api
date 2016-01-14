@@ -72,9 +72,12 @@ interface SiteRepositoryInterface extends ObjectRepository
     public function getSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null);
 
     /**
-     * @param $domain
+     * Check if a site with the given domain already existed
+     *
      * @param PublisherInterface $publisher
-     * @return null|SiteInterface
+     * @param $domain
+     * @param bool $useHash using hash to find site by domain and publisher. The hash is md5 publisher id and its domain
+     * @return null|SiteInterface[]
      */
-    public function getSiteByDomainAndPublisher(PublisherInterface $publisher, $domain);
+    public function getSitesByDomainAndPublisher(PublisherInterface $publisher, $domain, $useHash = false);
 }

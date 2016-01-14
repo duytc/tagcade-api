@@ -262,7 +262,8 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         }
         
         $domain = $this->extractDomain($domain);
-        $site = $this->siteRepository->getSiteByDomainAndPublisher($libraryAdSlot->getPublisher(), $domain);
+        $site = $this->siteRepository->getSitesByDomainAndPublisher($libraryAdSlot->getPublisher(), $domain, true);
+
         // if site with $domain not yet created
         if (!$site instanceof SiteInterface) {
             // create new Site

@@ -38,9 +38,6 @@ $em->getConnection()->getConfiguration()->setSQLLogger(null);
 /** @var PublisherManagerInterface $publisherManager */
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
 
-$siteIdx = 1;
-$adSlotIdx = 1;
-$adTagIdx = 1;
 foreach(xrange(NUM_PUBLISHER) as $userId) {
     //create publisher
     $publisher = new User();
@@ -57,13 +54,18 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
     $publisherManager->save($publisher);
 
     foreach(xrange(NUM_SITES) as $id) {
+        gc_enable();
+
+        $tempObjs = [];
         // create ad network
         $adNetwork = (new AdNetwork())
-            ->setName('Test Ad Network ' . $siteIdx++)
+            ->setName('Test Ad Network ' . $id)
             ->setActiveAdTagsCount(0) // why do I have to do this? it should default to 0
             ->setPausedAdTagsCount(0)
             ->setPublisher($publisher);
+
         $em->persist($adNetwork);
+        $tempObjs[] = $adNetwork;
 
         //create sites
         $site = (new Site())
@@ -74,61 +76,84 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             ->setPublisher($publisher)
         ;
         $em->persist($site);
+        $tempObjs[] = $site;
 
         foreach(xrange(NUM_AD_SLOTS_PER_SITE) as $slotId) {
             // create ad slot
+            $libraryAdSlot = (new LibraryDisplayAdSlot())
+                ->setName("Display AdSlot " . $slotId)
+                ->setType('display')
+                ->setVisible(false)
+                ->setPublisher($publisher);
             $adSlot = (new DisplayAdSlot())
-                ->setLibraryAdSlot(
-                    (new LibraryDisplayAdSlot())
-                        ->setName("Display AdSlot " . $adSlotIdx++)
-                        ->setType('display')
-                        ->setVisible(false)
-                        ->setPublisher($publisher)
-                )
+                ->setLibraryAdSlot($libraryAdSlot)
                 ->setAutoFit(true)
                 ->setPassbackMode('position')
                 ->setHeight(200)
                 ->setWidth(400)
                 ->setSite($site);
 
+            $tempObjs[] = $adSlot;
+            $tempObjs[] = $libraryAdSlot;
             // create ad tag
+            $libraryAdTag = (new LibraryAdTag())->setName('AdTag 1')
+                ->setVisible(false)
+                ->setHtml('ad tag 1 html')
+                ->setAdType(0)
+                ->setAdNetwork($adNetwork);
+            $tempObjs[] = $libraryAdTag;
+
             $adTag = (new AdTag())
-                ->setLibraryAdTag(
-                    (new LibraryAdTag())->setName('AdTag 1')
-                        ->setVisible(false)
-                        ->setHtml('ad tag 1 html')
-                        ->setAdType(0)
-                        ->setAdNetwork($adNetwork)
-                )
+                ->setLibraryAdTag($libraryAdTag)
                 ->setAdSlot($adSlot)
                 ->setActive(true)
                 ->setFrequencyCap(11)
                 ->setRefId(uniqid('', true));
             $adSlot->getAdTags()->add($adTag);
+            $tempObjs[] = $adTag;
 
+            unset($libraryAdTag);
+            unset($adTag);
+
+            $libraryAdTag = (new LibraryAdTag())->setName('AdTag 2')
+                ->setVisible(false)
+                ->setHtml('ad tag 2 html')
+                ->setAdType(0)
+                ->setAdNetwork($adNetwork);
+            $tempObjs[] = $libraryAdTag;
             $adTag = (new AdTag())
-                ->setLibraryAdTag(
-                    (new LibraryAdTag())->setName('AdTag 2')
-                        ->setVisible(false)
-                        ->setHtml('ad tag 2 html')
-                        ->setAdType(0)
-                        ->setAdNetwork($adNetwork)
-                )
+                ->setLibraryAdTag($libraryAdTag)
                 ->setAdSlot($adSlot)
                 ->setActive(true)
                 ->setFrequencyCap(11)
                 ->setRefId(uniqid('', true));
             $adSlot->getAdTags()->add($adTag);
-
+            $tempObjs[] = $adTag;
+            unset($libraryAdTag);
+            unset($adTag);
             $em->persist($adSlot);
+            unset($adSlot);
+            unset($libraryAdSlot);
         }
 
-        $em->flush();
+        unset($adNetwork);
+        unset($site);
 
-        echo sprintf('finish inserting site "%s"'. "\n", $site->getName()) ;
+        $em->flush();
+        foreach(array_reverse($tempObjs) as $obj) {
+            $em->detach($obj);
+        }
+
+
+        gc_collect_cycles();
+
+        echo sprintf('finish inserting site "Site %d"'. "\n", $id) ;
+        unset($tempObjs);
     }
-    echo sprintf('finish inserting publisher "%s"' . "\n", $publisher->getUsername()) ;
+    $em->detach($publisher);
+    unset($publisher);
+    echo sprintf('finish inserting publisher "%s"' . "\n", 'tagcade' . $userId) ;
 }
 
-
-
+$em->flush();
+$em->clear();

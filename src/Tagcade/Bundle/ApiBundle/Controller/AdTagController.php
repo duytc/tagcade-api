@@ -26,6 +26,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      *      serializerGroups={"adtag.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "user.summary", "adnetwork.summary", "libraryadtag.detail"}
      * )
      * @ApiDoc(
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -47,6 +48,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * Get a single adTag for the given id
      *
      * @ApiDoc(
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -68,6 +70,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * Create a adTag from the submitted data
      *
      * @ApiDoc(
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -88,6 +91,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * Update an existing adTag from the submitted data or create a new adTag
      *
      * @ApiDoc(
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -112,7 +116,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * Update estCpm for ad tag.
      *
      * @ApiDoc(
-     *  section = "adTags",
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful"
@@ -169,6 +173,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * Update an existing adTag from the submitted data or create a new adTag at a specific location
      *
      * @ApiDoc(
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -212,6 +217,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * Delete an existing adTag
      *
      * @ApiDoc(
+     *  section="Ad Tags",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

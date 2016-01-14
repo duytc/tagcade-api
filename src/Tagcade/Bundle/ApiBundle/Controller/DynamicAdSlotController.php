@@ -24,10 +24,12 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     use UpdateSiteForAdSlotValidator;
     /**
      * Get all dynamic ad slots
+     *
      * @Rest\View(
      *      serializerGroups={"adslot.detail", "dynamicadslot.summary", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
      * )
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -50,6 +52,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      *      serializerGroups={"adslot.detail", "dynamicadslot.detail", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
      * )
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -76,6 +79,16 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      *
      * @Rest\QueryParam(name="site")
      * @Rest\QueryParam(name="library")
+     *
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
      *
      * @return DynamicAdSlotInterface
      *
@@ -108,6 +121,16 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * @Rest\View(serializerEnableMaxDepthChecks=true)
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
      * @param int $id
      * @return View
      */
@@ -125,6 +148,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      * Create a dynamic adSlot from the submitted data
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -146,6 +170,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      * Update an existing dynamic adSlot from the submitted data or create a new dynamic adSlot
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -170,6 +195,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      * Update an existing dynamic adSlot from the submitted data or create a new dynamic adSlot at a specific location
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -197,6 +223,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      * Delete an existing dynamic adSlot
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

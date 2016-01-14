@@ -1,0 +1,56 @@
+Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup:
+    exclusion_policy: ALL
+    properties:
+        reportType:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        startDate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+            type: DateTime<'Y-m-d'>
+        endDate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+            type: DateTime<'Y-m-d'>
+        reports:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        name:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        totalOpportunities:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        impressions:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        fillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]         
+        passbacks:
+            expose: true
+            groups: [report_group.detail, report_group.summary]        
+        estCpm:
+            expose: true
+            groups: [report_group.detail, report_group.summary]              
+        estRevenue:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageTotalOpportunities:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageImpressions:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averagePassbacks:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageEstCpm:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageEstRevenue:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageFillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]

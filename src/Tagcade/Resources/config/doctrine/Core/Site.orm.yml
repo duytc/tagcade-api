@@ -7,11 +7,9 @@ Tagcade\Entity\Core\Site:
             field_name: deletedAt
             time_aware: false
     uniqueConstraints:
-        site_publisher_key:
+        site_token_key:
             columns:
-                - publisher_id
-                - domain
-                - delete_token
+                - site_token
     id:
         id:
             type: integer
@@ -31,7 +29,7 @@ Tagcade\Entity\Core\Site:
         deletedAt:
             type: datetime
             nullable: true
-        deleteToken:
+        siteToken:
             type: string
             nullable: false
         enableSourceReport:

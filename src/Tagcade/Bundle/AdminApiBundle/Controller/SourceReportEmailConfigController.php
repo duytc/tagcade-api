@@ -62,6 +62,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
     /**
      * get SourceReportEmailConfig by id
      *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param $id
      * @return \Tagcade\Model\ModelInterface
      */
@@ -84,6 +92,15 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      *
      * @Rest\Get("/sourcereportemailconfigs/accounts/{publisherId}", requirements={"publisherId" = "\d+"})
      *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param $publisherId
      *
      * @return SourceReportEmailConfigInterface[]
@@ -104,6 +121,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      *
      * @Rest\Get("/sourcereportemailconfig/creatorconfig")
      *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @return array
      */
     public function getCreatorConfigAction()
@@ -116,6 +141,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
 
     /**
      * Edit SourceReportEmailConfig by id
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
      *
      * @param Request $request
      * @param $id
@@ -130,6 +163,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      * Include all reports to the email
      *
      * @Rest\Post("/sourcereportemailconfigs/emailIncludedAll")
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful"
+     *  }
+     * )
      *
      * @param Request $request
      * @return View|FormTypeInterface
@@ -168,6 +209,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      * Include all reports of sites to the email where sites belong to special publishers
      *
      * @Rest\Post("/sourcereportemailconfigs/emailIncludedAllSites")
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful"
+     *  }
+     * )
      *
      * @param Request $request
      * @return View|FormTypeInterface
@@ -228,6 +277,15 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
 
     /**
      * Create new source report config for publisher
+     *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful"
+     *  }
+     * )
      *
      * @param Request $request
      *
@@ -291,6 +349,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
      *
      * @Rest\Post("/sourcereportemailconfigs/{id}/clone", requirements={"id" = "\d+"})
      *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param int $id
      * @param Request $request
      * @return View
@@ -324,6 +390,14 @@ class SourceReportEmailConfigController extends RestControllerAbstract implement
 
     /**
      * Delete SourceReportConfig by id
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful"
+     *  }
+     * )
      *
      * @param $id
      * @return View

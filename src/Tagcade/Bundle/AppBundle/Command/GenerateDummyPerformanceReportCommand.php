@@ -1,0 +1,111 @@
+<?php
+
+namespace Tagcade\Bundle\AppBundle\Command;
+
+
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Validator\Constraints\DateTime;
+
+class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
+{
+    /**
+     * Configure the CLI task
+     *
+     * @return void
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('tc:dummy-performance-report:create')
+            ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'Publisher id')
+            ->addOption('startDate', 'f', InputOption::VALUE_REQUIRED, 'Start date (YYYY-MM-DD) of the report. ')
+            ->addOption('endDate', 't', InputOption::VALUE_OPTIONAL, 'End date of the report (YYYY-MM-DD). Default is yesterday', (new \DateTime('yesterday'))->format('Ymd'))
+            ->setDescription('Generate dummy performance report for a publisher');
+        ;
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     * @throws \Exception
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $startDate = $input->getOption('startDate');
+        $endDate = $input->getOption('endDate');
+        $startDate = new \DateTime($startDate);
+        $endDate = new \DateTime($endDate);
+
+        $today = new \DateTime('today');
+
+        if ($startDate > $endDate || $endDate >= $today) {
+            throw new \Exception('startDate must be less than or equal to endDate and endDate must not exceed today');
+        }
+
+        $interval = new \DateInterval('P1D');
+        $dateRange = new \DatePeriod($startDate, $interval ,$endDate);
+
+        $container = $this->getContainer();
+        /**
+         * @var EntityManagerInterface $em
+         */
+        $em = $container->get('doctrine.orm.entity_manager');
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
+        $ronAdSlotManager = $container->get('tagcade.domain_manager.ron_ad_slot');
+        $segmentRepository = $container->get('tagcade.repository.segment');
+        $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
+        $userManager = $container->get('tagcade_user.domain_manager.publisher');
+
+
+        $reportTypes = [
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.platform'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot'),
+
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_tag'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.ad_network'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.ad_network.site'),
+
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.segment'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_slot'),
+            $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag')
+        ];
+
+
+        $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->allReportableAdSlots());
+        $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
+        $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
+
+        foreach($dateRange as $date){
+            /**
+             * @var \DateTime $date
+             */
+            echo sprintf("%s processing...\n", $date->format('Y-m-d'));
+
+            // TODO fetch report for this date and only create if there is no report
+            $eventCounter->refreshTestData();
+
+            $dailyReportCreator
+                ->setReportDate($date)
+                ->createAndSave(
+                    $userManager->allActivePublishers(),
+                    $adNetworkManager->all()
+                );
+
+            echo sprintf("%s created \n", $date->format('Y-m-d'));
+
+            $em->flush();
+
+            gc_collect_cycles();
+        }
+
+    }
+} 

@@ -68,6 +68,15 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Get the javascript display ad tags for all ron ad slot of this publisher
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param int $id
      * @return array
      */
@@ -81,6 +90,16 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
+     * Get js passback
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param $id
      * @return array
      */
@@ -93,6 +112,15 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * get header of tag for publisher
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param $id
      * @return array
      */
@@ -104,6 +132,20 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
         return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher);
     }
 
+    /**
+     * Get ad networks for publisher
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $publisherId
+     * @return array|\Tagcade\Model\Core\AdNetworkInterface[]
+     */
     public function getAdnetworksAction($publisherId)
     {
         $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
@@ -123,6 +165,15 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      * @param $publisherId
      *
      * @Rest\QueryParam(name="enableSourceReport", requirements="(true|false)", nullable=true)
+     *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
      *
      * @return SiteInterface[]
      * @throws NotFoundHttpException
@@ -157,6 +208,15 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Get token for publisher only
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param $publisherId
      * @return array
      */

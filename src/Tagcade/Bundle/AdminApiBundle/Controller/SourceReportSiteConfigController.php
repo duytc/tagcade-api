@@ -3,6 +3,7 @@ namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\UpdateSourceReportSiteConfigEventLog;
@@ -26,6 +27,15 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
     /**
      * get SourceReportSiteConfig by siteConfigId
      *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param $siteConfigId
      * @return \Tagcade\Model\ModelInterface
      */
@@ -38,6 +48,16 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      * Get source report site configs for publisher and email
      *
      * @Rest\Get("/sourcereportsiteconfigs/accounts/{publisherId}/emailConfigs/{emailConfigId}", requirements={"publisherId" = "\d+", "emailConfigId" = "\d+"})
+     *
+     *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
      *
      * @param int $publisherId
      *
@@ -60,6 +80,15 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      * Get source report site configs for emailConfig
      *
      * @Rest\Get("/sourcereportsiteconfigs/emailConfigs/{emailConfigId}", requirements={"emailConfigId" = "\d+"})
+     *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
      *
      * @param int $emailConfigId
      *
@@ -84,6 +113,15 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
     /**
      * Edit a SourceReportSiteConfig for siteConfigId
      *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
      * @param Request $request
      * @param int $siteConfigId
      * @return \FOS\RestBundle\View\View|\Symfony\Component\Form\FormTypeInterface
@@ -97,6 +135,15 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
      * Add Sites for emailConfigId with sites[id1, id2, ...]
      *
      * @Rest\Post("sourcereportsiteconfigs/emailConfigs/{emailConfigId}", requirements={"emailConfigId" = "\d+"})
+     *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful"
+     *  }
+     * )
      *
      * @param Request $request
      * @param int $emailConfigId
@@ -155,6 +202,15 @@ class SourceReportSiteConfigController extends RestControllerAbstract implements
 
     /**
      * Delete a SourceReportSiteConfig
+     *
+     *
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
      *
      * @param $siteConfigId
      * @return \FOS\RestBundle\View\View

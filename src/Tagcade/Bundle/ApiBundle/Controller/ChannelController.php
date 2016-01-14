@@ -28,6 +28,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      *      serializerGroups={"channel.summary", "user.summary"}
      * )
      * @ApiDoc(
+     *  section="Channels",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -50,6 +51,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      *      serializerGroups={"channel.summary", "user.summary"}
      * )
      * @ApiDoc(
+     *  section="Channels",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -74,6 +76,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      *      serializerGroups={"site.detail", "user.summary"}
      * )
      * @ApiDoc(
+     *  section="Channels",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -105,6 +108,15 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      *
      * @Rest\QueryParam(name="slotLibrary", requirements="\d+")
      *
+     * @ApiDoc(
+     *  section="Channels",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
      * @return array
      */
     public function getChannelsIncludeSitesHaveNoAdSlotReferenceToAdSlotLibraryAction()
@@ -128,6 +140,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * Create a channel from the submitted data
      *
      * @ApiDoc(
+     *  section="Channels",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -149,6 +162,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      *
      * @ApiDoc(
      *  resource = true,
+     *  section="Channels",
      *  statusCodes = {
      *      204 = "Returned when successful",
      *      400 = "Returned when the submitted data has errors"
@@ -183,6 +197,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * Delete an existing channel
      *
      * @ApiDoc(
+     *  section="Channels",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -205,6 +220,7 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * Delete one site in sites list for a existing channel
      *
      * @ApiDoc(
+     *  section="Channels",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

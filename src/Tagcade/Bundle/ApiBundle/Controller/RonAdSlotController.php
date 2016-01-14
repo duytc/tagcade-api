@@ -34,6 +34,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * Get all ron ad slots
      *
      * @ApiDoc(
+     *  section="Smart ad slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -54,6 +55,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * Get a single ron adSlot for the given id
      *
      * @ApiDoc(
+     *  section="Smart ad slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -72,6 +74,17 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * Get ad tags for this smart ad slot
+     *
+     * @ApiDoc(
+     *  section="Smart ad slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
      * @param int $id
      * @return View
      */
@@ -89,6 +102,16 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * )
      *
      * @Rest\QueryParam(name="domain", description="domain for search", nullable=true)
+     *
+     *
+     * @ApiDoc(
+     *  section="Smart ad slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
      *
      * @param int $id
      * @return FormTypeInterface|View
@@ -121,6 +144,16 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      *
      * @Rest\View(
      *      serializerGroups={"dynamicadslot.minimum", "nativeadslot.summary", "displayadslot.summary", "site.minimum", "user.summary", "slotlib.summary"}
+     * )
+     *
+     *
+     * @ApiDoc(
+     *  section="Smart ad slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
      * )
      *
      * @param Request $request
@@ -167,6 +200,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * Create a ron adSlot from the submitted data
      *
      * @ApiDoc(
+     *  section="Smart ad slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -188,6 +222,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * Update an existing ron adSlot from the submitted data or create a new one
      *
      * @ApiDoc(
+     *  section="Smart ad slots",
      *  resource = true,
      *  statusCodes = {
      *      201 = "Returned when the resource is created",
@@ -212,6 +247,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * Update an existing ron adSlot from the submitted data or create a new one at a specific location
      *
      * @ApiDoc(
+     *  section="Smart ad slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",
@@ -235,6 +271,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      * Delete an existing ron adSlot
      *
      * @ApiDoc(
+     *  section="Smart ad slots",
      *  resource = true,
      *  statusCodes = {
      *      204 = "Returned when successful",

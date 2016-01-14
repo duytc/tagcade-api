@@ -1,9 +1,4 @@
 Tagcade\Entity\Core\Site:
-    constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
-            fields: ["publisher", "domain"]
-            errorPath: domain
-            message: "A site with that domain name exists"
     properties:
         name:
             - NotBlank: ~

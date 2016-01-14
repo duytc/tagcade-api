@@ -113,10 +113,10 @@ interface SiteInterface extends ModelInterface
     /**
      * @return mixed
      */
-    public function getDeleteToken();
-    /**
-     * @param mixed $deleteToken
-     */
-    public function setDeleteToken($deleteToken);
+    public function getSiteToken();
 
+    /**
+     * @param mixed $siteToken
+     */
+    public function setSiteToken($siteToken);
 }

@@ -55,6 +55,8 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
 //    }
 
     /**
+     * Get all library ad slots
+     *
      * @Rest\Get("/libraryadslots")
      * @Rest\QueryParam(name="forRon", requirements="(true|false)", nullable=true)
      *
@@ -63,6 +65,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      * )
      *
      * @ApiDoc(
+     *   section = "Library Ad Slots",
      *   resource = true,
      *   statusCodes = {
      *      200 = "Returned when successful"
@@ -131,6 +134,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      * Get a single library adSlot for the given id
      *
      * @ApiDoc(
+     *   section = "Library Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -167,10 +171,21 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * Get library ad slots that are unlinked to a site
+     *
      * @Rest\Get("/libraryadslots/unreferred/site/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
      *      serializerGroups={"slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
+     * )
+     *
+     * @ApiDoc(
+     *   section = "Library Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
      * )
      *
      */
@@ -184,7 +199,20 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     *
+     * Create linked ad slot from library ad slot
+     *
      * @Rest\Post("/libraryadslots/{id}/createlinks", requirements={"id" = "\d+"})
+     *
+     *
+     * @ApiDoc(
+     *  section = "Library Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
      *
      * @param Request $request
      *

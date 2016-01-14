@@ -24,6 +24,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "site.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
@@ -54,6 +55,7 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      * Get a single adSlot for the given id
      *
      * @ApiDoc(
+     *  section = "Ad Slots",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
