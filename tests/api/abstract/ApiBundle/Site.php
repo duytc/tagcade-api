@@ -55,7 +55,8 @@ class Site
 
         $I->sendPATCH(URL_API . '/sites/' . $item['id'],
             [
-                'name' => 'Dtag.dev1'
+                'name' => 'Dtag.dev1',
+                'players' => null
             ]
         );
         $I->seeResponseCodeIs(204);

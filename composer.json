@@ -4,23 +4,25 @@
     "type": "project",
     "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
-        "psr-0": { "": "src/" }
+        "psr-0": { "": "src/" },
+        "classmap": [
+            "app/AppKernel.php",
+            "app/AppCache.php"
+        ]
     },
     "repositories": [
         { "type": "vcs", "url": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle" }
     ],
     "require": {
         "php": ">=5.5.0",
-
-        "symfony/symfony": "2.5.*",
-        "doctrine/orm": "~2.2,>=2.2.3",
-        "doctrine/doctrine-bundle": "~1.2",
+        "symfony/symfony": "2.8.*",
+        "doctrine/orm": "^2.4.8",
+        "doctrine/doctrine-bundle": "~1.4",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~3.0",
-        "sensio/framework-extra-bundle": "~3.0",
+        "sensio/distribution-bundle": "~5.0",
+        "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "rollerworks/multi-user-bundle": "1.1.*@dev",
         "friendsofsymfony/rest-bundle": "~1.4.0",
@@ -39,7 +41,7 @@
         "touki/ftp": "1.1.*"
     },
     "require-dev": {
-        "sensio/generator-bundle": "~2.3",
+        "sensio/generator-bundle": "~3.0",
         "phpunit/phpunit": "4.1.*",
         "doctrine/doctrine-fixtures-bundle": "dev-master",
         "liip/functional-test-bundle":"dev-master",

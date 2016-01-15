@@ -14,6 +14,8 @@ class AdSlot
                 'width' => 200,
                 'height' => 300,
                 'name' => 'dtag.test.adslot',
+                'autoFit' => true,
+                'passbackMode' => 'position'
                 //'visible' => false //default
             ]
         ];

@@ -2,6 +2,14 @@
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\DomainManager\AdNetworkManagerInterface;
+use Tagcade\DomainManager\AdSlotManagerInterface;
+use Tagcade\DomainManager\AdTagManagerInterface;
+use Tagcade\DomainManager\LibraryAdSlotManagerInterface;
+use Tagcade\DomainManager\LibrarySlotTagManagerInterface;
+use Tagcade\DomainManager\RonAdSlotManagerInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
@@ -90,11 +98,11 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
 
         // $adTag1 and $adTag2 should be removed
         // $adTag3, $adTag4 and $adTag5 should be created new
-        $this->assertCount(1, $adTag1);
-        $this->assertCount(1, $adTag2);
-        $this->assertCount(2, $adTag3);
-        $this->assertCount(2, $adTag4);
-        $this->assertCount(2, $adTag5);
+        $this->assertCount(0, $adTag1);
+        $this->assertCount(0, $adTag2);
+        $this->assertCount(1, $adTag3);
+        $this->assertCount(1, $adTag4);
+        $this->assertCount(1, $adTag5);
         $this->assertEquals('Ad Tag 3', $adTag3[0]->getName());
         $this->assertEquals('Ad Tag 4', $adTag4[0]->getName());
         $this->assertEquals('Ad Tag 5', $adTag5[0]->getName());
@@ -120,7 +128,7 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
 
         /** @var DisplayAdSlotInterface $adSlot */
         // $adSlot 5 has 3 ad tags
-        $adSlot = $displayAdSlotRepository->findOneBy(array('id' => 5));
+        $adSlot = $displayAdSlotRepository->findOneBy(array('id' => 2));
         $oldLibraryAdSlot = $adSlot->getLibraryAdSlot();
 
         $this->tester->assertNotNull($oldLibraryAdSlot);
@@ -133,7 +141,7 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
 
         /**@var LibraryDisplayAdSlotInterface $newLibraryAdSlot */
         // $newLibraryAdSlot 1 has 2 ad tags
-        $newLibraryAdSlot = $libraryDisplayAdSlotRepository->findOneBy(array('id' => 1));
+        $newLibraryAdSlot = $libraryDisplayAdSlotRepository->findOneBy(array('id' => 8));
 
         $this->assertNotNull($newLibraryAdSlot);
         $this->tester->assertEquals(2, count($newLibraryAdSlot->getLibSlotTags()->toArray()));
@@ -141,7 +149,7 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
         /**
          * @var DynamicAdSlotInterface $dynamicAdSlot
          */
-        $dynamicAdSlot = $dynamicAdSlotRepository->findOneBy(array('id' => 6));
+        $dynamicAdSlot = $dynamicAdSlotRepository->findOneBy(array('id' => 3));
         $expressions = $dynamicAdSlot->getExpressions()->toArray();
         // all starting position not null
         /** @var ExpressionInterface $expression */
@@ -176,6 +184,7 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
      */
     public function switchingLibraryDynamicAdSlot()
     {
+        // TODO prevent this to be taken place
         /**@var LibraryDynamicAdSlotRepositoryInterface $libraryDynamicAdSlotRepository */
         $libraryDynamicAdSlotRepository =  $this->em->getRepository(\Tagcade\Entity\Core\LibraryDynamicAdSlot::class);
         /**@var DynamicAdSlotRepositoryInterface $dynamicAdSlotRepository */
@@ -183,7 +192,7 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
 
         /** @var DynamicAdSlotInterface $dynamicAdSlot */
         // $adSlot 6 has 3 ad expression
-        $dynamicAdSlot = $dynamicAdSlotRepository->findOneBy(array('id' => 6));
+        $dynamicAdSlot = $dynamicAdSlotRepository->findOneBy(array('id' => 5));
         $oldLibraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
 
         $this->tester->assertNotNull($oldLibraryAdSlot);
@@ -194,7 +203,7 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
 
         /**@var LibraryDynamicAdSlotInterface $newLibraryAdSlot */
         // $newLibraryAdSlot 1 has 2 expressions
-        $newLibraryAdSlot = $libraryDynamicAdSlotRepository->findOneBy(array('id' => 6));
+        $newLibraryAdSlot = $libraryDynamicAdSlotRepository->findOneBy(array('id' => 7));
 
         $this->assertNotNull($newLibraryAdSlot);
         $this->tester->assertEquals(2, count($newLibraryAdSlot->getLibraryExpressions()->toArray()));
@@ -316,21 +325,21 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
         /** @var DynamicAdSlotInterface $dynamicAdSLot */
         // $dynamicAdSLot has 2 expression
         /** @var DynamicAdSlotInterface $dynamicAdSLot */
-        $dynamicAdSLot = $dynamicAdSlotRepository->findOneBy(array('id' => 3));
+        $dynamicAdSLot = $dynamicAdSlotRepository->findOneBy(array('id' => 5));
         $this->assertNotNull($dynamicAdSLot);
         // $dynamicAdSLot1 has 2 expression
         /** @var DynamicAdSlotInterface $dynamicAdSLot1 */
-        $dynamicAdSLot1 = $dynamicAdSlotRepository->findOneBy(array('id' => 4));
+        $dynamicAdSLot1 = $dynamicAdSlotRepository->findOneBy(array('id' => 7));
         $this->assertNotNull($dynamicAdSLot1);
 
         $expressions = $dynamicAdSLot->getExpressions()->toArray();
-        $this->assertEquals(2, count($expressions));
+        $this->assertEquals(3, count($expressions));
 
         /**@var LibraryDynamicAdSlotInterface $libraryDynamicAdSlot */
         $libraryDynamicAdSlot = $dynamicAdSLot->getLibraryAdSlot();
         $this->assertNotNull($libraryDynamicAdSlot);
         $libraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions()->toArray();
-        $this->assertEquals(2, count($libraryExpressions));
+        $this->assertEquals(3, count($libraryExpressions));
 
         /** @var LibraryDisplayAdSlotInterface $expectLibraryAdSlot */
         $expectLibraryAdSlot = $libraryDisplayAdSlotRepository->findOneBy(array('id' => 1));
@@ -354,8 +363,8 @@ class ReplicatorServiceTest extends \Codeception\TestCase\Test
         $this->replicator->replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots($libraryDynamicAdSlot);
 
         // expect $dynamicAdSLot and $dynamicAdSLot1 has 3 expression
-        $this->assertEquals(3, count($dynamicAdSLot->getExpressions()->toArray()));
-        $this->assertEquals(3, count($dynamicAdSLot1->getExpressions()->toArray()));
+        $this->assertEquals(4, count($dynamicAdSLot->getExpressions()->toArray()));
+        $this->assertEquals(4, count($dynamicAdSLot1->getExpressions()->toArray()));
     }
 
 }

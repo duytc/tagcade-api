@@ -41,9 +41,9 @@ class AppKernel extends Kernel
 
         );
 
-        if ($this->getEnvironment() == 'test') {
-            $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
-        }
+//        if ($this->getEnvironment() == 'test') {
+//            $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
+//        }
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
@@ -58,7 +58,8 @@ class AppKernel extends Kernel
 
     public function registerContainerConfiguration(LoaderInterface $loader)
     {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+        $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
+//        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
 
     public function getCacheDir()

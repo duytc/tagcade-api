@@ -1,4 +1,4 @@
-dummmyPublisher1:
+tagcadetest:
     id: 2
     sites:
         site1:
@@ -6,16 +6,18 @@ dummmyPublisher1:
             adSlots:
                 slot1:
                     type: display
-                    width: 100
-                    height: 200
-                    adTags:
-                        tag1: { html: 'tag1', adNetwork: 'indexExchange'}
-
-                slot2:
-                    width: 150
+                    width: 300
                     height: 250
                     adTags:
-                        tag1: { html: 'tag2', adNetwork: 'google'}
+                        openx: { html: 'tag1', adNetwork: 'openx'}
+                        rubicon: { html: 'tag2', adNetwork: 'rubicon'}
+                        appnexus: { html: 'tag3', adNetwork: 'appnexus'}
+
+                slot2:
+                    width: 728
+                    height: 90
+                    adTags:
+                        tag1: { html: 'tag2', adNetwork: 'appnexus'}
 
 
         site2:
@@ -23,17 +25,18 @@ dummmyPublisher1:
             adSlots:
                 slot21:
                     width: 300
-                    height: 200
+                    height: 250
                     adTags:
-                        tag1: { html: 'tag3', adNetwork: 'google'}
+                        tag1: { html: 'tag3', adNetwork: 'openx'}
     adNetworks:
-        google: { 'url': 'http://google.com' }
-        indexExchange: ~
+        openx: ~
+        rubicon: ~
+        appnexus: ~
 
     reports:
         performance:
-            startDate: "2015-01-01"
-            endDate: "2016-01-01"
+            startDate: "2016-01-01"
+            endDate: "2016-01-14"
         source:
-            startDate: "2015-01-01"
-            endDate: "2016-01-01"
+            startDate: "2016-01-01"
+            endDate: "2016-01-14"

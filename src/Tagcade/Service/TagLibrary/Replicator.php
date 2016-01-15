@@ -12,6 +12,7 @@ use Tagcade\Entity\Core\Expression;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -75,9 +76,15 @@ class Replicator implements ReplicatorInterface
      */
     public function replicateFromLibrarySlotToSingleAdSlot(BaseLibraryAdSlotInterface $libAdSlot, BaseAdSlotInterface &$adSlot)
     {
+        $referenceSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libAdSlot, $adSlot->getSite());
+        if ($referenceSlot instanceof DisplayAdSlotInterface && $referenceSlot->getId() !== $adSlot->getId()) {
+            throw new LogicException('Cannot create more than one ad slots in the same site referring to the same library');
+        }
+
         if(!$libAdSlot instanceof LibraryDisplayAdSlotInterface && !$libAdSlot instanceof LibraryNativeAdSlotInterface) {
             throw new InvalidArgumentException('expect instance of LibraryDisplayAdSlotInterface or LibraryNativeAdSlotInterface');
         }
+
         if(!$adSlot instanceof DisplayAdSlotInterface && !$adSlot instanceof NativeAdSlotInterface) {
             throw new InvalidArgumentException('expect instance of DisplayAdSlotInterface or NativeAdSlotInterface');
         }

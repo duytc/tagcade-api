@@ -12,6 +12,8 @@ class LibraryDisplayAdSlot
             'width' => 200,
             'height' => 300,
             'name' => 'dtag.test.librarydisplayadslot',
+            'autoFit' => true,
+            'passbackMode' => 'position'
             //'visible' => true, //default
             //'publisher' => 2
         ];

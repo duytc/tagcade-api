@@ -14,7 +14,7 @@ class SitePublisherCest extends Site
         $I->sendPOST(URL_API . '/sites',
             [
                 'name' => 'Dtag.dev1',
-                'domain' => 'Dtag.dev1.dev',
+                'domain' => 'dtag1.dev',
                 'channelSites' => [],
             ]
         );
@@ -30,7 +30,7 @@ class SitePublisherCest extends Site
         $I->sendPOST(URL_API . '/sites',
             [
                 'name' => 'Dtag.dev1',
-                'domain' => 'Dtag.dev1.dev',
+                'domain' => 'dtag1.dev',
                 'channelSites' => [
                     ['channel' => PARAMS_CHANNEL]
                 ]
@@ -48,7 +48,7 @@ class SitePublisherCest extends Site
         $I->sendPOST(URL_API . '/sites',
             [
                 'name' => null, //this field is null
-                'domain' => 'Dtag.dev1.dev',
+                'domain' => 'dtag1.dev',
                 'channelSites' => []
             ]
         );
@@ -64,7 +64,7 @@ class SitePublisherCest extends Site
         $I->sendPOST(URL_API . '/sites',
             [
                 'name' => 'Dtag.dev1',
-                'domain' => 'Dtag.dev1.dev',
+                'domain' => 'dtag1.dev',
                 'channelSites' => [],
                 'unexpected_field' => 'Dtag.dev1' //this is unexpected field
             ]
@@ -76,7 +76,7 @@ class SitePublisherCest extends Site
     {
         $I->sendPUT(URL_API . '/sites/' . PARAMS_SITE, [
                 'name' => 'Dtag.dev1',
-                'domain' => 'Dtag.dev1.dev-edited'
+                'domain' => 'dtag2.dev'
             ]
         );
         $I->seeResponseCodeIs(204);

@@ -56,6 +56,8 @@ class replicateFromLibrarySlotToSingleAdSlotTest extends \Codeception\TestCase\T
         $libraryAdSLot->setWidth(600);
         $libraryAdSLot->setType("display");
         $libraryAdSLot->setVisible(true);
+        $libraryAdSLot->setAutoFit(true);
+        $libraryAdSLot->setPassbackMode('position');
 
         $this->tester->persistEntity($libraryAdSLot);
 
@@ -79,6 +81,7 @@ class replicateFromLibrarySlotToSingleAdSlotTest extends \Codeception\TestCase\T
         $adTag->setLibraryAdTag($libraryAdTag);
         $adTag->setAdSlot($adSlot);
         $adTag->setActive(true);
+        $adTag->setRefId(uniqid('', true));
 
 
         $this->tester->persistEntity($libraryAdTag);
@@ -95,6 +98,7 @@ class replicateFromLibrarySlotToSingleAdSlotTest extends \Codeception\TestCase\T
         $adTag->setLibraryAdTag($libraryAdTag);
         $adTag->setAdSlot($adSlot);
         $adTag->setActive(true);
+        $adTag->setRefId(uniqid('', true));
 
         $this->tester->persistEntity($libraryAdTag);
         $this->tester->persistEntity($adTag);
@@ -110,6 +114,7 @@ class replicateFromLibrarySlotToSingleAdSlotTest extends \Codeception\TestCase\T
         $adTag->setLibraryAdTag($libraryAdTag);
         $adTag->setAdSlot($adSlot);
         $adTag->setActive(true);
+        $adTag->setRefId(uniqid('', true));
 
         $this->tester->persistEntity($libraryAdTag);
         $this->tester->persistEntity($adTag);
