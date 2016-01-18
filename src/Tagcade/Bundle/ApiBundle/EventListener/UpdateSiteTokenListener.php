@@ -36,7 +36,7 @@ class UpdateSiteTokenListener
          */
         $siteRepository = $args->getEntityManager()->getRepository(Site::class);
 
-        $similarSites = $siteRepository->findBy(array('domain'=>$entity->getDomain()));
+        $similarSites = $siteRepository->findBy(array('publisher'=> $entity->getPublisher(), 'domain'=>$entity->getDomain()));
         $hasSameExistingDomain = (empty($similarSites) || count($similarSites) < 1) ? false : true;
 
 
