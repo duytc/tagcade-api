@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class GenerateDummySourceReportCommand extends ContainerAwareCommand
 {
@@ -46,8 +47,20 @@ class GenerateDummySourceReportCommand extends ContainerAwareCommand
             throw new \Exception('startDate must be less than or equal to endDate and endDate must not exceed today');
         }
 
+        $publisherId = $input->getOption('publisher');
+        if (!is_numeric($publisherId) || (int)$publisherId < 1) {
+            throw new \Exception(sprintf('Expect positive integer publisher id. The value %s is entered', $publisherId));
+        }
+
+        $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
+        $publisher = $userManager->findPublisher($publisherId);
+        if (!$publisher instanceof PublisherInterface) {
+            throw new \Exception(sprintf('Not found publisher with id %d', $publisherId));
+        }
+
         $siteManager = $this->getContainer()->get('tagcade.domain_manager.site');
-        $sites = $siteManager->all();
+        $sites = $siteManager->getSitesForPublisher($publisher);
+
         $interval = new \DateInterval('P1D');
         $dateRange = new \DatePeriod($startDate, $interval ,$endDate);
 

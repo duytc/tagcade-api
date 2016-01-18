@@ -50,6 +50,9 @@ interface SiteInterface extends ModelInterface
 
     public function setAdSlots($adSlots);
 
+    /**
+     * @return ArrayCollection
+     */
     public function getAllAdSlots();
 
     /**

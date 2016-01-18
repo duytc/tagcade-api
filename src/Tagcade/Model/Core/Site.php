@@ -134,6 +134,10 @@ class Site implements SiteInterface
 
     public function getAllAdSlots()
     {
+        if (!$this->adSlots instanceof Collection) {
+            $this->adSlots = new ArrayCollection();
+        }
+
         return $this->adSlots;
     }
 

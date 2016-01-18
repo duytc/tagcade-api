@@ -169,11 +169,14 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
             $site->setAutoCreate(false);
             $site->setEnableSourceReport(true); // default
 
-            $em->persist($site);
 
             if (array_key_exists('adSlots', $data)) {
                 $this->createAdSlotsForSite($site, $data['adSlots']);
             }
+
+            $em->persist($site);
+
+            $em->flush();
         }
     }
 
@@ -221,11 +224,14 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
             $slot->setWidth($data['width']);
             $slot->setHeight($data['height']);
 
-            $em->persist($slot);
 
             if (array_key_exists('adTags', $data)) {
                 $this->createAdTagsForAdSlot($slot, $data['adTags']);
             }
+
+            $em->persist($slot);
+
+            $site->getAllAdSlots()->add($slot);
         }
     }
 
@@ -287,6 +293,8 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
             $adTag->setHtml($data['html']);
 
             $em->persist($adTag);
+
+            $adSlot->getAdTags()->add($adTag);
         }
     }
 

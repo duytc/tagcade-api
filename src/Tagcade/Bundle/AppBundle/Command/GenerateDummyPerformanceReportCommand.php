@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
 {
@@ -47,6 +48,11 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
             throw new \Exception('startDate must be less than or equal to endDate and endDate must not exceed today');
         }
 
+        $publisherId = $input->getOption('publisher');
+        if (!is_numeric($publisherId) || (int)$publisherId < 1) {
+            throw new \Exception(sprintf('Expect positive integer publisher id. The value %s is entered', $publisherId));
+        }
+
         $interval = new \DateInterval('P1D');
         $dateRange = new \DatePeriod($startDate, $interval ,$endDate);
 
@@ -62,6 +68,10 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
         $userManager = $container->get('tagcade_user.domain_manager.publisher');
 
+        $publisher = $userManager->findPublisher($publisherId);
+        if (!$publisher instanceof PublisherInterface) {
+            throw new \Exception(sprintf('Not found publisher with id %d', $publisherId));
+        }
 
         $reportTypes = [
             $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag'),
@@ -80,7 +90,7 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
         ];
 
 
-        $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->allReportableAdSlots());
+        $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->getReportableAdSlotsForPublisher($publisher));
         $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
         $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 
@@ -93,10 +103,11 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
             // TODO fetch report for this date and only create if there is no report
             $eventCounter->refreshTestData();
 
+            $publishers = [$publisher];
             $dailyReportCreator
                 ->setReportDate($date)
                 ->createAndSave(
-                    $userManager->allActivePublishers(),
+                    $publishers,
                     $adNetworkManager->all()
                 );
 
