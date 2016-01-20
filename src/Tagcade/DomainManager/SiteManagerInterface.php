@@ -52,4 +52,11 @@ interface SiteManagerInterface extends ManagerInterface
      * @return int number of removed channels
      */
     public function deleteChannelForSite(SiteInterface $site, $channelId) ;
+
+    /**
+     * @param $domain
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getSiteByDomainAndPublisher($domain, PublisherInterface $publisher);
 }

@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Model\Core\SiteInterface;
 
 class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotRepositoryInterface
 {
@@ -40,4 +41,14 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
         return parent::findOneBy($criteria, $orderBy);
     }
 
+    public function getAdSlotForSiteByName(SiteInterface $site, $name)
+    {
+        return $this->createQueryBuilder('d')
+            ->join('d.libraryAdSlot', 'l')
+            ->where('d.site = :site_id')
+            ->andWhere('l.name = :name')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+            ->setParameter('name', $name, Type::STRING)
+            ->getQuery()->getOneOrNullResult();
+    }
 }

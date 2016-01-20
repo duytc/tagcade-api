@@ -1,0 +1,7 @@
+services:
+    tagcade.service.csv.ad_slot_importer:
+        class: Tagcade\Service\CSV\AdSlotImporter
+        arguments:
+            - @tagcade_user.domain_manager.publisher
+            - @tagcade.domain_manager.site
+            - @tagcade.domain_manager.display_ad_slot

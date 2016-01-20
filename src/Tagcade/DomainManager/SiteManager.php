@@ -154,4 +154,9 @@ class SiteManager implements SiteManagerInterface
         //return number of removed channels
         return $removedCount;
     }
+
+    public function getSiteByDomainAndPublisher($domain, PublisherInterface $publisher)
+    {
+        return $this->repository->getSitesByDomainAndPublisher($publisher, $domain);
+    }
 }

@@ -36,4 +36,10 @@ interface DisplayAdSlotManagerInterface extends ManagerInterface{
      */
     public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site);
 
-} 
+    /**
+     * @param SiteInterface $site
+     * @param $name
+     * @return mixed
+     */
+    public function getAdSlotForSiteByName(SiteInterface $site, $name);
+}
