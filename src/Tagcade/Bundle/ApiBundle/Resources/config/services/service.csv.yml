@@ -5,3 +5,5 @@ services:
             - @tagcade_user.domain_manager.publisher
             - @tagcade.domain_manager.site
             - @tagcade.domain_manager.display_ad_slot
+            - @tagcade.service.tag_generator
+            - @logger

@@ -42,4 +42,10 @@ interface DisplayAdSlotManagerInterface extends ManagerInterface{
      * @return mixed
      */
     public function getAdSlotForSiteByName(SiteInterface $site, $name);
+
+    /**
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function deleteAdSlotForSite(SiteInterface $site);
 }

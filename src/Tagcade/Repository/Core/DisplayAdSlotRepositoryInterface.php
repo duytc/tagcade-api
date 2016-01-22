@@ -8,4 +8,6 @@ use Tagcade\Model\Core\SiteInterface;
 interface DisplayAdSlotRepositoryInterface extends ObjectRepository
 {
     public function getAdSlotForSiteByName(SiteInterface $site, $name);
+
+    public function deleteAdSlotForSite(SiteInterface $site);
 }

@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Model\Core\SiteInterface;
 
 class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotRepositoryInterface
@@ -51,4 +52,16 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
             ->setParameter('name', $name, Type::STRING)
             ->getQuery()->getOneOrNullResult();
     }
+
+    public function deleteAdSlotForSite(SiteInterface $site)
+    {
+        $qb = $this->_em->createQueryBuilder()
+            ->delete(DisplayAdSlot::class, 'd')
+            ->where('d.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER);
+
+        return $qb->getQuery()->execute();
+    }
+
+
 }

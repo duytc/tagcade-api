@@ -8,15 +8,10 @@ interface AdSlotImporterInterface
 {
     /**
      * @param $filename
-     * @param array $headers
      * @param $headerRow
-     * @return bool
-     */
-    public function checkCSVFileFormat($filename, array $headers, $headerRow);
-
-    /**
-     * @param $filename
+     * @param $outputFileName
+     * @param $csvSeparator
      * @return mixed
      */
-    public function import($filename);
+    public function importCsv($filename, $headerRow, $outputFileName, $csvSeparator);
 }

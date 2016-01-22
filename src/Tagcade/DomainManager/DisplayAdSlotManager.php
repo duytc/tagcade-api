@@ -157,4 +157,9 @@ class DisplayAdSlotManager implements DisplayAdSlotManagerInterface
     {
         return $this->repository->getAdSlotForSiteByName($site, $name);
     }
+
+    public function deleteAdSlotForSite(SiteInterface $site)
+    {
+        $this->repository->deleteAdSlotForSite($site);
+    }
 }
