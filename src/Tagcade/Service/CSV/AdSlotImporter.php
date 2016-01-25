@@ -61,6 +61,22 @@ class AdSlotImporter implements AdSlotImporterInterface
 
     const MIN_NUM_COLS = 14;
 
+    const DUMP_NEW_SITES_KEY = 'newSites';
+    const DUMP_UPDATED_SITES_KEY = 'updatedSites';
+    const DUMP_NEW_SLOTS_KEY = 'newSlots';
+    const DUMP_DELETING_SLOTS_KEY = 'deletingSlots';
+    const DUMP_SLOT_NAME_KEY = 'name';
+    const DUMP_SLOT_WIDTH_KEY = 'width';
+    const DUMP_SLOT_HEIGHT_KEY = 'height';
+    const DUMP_SITE_NAME_KEY = 'name';
+    const DUMP_SITE_DOMAIN_KEY = 'domain';
+    const DUMP_SITE_STATUS_KEY = 'status';
+    const DUMP_SITE_UPDATED_VALUE = 'updated';
+    const DUMP_SITE_INSERTED_VALUE = 'inserted';
+
+    const RESULT_DATA_KEY = 'data';
+    const RESULT_REPORT_KEY = 'report';
+
     protected $HEADERS_FOR_JS_TAGS = ['Ad Slot Html Code 1', 'Ad Slot Html Code 2', 'Ad Slot Html Code 3'];
     protected $HEADERS = ['region', 'site name', 'site url', 'ad slot name 1', 'ad slot width 1', 'ad slot height 1', 'ad slot name 2', 'ad slot width 2', 'ad slot height 2', 'ad slot name 3', 'ad slot width 3', 'ad slot height 3', 'publisher contact name', 'publisher email'];
     protected $OUTPUT_FILE_HEADERS = ['Region', 'Site Name', 'Site URL', 'Ad Slot Name 1', 'Ad Slot Width 1', 'Ad Slot Height 1', 'Ad Slot Html Code 1', 'Ad Slot Name 2', 'Ad Slot Width 2', 'Ad Slot Height 2', 'Ad Slot Html Code 2', 'Ad Slot Name 3', 'Ad Slot Width 3', 'Ad Slot Height 3', 'Ad Slot Html Code 3', 'Publisher Contact Name', 'Publisher Email'];
@@ -101,41 +117,22 @@ class AdSlotImporter implements AdSlotImporterInterface
     }
 
     /**
+     * @param PublisherInterface $publisher
      * @param $filename
-     * @param $headerPosition
      * @param $outputFileName
-     * @param string $csvSeparator
+     * @param $headerPosition = 0
+     * @param string $csvSeparator = ','
      * @return array
      */
-    public function importCsv($filename, $headerPosition, $outputFileName, $csvSeparator)
+    public function importCsvForPublisher(PublisherInterface $publisher, $filename, $outputFileName, $headerPosition = 0, $csvSeparator = ',')
     {
-        if ($headerPosition === null) {
-            $headerPosition = self::HEADER_POSITION;
-        }
-
-        if ($outputFileName === null) {
-            $outputFileName = self::OUTPUT_FILE_NAME;
-        }
-
-        if ($csvSeparator === null) {
-            $csvSeparator = self::CSV_SEPARATOR;
-        }
+        $this->validateParameters($filename, $headerPosition, $csvSeparator);
 
         $siteCount = 0;
         $adSlotCount = 0;
 
-        if (!file_exists($filename) || !is_file($filename)) {
-            throw new FileNotFoundException(sprintf('That file does not exists. Please recheck again this path %s', $filename));
-        }
-
-        $valid = $this->checkCSVFileFormat($filename, $this->HEADERS, $headerPosition, $csvSeparator);
-
-        if (!$valid) {
-            throw new InvalidArgumentException('The file format is invalid');
-        }
-
         $handle = fopen($filename, "r");
-        if ($handle === false) {
+        if ($handle === FALSE) {
             return array (
                 self::SITE_KEY => $siteCount,
                 self::SLOT_KEY => $adSlotCount,
@@ -159,7 +156,7 @@ class AdSlotImporter implements AdSlotImporterInterface
 
             $this->logger->info(sprintf('importing row %d', $row), $data);
 
-            $res = $this->importSingleLine($data);
+            $res = $this->importSingleLine($publisher, $data);
 
             $this->logger->info(sprintf('finish importing row %d', $row));
 
@@ -198,6 +195,85 @@ class AdSlotImporter implements AdSlotImporterInterface
     }
 
     /**
+     * @param PublisherInterface $publisher
+     * @param $filename
+     * @param int $headerPosition
+     * @param string $csvSeparator
+     * @return array
+     */
+    public function dumpChangesFromCsvForPublisher(PublisherInterface $publisher, $filename, $headerPosition = 0, $csvSeparator = ',')
+    {
+        $this->validateParameters($filename, $headerPosition, $csvSeparator);
+
+        $siteData = [];
+        $insertedSiteCount = 0;
+        $updatedSiteCount = 0;
+        $insertedSlotCount = 0;
+        $deletedSlotCount = 0;
+
+        $handle = fopen($filename, "r");
+        if ($handle === FALSE) {
+            throw new RuntimeException(sprintf('can not open the file %s', $filename));
+        }
+
+        $row = 0;
+        while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
+            // ignore header row
+            if ($row <= $headerPosition) {
+                $row++;
+                continue;
+            }
+
+            if (count($data) < self::MIN_NUM_COLS) {
+                fclose($handle);
+                throw new InvalidArgumentException('The file format is invalid');
+            }
+
+            $siteData[] = $this->dumpSingleLine($publisher, $data, $insertedSiteCount, $updatedSiteCount, $insertedSlotCount, $deletedSlotCount);
+        }
+
+        fclose($handle);
+
+        return array(
+            self::RESULT_DATA_KEY => $siteData,
+            self::RESULT_REPORT_KEY => array (
+                self::DUMP_NEW_SITES_KEY => $insertedSiteCount,
+                self::DUMP_UPDATED_SITES_KEY => $updatedSiteCount,
+                self::DUMP_NEW_SLOTS_KEY => $insertedSlotCount,
+                self::DUMP_DELETING_SLOTS_KEY => $deletedSlotCount
+            )
+        );
+    }
+
+    /**
+     * Validate parameters before trying to import
+     * @param $filename
+     * @param $headerPosition
+     * @param $csvSeparator
+     */
+    private function validateParameters($filename, &$headerPosition, &$csvSeparator)
+    {
+        if ($headerPosition === null) {
+            $headerPosition = self::HEADER_POSITION;
+        }
+
+        if ($csvSeparator === null) {
+            $csvSeparator = self::CSV_SEPARATOR;
+        }
+
+        if (!file_exists($filename) || !is_file($filename)) {
+            throw new FileNotFoundException(sprintf('That file does not exists. Please recheck again this path %s', $filename));
+        }
+
+        $valid = $this->checkCSVFileFormat($filename, $this->HEADERS, $headerPosition, $csvSeparator);
+
+        if (!$valid) {
+            throw new InvalidArgumentException('The file format is invalid');
+        }
+    }
+
+
+    /**
      * @param $filename
      * @param array $rows
      * @param string $csvSeparator
@@ -219,25 +295,15 @@ class AdSlotImporter implements AdSlotImporterInterface
     }
 
     /**
+     * @param PublisherInterface $publisher
      * @param $cells
-     * @return bool
+     * @return array
      */
-    protected function importSingleLine(array $cells)
+    private function importSingleLine(PublisherInterface $publisher, array $cells)
     {
         $siteCount = 0;
         $adSlotCount = 0;
         $siteDomain = $this->extractDomain($this->adjustDomainPart($cells[self::SITE_DOMAIN]));
-
-        $emails = $this->extractEmailsFromString($cells[self::PUBLISHER_EMAIL]);
-        $publisher = $this->findPublisherFromMultipleEmail($emails);
-
-        if (!$publisher instanceof PublisherInterface) {
-            return array (
-                self::SLOT_KEY => 0,
-                self::SITE_KEY => 0,
-                self::HTML_CODE_KEY => ''
-            );
-        }
 
         $sites = $this->siteManager->getSiteByDomainAndPublisher($siteDomain, $publisher);
         if (count($sites) >= 1) {
@@ -265,6 +331,81 @@ class AdSlotImporter implements AdSlotImporterInterface
             self::SLOT_KEY => $adSlotCount,
             self::HTML_CODE_KEY => $jsTags
         );
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param array $cells
+     * @param $insertedSiteCount
+     * @param $updatedSiteCount
+     * @param $insertedSlotCount
+     * @param $deletedSlotCount
+     * @return array
+     */
+    private function dumpSingleLine(PublisherInterface $publisher, array $cells, &$insertedSiteCount, &$updatedSiteCount, &$insertedSlotCount, &$deletedSlotCount)
+    {
+        $siteDomain = $this->extractDomain($this->adjustDomainPart($cells[self::SITE_DOMAIN]));
+        $sites = $this->siteManager->getSiteByDomainAndPublisher($siteDomain, $publisher);
+        if (count($sites) >= 1) {
+            $updatedSiteCount++;
+            $site = $sites[0];
+            $siteData = array (
+                self::DUMP_SITE_NAME_KEY => $cells[self::SITE_NAME],
+                self::DUMP_SITE_DOMAIN_KEY => strtolower($siteDomain),
+                self::DUMP_SITE_STATUS_KEY => self::DUMP_SITE_UPDATED_VALUE,
+                self::DUMP_DELETING_SLOTS_KEY => [],
+                self::DUMP_NEW_SLOTS_KEY => []
+            );
+            $adSlots = $this->adSlotManager->getAdSlotsForSite($site);
+
+            foreach($adSlots as $slot) {
+                $deletedSlotCount++;
+                $siteData[self::DUMP_DELETING_SLOTS_KEY][] = array (
+                    self::DUMP_SLOT_NAME_KEY => $slot->getName(),
+                    self::DUMP_SLOT_WIDTH_KEY => $slot->getWidth(),
+                    self::DUMP_SLOT_HEIGHT_KEY => $slot->getHeight()
+                );
+            }
+        }
+        else {
+            $insertedSiteCount++;
+            $siteData = array (
+                self::DUMP_SITE_NAME_KEY => $cells[self::SITE_NAME],
+                self::DUMP_SITE_DOMAIN_KEY => strtolower($siteDomain),
+                self::DUMP_SITE_STATUS_KEY => self::DUMP_SITE_INSERTED_VALUE,
+                self::DUMP_DELETING_SLOTS_KEY => [],
+                self::DUMP_NEW_SLOTS_KEY => []
+            );
+        }
+
+        if (isset($cells[self::AD_SLOT_1_NAME])) {
+            $insertedSlotCount++;
+            $siteData[self::DUMP_NEW_SLOTS_KEY][] = array (
+                self::DUMP_SLOT_NAME_KEY => $cells[self::AD_SLOT_1_NAME],
+                self::DUMP_SLOT_WIDTH_KEY => $cells[self::AD_SLOT_1_WIDTH],
+                self::DUMP_SLOT_HEIGHT_KEY => $cells[self::AD_SLOT_1_HEIGHT]
+            );
+        }
+
+        if (isset($cells[self::AD_SLOT_2_NAME])) {
+            $insertedSlotCount++;
+            $siteData[self::DUMP_NEW_SLOTS_KEY][] = array (
+                self::DUMP_SLOT_NAME_KEY => $cells[self::AD_SLOT_2_NAME],
+                self::DUMP_SLOT_WIDTH_KEY => $cells[self::AD_SLOT_2_WIDTH],
+                self::DUMP_SLOT_HEIGHT_KEY => $cells[self::AD_SLOT_2_HEIGHT]
+            );
+        }
+
+        if (isset($cells[self::AD_SLOT_3_NAME])) {
+            $insertedSlotCount++;
+            $siteData[self::DUMP_NEW_SLOTS_KEY][] = array (
+                self::DUMP_SLOT_NAME_KEY => $cells[self::AD_SLOT_3_NAME],
+                self::DUMP_SLOT_WIDTH_KEY => $cells[self::AD_SLOT_3_WIDTH],
+                self::DUMP_SLOT_HEIGHT_KEY => $cells[self::AD_SLOT_3_HEIGHT]
+            );
+        }
+
+        return $siteData;
     }
 
     /**
@@ -390,103 +531,11 @@ class AdSlotImporter implements AdSlotImporterInterface
     }
 
     /**
-     * Remove any non-ASCII characters and convert known non-ASCII characters
-     * to their ASCII equivalents, if possible.
-     *
-     * @param string $string
-     * @return string $string
-     * @author Jay Williams <myd3.com>
-     * @license MIT License
-     * @link http://gist.github.com/119517
-     */
-    private function convert_ascii($string)
-    {
-        // Replace Single Curly Quotes
-        $search[] = chr(226) . chr(128) . chr(152);
-        $replace[] = "'";
-        $search[] = chr(226) . chr(128) . chr(153);
-        $replace[] = "'";
-        // Replace Smart Double Curly Quotes
-        $search[] = chr(226) . chr(128) . chr(156);
-        $replace[] = '"';
-        $search[] = chr(226) . chr(128) . chr(157);
-        $replace[] = '"';
-        // Replace En Dash
-        $search[] = chr(226) . chr(128) . chr(147);
-        $replace[] = '--';
-        // Replace Em Dash
-        $search[] = chr(226) . chr(128) . chr(148);
-        $replace[] = '---';
-        // Replace Bullet
-        $search[] = chr(226) . chr(128) . chr(162);
-        $replace[] = '*';
-        // Replace Middle Dot
-        $search[] = chr(194) . chr(183);
-        $replace[] = '*';
-        // Replace Ellipsis with three consecutive dots
-        $search[] = chr(226) . chr(128) . chr(166);
-        $replace[] = '...';
-        // Apply Replacements
-        $string = str_replace($search, $replace, $string);
-        // Remove any non-ASCII Characters
-        $string = preg_replace("/[^\x01-\x7F]/", "", $string);
-        return $string;
-    }
-
-    /**
-     * @param array $array1
-     * @param array $array2
-     * @return bool
-     */
-    protected function arrayCompare(array $array1, array $array2)
-    {
-        if (count($array1) !== count($array2)) {
-            return false;
-        }
-
-        return (!array_diff($array1, $array2) && !array_diff($array2, $array1));
-    }
-
-    /**
      * @param $value
      * @return mixed
      */
     private function adjustDomainPart($value)
     {
         return explode(' ', $value)[0];
-    }
-
-    /**
-     * find publisher by the given list of emails. null returned if no publisher found.
-     * @param array $emails
-     * @return \FOS\UserBundle\Model\UserInterface|null
-     */
-    protected function findPublisherFromMultipleEmail(array $emails)
-    {
-        if (count($emails) < 1) {
-            return null;
-        }
-
-        foreach($emails as $email) {
-            $publisher = $this->publisherManager->findUserByUsernameOrEmail($email);
-            if ($publisher instanceof PublisherInterface) {
-                return $publisher;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * get all valid email from a string
-     * @param $str
-     * @return mixed
-     */
-    protected function extractEmailsFromString($str)
-    {
-        $emails = array();
-        preg_match_all(self::EMAIL_PATTERN, $str, $emails);
-
-        return $emails[0];
     }
 }
