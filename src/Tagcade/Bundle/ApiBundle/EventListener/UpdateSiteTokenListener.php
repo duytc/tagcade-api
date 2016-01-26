@@ -21,8 +21,6 @@ class UpdateSiteTokenListener
 {
     use CreateSiteTokenTrait;
 
-    private $changedSites = [];
-
     /**
      * handle event postPersist one site, this auto add site to SourceReportSiteConfig & SourceReportEmailConfig.
      *
@@ -70,28 +68,6 @@ class UpdateSiteTokenListener
 
         // generate new site_token separate from previous site_token value
         $entity->setSiteToken($this->generateSiteToken($args));
-
-        $this->changedSites[] = $entity;
-    }
-
-    /**
-     * handle event postFlush to do updating previous changedSites collected from preUpdate event
-     * @param PostFlushEventArgs $args
-     */
-    public function postFlush(PostFlushEventArgs $args)
-    {
-        if(count($this->changedSites) < 1) {
-            return;
-        }
-
-        $em = $args->getEntityManager();
-
-        foreach($this->changedSites as $site) {
-            $em->merge($site);
-        }
-
-        $this->changedSites = [];
-        $em->flush();
     }
 
     /**
