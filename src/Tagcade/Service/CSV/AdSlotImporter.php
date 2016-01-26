@@ -126,7 +126,7 @@ class AdSlotImporter implements AdSlotImporterInterface
      */
     public function importCsvForPublisher(PublisherInterface $publisher, $filename, $outputFileName, $headerPosition = 0, $csvSeparator = ',')
     {
-        $this->validateParameters($filename, $headerPosition, $csvSeparator);
+        $this->validateParameters($filename, $headerPosition, $csvSeparator, $outputFileName);
 
         $siteCount = 0;
         $adSlotCount = 0;
@@ -248,13 +248,18 @@ class AdSlotImporter implements AdSlotImporterInterface
     /**
      * Validate parameters before trying to import
      * @param $filename
+     * @param $outputFilename
      * @param $headerPosition
      * @param $csvSeparator
      */
-    private function validateParameters($filename, &$headerPosition, &$csvSeparator)
+    private function validateParameters($filename, &$headerPosition, &$csvSeparator, &$outputFilename = null)
     {
         if ($headerPosition === null) {
             $headerPosition = self::HEADER_POSITION;
+        }
+
+        if ($outputFilename === null) {
+            $outputFilename = self::OUTPUT_FILE_NAME;
         }
 
         if ($csvSeparator === null) {
@@ -531,6 +536,7 @@ class AdSlotImporter implements AdSlotImporterInterface
     }
 
     /**
+     * remove all characters after the first space
      * @param $value
      * @return mixed
      */

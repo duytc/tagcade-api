@@ -3,17 +3,14 @@
 namespace Tagcade\Bundle\AppBundle\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Tagcade\Behaviors\CreateSiteTokenTrait;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 /**

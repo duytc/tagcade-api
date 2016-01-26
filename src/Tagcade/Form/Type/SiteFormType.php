@@ -58,8 +58,11 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 $form = $event->getForm();
 
                 //validate domain
-                $domain = $site->getDomain();
-                if (!$this->validateDomain($domain)) {
+                $domain =  $site->getDomain();
+                try {
+                    $domain = $this->extractDomain($domain);
+                    $site->setDomain($domain);
+                } catch(\Exception $ex) {
                     $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
                 }
 
@@ -91,21 +94,21 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 $site->setChannelSites($channelSites);
 
                 $players = $form->get('players')->getData();
-                if($this->userRole instanceof PublisherInterface) {
-                    if(!$this->userRole->getUser()->hasVideoModule()) {
+                if ($this->userRole instanceof PublisherInterface) {
+                    if (!$this->userRole->getUser()->hasVideoModule()) {
                         if(is_array($players)) {
                             $form->get('players')->addError(new FormError('this user does not have module video enabled'));
                             return;
                         }
                     }
-                    else{
-                        if(!is_array($players)) {
+                    else {
+                        if (!is_array($players)) {
                             $form->get('players')->addError(new FormError('expect player config to be an array object'));
                             return;
                         }
-                        else{
+                        else {
                             foreach($players as $player){
-                                if(!in_array($player, $this->listPlayers)) {
+                                if (!in_array($player, $this->listPlayers)) {
                                     $form->get('players')->addError(new FormError(sprintf('players %s is not supported', $player)));
                                     return;
                                 }
