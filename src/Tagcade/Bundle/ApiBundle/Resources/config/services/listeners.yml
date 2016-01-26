@@ -71,7 +71,9 @@ services:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateSiteTokenListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
-#            - { name: doctrine.event_listener, event: preSoftDelete }
+            - { name: doctrine.event_listener, event: preSoftDelete }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush}
 
     tagcade_api.event_listener.UpdateDeleteTokenForAdSlotListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateDeleteTokenForAdSlotListener
