@@ -10,9 +10,9 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
-const ALL_SITES = true; // update all sites
-const PUBLISHER_ID = 2; 
-const DUMP_MODE = false; // not persist to DB
+const MODE_DRY = true; // dry = true => not persist to DB
+const PUBLISHER_ID = 2;
+const ALL_PLATFORM_SITES = false; // update all sites of all publishers. if set to true, this will ignore the defined PUBLISHER_ID
 
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
@@ -53,7 +53,7 @@ function extractDomain($domain) {
 
 $batchSize = 20;
 $siteCount = 0;
-if (ALL_SITES === TRUE) {
+if (ALL_PLATFORM_SITES === TRUE) {
     $sites = $siteRepository->findAll();
     echo 'calculating for all sites...' . "\r\n";
 }
@@ -65,7 +65,7 @@ else {
     }
 
     $sites =  $siteRepository->getSitesForPublisher($publisher);
-    echo sprintf('calculating for publisher %s', $publisher->getFirstName()) . "\r\n";
+    echo sprintf('calculating for publisher "%s" (%s) :', $publisher->getFirstName(), $publisher->getEmail()) . "\r\n";
 }
 
 foreach($sites as $id=>$site) {
@@ -83,7 +83,7 @@ foreach($sites as $id=>$site) {
     }
 
     $siteCount++;
-    if (DUMP_MODE === FALSE) {
+    if (MODE_DRY === FALSE) {
         $site->setDomain($tmp);
 
         // Set site unique for the case of auto create.
@@ -104,16 +104,21 @@ foreach($sites as $id=>$site) {
         if ($id % $batchSize == 0) {
             $em->flush();
         }
+
+        echo sprintf('  - site "%s" (%s) updated successfully!', $site->getName(), $site->getDomain()) .  "\r\n";
+    }
+    else {
+        echo sprintf('  - site "%s" (%s) is being updated!', $site->getName(), $site->getDomain()) .  "\r\n";
     }
 }
 
-if (DUMP_MODE === FALSE) {
+if (MODE_DRY === FALSE) {
     $em->flush();
     $em->clear();
-    echo sprintf('%d site(s) updated', $siteCount) .  "\r\n";
-    echo 'DONE' . "\r\n";
-    exit;
 }
 
-echo sprintf('%d site(s) is being updated', $siteCount) .  "\r\n";
+if ($siteCount === 0) {
+    echo 'nothing to update' . "\r\n";
+}
+echo 'DONE' . "\r\n";
 
