@@ -79,3 +79,9 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preSoftDelete }
+
+    tagcade_api.event_listener.CorrectSiteDomainListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\CorrectSiteDomainListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }

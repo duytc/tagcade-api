@@ -55,7 +55,7 @@ $batchSize = 20;
 $siteCount = 0;
 if (ALL_PLATFORM_SITES === TRUE) {
     $sites = $siteRepository->findAll();
-    echo 'calculating for all sites...' . "\r\n";
+    echo 'calculating for all sites...' . "\n";
 }
 else {
     $publisher = $publisherManager->find(PUBLISHER_ID);
@@ -65,7 +65,7 @@ else {
     }
 
     $sites =  $siteRepository->getSitesForPublisher($publisher);
-    echo sprintf('calculating for publisher "%s" (%s) :', $publisher->getFirstName(), $publisher->getEmail()) . "\r\n";
+    echo sprintf('calculating for publisher "%s" (%s) :', $publisher->getFirstName(), $publisher->getEmail()) . "\n";
 }
 
 foreach($sites as $id=>$site) {
@@ -105,10 +105,10 @@ foreach($sites as $id=>$site) {
             $em->flush();
         }
 
-        echo sprintf('  - site "%s" (%s) updated successfully!', $site->getName(), $site->getDomain()) .  "\r\n";
+        echo sprintf('  - site "%s" (%s) updated successfully!', $site->getName(), $site->getDomain()) .  "\n";
     }
     else {
-        echo sprintf('  - site "%s" (%s) is being updated!', $site->getName(), $site->getDomain()) .  "\r\n";
+        echo sprintf('  - site "%s" (%s) is being updated to %s!', $site->getName(), $site->getDomain(), $tmp) .  "\n";
     }
 }
 
@@ -118,7 +118,7 @@ if (MODE_DRY === FALSE) {
 }
 
 if ($siteCount === 0) {
-    echo 'nothing to update' . "\r\n";
+    echo 'nothing to update' . "\n";
 }
-echo 'DONE' . "\r\n";
+echo 'DONE' . "\n";
 
