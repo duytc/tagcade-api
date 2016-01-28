@@ -14,6 +14,7 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
+    const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
     private $firstOpportunities = 0;
@@ -45,54 +46,60 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
 
         $namespaceAndToday = sprintf('%s:%s', $namespace, $today->format('ymd'));
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_OPPORTUNITY, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->opportunities = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_OPPORTUNITY, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->opportunities = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_FIRST_OPPORTUNITY, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->firstOpportunities = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_FIRST_OPPORTUNITY, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->firstOpportunities = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_IMPRESSION, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->impressions = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_IMPRESSION, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->impressions = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_VERIFIED_IMPRESSION, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->verifiedImpressions = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_VERIFIED_IMPRESSION, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->verifiedImpressions = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_UNVERIFIED_IMPRESSION, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->unverifiedImpressions = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_UNVERIFIED_IMPRESSION, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->unverifiedImpressions = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_BLANK_IMPRESSION, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->blankImpressions = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_BLANK_IMPRESSION, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->blankImpressions = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_VOID_IMPRESSION, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->voidImpressions = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_VOID_IMPRESSION, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->voidImpressions = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_CLICK, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->clicks = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_CLICK, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->clicks = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_PASSBACK, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->passbacks = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_PASSBACK, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->passbacks = (int)$redisReportData[$cacheKey];
         }
 
-        $cacheKeyOpportunity = sprintf('%s:%s', self::CACHE_KEY_FORCED_PASSBACK, $namespaceAndToday);
-        if (array_key_exists($cacheKeyOpportunity, $redisReportData)) {
-            $this->forcedPassbacks = (int)$redisReportData[$cacheKeyOpportunity];
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_FALLBACK, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->passbacks = (int)$redisReportData[$cacheKey];
+        }
+
+
+        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_FORCED_PASSBACK, $namespaceAndToday);
+        if (array_key_exists($cacheKey, $redisReportData)) {
+            $this->forcedPassbacks = (int)$redisReportData[$cacheKey];
         }
 
     }
