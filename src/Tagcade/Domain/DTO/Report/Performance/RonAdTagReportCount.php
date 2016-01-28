@@ -13,7 +13,6 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
-    const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
 
@@ -84,11 +83,6 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
         $cacheKey = sprintf('%s:%s', self::CACHE_KEY_CLICK, $namespaceAndToday);
         if (array_key_exists($cacheKey, $redisReportData)) {
             $this->clicks = (int)$redisReportData[$cacheKey];
-        }
-
-        $cacheKey = sprintf('%s:%s', self::CACHE_KEY_PASSBACK, $namespaceAndToday);
-        if (array_key_exists($cacheKey, $redisReportData)) {
-            $this->passbacks = (int)$redisReportData[$cacheKey];
         }
 
         $cacheKey = sprintf('%s:%s', self::CACHE_KEY_FALLBACK, $namespaceAndToday);
