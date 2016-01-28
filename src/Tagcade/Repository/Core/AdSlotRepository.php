@@ -234,7 +234,6 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             ->leftJoin('sl.libraryAdSlot', 'lsl')
             ->join('lsl.ronAdSlot', 'rsl')
             ->where('rsl.id = :ron_ad_slot_id')
-            ->andWhere('sl.autoCreate = true')
             ->setParameter('ron_ad_slot_id', $ronAdSlot->getId(), TYPE::INTEGER);
 
         if (is_int($limit)) {
