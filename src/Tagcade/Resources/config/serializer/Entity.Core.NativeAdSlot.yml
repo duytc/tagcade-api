@@ -3,7 +3,7 @@ Tagcade\Entity\Core\NativeAdSlot:
     properties:
         id:
             expose: true
-            groups: [nativeadslot.detail, nativeadslot.summary]
+            groups: [nativeadslot.primary, nativeadslot.summary, nativeadslot.detail]
         site:
             expose: true
             groups: [nativeadslot.detail, nativeadslot.summary]
