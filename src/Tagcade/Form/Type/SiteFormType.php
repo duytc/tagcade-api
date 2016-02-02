@@ -47,7 +47,20 @@ class SiteFormType extends AbstractRoleSpecificFormType
             )
         );
 
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                // validate players before submitting if Publisher and Publisher does not have Video Module
+                if ($this->userRole instanceof PublisherInterface && !$this->userRole->getUser()->hasVideoModule()) {
+                    $form = $event->getForm();
 
+                    if ($form->has('players') && null !== $form->get('players')->getData()) {
+                        $form->get('players')->addError(new FormError('this user does not have module video enabled'));
+                        return;
+                    }
+                }
+            }
+        );
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
@@ -90,31 +103,23 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 $channelSites = array_unique($channelSites);
                 $site->setChannelSites($channelSites);
 
+                // validate players after submitting if Publisher and Publisher has Video Module
                 $players = $form->get('players')->getData();
-                if ($this->userRole instanceof PublisherInterface) {
-                    if (!$this->userRole->getUser()->hasVideoModule()) {
-                        if(is_array($players)) {
-                            $form->get('players')->addError(new FormError('this user does not have module video enabled'));
-                            return;
-                        }
+                if ($this->userRole instanceof PublisherInterface && $this->userRole->getUser()->hasVideoModule()) {
+                    if (!is_array($players)) {
+                        $form->get('players')->addError(new FormError('expect player config to be an array object'));
+                        return;
                     }
                     else {
-                        if (!is_array($players)) {
-                            $form->get('players')->addError(new FormError('expect player config to be an array object'));
-                            return;
-                        }
-                        else {
-                            foreach($players as $player){
-                                if (!in_array($player, $this->listPlayers)) {
-                                    $form->get('players')->addError(new FormError(sprintf('players %s is not supported', $player)));
-                                    return;
-                                }
-
+                        foreach($players as $player){
+                            if (!in_array($player, $this->listPlayers)) {
+                                $form->get('players')->addError(new FormError(sprintf('players %s is not supported', $player)));
+                                return;
                             }
+
                         }
                     }
                 }
-
             }
         );
     }
