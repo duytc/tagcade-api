@@ -4,22 +4,24 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Handler\Handlers\Core\LibraryDynamicAdSlotHandlerAbstract;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("LibraryDynamicAdSlot")
  */
 class LibraryDynamicAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use GetEntityFromIdTrait;
+
     /**
      * Get all library dynamic adSlot
      *
@@ -87,6 +89,12 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
         {
             $request->request->add(array('visible' => true));
         }
+
+        //get Channels from request and override to request
+        $request->request->set('channels', $this->getChannels($request->request->get('channels', [])));
+
+        //get Sites from request and override to request
+        $request->request->set('sites', $this->getSites($request->request->get('sites', [])));
 
         return $this->post($request);
     }
@@ -212,7 +220,6 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
 
         return $this->delete($id);
     }
-
 
     protected function getResourceName()
     {

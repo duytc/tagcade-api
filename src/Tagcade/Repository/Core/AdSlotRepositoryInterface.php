@@ -10,6 +10,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface AdSlotRepositoryInterface extends ObjectRepository
 {
@@ -69,4 +70,14 @@ interface AdSlotRepositoryInterface extends ObjectRepository
     public function getReportableAdSlotIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork);
+
+    /**
+     * getAdSlotsRelatedChannelForUser
+     *
+     * @param UserRoleInterface $user
+     * @param null|int $limit [option]
+     * @param null|int $offset [option]
+     * @return mixed
+     */
+    public function getAdSlotsRelatedChannelForUser(UserRoleInterface $user, $limit = null, $offset = null);
 }

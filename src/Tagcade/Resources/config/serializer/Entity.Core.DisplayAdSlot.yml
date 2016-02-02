@@ -1,9 +1,14 @@
 Tagcade\Entity\Core\DisplayAdSlot:
     exclusion_policy: ALL
+    virtual_properties:
+        getChannels:
+            serialized_name: channels
+            groups: [displayadslot.withChannel]
+#            max_depth: 1
     properties:
         id:
             expose: true
-            groups: [displayadslot.primary, displayadslot.detail, displayadslot.summary]
+            groups: [displayadslot.primary, displayadslot.detail, displayadslot.summary, displayadslot.withChannel]
         site:
             expose: true
-            groups: [displayadslot.detail, displayadslot.summary]
+            groups: [displayadslot.detail, displayadslot.summary, displayadslot.withChannel]

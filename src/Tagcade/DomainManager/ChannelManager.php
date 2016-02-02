@@ -10,6 +10,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Repository\Core\ChannelRepositoryInterface;
 
 class ChannelManager implements ChannelManagerInterface
@@ -90,6 +91,14 @@ class ChannelManager implements ChannelManagerInterface
     public function getChannelsIncludeSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null)
     {
         return $this->repository->getChannelsIncludeSitesUnreferencedToLibraryAdSlot($slotLibrary, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChannelsHaveSiteForUser(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        return $this->repository->getChannelsHaveSiteForUser($user, $limit, $offset);
     }
 
     /**

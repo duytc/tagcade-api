@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface ChannelRepositoryInterface extends ObjectRepository
 {
@@ -34,4 +35,14 @@ interface ChannelRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getChannelsIncludeSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null);
+
+    /**
+     * get Channels Include at least one Site for user (Admin or Publisher)
+     *
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getChannelsHaveSiteForUser(UserRoleInterface $user, $limit = null, $offset = null);
 }

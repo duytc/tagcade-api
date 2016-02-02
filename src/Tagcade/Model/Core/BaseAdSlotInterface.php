@@ -85,4 +85,9 @@ interface BaseAdSlotInterface extends ModelInterface
      * @param mixed $deleteToken
      */
     public function setDeleteToken($deleteToken);
+
+    /**
+     * @return array
+     */
+    public function getChannels();
 }

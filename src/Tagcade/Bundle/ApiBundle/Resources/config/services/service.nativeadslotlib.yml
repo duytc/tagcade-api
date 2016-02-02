@@ -29,6 +29,7 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.library_native_ad_slot
+            - @tagcade_api.service.tag_library.ad_slot_generator_service
 
     tagcade.form.type.library_native_ad_slot:
         class: %tagcade.form.type.library_native_ad_slot.class%

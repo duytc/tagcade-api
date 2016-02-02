@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface ChannelManagerInterface extends ManagerInterface
 {
@@ -34,4 +35,14 @@ interface ChannelManagerInterface extends ManagerInterface
      * @return ChannelInterface[]
      */
     public function getChannelsIncludeSitesUnreferencedToLibraryAdSlot(BaseLibraryAdSlotInterface $slotLibrary, $limit = null, $offset = null) ;
+
+    /**
+     * get Channels Include at least one Site
+     *
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return ChannelInterface[]
+     */
+    public function getChannelsHaveSiteForUser(UserRoleInterface $user, $limit = null, $offset = null);
 }

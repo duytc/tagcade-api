@@ -11,6 +11,7 @@ use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryNativeAdSlotRepositoryInterface;
+use Tagcade\Service\TagLibrary\AdSlotGeneratorInterface;
 
 class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
 {
@@ -19,10 +20,14 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     protected $em;
     protected $repository;
 
-    public function __construct(EntityManagerInterface $em, LibraryNativeAdSlotRepositoryInterface $repository)
+    /** @var AdSlotGeneratorInterface */
+    protected $adSlotGenerator;
+
+    public function __construct(EntityManagerInterface $em, LibraryNativeAdSlotRepositoryInterface $repository, AdSlotGeneratorInterface $adSlotGenerator)
     {
         $this->em = $em;
         $this->repository = $repository;
+        $this->adSlotGenerator = $adSlotGenerator;
     }
 
     /**
@@ -90,6 +95,14 @@ class LibraryNativeAdSlotManager implements LibraryNativeAdSlotManagerInterface
     public function getLibraryNativeAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getLibraryNativeAdSlotsForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function generateAdSlotFromLibraryForChannelsAndSites(LibraryNativeAdSlotInterface $slotLibrary, $channels, $sites)
+    {
+        $this->adSlotGenerator->generateAdSlotFromLibraryForChannelsAndSites($slotLibrary, $channels, $sites);
     }
 
     /**

@@ -18,6 +18,7 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
 class AdSlotManager implements AdSlotManagerInterface
@@ -206,5 +207,13 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork)
     {
         return $this->adSlotRepository->getReportableAdSlotIdsRelatedAdNetwork($adNetwork);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsRelatedChannelForUser(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getAdSlotsRelatedChannelForUser($user, $limit, $offset);
     }
 }

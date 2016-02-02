@@ -13,8 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\ChannelHandlerAbstract;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("Channel")
@@ -134,6 +136,31 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
         $this->checkUserPermission($slotLibrary, 'edit');
 
         return $this->get('tagcade.domain_manager.channel')->getChannelsIncludeSitesUnreferencedToLibraryAdSlot($slotLibrary);
+    }
+
+    /**
+     * get Channels has at least one Site
+     *
+     * @Rest\View(
+     *      serializerGroups={"channel.summary", "user.summary"}
+     * )
+     *
+     * @Rest\Get("/channels/havesite")
+     *
+     * @ApiDoc(
+     *  section="Channels",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @return array
+     */
+    public function getChannelsHaveSiteAction()
+    {
+        return $this->get('tagcade.domain_manager.channel')->getChannelsHaveSiteForUser($this->getUser());
     }
 
     /**

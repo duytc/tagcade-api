@@ -193,5 +193,11 @@ abstract class AdSlotAbstract
         $this->deleteToken = $deleteToken;
     }
 
-
+    /**
+     * @return array
+     */
+    public function getChannels()
+    {
+        return $this->site->getChannels();
+    }
 }

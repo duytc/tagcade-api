@@ -1,9 +1,14 @@
 Tagcade\Entity\Core\NativeAdSlot:
     exclusion_policy: ALL
+    virtual_properties:
+        getChannels:
+            serialized_name: channels
+            groups: [nativeadslot.withChannel]
+#            max_depth: 1
     properties:
         id:
             expose: true
-            groups: [nativeadslot.primary, nativeadslot.summary, nativeadslot.detail]
+            groups: [nativeadslot.primary, nativeadslot.summary, nativeadslot.detail, nativeadslot.withChannel]
         site:
             expose: true
-            groups: [nativeadslot.detail, nativeadslot.summary]
+            groups: [nativeadslot.detail, nativeadslot.summary, nativeadslot.withChannel]

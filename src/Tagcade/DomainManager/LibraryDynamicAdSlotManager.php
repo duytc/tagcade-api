@@ -13,6 +13,7 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
+use Tagcade\Service\TagLibrary\AdSlotGeneratorInterface;
 use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterface
@@ -30,12 +31,16 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
      */
     private $ronAdSlotManager;
 
-    public function __construct(EntityManagerInterface $em, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator, RonAdSlotManagerInterface $ronAdSlotManager)
+    /** @var AdSlotGeneratorInterface */
+    protected $adSlotGenerator;
+
+    public function __construct(EntityManagerInterface $em, LibraryDynamicAdSlotRepositoryInterface $repository, ReplicatorInterface $replicator, RonAdSlotManagerInterface $ronAdSlotManager, AdSlotGeneratorInterface $adSlotGenerator)
     {
         $this->em = $em;
         $this->repository = $repository;
         $this->replicator = $replicator;
         $this->ronAdSlotManager = $ronAdSlotManager;
+        $this->adSlotGenerator = $adSlotGenerator;
     }
 
     /**
@@ -127,6 +132,14 @@ class LibraryDynamicAdSlotManager implements LibraryDynamicAdSlotManagerInterfac
     public function getLibraryDynamicAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getLibraryDynamicAdSlotsForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function generateAdSlotFromLibraryForChannelsAndSites(LibraryDynamicAdSlotInterface $slotLibrary, $channels, $sites)
+    {
+        $this->adSlotGenerator->generateAdSlotFromLibraryForChannelsAndSites($slotLibrary, $channels, $sites);
     }
 
     /**

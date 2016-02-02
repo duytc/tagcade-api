@@ -49,6 +49,8 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
     }
 
     /**
+     * @Rest\Get("/adslots/{id}", requirements={"id" = "\d+"})
+     *
      * @Rest\View(
      *      serializerGroups={"libraryexpression.detail", "expression.summary", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
@@ -90,4 +92,28 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
         return $adSlot;
     }
 
+    /**
+     * get AdSlots belong to at least one Channel
+     *
+     * @Rest\View(
+     *      serializerGroups={"libraryexpression.detail", "expression.summary", "adslot.detail", "nativeadslot.withChannel", "displayadslot.withChannel", "dynamicadslot.withChannel", "site.minimum", "channel.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
+     * )
+     *
+     * @Rest\Get("/adslots/relatedchannel")
+     *
+     * @ApiDoc(
+     *  section="Channels",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @return array
+     */
+    public function getAdSlotsRelatedChannelAction()
+    {
+        return $this->get('tagcade.domain_manager.ad_slot')->getAdSlotsRelatedChannelForUser($this->getUser());
+    }
 }

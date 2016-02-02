@@ -31,6 +31,7 @@ services:
             - @tagcade.repository.library_dynamic_ad_slot
             - @tagcade_api.service.tag_library.replicator
             - @tagcade.domain_manager.ron_ad_slot
+            - @tagcade_api.service.tag_library.ad_slot_generator_service
 
     tagcade.form.type.library_dynamic_ad_slot:
         class: %tagcade.form.type.library_dynamic_ad_slot.class%

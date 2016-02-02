@@ -1,15 +1,20 @@
 Tagcade\Entity\Core\DynamicAdSlot:
     exclusion_policy: ALL
+    virtual_properties:
+        getChannels:
+            serialized_name: channels
+            groups: [dynamicadslot.withChannel]
+#            max_depth: 1
     properties:
         id:
             expose: true
-            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum]
+            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum, dynamicadslot.withChannel]
         site:
             expose: true
-            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum]
+            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum, dynamicadslot.withChannel]
 #        expressions:
 #            expose: true
 #            groups: [dynamicadslot.detail, dynamicadslot.summary]
         defaultAdSlot:
             expose: true
-            groups: [dynamicadslot.detail, dynamicadslot.summary]
+            groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.withChannel]

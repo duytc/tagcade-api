@@ -8,6 +8,7 @@ use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class ChannelRepository extends EntityRepository implements ChannelRepositoryInterface
 {
@@ -98,5 +99,31 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
         );
 
         return array_values($channels);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChannelsHaveSiteForUser(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('cl');
+
+        if ($user instanceof PublisherInterface) {
+            // override prev $qb
+            $qb = $this->getChannelsForPublisherQuery($user);
+        }
+
+        $qb
+            ->join('cl.channelSites', 'cs');
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

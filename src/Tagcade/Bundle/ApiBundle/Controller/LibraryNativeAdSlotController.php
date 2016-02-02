@@ -6,21 +6,24 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("LibraryNativeAdSlot")
  */
 class LibraryNativeAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use GetEntityFromIdTrait;
+
     /**
      * @Rest\View(
      *      serializerGroups={"librarynativeadslot.summary", "slotlib.extra", "user.summary", "nativeadslot.summary", "site.summary"}
@@ -132,6 +135,12 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
             $request->request->add(array('visible' => true));
         }
 
+        //get Channels from request and override to request
+        $request->request->set('channels', $this->getChannels($request->request->get('channels', [])));
+
+        //get Sites from request and override to request
+        $request->request->set('sites', $this->getSites($request->request->get('sites', [])));
+
         return $this->post($request);
     }
 
@@ -240,7 +249,6 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
 
         return $this->delete($id);
     }
-
 
     /**
      * @return string

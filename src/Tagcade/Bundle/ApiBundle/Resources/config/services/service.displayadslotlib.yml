@@ -44,6 +44,7 @@ services:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.library_display_ad_slot
             - @tagcade.repository.library_slot_tag
+            - @tagcade_api.service.tag_library.ad_slot_generator_service
 
     tagcade.form.type.library_ad_slot:
         class: %tagcade.form.type.library_ad_slot.class%

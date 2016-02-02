@@ -15,6 +15,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInterface
 {
@@ -290,5 +291,33 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                 return $adSlotData['id'];
             }, $results
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsRelatedChannelForUser(UserRoleInterface $user, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->leftJoin('sl.site', 'st')
+            ->orderBy('sl.id', 'asc');
+
+        if ($user instanceof PublisherInterface) {
+            // override prev $qb
+            $qb = $this->getAdSlotsForPublisherQuery($user);
+        }
+
+        $qb
+            ->join('st.channelSites', 'cs');
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
