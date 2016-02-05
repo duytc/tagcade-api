@@ -3,6 +3,7 @@
 namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -40,6 +41,10 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 if ($adNetwork->getId() === null) {
                     $adNetwork->setActiveAdTagsCount(0);
                     $adNetwork->setPausedAdTagsCount(0);
+                }
+
+                if ($adNetwork->getDefaultCpmRate() < 0) {
+                    $event->getForm()->addError(new FormError('defaultCpmRate is either zero or positive numeric value'));
                 }
             }
         );
