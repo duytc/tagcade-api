@@ -299,6 +299,11 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
      *
+     *
+     * @Rest\View(
+     *      serializerGroups={"billed_report_group.summary", "report_type.summary", "site.minimum"}
+     * )
+     *
      * @ApiDoc(
      *  section = "Performance Report",
      *  resource = true,
@@ -468,9 +473,24 @@ class PerformanceReportController extends FOSRestController
 
     /**
      * @Rest\Get("/adslots")
+     *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @Rest\View(
+     *      serializerGroups={"billed_report_group.summary", "report_type.summary", "displayadslot.primary", "nativeadslot.primary"}
+     * )
+     *
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
      */
     public function getAllAdSlotsAction()
     {

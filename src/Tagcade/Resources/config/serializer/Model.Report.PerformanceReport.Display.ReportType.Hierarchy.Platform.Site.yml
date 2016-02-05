@@ -3,6 +3,8 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Sit
     virtual_properties:
         getSiteId:
             type: integer
+            expose: true
+            groups: [report_type.summary]
     properties:
         site:
             exclude: true

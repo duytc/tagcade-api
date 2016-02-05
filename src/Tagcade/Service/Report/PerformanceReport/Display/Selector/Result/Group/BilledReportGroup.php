@@ -9,6 +9,27 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 
 class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
 {
+    // inherited properties
+    protected $reportType;
+    protected $reports;
+    protected $name;
+    protected $startDate;
+    protected $endDate;
+    protected $fillRate;
+    protected $totalOpportunities;
+    protected $impressions;
+    protected $passbacks;
+    protected $estCpm;
+    protected $estRevenue;
+
+    protected $averageTotalOpportunities;
+    protected $averageImpressions;
+    protected $averagePassbacks;
+    protected $averageEstCpm;
+    protected $averageEstRevenue;
+    protected $averageFillRate;
+
+    // new properties
     protected $slotOpportunities;
     protected $billedAmount;
     protected $averageSlotOpportunities;

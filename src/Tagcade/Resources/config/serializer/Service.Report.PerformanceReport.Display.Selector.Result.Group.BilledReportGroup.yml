@@ -12,4 +12,58 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledRep
             groups: [billed_report_group.detail, billed_report_group.summary]
         averageBilledAmount:
             expose: true
-            groups: [billed_report_group.detail, billed_report_group.summary]                                                
+            groups: [billed_report_group.detail, billed_report_group.summary]
+
+        reportType:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        startDate:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+            type: DateTime<'Y-m-d'>
+        endDate:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+            type: DateTime<'Y-m-d'>
+        reports:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        name:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        totalOpportunities:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        impressions:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        fillRate:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        passbacks:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        estCpm:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        estRevenue:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageTotalOpportunities:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageImpressions:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averagePassbacks:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageEstCpm:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageEstRevenue:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageFillRate:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
