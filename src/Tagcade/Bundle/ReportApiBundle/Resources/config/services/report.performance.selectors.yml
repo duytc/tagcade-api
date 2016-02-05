@@ -175,7 +175,7 @@ services:
 
     ###
 
-    tagcade.server.report.performance_report.display.selector.report_builder:
+    tagcade.service.report.performance_report.display.selector.report_builder:
         class: Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilder
         arguments:
             - @tagcade.service.report.performance_report.display.selector.report_selector

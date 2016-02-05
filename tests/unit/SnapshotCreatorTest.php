@@ -73,7 +73,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->siteManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.site');
         $this->adNetworkManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_network');
         $this->adTagManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_tag');
-        $this->reportBuilder = $this->tester->grabServiceFromContainer('tagcade.server.report.performance_report.display.selector.report_builder');
+        $this->reportBuilder = $this->tester->grabServiceFromContainer('tagcade.service.report.performance_report.display.selector.report_builder');
 
         //create publisher
         $this->publisher = new Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User();

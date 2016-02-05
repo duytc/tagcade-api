@@ -4,7 +4,7 @@ services:
     tagcade.service.statistics.account:
         class: Tagcade\Service\Statistics\Provider\AccountStatistics
         arguments:
-            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.selector.report_builder
             - @tagcade.service.report.performance_report.display.billing.projected_billing_calculator
             - @tagcade_user.domain_manager.publisher
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
@@ -12,7 +12,7 @@ services:
     tagcade.service.statistics.site:
         class: Tagcade\Service\Statistics\Provider\SiteStatistics
         arguments:
-            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.selector.report_builder
             - @tagcade.service.report.performance_report.display.billing.projected_billing_calculator
             - @tagcade.domain_manager.site
 
@@ -20,7 +20,7 @@ services:
     tagcade.service.statistics:
         class: Tagcade\Service\Statistics\Statistics
         arguments:
-            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.selector.report_builder
             - @tagcade.service.statistics.account
             - @tagcade.service.statistics.site
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.platform

@@ -27,7 +27,7 @@ services:
     tagcade.service.report.performance_report.display.billing.billed_amount_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor
         arguments:
-            - @tagcade.server.report.performance_report.display.selector.report_builder
+            - @tagcade.service.report.performance_report.display.selector.report_builder
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @doctrine.orm.entity_manager
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter

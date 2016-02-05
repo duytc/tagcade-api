@@ -850,7 +850,7 @@ class PerformanceReportController extends FOSRestController
      */
     protected function getReportBuilder()
     {
-        return $this->get('tagcade.server.report.performance_report.display.selector.report_builder');
+        return $this->get('tagcade.service.report.performance_report.display.selector.report_builder');
     }
 
     /**
