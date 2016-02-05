@@ -186,4 +186,10 @@ interface ReportBuilderInterface
      * @return ReportResultInterface|false
      */
     public function getAdTagReport(AdTagInterface $adTag, Params $params);
+
+    /**
+     * @param Params $params
+     * @return mixed
+     */
+    public function getAllAdSlotsReport(Params $params);
 }

@@ -4,9 +4,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
         id:
             expose: true
             groups: [platform_account_report.detail, platform_account_report.summary]
-        publisher:
-            expose: true
-            groups: [platform_account_report.detail, platform_account_report.summary]            
+#        publisher:
+#            expose: true
+#            groups: [platform_account_report.detail, platform_account_report.summary]
         name:
             expose: true
             groups: [platform_account_report.detail, platform_account_report.summary]

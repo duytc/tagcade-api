@@ -4,9 +4,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
         id:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
-        adSlot:
-            expose: true
-            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]            
+#        adSlot:
+#            expose: true
+#            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
         name:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]

@@ -35,6 +35,11 @@ class PerformanceReportController extends FOSRestController
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful"
+     *  },
+     *  parameters={
+     *      {"name"="startDate", "dataType"="datetime", "required"=true, "description"="the start of date period"},
+     *      {"name"="endDate", "dataType"="datetime", "required"=true, "description"="the end of date period"},
+     *      {"name"="group", "dataType"="boolean", "required"=false, "description"="if group is provided true then all sub reports should be grouped"}
      *  }
      * )
      *
@@ -298,7 +303,8 @@ class PerformanceReportController extends FOSRestController
      *  section = "Performance Report",
      *  resource = true,
      *  statusCodes = {
-     *      200 = "Returned when successful"
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
      *  }
      * )
      *
@@ -317,15 +323,17 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Rest\Get("/sites/{siteId}", requirements={"siteId" = "\d+"})
      *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="the start of date period")
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="the end of date period")
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true, description="if group is provided true then all sub reports should be grouped")
      *
      * @ApiDoc(
      *  section = "Performance Report",
+     *  description = "get performance report for the given {siteId}",
      *  resource = true,
      *  statusCodes = {
-     *      200 = "Returned when successful"
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
      *  }
      * )
      *
@@ -455,6 +463,26 @@ class PerformanceReportController extends FOSRestController
 
         return $this->getResult(
             $this->getReportBuilder()->getAdSlotReport($adSlot, $this->getParams())
+        );
+    }
+
+    /**
+     * @Rest\Get("/adslots")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     */
+    public function getAllAdSlotsAction()
+    {
+        $user = $this->getUser();
+        if ($user instanceof PublisherInterface) {
+            return $this->getResult(
+                $this->getReportBuilder()->getPublisherAdSlotsReport($user, $this->getParams())
+            );
+        }
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllAdSlotsReport($this->getParams())
         );
     }
 

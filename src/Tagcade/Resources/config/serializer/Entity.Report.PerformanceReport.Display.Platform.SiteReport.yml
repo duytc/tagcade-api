@@ -4,9 +4,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
         id:
             expose: true
             groups: [platform_site_report.detail, platform_site_report.summary]
-        site:
-            expose: true
-            groups: [platform_site_report.detail, platform_site_report.summary]            
+#        site:
+#            expose: true
+#            groups: [platform_site_report.detail, platform_site_report.summary]
         name:
             expose: true
             groups: [platform_site_report.detail, platform_site_report.summary]
