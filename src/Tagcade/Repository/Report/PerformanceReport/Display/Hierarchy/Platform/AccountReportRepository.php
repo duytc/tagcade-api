@@ -104,5 +104,23 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return $result;
     }
 
+    public function getTopPublishersByBilledAmount(DateTime $startDate, DateTime $endDate, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('pr');
+        $qb->select('p.id, SUM(pr.billedAmount) AS totalBilledAmount')
+            ->join('pr.publisher', 'p')
+            ->where($qb->expr()->between('pr.date', ':startDate', ':endDate'))
+            ->andWhere('p.id = pr.publisher')
+            ->andWhere('p.enabled = 1')
+            ->setParameter('startDate', $startDate, Type::DATE)
+            ->setParameter('endDate', $endDate, Type::DATE)
+            ->groupBy('pr.publisher')
+            ->orderBy('totalBilledAmount', 'DESC')
+            ->setMaxResults($limit)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
 
 }

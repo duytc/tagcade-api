@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform
 
 use DateTime;
 use Doctrine\DBAL\Types\Type;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -63,4 +64,42 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
 
         return $result;
     }
+
+    public function getTopSitesByBilledAmount(DateTime $startDate, DateTime $endDate, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('sr');
+        $qb->select('s.id, SUM(sr.billedAmount) AS totalBilledAmount')
+            ->join('sr.site', 's')
+            ->where($qb->expr()->between('sr.date', ':startDate', ':endDate'))
+            ->andWhere('s.id = sr.site')
+            ->setParameter('startDate', $startDate, Type::DATE)
+            ->setParameter('endDate', $endDate, Type::DATE)
+            ->groupBy('sr.site')
+            ->orderBy('totalBilledAmount', 'DESC')
+            ->setMaxResults($limit)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('sr');
+        $qb->select('s.id, SUM(sr.estRevenue) AS totalEstRevenue')
+            ->join('sr.site', 's')
+            ->join('s.publisher', 'p')
+            ->where($qb->expr()->between('sr.date', ':startDate', ':endDate'))
+            ->andWhere('s.id = sr.site')
+            ->andWhere('p.id = :publisherId')
+            ->setParameter('startDate', $startDate, Type::DATE)
+            ->setParameter('endDate', $endDate, Type::DATE)
+            ->setParameter('publisherId', $publisher->getId(), Type::INTEGER)
+            ->groupBy('sr.site')
+            ->orderBy('totalEstRevenue', 'DESC')
+            ->setMaxResults($limit)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

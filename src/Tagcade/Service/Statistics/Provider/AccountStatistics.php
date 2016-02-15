@@ -67,8 +67,18 @@ class AccountStatistics implements AccountStatisticsInterface
 
     public function getTopPublishersByBilledAmount(Params $params, $limit = 10)
     {
+        $topPublishers = $this->accountReportRepository->getTopPublishersByBilledAmount($params->getStartDate(), $params->getEndDate(), $limit);
+        $myPublishers = [];
+        foreach ($topPublishers as $publisherObj) {
+            if (!array_key_exists('id', $publisherObj)) {
+                throw new \LogicException('Expect id in publisher object');
+            }
+
+            $myPublishers[] = $publisherObj['id'];
+        }
+
         $params->setGrouped(true);
-        $allPublishersReports = $this->reportBuilder->getAllPublishersReport($params);
+        $allPublishersReports = $this->reportBuilder->getPublishersReport($myPublishers, $params);
 
         return $this->topList($allPublishersReports, $sortBy = 'billedAmount', $limit);
     }

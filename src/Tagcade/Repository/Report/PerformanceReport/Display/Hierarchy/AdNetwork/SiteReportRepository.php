@@ -22,4 +22,15 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->getResult()
         ;
     }
+
+    public function getTopSitesByBilledAmount(DateTime $startDate, $endDate)
+    {
+        $qb = $this->createQueryBuilder('s');
+        $qb->select('s.site, sum(s.billedAmount) as billedAmount')
+            ->groupBy('s.site')
+            ->orderBy('billedAmount', 'DESC')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
 }

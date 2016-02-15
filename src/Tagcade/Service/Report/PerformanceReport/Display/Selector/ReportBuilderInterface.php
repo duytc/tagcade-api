@@ -26,6 +26,13 @@ interface ReportBuilderInterface
     public function getAllPublishersReport(Params $params);
 
     /**
+     * @param array $publishers
+     * @param Params $params
+     * @return mixed
+     */
+    public function getPublishersReport(array $publishers, Params $params);
+
+    /**
      * @param PublisherInterface $publisher
      * @param Params $params
      * @return ReportResultInterface|false
@@ -81,6 +88,14 @@ interface ReportBuilderInterface
      * @return ReportResultInterface|false
      */
     public function getAllSitesReport(Params $params);
+
+    /**
+     * @param array $sites
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSitesReport(array $sites, Params $params);
+
 
     /**
      * @param PublisherInterface $publisher

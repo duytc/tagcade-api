@@ -22,4 +22,14 @@ interface AccountReportRepositoryInterface
     public function getSumRevenueForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 
     public function getStatsSummaryForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * This will return array of pair (publisher id, billedAmount) sorted by billedAmount desc
+     *
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @param int $limit
+     * @return array
+     */
+    public function getTopPublishersByBilledAmount(DateTime $startDate, DateTime $endDate, $limit = 10);
 }

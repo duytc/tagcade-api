@@ -96,6 +96,26 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports($reportTypes, $params);
     }
 
+    public function getPublishersReport(array $publishers, Params $params)
+    {
+        $processedPublishers = [];
+        $reportTypes = [];
+        foreach ($publishers as $publisher) {
+
+            $id = $publisher instanceof PublisherInterface ? $publisher->getId() : $publisher;
+            if (!is_int($id) || (isset($processedPublishers[$id]) && $processedPublishers[$id] === true)) {
+                continue;
+            }
+
+            $tmpPublisher = $publisher instanceof PublisherInterface ? $publisher : $this->userManager->findPublisher($id);
+
+            $reportTypes[] = new PlatformReportTypes\Account($tmpPublisher);
+            $processedPublishers[$id] = true;
+        }
+
+        return $this->getReports($reportTypes, $params);
+    }
+
     public function getPublisherReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\Account($publisher), $params);
@@ -157,11 +177,35 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAllSitesReport(Params $params)
     {
-        $publishers = $this->siteManager->all();
+        $sites = $this->siteManager->all();
 
         $reportTypes = array_map(function(SiteInterface $site) {
             return new PlatformReportTypes\Site($site);
-        }, $publishers);
+        }, $sites);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSitesReport(array $sites, Params $params)
+    {
+        $reportTypes = [];
+        $enqueuedSites = [];
+
+        foreach ($sites as $site) {
+            $id = $site instanceof SiteInterface ? $site->getId() : $site;
+            if (!is_int($id) || $id < 0) {
+                continue;
+            }
+
+            if (isset($enqueuedSites[$id]) && $enqueuedSites[$id] === true) {
+                continue;
+            }
+
+            $enqueuedSites[$id] = true;
+
+            $mySite = $site instanceof SiteInterface ? $site : $this->siteManager->find($id);
+            $reportTypes[] = new PlatformReportTypes\Site($mySite);
+        }
 
         return $this->getReports($reportTypes, $params);
     }

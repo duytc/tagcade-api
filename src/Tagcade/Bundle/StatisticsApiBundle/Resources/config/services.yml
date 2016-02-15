@@ -14,7 +14,7 @@ services:
         arguments:
             - @tagcade.service.report.performance_report.display.selector.report_builder
             - @tagcade.service.report.performance_report.display.billing.projected_billing_calculator
-            - @tagcade.domain_manager.site
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.site
 
     ## statistics provider service
     tagcade.service.statistics:
