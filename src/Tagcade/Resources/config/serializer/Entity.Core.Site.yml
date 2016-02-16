@@ -8,13 +8,13 @@ Tagcade\Entity\Core\Site:
     properties:
         id:
             expose: true
-            groups: [site.detail, site.summary, site.minimum]
+            groups: [site.detail, site.summary, site.minimum, site.primary]
         publisher:
             expose: true
             groups: [site.detail, site.summary]
         name:
             expose: true
-            groups: [site.detail, site.summary]
+            groups: [site.detail, site.summary, site.primary]
         domain:
             expose: true
             groups: [site.detail, site.minimum]
