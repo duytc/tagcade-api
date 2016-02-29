@@ -10,3 +10,12 @@ Tagcade\Entity\Core\RonAdSlot:
         ronAdSlotSegments:
             expose: true
             groups: [ronadslot.detail, ronadslot.summary]
+        rtbStatus:
+            expose: true
+            groups: [ronadslot.detail, ronadslot.summary]
+        floorPrice:
+            expose: true
+            groups: [ronadslot.detail, ronadslot.summary]
+        exchanges:
+            expose: true
+            groups: [ronadslot.detail, ronadslot.summary]

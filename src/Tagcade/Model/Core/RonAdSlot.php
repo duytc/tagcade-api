@@ -5,11 +5,11 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\Security\Acl\Exception\AclAlreadyExistsException;
 use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 
 class RonAdSlot implements RonAdSlotInterface
 {
+    const RTB_STATUS_DEFAULT = self::RTB_DISABLED;
 
     /** @var int */
     protected $id;
@@ -22,6 +22,11 @@ class RonAdSlot implements RonAdSlotInterface
      */
     protected $ronAdSlotSegments;
 
+    protected $rtbStatus;
+    protected $floorPrice;
+    /** @var array|string[] */
+    protected $exchanges;
+
     /** @var \Datetime */
     protected $createdAt;
 
@@ -30,6 +35,11 @@ class RonAdSlot implements RonAdSlotInterface
 
     /** @var \Datetime */
     protected $deletedAt;
+
+    public function __construct()
+    {
+        $this->rtbStatus = self::RTB_STATUS_DEFAULT;
+    }
 
     /**
      * @return int
@@ -149,6 +159,71 @@ class RonAdSlot implements RonAdSlotInterface
         else return [];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getRtbStatus()
+    {
+        return $this->rtbStatus;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRtbStatus($rtbStatus)
+    {
+        $this->rtbStatus = null === $rtbStatus ? self::RTB_STATUS_DEFAULT : $rtbStatus;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFloorPrice()
+    {
+        return $this->floorPrice;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setFloorPrice($floorPrice)
+    {
+        $this->floorPrice = $floorPrice;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExchanges()
+    {
+        if (!is_array($this->exchanges)) {
+            $this->exchanges = [];
+        }
+
+        return $this->exchanges;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setExchanges($exchanges)
+    {
+        $this->exchanges = is_array($exchanges) ? $exchanges : (null === $exchanges ? [] : [$exchanges]);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isRTBEnabled()
+    {
+        if (!$this->getLibraryAdSlot()->getPublisher()->hasRtbModule()) {
+            return false;
+        }
+
+        return $this->rtbStatus === self::RTB_ENABLED;
+    }
 
     /**
      * @return \Datetime

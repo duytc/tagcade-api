@@ -2,12 +2,10 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Result;
 
-use DateTime;
-use IteratorAggregate;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 
-interface ReportResultInterface extends IteratorAggregate
+interface ReportResultInterface extends \IteratorAggregate
 {
     /**
      * @return ReportTypeInterface|ReportTypeInterface[]
@@ -15,12 +13,12 @@ interface ReportResultInterface extends IteratorAggregate
     public function getReportType();
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getStartDate();
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getEndDate();
 

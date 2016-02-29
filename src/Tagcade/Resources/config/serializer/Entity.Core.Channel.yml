@@ -1,10 +1,9 @@
 Tagcade\Entity\Core\Channel:
     exclusion_policy: ALL
 #    virtual_properties:
-#        getSites:
-#            serialized_name: sites
-#            groups: [channel.summary]
-#            max_depth: 1
+#        isRTBEnabled:
+#            serialized_name: rtbEnabled
+#            groups: [channel.detail, channel.summary]
     properties:
         id:
             expose: true
@@ -13,6 +12,9 @@ Tagcade\Entity\Core\Channel:
             expose: true
             groups: [channel.detail, channel.summary]
         name:
+            expose: true
+            groups: [channel.detail, channel.summary]
+        rtbStatus:
             expose: true
             groups: [channel.detail, channel.summary]
 #        channelSites:

@@ -2,12 +2,13 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\Collection;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class Channel implements ChannelInterface
 {
+    const RTB_STATUS_DEFAULT = self::RTB_DISABLED;
+
     protected $id;
 
     /** @var PublisherInterface */
@@ -15,17 +16,16 @@ class Channel implements ChannelInterface
 
     protected $name;
 
+    protected $rtbStatus;
+
     protected $deletedAt;
 
     /** @var ChannelSiteInterface[] */
     protected $channelSites;
 
-    /**
-     * @param string $name
-     */
-    public function __construct($name)
+    public function __construct()
     {
-        $this->name = $name;
+        $this->rtbStatus = self::RTB_STATUS_DEFAULT;
         $this->channelSites = new ArrayCollection();
     }
 
@@ -126,6 +126,35 @@ class Channel implements ChannelInterface
         return $sites;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function isRTBEnabled()
+    {
+        if ($this->getPublisher() === null || !$this->getPublisher()->hasRtbModule()) {
+            return false;
+        }
+
+        return $this->rtbStatus === self::RTB_ENABLED;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRtbStatus()
+    {
+        return $this->rtbStatus;
+    }
+
+    /**
+     * @param int $rtbStatus
+     * @return self
+     */
+    public function setRtbStatus($rtbStatus)
+    {
+        $this->rtbStatus = null === $rtbStatus ? self::RTB_STATUS_DEFAULT : $rtbStatus;
+        return $this;
+    }
 
     public function __toString()
     {

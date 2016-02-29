@@ -1,0 +1,7 @@
+Tagcade\Model\Report\RtbReport\AbstractReport:
+    exclusion_policy: NONE
+    properties:
+        id:
+            exclude: true
+        fillRate:
+            type: double

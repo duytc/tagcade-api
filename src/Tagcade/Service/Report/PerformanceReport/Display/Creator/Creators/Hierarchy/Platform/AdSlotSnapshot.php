@@ -14,6 +14,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 
 class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotInterface, SnapshotCreatorInterface
 {
+    use ConstructCalculatedReportTrait;
     /**
      * @var AdTagManagerInterface
      */
@@ -55,23 +56,5 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
     public function supportsReportType(ReportTypeInterface $reportType)
     {
         return $reportType instanceof AdSlotReportType;
-    }
-
-    protected function constructReportModel(ReportInterface $report, array $data)
-    {
-        if (!$report instanceof AdSlotReport) {
-            throw new InvalidArgumentException('Expect instance AdTagReport');
-        }
-
-        $report->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-            ->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-            ->setFillRate()
-        ;
-
-        // TODO latter
-        $report->setEstCpm((float)0);
-        $report->setEstRevenue((float)0);
     }
 }

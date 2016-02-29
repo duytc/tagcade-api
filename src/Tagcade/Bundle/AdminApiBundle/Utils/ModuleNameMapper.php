@@ -13,6 +13,7 @@ trait ModuleNameMapper {
             elseif($key === 'MODULE_VIDEO_ANALYTICS') return 'videoAnalytics';
             elseif($key === 'MODULE_FRAUD_DETECTION') return 'fraudDetection';
             elseif($key === 'MODULE_UNIFIED_REPORT') return 'unifiedReport';
+            elseif($key === 'MODULE_RTB') return 'realTimeBidding';
             else return $key;
         }, $modules);
     }
@@ -43,6 +44,10 @@ trait ModuleNameMapper {
                 case 'MODULE_UNIFIED_REPORT':
                     $moduleConfigs['unifiedReport'] = $moduleConfigs['MODULE_UNIFIED_REPORT'];
                     unset($moduleConfigs['MODULE_UNIFIED_REPORT']);
+                    break;
+                case 'MODULE_RTB':
+                    $moduleConfigs['realTimeBidding'] = $moduleConfigs['MODULE_RTB'];
+                    unset($moduleConfigs['MODULE_RTB']);
                     break;
             }
         }

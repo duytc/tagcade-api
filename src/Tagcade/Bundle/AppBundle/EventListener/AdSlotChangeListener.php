@@ -33,11 +33,19 @@ class AdSlotChangeListener
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof LibraryDisplayAdSlotInterface) {
+        if (!$entity instanceof DisplayAdSlotInterface && !$entity instanceof LibraryDisplayAdSlotInterface) {
             return;
         }
 
-        if ($args->hasChangedField('width') || $args->hasChangedField('height') || $args->hasChangedField('autoFit') || $args->hasChangedField('passbackMode')) {
+        if ($entity instanceof DisplayAdSlotInterface &&
+            ($args->hasChangedField('rtbStatus') || $args->hasChangedField('floorPrice'))
+        ) {
+            $this->updatedAdSlots = array($entity);
+        }
+
+        if ($entity instanceof LibraryDisplayAdSlotInterface &&
+            ($args->hasChangedField('width') || $args->hasChangedField('height') || $args->hasChangedField('autoFit') || $args->hasChangedField('passbackMode'))
+        ) {
             $this->updatedAdSlots = $entity->getAdSlots();
         }
     }
@@ -46,7 +54,7 @@ class AdSlotChangeListener
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof LibraryDisplayAdSlotInterface) {
+        if (!$entity instanceof DisplayAdSlotInterface && !$entity instanceof LibraryDisplayAdSlotInterface) {
             return;
         }
 

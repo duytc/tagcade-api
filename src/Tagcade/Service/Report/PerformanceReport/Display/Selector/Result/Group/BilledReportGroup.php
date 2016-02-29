@@ -32,7 +32,9 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     // new properties
     protected $slotOpportunities;
     protected $billedAmount;
+    protected $rtbImpressions;
     protected $averageSlotOpportunities;
+    protected $averageRtbImpressions;
     protected $averageBilledAmount;
 
     /**
@@ -59,7 +61,8 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
+        $rtbImpressions, $averageRtbImpressions
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
@@ -68,8 +71,10 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         );
 
         $this->slotOpportunities = $slotOpportunities;
+        $this->rtbImpressions = $rtbImpressions;
         $this->billedAmount = round($billedAmount, 4);
         $this->averageSlotOpportunities = round($averageSlotOpportunities);
+        $this->averageRtbImpressions = round($averageRtbImpressions);
         $this->averageBilledAmount = round($averageBilledAmount, 4);
     }
 
@@ -79,6 +84,11 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function getSlotOpportunities()
     {
         return $this->slotOpportunities;
+    }
+
+    public function getRtbImpressions()
+    {
+        return $this->rtbImpressions;
     }
 
     /**
@@ -95,6 +105,11 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function getAverageSlotOpportunities()
     {
         return $this->averageSlotOpportunities;
+    }
+
+    public function getAverageRtbImpressions()
+    {
+        return $this->averageRtbImpressions;
     }
 
     /**

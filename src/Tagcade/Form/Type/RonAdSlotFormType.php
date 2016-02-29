@@ -3,6 +3,7 @@
 namespace Tagcade\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -14,7 +15,9 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotSegmentInterface;
+use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class RonAdSlotFormType extends AbstractRoleSpecificFormType
 {
@@ -23,24 +26,33 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-//        ->add('type', null, array('mapped' => false))
-        ->add('publisher', null, array('mapped' => false))
-        ->add('libraryAdSlot', 'entity', array(
+            ->add('publisher', null, array('mapped' => false))
+            ->add('libraryAdSlot', 'entity', array(
                 'class' => LibraryAdSlotAbstract::class,
-                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libSlot')->select('libSlot'); }
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('libSlot')->select('libSlot');
+                }
             ))
-        ->add('ronAdSlotSegments', 'collection', array(
-            'mapped' => true,
-            'allow_add' => true,
-            'allow_delete' => true,
-            'type' => new RonAdSlotSegmentFormType($this->userRole)
-        ))
-        ;
+            ->add('ronAdSlotSegments', 'collection', array(
+                'mapped' => true,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'type' => new RonAdSlotSegmentFormType($this->userRole)
+            ))
+            ->add('floorPrice')
+            ->add('rtbStatus', ChoiceType::class, array(
+                'choices' => array(
+                    RTB_STATUS::RTB_ENABLED,
+                    RTB_STATUS::RTB_DISABLED
+                )
+            ))
+            ->add('exchanges');
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 $form = $event->getForm();
+                /** @var RonAdSlotInterface $ronAdSlot */
                 $ronAdSlot = $event->getData();
 
                 if ($this->userRole instanceof AdminInterface) {
@@ -108,16 +120,32 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function(FormEvent $event) {
+                $form = $event->getForm();
+
                 $ronAdSlot = $event->getData();
                 // if we are updating a ron ad slot
                 if ($ronAdSlot instanceof RonAdSlotInterface && $ronAdSlot->getId() !== null) {
                     $this->oldLibraryAdSlot = $ronAdSlot->getLibraryAdSlot();
+                }
+
+                // validate exchanges, rtbStatus before submitting
+                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
+                    if ($form->has('exchanges') && $form->get('exchanges')->getData() !== null) {
+                        $form->get('exchanges')->addError(new FormError('this ron ad slot belongs to publisher that does not have rtb module enabled'));
+                        return;
+                    }
+
+                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
+                        $form->get('rtbStatus')->addError(new FormError('this ron ad slot belongs to publisher that does not have rtb module enabled'));
+                        return;
+                    }
                 }
             });
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
+                $form = $event->getForm();
                 /**@var RonAdSlotInterface $ronAdSlot */
                 $ronAdSlot = $event->getData();
 
@@ -142,6 +170,24 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
                     /** @var RonAdSlotSegmentInterface $ronAdSlotSegment */
                     foreach($ronAdSlotSegments as $ronAdSlotSegment) {
                         $ronAdSlotSegment->setRonAdSlot($ronAdSlot);
+                    }
+                }
+
+                // validate exchanges before submitting if this ron ad slot has Rtb enabled
+                $exchanges = $form->get('exchanges')->getData();
+                if($ronAdSlot->isRTBEnabled()) {
+                    if (!is_array($exchanges)) {
+                        $form->get('exchanges')->addError(new FormError('expect exchanges config to be an array object'));
+                        return;
+                    } else {
+                        $listExchanges = $ronAdSlot->getLibraryAdSlot()->getPublisher()->getExchanges();
+
+                        foreach ($exchanges as $exchange) {
+                            if (!in_array($exchange, $listExchanges)) {
+                                $form->get('exchanges')->addError(new FormError(sprintf('exchanges %s is not supported by own publisher', $exchange)));
+                                return;
+                            }
+                        }
                     }
                 }
             }

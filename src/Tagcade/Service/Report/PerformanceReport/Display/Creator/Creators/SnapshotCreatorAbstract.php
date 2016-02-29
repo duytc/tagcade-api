@@ -12,22 +12,11 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 abstract class SnapshotCreatorAbstract extends CreatorAbstract implements SnapshotCreatorInterface {
 
-    const CACHE_KEY_SLOT_OPPORTUNITY       = 'slot_opportunities';
-    const CACHE_KEY_OPPORTUNITY            = 'opportunities';
-    const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
-    const CACHE_KEY_IMPRESSION             = 'impressions';
-    const CACHE_KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
-    const CACHE_KEY_UNVERIFIED_IMPRESSION  = 'unverified_impressions';
-    const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
-    const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
-    const CACHE_KEY_CLICK                  = 'clicks';
-    const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
-    const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
-
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
         $result = array(
             self::CACHE_KEY_SLOT_OPPORTUNITY => 0,
+            self::CACHE_KEY_RTB_IMPRESSION => 0,
             self::CACHE_KEY_OPPORTUNITY => 0,
             self::CACHE_KEY_FIRST_OPPORTUNITY => 0,
             self::CACHE_KEY_IMPRESSION => 0,
@@ -79,5 +68,6 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
         }
 
         $result[self::CACHE_KEY_SLOT_OPPORTUNITY] += $adSlotReportCount->getSlotOpportunities();
+        $result[self::CACHE_KEY_RTB_IMPRESSION] += $adSlotReportCount->getRtbImpression();
     }
 } 

@@ -44,6 +44,13 @@ trait CreateAdSlotDataTrait
      * {
      *     'id' => $adSlot->getId(),
      *     'type' => 'display',
+     *     'width' => $adSlot->getWidth(),
+     *     'height' => $adSlot->getHeight(),
+     *     'passbackMode' => $adSlot->getPassbackMode(),
+     *     'autoFit' => unset or true due to $adSlot->isAutoFit()
+     *     'rtb' => unset or true due to $adSlot->getRtb()
+     *     'exchanges' => unset or [... all supported exchanges ...] due to $adSlot->getRtb()
+     *     'floorPrice' => unset or $adSlot->isAutoFit() due to $adSlot->getRtb()
      *     'tags' => [... all tags ...]
      * }
      *
@@ -51,6 +58,13 @@ trait CreateAdSlotDataTrait
      * {
      *     "id": "1",
      *     "type": "display",
+     *     "width": "200",
+     *     "height": "300",
+     *     "passbackMode": "position",
+     *     "autoFit": "true",
+     *     "rtb": "true",
+     *     "exchanges": ["openX", "rubicon", , "indexExchange"],
+     *     "floorPrice": "16.3",
      *     "tags":
      *     [
      *         "0":
@@ -98,6 +112,14 @@ trait CreateAdSlotDataTrait
         if($adSlot->isAutoFit()) {
             $data['autoFit'] = true;
         }
+
+        // update rtb cache data if supports
+        if ($adSlot->isRTBEnabled()) {
+            $data['rtb'] = true;
+            $data['exchanges'] = $adSlot->getSite()->getExchanges();
+            $data['floorPrice'] = $adSlot->getFloorPrice();
+        }
+
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
         $adTags = $adSlot->getAdTags();

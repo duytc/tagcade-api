@@ -2,7 +2,7 @@ parameters:
     # entity class
     tagcade.entity.core.ad_slot.class: Tagcade\Entity\Core\DisplayAdSlot
     # form class
-    tagcade.form.type.ad_slot.class: Tagcade\Form\Type\AdSlotFormType
+    tagcade.form.type.display_ad_slot.class: Tagcade\Form\Type\DisplayAdSlotFormType
 
 services:
 
@@ -50,8 +50,8 @@ services:
         calls:
             - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
 
-    tagcade.form.type.ad_slot:
-        class: %tagcade.form.type.ad_slot.class%
+    tagcade.form.type.display_ad_slot:
+        class: %tagcade.form.type.display_ad_slot.class%
         arguments:
             - @tagcade.repository.display_ad_slot
             - @tagcade.repository.site
@@ -64,7 +64,7 @@ services:
         abstract: true
         public: false
         arguments:
-            - @tagcade.form.type.ad_slot
+            - @tagcade.form.type.display_ad_slot
             - @tagcade.domain_manager.display_ad_slot
 
     tagcade.handler.handlers.ad_slot.admin:

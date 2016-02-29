@@ -87,6 +87,11 @@ class SiteManager implements SiteManagerInterface
         return $this->repository->getSitesForPublisher($publisher, $limit, $offset);
     }
 
+    public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getRTBEnabledSitesForPublisher($publisher, $limit, $offset);
+    }
+
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
         return $this->repository->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);

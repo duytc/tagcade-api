@@ -25,6 +25,10 @@ class RonAdSlotChangeListener {
 
     protected $updatingLibraryAdSlots = [];
     protected $updatingRonSlotSegments = [];
+    /**
+     * @var array|ModelInterface[]
+     */
+    protected $changedEntities = [];
 
     function __construct(EventDispatcherInterface $eventDispatcher)
     {
@@ -203,6 +207,11 @@ class RonAdSlotChangeListener {
         $tmpRonSlotSegments = array_filter($tmp, function($item) { return $item instanceof RonAdSlotSegmentInterface; });
         $this->updatingRonSlotSegments = array_merge($tmpRonSlotSegments, $this->updatingRonSlotSegments);
 
+        // get all changed ron ad slots
+        $this->changedEntities = array_merge($this->changedEntities, $uow->getScheduledEntityUpdates()); // handle ron ad slot changed itself fields
+        $this->changedEntities = array_filter($this->changedEntities, function ($entity) {
+            return $entity instanceof RonAdSlotInterface;
+        });
     }
     /**
      * handle event on post update. A Library Display or Native or Dynamic Ad Slot, which Ron Ad Slot using, is updated (to database),
@@ -235,6 +244,34 @@ class RonAdSlotChangeListener {
         }
 
         $this->updatingLibraryAdSlots = [];
+
+        // merge all changed ron ad slot due to fields related to rtb ('exchanges', 'rtbStatus')
+        if (count($this->changedEntities) > 0) {
+            $em = $args->getEntityManager();
+            $uow = $em->getUnitOfWork();
+            $needBeUpdatedRonAdSlots = [];
+            foreach ($this->changedEntities as $entity) {
+                if (!$entity instanceof RonAdSlotInterface) {
+                    continue;
+                }
+
+                if (!$entity->getLibraryAdSlot() instanceof LibraryDisplayAdSlotInterface) {
+                    continue;
+                }
+
+                $changedFields = $uow->getEntityChangeSet($entity);
+
+                if (array_key_exists('rtbStatus', $changedFields) || array_key_exists('exchanges', $changedFields) || array_key_exists('floorPrice', $changedFields)) {
+                    // notice: current support rtb for "Ron Display ad slot" type!!!
+                    $needBeUpdatedRonAdSlots[] = $entity;
+                }
+            }
+
+            // reset for new onFlush event
+            $this->changedEntities = [];
+
+            $ronAdSlots = array_merge($ronAdSlots, $needBeUpdatedRonAdSlots);
+        }
 
         $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($ronAdSlots));
     }

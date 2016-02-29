@@ -20,13 +20,17 @@ if ($env == 'dev') {
 $kernel = new AppKernel($env, $debug);
 $kernel->boot();
 
+/** @var \Symfony\Component\DependencyInjection\ContainerInterface $container */
 $container = $kernel->getContainer();
 $entityManager = $container->get('doctrine.orm.entity_manager');
 $queue = $container->get("leezy.pheanstalk");
 // only tasks listed here are able to run
 $availableWorkers = [
     $container->get('tagcade.worker.workers.update_revenue_worker'),
-    $container->get('tagcade.worker.workers.update_cdn_worker')
+    $container->get('tagcade.worker.workers.update_cdn_worker'),
+    $container->get('tagcade.worker.workers.update_cache_for_site_worker'),
+    $container->get('tagcade.worker.workers.update_cache_for_channel_worker'),
+    $container->get('tagcade.worker.workers.update_cache_for_publisher_worker'),
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

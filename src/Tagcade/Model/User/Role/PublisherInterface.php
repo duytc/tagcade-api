@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\User\Role;
 
+
 interface PublisherInterface extends UserRoleInterface
 {
     /**
@@ -129,6 +130,11 @@ interface PublisherInterface extends UserRoleInterface
     /**
      * @return bool
      */
+    public function hasRtbModule();
+
+    /**
+     * @return bool
+     */
     public function hasVideoModule();
 
     /**
@@ -159,4 +165,15 @@ interface PublisherInterface extends UserRoleInterface
      *
      */
     public function setTagDomain($tagDomain);
+
+    /**
+     * @return mixed
+     */
+    public function getExchanges();
+
+    /**
+     * @param mixed $exchanges
+     * @return self
+     */
+    public function setExchanges($exchanges);
 }

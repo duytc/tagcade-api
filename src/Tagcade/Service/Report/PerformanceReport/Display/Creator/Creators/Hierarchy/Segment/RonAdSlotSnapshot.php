@@ -15,9 +15,11 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubRepo
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot as RonAdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag as RonAdTagReportType;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\BillableSnapshotCreatorAbstract;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\ConstructCalculatedReportTrait;
 
 class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAdSlotInterface
 {
+    use ConstructCalculatedReportTrait;
     /**
      * @var LibrarySlotTagRepositoryInterface
      */
@@ -62,19 +64,5 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
     public function supportsReportType(ReportTypeInterface $reportType)
     {
         return $reportType instanceof RonAdSlotReportType;
-    }
-
-    protected function constructReportModel(ReportInterface $report, array $data)
-    {
-        if (!$report instanceof RonAdSlotReport) {
-            throw new InvalidArgumentException('Expect instance RonAdSlotReport');
-        }
-
-        $report->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-            ->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-            ->setFillRate()
-        ;
     }
 }

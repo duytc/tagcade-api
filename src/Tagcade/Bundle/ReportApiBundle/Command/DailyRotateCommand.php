@@ -27,12 +27,13 @@ class DailyRotateCommand extends ContainerAwareCommand
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
 
+        $reportDate = new DateTime('yesterday');
+
+        /* create performance and billing reports */
+        $output->writeln('--> start daily rotation for performance and billing...');
         $dailyReportCreator = $this->getContainer()->get('tagcade.service.report.performance_report.display.creator.daily_report_creator');
 
-        $output->writeln('started daily rotation...');
-
         // create report from redis data
-        $reportDate = new DateTime('yesterday');
         $dailyReportCreator->setReportDate($reportDate);
         $eventCounter->refreshTestData();
         $dailyReportCreator->createAndSave(
@@ -46,6 +47,18 @@ class DailyRotateCommand extends ContainerAwareCommand
         $updatedCount = $billingEditor->updateBilledAmountThresholdForAllPublishers($reportDate);
 
         $output->writeln( sprintf('finish recalculating billed amount. Total %d publisher(s) gets updated.', $updatedCount));
+
+        $output->writeln('--> finished daily rotation for performance and billing...');
+
+        /* create rtb reports */
+        $output->writeln('--> start daily rotation for rtb...');
+        $dailyRtbReportCreator = $this->getContainer()->get('tagcade.service.report.rtb_report.creator.daily_report_creator');
+
+        $reportDate = new DateTime('yesterday');
+        $dailyRtbReportCreator->setReportDate($reportDate);
+
+        $dailyRtbReportCreator->createAndSave($userManager->allActivePublishers());
+        $output->writeln('--> finished daily rotation for rtb...');
 
         $output->writeln('finished daily rotation');
     }

@@ -52,4 +52,14 @@ interface RonAdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate(ReportableLibraryAdSlotInterface $libraryAdSlot, array $ronAdSlotSegments);
+
+    /**
+     * Get all Ron Display AdSlot that a specific publisher had created before
+     *
+     * @param PublisherInterface $publisher
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return array
+     */
+    public function getRonDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 }

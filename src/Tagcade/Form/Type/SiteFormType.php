@@ -3,6 +3,7 @@
 namespace Tagcade\Form\Type;
 
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
@@ -12,6 +13,7 @@ use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\StringUtilTrait;
@@ -28,7 +30,14 @@ class SiteFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('domain')
             ->add('enableSourceReport')
-            ->add('players');
+            ->add('players')
+            ->add('rtbStatus', ChoiceType::class, array(
+                'choices' => array(
+                    RTB_STATUS::RTB_ENABLED,
+                    RTB_STATUS::RTB_DISABLED,
+                    RTB_STATUS::RTB_INHERITED
+                )))
+            ->add('exchanges');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -50,12 +59,27 @@ class SiteFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
+                $form = $event->getForm();
+
                 // validate players before submitting if Publisher and Publisher does not have Video Module
                 if ($this->userRole instanceof PublisherInterface && !$this->userRole->getUser()->hasVideoModule()) {
                     $form = $event->getForm();
 
                     if ($form->has('players') && null !== $form->get('players')->getData()) {
                         $form->get('players')->addError(new FormError('this user does not have module video enabled'));
+                        return;
+                    }
+                }
+
+                // validate rtbStatus before submitting
+                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
+                    if ($form->has('exchanges') && $form->get('exchanges')->getData() !== null) {
+                        $form->get('exchanges')->addError(new FormError('this site belongs to publisher that does not have rtb module enabled'));
+                        return;
+                    }
+
+                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
+                        $form->get('rtbStatus')->addError(new FormError('this site belongs to publisher that does not have rtb module enabled'));
                         return;
                     }
                 }
@@ -71,7 +95,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 $form = $event->getForm();
 
                 //validate domain
-                $domain =  $site->getDomain();
+                $domain = $site->getDomain();
                 if ($this->validateDomain($domain) === FALSE) {
                     $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
                 }
@@ -109,14 +133,29 @@ class SiteFormType extends AbstractRoleSpecificFormType
                     if (!is_array($players)) {
                         $form->get('players')->addError(new FormError('expect player config to be an array object'));
                         return;
-                    }
-                    else {
-                        foreach($players as $player){
+                    } else {
+                        foreach ($players as $player) {
                             if (!in_array($player, $this->listPlayers)) {
                                 $form->get('players')->addError(new FormError(sprintf('players %s is not supported', $player)));
                                 return;
                             }
+                        }
+                    }
+                }
 
+                $exchanges = $form->get('exchanges')->getData();
+                if ($site->isRTBEnabled()) {
+                    if (!is_array($exchanges)) {
+                        $form->get('exchanges')->addError(new FormError('expect exchanges config to be an array object'));
+                        return;
+                    } else {
+                        $listExchanges = $site->getPublisher()->getExchanges();
+
+                        foreach ($exchanges as $exchange) {
+                            if (!in_array($exchange, $listExchanges)) {
+                                $form->get('exchanges')->addError(new FormError(sprintf('exchanges %s is not supported by own publisher', $exchange)));
+                                return;
+                            }
                         }
                     }
                 }

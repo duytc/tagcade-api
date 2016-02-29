@@ -61,10 +61,18 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
                     if($publisher->hasVideoModule()){
                         $moduleConfigs = array('MODULE_VIDEO_ANALYTICS' => array('players' => $site->getPlayers()));
                         $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($moduleConfigs));
+
+                        continue;
                     }
-                    else{
-                        $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules));
+
+                    if($publisher->hasRtbModule()){
+                        $moduleConfigs = array('MODULE_RTB' => array('exchanges' => $site->getExchanges()));
+                        $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($moduleConfigs));
+
+                        continue;
                     }
+
+                    $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules));
                 }
             }
         }

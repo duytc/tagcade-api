@@ -1,0 +1,28 @@
+Tagcade\Entity\Report\RtbReport\RonAdSlotReport:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+        name:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+        date:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+            type: DateTime<'Y-m-d'>
+        opportunities:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+        impressions:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+        earnedAmount:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+        fillRate:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]
+        segment:
+            expose: true
+            groups: [rtb_ron_ad_slot_report.detail, rtb_ron_ad_slot_report.summary]

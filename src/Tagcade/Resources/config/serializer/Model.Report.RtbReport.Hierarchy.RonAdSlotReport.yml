@@ -1,0 +1,12 @@
+Tagcade\Model\Report\RtbReport\Hierarchy\RonAdSlotReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getRonAdSlotId:
+            type: integer
+        getSegmentId:
+            type: integer
+    properties:
+        ronAdSlot:
+            exclude: true
+        segment:
+            exclude: true

@@ -13,4 +13,6 @@ interface BilledReportDataInterface extends ReportDataInterface
      * @return float
      */
     public function getBilledAmount();
+
+    public function getRtbImpressions();
 }

@@ -19,6 +19,8 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class AccountSnapshot extends BillableSnapshotCreatorAbstract implements AccountInterface, SnapshotCreatorInterface
 {
     use HasSubReportsTrait;
+    use ConstructCalculatedReportTrait;
+
 
     /**
      * @var AdSlotManagerInterface
@@ -70,23 +72,5 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
     public function supportsReportType(ReportTypeInterface $reportType)
     {
         return $reportType instanceof AccountReportType;
-    }
-
-    protected function constructReportModel(ReportInterface $report, array $data)
-    {
-        if (!$report instanceof CalculatedReportInterface) {
-            throw new InvalidArgumentException('Expect CalculatedReportInterface');
-        }
-
-        $report->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-            ->setFillRate()
-
-        ;
-        // TODO latter
-        $report->setEstCpm((float)0);
-        $report->setEstRevenue((float)0);
     }
 }

@@ -12,6 +12,7 @@ use Tagcade\Entity\Core\NativeAdSlot;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -309,6 +310,30 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         $qb
             ->join('st.channelSites', 'cs');
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsForChannel(ChannelInterface $channel, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->leftJoin('sl.site', 'st')
+            ->join('st.channelSites', 'cs')
+            ->join('cs.channel', 'cn')
+            ->where('cn.id = :channelId')
+            ->setParameter('channelId', $channel->getId())
+            ->orderBy('sl.id', 'asc');
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);

@@ -99,6 +99,45 @@ class Manager
     }
 
     /**
+     * update cache for multiple site ids
+     *
+     * @param array $siteIds
+     */
+    public function updateCacheForSites(array $siteIds)
+    {
+        $params = new StdClass;
+        $params->siteIds = $siteIds;
+
+        $this->queueTask('updateCacheForSites', $params);
+    }
+
+    /**
+     * update cache for multiple channel ids
+     *
+     * @param array $channelIds
+     */
+    public function updateCacheForChannels(array $channelIds)
+    {
+        $params = new StdClass;
+        $params->channelIds = $channelIds;
+
+        $this->queueTask('updateCacheForChannels', $params);
+    }
+
+    /**
+     * update cache for multiple publisher ids
+     *
+     * @param array $publisherIds
+     */
+    public function updateCacheForPublishers(array $publisherIds)
+    {
+        $params = new StdClass;
+        $params->publisherIds = $publisherIds;
+
+        $this->queueTask('updateCacheForPublishers', $params);
+    }
+
+    /**
      * @param string $task
      * @param StdClass $params
      */

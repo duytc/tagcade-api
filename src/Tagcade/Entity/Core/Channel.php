@@ -11,8 +11,13 @@ class Channel extends ChannelModel
     protected $name;
     protected $deletedAt;
     protected $channelSites;
+    protected $rtbStatus;
 
+    /**
+     * this constructor will be called by FormType, must be used to call parent to set default values
+     */
     public function __construct()
     {
+        parent::__construct();
     }
 }

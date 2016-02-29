@@ -25,6 +25,15 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $qb->getQuery()->getResult();
     }
 
+    public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesForPublisherQuery($publisher, $limit, $offset);
+        $qb->andWhere('st.rtbEnabled = true');
+
+        return $qb->getQuery()->getResult();
+    }
+
+
     /**
      * @param UserRoleInterface $user
      * @param null $limit

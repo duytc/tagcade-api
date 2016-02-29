@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork;
 
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
@@ -57,7 +58,6 @@ class AdTag extends CreatorAbstract implements AdTagInterface
                 ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
             ;
         }
-
 
         return $report;
     }

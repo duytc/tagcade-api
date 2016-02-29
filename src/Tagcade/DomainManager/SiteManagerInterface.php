@@ -17,6 +17,8 @@ interface SiteManagerInterface extends ManagerInterface
      */
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
+    public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);

@@ -3,7 +3,6 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
-use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 
 interface EventCounterInterface
@@ -26,6 +25,12 @@ interface EventCounterInterface
     public function getSlotOpportunityCount($slotId);
 
     /**
+     * @param $slotId
+     * @return int
+     */
+    public function getRtbImpressionsCount($slotId);
+
+    /**
      * @param int $ronSlotId
      * @param int|null $segment
      * @return mixed
@@ -44,6 +49,7 @@ interface EventCounterInterface
      * @return mixed
      */
     public function getRonOpportunityCount($ronTagId, $segment = null);
+
 
     /**
      * @param int $tagId

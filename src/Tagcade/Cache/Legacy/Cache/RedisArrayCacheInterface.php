@@ -7,6 +7,12 @@ use Doctrine\Common\Cache\Cache;
 interface RedisArrayCacheInterface extends Cache
 {
     /**
+     * @param $hash
+     * @return mixed
+     */
+    public function incr($hash);
+
+    /**
      * Gets a value from the hash stored at key.
      * If the hash table doesn't exist, or the key doesn't exist, FALSE is returned.
      *

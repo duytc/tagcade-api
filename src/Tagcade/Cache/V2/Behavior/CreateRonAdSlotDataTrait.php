@@ -59,11 +59,18 @@ trait CreateRonAdSlotDataTrait {
     }
 
     /**
-     * create Ron Ad Slot cache data for Display, format as:
+     * create as ron display ad slot, format as:
      *
      * {
      *     'id' => $adSlot->getId(),
      *     'type' => 'display',
+     *     'width' => $adSlot->getWidth(),
+     *     'height' => $adSlot->getHeight(),
+     *     'passbackMode' => $adSlot->getPassbackMode(),
+     *     'autoFit' => unset or true due to $adSlot->isAutoFit()
+     *     'rtb' => unset or true due to $adSlot->getRtb()
+     *     'exchanges' => unset or [... all supported exchanges ...] due to $adSlot->getRtb()
+     *     'floorPrice' => unset or $adSlot->isAutoFit() due to $adSlot->getRtb()
      *     'tags' => [... all tags ...]
      * }
      *
@@ -71,6 +78,13 @@ trait CreateRonAdSlotDataTrait {
      * {
      *     "id": "1",
      *     "type": "display",
+     *     "width": "200",
+     *     "height": "300",
+     *     "passbackMode": "position",
+     *     "autoFit": "true",
+     *     "rtb": "true",
+     *     "exchanges": ["openX", "rubicon", , "indexExchange"],
+     *     "floorPrice": "16.3",
      *     "tags":
      *     [
      *         "0":
@@ -124,6 +138,13 @@ trait CreateRonAdSlotDataTrait {
 
         if ($libDisplay->isAutoFit()) {
             $data['autoFit'] = true;
+        }
+
+        // update rtb cache data if supports
+        if ($ronAdSlot->isRTBEnabled()) {
+            $data['rtb'] = true;
+            $data['exchanges'] = $ronAdSlot->getExchanges();
+            $data['floorPrice'] = $ronAdSlot->getFloorPrice();
         }
 
         //step 1. get and check adTags

@@ -27,6 +27,8 @@ class User extends BaseUser implements PublisherInterface
     protected $country;
     protected $settings; //json string represent setting for report bundle
     protected $tagDomain;
+    /** @var array|string[] */
+    protected $exchanges;
 
     /**
      * @return string
@@ -266,6 +268,27 @@ class User extends BaseUser implements PublisherInterface
     public function setTagDomain($tagDomain)
     {
         $this->tagDomain = $tagDomain;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExchanges()
+    {
+        if (!is_array($this->exchanges)) {
+            $this->exchanges = [];
+        }
+
+        return $this->exchanges;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setExchanges($exchanges)
+    {
+        $this->exchanges = is_array($exchanges) ? $exchanges : (null === $exchanges ? [] : [$exchanges]);
         return $this;
     }
 }

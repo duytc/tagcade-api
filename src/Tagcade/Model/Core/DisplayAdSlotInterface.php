@@ -71,4 +71,30 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      * @return DisplayAdSlotInterface[]
      */
     public function getCoReferencedAdSlots();
+
+    /**
+     * @return float
+     */
+    public function getFloorPrice();
+
+    /**
+     * @param float $floorPrice
+     */
+    public function setFloorPrice($floorPrice);
+
+    /**
+     * @return mixed
+     */
+    public function removeFloorPrice();
+
+    /**
+     * @return integer
+     */
+    public function getRtbStatus();
+
+    /**
+     * @param integer $rtbStatus
+     * @return self
+     */
+    public function setRtbStatus($rtbStatus);
 }

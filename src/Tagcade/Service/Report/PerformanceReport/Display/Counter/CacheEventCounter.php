@@ -3,7 +3,6 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
-use Doctrine\Common\Cache\Cache;
 use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
 use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
@@ -36,6 +35,10 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const NAMESPACE_APPEND_SEGMENT         = 'segment_%d';
 
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
+
+    /* for rtb event count redis cache */
+    const CACHE_KEY_RTB_IMPRESSION         = 'impression';
+    const REDIS_HASH_RTB_EVENT_COUNT       = 'rtb_event_processor:event_count';
 
     private static $adTagReportKeys = [
         0 => self::CACHE_KEY_OPPORTUNITY,
@@ -89,6 +92,17 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         );
     }
 
+    /**
+     * @param $slotId
+     * @return int|mixed
+     */
+    public function getRtbImpressionsCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
+    }
+
     public function getOpportunityCount($tagId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
@@ -106,6 +120,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $this->getCacheKey(static::CACHE_KEY_IMPRESSION, $namespace)
         );
     }
+
 
     public function getPassbackCount($tagId)
     {
@@ -234,6 +249,18 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     }
 
     /**
+     * @param $ronSlotId
+     * @param null $segment
+     * @return mixed
+     */
+    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $ronSlotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
+    }
+
+    /**
      * @param int $ronTagId
      * @param int|null $segment
      * @return mixed
@@ -332,7 +359,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $index = 0;
 
         foreach($adSlotIds as $id) {
-            $convertedResults[$id] = new AdSlotReportCount(array(self::CACHE_KEY_SLOT_OPPORTUNITY => $results[$index]));
+            $rtbImpression = $this->getRtbImpressionsCount($id);
+            $convertedResults[$id] = new AdSlotReportCount(
+                array(
+                    self::CACHE_KEY_SLOT_OPPORTUNITY => $results[$index],
+                    self::CACHE_KEY_RTB_IMPRESSION => $rtbImpression
+                )
+            );
             $index ++;
         }
 
@@ -431,7 +464,12 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronAdSlotKeys);
 
-        return new RonAdSlotReportCount($ronAdSlotId, $results, $segmentId);
+        $rtbImpression = $this->getRonSlotRtbImpressionsCount($ronAdSlotId, $segmentId);
+
+        $ronSlotCount = new RonAdSlotReportCount($ronAdSlotId, $results, $segmentId);
+        $ronSlotCount->setRtbImpression($rtbImpression);
+
+        return $ronSlotCount;
     }
 
 
@@ -477,6 +515,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         return $adTagKeys;
     }
+
     /**
      * @param string $key
      * @return mixed

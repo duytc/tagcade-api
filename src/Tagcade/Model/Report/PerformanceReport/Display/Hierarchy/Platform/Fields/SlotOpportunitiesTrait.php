@@ -21,6 +21,8 @@ trait SlotOpportunitiesTrait
      */
     protected $billedRate;
 
+    protected $rtbImpressions;
+
     /**
      * @inheritdoc
      */
@@ -37,6 +39,25 @@ trait SlotOpportunitiesTrait
         $this->slotOpportunities = (int) $slotOpportunities;
 
         return $this;
+    }
+
+    /**
+     * @param $rtbImpressions
+     * @return $this
+     */
+    public function setRtbImpressions($rtbImpressions)
+    {
+        $this->rtbImpressions = (int)$rtbImpressions;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRtbImpressions()
+    {
+        return (int)$this->rtbImpressions;
     }
 
     /**
@@ -91,4 +112,4 @@ trait SlotOpportunitiesTrait
      * @return int|null
      */
     abstract public function getImpressions();
-} 
+}

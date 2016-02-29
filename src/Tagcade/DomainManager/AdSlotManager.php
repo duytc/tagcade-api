@@ -8,6 +8,7 @@ use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
@@ -215,5 +216,21 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getAdSlotsRelatedChannelForUser(UserRoleInterface $user, $limit = null, $offset = null)
     {
         return $this->adSlotRepository->getAdSlotsRelatedChannelForUser($user, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsForChannel(ChannelInterface $channel, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getAdSlotsForChannel($channel, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getDisplayAdSlotsForPublisher($publisher, $limit, $offset);
     }
 }

@@ -4,8 +4,9 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\RTBEnabledInterface;
 
-interface BaseAdSlotInterface extends ModelInterface
+interface BaseAdSlotInterface extends ModelInterface, RTBEnabledInterface
 {
     /**
      * @param mixed $id

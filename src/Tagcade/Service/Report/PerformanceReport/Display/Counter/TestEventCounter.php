@@ -21,6 +21,7 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_OPPORTUNITY            = 'opportunities';
     const KEY_SLOT_OPPORTUNITY       = 'opportunities';
     const KEY_IMPRESSION             = 'impressions';
+    const KEY_RTB_IMPRESSION         = 'rtb_impressions';
     const KEY_PASSBACK               = 'passbacks';
     const KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
     const KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
@@ -58,10 +59,13 @@ class TestEventCounter extends AbstractEventCounter
             $this->seedRandomGenerator();
 
             $slotOpportunities = mt_rand(1000, 100000);
-            $opportunitiesRemaining = $slotOpportunities;
+            $rtbImpressions = mt_rand(0, $slotOpportunities * 0.01);
+            $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
+
 
             $this->adSlotData[$adSlot->getId()] = [
                 static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
+                static::KEY_RTB_IMPRESSION => $rtbImpressions
             ];
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
@@ -280,6 +284,16 @@ class TestEventCounter extends AbstractEventCounter
 
         return $this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY];
     }
+
+    public function getRtbImpressionsCount($slotId)
+    {
+        if (!isset($this->adSlotData[$slotId][static::KEY_RTB_IMPRESSION])) {
+            return false;
+        }
+
+        return $this->adSlotData[$slotId][static::KEY_RTB_IMPRESSION];
+    }
+
 
     /**
      * @inheritdoc

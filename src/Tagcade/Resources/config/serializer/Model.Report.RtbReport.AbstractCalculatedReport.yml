@@ -1,0 +1,5 @@
+Tagcade\Model\Report\RtbReport\AbstractCalculatedReport:
+    exclusion_policy: NONE
+    properties:
+        subReports:
+            exclude: true

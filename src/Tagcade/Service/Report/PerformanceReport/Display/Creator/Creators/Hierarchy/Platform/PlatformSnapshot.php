@@ -18,6 +18,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterface, SnapshotCreatorInterface
 {
     use CalculateRatiosTrait;
+    use ConstructCalculatedReportTrait;
 
     const BILLED_AMOUNT = 'billed_amount';
     const BILLED_RATE = 'billed_rate';
@@ -45,6 +46,7 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
 
         $result = array(
             self::CACHE_KEY_SLOT_OPPORTUNITY => 0,
+            self::CACHE_KEY_RTB_IMPRESSION => 0,
             self::CACHE_KEY_OPPORTUNITY => 0,
             self::CACHE_KEY_IMPRESSION => 0,
             self::CACHE_KEY_PASSBACK => 0,
@@ -61,6 +63,7 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
              */
             $accountReport = $this->accountSnapshotCreator->createReport(new AccountReportType($publisher));
             $result[self::CACHE_KEY_SLOT_OPPORTUNITY] += $accountReport->getSlotOpportunities();
+            $result[self::CACHE_KEY_RTB_IMPRESSION] += $accountReport->getRtbImpressions();
             $result[self::CACHE_KEY_OPPORTUNITY] += $accountReport->getTotalOpportunities();
             $result[self::CACHE_KEY_IMPRESSION] += $accountReport->getImpressions();
             $result[self::CACHE_KEY_PASSBACK] += $accountReport->getPassbacks();
@@ -86,23 +89,23 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
     }
 
 
-    protected function constructReportModel(ReportInterface $report, array $data)
-    {
-        if (!$report instanceof PlatformReport) {
-            throw new InvalidArgumentException('Expect PlatformReport');
-        }
-
-        $report->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-            ->setFillRate()
-            ->setBilledAmount($data[self::BILLED_AMOUNT])
-            ->setBilledRate($data[self::BILLED_RATE])
-
-        ;
-        // TODO latter
-        $report->setEstCpm((float)0);
-        $report->setEstRevenue((float)0);
-    }
+//    protected function constructReportModel(ReportInterface $report, array $data)
+//    {
+//        if (!$report instanceof PlatformReport) {
+//            throw new InvalidArgumentException('Expect PlatformReport');
+//        }
+//
+//        $report->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
+//            ->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
+//            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
+//            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
+//            ->setFillRate()
+//            ->setBilledAmount($data[self::BILLED_AMOUNT])
+//            ->setBilledRate($data[self::BILLED_RATE])
+//
+//        ;
+//        // TODO latter
+//        $report->setEstCpm((float)0);
+//        $report->setEstRevenue((float)0);
+//    }
 }

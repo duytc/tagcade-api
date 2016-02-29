@@ -12,6 +12,8 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
 
     private $slotOpportunities = 0;
+    private $rtbImpression = 0;
+
     /**
      * @var
      */
@@ -52,4 +54,20 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
     {
         return $this->ronAdSlotId;
     }
+
+    public function getRtbImpression()
+    {
+        return $this->rtbImpression;
+    }
+
+    /**
+     * @param int $rtbImpression
+     */
+    public function setRtbImpression($rtbImpression)
+    {
+        $this->rtbImpression = $rtbImpression;
+    }
+
+
+
 }

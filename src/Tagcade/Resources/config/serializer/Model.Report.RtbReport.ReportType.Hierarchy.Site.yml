@@ -1,0 +1,8 @@
+Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\Site:
+    exclusion_policy: NONE
+    virtual_properties:
+        getSiteId:
+            type: integer
+    properties:
+        site:
+            exclude: true

@@ -39,6 +39,14 @@ Tagcade\Entity\Core\Site:
         players:
             type: json_array
             nullable: true
+        exchanges:
+            type: json_array
+            nullable: true
+        rtbStatus:
+            type: smallint
+            nullable: false
+            options:
+                default: 2 # inherit
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

@@ -1,0 +1,10 @@
+Tagcade\Model\Report\RtbReport\Hierarchy\AccountReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getPublisherId:
+            type: integer
+    properties:
+        publisher:
+            exclude: true
+        superReport:
+            exclude: true

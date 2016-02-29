@@ -1,0 +1,68 @@
+#parameters:
+# ...
+
+services:
+    ### Rtb report creators
+    # platform snapshot creator
+    tagcade.service.report.rtb_report.creator.creators.hierarchy.platform_snapshot:
+        class: Tagcade\Service\Report\RtbReport\Creator\Creators\Hierarchy\Impression\RtbPlatformSnapshot
+        arguments:
+            - @tagcade.service.report.rtb_report.creator.creators.hierarchy.account_snapshot
+
+    # account snapshot creator
+    tagcade.service.report.rtb_report.creator.creators.hierarchy.account_snapshot:
+        class: Tagcade\Service\Report\RtbReport\Creator\Creators\Hierarchy\Impression\RtbAccountSnapshot
+        arguments:
+            - @tagcade.service.report.rtb_report.creator.creators.hierarchy.site_snapshot
+            - @tagcade.domain_manager.site
+
+    # site snapshot creator
+    tagcade.service.report.rtb_report.creator.creators.hierarchy.site_snapshot:
+        class: Tagcade\Service\Report\RtbReport\Creator\Creators\Hierarchy\Impression\RtbSiteSnapshot
+        arguments:
+            - @tagcade.service.report.rtb_report.creator.creators.hierarchy.ad_slot_snapshot
+
+    # ad slot snapshot creator
+    tagcade.service.report.rtb_report.creator.creators.hierarchy.ad_slot_snapshot:
+        class: Tagcade\Service\Report\RtbReport\Creator\Creators\Hierarchy\Impression\RtbAdSlotSnapshot
+
+    # ron ad slot snapshot creator
+    tagcade.service.report.rtb_report.creator.creators.hierarchy.ron_ad_slot_snapshot:
+        class: Tagcade\Service\Report\RtbReport\Creator\Creators\Hierarchy\Impression\RtbRonAdSlotSnapshot
+
+    ### legacy access to live rtb report data
+    ### => current using redis_array of performance_report_data
+#    redis_array.performance_report_data:
+#        class: RedisArray
+#        arguments:
+#            - %tc.legacy.live_performance_report.redis_hosts%
+
+#    tagcade.legacy.cache.performance_report_data:
+#        class: Tagcade\Cache\Legacy\Cache\RedisArrayCache
+#        calls:
+#            - [setRedis, [@redis_array.performance_report_data]]
+
+    tagcade.service.report.rtb_report.counter.cache_event_counter:
+        class: Tagcade\Service\Report\RtbReport\Counter\RtbCacheEventCounter
+        arguments:
+            - @tagcade.legacy.cache.performance_report_data
+
+    ### Rtb Snapshot report creator
+    tagcade.service.report.rtb_report.creator.snapshot_report_creator:
+        class: Tagcade\Service\Report\RtbReport\Creator\RtbSnapshotReportCreator
+        arguments:
+            -
+               # platform hierarchy
+                - @tagcade.service.report.rtb_report.creator.creators.hierarchy.platform_snapshot
+                - @tagcade.service.report.rtb_report.creator.creators.hierarchy.account_snapshot
+                - @tagcade.service.report.rtb_report.creator.creators.hierarchy.site_snapshot
+                - @tagcade.service.report.rtb_report.creator.creators.hierarchy.ad_slot_snapshot
+                - @tagcade.service.report.rtb_report.creator.creators.hierarchy.ron_ad_slot_snapshot
+            - @tagcade.service.report.rtb_report.counter.cache_event_counter
+
+    tagcade.service.report.rtb_report.creator.daily_report_creator:
+        class: Tagcade\Service\Report\RtbReport\Creator\RtbDailyReportCreator
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.service.report.rtb_report.creator.snapshot_report_creator
+            - @tagcade.domain_manager.ron_ad_slot

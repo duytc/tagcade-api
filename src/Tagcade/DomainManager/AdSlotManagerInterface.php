@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -67,4 +68,24 @@ interface AdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getAdSlotsRelatedChannelForUser(UserRoleInterface $user, $limit = null, $offset = null);
+
+    /**
+     * get AdSlots For a Channel
+     *
+     * @param ChannelInterface $channel
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdSlotsForChannel(ChannelInterface $channel, $limit = null, $offset = null);
+
+    /**
+     * get Display AdSlots For Publisher
+     *
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 }

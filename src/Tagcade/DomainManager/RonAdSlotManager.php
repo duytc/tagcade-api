@@ -309,4 +309,17 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         }
         return $result;
     }
+
+    /**
+     * Get all Ron Display AdSlot that a specific publisher had created before
+     *
+     * @param PublisherInterface $publisher
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return array
+     */
+    public function getRonDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getRonDisplayAdSlotsForPublisher($publisher, $limit, $offset);
+    }
 }

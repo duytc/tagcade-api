@@ -17,6 +17,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         - settings
         - moduleConfigs
         - tagDomain
+        - exchanges
     properties:
         id:
             expose: true
@@ -48,3 +49,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             expose: true
         tagDomain:
             expose: true
+        exchanges:
+            expose: true
+            groups: [user.summary]

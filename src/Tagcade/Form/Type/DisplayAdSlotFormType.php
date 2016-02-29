@@ -3,27 +3,26 @@
 namespace Tagcade\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DisplayAdSlot;
-use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
-use Tagcade\Repository\Core\LibraryAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibraryDisplayAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
-class AdSlotFormType extends AbstractRoleSpecificFormType
+class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
 {
     /** @var DisplayAdSlotRepositoryInterface */
     private $adSlotRepository;
@@ -39,6 +38,16 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder
+            ->add('floorPrice')
+            ->add('rtbStatus', ChoiceType::class, array(
+                'choices' => array(
+                    RTB_STATUS::RTB_ENABLED,
+                    RTB_STATUS::RTB_DISABLED,
+                    RTB_STATUS::RTB_INHERITED
+                ),
+            ));
+
         if ($this->userRole instanceof AdminInterface) {
 
             // allow all sites, default is fine
@@ -79,6 +88,21 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
         }
 
         $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+
+                // validate rtbStatus before submitting
+                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
+                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
+                        $form->get('rtbStatus')->addError(new FormError('this display ad slot belongs to publisher that does not have rtb module enabled'));
+                        return;
+                    }
+                }
+            }
+        );
+
+        $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 $form = $event->getForm();
@@ -99,6 +123,26 @@ class AdSlotFormType extends AbstractRoleSpecificFormType
                         $displayAdSlot['libraryAdSlot']['publisher'] = $site->getPublisher()->getId();
                         $event->setData($displayAdSlot);
                     }
+                }
+            }
+        );
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+                /** @var DisplayAdSlotInterface $displayAdSlot */
+                $displayAdSlot = $event->getData();
+
+                // TODO why we need to remove floor price
+                if (!$displayAdSlot->isRTBEnabled()) {
+                    $displayAdSlot->removeFloorPrice();
+                }
+
+                // validate rtbStatus
+                if (!$displayAdSlot->getSite()->getPublisher()->hasRtbModule() && $displayAdSlot->getRtbStatus() !== RTB_STATUS::RTB_DISABLED) {
+                    $form->get('rtbStatus')->addError(new FormError('this display ad slot belongs to publisher that does not have rtb module enabled'));
+                    return;
                 }
             }
         );

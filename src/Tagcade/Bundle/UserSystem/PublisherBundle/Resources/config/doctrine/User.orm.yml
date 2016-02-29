@@ -43,3 +43,6 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         tagDomain:
             type: json_array
             nullable: true
+        exchanges:
+            type: json_array
+            nullable: true

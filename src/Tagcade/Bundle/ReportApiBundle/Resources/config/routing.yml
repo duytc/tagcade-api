@@ -1,20 +1,26 @@
 report_api_source_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\SourceReportController
-    name_prefix: report_api_1_
+    name_prefix: source_report_api_1_
     prefix: /sourcereports
 
 report_api_performance_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\PerformanceReportController
-    name_prefix: report_api_1_
+    name_prefix: performance_report_api_1_
     prefix: /performancereports
 
 report_api_unified_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\UnifiedReportController
-    name_prefix: report_api_1_
+    name_prefix: unified_report_api_1_
     prefix: /unifiedreports/partners
+
+report_api_rtb_report:
+    type: rest
+    resource: Tagcade\Bundle\ReportApiBundle\Controller\RtbReportController
+    name_prefix: rtb_report_api_1_
+    prefix: /rtbreports
 
 # functional api calls
 
@@ -22,5 +28,5 @@ report_api_functional_billing:
     type: rest
 #    parent:   publisher
     resource: Tagcade\Bundle\ReportApiBundle\Controller\BillingEditorController
-    name_prefix: report_api_1_func_
+    name_prefix: functional_report_api_1_
     prefix: /billing

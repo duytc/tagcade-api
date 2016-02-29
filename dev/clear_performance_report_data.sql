@@ -13,6 +13,12 @@ truncate table report_performance_display_hierarchy_ad_network_ad_tag;
 truncate table report_performance_display_hierarchy_segment_segment;
 truncate table report_performance_display_hierarchy_segment_ron_ad_slot;
 truncate table report_performance_display_hierarchy_segment_ron_ad_tag;
+
+truncate table report_rtb_hierarchy_account;
+truncate table report_rtb_hierarchy_platform;
+truncate table report_rtb_hierarchy_site;
+truncate table report_rtb_hierarchy_ad_slot;
+truncate table report_rtb_hierarchy_ron_ad_slot;
 --
 
 set foreign_key_checks = 0;

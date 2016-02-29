@@ -1,0 +1,44 @@
+Tagcade\Service\Report\RtbReport\Selector\Result\Group\ReportGroup:
+    exclusion_policy: ALL
+    properties:
+        reportType:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        startDate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+            type: DateTime<'Y-m-d'>
+        endDate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+            type: DateTime<'Y-m-d'>
+        reports:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        name:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        opportunities:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        impressions:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        fillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        earnedAmount:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageOpportunities:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageImpressions:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageFillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageEarnedAmount:
+            expose: true
+            groups: [report_group.detail, report_group.summary]

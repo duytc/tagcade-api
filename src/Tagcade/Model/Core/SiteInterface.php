@@ -4,9 +4,10 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\RTBEnabledInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface SiteInterface extends ModelInterface
+interface SiteInterface extends ModelInterface, RTBEnabledInterface
 {
     /**
      * @param string $name
@@ -46,8 +47,20 @@ interface SiteInterface extends ModelInterface
      */
     public function setPublisher(PublisherInterface $publisher);
 
+    /**
+     * @return array|ReportableAdSlotInterface[]
+     */
     public function getReportableAdSlots();
 
+    /**
+     * @return array|DisplayAdSlotInterface[]
+     */
+    public function getDisplayAdSlots();
+
+    /**
+     * @param $adSlots
+     * @return self
+     */
     public function setAdSlots($adSlots);
 
     /**
@@ -94,6 +107,7 @@ interface SiteInterface extends ModelInterface
 
     /**
      * @param mixed $players
+     * @return self
      */
     public function setPlayers($players);
 
@@ -120,6 +134,29 @@ interface SiteInterface extends ModelInterface
 
     /**
      * @param mixed $siteToken
+     * @return self
      */
     public function setSiteToken($siteToken);
+
+    /**
+     * @return mixed
+     */
+    public function getExchanges();
+
+    /**
+     * @param mixed $exchanges
+     * @return self
+     */
+    public function setExchanges($exchanges);
+
+    /**
+     * @return int
+     */
+    public function getRtbStatus();
+
+    /**
+     * @param int $rtbStatus
+     * @return self
+     */
+    public function setRtbStatus($rtbStatus);
 }

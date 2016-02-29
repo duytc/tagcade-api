@@ -7,6 +7,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -80,4 +81,14 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdSlotsRelatedChannelForUser(UserRoleInterface $user, $limit = null, $offset = null);
+
+    /**
+     * get AdSlots For Channel
+     *
+     * @param ChannelInterface $channel
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdSlotsForChannel(ChannelInterface $channel, $limit = null, $offset = null);
 }

@@ -163,5 +163,44 @@ services:
         arguments:
             - @tagcade.service.cdn.cdn_updater
 
+    tagcade.worker.workers.update_cache_for_site_worker:
+        class: Tagcade\Worker\Workers\UpdateCacheForSiteWorker
+        arguments:
+            - @tagcade.cache.v2.tag_cache
+            - @tagcade.domain_manager.site
+            - @tagcade.domain_manager.ad_slot
+
+    tagcade.worker.workers.update_cache_for_channel_worker:
+        class: Tagcade\Worker\Workers\UpdateCacheForChannelWorker
+        arguments:
+            - @tagcade.cache.v2.tag_cache
+            - @tagcade.domain_manager.channel
+            - @tagcade.domain_manager.ad_slot
+
+    tagcade.worker.workers.update_cache_for_publisher_worker:
+        class: Tagcade\Worker\Workers\UpdateCacheForPublisherWorker
+        arguments:
+            - @tagcade.cache.v2.tag_cache
+            - @tagcade_user.domain_manager.publisher
+            - @tagcade.domain_manager.ad_slot
+            - @tagcade.domain_manager.ron_ad_slot
+
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil
+
+    monolog.formatter.session_request:
+        class: Monolog\Formatter\LineFormatter
+        arguments:
+            - "[%%datetime%%] [%%extra.user%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra%%\n"
+
+    monolog.processor.web:
+        class: Monolog\Processor\WebProcessor
+        tags:
+            - { name: monolog.processor }
+
+    monolog.processor.session_request:
+        class: Tagcade\Bundle\ApiBundle\Service\SessionRequestProcessor
+        arguments:
+            - @security.token_storage
+        tags:
+            - { name: monolog.processor, method: processRecord }

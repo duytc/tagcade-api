@@ -17,6 +17,7 @@ class JWTResponseTransformer
 
         if($user instanceof PublisherInterface) {
             $data['settings'] = $user->getSettings();
+            $data['exchanges'] = $user->getExchanges();
         }
 
         return $data;

@@ -11,8 +11,10 @@ class BilledReportGrouper extends AbstractGrouper
 {
     private $slotOpportunities;
     private $billedAmount;
+    private $rtbImpressions;
 
     private $averageSlotOpportunities;
+    private $averageRtbImpressions;
     private $averageBilledAmount;
 
     public function getGroupedReport()
@@ -39,7 +41,9 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageEstRevenue(),
             $this->getAverageFillRate(),
             $this->getAverageSlotOpportunities(),
-            $this->getAverageBilledAmount()
+            $this->getAverageBilledAmount(),
+            $this->getRtbImpressions(),
+            $this->getAverageRtbImpressions()
         );
     }
 
@@ -51,6 +55,7 @@ class BilledReportGrouper extends AbstractGrouper
 
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
+        $this->averageRtbImpressions = $this->getRatio($this->getRtbImpressions(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -63,11 +68,17 @@ class BilledReportGrouper extends AbstractGrouper
 
         $this->addSlotOpportunities($report->getSlotOpportunities());
         $this->addBilledAmount($report->getBilledAmount());
+        $this->addRtbImpressions($report->getRtbImpressions());
     }
 
     protected function addSlotOpportunities($slotOpportunities)
     {
         $this->slotOpportunities += (int) $slotOpportunities;
+    }
+
+    protected function addRtbImpressions($rtbImpressions)
+    {
+        $this->rtbImpressions += (int)$rtbImpressions;
     }
 
     protected function addBilledAmount($billedAmount)
@@ -88,6 +99,11 @@ class BilledReportGrouper extends AbstractGrouper
         return $this->slotOpportunities;
     }
 
+    public function getRtbImpressions()
+    {
+        return $this->rtbImpressions;
+    }
+
     /**
      * @return float
      */
@@ -102,6 +118,11 @@ class BilledReportGrouper extends AbstractGrouper
     public function getAverageSlotOpportunities()
     {
         return $this->averageSlotOpportunities;
+    }
+
+    public function getAverageRtbImpressions()
+    {
+        return $this->averageRtbImpressions;
     }
 
     /**

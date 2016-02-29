@@ -28,11 +28,18 @@ class RedisArrayCache implements RedisArrayCacheInterface
     /**
      * {@inheritdoc}
      */
+    public function incr($hash)
+    {
+        return $this->redis->incr($hash);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function fetch($id)
     {
         return $this->redis->get($id);
     }
-
 
     /**
      * {@inheritdoc}

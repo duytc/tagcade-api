@@ -23,4 +23,14 @@ interface RonAdSlotRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getRonAdSlotsForSegment(SegmentInterface $segment, $limit = null, $offset = null);
+
+    /**
+     * get Ron Display AdSlots For Publisher
+     *
+     * @param PublisherInterface $publisher
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return array
+     */
+    public function getRonDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 }

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\RTBEnabledInterface;
 
 class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, ReportableAdSlotInterface
 {
@@ -50,6 +51,10 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
         return self::TYPE_NATIVE;
     }
 
+    public function isRTBEnabled()
+    {
+        return RTBEnabledInterface::RTB_DISABLED;
+    }
 
     public function __toString()
     {

@@ -10,6 +10,8 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class Site implements SiteInterface
 {
+    const RTB_STATUS_DEFAULT = self::RTB_DISABLED;
+
     protected $id;
 
     /** @var UserEntityInterface */
@@ -32,17 +34,16 @@ class Site implements SiteInterface
 
     protected $deletedAt;
 
-    /**
-     * @param string $name
-     * @param string $domain
-     */
-    public function __construct($name, $domain)
+    protected $rtbStatus;
+    /** @var array|string[] */
+    protected $exchanges;
+
+    public function __construct()
     {
-        $this->name = $name;
-        $this->domain = $domain;
         $this->adSlots = new ArrayCollection();
         $this->channelSites = new ArrayCollection();
         $this->autoCreate = false;
+        $this->rtbStatus = self::RTB_STATUS_DEFAULT;
     }
 
     public function getId()
@@ -115,7 +116,13 @@ class Site implements SiteInterface
 
     public function getDisplayAdSlots()
     {
-        $this->adSlots;
+        if (!$this->adSlots instanceof Collection) {
+            return [];
+        }
+
+        return array_filter($this->adSlots->toArray(), function (BaseAdSlotInterface $adSlot) {
+            return $adSlot instanceof DisplayAdSlotInterface;
+        });
     }
 
     /**
@@ -128,10 +135,13 @@ class Site implements SiteInterface
         }
 
         return array_filter($this->adSlots->toArray(), function (BaseAdSlotInterface $adSlot) {
-                return $adSlot instanceof ReportableAdSlotInterface;
-            });
+            return $adSlot instanceof ReportableAdSlotInterface;
+        });
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAllAdSlots()
     {
         if (!$this->adSlots instanceof Collection) {
@@ -141,6 +151,9 @@ class Site implements SiteInterface
         return $this->adSlots;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function setAdSlots($adSlots)
     {
         $this->adSlots = $adSlots;
@@ -164,6 +177,9 @@ class Site implements SiteInterface
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSourceReportSiteConfigs()
     {
         return $this->sourceReportSiteConfigs;
@@ -190,7 +206,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
     public function getChannels()
     {
@@ -207,23 +223,28 @@ class Site implements SiteInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getPlayers()
     {
+        if (!is_array($this->players)) {
+            $this->players = [];
+        }
+
         return $this->players;
     }
 
     /**
-     * @param mixed $players
+     * @inheritdoc
      */
     public function setPlayers($players)
     {
-        $this->players = $players;
+        $this->players = is_array($players) ? $players : (null === $players ? [] : [$players]);
+        return $this;
     }
 
     /**
-     * @return boolean
+     * @inheritdoc
      */
     public function isAutoCreate()
     {
@@ -231,8 +252,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * @param boolean $autoCreate
-     * @return self
+     * @inheritdoc
      */
     public function setAutoCreate($autoCreate)
     {
@@ -241,7 +261,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getDeletedAt()
     {
@@ -249,7 +269,7 @@ class Site implements SiteInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getSiteToken()
     {
@@ -257,11 +277,82 @@ class Site implements SiteInterface
     }
 
     /**
-     * @param mixed $siteToken
+     * @inheritdoc
      */
     public function setSiteToken($siteToken)
     {
         $this->siteToken = $siteToken;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRtbStatus()
+    {
+        return $this->rtbStatus;
+    }
+
+    /**
+     * @param int $rtbStatus
+     * @return self
+     */
+    public function setRtbStatus($rtbStatus)
+    {
+        $this->rtbStatus = null === $rtbStatus ? self::RTB_STATUS_DEFAULT : $rtbStatus;
+        return $this;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function isRTBEnabled()
+    {
+        if ($this->getPublisher() === null || !$this->getPublisher()->hasRtbModule()) {
+            return false;
+        }
+
+        if ($this->rtbStatus === self::RTB_INHERITED) {
+            $channels = $this->getChannels();
+            if (empty($channels)) {
+                return $this->getPublisher()->hasRtbModule();
+            }
+
+            $rtbEnabled = false;
+            /** @var ChannelInterface $channel */
+            foreach($channels as $channel) {
+                if ($channel->isRTBEnabled())
+                {
+                    return true;
+                }
+            }
+
+            return $rtbEnabled;
+        }
+
+        return $this->rtbStatus === self::RTB_ENABLED;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExchanges()
+    {
+        if (!is_array($this->exchanges)) {
+            $this->exchanges = [];
+        }
+
+        return $this->exchanges;
+    }
+
+    /**
+     * @inheritdoc\
+     */
+    public function setExchanges($exchanges)
+    {
+        $this->exchanges = is_array($exchanges) ? $exchanges : (null === $exchanges ? [] : [$exchanges]);
+        return $this;
     }
 
     public function __toString()

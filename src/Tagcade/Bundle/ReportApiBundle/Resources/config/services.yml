@@ -6,3 +6,5 @@ imports:
     - { resource: services/report.source.selector.yml }
     - { resource: services/report.billing.yml }
     - { resource: services/report.unified_report.selectors.yml }
+    - { resource: services/report.rtb.selectors.yml }
+    - { resource: services/report.rtb_report.snapshot.creators.yml }

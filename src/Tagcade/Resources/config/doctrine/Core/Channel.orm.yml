@@ -18,6 +18,11 @@ Tagcade\Entity\Core\Channel:
         deletedAt:
             type: date
             nullable: true
+        rtbStatus:
+            type: smallint
+            nullable: false
+            options:
+                default: 2 # inherit
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

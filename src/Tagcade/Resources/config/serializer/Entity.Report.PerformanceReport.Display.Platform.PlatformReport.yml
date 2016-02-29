@@ -38,6 +38,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
         billedRate:
             expose: true
             groups: [platform_platform_report.detail, platform_platform_report.summary]         
-#        subReports:
-#            expose: true
-#            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        rtbImpressions:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]

@@ -32,6 +32,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
         estCpm:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]     
-#        subReports:
-#            expose: true
-#            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        rtbImpressions:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]

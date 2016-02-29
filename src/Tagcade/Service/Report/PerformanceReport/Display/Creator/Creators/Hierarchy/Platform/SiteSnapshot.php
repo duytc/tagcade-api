@@ -18,6 +18,8 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 
 class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterface, SnapshotCreatorInterface
 {
+    use ConstructCalculatedReportTrait;
+
     /**
      * @var AdSlotManagerInterface
      */
@@ -60,24 +62,6 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
         $this->parseRawReportData($report, array_merge($adSlotReportCounts, $adTagReportCounts));
 
         return $report;
-    }
-
-    protected function constructReportModel(ReportInterface $report, array $data)
-    {
-        if (!$report instanceof CalculatedReportInterface) {
-            throw new InvalidArgumentException('Expect CalculatedReportInterface');
-        }
-
-        $report->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-            ->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-            ->setFillRate()
-        ;
-
-        // TODO latter
-        $report->setEstCpm((float)0);
-        $report->setEstRevenue((float)0);
     }
 
     /**

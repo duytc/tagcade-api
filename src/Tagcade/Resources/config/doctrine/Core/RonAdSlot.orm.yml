@@ -17,6 +17,18 @@ Tagcade\Entity\Core\RonAdSlot:
             generator:
                 strategy: AUTO
     fields:
+        floorPrice:
+            type: float
+            scale: 4
+            nullable: true
+        rtbStatus:
+            type: smallint
+            nullable: false
+            options:
+                default: 2 # inherit
+        exchanges:
+            type: json_array
+            nullable: true
         createdAt:
             type: datetime
             gedmo:

@@ -44,9 +44,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
         reportType:
             expose: true
             groups: [platform_site_report.detail, platform_site_report.summary]
-#        subReports:
-#            expose: true
-#            groups: [platform_site_report.detail, platform_site_report.summary]
-#        superReport:
-#            expose: true
-#            groups: [platform_site_report.detail, platform_site_report.summary]
+        rtbImpressions:
+            expose: true
+            groups: [platform_site_report.detail, platform_site_report.summary]

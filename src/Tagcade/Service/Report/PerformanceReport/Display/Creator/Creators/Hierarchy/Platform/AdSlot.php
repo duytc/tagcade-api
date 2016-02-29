@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
@@ -39,7 +40,12 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
         $report
             ->setAdSlot($adSlot)
             ->setDate($this->getDate())
-            ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()));
+            ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()))
+        ;
+
+        if ($adSlot instanceof DisplayAdSlotInterface) {
+            $report->setRtbImpressions($this->eventCounter->getRtbImpressionsCount($adSlot->getId()));
+        }
 
         $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), $report->getSlotOpportunities());
 
