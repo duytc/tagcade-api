@@ -43,6 +43,9 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         tagDomain:
             type: json_array
             nullable: true
-        exchanges:
-            type: json_array
-            nullable: true
+    oneToMany:
+        publisherExchanges:
+            targetEntity: Tagcade\Entity\Core\PublisherExchange
+            mappedBy: publisher
+            cascade: ['persist', 'remove', 'detach']
+            orphanRemoval: true

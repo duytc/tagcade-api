@@ -2,14 +2,19 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Form\Type;
 
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
+use Tagcade\Entity\Core\PublisherExchange;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
+use Tagcade\Form\Type\ExchangeFormType;
+use Tagcade\Form\Type\PublisherExchangeFormType;
+use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -34,7 +39,6 @@ class UserFormType extends AbstractRoleSpecificFormType
     const VIDEO_MODULE = 'MODULE_VIDEO_ANALYTICS';
     const VIDEO_PLAYERS = 'players';
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
-    protected $listExchanges = ['app-nexus', 'double-click', 'openx', 'rubicon', 'index-exchange', 'microsoft'];
     private $oldSettings;
 
     public function __construct(UserEntityInterface $userRole)
@@ -58,7 +62,12 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('postalCode')
             ->add('country')
             ->add('settings')
-            ->add('exchanges')
+            ->add('publisherExchanges', CollectionType::class, array (
+                'mapped' => true,
+                'type' => new PublisherExchangeFormType(),
+                'allow_add' => true,
+                'allow_delete' => true,
+            ))
         ;
 
         if($this->userRole instanceof AdminInterface){
@@ -84,18 +93,18 @@ class UserFormType extends AbstractRoleSpecificFormType
         //validate 'settings' field submitted by publisher
         //also merge all changes to current 'settings' of publisher (ui only submit with patched settings)
         if($this->userRole instanceof PublisherInterface) {
-            $builder->addEventListener(
-                FormEvents::PRE_SET_DATA,
-                function (FormEvent $event) {
-                    // validate exchanges before submitting if Publisher: only Admin has permission!!!
-                    $form = $event->getForm();
-
-                    if ($form->has('exchanges') && null !== $form->get('exchanges')->getData()) {
-                        $form->get('exchanges')->addError(new FormError('this user does not have permission to edit exchanges'));
-                        return;
-                    }
-                }
-            );
+//            $builder->addEventListener(
+//                FormEvents::PRE_SET_DATA,
+//                function (FormEvent $event) {
+//                    // validate exchanges before submitting if Publisher: only Admin has permission!!!
+//                    $form = $event->getForm();
+//
+//                    if ($form->has('exchanges') && null !== $form->get('exchanges')->getData()) {
+//                        $form->get('exchanges')->addError(new FormError('this user does not have permission to edit exchanges'));
+//                        return;
+//                    }
+//                }
+//            );
 
             $builder->addEventListener(
                 FormEvents::POST_SET_DATA,
@@ -148,21 +157,12 @@ class UserFormType extends AbstractRoleSpecificFormType
                         }
                     }
 
-                    // validate exchanges after submitting if Publisher has Rtb Module
-                    $exchanges = $form->get('exchanges')->getData();
-                    if ($publisher->hasRtbModule()) {
-                        if (!is_array($exchanges)) {
-                            $form->get('exchanges')->addError(new FormError('expect exchanges config to be an array object'));
-                            return;
-                        }
-                        else {
-                            foreach($exchanges as $exchange){
-                                if (!in_array($exchange, $this->listExchanges)) {
-                                    $form->get('exchanges')->addError(new FormError(sprintf('exchanges %s is not supported', $exchange)));
-                                    return;
-                                }
-                            }
-                        }
+                    /**
+                     * @var PublisherExchangeInterface[] $publisherExchanges
+                     */
+                    $publisherExchanges = $form->get('publisherExchanges')->getData();
+                    foreach($publisherExchanges as $publisherExchange) {
+                        $publisherExchange->setPublisher($publisher);
                     }
                 }
                 else if ($this->userRole instanceof PublisherInterface) {

@@ -20,6 +20,7 @@ imports:
     - { resource: services/cdn.yml }
     - { resource: services/service.adnetwork.partner.yml }
     - { resource: services/service.csv.yml }
+    - { resource: services/service.exchange.yml }
 
 
 parameters:

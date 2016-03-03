@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\PublisherExchange:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [publisherexchange.detail, publisherexchange.summary]
+        publisher:
+            expose: true
+            groups: [publisherexchange.detail, publisherexchange.summary]
+        exchange:
+            expose: true
+            groups: [publisherexchange.detail, publisherexchange.summary]

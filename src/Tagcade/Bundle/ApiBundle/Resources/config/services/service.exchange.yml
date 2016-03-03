@@ -1,0 +1,67 @@
+parameters:
+    # entity class
+    tagcade.entity.core.exchange.class: Tagcade\Entity\Core\Exchange
+    # form class
+    tagcade.form.type.exchange.class: Tagcade\Form\Type\ExchangeFormType
+
+services:
+
+    # exchange ######################################################
+
+    tagcade_api.handler.exchange:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.exchange
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for exchange handler #######
+
+    tagcade.repository.exchange:
+        class: Tagcade\Repository\Core\ExchangeRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.exchange.class%
+
+    tagcade.domain_manager.exchange:
+        class: Tagcade\DomainManager\ExchangeManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.exchange
+
+    tagcade.form.type.exchange:
+        class: %tagcade.form.type.exchange.class%
+        arguments:
+            - @tagcade.repository.exchange
+        tags:
+            - { name: form.type, alias: tagcade_form_exchange }
+
+    tagcade.handler.handlers.exchange.abstract:
+        class: Tagcade\Handler\Handlers\Core\ExchangeHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.exchange
+            - @tagcade.domain_manager.exchange
+
+    tagcade.handler.handlers.exchange.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\ExchangeHandler
+        parent: tagcade.handler.handlers.exchange.abstract
+        public: false
+
+    tagcade.handler.handlers.exchange.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\ExchangeHandler
+        parent: tagcade.handler.handlers.exchange.abstract
+        public: false
+
+    tagcade.handler.handler_manager.exchange:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.exchange.class%
+            -
+                - @tagcade.handler.handlers.exchange.admin
+                - @tagcade.handler.handlers.exchange.publisher
+
+    # end exchange #####################################################

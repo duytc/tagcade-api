@@ -107,3 +107,8 @@ api_partner:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\PartnerController
     name_prefix:  api_1_
+
+api_exchange:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\ExchangeController
+    name_prefix:  api_1_

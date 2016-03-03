@@ -3,13 +3,14 @@
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Model\Core\ExchangeInterface;
+use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\UserEntityInterface;
 
 /**
  * Handle events to update Exchanges of a site due to Exchanges of Publisher is changed
@@ -31,18 +32,58 @@ class UpdateSiteExchangesListener
     {
         $entity = $args->getObject();
 
-        if (!$entity instanceof PublisherInterface || (!$args->hasChangedField('exchanges') && !$args->hasChangedField('roles'))) {
-            return;
-        }
-
-        // get all affected sites belong to Publisher
-        // notice: we will update all sites which have configured exchanges, not depend on rtb true or false because sites may be changed rtb later!!!
+        $allSites = [];
         /** @var SiteManagerInterface $siteManager */
         $siteManager = $args->getEntityManager()->getRepository(Site::class);
-        $sites = $siteManager->getSitesForPublisher($entity);
+        if ($entity instanceof ExchangeInterface && !$args->hasChangedField('canonicalName')) {
+            /** @var PublisherExchangeInterface $publisherExchange */
+            foreach($entity->getPublisherExchanges() as $publisherExchange) {
+                $sites = $siteManager->getSitesForPublisher($publisherExchange->getPublisher());
+                $allSites = array_merge($sites, $sites);
+            }
+            // get all affected sites belong to Publisher
+            // notice: we will update all sites which have configured exchanges, not depend on rtb true or false because sites may be changed rtb later!!!
 
-        // TODO this must be updated in the next phase
-        $this->updateExchangesForSites($sites, $entity);
+
+            // TODO this must be updated in the next phase
+            $this->updateExchangesForSites($allSites);
+        }
+
+        if ($entity instanceof PublisherExchangeInterface && $args->hasChangedField('exchange')) {
+            $sites = $siteManager->getSitesForPublisher($entity->getPublisher());
+            $allSites = array_merge($sites, $sites);
+            $this->updateExchangesForSites($allSites);
+        }
+    }
+
+    public function prePersist(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if (!$entity instanceof PublisherExchangeInterface) {
+            return ;
+        }
+
+        /** @var SiteManagerInterface $siteManager */
+        $siteManager = $args->getEntityManager()->getRepository(Site::class);
+        $sites = $siteManager->getSitesForPublisher($entity->getPublisher());
+
+        $this->updateExchangesForSites($sites);
+    }
+
+    public function postRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if (!$entity instanceof PublisherExchangeInterface) {
+            return ;
+        }
+
+        /** @var SiteManagerInterface $siteManager */
+        $siteManager = $args->getEntityManager()->getRepository(Site::class);
+        $sites = $siteManager->getSitesForPublisher($entity->getPublisher());
+
+        $this->updateExchangesForSites($sites);
     }
 
     /**
@@ -73,13 +114,10 @@ class UpdateSiteExchangesListener
      * update Exchanges For Sites Due To Publisher
      *
      * @param SiteInterface[] $sites
-     * @param PublisherInterface $publisher
      * @return array|SiteInterface[]
      */
-    private function updateExchangesForSites(array $sites, PublisherInterface $publisher)
+    private function updateExchangesForSites(array $sites)
     {
-        $newSupportedExchanges = $publisher->getExchanges();
-
         foreach ($sites as $site) {
             /* // temporarily disable edit exchanges by manual, will be inherited from publisher
             if (!$site instanceof SiteInterface || count($site->getExchanges()) < 1) {
@@ -96,7 +134,7 @@ class UpdateSiteExchangesListener
                 continue;
             }
 
-            $newExchanges = $newSupportedExchanges;
+            $newExchanges = $site->getPublisher()->getExchanges();
             // << end
 
             $site->setExchanges($newExchanges);

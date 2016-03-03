@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\Exchange:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [exchange.detail, exchange.summary]
+        name:
+            expose: true
+            groups: [exchange.detail, exchange.summary]
+        canonicalName:
+            expose: true
+            groups: [exchange.detail, exchange.summary]

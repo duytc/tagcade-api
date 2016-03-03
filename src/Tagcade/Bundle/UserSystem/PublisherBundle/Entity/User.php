@@ -2,6 +2,8 @@
 
 namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 
+use Tagcade\Model\Core\ExchangeInterface;
+use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Model\User\UserEntityInterface;
@@ -27,8 +29,8 @@ class User extends BaseUser implements PublisherInterface
     protected $country;
     protected $settings; //json string represent setting for report bundle
     protected $tagDomain;
-    /** @var array|string[] */
-    protected $exchanges;
+    /** @var PublisherExchangeInterface[] */
+    protected $publisherExchanges;
 
     /**
      * @return string
@@ -276,19 +278,55 @@ class User extends BaseUser implements PublisherInterface
      */
     public function getExchanges()
     {
-        if (!is_array($this->exchanges)) {
-            $this->exchanges = [];
+        if ($this->getPublisherExchanges() === null || count($this->publisherExchanges) < 1) {
+            return [];
         }
 
-        return $this->exchanges;
+        $exchanges = [];
+        /**
+         * @var PublisherExchangeInterface $publisherExchange
+         */
+        foreach($this->getPublisherExchanges() as $publisherExchange) {
+            $exchanges[] = $publisherExchange->getExchange()->getCanonicalName();
+        }
+
+        return $exchanges;
+    }
+
+    public function getExchangeObjects()
+    {
+        if ($this->getPublisherExchanges() === null || count($this->publisherExchanges) < 1) {
+            return [];
+        }
+
+        $exchanges = [];
+        /**
+         * @var PublisherExchangeInterface $publisherExchange
+         */
+        foreach($this->getPublisherExchanges() as $publisherExchange) {
+            $exchanges[] = $publisherExchange->getExchange();
+        }
+
+        return $exchanges;
+    }
+
+
+    /**
+     * @return \Tagcade\Model\Core\PublisherExchangeInterface[]
+     */
+    public function getPublisherExchanges()
+    {
+        return $this->publisherExchanges;
     }
 
     /**
-     * @inheritdoc
+     * @param \Tagcade\Model\Core\PublisherExchangeInterface[] $publisherExchanges
+     * @return self
      */
-    public function setExchanges($exchanges)
+    public function setPublisherExchanges($publisherExchanges)
     {
-        $this->exchanges = is_array($exchanges) ? $exchanges : (null === $exchanges ? [] : [$exchanges]);
+        $this->publisherExchanges = $publisherExchanges;
+
         return $this;
     }
 }

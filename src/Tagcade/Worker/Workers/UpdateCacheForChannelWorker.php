@@ -59,8 +59,7 @@ class UpdateCacheForChannelWorker
             foreach ($adSlots as $adSlot) {
                 /** @var DisplayAdSlotInterface|ReportableAdSlotInterface $adSlot */
                 if (!$adSlot instanceof DisplayAdSlotInterface
-                    || $adSlot->getRtbStatus() !== RTBEnabledInterface::RTB_INHERITED
-                    || $adSlot->getSite()->getRtbStatus() !== RTBEnabledInterface::RTB_INHERITED
+                    || !$adSlot->isRTBEnabled()
                 ) {
                     continue; // only supported DisplayAdSlot and rtbStatus of own site is inherited rtbStatus of this channel
                 }

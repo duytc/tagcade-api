@@ -58,7 +58,7 @@ class UpdateCacheForSiteWorker
 
             foreach ($adSlots as $adSlot) {
                 /** @var DisplayAdSlotInterface|ReportableAdSlotInterface $adSlot */
-                if (!$adSlot instanceof DisplayAdSlotInterface || $adSlot->getRtbStatus() !== RTBEnabledInterface::RTB_INHERITED) {
+                if (!$adSlot instanceof DisplayAdSlotInterface || !$adSlot->isRTBEnabled()) {
                     continue; // only supported DisplayAdSlot and rtbStatus is inherited rtbStatus of this site
                 }
 

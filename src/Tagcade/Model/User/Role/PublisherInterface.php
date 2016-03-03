@@ -171,9 +171,5 @@ interface PublisherInterface extends UserRoleInterface
      */
     public function getExchanges();
 
-    /**
-     * @param mixed $exchanges
-     * @return self
-     */
-    public function setExchanges($exchanges);
+    public function getExchangeObjects();
 }

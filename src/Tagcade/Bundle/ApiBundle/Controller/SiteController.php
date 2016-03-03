@@ -27,7 +27,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Get all sites
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary"}
+     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
      * )
      *
      * @Rest\QueryParam(name="createType", nullable=true)
@@ -66,7 +66,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\Get("/sites/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary"}
+     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
      * )
      * @ApiDoc(
      *  section="Sites",
