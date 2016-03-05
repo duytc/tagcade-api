@@ -84,8 +84,10 @@ class PublisherChangeListener
             }
         }
 
-        // update cache due to sites
-        $this->workerManager->updateCacheForPublishers($needToBeUpdatedPublisherIds);
+        // update cache due to publisher
+        if (count($needToBeUpdatedPublisherIds)) {
+            $this->workerManager->updateCacheForPublishers($needToBeUpdatedPublisherIds);
+        }
 
         // reset for new onFlush event
         $this->changedEntities = [];

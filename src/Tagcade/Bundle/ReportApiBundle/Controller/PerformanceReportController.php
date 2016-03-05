@@ -12,11 +12,12 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 /**
- * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY') )")
+ * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY')) or has_role('ROLE_SUB_PUBLISHER')")
  *
  * Only allow admins and publishers with the display module enabled
  */
@@ -103,6 +104,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/accounts/{publisherId}", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -131,6 +134,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/accounts/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -158,6 +163,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adnetworks/{adNetworkId}", requirements={"adNetworkId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -185,6 +192,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adnetworks/{adNetworkId}/sites", requirements={"adNetworkId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -212,6 +221,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -242,6 +253,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adnetworks/{adNetworkId}/adtags", requirements={"adNetworkId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="start date to retrieve report")
@@ -271,6 +284,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}/adtags", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -356,6 +371,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/sites/{siteId}/adnetworks", requirements={"siteId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -381,6 +398,7 @@ class PerformanceReportController extends FOSRestController
             $this->getReportBuilder()->getSiteAdNetworksReport($site, $this->getParams())
         );
     }
+
     /**
      * @Rest\Get("/sites/{siteId}/adslots", requirements={"siteId" = "\d+"})
      *
@@ -472,6 +490,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adslots")
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -579,6 +599,7 @@ class PerformanceReportController extends FOSRestController
      * There's only on ad slot in a single site that was created from an ron ad slot.
      * Hence report for ron ad slot break down by site is corresponding to break down by ad slot
      *
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/ronadslots/{ronAdSlotId}/segments", requirements={"ronAdSlotId" = "\d+"})
      *
@@ -618,6 +639,7 @@ class PerformanceReportController extends FOSRestController
      * There's only on ad slot in a single site that was created from an ron ad slot.
      * Hence report for ron ad slot break down by site is corresponding to break down by ad slot
      *
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/ronadslots/{ronAdSlotId}/sites", requirements={"ronAdSlotId" = "\d+"})
      *
@@ -654,6 +676,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/ronadslots/{ronAdSlotId}/adtags", requirements={"ronAdSlotId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -689,6 +713,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/segments/{segmentId}", requirements={"segmentId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -722,6 +748,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/segments/{segmentId}/ronadslots", requirements={"segmentId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -755,6 +783,8 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     *
      * @Rest\Get("/adtags/{adTagId}", requirements={"adTagId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -818,8 +848,9 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId);
 
-        if (!$publisher) {
-            throw new NotFoundHttpException('That publisher does not exist');
+        if (!$publisher instanceof PublisherInterface) {
+            // try again with SubPublisher
+            $publisher = $this->get('tagcade_user_system_sub_publisher.user_manager')->findUserBy(array('id' => $publisherId));
         }
 
         if (!$publisher instanceof PublisherInterface) {

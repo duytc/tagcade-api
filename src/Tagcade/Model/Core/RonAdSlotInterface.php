@@ -92,17 +92,6 @@ interface RonAdSlotInterface extends ModelInterface, RTBEnabledInterface
     public function getFloorPrice();
 
     /**
-     * @return mixed
-     */
-    public function getExchanges();
-
-    /**
-     * @param mixed $exchanges
-     * @return self
-     */
-    public function setExchanges($exchanges);
-
-    /**
      * @param float $floorPrice
      */
     public function setFloorPrice($floorPrice);

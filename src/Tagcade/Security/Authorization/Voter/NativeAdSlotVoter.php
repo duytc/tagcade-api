@@ -24,4 +24,41 @@ class NativeAdSlotVoter extends EntityVoterAbstract
     {
         return $user->getId() == $nativeAdSlot->getSite()->getPublisherId();
     }
+
+    /**
+     * @param NativeAdSlotInterface $nativeAdSlot
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($nativeAdSlot, UserEntityInterface $user, $action)
+    {
+        // check subPublisherId
+        $isAllowedSubPublisher = false;
+
+        foreach ($nativeAdSlot->getSite()->getSubPublishers() as $subPublisher) {
+            if ($user->getId() === $subPublisher->getId()) {
+                $isAllowedSubPublisher = true;
+                break;
+            }
+        }
+
+        if (!$isAllowedSubPublisher) {
+            return false;
+        }
+
+        // check access grant for config subPublisher-site
+        if (count($nativeAdSlot->getSite()->getSubPublisherSites()) < 1) {
+            // no config => decline
+            return false;
+        }
+
+        $access = $nativeAdSlot->getSite()->getSubPublisherSites()[0]->getAccess();
+
+        if (!$this->allowsAccess($access, $action)) {
+            return false;
+        }
+
+        return true;
+    }
 }

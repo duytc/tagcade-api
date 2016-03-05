@@ -4,18 +4,21 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Tagcade\Behaviors\CreateSiteTokenTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\SubPublisherSite;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 
 class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 {
     use CreateSiteTokenTrait;
+
     /**
      * @inheritdoc
      */
@@ -66,14 +69,7 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
     protected function getSitesForUserQuery(UserRoleInterface $user, $limit = null, $offset = null)
     {
-        $qb = $this->createQueryBuilder('st')
-            ->where('1=1')
-        ;
-
-        if ($user instanceof PublisherInterface) {
-            $qb->andWhere('st.publisher = :publisher_id')
-                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
-        }
+        $qb = $this->createQueryBuilderForUser($user);
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -91,10 +87,8 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
      */
     public function getSitesForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        $qb = $this->createQueryBuilder('st')
-            ->where('st.publisher = :publisher_id')
-            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
-            ->addOrderBy('st.name', 'asc');
+        $qb = $this->createQueryBuilderForPublisher($publisher)
+            ->addOrderBy('st.name', 'asc');;
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -117,7 +111,9 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         $qb = $this->getSitesThatHaveAdTagsBelongingToAdNetworkQuery($adNetwork, $limit, $offset);
         $results = $qb->select('st.id')->getQuery()->getArrayResult();
 
-        return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+        return array_map(function ($resultItem) {
+                return $resultItem['id'];
+            }, $results);
     }
 
 
@@ -226,5 +222,40 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
             ->setParameter('domain', $domain, TYPE::STRING)
             ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
             ->getQuery()->getResult();
+    }
+
+    /**
+     * create QueryBuilder For Publisher due to Publisher or SubPublisher
+     * @param PublisherInterface $publisher
+     * @return QueryBuilder qb with alias 'st'
+     */
+    private function createQueryBuilderForPublisher(PublisherInterface $publisher)
+    {
+        $qb = $this->createQueryBuilder('st');
+
+        if ($publisher instanceof SubPublisherInterface) {
+            $qb
+                ->leftJoin('st.subPublisherSites', 'sps')
+                ->where('sps.subPublisher = :sub_publisher_id')
+//                ->andWhere('sps.access IN (:access)')
+                ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER);
+//                ->setParameter('access', array_values(SubPublisherSite::$ACCESS_READ_ARRAY));
+        } else {
+            $qb
+                ->where('st.publisher = :publisher_id')
+                ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
+        }
+
+        return $qb;
+    }
+
+    /**
+     * create QueryBuilder For User due to Admin or Publisher|SubPublisher
+     * @param UserRoleInterface $user
+     * @return QueryBuilder qb with alias 'st'
+     */
+    private function createQueryBuilderForUser(UserRoleInterface $user)
+    {
+        return $user instanceof PublisherInterface ? $this->createQueryBuilderForPublisher($user) : $this->createQueryBuilder('st');
     }
 }

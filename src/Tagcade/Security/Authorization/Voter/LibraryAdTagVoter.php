@@ -24,4 +24,16 @@ class LibraryAdTagVoter extends EntityVoterAbstract
     {
         return $user->getId() == $libraryAdTag->getAdNetwork()->getPublisherId();
     }
+
+    /**
+     * @param LibraryAdTagInterface $libraryAdTag
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($libraryAdTag, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

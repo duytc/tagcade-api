@@ -1,0 +1,14 @@
+Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
+    type:  entity
+    table: core_user_sub_publisher
+
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User
+
+    oneToMany:
+        subPublisherSites:
+            targetEntity: Tagcade\Entity\Core\SubPublisherSite
+            mappedBy: subPublisher
+            cascade: ["persist", "remove", "detach"]
+            orphanRemoval: true

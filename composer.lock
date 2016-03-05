@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c09aedd5dfcbb635c7c86efccd357652",
-    "content-hash": "403b770eab09df4d1e9f7c3926c52ed4",
+    "hash": "6c1774ce751c20cc67841fb28b58ecce",
+    "content-hash": "cf4d07c03bdb3402c2886073991ab5bb",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2080,16 +2080,16 @@
         },
         {
             "name": "ocramius/proxy-manager",
-            "version": "1.0.2",
+            "version": "0.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ocramius/ProxyManager.git",
-                "reference": "57e9272ec0e8deccf09421596e0e2252df440e11"
+                "reference": "0ac0eb3e8e04c7fa75caaf1a43c5405623abf8f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/57e9272ec0e8deccf09421596e0e2252df440e11",
-                "reference": "57e9272ec0e8deccf09421596e0e2252df440e11",
+                "url": "https://api.github.com/repos/Ocramius/ProxyManager/zipball/0ac0eb3e8e04c7fa75caaf1a43c5405623abf8f5",
+                "reference": "0ac0eb3e8e04c7fa75caaf1a43c5405623abf8f5",
                 "shasum": ""
             },
             "require": {
@@ -2111,7 +2111,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.0.x-dev"
+                    "dev-master": "0.6.x-dev"
                 }
             },
             "autoload": {
@@ -2139,7 +2139,7 @@
                 "proxy pattern",
                 "service proxies"
             ],
-            "time": "2015-08-09 04:28:19"
+            "time": "2014-09-28 14:18:11"
         },
         {
             "name": "paragonie/random_compat",
@@ -2539,46 +2539,46 @@
         },
         {
             "name": "rollerworks/multi-user-bundle",
-            "version": "dev-master",
+            "version": "v1.0.0-beta7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rollerworks/RollerworksMultiUserBundle.git",
-                "reference": "dac1abac7a0ccd8abdd4612012ce2f0513becf1f"
+                "reference": "fc615c9bf266c7cc9729e54a36ee206e0aa1c668"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rollerworks/RollerworksMultiUserBundle/zipball/dac1abac7a0ccd8abdd4612012ce2f0513becf1f",
-                "reference": "dac1abac7a0ccd8abdd4612012ce2f0513becf1f",
+                "url": "https://api.github.com/repos/rollerworks/RollerworksMultiUserBundle/zipball/fc615c9bf266c7cc9729e54a36ee206e0aa1c668",
+                "reference": "fc615c9bf266c7cc9729e54a36ee206e0aa1c668",
                 "shasum": ""
             },
             "require": {
-                "friendsofsymfony/user-bundle": "~2.0@dev,>2.0.0-alpha3",
-                "ocramius/proxy-manager": "~0.4|~1.0",
+                "friendsofsymfony/user-bundle": "~2.0@dev,>2.0.0-alpha1",
+                "ocramius/proxy-manager": "~0.4",
                 "php": ">=5.3.3",
                 "rollerworks/sf-container-injector": "~1.0",
-                "symfony/finder": "~2.3|~3.0",
-                "symfony/framework-bundle": "~2.3|~3.0",
-                "symfony/proxy-manager-bridge": "~2.3|~3.0"
+                "symfony/finder": "~2.3",
+                "symfony/framework-bundle": "~2.3",
+                "symfony/proxy-manager-bridge": "~2.3"
             },
             "conflict": {
                 "pugx/multi-user-bundle": "*"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "~1.2",
-                "doctrine/orm": "^2.2.3",
-                "matthiasnoback/symfony-config-test": "^0.1.1",
-                "sensio/generator-bundle": "~2.3|~3.0",
+                "doctrine/orm": "~2.2,>=2.2.3",
+                "matthiasnoback/symfony-config-test": "0.*,>=0.1.1",
+                "sensio/generator-bundle": "~2.3",
                 "swiftmailer/swiftmailer": ">=4.3,<6.0",
-                "symfony/browser-kit": "~2.3|~3.0",
-                "symfony/css-selector": "~2.3|~3.0",
-                "symfony/expression-language": "~2.4|~3.0",
+                "symfony/browser-kit": "~2.3",
+                "symfony/css-selector": "~2.3",
+                "symfony/expression-language": "~2.4",
                 "symfony/monolog-bundle": "~2.3",
-                "symfony/process": "~2.3|~3.0",
+                "symfony/process": "~2.3",
                 "symfony/swiftmailer-bundle": "~2.3",
-                "symfony/twig-bundle": "~2.3|~3.0",
-                "symfony/validator": "~2.3|~3.0",
-                "symfony/web-profiler-bundle": "~2.3|~3.0",
-                "symfony/yaml": "~2.3|~3.0",
+                "symfony/twig-bundle": "~2.3",
+                "symfony/validator": "~2.3",
+                "symfony/web-profiler-bundle": "~2.3",
+                "symfony/yaml": "~2.3",
                 "twig/twig": "~1.5"
             },
             "type": "symfony-bundle",
@@ -2614,7 +2614,7 @@
                 "rollerworks",
                 "user"
             ],
-            "time": "2016-01-01 08:15:39"
+            "time": "2015-04-27 07:09:17"
         },
         {
             "name": "rollerworks/sf-container-injector",
@@ -2769,6 +2769,54 @@
                 "controllers"
             ],
             "time": "2015-12-18 17:39:27"
+        },
+        {
+            "name": "sensio/generator-bundle",
+            "version": "2.5.x-dev",
+            "target-dir": "Sensio/Bundle/GeneratorBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sensiolabs/SensioGeneratorBundle.git",
+                "reference": "ab9345fdea575b936b00c915b09540862e92a94f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sensiolabs/SensioGeneratorBundle/zipball/ab9345fdea575b936b00c915b09540862e92a94f",
+                "reference": "ab9345fdea575b936b00c915b09540862e92a94f",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": "~2.5",
+                "symfony/framework-bundle": "~2.2"
+            },
+            "require-dev": {
+                "doctrine/orm": "~2.2,>=2.2.3",
+                "symfony/doctrine-bridge": "~2.2",
+                "twig/twig": "~1.11"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Sensio\\Bundle\\GeneratorBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "This bundle generates code for you",
+            "time": "2015-05-05 01:52:20"
         },
         {
             "name": "sensiolabs/security-checker",
@@ -4332,12 +4380,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liip/LiipFunctionalTestBundle.git",
-                "reference": "790c82c7a2a4946659dcd724be35208e2407b9ad"
+                "reference": "20f332accd3a04efaaa42d52c7f70c10fedf2f47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liip/LiipFunctionalTestBundle/zipball/790c82c7a2a4946659dcd724be35208e2407b9ad",
-                "reference": "790c82c7a2a4946659dcd724be35208e2407b9ad",
+                "url": "https://api.github.com/repos/liip/LiipFunctionalTestBundle/zipball/20f332accd3a04efaaa42d52c7f70c10fedf2f47",
+                "reference": "20f332accd3a04efaaa42d52c7f70c10fedf2f47",
                 "shasum": ""
             },
             "require": {
@@ -4392,7 +4440,7 @@
             "keywords": [
                 "Symfony2"
             ],
-            "time": "2016-01-14 08:06:07"
+            "time": "2016-01-18 21:47:18"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -5128,58 +5176,6 @@
             "time": "2015-06-21 13:59:46"
         },
         {
-            "name": "sensio/generator-bundle",
-            "version": "v3.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sensiolabs/SensioGeneratorBundle.git",
-                "reference": "5274eafa251359087230bade2ff35dd6cec2e530"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioGeneratorBundle/zipball/5274eafa251359087230bade2ff35dd6cec2e530",
-                "reference": "5274eafa251359087230bade2ff35dd6cec2e530",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/console": "~2.7|~3.0",
-                "symfony/framework-bundle": "~2.7|~3.0",
-                "symfony/process": "~2.7|~3.0",
-                "symfony/yaml": "~2.7|~3.0"
-            },
-            "require-dev": {
-                "doctrine/orm": "~2.4",
-                "symfony/doctrine-bridge": "~2.7|~3.0",
-                "twig/twig": "~1.18"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Sensio\\Bundle\\GeneratorBundle\\": ""
-                },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "This bundle generates code for you",
-            "time": "2016-01-05 16:30:36"
-        },
-        {
             "name": "webfactory/exceptions-bundle",
             "version": "4.2.0",
             "source": {
@@ -5237,6 +5233,7 @@
         "gfreeau/custom-validation-path-bundle": 20,
         "stof/doctrine-extensions-bundle": 20,
         "doctrine/migrations": 20,
+        "sensio/generator-bundle": 20,
         "doctrine/doctrine-fixtures-bundle": 20,
         "liip/functional-test-bundle": 20,
         "webfactory/exceptions-bundle": 0

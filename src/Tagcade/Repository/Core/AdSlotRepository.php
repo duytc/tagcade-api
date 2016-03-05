@@ -6,6 +6,7 @@ namespace Tagcade\Repository\Core;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\NativeAdSlot;
@@ -15,8 +16,10 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\SubPublisherSite;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInterface
 {
@@ -161,10 +164,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
      */
     public function getAdSlotsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        $qb = $this->createQueryBuilder('sl')
-            ->leftJoin('sl.site', 'st')
-            ->where('st.publisher = :publisher_id')
-            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+        $qb = $this->createQueryBuilderForPublisher($publisher)
             ->orderBy('sl.id', 'asc')
         ;
 
@@ -236,6 +236,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             ->leftJoin('sl.libraryAdSlot', 'lsl')
             ->join('lsl.ronAdSlot', 'rsl')
             ->where('rsl.id = :ron_ad_slot_id')
+            ->andWhere('sl.autoCreate = true')
             ->setParameter('ron_ad_slot_id', $ronAdSlot->getId(), TYPE::INTEGER);
 
         if (is_int($limit)) {
@@ -292,6 +293,32 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                 return $adSlotData['id'];
             }, $results
         );
+    }
+
+    /**
+     * create QueryBuilder For Publisher due to Publisher or SubPublisher
+     * @param PublisherInterface $publisher
+     * @return QueryBuilder qb with alias 'sl'
+     */
+    private function createQueryBuilderForPublisher(PublisherInterface $publisher)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->leftJoin('sl.site', 'st');
+
+        if ($publisher instanceof SubPublisherInterface) {
+            $qb
+                ->leftJoin('st.subPublisherSites', 'sps')
+                ->where('sps.subPublisher = :sub_publisher_id')
+//                ->andWhere('sps.access IN (:access)')
+                ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER);
+//                ->setParameter('access', array_values(SubPublisherSite::$ACCESS_READ_ARRAY));
+        } else {
+            $qb
+                ->where('st.publisher = :publisher_id')
+                ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
+        }
+
+        return $qb;
     }
 
     /**

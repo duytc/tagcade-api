@@ -24,4 +24,16 @@ class RonAdSlotVoter extends EntityVoterAbstract
     {
         return $user->getId() == $ronAdSlot->getLibraryAdSlot()->getPublisherId();
     }
+
+    /**
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($ronAdSlot, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

@@ -9,16 +9,19 @@ security:
 
     role_hierarchy:
         ROLE_PUBLISHER: ROLE_USER
+        ROLE_SUB_PUBLISHER: ROLE_USER
         ROLE_ADMIN:     ROLE_USER
 
     providers:
         tagcade_user_publisher:
             id: tagcade_user_system_publisher.user_provider.username
+        tagcade_user_sub_publisher:
+            id: tagcade_user_system_sub_publisher.user_provider.username
         tagcade_user_admin:
             id: tagcade_user_system_admin.user_provider.username
         tagcade_user:
             chain:
-                providers: [tagcade_user_publisher, tagcade_user_admin]
+                providers: [tagcade_user_publisher, tagcade_user_sub_publisher, tagcade_user_admin]
         #
         fos_userbundle:
             id: fos_user.user_manager

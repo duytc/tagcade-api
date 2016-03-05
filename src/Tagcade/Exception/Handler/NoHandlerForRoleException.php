@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Exception;
+namespace Tagcade\Exception\Handler;
 
 class NoHandlerForRoleException extends \RuntimeException
 {}

@@ -17,7 +17,6 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotSegmentInterface;
 use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 class RonAdSlotFormType extends AbstractRoleSpecificFormType
 {
@@ -45,8 +44,7 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
                     RTB_STATUS::RTB_ENABLED,
                     RTB_STATUS::RTB_DISABLED
                 )
-            ))
-            ->add('exchanges');
+            ));
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
@@ -127,19 +125,6 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
                 if ($ronAdSlot instanceof RonAdSlotInterface && $ronAdSlot->getId() !== null) {
                     $this->oldLibraryAdSlot = $ronAdSlot->getLibraryAdSlot();
                 }
-
-                // validate exchanges, rtbStatus before submitting
-                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
-                    if ($form->has('exchanges') && $form->get('exchanges')->getData() !== null) {
-                        $form->get('exchanges')->addError(new FormError('this ron ad slot belongs to publisher that does not have rtb module enabled'));
-                        return;
-                    }
-
-                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
-                        $form->get('rtbStatus')->addError(new FormError('this ron ad slot belongs to publisher that does not have rtb module enabled'));
-                        return;
-                    }
-                }
             });
 
         $builder->addEventListener(
@@ -170,24 +155,6 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
                     /** @var RonAdSlotSegmentInterface $ronAdSlotSegment */
                     foreach($ronAdSlotSegments as $ronAdSlotSegment) {
                         $ronAdSlotSegment->setRonAdSlot($ronAdSlot);
-                    }
-                }
-
-                // validate exchanges before submitting if this ron ad slot has Rtb enabled
-                $exchanges = $form->get('exchanges')->getData();
-                if($ronAdSlot->isRTBEnabled()) {
-                    if (!is_array($exchanges)) {
-                        $form->get('exchanges')->addError(new FormError('expect exchanges config to be an array object'));
-                        return;
-                    } else {
-                        $listExchanges = $ronAdSlot->getLibraryAdSlot()->getPublisher()->getExchanges();
-
-                        foreach ($exchanges as $exchange) {
-                            if (!in_array($exchange, $listExchanges)) {
-                                $form->get('exchanges')->addError(new FormError(sprintf('exchanges %s is not supported by own publisher', $exchange)));
-                                return;
-                            }
-                        }
                     }
                 }
             }

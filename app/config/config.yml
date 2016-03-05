@@ -95,6 +95,7 @@ doctrine:
                     TagcadeAdminApiBundle:  ~
                     TagcadeUserSystemAdminBundle:  ~
                     TagcadeUserSystemPublisherBundle:  ~
+                    TagcadeUserSystemSubPublisherBundle:  ~
                     # custom
                     CoreEntities:
                         type:       yml
@@ -197,6 +198,17 @@ tagcade_user_system_publisher:
         template:
             email: TagcadeApiBundle:Resetting:email.txt.twig
 
+tagcade_user_system_sub_publisher:
+    request_matcher: tagcade_user.request.user_system.request_matcher
+    firewall_name: api
+    resetting:
+        token_ttl: 86400
+        email:
+            from_email:
+                address:        "%mailer_sender%"
+                sender_name:    "%mailer_sender_name%"
+        template:
+            email: TagcadeApiBundle:Resetting:email.txt.twig
 
 ######################################################
 

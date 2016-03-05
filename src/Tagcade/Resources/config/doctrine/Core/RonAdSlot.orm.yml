@@ -26,9 +26,6 @@ Tagcade\Entity\Core\RonAdSlot:
             nullable: false
             options:
                 default: 2 # inherit
-        exchanges:
-            type: json_array
-            nullable: true
         createdAt:
             type: datetime
             gedmo:

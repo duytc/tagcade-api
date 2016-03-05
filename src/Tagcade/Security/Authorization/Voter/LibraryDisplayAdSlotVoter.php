@@ -24,4 +24,16 @@ class LibraryDisplayAdSlotVoter extends EntityVoterAbstract
     {
         return $user->getId() == $libraryDisplayAdSlot->getPublisherId();
     }
+
+    /**
+     * @param LibraryDisplayAdSlotInterface $libraryDisplayAdSlot
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($libraryDisplayAdSlot, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -100,6 +101,8 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
+     *
      * Create a display adSlot from the submitted data
      *
      * @ApiDoc(

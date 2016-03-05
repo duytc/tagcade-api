@@ -16,6 +16,3 @@ Tagcade\Entity\Core\RonAdSlot:
         floorPrice:
             expose: true
             groups: [ronadslot.detail, ronadslot.summary]
-        exchanges:
-            expose: true
-            groups: [ronadslot.detail, ronadslot.summary]

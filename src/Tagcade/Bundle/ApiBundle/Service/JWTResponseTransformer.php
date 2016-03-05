@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\ApiBundle\Service;
 
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class JWTResponseTransformer
@@ -15,7 +16,7 @@ class JWTResponseTransformer
         $data['userRoles'] = $user->getUserRoles();
         $data['enabledModules'] = $user->getEnabledModules();
 
-        if($user instanceof PublisherInterface) {
+        if($user instanceof PublisherInterface && !$user instanceof SubPublisherInterface) {
             $data['settings'] = $user->getSettings();
             $data['exchanges'] = $user->getExchanges();
         }

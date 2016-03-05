@@ -84,6 +84,7 @@ class UserFormType extends AbstractRoleSpecificFormType
                         'MODULE_ANALYTICS'       => 'Analytics',
                         'MODULE_FRAUD_DETECTION' => 'Fraud Detection',
                         'MODULE_UNIFIED_REPORT'  => 'Unified Report',
+                        'MODULE_SUB_PUBLISHER'  => 'Sub Publisher',
                         'MODULE_RTB'  => 'RealTime Bidding'
                     ],
                 ])

@@ -7,6 +7,7 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use InvalidArgumentException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -98,6 +99,8 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
 
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
+     *
      * Create a native AdSlot from the submitted data
      *
      * @ApiDoc(

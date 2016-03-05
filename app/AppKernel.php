@@ -36,9 +36,9 @@ class AppKernel extends Kernel
             new Tagcade\Bundle\AppBundle\TagcadeAppBundle(),
             new Tagcade\Bundle\UserSystem\PublisherBundle\TagcadeUserSystemPublisherBundle(),
             new Tagcade\Bundle\UserSystem\AdminBundle\TagcadeUserSystemAdminBundle(),
+            new Tagcade\Bundle\UserSystem\SubPublisherBundle\TagcadeUserSystemSubPublisherBundle(),
 
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
-
         );
 
 //        if ($this->getEnvironment() == 'test') {

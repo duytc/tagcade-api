@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 /**
  * @Rest\RouteResource("Adslot")
@@ -39,13 +40,10 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
         $adSlotManager = $this->get('tagcade.domain_manager.ad_slot');
 
         if ($role instanceof PublisherInterface) {
-            $adSlots = $adSlotManager->getAdSlotsForPublisher($role);
-            return $adSlots;
+            return $adSlotManager->getAdSlotsForPublisher($role);
         }
 
-        $adSlots =  $adSlotManager->all();
-
-        return $adSlots;
+        return $adSlotManager->all();
     }
 
     /**

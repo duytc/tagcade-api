@@ -1,0 +1,55 @@
+parameters:
+    # entity class
+    tagcade.entity.core.sub_publisher.class: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User
+    # form class
+    tagcade.form.type.sub_publisher.class: Tagcade\Bundle\UserSystem\SubPublisherBundle\Form\Type\SubPublisherFormType
+
+services:
+    tagcade_user_system_sub_publisher.set_sub_publisher_role_listener:
+        class: Tagcade\Bundle\UserSystem\SubPublisherBundle\EventListener\SetSubPublisherRoleListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
+    tagcade.handler.sub_publisher:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.sub_publisher
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    tagcade.form.type.sub_publisher:
+        class: %tagcade.form.type.sub_publisher.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_sub_publisher_api_user }
+
+    tagcade_user.domain_manager.sub_publisher:
+        class: Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManager
+        arguments:
+            - @tagcade_user_system_sub_publisher.user_manager
+
+    tagcade.handler.handlers.sub_publisher.abstract:
+        class: Tagcade\Handler\Handlers\Core\SubPublisherHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.sub_publisher
+            - @tagcade_user.domain_manager.sub_publisher
+
+    tagcade.handler.handlers.sub_publisher.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\SubPublisherHandler
+        parent: tagcade.handler.handlers.sub_publisher.abstract
+        public: false
+
+    tagcade.handler.handlers.sub_publisher.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\SubPublisherHandler
+        parent: tagcade.handler.handlers.sub_publisher.abstract
+        public: false
+
+    tagcade.handler.handler_manager.sub_publisher:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.sub_publisher.class%
+            -
+                - @tagcade.handler.handlers.sub_publisher.admin
+                - @tagcade.handler.handlers.sub_publisher.publisher

@@ -1,0 +1,38 @@
+Tagcade\Entity\Core\SubPublisherSite:
+    type: entity
+    table: core_sub_publisher_site
+    #repositoryClass: Tagcade\Repository\Core\ChannelSiteRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+
+#    uniqueConstraints:
+#        unique_sub_publisher_site_idx:
+#            columns:
+#                - sub_publisher_id
+#                - site_id # underscore column name
+
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        access:
+            type: integer
+            #options:
+            #    default: 1 # default: READ (or VIEW) only
+            nullable: true
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        subPublisher:
+            targetEntity: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User
+            #inversedBy: subPublisherSites
+            #cascade: ["persist"]
+        site:
+            targetEntity: Tagcade\Entity\Core\Site
+            inversedBy: subPublisherSites
+            #cascade: ["persist"]

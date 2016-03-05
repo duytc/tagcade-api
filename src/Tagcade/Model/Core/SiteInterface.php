@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\RTBEnabledInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 interface SiteInterface extends ModelInterface, RTBEnabledInterface
 {
@@ -139,17 +140,6 @@ interface SiteInterface extends ModelInterface, RTBEnabledInterface
     public function setSiteToken($siteToken);
 
     /**
-     * @return mixed
-     */
-    public function getExchanges();
-
-    /**
-     * @param mixed $exchanges
-     * @return self
-     */
-    public function setExchanges($exchanges);
-
-    /**
      * @return int
      */
     public function getRtbStatus();
@@ -159,4 +149,20 @@ interface SiteInterface extends ModelInterface, RTBEnabledInterface
      * @return self
      */
     public function setRtbStatus($rtbStatus);
+
+    /**
+     * @param $subPublisherSites
+     * @return self
+     */
+    public function setSubPublisherSites($subPublisherSites);
+
+    /**
+     * @return array|SubPublisherSiteInterface[]
+     */
+    public function getSubPublisherSites();
+
+    /**
+     * @return array|SubPublisherInterface[]
+     */
+    public function getSubPublishers();
 }

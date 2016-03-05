@@ -36,8 +36,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
                     RTB_STATUS::RTB_ENABLED,
                     RTB_STATUS::RTB_DISABLED,
                     RTB_STATUS::RTB_INHERITED
-                )))
-            ->add('exchanges');
+                )));
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -73,11 +72,6 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
                 // validate rtbStatus before submitting
                 if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
-                    if ($form->has('exchanges') && $form->get('exchanges')->getData() !== null) {
-                        $form->get('exchanges')->addError(new FormError('this site belongs to publisher that does not have rtb module enabled'));
-                        return;
-                    }
-
                     if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
                         $form->get('rtbStatus')->addError(new FormError('this site belongs to publisher that does not have rtb module enabled'));
                         return;
@@ -137,23 +131,6 @@ class SiteFormType extends AbstractRoleSpecificFormType
                         foreach ($players as $player) {
                             if (!in_array($player, $this->listPlayers)) {
                                 $form->get('players')->addError(new FormError(sprintf('players %s is not supported', $player)));
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                $exchanges = $form->get('exchanges')->getData();
-                if ($site->isRTBEnabled()) {
-                    if (!is_array($exchanges)) {
-                        $form->get('exchanges')->addError(new FormError('expect exchanges config to be an array object'));
-                        return;
-                    } else {
-                        $listExchanges = $site->getPublisher()->getExchanges();
-
-                        foreach ($exchanges as $exchange) {
-                            if (!in_array($exchange, $listExchanges)) {
-                                $form->get('exchanges')->addError(new FormError(sprintf('exchanges %s is not supported by own publisher', $exchange)));
                                 return;
                             }
                         }

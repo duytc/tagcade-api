@@ -66,7 +66,7 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
                     }
 
                     if($publisher->hasRtbModule()){
-                        $moduleConfigs = array('MODULE_RTB' => array('exchanges' => $site->getExchanges()));
+                        $moduleConfigs = array('MODULE_RTB' => array('exchanges' => $publisher->getExchanges()));
                         $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($moduleConfigs));
 
                         continue;

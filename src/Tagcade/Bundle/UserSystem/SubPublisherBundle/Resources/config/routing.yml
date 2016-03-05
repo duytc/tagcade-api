@@ -1,0 +1,4 @@
+sub_publisher_api_user:
+    type: rest
+    resource: Tagcade\Bundle\UserSystem\SubPublisherBundle\Controller\SubPublisherController
+    name_prefix: sub_publisher_api_1_

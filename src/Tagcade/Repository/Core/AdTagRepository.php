@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Internal\Hydration\HydrationException;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -13,7 +14,9 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\SubPublisherSite;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class AdTagRepository extends EntityRepository implements AdTagRepositoryInterface
 {
@@ -141,11 +144,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
     protected function getAdTagsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
-        $qb = $this->createQueryBuilder('t')
-            ->join('t.adSlot', 'sl')
-            ->join('sl.site', 'st')
-            ->where('st.publisher = :publisher_id')
-            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+        $qb = $this->createQueryBuilderForPublisher($publisher)
             ->orderBy('t.id', 'asc')
         ;
 
@@ -348,5 +347,32 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->select('t.id')->getQuery()->getArrayResult();
 
         return array_map(function($resultItem) { return $resultItem['id']; }, $results);
+    }
+
+    /**
+     * create QueryBuilder For Publisher due to Publisher or SubPublisher
+     * @param PublisherInterface $publisher
+     * @return QueryBuilder qb with alias 't'
+     */
+    private function createQueryBuilderForPublisher(PublisherInterface $publisher)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.adSlot', 'sl')
+            ->join('sl.site', 'st');
+
+        if ($publisher instanceof SubPublisherInterface) {
+            $qb
+                ->leftJoin('st.subPublisherSites', 'sps')
+                ->where('sps.subPublisher = :sub_publisher_id')
+//                ->andWhere('sps.access IN (:access)')
+                ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER);
+//                ->setParameter('access', array_values(SubPublisherSite::$ACCESS_READ_ARRAY));
+        } else {
+            $qb
+                ->where('st.publisher = :publisher_id')
+                ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
+        }
+
+        return $qb;
     }
 }

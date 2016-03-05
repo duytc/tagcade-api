@@ -14,6 +14,7 @@ trait ModuleNameMapper {
             elseif($key === 'MODULE_FRAUD_DETECTION') return 'fraudDetection';
             elseif($key === 'MODULE_UNIFIED_REPORT') return 'unifiedReport';
             elseif($key === 'MODULE_RTB') return 'realTimeBidding';
+            elseif($key === 'MODULE_SUB_PUBLISHER') return 'subPublisher';
             else return $key;
         }, $modules);
     }
@@ -48,6 +49,10 @@ trait ModuleNameMapper {
                 case 'MODULE_RTB':
                     $moduleConfigs['realTimeBidding'] = $moduleConfigs['MODULE_RTB'];
                     unset($moduleConfigs['MODULE_RTB']);
+                    break;
+                case 'MODULE_SUB_PUBLISHER':
+                    $moduleConfigs['subPublisher'] = $moduleConfigs['MODULE_SUB_PUBLISHER'];
+                    unset($moduleConfigs['MODULE_SUB_PUBLISHER']);
                     break;
             }
         }

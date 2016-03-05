@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 

@@ -89,6 +89,24 @@ class Exchange implements ExchangeInterface
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherIds()
+    {
+        if ($this->getPublisherExchanges() === null || count($this->publisherExchanges) < 1) {
+            return [];
+        }
+
+        $publisherIds = [];
+
+        /** @var PublisherExchangeInterface $publisherExchange */
+        foreach($this->getPublisherExchanges() as $publisherExchange) {
+            $publisherIds[] = $publisherExchange->getPublisher()->getId();
+        }
+
+        return $publisherIds;
+    }
 
     public function __toString()
     {

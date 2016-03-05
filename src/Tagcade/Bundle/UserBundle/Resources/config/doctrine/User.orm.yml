@@ -27,3 +27,4 @@ Tagcade\Bundle\UserBundle\Entity\User:
     discriminatorMap:
         admin: Tagcade\Bundle\UserSystem\AdminBundle\Entity\User
         publisher: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User
+        subPublisher: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User

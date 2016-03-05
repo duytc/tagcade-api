@@ -3,7 +3,7 @@
 namespace Tagcade\Handler;
 
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\NoHandlerForRoleException;
+use Tagcade\Exception\Handler\NoHandlerForRoleException;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\ModelInterface;
 use ReflectionClass;

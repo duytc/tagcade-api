@@ -261,7 +261,7 @@ class RonAdSlotChangeListener {
 
                 $changedFields = $uow->getEntityChangeSet($entity);
 
-                if (array_key_exists('rtbStatus', $changedFields) || array_key_exists('exchanges', $changedFields) || array_key_exists('floorPrice', $changedFields)) {
+                if (array_key_exists('rtbStatus', $changedFields) || array_key_exists('floorPrice', $changedFields)) {
                     // notice: current support rtb for "Ron Display ad slot" type!!!
                     $needBeUpdatedRonAdSlots[] = $entity;
                 }

@@ -24,4 +24,16 @@ class AdNetworkVoter extends EntityVoterAbstract
     {
         return $user->getId() == $adNetwork->getPublisherId();
     }
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($adNetwork, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

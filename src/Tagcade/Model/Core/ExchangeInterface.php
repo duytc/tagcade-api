@@ -44,4 +44,10 @@ interface ExchangeInterface extends ModelInterface
      * @return self
      */
     public function setPublisherExchanges($publisherExchanges);
+
+    /**
+     * get publisher ids related to this exchanges
+     * @return array
+     */
+    public function getPublisherIds();
 }

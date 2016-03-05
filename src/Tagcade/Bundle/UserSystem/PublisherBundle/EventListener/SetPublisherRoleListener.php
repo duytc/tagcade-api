@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\UserSystem\PublisherBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class SetPublisherRoleListener
@@ -15,7 +16,7 @@ class SetPublisherRoleListener
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof PublisherInterface) {
+        if ($entity instanceof SubPublisherInterface || !$entity instanceof PublisherInterface) {
             return;
         }
 

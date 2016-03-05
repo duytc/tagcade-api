@@ -7,6 +7,7 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -88,6 +89,8 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
+     *
      * Create a site from the submitted data
      *
      * @ApiDoc(

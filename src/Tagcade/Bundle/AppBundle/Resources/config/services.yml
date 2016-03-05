@@ -67,6 +67,24 @@ services:
             - { name: doctrine.event_listener, event: onFlush }
             - { name: doctrine.event_listener, event: postFlush }
 
+    tagcade_app.event_listener.publisher_exchange_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\PublisherExchangeChangeListener
+        arguments:
+            - @tagcade.worker.manager
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    tagcade_app.event_listener.exchange_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\ExchangeChangeListener
+        arguments:
+            - @tagcade.worker.manager
+        tags:
+            - { name: doctrine.event_listener, event: onFlush }
+            - { name: doctrine.event_listener, event: postFlush }
+
 #    tagcade_app.event_listener.ronadslot_segment_change_listener:
 #        class: Tagcade\Bundle\AppBundle\EventListener\RonAdSlotSegmentChangeListener
 #        arguments:

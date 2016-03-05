@@ -24,4 +24,16 @@ class SegmentVoter extends EntityVoterAbstract
     {
         return $user->getId() == $segment->getPublisherId();
     }
+
+    /**
+     * @param SegmentInterface $segment
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($segment, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

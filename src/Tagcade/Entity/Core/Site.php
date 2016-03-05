@@ -18,7 +18,7 @@ class Site extends SiteModel
     protected $channelSites;
     protected $players;
     protected $autoCreate;
-    protected $exchanges;
+    protected $subPublisherSites;
 
     /**
      * this constructor will be called by FormType, must be used to call parent to set default values

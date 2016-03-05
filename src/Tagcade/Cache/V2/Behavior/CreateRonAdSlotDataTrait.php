@@ -143,7 +143,7 @@ trait CreateRonAdSlotDataTrait {
         // update rtb cache data if supports
         if ($ronAdSlot->isRTBEnabled()) {
             $data['rtb'] = true;
-            $data['exchanges'] = $ronAdSlot->getExchanges();
+            $data['exchanges'] = $ronAdSlot->getLibraryAdSlot()->getPublisher()->getExchanges();
             $data['floorPrice'] = $ronAdSlot->getFloorPrice();
         }
 

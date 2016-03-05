@@ -116,7 +116,7 @@ trait CreateAdSlotDataTrait
         // update rtb cache data if supports
         if ($adSlot->isRTBEnabled()) {
             $data['rtb'] = true;
-            $data['exchanges'] = $adSlot->getSite()->getExchanges();
+            $data['exchanges'] = $adSlot->getSite()->getPublisher()->getExchanges();
             $data['floorPrice'] = $adSlot->getFloorPrice();
         }
 

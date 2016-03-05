@@ -9,6 +9,7 @@ use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use Ramsey\Uuid\Uuid;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class SetPublisherUuidListener
 {
@@ -16,7 +17,7 @@ class SetPublisherUuidListener
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof PublisherInterface) {
+        if ($entity instanceof SubPublisherInterface || !$entity instanceof PublisherInterface) {
             return;
         }
 

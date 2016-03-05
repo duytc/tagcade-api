@@ -25,4 +25,16 @@ class LibrarySlotTagVoter extends EntityVoterAbstract
     {
         return true;
     }
+
+    /**
+     * @param LibraryAdTagInterface $libraryAdTag
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($libraryAdTag, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

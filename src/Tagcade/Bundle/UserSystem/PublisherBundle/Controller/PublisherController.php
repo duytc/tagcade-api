@@ -11,7 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 /**
  * @Rest\RouteResource("publishers/current")
@@ -53,7 +55,10 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
     public function getJspassbackAction()
     {
         $publisherId = $this->get('security.context')->getToken()->getUser()->getId();
-        $publisher = $this->one($publisherId);
+
+        /** @var PublisherInterface $publisher */
+        $publisher = $this->getPublisher($publisherId);
+
         return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher);
     }
 
@@ -89,6 +94,31 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
         $publisherId = $this->get('security.context')->getToken()->getUser()->getId();
 
         return $this->patch($request, $publisherId);
+    }
+
+    /**
+     * get account as Publisher or SubPublisher by publisherId
+     * @param integer $publisherId
+     * @return PublisherInterface Publisher or SubPublisher
+     */
+    protected function getPublisher($publisherId)
+    {
+        try {
+            $publisher = $this->one($publisherId);
+        } catch (\Exception $e) {
+            $publisher = false;
+        }
+
+        if (!$publisher instanceof PublisherInterface) {
+            // try again with SubPublisher
+            $publisher = $this->get('tagcade_user_system_sub_publisher.user_manager')->findUserBy(array('id' => $publisherId));
+        }
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new LogicException('The user should have the publisher role');
+        }
+
+        return $publisher;
     }
 
     /**

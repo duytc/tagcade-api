@@ -31,7 +31,7 @@ class SiteChangeListener
     }
 
     /**
-     * Handle event onFlush for detecting site changed on fields relate to RTB (rtb, exchanges, ...), then update cache for display ad slot
+     * Handle event onFlush for detecting site changed on fields relate to RTB (rtbStatus), then update cache for display ad slot
      *
      * @param OnFlushEventArgs $args
      */
@@ -71,7 +71,7 @@ class SiteChangeListener
 
             $changedFields = $uow->getEntityChangeSet($entity);
 
-            if (array_key_exists('rtbStatus', $changedFields) || array_key_exists('exchanges', $changedFields)) {
+            if (array_key_exists('rtbStatus', $changedFields)) {
                 $needToBeUpdatedSiteIds[] = $entity->getId();
             }
         }

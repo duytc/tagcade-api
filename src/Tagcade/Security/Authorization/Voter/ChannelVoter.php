@@ -24,4 +24,16 @@ class ChannelVoter extends EntityVoterAbstract
     {
         return $user->getId() == $channel->getPublisherId();
     }
+
+    /**
+     * @param ChannelInterface $channel
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($channel, UserEntityInterface $user, $action)
+    {
+        // not allowed
+        return false;
+    }
 }

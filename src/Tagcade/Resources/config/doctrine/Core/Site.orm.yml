@@ -39,9 +39,6 @@ Tagcade\Entity\Core\Site:
         players:
             type: json_array
             nullable: true
-        exchanges:
-            type: json_array
-            nullable: true
         rtbStatus:
             type: smallint
             nullable: false
@@ -65,4 +62,7 @@ Tagcade\Entity\Core\Site:
             mappedBy: site
             cascade: ["persist", "remove", "detach"]
             orphanRemoval: true
+        subPublisherSites:
+            targetEntity: Tagcade\Entity\Core\SubPublisherSite
+            mappedBy: site
 

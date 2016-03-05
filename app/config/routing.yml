@@ -8,6 +8,11 @@ tagcade_publisher_api:
     type:   rest
     prefix: /api/publisher/v1
 
+tagcade_sub_publisher_api:
+    resource: "@TagcadeUserSystemSubPublisherBundle/Resources/config/routing.yml"
+    type:   rest
+    prefix: /api/subpublisher/v1
+
 tagcade_api:
     resource: "@TagcadeApiBundle/Resources/config/routing.yml"
     type:   rest

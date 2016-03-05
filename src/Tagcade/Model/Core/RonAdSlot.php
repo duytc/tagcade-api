@@ -24,8 +24,6 @@ class RonAdSlot implements RonAdSlotInterface
 
     protected $rtbStatus;
     protected $floorPrice;
-    /** @var array|string[] */
-    protected $exchanges;
 
     /** @var \Datetime */
     protected $createdAt;
@@ -190,27 +188,6 @@ class RonAdSlot implements RonAdSlotInterface
     public function setFloorPrice($floorPrice)
     {
         $this->floorPrice = $floorPrice;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getExchanges()
-    {
-        if (!is_array($this->exchanges)) {
-            $this->exchanges = [];
-        }
-
-        return $this->exchanges;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setExchanges($exchanges)
-    {
-        $this->exchanges = is_array($exchanges) ? $exchanges : (null === $exchanges ? [] : [$exchanges]);
-        return $this;
     }
 
     /**

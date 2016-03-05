@@ -11,7 +11,7 @@ Tagcade\Entity\Core\DisplayAdSlot:
     properties:
         id:
             expose: true
-            groups: [displayadslot.detail, displayadslot.summary]
+            groups: [displayadslot.detail, displayadslot.summary, displayadslot.withChannel]
         floorPrice:
             expose: true
             groups: [displayadslot.detail, displayadslot.summary]

@@ -15,6 +15,7 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class TagGenerator
 {
@@ -40,6 +41,11 @@ class TagGenerator
 
     public function getTagsForPassback(PublisherInterface $publisher)
     {
+        // generate Passback js by SubPublisher is also by its Publisher
+        if ($publisher instanceof SubPublisherInterface) {
+            $publisher = $publisher->getPublisher();
+        }
+
         return array('passback' => $this->createDisplayPassbackTag($publisher));
     }
 

@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class Site implements SiteInterface
@@ -32,11 +33,12 @@ class Site implements SiteInterface
     protected $channelSites;
     protected $players;
 
+    /** @var SubPublisherInterface[] */
+    protected $subPublisherSites;
+
     protected $deletedAt;
 
     protected $rtbStatus;
-    /** @var array|string[] */
-    protected $exchanges;
 
     public function __construct()
     {
@@ -337,22 +339,38 @@ class Site implements SiteInterface
     /**
      * @inheritdoc
      */
-    public function getExchanges()
+    public function setSubPublisherSites($subPublisherSites)
     {
-        if (!is_array($this->exchanges)) {
-            $this->exchanges = [];
-        }
-
-        return $this->exchanges;
+        $this->subPublisherSites = $subPublisherSites;
+        return $this;
     }
 
     /**
-     * @inheritdoc\
+     * @inheritdoc
      */
-    public function setExchanges($exchanges)
+    public function getSubPublisherSites()
     {
-        $this->exchanges = is_array($exchanges) ? $exchanges : (null === $exchanges ? [] : [$exchanges]);
-        return $this;
+        if(null === $this->subPublisherSites) {
+            $this->subPublisherSites = new ArrayCollection();
+        }
+        return $this->subPublisherSites;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSubPublishers()
+    {
+        $subPublishers = [];
+        $subPublisherSites = $this->getSubPublisherSites();
+        /**
+         * @var SubPublisherSiteInterface $subPublisherSite
+         */
+        foreach($subPublisherSites as $subPublisherSite) {
+            $subPublishers[] = $subPublisherSite->getSubPublisher();
+        }
+
+        return $subPublishers;
     }
 
     public function __toString()

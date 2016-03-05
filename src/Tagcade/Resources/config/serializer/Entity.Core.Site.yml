@@ -25,9 +25,6 @@ Tagcade\Entity\Core\Site:
         players:
             expose: true
             groups: [site.detail, site.summary]
-        exchanges:
-            expose: true
-            groups: [site.detail, site.summary]
         rtbStatus:
             expose: true
             groups: [site.detail, site.summary]

@@ -1,0 +1,15 @@
+Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
+    exclusion_policy: ALL
+    virtual_properties:
+        getEnabledModules:
+            serialized_name: enabledModules
+            groups: [user.summary]
+    properties:
+        id:
+            expose: true
+            groups: [user.summary]
+        publisher:
+            expose: true
+            groups: [user.summary]
+        subPublisherSites:
+            expose: true

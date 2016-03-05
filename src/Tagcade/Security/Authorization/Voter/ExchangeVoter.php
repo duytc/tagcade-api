@@ -2,10 +2,11 @@
 
 namespace Tagcade\Security\Authorization\Voter;
 
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Model\Core\ExchangeInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\Core\PublisherExchangeInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\Core\AdNetworkInterface;
 
 class ExchangeVoter extends EntityVoterAbstract
 {
@@ -17,17 +18,37 @@ class ExchangeVoter extends EntityVoterAbstract
     }
 
     /**
-     * @param AdNetworkInterface $exchange
+     * @param ExchangeInterface $exchange
      * @param UserEntityInterface $user
      * @param $action
      * @return bool
      */
     protected function isPublisherActionAllowed($exchange, UserEntityInterface $user, $action)
     {
-        if ($action === self::VIEW) {
+        /** @var PublisherExchangeInterface[]|Collection $publisherExchanges */
+        $publisherExchanges = $exchange->getPublisherExchanges();
+
+        if (count($publisherExchanges) < 1) {
             return true;
         }
 
+        if ($publisherExchanges instanceof Collection) {
+            $publisherExchanges = $publisherExchanges->toArray();
+        }
+
+        return $user->getId() == $publisherExchanges[0]->getPublisher()->getId();
+    }
+
+    /**
+     * Checks to see if a sub publisher has permission to perform an action
+     *
+     * @param ModelInterface $entity
+     * @param UserEntityInterface $user
+     * @param $action
+     * @return bool
+     */
+    protected function isSubPublisherActionAllowed($entity, UserEntityInterface $user, $action)
+    {
         return false;
     }
 }
