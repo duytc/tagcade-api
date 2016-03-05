@@ -3,6 +3,8 @@
 namespace Tagcade\Model\User\Role;
 
 
+use Tagcade\Model\Core\PublisherExchangeInterface;
+
 interface PublisherInterface extends UserRoleInterface
 {
     /**
@@ -172,4 +174,17 @@ interface PublisherInterface extends UserRoleInterface
     public function getExchanges();
 
     public function getExchangeObjects();
+
+    /**
+     * @return \Tagcade\Model\Core\PublisherExchangeInterface[]
+     */
+    public function getPublisherExchanges();
+
+    /**
+     * @param \Tagcade\Model\Core\PublisherExchangeInterface[] $publisherExchanges
+     * @return self
+     */
+    public function setPublisherExchanges($publisherExchanges);
+
+    public function addPublisherExchanges(PublisherExchangeInterface $publisherExchange);
 }

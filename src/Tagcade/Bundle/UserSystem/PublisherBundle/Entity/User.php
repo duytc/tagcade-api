@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Core\ExchangeInterface;
 use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -328,5 +329,14 @@ class User extends BaseUser implements PublisherInterface
         $this->publisherExchanges = $publisherExchanges;
 
         return $this;
+    }
+
+    public function addPublisherExchanges(PublisherExchangeInterface $publisherExchange)
+    {
+        if ($this->publisherExchanges === null) {
+            $this->publisherExchanges = new ArrayCollection();
+        }
+
+        $this->publisherExchanges->add($publisherExchange);
     }
 }
