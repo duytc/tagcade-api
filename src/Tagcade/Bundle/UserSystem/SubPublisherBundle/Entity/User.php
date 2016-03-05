@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Exception\NotSupportedException;
+use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\Core\SubPublisherSiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -308,5 +309,29 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     public function getExchangeObjects()
     {
         throw new NotSupportedException('getExchangeObjects Not supported by SubPublisher');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherExchanges()
+    {
+        throw new NotSupportedException('getPublisherExchanges Not supported by SubPublisher');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPublisherExchanges($publisherExchanges)
+    {
+        throw new NotSupportedException('setPublisherExchanges Not supported by SubPublisher');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addPublisherExchanges(PublisherExchangeInterface $publisherExchange)
+    {
+        throw new NotSupportedException('addPublisherExchanges Not supported by SubPublisher');
     }
 }
