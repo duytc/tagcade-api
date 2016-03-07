@@ -120,7 +120,7 @@ class UserFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function(FormEvent $event) {
-                /** @var UserEntityInterface $publisher */
+                /** @var UserEntityInterface|PublisherInterface $publisher */
                 $publisher = $event->getData();
                 $form = $event->getForm();
 
