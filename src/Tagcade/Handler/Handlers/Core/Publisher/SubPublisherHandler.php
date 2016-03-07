@@ -38,6 +38,14 @@ class SubPublisherHandler extends SubPublisherHandlerAbstract
     /**
      * @inheritdoc
      */
+    public function all($limit = null, $offset = null)
+    {
+        return $this->getDomainManager()->allForPublisher($this->getUserRole(), $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function processForm(ModelInterface $subPublisher, array $parameters, $method = "PUT")
     {
         /** @var SubPublisherInterface $subPublisher */

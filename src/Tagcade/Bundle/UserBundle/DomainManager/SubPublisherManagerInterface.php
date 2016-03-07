@@ -50,6 +50,16 @@ interface SubPublisherManagerInterface
     public function allActive($limit = null, $offset = null);
 
     /**
+     * get all subPublisher for a publisher
+     *
+     * @param PublisherInterface $publisher
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return FOSUserInterface[]
+     */
+    public function allForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
      * @param int $id
      * @return PublisherInterface|bool
      * @throws InvalidUserRoleException

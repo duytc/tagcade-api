@@ -6,6 +6,7 @@ use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
 use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 /**
@@ -69,6 +70,22 @@ class SubPublisherManager implements SubPublisherManagerInterface
 
         $publishers = array_filter($publishers, function (UserEntityInterface $user) {
             return $user->hasRole(static::ROLE_SUB_PUBLISHER);
+        });
+
+        return array_values($publishers);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function allForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        /** @var array $publishers */
+        $publishers = $this->FOSUserManager->findUsers();
+
+        $publishers = array_filter($publishers, function (UserEntityInterface $user) use ($publisher){
+            /** @var UserEntityInterface|SubPublisherInterface $user */
+            return $user->hasRole(static::ROLE_SUB_PUBLISHER) && $user->getPublisher()->getId() == $publisher->getId();
         });
 
         return array_values($publishers);
