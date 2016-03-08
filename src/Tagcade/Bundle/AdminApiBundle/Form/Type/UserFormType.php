@@ -37,8 +37,12 @@ class UserFormType extends AbstractRoleSpecificFormType
     private $oldSettings;
     private $exchanges;
 
-    public function __construct(UserEntityInterface $userRole, array $exchanges)
+    public function __construct(UserEntityInterface $userRole, $exchanges)
     {
+        if ($exchanges == null) {
+            $exchanges = [];
+        }
+
         $this->setUserRole($userRole);
         $this->exchanges = array_map(function(array $exchange){
             return $exchange['abbreviation'];
