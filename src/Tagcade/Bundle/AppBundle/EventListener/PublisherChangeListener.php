@@ -71,6 +71,11 @@ class PublisherChangeListener
 
             $changedFields = $uow->getEntityChangeSet($entity);
 
+            if (array_key_exists('exchanges', $changedFields)) {
+                $needToBeUpdatedPublisherIds[] = $entity->getId();
+                continue;
+            }
+
             if (array_key_exists('roles', $changedFields)) { // the 'exchanges' field is already listened by SiteChangeListener!!!
                 $roles = $changedFields['roles'];
 

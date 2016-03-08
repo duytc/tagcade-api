@@ -20,7 +20,6 @@ parameters:
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
     tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
     tagcade.security.auth.voter.channel.class: Tagcade\Security\Authorization\Voter\ChannelVoter
-    tagcade.security.auth.voter.exchange.class: Tagcade\Security\Authorization\Voter\ExchangeVoter
 
     tagcade.security.auth.voter.library_expresison.class: Tagcade\Security\Authorization\Voter\LibraryExpressionVoter
 
@@ -96,12 +95,6 @@ services:
 
     tagcade.security.auth.voter.library_ad_tag:
         class:  %tagcade.security.auth.voter.library_ad_tag.class%
-        public: false
-        tags:
-            - { name: security.voter }
-
-    tagcade.security.auth.voter.exchange:
-        class:  %tagcade.security.auth.voter.exchange.class%
         public: false
         tags:
             - { name: security.voter }

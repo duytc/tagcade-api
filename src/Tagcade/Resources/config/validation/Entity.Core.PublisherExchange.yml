@@ -1,5 +1,0 @@
-Tagcade\Entity\Core\PublisherExchange:
-    properties:
-        publisher:
-            - NotBlank: ~
-            - Valid: ~

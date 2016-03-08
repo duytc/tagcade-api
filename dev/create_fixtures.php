@@ -11,9 +11,6 @@ use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Entity\Core\Exchange;
-use Tagcade\Entity\Core\PublisherExchange;
-use Tagcade\Model\Core\ExchangeInterface;
 use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 
 $loader = require_once __DIR__ . '/../app/autoload.php';
@@ -41,17 +38,6 @@ $em = $container->get('doctrine.orm.entity_manager');
 $em->getConnection()->getConfiguration()->setSQLLogger(null);
 /** @var PublisherManagerInterface $publisherManager */
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
-$exchangeManager = $container->get('tagcade.domain_manager.exchange');
-
-$exchanges = [];
-foreach(xrange(NUM_EXCHANGE_PER_PUBLISHER) as $exchangeId) {
-    $exchange = new Exchange();
-    $exchange->setName(sprintf("Index Exchange %d", $exchangeId));
-    $exchange->setCanonicalName(sprintf('index-exchange-%d', $exchangeId));
-    $em->persist($exchange);
-    $exchanges[] = $exchange;
-}
-$em->flush();
 
 foreach(xrange(NUM_PUBLISHER) as $userId) {
     //create publisher
@@ -62,16 +48,6 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setEmail(sprintf('tctest%d@tagcade.com', $userId))
         ->setEnabled(true)
     ;
-    /**
-     * @var ExchangeInterface $exchange
-     */
-    foreach($exchanges as $exchange) {
-        $publisherExchange = new PublisherExchange();
-        $publisherExchange->setPublisher($publisher);
-        $publisherExchange->setExchange($exchange);
-
-        $publisher->addPublisherExchanges($publisherExchange);
-    }
 
     $publisher->setCompany('tctest'); // doesn't return $this so cannot chain
     $publisher->setEnabledModules([$publisher::MODULE_DISPLAY, $publisher::MODULE_RTB]);

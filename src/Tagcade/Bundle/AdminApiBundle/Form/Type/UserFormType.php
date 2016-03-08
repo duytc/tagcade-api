@@ -2,19 +2,14 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Form\Type;
 
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
-use Tagcade\Entity\Core\PublisherExchange;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
-use Tagcade\Form\Type\ExchangeFormType;
-use Tagcade\Form\Type\PublisherExchangeFormType;
-use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -40,10 +35,14 @@ class UserFormType extends AbstractRoleSpecificFormType
     const VIDEO_PLAYERS = 'players';
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
     private $oldSettings;
+    private $exchanges;
 
-    public function __construct(UserEntityInterface $userRole)
+    public function __construct(UserEntityInterface $userRole, array $exchanges)
     {
         $this->setUserRole($userRole);
+        $this->exchanges = array_map(function(array $exchange){
+            return $exchange['canonicalName'];
+        } , $exchanges) ;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -62,12 +61,7 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('postalCode')
             ->add('country')
             ->add('settings')
-            ->add('publisherExchanges', CollectionType::class, array (
-                'mapped' => true,
-                'type' => new PublisherExchangeFormType(),
-                'allow_add' => true,
-                'allow_delete' => true,
-            ))
+            ->add('exchanges')
         ;
 
         if($this->userRole instanceof AdminInterface){
@@ -94,18 +88,18 @@ class UserFormType extends AbstractRoleSpecificFormType
         //validate 'settings' field submitted by publisher
         //also merge all changes to current 'settings' of publisher (ui only submit with patched settings)
         if($this->userRole instanceof PublisherInterface) {
-//            $builder->addEventListener(
-//                FormEvents::PRE_SET_DATA,
-//                function (FormEvent $event) {
-//                    // validate exchanges before submitting if Publisher: only Admin has permission!!!
-//                    $form = $event->getForm();
-//
-//                    if ($form->has('exchanges') && null !== $form->get('exchanges')->getData()) {
-//                        $form->get('exchanges')->addError(new FormError('this user does not have permission to edit exchanges'));
-//                        return;
-//                    }
-//                }
-//            );
+            $builder->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                function (FormEvent $event) {
+                    // validate exchanges before submitting if Publisher: only Admin has permission!!!
+                    $form = $event->getForm();
+
+                    if ($form->has('exchanges') && null !== $form->get('exchanges')->getData()) {
+                        $form->get('exchanges')->addError(new FormError('you do not have enough permission to edit this entity'));
+                        return;
+                    }
+                }
+            );
 
             $builder->addEventListener(
                 FormEvents::POST_SET_DATA,
@@ -126,6 +120,15 @@ class UserFormType extends AbstractRoleSpecificFormType
 
 
                 if ($this->userRole instanceof AdminInterface) {
+                    $exchanges = $publisher->getExchanges();
+                    foreach($exchanges as $exchange) {
+                        if (!in_array($exchange, $this->exchanges)) {
+                            $form->get('exchanges')->addError(new FormError(sprintf('exchange "%s" is currently not supported', $exchange)));
+                        }
+
+                        return;
+                    }
+
                     if ($publisher->getId() === null) {
                         $publisher->generateAndAssignUuid();
                     }
@@ -156,14 +159,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                         if (isset($tagDomain['secure']) && !is_bool($tagDomain['secure'])) {
                             throw new InvalidArgumentException('expect true or false');
                         }
-                    }
-
-                    /**
-                     * @var PublisherExchangeInterface[] $publisherExchanges
-                     */
-                    $publisherExchanges = $form->get('publisherExchanges')->getData();
-                    foreach($publisherExchanges as $publisherExchange) {
-                        $publisherExchange->setPublisher($publisher);
                     }
                 }
                 else if ($this->userRole instanceof PublisherInterface) {
