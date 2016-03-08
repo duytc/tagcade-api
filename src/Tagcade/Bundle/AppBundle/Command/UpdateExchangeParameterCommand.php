@@ -33,7 +33,7 @@ class UpdateExchangeParameterCommand extends ContainerAwareCommand
 
         $exchanges = $this->getContainer()->getParameter('rtb.exchanges');
         $exchanges = array_map(function(array $exchange) {
-            return $exchange['canonicalName'];
+            return $exchange['abbreviation'];
         }, $exchanges);
 
         foreach($publishers as $publisher) {

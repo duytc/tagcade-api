@@ -41,7 +41,7 @@ class UserFormType extends AbstractRoleSpecificFormType
     {
         $this->setUserRole($userRole);
         $this->exchanges = array_map(function(array $exchange){
-            return $exchange['canonicalName'];
+            return $exchange['abbreviation'];
         } , $exchanges) ;
     }
 
