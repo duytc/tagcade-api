@@ -3,8 +3,6 @@
 namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\Core\ExchangeInterface;
-use Tagcade\Model\Core\PublisherExchangeInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Model\User\UserEntityInterface;
@@ -30,8 +28,8 @@ class User extends BaseUser implements PublisherInterface
     protected $country;
     protected $settings; //json string represent setting for report bundle
     protected $tagDomain;
-    /** @var PublisherExchangeInterface[] */
-    protected $publisherExchanges;
+    /** @var array */
+    protected $exchanges;
 
     /**
      * @return string
@@ -279,64 +277,21 @@ class User extends BaseUser implements PublisherInterface
      */
     public function getExchanges()
     {
-        if ($this->getPublisherExchanges() === null || count($this->publisherExchanges) < 1) {
-            return [];
+        if ($this->exchanges === null) {
+            $this->exchanges = [];
         }
 
-        $exchanges = [];
-        /**
-         * @var PublisherExchangeInterface $publisherExchange
-         */
-        foreach($this->getPublisherExchanges() as $publisherExchange) {
-            $exchanges[] = $publisherExchange->getExchange()->getCanonicalName();
-        }
-
-        return $exchanges;
-    }
-
-    public function getExchangeObjects()
-    {
-        if ($this->getPublisherExchanges() === null || count($this->publisherExchanges) < 1) {
-            return [];
-        }
-
-        $exchanges = [];
-        /**
-         * @var PublisherExchangeInterface $publisherExchange
-         */
-        foreach($this->getPublisherExchanges() as $publisherExchange) {
-            $exchanges[] = $publisherExchange->getExchange();
-        }
-
-        return $exchanges;
-    }
-
-
-    /**
-     * @return \Tagcade\Model\Core\PublisherExchangeInterface[]
-     */
-    public function getPublisherExchanges()
-    {
-        return $this->publisherExchanges;
+        return $this->exchanges;
     }
 
     /**
-     * @param \Tagcade\Model\Core\PublisherExchangeInterface[] $publisherExchanges
+     * @param array $exchanges
      * @return self
      */
-    public function setPublisherExchanges($publisherExchanges)
+    public function setExchanges($exchanges)
     {
-        $this->publisherExchanges = $publisherExchanges;
+        $this->exchanges = $exchanges;
 
         return $this;
-    }
-
-    public function addPublisherExchanges(PublisherExchangeInterface $publisherExchange)
-    {
-        if ($this->publisherExchanges === null) {
-            $this->publisherExchanges = new ArrayCollection();
-        }
-
-        $this->publisherExchanges->add($publisherExchange);
     }
 }

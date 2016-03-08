@@ -25,7 +25,10 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
-
+    rtb.exchanges:
+        -
+            name: Index Exchange
+            abbreviation: index-exchange # This abbreviation will be used in the auction service configuration in order to enable this exchange
     tc.default_page_size: 10
     tc.default_tag_url:
         domain: 'tags.tagcade.dev'
