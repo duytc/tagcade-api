@@ -105,3 +105,9 @@ services:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService
         arguments:
             - @doctrine.orm.default_entity_manager
+
+    tagcade_app.service.core.exchange.exchange_cache_updater:
+        class: Tagcade\Service\Core\Exchange\ExchangeCacheUpdater
+        arguments:
+            - @tagcade_user.domain_manager.publisher
+            - %rtb.exchanges%
