@@ -31,6 +31,7 @@ class UserFormType extends AbstractRoleSpecificFormType
         'fillRate',
     ];
     const MODULE_CONFIG = 'moduleConfigs';
+    const ABBREVIATION_KEY = 'abbreviation';
     const VIDEO_MODULE = 'MODULE_VIDEO_ANALYTICS';
     const VIDEO_PLAYERS = 'players';
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
@@ -40,12 +41,13 @@ class UserFormType extends AbstractRoleSpecificFormType
     public function __construct(UserEntityInterface $userRole, $exchanges)
     {
         if ($exchanges == null) {
-            $exchanges = [];
+            $this->exchanges = [];
         }
 
         $this->setUserRole($userRole);
+
         $this->exchanges = array_map(function(array $exchange){
-            return $exchange['abbreviation'];
+            return $exchange[self::ABBREVIATION_KEY];
         } , $exchanges) ;
     }
 
@@ -73,7 +75,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                 ->add('tagDomain')
                 ->add('enabled')
                 ->add('enabledModules', 'choice', [
-                    'mapped' => false,
                     'empty_data' => null,
                     'multiple' => true,
                     'choices' => [
