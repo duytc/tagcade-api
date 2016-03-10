@@ -40,6 +40,11 @@ class RenameExchangeCommand extends ContainerAwareCommand
         $preName = $input->getOption('preName');
         $newName = $input->getOption('newName');
 
+        if (empty($preName) || empty($newName)) {
+            $output->writeln('<error>Either "preName" or "newName" is missing</error>');
+            return;
+        }
+
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion(
             sprintf('This will remove "%s" from all RTB transaction while enable "%s". Continue ? (y/n)', $preName, $newName),

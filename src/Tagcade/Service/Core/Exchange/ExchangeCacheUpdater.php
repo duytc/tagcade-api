@@ -42,7 +42,11 @@ class ExchangeCacheUpdater implements ExchangeCacheUpdaterInterface
      */
     public function updateCacheAfterUpdateExchangeParameter($oldName, $newName = null)
     {
-        if (!in_array($newName, $this->exchanges)) {
+        if (!in_array($oldName, $this->exchanges) && $newName === null) {
+            throw new RuntimeException(sprintf('exchange "%s" is not existed', $oldName));
+        }
+
+        if ($newName !== null && !in_array($newName, $this->exchanges)) {
             throw new RuntimeException(sprintf('exchange "%s" is not existed', $newName));
         }
 
