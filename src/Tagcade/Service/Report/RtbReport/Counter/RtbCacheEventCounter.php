@@ -9,6 +9,7 @@ use Tagcade\Domain\DTO\Report\RtbReport\RtbRonAdSlotReportCount;
 class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEventCounterInterface
 {
     const KEY_DATE_FORMAT = 'ymd';
+    const SEGMENT_NONE = null;
 
     /* cache keys */
     const CACHE_KEY_SLOT_OPPORTUNITY = 'opportunity'; // same "opportunities" key, used with different namespace
@@ -60,19 +61,37 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
     /**
      * @inheritdoc
      */
-    public function getRtbAdSlotReport($adSlotId)
+    public function getRtbAdSlotReport($adSlotId, $supportMGet = true)
     {
         $rtbCacheKeys = $this->createRtbCacheKeysForAdSlot($adSlotId);
 
-        $results = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
+        $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys) : $this->getSequentiallyMultipleFields(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
         return new RtbAdSlotReportCount($adSlotId, $results, $this->getDate());
     }
 
     /**
+     * get multiple fields sequentially from cache in case of not support mGet for multiple-redis-server-instances
+     * this takes more time when get many records from cache but makes an exactly report
+     *
+     * @param $hash
+     * @param array $fields
+     * @return array
+     */
+    private function getSequentiallyMultipleFields($hash, array $fields)
+    {
+        $results = [];
+        foreach($fields as $field) {
+            $results[] = $this->cache->hFetch($hash, $field);
+        }
+
+        return $results;
+    }
+
+    /**
      * @inheritdoc
      */
-    public function getRtbAdSlotReports(array $adSlotIds)
+    public function getRtbAdSlotReports(array $adSlotIds, $supportMGet = true)
     {
         /* build cache keys for all adSlotIds */
         $rtbCacheKeys = [];
@@ -85,12 +104,12 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
         }
 
         /* get cache data for all adSlotIds */
-        $results = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
+        $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys) : $this->getSequentiallyMultipleFields(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
         /* build reports from data */
         $reports = [];
         foreach ($adSlotIds as $id) {
-            $reports[] = new RtbAdSlotReportCount($id, $results);
+            $reports[] = new RtbAdSlotReportCount($id, $results, $this->getDate());
         }
 
         return $reports;
@@ -99,11 +118,11 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
     /**
      * @inheritdoc
      */
-    public function getRtbRonAdSlotReport($ronAdSlotId, $segmentId = null)
+    public function getRtbRonAdSlotReport($ronAdSlotId, $segmentId = null, $supportMGet = true)
     {
         $rtbCacheKeys = $this->createRtbCacheKeyForRonAdSlot($ronAdSlotId, $segmentId);
 
-        $results = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
+        $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys) : $this->getSequentiallyMultipleFields(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
         return new RtbRonAdSlotReportCount($ronAdSlotId, $results, $this->getDate(), $segmentId);
     }
@@ -111,7 +130,7 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
     /**
      * @inheritdoc
      */
-    public function getRtbRonAdSlotReports(array $ronAdSlotIds, $segmentId = null)
+    public function getRtbRonAdSlotReports(array $ronAdSlotIds, $segmentId = null, $supportMGet = true)
     {
         /* build cache keys for all ron adSlotIds */
         $rtbCacheKeys = [];
@@ -124,7 +143,7 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
         }
 
         /* get cache data for all adSlotIds */
-        $results = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
+        $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys) :  $this->getSequentiallyMultipleFields(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
         /* build reports from data */
         $reports = [];

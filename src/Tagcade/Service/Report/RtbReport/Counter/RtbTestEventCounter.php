@@ -194,7 +194,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     /**
      * @inheritdoc
      */
-    public function getRtbAdSlotReport($adSlotId)
+    public function getRtbAdSlotReport($adSlotId, $supportMGet = false)
     {
         // NOTICE: implement this to create RtbAdSlotReport by random value instead of get from cache!!!
         /* build report from $this->adSlotData */
@@ -204,7 +204,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     /**
      * @inheritdoc
      */
-    public function getRtbAdSlotReports(array $adSlotIds)
+    public function getRtbAdSlotReports(array $adSlotIds, $supportMGet = false)
     {
         // NOTICE: implement this to create RtbAdSlotReports by random value instead of get from cache!!!
         /* build reports from $this->adSlotData */
@@ -219,7 +219,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     /**
      * @inheritdoc
      */
-    public function getRtbRonAdSlotReport($ronAdSlotId, $segmentId = null)
+    public function getRtbRonAdSlotReport($ronAdSlotId, $segmentId = null, $supportMGet = false)
     {
         // NOTICE: implement this to create RtbRonAdSlotReport by random value instead of get from cache!!!
         /* build report from $this->ronAdSlotData or $this->ronAdSlotSegmentData (if segmentId is not null) */
@@ -231,7 +231,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     /**
      * @inheritdoc
      */
-    public function getRtbRonAdSlotReports(array $ronAdSlotIds, $segmentId = null)
+    public function getRtbRonAdSlotReports(array $ronAdSlotIds, $segmentId = null, $supportMGet = false)
     {
         // NOTICE: implement this to create RtbRonAdSlotReports by random value instead of get from cache!!!
         /* build reports from $this->ronAdSlotData */

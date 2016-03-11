@@ -26,7 +26,15 @@ class RtbAdSlotSnapshot extends RtbSnapshotCreatorAbstract implements RtbAdSlotS
             ->setName($adSlot->getName())
             ->setDate($this->getDate());
 
-        $adSlotReportCounts[] = $this->eventCounter->getRtbAdSlotReport($adSlot->getId());
+        /*
+         * NOTICE: when using DailyReportCreator tools for yesterday, we want an exactly report and allow executing takes more time.
+         * So that use supportMGet = false to get SEQUENTIALLY all cache records from all redis server instances.
+         *
+         * But for today report view from web, high accuracy report is not very important, hence we use supportMGet = true.
+         */
+        $supportMGet = !($this->getDate() < new \DateTime('today'));
+
+        $adSlotReportCounts[] = $this->eventCounter->getRtbAdSlotReport($adSlot->getId(), $supportMGet);
 
         $this->parseRawReportData($report, $adSlotReportCounts);
 
