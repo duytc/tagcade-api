@@ -52,27 +52,36 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
             }
 
             $modules = $publisher->getEnabledModules();
-//            $configs = $publisher->getConfig("MODULE_VIDEO");
             $sites = $siteManager->getSitesForPublisher($publisher);
 
             /**@var SiteInterface $site */
             foreach($sites as $site){
                 if($site instanceof SiteInterface) {
-                    if($publisher->hasVideoModule()){
-                        $moduleConfigs = array('MODULE_VIDEO_ANALYTICS' => array('players' => $site->getPlayers()));
-                        $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($moduleConfigs));
+                    $moduleConfigs = [];
+                    $siteConfigs[$site->getId()] = [];
 
-                        continue;
+                    if($publisher->hasVideoModule()){
+                        $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_VIDEO_ANALYTICS' => array('players' => $site->getPlayers())));
                     }
 
                     if($publisher->hasRtbModule()){
-                        $moduleConfigs = array('MODULE_RTB' => array('exchanges' => $publisher->getExchanges()));
-                        $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules), 'config' => $this->mapModuleConfig($moduleConfigs));
-
-                        continue;
+                        $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_RTB' => array('exchanges' => $publisher->getExchanges())));
                     }
 
-                    $siteConfigs[$site->getId()] = array('modules' => $this->mapModuleName($modules));
+                    // build data for key 'config'
+                    $configs = [];
+                    if (count($moduleConfigs) > 0) {
+                        foreach ($moduleConfigs as $modConf) {
+                            foreach ($modConf as $name => $value) {
+                                $configs[$name] = $value;
+                            }
+                        }
+                    }
+
+                    // notice: 'config' key existed only if config data has at least one item
+                    $siteConfigs[$site->getId()] = count($configs) > 0
+                        ? array('modules' => $this->mapModuleName($modules), 'config' => $configs)
+                        : array('modules' => $this->mapModuleName($modules));
                 }
             }
         }
