@@ -17,10 +17,4 @@ interface SegmentManagerInterface extends ManagerInterface
      */
     public function getSegmentsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
-    /**
-     * @param PublisherInterface $publisher
-     * @param null $type
-     * @return array
-     */
-    public function getSegmentsByType(PublisherInterface $publisher, $type = null);
 }

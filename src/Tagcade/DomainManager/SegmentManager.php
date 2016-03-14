@@ -86,17 +86,4 @@ class SegmentManager implements SegmentManagerInterface
     {
         return $this->repository->getSegmentsForPublisher($publisher, $limit, $offset);
     }
-
-
-
-    /**
-     * @param PublisherInterface $publisher
-     * @param null $type
-     * @return array
-     */
-    public function getSegmentsByType(PublisherInterface $publisher, $type = null)
-    {
-        return $this->repository->getSegmentsByType($publisher, $type);
-    }
-
 }
