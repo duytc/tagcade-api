@@ -4,10 +4,14 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\SegmentInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("Segment")
@@ -20,6 +24,10 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
      * @Rest\View(
      *      serializerGroups={"segment.detail", "user.summary"}
      * )
+     *
+     * @Rest\QueryParam(name="publisher", requirements={"\d+"}, nullable=true)*
+     * @Rest\QueryParam(name="type", requirements="(custom|publisher)", nullable=true)*
+     *
      * @ApiDoc(
      *  section="Segments",
      *  resource = true,
@@ -27,12 +35,23 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
      *      200 = "Returned when successful"
      *  }
      * )
-     *
+     * @param Request $request the resource request
      * @return SegmentInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $typeSegment = $request->get('type',null);
+
+        if (null === $typeSegment) {
+            return $this->all();
+        }
+
+        $publisherId = $request->get('publisher',null);
+        $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+
+        $publisher = $this->getUser() instanceof AdminInterface ? $publisherManager->find($publisherId) : $this->getUser();
+
+        return $this->get('tagcade.repository.segment')->getSegmentsByTypeForPublisher($publisher, $typeSegment);
     }
 
     /**
@@ -95,6 +114,9 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
         return 'api_1_get_segment';
     }
 
+    /**
+     * @return \Tagcade\Handler\Handlers\Core\Publisher\SegmentHandler
+     */
     protected function getHandler()
     {
         return $this->container->get('tagcade_api.handler.segment');

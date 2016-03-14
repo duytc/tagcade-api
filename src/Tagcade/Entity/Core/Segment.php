@@ -8,6 +8,7 @@ class Segment extends SegmentModel
 {
     protected $id;
     protected $publisher;
+    protected $subPublisher;
     protected $name;
     protected $ronAdSlotSegments;
     protected $createdAt;

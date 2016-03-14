@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Exception\NotSupportedException;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Core\SubPublisherSiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -23,6 +24,9 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /** @var array */
     protected $enabledModules;
 
+    /** @var SegmentInterface[] */
+    protected $segments;
+
     /**
      * @inheritdoc
      */
@@ -37,6 +41,25 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     public function setPublisher(PublisherInterface $publisher)
     {
         $this->publisher = $publisher;
+
+        return $this;
+    }
+
+    /**
+     * @return \Tagcade\Model\Core\SegmentInterface[]
+     */
+    public function getSegments()
+    {
+        return $this->segments;
+    }
+
+    /**
+     * @param \Tagcade\Model\Core\SegmentInterface[] $segments
+     * @return self
+     */
+    public function setSegments($segments)
+    {
+        $this->segments = $segments;
 
         return $this;
     }

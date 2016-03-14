@@ -5,6 +5,7 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 interface SegmentInterface extends ModelInterface
 {
@@ -50,4 +51,14 @@ interface SegmentInterface extends ModelInterface
      * @return mixed
      */
     public function getReportableRonAdSlots();
+
+    /**
+     * @return SubPublisherInterface
+     */
+    public function getSubPublisher();
+
+    /**
+     * @param SubPublisherInterface $subPublisher
+     */
+    public function setSubPublisher(SubPublisherInterface $subPublisher);
 }

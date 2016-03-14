@@ -4,6 +4,7 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class Segment implements SegmentInterface
@@ -12,6 +13,10 @@ class Segment implements SegmentInterface
 
     /** @var UserEntityInterface */
     protected $publisher;
+
+    /** @var UserEntityInterface */
+    protected $subPublisher;
+
     protected $name;
     /**
      * @var array
@@ -75,6 +80,22 @@ class Segment implements SegmentInterface
     {
         $this->publisher = $publisher->getUser();
         return $this;
+    }
+
+    /**
+     * @return SubPublisherInterface
+     */
+    public function getSubPublisher()
+    {
+        return $this->subPublisher;
+    }
+
+    /**
+     * @param SubPublisherInterface $subPublisher
+     */
+    public function setSubPublisher(SubPublisherInterface $subPublisher)
+    {
+        $this->subPublisher = $subPublisher;
     }
 
     /**

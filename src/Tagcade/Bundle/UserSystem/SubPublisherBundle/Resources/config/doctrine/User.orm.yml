@@ -12,3 +12,6 @@ Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
             mappedBy: subPublisher
             cascade: ["persist", "remove", "detach"]
             orphanRemoval: true
+        segments:
+            targetEntity: Tagcade\Entity\Core\Segment
+            mappedBy: subPublisher

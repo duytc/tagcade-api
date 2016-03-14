@@ -85,3 +85,8 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.CreateSubPublisherSegmentListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\CreateSubPublisherSegmentListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }

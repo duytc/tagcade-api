@@ -10,3 +10,6 @@ Tagcade\Entity\Core\Segment:
         publisher:
             expose: true
             groups: [segment.detail, segment.summary]
+        subPublisher:
+            expose: true
+            groups: [segment.detail, segment.summary]

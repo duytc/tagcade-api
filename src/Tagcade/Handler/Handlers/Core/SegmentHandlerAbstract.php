@@ -18,4 +18,7 @@ abstract class SegmentHandlerAbstract extends RoleHandlerAbstract
     {
         return parent::getDomainManager();
     }
+
+
+
 }

@@ -26,8 +26,12 @@ Tagcade\Entity\Core\Segment:
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+        subPublisher:
+            targetEntity: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User
     oneToMany:
         ronAdSlotSegments:
             targetEntity: Tagcade\Entity\Core\RonAdSlotSegment
             mappedBy: segment
             cascade: ["remove"]
+
+
