@@ -64,7 +64,7 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
                         $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_VIDEO_ANALYTICS' => array('players' => $site->getPlayers())));
                     }
 
-                    if($publisher->hasRtbModule()){
+                    if($site->isRTBEnabled()){
                         $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_RTB' => array('exchanges' => $publisher->getExchanges())));
                     }
 
