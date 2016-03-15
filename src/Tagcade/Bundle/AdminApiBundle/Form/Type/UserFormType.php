@@ -41,7 +41,7 @@ class UserFormType extends AbstractRoleSpecificFormType
     public function __construct(UserEntityInterface $userRole, $exchanges)
     {
         if ($exchanges == null) {
-            $this->exchanges = [];
+            $exchanges = [];
         }
 
         $this->setUserRole($userRole);
