@@ -11,8 +11,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManagerInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 /**
  * @Rest\RouteResource("publishers/current")
@@ -123,6 +127,39 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
         }
 
         return $publisher;
+    }
+
+    /**
+     * Get token for sub publisher only
+     * @Rest\Get("{subPublisherId}/token", requirements={"subPublisherId" = "\d+"})
+     * @ApiDoc(
+     *  section = "publisher",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     * @param $subPublisherId
+     * @return array
+     */
+    public function getTokenAction($subPublisherId)
+    {
+        /**
+         * @var SubPublisherManagerInterface $subPublisherManager;
+         */
+        $subPublisherManager = $this->get('tagcade_user.domain_manager.sub_publisher');
+        $subPublisher = $subPublisherManager->find($subPublisherId);
+
+        if (!$subPublisher instanceof SubPublisherInterface) {
+            throw new NotFoundHttpException('That sub publisher does not exist');
+        }
+
+        $jwtManager = $this->get('lexik_jwt_authentication.jwt_manager');
+        $jwtTransformer = $this->get('tagcade_api.service.jwt_response_transformer');
+
+        $tokenString = $jwtManager->create($subPublisher);
+
+        return $jwtTransformer->transform(['token' => $tokenString], $subPublisher);
     }
 
     /**
