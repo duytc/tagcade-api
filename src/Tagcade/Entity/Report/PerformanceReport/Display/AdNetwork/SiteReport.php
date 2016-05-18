@@ -19,12 +19,10 @@ class SiteReport extends SiteReportModel
     protected $estRevenue;
     protected $estCpm;
 
-
     protected $firstOpportunities;
     protected $verifiedImpressions;
     protected $unverifiedImpressions;
     protected $blankImpressions;
     protected $voidImpressions;
     protected $clicks;
-
 }

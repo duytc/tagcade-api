@@ -112,3 +112,8 @@ api_exchange:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\ExchangeController
     name_prefix:  api_1_
+
+api_bidders:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\BidderController
+    name_prefix:  api_1_

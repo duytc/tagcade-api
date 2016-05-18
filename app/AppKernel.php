@@ -39,6 +39,8 @@ class AppKernel extends Kernel
             new Tagcade\Bundle\UserSystem\SubPublisherBundle\TagcadeUserSystemSubPublisherBundle(),
 
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
+
         );
 
 //        if ($this->getEnvironment() == 'test') {

@@ -17,7 +17,6 @@ use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -29,12 +28,10 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
     function __construct($userRole = null)
     {
-        if($userRole instanceof UserRoleInterface)
-        {
+        if ($userRole instanceof UserRoleInterface) {
             $this->userRole = $userRole;
         }
     }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -42,37 +39,43 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('visible')
             ->add('id')
-            ->add('libraryExpressions', 'collection',  array(
+            ->add('libraryExpressions', 'collection', array(
                     'mapped' => true,
                     'type' => new LibraryExpressionFormType(new ExpressionInJsGenerator()),
                     'allow_add' => true,
                     'allow_delete' => true,
                 )
-            )
-        ;
+            );
 
         if ($this->userRole instanceof AdminInterface) {
-            $builder->add(
-                $builder->create('publisher')
-                    ->addModelTransformer(
-                        new RoleToUserEntityTransformer(), false
-                    )
-            )
-            ->add('defaultLibraryAdSlot', 'entity', array(
-                'class' => LibraryAdSlotAbstract::class,
-                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libadslot')->select('libadslot'); }
-            ))
-            ;
-        }
-        else if ($this->userRole instanceof PublisherInterface) {
-            $builder->add('defaultLibraryAdSlot', 'entity', array(
-                'class' => LibraryAdSlotAbstract::class,
-                'query_builder' => function (LibraryAdSlotRepositoryInterface $er) {
-                    /** @var PublisherInterface $publisher */
-                    $publisher = $this->userRole;
-                    return $er->getAllLibraryAdSlotsForPublisherQuery($publisher);
-                }
-            ));
+            $builder
+                ->add(
+                    $builder->create('publisher')
+                        ->addModelTransformer(
+                            new RoleToUserEntityTransformer(), false
+                        )
+                )
+                ->add('defaultLibraryAdSlot', 'entity', array(
+                    'class' => LibraryAdSlotAbstract::class,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('libadslot')->select('libadslot');
+                    }
+                ));
+        } else if ($this->userRole instanceof PublisherInterface) {
+            $builder
+                ->add('defaultLibraryAdSlot', 'entity', array(
+                    'class' => LibraryAdSlotAbstract::class,
+                    'query_builder' => function (LibraryAdSlotRepositoryInterface $er) {
+                        /** @var PublisherInterface $publisher */
+                        $publisher = $this->userRole;
+
+                        /*
+                         * IMPORTANT: get all library ad slots, for a publisher, WITHOUT checking 'visible',
+                         * because the defaultLibraryAdSlot may be not yet shared (the own defaultAdSlot belongs to only one site, not yet shared)!!!
+                         */
+                        return $er->getAllLibraryAdSlotsForPublisherQuery($publisher);
+                    }
+                ));
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA,
@@ -87,24 +90,22 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 if (!$libraryDynamicAdSlot || null === $libraryDynamicAdSlot->getId()) {
                     $form->add('native');
                 }
-        });
-
+            });
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT,
             function (FormEvent $event) {
                 $form = $event->getForm();
                 $libraryDynamicAdSlot = $event->getData();
 
-                if(array_key_exists('libraryExpressions', $libraryDynamicAdSlot)) {
+                if (array_key_exists('libraryExpressions', $libraryDynamicAdSlot)) {
                     $libraryExpressions = $libraryDynamicAdSlot['libraryExpressions'];
 
-                    if(!is_array($libraryExpressions)) {
+                    if (!is_array($libraryExpressions)) {
                         $form->remove('libraryExpressions');
                         $form->add('libraryExpressions', 'text');
                     }
                 }
             });
-
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
@@ -116,7 +117,7 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 /** @var null|LibraryExpressionInterface[] $libraryExpressions */
                 $libraryExpressions = $event->getForm()->get('libraryExpressions')->getData();
 
-                if($libraryExpressions === null || is_string($libraryExpressions)) {
+                if ($libraryExpressions === null || is_string($libraryExpressions)) {
                     $form->get('libraryExpressions')->addError(new FormError('libraryExpressions must be an array string'));
                     return;
                 }
@@ -137,9 +138,9 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 }
 
                 // Validate defaultAdSlot and expectedAdSlot for native selected
-                if(!($libraryDynamicAdSlot->isSupportedNative())) {
+                if (!($libraryDynamicAdSlot->isSupportedNative())) {
                     // Validate defaultAdSlot for native selected
-                    if($libraryDynamicAdSlot->getDefaultLibraryAdSlot() instanceof LibraryNativeAdSlotInterface) {
+                    if ($libraryDynamicAdSlot->getDefaultLibraryAdSlot() instanceof LibraryNativeAdSlotInterface) {
                         $form->get('defaultLibraryAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native not supported!'));
 
                         return;
@@ -150,7 +151,7 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     }
                     // Validate expectedAdSlot for native selected
                     foreach ($libraryExpressions as $idx => $libraryExpression) {
-                        if($libraryExpression->getExpectLibraryAdSlot() instanceof LibraryNativeAdSlotInterface) {
+                        if ($libraryExpression->getExpectLibraryAdSlot() instanceof LibraryNativeAdSlotInterface) {
                             $form->get('libraryExpressions')[$idx]->get('expectLibraryAdSlot')->addError(new FormError('ExpectedAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native not supported!'));
 
                             return;
@@ -176,27 +177,25 @@ class LibraryDynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
     /**
      * @param LibraryDynamicAdSlotInterface $libraryDynamicAdSlot
-     * @param LibraryExpressionInterface[] $persistingLibraryExpressions
+     * @param Collection $persistingLibraryExpressions
      */
     protected function updateLibraryDynamicAdSlotForExpression(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot, Collection $persistingLibraryExpressions)
     {
         $currentLibraryExpressions = $libraryDynamicAdSlot->getLibraryExpressions()->toArray();
         $totalCurrentLibraryExpression = count($currentLibraryExpressions);
         // remove old expressions
-        for($i = $totalCurrentLibraryExpression-1; $i >= 0; $i -- ) {
+        for ($i = $totalCurrentLibraryExpression - 1; $i >= 0; $i--) {
             $libraryDynamicAdSlot->getLibraryExpressions()->remove($i);
         }
 
         // creating new expressions
+        /** @var LibraryExpressionInterface $libraryExpression */
         foreach ($persistingLibraryExpressions as $libraryExpression) {
             $libraryExpression->setLibraryDynamicAdSlot($libraryDynamicAdSlot);
 
             $libraryDynamicAdSlot->getLibraryExpressions()->add($libraryExpression);
         }
-
     }
-
-
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

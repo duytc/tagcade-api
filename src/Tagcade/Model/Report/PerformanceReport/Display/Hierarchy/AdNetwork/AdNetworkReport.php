@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
@@ -13,7 +12,6 @@ class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkRepor
      * @var AdNetworkInterface
      */
     protected $adNetwork;
-
 
     /**
      * @return AdNetworkInterface|null
@@ -56,5 +54,14 @@ class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkRepor
         if ($this->adNetwork instanceof AdNetworkInterface) {
             $this->setName($this->adNetwork->getName());
         }
+    }
+
+    public function getName()
+    {
+        if ($this->adNetwork instanceof AdNetworkInterface) {
+            return $this->adNetwork->getName();
+        }
+
+        return null;
     }
 }

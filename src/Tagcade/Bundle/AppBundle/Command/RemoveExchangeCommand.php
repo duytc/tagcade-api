@@ -9,8 +9,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\Exchange\ExchangeCacheUpdaterInterface;
 
 class RemoveExchangeCommand extends ContainerAwareCommand
@@ -25,8 +23,7 @@ class RemoveExchangeCommand extends ContainerAwareCommand
         $this
             ->setName('tc:exchange:remove')
             ->addArgument('name', InputArgument::REQUIRED, 'Abbreviation name in the parameter configuration')
-            ->setDescription('Update all existing caches when an exchange is removed from parameter')
-        ;
+            ->setDescription('Update all existing caches when an exchange is removed from parameter');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -49,8 +46,8 @@ class RemoveExchangeCommand extends ContainerAwareCommand
 
         try {
             $cacheUpdater->updateCacheAfterUpdateExchangeParameter($name);
-        } catch(\Exception $ex) {
-           $output->writeln(sprintf('<error>%s</error>', $ex->getMessage()));
+        } catch (\Exception $ex) {
+            $output->writeln(sprintf('<error>%s</error>', $ex->getMessage()));
             return;
         }
 

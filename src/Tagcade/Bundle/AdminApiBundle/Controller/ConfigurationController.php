@@ -2,20 +2,15 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
-use FOS\UserBundle\Model\UserManagerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Tagcade\Bundle\AdminApiBundle\Utils\ModuleNameMapper;
-use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Response;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\Bundle\AdminApiBundle\Utils\ModuleNameMapper;
+use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -36,37 +31,87 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
      * )
      *
      * @Rest\Get("/configurations/sites")
-     * @return array
+     * @return array format as:
+     * {
+     *      "1":{
+     *          "modules":[
+     *              "displayAds",
+     *              "analytics",
+     *              "unifiedReport",
+     *              "subPublisher",
+     *              "videoAnalytics",
+     *              "realTimeBidding"
+     *          ],
+     *          "config":{
+     *              "videoAnalytics":{
+     *                  "players":[
+     *                      "5min",
+     *                      "ooyala"
+     *                  ]
+     *              },
+     *              "realTimeBidding":{
+     *                  "exchanges":[
+     *                      "index-exchange",
+     *                      "open-x"
+     *                  ]
+     *              }
+     *          }
+     *      },
+     *      ...
+     * }
+     *
      */
     public function getSiteConfigsAction()
     {
         $siteManager = $this->get('tagcade.domain_manager.site');
         $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+        $adSlotManager = $this->get('tagcade.domain_manager.ad_slot');
 
         $publishers = $publisherManager->allPublishers();
         $siteConfigs = array();
         /** @var PublisherInterface $publisher */
-        foreach($publishers as $publisher) {
-            if(!$publisher instanceof PublisherInterface) {
-               throw new RuntimeException('expect PublisherInterface interface instance');
+        foreach ($publishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                throw new RuntimeException('expect PublisherInterface interface instance');
             }
 
             $modules = $publisher->getEnabledModules();
             $sites = $siteManager->getSitesForPublisher($publisher);
 
             /**@var SiteInterface $site */
-            foreach($sites as $site){
-                if($site instanceof SiteInterface) {
+            foreach ($sites as $site) {
+                if ($site instanceof SiteInterface) {
                     $moduleConfigs = [];
                     $siteConfigs[$site->getId()] = [];
 
-                    if($publisher->hasVideoModule()){
+                    if ($publisher->hasVideoModule()) {
                         $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_VIDEO_ANALYTICS' => array('players' => $site->getPlayers())));
                     }
 
-                    if($site->isRTBEnabled()){
+                    if ($publisher->hasHeaderBiddingModule()) {
+                        $adSlots = $adSlotManager->getDisplayAdSlotsForSite($site);
+
+                        $adSlotsCfg = array_map(function ($adSlot) {
+                            if (!$adSlot instanceof DisplayAdSlotInterface) {
+                                return null;
+                            }
+
+                            return [
+                                'id' => $adSlot->getId(),
+                                'width' => $adSlot->getWidth(),
+                                'height' => $adSlot->getHeight()
+                            ];
+                        }, $adSlots);
+
+                        if (count($adSlotsCfg) > 0) {
+                            $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_HEADER_BIDDING' => array('adSlots' => $adSlotsCfg, 'bidders' => $publisher->getBidders())));
+                        }
+                    }
+
+                    if ($site->isRTBEnabled()) {
                         $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_RTB' => array('exchanges' => $publisher->getExchanges())));
                     }
+
 
                     // build data for key 'config'
                     $configs = [];
@@ -113,6 +158,6 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
      */
     protected function getHandler()
     {
-       throw new RuntimeException('Not support handler for configuration controller');
+        throw new RuntimeException('Not support handler for configuration controller');
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
@@ -61,7 +60,6 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
      */
     public function setPublisher(PublisherInterface $publisher);
 
-
     /**
      * @return mixed
      */
@@ -72,5 +70,4 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
      * @return DisplayAdSlotInterface[]
      */
     public function getDisplayAdSlots();
-
 }

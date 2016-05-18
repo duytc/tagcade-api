@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\DomainManager\SiteManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -24,36 +25,6 @@ use Tagcade\Model\User\Role\PublisherInterface;
  */
 class LibraryAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
-
-//    /**
-//     *
-//     * Get all library ad slots
-//     * @Rest\View(
-//     *      serializerGroups={"slotlib.extra", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
-//     * )
-//     * @ApiDoc(
-//     *  resource = true,
-//     *  statusCodes = {
-//     *      200 = "Returned when successful"
-//     *  }
-//     * )
-//     *
-//     * @return BaseLibraryAdSlotInterface[]
-//     */
-//    public function cgetAction()
-//    {
-//        $role = $this->getUser();
-//        $libraryAdSlotManager = $this->get('tagcade.domain_manager.library_ad_slot');
-//
-//        if ($role instanceof PublisherInterface) {
-//            $libraryAdSlots =  $libraryAdSlotManager->getAdSlotsForPublisher($role);
-//
-//            return $libraryAdSlots;
-//        }
-//
-//        return $libraryAdSlotManager->all();
-//    }
-
     /**
      * Get all library ad slots
      *
@@ -64,6 +35,14 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      *      serializerGroups={"slotlib.extra", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.detail", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.detail"}
      * )
      *
+     *      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *   section = "Library Ad Slots",
      *   resource = true,
@@ -71,23 +50,30 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      *      200 = "Returned when successful"
      *   }
      * )
-     *
+     * @param Request $request
+     * @return array|mixed|\Tagcade\Model\Core\BaseLibraryAdSlotInterface[]|\Tagcade\Model\ModelInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
         $role = $this->getUser();
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $forRon = $paramFetcher->get('forRon');
+        $libraryAdSlot = $this->get('tagcade.repository.library_ad_slot');
 
         if ($forRon === null) {
+            if ($request->query->get('page') > 0) {
+                $qb = $libraryAdSlot->getLibraryAdSlotsWithPagination($this->getUser(), $this->getParams());
+
+                return $this->getPagination($qb, $request);
+            }
+
             return $this->getAllLibraryAdSlot($role);
-        }
-        else {
+        } else {
             $forRon = filter_var($forRon, FILTER_VALIDATE_BOOLEAN);
+
             if ($forRon) {
                 return $this->getAllLibraryAdSlotForRonAdSlot($role);
-            }
-            else {
+            } else {
                 return $this->getAllLibraryAdSlotNotForRonAdSlot($role);
             }
         }
@@ -98,7 +84,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         $libraryAdSlotManager = $this->get('tagcade.domain_manager.library_ad_slot');
 
         if ($role instanceof PublisherInterface) {
-            return  $libraryAdSlotManager->getAdSlotsForPublisher($role);
+            return $libraryAdSlotManager->getAdSlotsForPublisher($role);
         }
 
         return $libraryAdSlotManager->all();
@@ -109,7 +95,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         $libraryAdSlotManager = $this->get('tagcade.domain_manager.library_ad_slot');
 
         if ($role instanceof PublisherInterface) {
-            return  $libraryAdSlotManager->getLibraryAdSlotsUnusedInRonForPublisher($role);
+            return $libraryAdSlotManager->getLibraryAdSlotsUnusedInRonForPublisher($role);
         }
 
         return $libraryAdSlotManager->getAllLibraryAdSlotsUnusedInRon();
@@ -120,7 +106,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         $libraryAdSlotManager = $this->get('tagcade.domain_manager.library_ad_slot');
 
         if ($role instanceof PublisherInterface) {
-            return  $libraryAdSlotManager->getLibraryAdSlotsUsedInRonForPublisher($role);
+            return $libraryAdSlotManager->getLibraryAdSlotsUsedInRonForPublisher($role);
         }
 
         return $libraryAdSlotManager->getAllLibraryAdSlotsUsedInRon();
@@ -155,7 +141,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         if (null === $libraryAdSlot) {
             throw new NotFoundHttpException(sprintf('not found ad slot with id %s', $id));
         }
-        
+
         $securityContext = $this->get('security.context');
         if (false === $securityContext->isGranted('view', $libraryAdSlot)) {
             throw new AccessDeniedException(
@@ -172,9 +158,9 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * Get library ad slots that are unlinked to a site
+     * @deprecated
      *
      * @Rest\Get("/libraryadslots/unreferred/site/{id}", requirements={"id" = "\d+"})
-     *
      * @Rest\View(
      *      serializerGroups={"slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
      * )
@@ -187,12 +173,14 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      *      404 = "Returned when the resource is not found"
      *  }
      * )
-     *
+     * @param int $id
+     * @return array
      */
-    public function getUnreferredAction($id){
+    public function getUnreferredAction($id)
+    {
         $site = $this->get('tagcade.domain_manager.site')->find($id);
-        if(!$site instanceof SiteInterface) {
-            throw new \Tagcade\Exception\InvalidArgumentException('Site not existed');
+        if (!$site instanceof SiteInterface) {
+            throw new InvalidArgumentException('Site not existed');
         }
 
         return $this->get('tagcade.domain_manager.library_ad_slot')->getUnReferencedLibraryAdSlotForSite($site);
@@ -225,7 +213,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         //find and validate slotLibrary
         /** @var BaseLibraryAdSlotInterface $slotLibrary */
         $slotLibrary = $this->get('tagcade.domain_manager.library_ad_slot')->find($id);
-        if(!$slotLibrary instanceof BaseLibraryAdSlotInterface) {
+        if (!$slotLibrary instanceof BaseLibraryAdSlotInterface) {
             throw new NotFoundHttpException(
                 sprintf("The %s resource '%s' was not found or you do not have access", $this->getResourceName(), $id)
             );
@@ -288,7 +276,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         $channelManager = $this->get('tagcade.domain_manager.channel');
 
         array_walk(
-            $channelIds, function($channelId) use($channelManager, &$channels){
+            $channelIds, function ($channelId) use ($channelManager, &$channels) {
                 $channel = $channelManager->find((int)$channelId);
 
                 if (!$channel instanceof ChannelInterface) {
@@ -319,7 +307,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         $siteManager = $this->get('tagcade.domain_manager.site');
         array_walk(
             $siteIds,
-            function($siteId) use($siteManager, &$sites) {
+            function ($siteId) use ($siteManager, &$sites) {
                 $site = $siteManager->find((int)$siteId);
 
                 if (!$site instanceof SiteInterface) {
@@ -334,28 +322,5 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         );
 
         return $sites;
-    }
-
-    /**
-     * filter Sites Existed In Channels
-     * @param ChannelInterface[] $channels
-     * @param SiteInterface[] $sites
-     * @return array
-     */
-    private function filterSitesExistedInChannels(array $channels, array $sites)
-    {
-        return array_filter(
-            $sites,
-            function (SiteInterface $site) use ($channels) {
-                $channelsOfSite = $site->getChannels();
-                foreach ($channelsOfSite as $cn) {
-                    if (in_array($cn, $channels)) {
-                        return false; // ignore this site since it is in input channel already
-                    }
-                }
-
-                return true;
-            }
-        );
     }
 }

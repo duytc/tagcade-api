@@ -9,9 +9,7 @@ class AdTag implements AdTagInterface
 {
     protected $id;
 
-    /**
-     * @var BaseAdSlotInterface
-     */
+    /** @var BaseAdSlotInterface */
     protected $adSlot;
     protected $position;
     protected $active;
@@ -21,12 +19,25 @@ class AdTag implements AdTagInterface
     protected $rotation;
     protected $deletedAt;
 
-
-    /**
-     * @var LibraryAdTagInterface
-     */
+    /** @var LibraryAdTagInterface */
     protected $libraryAdTag;
     protected $refId;
+
+    /** string for mapping tag id of ad network vs ad network partner */
+    protected $partnerTagId;
+    /** string for mapping tag size of ad network with vs network partner */
+    protected $partnerTagSize;
+
+    protected $_autoIncreasePosition; // temp var
+
+    /**
+     * @var integer
+     */
+    protected $impressionCap;
+    /**
+     * @var integer
+     */
+    protected $networkOpportunityCap;
     /**
      * @param LibraryAdTagInterface $libraryAdTag
      */
@@ -39,14 +50,16 @@ class AdTag implements AdTagInterface
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
-     * @return $this;
+     * @inheritdoc
      */
     public function setId($id)
     {
@@ -87,7 +100,7 @@ class AdTag implements AdTagInterface
      */
     public function getAdNetwork()
     {
-        if($this->libraryAdTag === null) return null;
+        if ($this->libraryAdTag === null) return null;
 
         return $this->libraryAdTag->getAdNetwork();
     }
@@ -99,21 +112,21 @@ class AdTag implements AdTagInterface
     {
         $libraryAdTag = $this->getLibraryAdTag();
 
-        if($libraryAdTag == null) return null;
+        if ($libraryAdTag == null) return null;
 
         /**
          * @var AdNetworkInterface $adNetwork
          */
-        $adNetwork =  $libraryAdTag->getAdNetwork();
+        $adNetwork = $libraryAdTag->getAdNetwork();
 
-        if($adNetwork == null) return null;
+        if ($adNetwork == null) return null;
 
         return $adNetwork->getId();
     }
 
     public function setAdNetwork(AdNetworkInterface $adNetwork)
     {
-        if($this->libraryAdTag != null) {
+        if ($this->libraryAdTag != null) {
             $this->libraryAdTag->setAdNetwork($adNetwork);
         }
 
@@ -125,8 +138,7 @@ class AdTag implements AdTagInterface
      */
     public function getName()
     {
-        if($this->libraryAdTag instanceof LibraryAdTagInterface)
-        {
+        if ($this->libraryAdTag instanceof LibraryAdTagInterface) {
             return $this->libraryAdTag->getName();
         }
 
@@ -138,8 +150,7 @@ class AdTag implements AdTagInterface
      */
     public function setName($name)
     {
-        if($this->libraryAdTag instanceof LibraryAdTagInterface)
-        {
+        if ($this->libraryAdTag instanceof LibraryAdTagInterface) {
             return $this->libraryAdTag->setName($name);
         }
 
@@ -151,7 +162,7 @@ class AdTag implements AdTagInterface
      */
     public function getHtml()
     {
-        if($this->libraryAdTag == null) return null;
+        if ($this->libraryAdTag == null) return null;
 
         return $this->libraryAdTag->getHtml();
     }
@@ -161,7 +172,7 @@ class AdTag implements AdTagInterface
      */
     public function setHtml($html)
     {
-        if($this->libraryAdTag != null) {
+        if ($this->libraryAdTag != null) {
             $this->libraryAdTag->setHtml($html);
         }
 
@@ -191,6 +202,25 @@ class AdTag implements AdTagInterface
      */
     public function isActive()
     {
+        return $this->active == AdTagInterface::ACTIVE;
+    }
+
+    public function isAutoPaused()
+    {
+        return $this->active == AdTagInterface::AUTO_PAUSED;
+    }
+
+    public function activate()
+    {
+        $this->setActive(AdTagInterface::ACTIVE);
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getActive()
+    {
         return $this->active;
     }
 
@@ -199,14 +229,21 @@ class AdTag implements AdTagInterface
      */
     public function setActive($boolean)
     {
-        $this->active = (Boolean)$boolean;
+        switch ($boolean) {
+            case AdTagInterface::ACTIVE:
+            case AdTagInterface::PAUSED:
+            case AdTagInterface::AUTO_PAUSED:
+                $this->active = $boolean;
+                break;
+            default:
+                $this->active = AdTagInterface::PAUSED;
+        }
 
         return $this;
     }
 
     /**
-     * @param int|null $frequencyCap
-     * @return $this
+     * @inheritdoc
      */
     public function setFrequencyCap($frequencyCap)
     {
@@ -216,7 +253,7 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * @return int|null
+     * @inheritdoc
      */
     public function getFrequencyCap()
     {
@@ -260,17 +297,17 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * @return AdTagInterface[]
+     * @inheritdoc
      */
     public function getCoReferencedAdTags()
     {
-        if($this->getLibraryAdTag() == null) return new ArrayCollection();
+        if ($this->getLibraryAdTag() == null) return new ArrayCollection();
 
         return $this->getLibraryAdTag()->getAdTags();
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getRefId()
     {
@@ -278,8 +315,7 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * @param mixed $refId
-     * @return $this;
+     * @inheritdoc
      */
     public function setRefId($refId)
     {
@@ -289,7 +325,7 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function isInLibrary()
     {
@@ -298,7 +334,7 @@ class AdTag implements AdTagInterface
 
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getDeletedAt()
     {
@@ -313,7 +349,7 @@ class AdTag implements AdTagInterface
      */
     public function checkSum()
     {
-        return  md5(serialize(
+        return md5(serialize(
             array(
                 $this->getLibraryAdTag()->getId(),
                 $this->getName(),
@@ -326,8 +362,7 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * Get then entity that contain current object
-     * @return mixed
+     * @inheritdoc
      */
     public function getContainer()
     {
@@ -335,7 +370,7 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getClassName()
     {
@@ -343,18 +378,85 @@ class AdTag implements AdTagInterface
     }
 
     /**
-     * Get those entities that belong to the same container with the current entity
-     * @return mixed
+     * @inheritdoc
      */
     public function getSiblings()
     {
         return $this->getAdSlot()->getAdTags();
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getPartnerTagId()
+    {
+        if ($this->libraryAdTag instanceof LibraryAdTagInterface) {
+            return $this->libraryAdTag->getPartnerTagId();
+        }
 
+        return null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getImpressionCap()
+    {
+        return $this->impressionCap;
+    }
+
+    /**
+     * @param int $impressionCap
+     * @return self
+     */
+    public function setImpressionCap($impressionCap)
+    {
+        $this->impressionCap = $impressionCap;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNetworkOpportunityCap()
+    {
+        return $this->networkOpportunityCap;
+    }
+
+    /**
+     * @param int $networkOpportunityCap
+     * @return self
+     */
+    public function setNetworkOpportunityCap($networkOpportunityCap)
+    {
+        $this->networkOpportunityCap = $networkOpportunityCap;
+        return $this;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function getAutoIncreasePosition()
+    {
+        return $this->_autoIncreasePosition;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAutoIncreasePosition($autoIncreasePosition)
+    {
+        $this->_autoIncreasePosition = $autoIncreasePosition;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function __toString()
     {
         return $this->id . $this->getName();
     }
-
 }

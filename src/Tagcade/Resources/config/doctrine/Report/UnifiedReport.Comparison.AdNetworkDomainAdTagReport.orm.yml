@@ -1,0 +1,39 @@
+Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkDomainAdTagReport:
+    type: entity
+    table: unified_report_comparison_ad_network_domain_ad_tag
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\Comparison\AdNetworkDomainAdTagReportRepository
+    uniqueConstraints:
+        unified_report_comparison_ad_network_domain_ad_tag_unique_key:
+            columns: # underscore column name
+                - date
+                - domain
+                - partner_tag_id
+                - performance_ad_network_domain_ad_tag_report_id
+                - unified_ad_network_domain_ad_tag_report_id
+                - ad_network_id
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+        partnerTagId:
+            type: string
+            nullable: true
+        domain:
+            type: string
+            nullable: true
+    manyToOne:
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork
+    oneToOne:
+        performanceAdNetworkDomainAdTagReport:
+            targetEntity: Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkDomainAdTagReport
+        unifiedAdNetworkDomainAdTagReport:
+            targetEntity: Tagcade\Entity\Report\UnifiedReport\Network\NetworkDomainAdTagReport

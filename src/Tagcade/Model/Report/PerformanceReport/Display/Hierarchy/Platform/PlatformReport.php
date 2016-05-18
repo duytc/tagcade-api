@@ -15,4 +15,33 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
     {
         // do nothing, a name isn't needed for this report
     }
+
+    public function parseData(array $data)
+    {
+        if (array_key_exists('slotOpportunities', $data)) {
+            $this->setSlotOpportunities($data['slotOpportunities']);
+        }
+
+        if (array_key_exists('totalOpportunities', $data)) {
+            $this->setTotalOpportunities($data['totalOpportunities']);
+        }
+
+        if (array_key_exists('impressions', $data)) {
+            $this->setImpressions($data['impressions']);
+        }
+
+        if (array_key_exists('rtbImpressions', $data)) {
+            $this->setRtbImpressions($data['rtbImpressions']);
+        }
+
+        if (array_key_exists('passbacks', $data)) {
+            $this->setPassbacks($data['passbacks']);
+        }
+
+        if (array_key_exists('billedAmount', $data)) {
+            $this->setBilledAmount($data['billedAmount']);
+        }
+
+        return $this;
+    }
 }

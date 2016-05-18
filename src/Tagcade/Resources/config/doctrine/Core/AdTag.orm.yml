@@ -18,9 +18,9 @@ Tagcade\Entity\Core\AdTag:
                 default: 1
 
         active:
-            type: boolean
+            type: smallint
             options:
-                default: true
+                default: 1
 
         createdAt:
             type: datetime
@@ -43,8 +43,17 @@ Tagcade\Entity\Core\AdTag:
         rotation:
             type: integer
             nullable: true
+
+        impressionCap:
+            type: integer
+            nullable: true
+        networkOpportunityCap:
+            type: integer
+            nullable: true
+
         refId:
             type: string
+
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

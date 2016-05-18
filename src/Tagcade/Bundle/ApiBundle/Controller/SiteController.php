@@ -16,7 +16,9 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 /**
@@ -31,7 +33,52 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
      * )
      *
-     * @Rest\QueryParam(name="createType", nullable=true)
+     * @Rest\QueryParam(name="autoCreate", nullable=true)
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering sites")
+     *
+     * @ApiDoc(
+     *  section="Sites",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     * @param $request
+     * @return SiteInterface[]
+     */
+    public function cgetAction(Request $request)
+    {
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        if ($request->query->count() < 1) {
+            return $this->all();
+        }
+
+        /** @var SiteRepositoryInterface $siteRepository */
+        $siteRepository = $this->get('tagcade.repository.site');
+        if (is_string($request->query->get('autoCreate'))) {
+            $autoCreate = filter_var($params['autoCreate'], FILTER_VALIDATE_INT);
+            $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate);
+            return $this->getPagination($qb, $request);
+        }
+
+        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
+    }
+
+    /**
+     * Get all sites not belong to any SubPublisher of a Publisher
+     *
+     * @Rest\Get("/sites/notBelongToSubPublisher")
+     *
+     * @Rest\View(
+     *      serializerGroups={"site.summary", "user.summary"}
+     * )
      *
      * @ApiDoc(
      *  section="Sites",
@@ -43,22 +90,15 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      *
      * @return SiteInterface[]
      */
-    public function cgetAction()
+    public function getSitesNotBelongToSubPublisherAction()
     {
-        $createType = $this->get('fos_rest.request.param_fetcher')->get('createType');
-        /**
-         * @var SiteRepositoryInterface $siteRepository
-         */
-        $siteRepository = $this->get('tagcade.repository.site');
+        $user = $this->getUser();
 
-        if ($createType === 'auto') {
-            return $siteRepository->getAutoCreatedSites($this->getUser());
-        }
-        else if ($createType === 'manual') {
-            return $siteRepository->getManualCreatedSites($this->getUser());
+        if ($user instanceof AdminInterface || $user instanceof SubPublisherInterface) {
+            return $this->view('Permission decline, only supported for Publisher', Codes::HTTP_FORBIDDEN);
         }
 
-        return $this->all();
+        return $this->get('tagcade.repository.site')->getSitesNotBelongToSubPublisherForPublisher($user);
     }
 
     /**
@@ -445,7 +485,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      *      serializerGroups={"site.detail", "user.summary"}
      * )
      *
-     * @Rest\Get("sites/noreference")
+     * @Rest\Get("sites/nodeployments")
      *
      * @Rest\QueryParam(name="slotLibrary", requirements="\d+")
      *

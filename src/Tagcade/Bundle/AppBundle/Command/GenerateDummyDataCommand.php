@@ -62,8 +62,8 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
             throw new RuntimeException('Expect a valid configuration file.');
         }
 
-        $yaml = new Parser();
-        $config = $yaml->parse(file_get_contents($ymlConfig));
+        $ymlParser = new Parser();
+        $config = $ymlParser->parse(file_get_contents($ymlConfig));
         /**
          * @var EntityManagerInterface $em
          */

@@ -5,12 +5,9 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\View\View;
-use Tagcade\Model\Core\AdTagInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use FOS\RestBundle\Util\Codes;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Model\Core\AdTagInterface;
 
 /**
  * @Rest\RouteResource("Exchange")

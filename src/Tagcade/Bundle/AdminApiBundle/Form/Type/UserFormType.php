@@ -10,6 +10,8 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
+use Tagcade\Form\Type\BillingConfigurationFormType;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -49,6 +51,8 @@ class UserFormType extends AbstractRoleSpecificFormType
         $this->exchanges = array_map(function(array $exchange){
             return $exchange[self::ABBREVIATION_KEY];
         } , $exchanges) ;
+
+
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -68,6 +72,7 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('country')
             ->add('settings')
             ->add('exchanges')
+            ->add('bidders');
         ;
 
         if($this->userRole instanceof AdminInterface){
@@ -84,10 +89,17 @@ class UserFormType extends AbstractRoleSpecificFormType
                         'MODULE_FRAUD_DETECTION' => 'Fraud Detection',
                         'MODULE_UNIFIED_REPORT'  => 'Unified Report',
                         'MODULE_SUB_PUBLISHER'  => 'Sub Publisher',
+                        'MODULE_HEADER_BIDDING'  => 'Header Bidding',
                         'MODULE_RTB'  => 'RealTime Bidding'
                     ],
                 ])
-                ->add('billingRate');
+                ->add('billingRate')
+                ->add('billingConfigs', 'collection',  array(
+                'mapped' => true,
+                'type' => new BillingConfigurationFormType(),
+                'allow_add' => true,
+                'allow_delete' => true,
+                ));
         }
 
         //validate 'settings' field submitted by publisher
@@ -123,6 +135,13 @@ class UserFormType extends AbstractRoleSpecificFormType
                 $publisher = $event->getData();
                 $form = $event->getForm();
 
+                $billingConfigs = $publisher->getBillingConfigs();
+
+                /** @var BillingConfigurationInterface $billingConfig */
+                foreach($billingConfigs as $billingConfig){
+
+                    $billingConfig->setPublisher($publisher);
+                }
 
                 if ($this->userRole instanceof AdminInterface) {
                     $exchanges = $publisher->getExchanges();

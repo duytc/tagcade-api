@@ -92,16 +92,13 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      */
     public function postAdtagAction(Request $request, $id)
     {
-        /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
-        $libraryNativeAdSlot = $this->getOr404($id);
-
         $request->request->set('libraryAdSlot', $id);
 
         $request->request->set('refId', uniqid("", true));
         // move the creating AdTag to library
         $libraryAdTag = $request->request->get('libraryAdTag');
-        
-        if(is_array($libraryAdTag)){
+
+        if (is_array($libraryAdTag)) {
             $libraryAdTag['visible'] = true;
             $request->request->set('libraryAdTag', $libraryAdTag);
         }
@@ -130,8 +127,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      */
     public function postAction(Request $request)
     {
-        if(!array_key_exists('visible', $request->request->all()))
-        {
+        if (!array_key_exists('visible', $request->request->all())) {
             $request->request->add(array('visible' => true));
         }
 
@@ -168,7 +164,6 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
         return $this->patch($request, $id);
     }
 
-
     /**
      * Get those AdSlots which refer to the current AdSlot Library
      * @Rest\View(
@@ -188,13 +183,13 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * @return NativeAdSlotInterface[]
      * @throws NotFoundHttpException when the resource does not exist
      */
-    public function getAssociatedadslotsAction($id){
+    public function getAssociatedadslotsAction($id)
+    {
         /** @var LibraryNativeAdSlotInterface $entity */
         $entity = $this->one($id);
 
         return $entity->getAdSlots();
     }
-
 
     /**
      * Get those AdTags which belong to the given AdSlot Library, also have been moved to AdTag Library
@@ -213,7 +208,8 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * @return AdTagInterface[]
      * @throws NotFoundHttpException when the resource does not exist
      */
-    public function getAdtagsAction($id){
+    public function getAdtagsAction($id)
+    {
         /** @var LibraryNativeAdSlotInterface $entity */
         $entity = $this->one($id);
         return $this->get('tagcade.repository.library_slot_tag')->getByLibraryAdSlot($entity);

@@ -3,15 +3,13 @@
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
 use DateTime;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Bundle\AdminApiBundle\Repository\ActionLogRepositoryInterface;
-use Tagcade\Exception\Report\InvalidDateException;
 use Tagcade\Domain\DTO\ActionLog;
-
+use Tagcade\Exception\Report\InvalidDateException;
 
 
 /**
@@ -57,13 +55,11 @@ class ActionLogController extends FOSRestController
         $loginLogs = filter_var($paramFetcher->get('loginLogs'), FILTER_VALIDATE_BOOLEAN);
         $publisherId = $paramFetcher->get('publisherId', true);
 
-        if(!$startDate)
-        {
+        if (!$startDate) {
             $startDate = new DateTime('6 days ago');
         }
 
-        if(!$endDate)
-        {
+        if (!$endDate) {
             $endDate = new DateTime('today');
         }
 
@@ -95,6 +91,5 @@ class ActionLogController extends FOSRestController
         $logsList = $actionLogRepository->getLogsForDateRange($startDate, $endDate, $rowOffset, $rowLimit, $publisher, $loginLogs);
 
         return new ActionLog($numRows, $logsList);
-
     }
 }

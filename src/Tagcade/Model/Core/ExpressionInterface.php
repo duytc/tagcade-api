@@ -2,16 +2,15 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 
 interface ExpressionInterface extends ModelInterface
 {
-
     /**
      * @return mixed
      */
     public function getExpressionDescriptor();
+
     /**
      * @param mixed $expressionDescriptor
      * @return self
@@ -33,6 +32,7 @@ interface ExpressionInterface extends ModelInterface
      * @return BaseAdSlotInterface
      */
     public function getExpectAdSlot();
+
     /**
      * @param ReportableAdSlotInterface $expectAdSlot
      * @return self
@@ -43,6 +43,7 @@ interface ExpressionInterface extends ModelInterface
      * @return mixed
      */
     public function getExpressionInJs();
+
     /**
      * @param mixed $expressionInJs
      * @return self

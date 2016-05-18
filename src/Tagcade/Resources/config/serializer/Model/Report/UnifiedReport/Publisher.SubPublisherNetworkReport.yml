@@ -1,0 +1,12 @@
+Tagcade\Model\Report\UnifiedReport\Publisher\SubPublisherNetworkReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getSubPublisherId:
+            type: integer
+        getAdNetworkId:
+            type: integer
+    properties:
+        subPublisher:
+            exclude: true
+        adNetwork:
+            exclude: true

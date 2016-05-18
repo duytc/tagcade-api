@@ -14,13 +14,10 @@ use Tagcade\Model\Core\ExpressionInterface;
 
 class UpdateDynamicAdSlotCacheListener
 {
-    /**
-     * @var EventDispatcherInterface
-     */
+    /** @var EventDispatcherInterface */
     private $eventDispatcher;
-    /**
-     * @var array
-     */
+
+    /** @var array */
     protected $changedEntities = [];
 
     function __construct(EventDispatcherInterface $eventDispatcher)
@@ -34,7 +31,7 @@ class UpdateDynamicAdSlotCacheListener
      */
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        $entity=  $args->getObject();
+        $entity = $args->getObject();
 
         if (!$entity instanceof DynamicAdSlotInterface || ($entity instanceof DynamicAdSlotInterface && !$args->hasChangedField('defaultAdSlot'))) {
             return;
@@ -90,14 +87,14 @@ class UpdateDynamicAdSlotCacheListener
 
         $this->changedEntities = []; // reset  changed entities track
 
-        $adSlots = array_filter($changedEntities, function($entity) { return $entity instanceof DynamicAdSlotInterface; });
+        $adSlots = array_filter($changedEntities, function ($entity) {
+                return $entity instanceof DynamicAdSlotInterface;
+            });
 
         // filter all adTags and not (in $adSlots and in $adNetworks)
         array_walk($changedEntities,
-            function($entity) use (&$adSlots)
-            {
-                if (!$entity instanceof ExpressionInterface)
-                {
+            function ($entity) use (&$adSlots) {
+                if (!$entity instanceof ExpressionInterface) {
                     return false;
                 }
 
@@ -105,9 +102,10 @@ class UpdateDynamicAdSlotCacheListener
 
                 if (null === $entity->getDeletedAt() && !$affectingDynamicAdSlot->getExpressions()->contains($entity)) { // include the entity being inserted
                     $affectingDynamicAdSlot->getExpressions()->add($entity);
-                }
-                else if (null !== $entity->getDeletedAt()) { // remove expression
-                    $removeElement = array_filter($affectingDynamicAdSlot->getExpressions()->toArray(), function(ExpressionInterface $e) use($entity) { return $e->getId() === $entity->getId();});
+                } else if (null !== $entity->getDeletedAt()) { // remove expression
+                    $removeElement = array_filter($affectingDynamicAdSlot->getExpressions()->toArray(), function (ExpressionInterface $e) use ($entity) {
+                            return $e->getId() === $entity->getId();
+                        });
                     $removeElement = current($removeElement);
                     if ($removeElement instanceof ExpressionInterface) {
                         $affectingDynamicAdSlot->getExpressions()->removeElement($removeElement);

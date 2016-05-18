@@ -14,7 +14,6 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlot;
 use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -39,21 +38,25 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->userRole instanceof AdminInterface) {
-
             // allow all sites, default is fine
-            $builder->add('site', 'entity', array(
+            $builder
+                ->add('site', 'entity', array(
                     'class' => Site::class,
-                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
-            ))
-            ->add('libraryAdSlot', 'entity', array(
-                'class' => LibraryNativeAdSlot::class,
-                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
-            ));
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('site')->select('site');
+                    }
+                ))
+                ->add('libraryAdSlot', 'entity', array(
+                    'class' => LibraryNativeAdSlot::class,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('slot')->select('slot');
+                    }
+                ));
 
         } else if ($this->userRole instanceof PublisherInterface) {
-
             // for publishers, only allow their sites
-            $builder->add('site', 'entity', [
+            $builder
+                ->add('site', 'entity', [
                     'class' => Site::class,
                     'query_builder' => function (SiteRepositoryInterface $repository) {
                         /** @var PublisherInterface $publisher */
@@ -61,15 +64,15 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
 
                         return $repository->getSitesForPublisherQuery($publisher);
                     }
-            ])
-            ->add('libraryAdSlot', 'entity', array(
-                'class' => LibraryNativeAdSlot::class,
-                'query_builder' => function (LibraryNativeAdSlotRepositoryInterface $er) {
-                    /** @var PublisherInterface $publisher */
-                    $publisher = $this->userRole;
-                    return $er->getAllLibraryNativeAdSlotsForPublisherQuery($publisher);
-                }
-            ));
+                ])
+                ->add('libraryAdSlot', 'entity', array(
+                    'class' => LibraryNativeAdSlot::class,
+                    'query_builder' => function (LibraryNativeAdSlotRepositoryInterface $er) {
+                        /** @var PublisherInterface $publisher */
+                        $publisher = $this->userRole;
+                        return $er->getAllLibraryNativeAdSlotsForPublisherQuery($publisher);
+                    }
+                ));
 
         } else {
             throw new LogicException('A valid user role is required by NativeAdSlotFormType');
@@ -82,13 +85,13 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
                 $nativeAdSlot = $event->getData();
 
                 //create new Library
-                if(array_key_exists('libraryAdSlot', $nativeAdSlot) && is_array($nativeAdSlot['libraryAdSlot'])){
+                if (array_key_exists('libraryAdSlot', $nativeAdSlot) && is_array($nativeAdSlot['libraryAdSlot'])) {
                     $form->remove('libraryAdSlot');
                     $form->add('libraryAdSlot', new LibraryNativeAdSlotFormType($this->userRole));
 
-                    if($this->userRole instanceof AdminInterface) {
+                    if ($this->userRole instanceof AdminInterface) {
                         $site = $this->siteRepository->find($nativeAdSlot['site']);
-                        if(!$site instanceof SiteInterface) {
+                        if (!$site instanceof SiteInterface) {
                             $form->get('site')->addError(new FormError('This value is not valid'));
                             return;
                         }
@@ -107,13 +110,13 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
                 $nativeAdSlot = $event->getData();
 
                 $site = $nativeAdSlot->getSite();
-                if($site instanceof SiteInterface) {
+                if ($site instanceof SiteInterface) {
                     $publisher = $site->getPublisher();
 
                     // set nativeAdSlotLib to NativeAdSlot for cascade persist
                     /** @var LibraryNativeAdSlotInterface $libraryNativeAdSlot */
                     $libraryNativeAdSlot = $event->getForm()->get('libraryAdSlot')->getData();
-                    if($libraryNativeAdSlot instanceof LibraryNativeAdSlotInterface) {
+                    if ($libraryNativeAdSlot instanceof LibraryNativeAdSlotInterface) {
                         $libraryNativeAdSlot->setPublisher($publisher);
                         $nativeAdSlot->setLibraryAdSlot($libraryNativeAdSlot);
                     }

@@ -1,0 +1,49 @@
+Tagcade\Entity\Report\PartnerReport\AbstractPartnerReport:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        publisherId:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        impressions:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        passbacks:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        fillRate:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        opportunities:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        estCpm:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        estRevenue:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        averageFillRate:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        averageImpressions:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        averagePassbacks:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        averageEstCpm:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        averageEstRevenue:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        averageOpportunities:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+        date:
+            expose: true
+            groups: [abstract_partner_report.detail, abstract_partner_report.summary]
+            type: DateTime<'Y-m-d'>            

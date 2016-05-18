@@ -92,7 +92,9 @@ class ResetStartingPositionListener
      */
     protected function getMaxPosition(array $adTags)
     {
-        $adTags = array_filter($adTags, function(PositionInterface $t) { return null === $t->getDeletedAt() && $t->isActive(); }); // get active tag
+        $adTags = array_filter($adTags, function (PositionInterface $t) {
+                return null === $t->getDeletedAt() && $t->isActive();
+            }); // get active tag
 
         $positions = array_map(function(PositionInterface $tag) {
             return $tag->getPosition();

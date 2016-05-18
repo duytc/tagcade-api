@@ -4,14 +4,12 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
-use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\SegmentInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("Segment")
@@ -40,13 +38,13 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
      */
     public function cgetAction(Request $request)
     {
-        $typeSegment = $request->get('type',null);
+        $typeSegment = $request->get('type', null);
 
         if (null === $typeSegment) {
             return $this->all();
         }
 
-        $publisherId = $request->get('publisher',null);
+        $publisherId = $request->get('publisher', null);
         $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
 
         $publisher = $this->getUser() instanceof AdminInterface ? $publisherManager->find($publisherId) : $this->getUser();
@@ -79,7 +77,6 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
         return $this->one($id);
     }
 
-
     /**
      * Delete an existing segment
      *
@@ -102,7 +99,6 @@ class SegmentController extends RestControllerAbstract implements ClassResourceI
     {
         return $this->delete($id);
     }
-
 
     protected function getResourceName()
     {

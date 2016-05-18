@@ -1,113 +1,317 @@
-#parameters:
-# ...
-
 services:
-    ### Unified report repositories ###
-    tagcade.repository.report.unified_report.pulse_point.account_management:
-        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\AccountManagementRepositoryInterface
-        factory_service: doctrine.orm.unifiedreport_entity_manager
+    ### unified report repositories
+    tagcade.repository.report.unified_report.abstract:
+        class: Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository
+        abstract: true
+        public: false
+        calls:
+            - [setLogger, ["@monolog.logger"]]
+
+    tagcade.repository.report.unified_report.network.network_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
-            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AccountManagement
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkReport
 
-    tagcade.repository.report.unified_report.pulse_point.daily:
-        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DailyReportRepositoryInterface
-        factory_service: doctrine.orm.unifiedreport_entity_manager
+    tagcade.repository.report.unified_report.network.network_site_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkSiteReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
-            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\Daily
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkSiteReport
 
-    tagcade.repository.report.unified_report.pulse_point.domain_impression:
-        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\DomainReportRepositoryInterface
-        factory_service: doctrine.orm.unifiedreport_entity_manager
+    tagcade.repository.report.unified_report.network.network_ad_tag_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkAdTagReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
-            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\DomainImpression
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagReport
 
-    tagcade.repository.report.unified_report.pulse_point.country_daily:
-        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\CountryDailyRepositoryInterface
-        factory_service: doctrine.orm.unifiedreport_entity_manager
+    tagcade.repository.report.unified_report.network.network_domain_ad_tag_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkDomainAdTagReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
-            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\CountryDaily
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkDomainAdTagReport
+        calls:
+            - [setSubPublisherManager, [@tagcade_user.domain_manager.sub_publisher]]
+            - [setSiteService, [@tagcade_app.service.core.site.site_service]]
 
-    tagcade.repository.report.unified_report.pulse_point.ad_tag_domain_impression:
-        class: Tagcade\Repository\Report\UnifiedReport\PulsePoint\AdTagDomainImpressionRepositoryInterface
-        factory_service: doctrine.orm.unifiedreport_entity_manager
+    tagcade.repository.report.unified_report.network.network_domain_ad_tag_sub_publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkDomainAdTagSubPublisherReportRepository
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
-            - Tagcade\Entity\Report\UnifiedReport\PulsePoint\AdTagDomainImpression
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkDomainAdTagSubPublisherReport
 
-    ### Unified report selectors ###
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.account_management:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AccountManagement
+    tagcade.repository.report.unified_report.network.network_site_sub_publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkSiteSubPublisherReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.account_management
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkSiteSubPublisherReport
 
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.daily:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\Daily
+    tagcade.repository.report.unified_report.network.network_ad_tag_sub_publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.daily
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReport
 
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\DomainImpression
+    tagcade.repository.report.unified_report.publisher.publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Publisher\PublisherReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.domain_impression
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Publisher\PublisherReport
 
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.country_daily:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\CountryDaily
+    tagcade.repository.report.unified_report.publisher.sub_publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Publisher\SubPublisherReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.country_daily
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Publisher\SubPublisherReport
 
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_domain_impression:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagDomainImpression
+    tagcade.repository.report.unified_report.publisher.sub_publisher_network_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Publisher\SubPublisherNetworkReportRepositoryInterface
+        parent: tagcade.repository.report.unified_report.abstract
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.ad_tag_domain_impression
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Publisher\SubPublisherNetworkReport
 
-    # custom for adTag-country
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_country:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagCountry
+    ### comparison
+    tagcade.repository.report.unified_report.comparison.account_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\AccountReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.country_daily
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\AccountReport
 
-    # custom for adTagGroup-daily
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_daily:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagGroupDaily
+    tagcade.repository.report.unified_report.comparison.ad_network_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\AdNetworkReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.account_management
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkReport
 
-    # custom for adTagGroup-country
-    tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_country:
-        class: Tagcade\Service\Report\UnifiedReport\Selector\PulsePoint\AdTagGroupCountry
+    tagcade.repository.report.unified_report.comparison.ad_network_domain_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\AdNetworkDomainReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
         arguments:
-            - @tagcade.repository.report.unified_report.pulse_point.country_daily
-            - %tc.default_page_size%
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkDomainReport
+
+    tagcade.repository.report.unified_report.comparison.ad_network_ad_tag_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\AdNetworkAdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkAdTagReport
+
+    tagcade.repository.report.unified_report.comparison.ad_network_domain_ad_tag_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\AdNetworkDomainAdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkDomainAdTagReport
+
+    tagcade.repository.report.unified_report.comparison.ad_network_domain_ad_tag_sub_publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\AdNetworkDomainAdTagSubPublisherReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkDomainAdTagSubPublisherReport
+
+    tagcade.repository.report.unified_report.comparison.sub_publisher_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\SubPublisherReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\SubPublisherReport
+
+    tagcade.repository.report.unified_report.comparison.sub_publisher_ad_network_report:
+        class: Tagcade\Repository\Report\UnifiedReport\Comparison\SubPublisherAdNetworkReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\UnifiedReport\Comparison\SubPublisherAdNetworkReport
+
+    # unified report selector
+    tagcade.service.report.unified_report.selector.selectors.network.network_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\Network
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_report
+
+    tagcade.service.report.unified_report.selector.selectors.network.network_site_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkSite
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_site_report
+
+    tagcade.service.report.unified_report.selector.selectors.network.network_ad_tag_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkAdTag
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_report
+
+    tagcade.service.report.unified_report.selector.selectors.network.network_domain_ad_tag_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkDomainAdTag
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_domain_ad_tag_report
+
+    tagcade.service.report.unified_report.selector.selectors.network.network_domain_ad_tag_sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkDomainAdTagSubPublisher
+        arguments:
+            - "@tagcade.repository.report.unified_report.network.network_domain_ad_tag_sub_publisher_report"
+
+    tagcade.service.report.unified_report.selector.selectors.publisher.publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Publisher\Publisher
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.publisher_report
+
+    tagcade.service.report.unified_report.selector.selectors.publisher.sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Publisher\SubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_report
+
+    tagcade.service.report.unified_report.selector.selectors.publisher.sub_publisher_network_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Publisher\SubPublisherNetwork
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_network_report
+
+    tagcade.service.report.unified_report.selector.selectors.network.network_site_sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkSiteSubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_site_sub_publisher_report
+
+    tagcade.service.report.unified_report.selector.selectors.network.network_ad_tag_sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkAdTagSubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_sub_publisher_report
+
+    ### Comparison
+    tagcade.service.report.unified_report.selector.selectors.comparison.account_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\Account
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.account_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetwork
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.ad_network_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetworkDomain
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.ad_network_domain_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_ad_tag_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetworkAdTag
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.ad_network_ad_tag_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_ad_tag_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetworkDomainAdTag
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.ad_network_domain_ad_tag_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_ad_tag_sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetworkDomainAdTagSubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.ad_network_domain_ad_tag_sub_publisher_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\SubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.sub_publisher_report
+
+    tagcade.service.report.unified_report.selector.selectors.comparison.sub_publisher_ad_network_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\SubPublisherAdNetwork
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.sub_publisher_ad_network_report
 
     ### Unified selector service ###
-    tagcade.service.report.unified_report.selector.report_selector:
+    tagcade.service.report.unified_report.selector.partner_report_selector:
         class: Tagcade\Service\Report\UnifiedReport\Selector\ReportSelector
         arguments:
             -
-                # account_management selectors
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.account_management
-                # daily selectors
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.daily
-                # domain_impression selectors
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.domain_impression
-                # country_daily selectors
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.country_daily
-                # ad_tag_domain_impression selectors
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_domain_impression
-                # ad_tag_country selectors (custom)
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_country
-                # ad_tag_group_daily selectors (custom)
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_daily
-                # ad_tag_group_country selectors (custom)
-                - @tagcade.service.report.unified_report.pulse_point.selector.selectors.ad_tag_group_country
+                # unified reports selector
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_report
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_site_report
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_ad_tag_report
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_domain_ad_tag_report
+                - @tagcade.service.report.unified_report.selector.selectors.publisher.publisher_report
+                - @tagcade.service.report.unified_report.selector.selectors.publisher.sub_publisher_report
+                - @tagcade.service.report.unified_report.selector.selectors.publisher.sub_publisher_network_report
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_site_sub_publisher_report
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_ad_tag_sub_publisher_report
+                - "@tagcade.service.report.unified_report.selector.selectors.network.network_domain_ad_tag_sub_publisher_report"
+                # comparison
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.account_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_ad_tag_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_ad_tag_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_ad_tag_sub_publisher_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.sub_publisher_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.sub_publisher_ad_network_report
+            - @tagcade.service.report.performance_report.display.select.grouper.report_grouper
+            - @tagcade.service.date_util
+
+    ### Report builder service
+    tagcade.service.report.unified_report.selector.report_builder:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder
+        arguments:
+            - @tagcade.service.report.unified_report.selector.partner_report_selector
+            - @tagcade.service.date_util
+            - @tagcade_user.domain_manager.publisher
+            - @tagcade.domain_manager.ad_network
+            - @tagcade.domain_manager.site
+            - @tagcade.domain_manager.ad_tag
+
+    tagcade.service.report.unified_report.report_comparison_creator:
+        class: Tagcade\Service\Report\UnifiedReport\ReportComparisonCreator
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@tagcade.repository.ad_tag"
+            - "@tagcade.repository.ad_network"
+            - "@tagcade_user.domain_manager.sub_publisher"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_ad_tag"
+            - "@tagcade.repository.report.unified_report.network.network_ad_tag_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain"
+            - "@tagcade.repository.report.unified_report.network.network_site_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_network"
+            - "@tagcade.repository.report.unified_report.network.network_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.partner.account"
+            - "@tagcade.repository.report.unified_report.publisher.publisher_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher_ad_network"
+            - "@tagcade.repository.report.unified_report.publisher.sub_publisher_network_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher"
+            - "@tagcade.repository.report.unified_report.publisher.sub_publisher_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain_ad_tag"
+            - "@tagcade.repository.report.unified_report.network.network_domain_ad_tag_report"
+            - "@tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain_ad_tag_sub_publisher"
+            - "@tagcade.repository.report.unified_report.network.network_domain_ad_tag_sub_publisher_report"
+
+            - @tagcade.repository.report.unified_report.comparison.account_report
+            - @tagcade.repository.report.unified_report.comparison.ad_network_ad_tag_report
+            - @tagcade.repository.report.unified_report.comparison.ad_network_domain_ad_tag_report
+            - @tagcade.repository.report.unified_report.comparison.ad_network_domain_ad_tag_sub_publisher_report
+            - @tagcade.repository.report.unified_report.comparison.ad_network_domain_report
+            - @tagcade.repository.report.unified_report.comparison.ad_network_report
+            - @tagcade.repository.report.unified_report.comparison.sub_publisher_report
+            - @tagcade.repository.report.unified_report.comparison.sub_publisher_ad_network_report
+
+        calls:
+            - [setLogger, ["@monolog.logger"]]
+
+

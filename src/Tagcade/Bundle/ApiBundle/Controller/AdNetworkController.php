@@ -2,27 +2,26 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\Entity\Core\AdTag;
-use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\LibraryAdTagInterface;
+use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 
 /**
@@ -33,7 +32,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all ad networks
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary"})
+     *
+     * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
+     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -47,13 +49,50 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function cgetAction()
     {
-        return $this->all();
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $publisher = $paramFetcher->get('publisher');
+        $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
+        $builtIn = $paramFetcher->get('builtIn');
+        $builtIn = filter_var($builtIn, FILTER_VALIDATE_BOOLEAN);
+
+        if ($publisher != null && $this->getUser() instanceof AdminInterface) {
+            $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisher);
+
+            if (!$publisher instanceof PublisherInterface) {
+                throw new NotFoundHttpException('That publisher does not exist');
+            }
+
+            $all = $adNetworkManager->getAdNetworksForPublisher($publisher);
+        }
+
+        $all = isset($all) ? $all : $this->all();
+
+        $this->checkUserPermission($all);
+
+
+        if ($builtIn == false) {
+            return $all;
+        }
+
+        $results = [];
+        foreach ($all as $adNetwork) {
+            /**
+             * @var AdNetworkInterface $adNetwork
+             */
+            if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
+                continue;
+            }
+
+            $results[] = $adNetwork;
+        }
+
+        return $results;
     }
 
     /**
      * Get a single ad network for the given id
      *
-     * @Rest\View(serializerGroups={"adnetwork.detail", "user.summary", "adtag.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.detail", "user.summary", "adtag.summary", "partner.summary"})
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -74,7 +113,32 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * @Rest\Get("/adnetworks/{cname}/publishers")
+     *
+     * @Rest\View(serializerGroups={"adnetwork.credential", "user.uuid", "adtag.summary", "partner.summary"})
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param string $cname partner's canonical name
+     *
+     * @return \Tagcade\Model\Core\AdNetworkInterface
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getPublishersByCNameAction($cname)
+    {
+        return $this->get('tagcade.repository.ad_network')->getPartnerConfigurationForAllPublishers($cname);
+    }
+
+    /**
      * Get all sites belonging to this ad network
+     *
+     * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -85,29 +149,29 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *  }
      * )
      *
-     * @param $id
+     * @param int $id
+     * @param Request $request
      * @return SiteInterface[]
      *
-     * @throws NotFoundHttpException when the resource does not exist
      */
-    public function getSitesAction($id)
+    public function getSitesAction($id, Request $request)
     {
-        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->one($id);
 
-        if (!$adNetwork) {
-            throw new NotFoundHttpException('That adNetwork does not exist');
+        // publisher for filter
+        $user = $this->getUser();
+
+        /* NOTE: default publisher-filter = no filter if admin, or this $user if publisher */
+        $publisher = $user instanceof AdminInterface ? null : $user;
+
+        /* only check permission if has query param "publisher" */
+        if ($request->query->has('publisher')) {
+            $publisherId = $request->query->get('publisher', null);
+            $publisher = $this->getPublisher($publisherId);
         }
 
-        $role = $this->get('tagcade.user_role');
-
-        if ($role instanceof AdminInterface) {
-            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork);
-        }
-
-        /**
-         * @var PublisherInterface $role
-         */
-        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $role);
+        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
     }
 
 
@@ -130,7 +194,9 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function getAdtagsActiveAction($id)
     {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+
         if (!$adNetwork) {
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
@@ -161,6 +227,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function getSitesActiveAction($id)
     {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
 
         if (!$adNetwork) {
@@ -177,7 +244,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
          * @var PublisherInterface $role
          */
         return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
-
     }
 
     /**
@@ -200,12 +266,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function getSiteAdtagsActiveAction($id, $siteId)
     {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+
         if (!$adNetwork) {
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
+        /** @var SiteInterface $site */
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
+
         if (!$site) {
             throw new NotFoundHttpException('That site does not exist');
         }
@@ -241,6 +311,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         return $this->get('tagcade.domain_manager.ad_tag')
             ->getAdTagsForAdNetwork($adNetwork);
     }
+
     /**
      * Create a ad network from the submitted data
      *
@@ -276,17 +347,17 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *
      * @Rest\QueryParam(name="active", requirements="(true|false)", nullable=true)
      *
-     * @param Request $request
      * @param $id
      * @return View|FormTypeInterface
      */
-    public function putStatusAction(Request $request, $id)
+    public function putStatusAction($id)
     {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->getOr404($id);
+
         $this->checkUserPermission($adNetwork, 'edit');
-        /**
-         * @var ParamFetcherInterface $paramFetcher
-         */
+
+        /** @var ParamFetcherInterface $paramFetcher */
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $active = $paramFetcher->get('active');
         $active = filter_var($active, FILTER_VALIDATE_BOOLEAN);
@@ -296,6 +367,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
+
     /**
      * Update an existing ad network from the submitted data or create a new ad network
      *
@@ -349,7 +421,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         //check param estCpm is number?
         $estCpmParam = $paramFetcher->get('estCpm');
-        if(!is_numeric($estCpmParam)) {
+        if (!is_numeric($estCpmParam)) {
             throw new InvalidArgumentException('estCpm should be numeric');
         }
 
@@ -358,6 +430,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new InvalidArgumentException('estCpm should be positive value');
         }
 
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
         if (!$adNetwork) {
             throw new NotFoundHttpException('That adNetwork does not exist');
@@ -377,7 +450,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $event->addChangedFields('estCpm', '', $estCpm, $startDate, $endDate);
         /** @var AdTagInterface[] $adTags */
         $adTags = $adNetwork->getAdTags();
-        foreach($adTags as $adTag){
+        foreach ($adTags as $adTag) {
             $event->addAffectedEntityByObject($adTag);
         }
         $this->getHandler()->dispatchEvent($event);
@@ -414,7 +487,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         //check param estCpm is number?
         $estCpmParam = $paramFetcher->get('estCpm');
-        if(!is_numeric($estCpmParam)) {
+        if (!is_numeric($estCpmParam)) {
             throw new InvalidArgumentException('estCpm should be numeric');
         }
 
@@ -423,11 +496,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new InvalidArgumentException('estCpm should be positive value');
         }
 
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
         if (!$adNetwork) {
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
+        /** @var SiteInterface $site */
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
         if (!$site) {
             throw new NotFoundHttpException('That site does not exist');
@@ -450,7 +525,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $event->addAffectedEntityByObject($site);
         /** @var AdTagInterface[] $adTags */
         $adTags = $adNetwork->getAdTags();
-        foreach($adTags as $adTag){
+        foreach ($adTags as $adTag) {
             $event->addAffectedEntityByObject($adTag);
         }
         $this->getHandler()->dispatchEvent($event);
@@ -479,6 +554,8 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     public function putSiteStatusAction($id, $siteId)
     {
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
         if (!$adNetwork) {
             throw new NotFoundHttpException('That adNetwork does not exist');
@@ -486,12 +563,15 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         //get oldValue for action log bellow. Not clone direct $adNetwork->getAdTags() because lazy load and oldValue then be updated as newValue
         $adTags = $adNetwork->getAdTags();
+
         /** @var AdTagInterface[] $adTagsOld */
         $adTagsOld = [];
+
         foreach ($adTags as $adTag) {
             $adTagsOld[] = clone $adTag;
         }
 
+        /** @var SiteInterface $site */
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
         if (!$site) {
             throw new NotFoundHttpException('That site does not exist');
@@ -513,8 +593,8 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         ////detect and add Affected for AdTags
         $hasAdTagAffected = false;
-        foreach($adTagsOld as $adTag){
-            //only add adtag to affected list if really has changing
+        foreach ($adTagsOld as $adTag) {
+            //only add ad tag to affected list if really has changing
             if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
                 $event->addAffectedEntityByObject($adTag);
                 $hasAdTagAffected = true;
@@ -533,7 +613,8 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
-     * Update position of of all ad tags belonging to adNetwork
+     * Update position of of all ad tags belonging to adNetwork,
+     * support auto shift down all ad tags of other ad network with positions greater than or equal
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -544,6 +625,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * )
      *
      * @Rest\QueryParam(name="position", requirements="\d+", description="new position of all ad tags belonging to this ad network")
+     * @Rest\QueryParam(name="autoIncreasePosition", requirements="true|false", default="false", nullable=true, description="auto shift down all ad tags that belonging to other ad network and have position greater than or equal")
      *
      * @param $id
      *
@@ -551,36 +633,15 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function putPositionAction($id)
     {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
-        if (!$adNetwork) {
+        if (!$adNetwork instanceof AdNetworkInterface) {
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
-        if (false === $this->get('security.context')->isGranted('edit', $adNetwork)) {
-            throw new AccessDeniedException('You do not have permission to edit this');
-        }
+        $this->checkUserPermission($adNetwork, 'edit');
 
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $position = (int)$paramFetcher->get('position', true);
-        if ($position < 1) {
-            throw new InvalidArgumentException('position should be greater than zero');
-        }
-
-        $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
-
-        $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position);
-
-        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
-        $event = new HandlerEventLog('PUT', $adNetwork);
-        $event->addChangedFields('position', '', $position);
-        /** @var AdTagInterface[] $adTags */
-        $adTags = $adNetwork->getAdTags();
-        foreach($adTags as $adTag){
-            $event->addAffectedEntityByObject($adTag);
-        }
-        $this->getHandler()->dispatchEvent($event);
-
-        return $this->view(null, Codes::HTTP_NO_CONTENT);
+        return $this->cascadePosition($adNetwork);
     }
 
     /**
@@ -595,6 +656,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * )
      *
      * @Rest\QueryParam(name="position", requirements="\d+", description="new position of all ad tags belonging to this ad network and filtered by siteId")
+     * @Rest\QueryParam(name="autoIncreasePosition", requirements="true|false", default="false", nullable=true, description="auto shift down all ad tags that belonging to other ad network and have position greater than or equal")
      *
      * @param $id
      * @param $siteId
@@ -603,42 +665,63 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function putSitePositionAction($id, $siteId)
     {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
-        if (!$adNetwork) {
+        if (!$adNetwork instanceof AdNetworkInterface) {
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
+        $this->checkUserPermission($adNetwork, 'edit');
+
+        /** @var SiteInterface $site */
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
-        if (!$site) {
+        if (!$site instanceof SiteInterface) {
             throw new NotFoundHttpException('That site does not exist');
         }
 
-        if (false === $this->get('security.context')->isGranted('edit', $adNetwork) || false === $this->get('security.context')->isGranted('edit', $site)) {
-            throw new AccessDeniedException('You do not have permission to edit this');
+        $this->checkUserPermission($site);
+
+        return $this->cascadePosition($adNetwork, $site);
+    }
+
+    /**
+     * Update position of of all ad tags belonging to adNetwork and filtered by channel
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="position", requirements="\d+", description="new position of all ad tags belonging to this ad network and filtered by $channelId")
+     * @Rest\QueryParam(name="autoIncreasePosition", requirements="true|false", default="false", nullable=true, description="auto shift down all ad tags that belonging to other ad network and have position greater than or equal")
+     *
+     * @param $id
+     * @param $channelId
+     *
+     * @return View
+     */
+    public function putChannelPositionAction($id, $channelId)
+    {
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->get('tagcade.domain_manager.ad_network')->find($id);
+        if (!$adNetwork instanceof AdNetworkInterface) {
+            throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $position = (int)$paramFetcher->get('position', true);
+        $this->checkUserPermission($adNetwork, 'edit');
 
-        if ($position < 1) {
-            throw new InvalidArgumentException('position should be greater than zero');
+        /** @var ChannelInterface $channel */
+        $channel = $this->get('tagcade.domain_manager.channel')->find($channelId);
+        if (!$channel instanceof ChannelInterface) {
+            throw new NotFoundHttpException('That channel does not exist');
         }
 
-        $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
+        $this->checkUserPermission($channel);
 
-        $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position, $site);
-
-        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
-        $event = new HandlerEventLog('PUT', $adNetwork);
-        $event->addChangedFields('position', '', $position);
-        /** @var AdTagInterface[] $adTags */
-        $adTags = $adNetwork->getAdTags();
-        foreach($adTags as $adTag){
-            $event->addAffectedEntityByObject($adTag);
-        }
-        $this->getHandler()->dispatchEvent($event);
-
-        return $this->view(null, Codes::HTTP_NO_CONTENT);
+        return $this->cascadePosition($adNetwork, $channel->getSites());
     }
 
     /**
@@ -667,9 +750,9 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
          */
         $adNetwork = $this->one($id);
 
-        if(array_key_exists('publisher', $request->request->all())) {
+        if (array_key_exists('publisher', $request->request->all())) {
             $publisher = (int)$request->get('publisher');
-            if($adNetwork->getPublisherId() != $publisher) {
+            if ($adNetwork->getPublisherId() != $publisher) {
                 throw new InvalidArgumentException('publisher in invalid');
             }
         }
@@ -698,6 +781,69 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     public function deleteAction($id)
     {
         return $this->delete($id);
+    }
+
+    /**
+     * cascade Position for an ad network, filter by site(s) (optional)
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param null|SiteInterface|SiteInterface[] $sites
+     * @return View
+     */
+    private function cascadePosition(AdNetworkInterface $adNetwork, $sites = null)
+    {
+        // get position from request query params
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $position = (int)$paramFetcher->get('position', true);
+        $autoIncreasePosition = $paramFetcher->get('autoIncreasePosition') == 'true';
+
+        if ($position < 1) {
+            return $this->view('position should be greater than zero', Codes::HTTP_BAD_REQUEST);
+        }
+
+        // do cascading position
+        $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
+        $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position, $sites, $autoIncreasePosition);
+
+        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+        $event = new HandlerEventLog('PUT', $adNetwork);
+
+        $event->addChangedFields('position', '', $position);
+
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $adNetwork->getAdTags();
+        foreach ($adTags as $adTag) {
+            $event->addAffectedEntityByObject($adTag);
+        }
+
+        $this->getHandler()->dispatchEvent($event);
+
+        // return view
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param int $publisherId
+     * @return PublisherInterface
+     * @throws LogicException
+     */
+    private function getPublisher($publisherId)
+    {
+        /** @var PublisherInterface $publisher */
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId);
+
+        if (!$publisher instanceof PublisherInterface) {
+            // try again with SubPublisher
+            $publisher = $this->get('tagcade_user_system_sub_publisher.user_manager')->findUserBy(array('id' => $publisherId));
+        }
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new LogicException('The user should have the publisher role');
+        }
+
+        $this->checkUserPermission($publisher);
+
+        return $publisher;
     }
 
     protected function getResourceName()

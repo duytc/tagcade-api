@@ -10,11 +10,7 @@ use Doctrine\ORM\PersistentCollection;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
-use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 
@@ -29,16 +25,16 @@ use Tagcade\Model\Core\ReportableAdSlotInterface;
  */
 class UpdateAdTagPositionListener
 {
-    private $presoftDeleteAdTags = [];
+    private $preSoftDeleteAdTags = [];
 
     public function preSoftDelete(LifecycleEventArgs $args)
     {
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $this->presoftDeleteAdTags = array_merge($this->presoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function($entity) {
-            return ($entity instanceof LibrarySlotTagInterface || ($entity instanceof AdTagInterface && !$entity->isInLibrary()));
-          }
+        $this->preSoftDeleteAdTags = array_merge($this->preSoftDeleteAdTags, array_filter($uow->getScheduledEntityDeletions(), function ($entity) {
+                return ($entity instanceof LibrarySlotTagInterface || ($entity instanceof AdTagInterface && !$entity->isInLibrary()));
+            }
         ));
     }
 
@@ -47,8 +43,8 @@ class UpdateAdTagPositionListener
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $preSoftDeleteAdTags = $this->presoftDeleteAdTags;
-        $this->presoftDeleteAdTags = [];
+        $preSoftDeleteAdTags = $this->preSoftDeleteAdTags;
+        $this->preSoftDeleteAdTags = [];
 
         $entities = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions(), $preSoftDeleteAdTags);
 
@@ -65,13 +61,14 @@ class UpdateAdTagPositionListener
             }
         }
     }
+
     /**
      * @param LifecycleEventArgs $args
      */
     public function prePersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof PositionInterface) {
+        if (!$entity instanceof PositionInterface) {
             return;
         }
 
@@ -88,8 +85,7 @@ class UpdateAdTagPositionListener
     {
         $adSlot = $updatingAdTag->getContainer();
 
-        if($adSlot instanceof ReportableAdSlotInterface || $adSlot instanceof BaseLibraryAdSlotInterface)
-        {
+        if ($adSlot instanceof ReportableAdSlotInterface || $adSlot instanceof BaseLibraryAdSlotInterface) {
             return $this->updatePositionForAdSlot($updatingAdTag);
         }
 
@@ -100,11 +96,13 @@ class UpdateAdTagPositionListener
     {
         $listTags = $updatingAdTag->getSiblings();
 
-        if($listTags instanceof ArrayCollection || $listTags instanceof PersistentCollection) $listTags = $listTags->toArray();
+        if ($listTags instanceof ArrayCollection || $listTags instanceof PersistentCollection) $listTags = $listTags->toArray();
 
-        if(null === $listTags) $listTags = [];
+        if (null === $listTags) $listTags = [];
 
-        $adTags = array_filter($listTags, function(PositionInterface $t) { return null === $t->getDeletedAt();});
+        $adTags = array_filter($listTags, function (PositionInterface $t) {
+                return null === $t->getDeletedAt();
+            });
 
         $updatedAdTags = $this->correctAdTagPositionInList($updatingAdTag, $adTags);
 
@@ -120,13 +118,13 @@ class UpdateAdTagPositionListener
      */
     protected function correctAdTagPositionInList(&$updatingAdTag, array &$adTags)
     {
-        if(!$updatingAdTag instanceof PositionInterface) {
+        if (!$updatingAdTag instanceof PositionInterface) {
             return [];
         }
         // sort array asc with respect to position
-        usort($adTags, function(PositionInterface $a, PositionInterface $b) {
-            if($a->getPosition() === null) return 1;
-            if($b->getPosition() === null) return -1;
+        usort($adTags, function (PositionInterface $a, PositionInterface $b) {
+            if ($a->getPosition() === null) return 1;
+            if ($b->getPosition() === null) return -1;
             if ($a->getPosition() == $b->getPosition()) {
                 return 0;
             }
@@ -139,7 +137,7 @@ class UpdateAdTagPositionListener
         $mappedPositions = array();
         array_walk(
             $adTags,
-            function(PositionInterface $adTag) use(&$positions, &$updatedAdTags, &$mappedPositions) {
+            function (PositionInterface $adTag) use (&$positions, &$updatedAdTags, &$mappedPositions) {
                 $myPos = $adTag->getPosition();
                 $newPos = !array_key_exists($myPos, $mappedPositions) ? count($positions) + 1 : $mappedPositions[$myPos];
                 $mappedPositions[$myPos] = $newPos;
@@ -187,7 +185,7 @@ class UpdateAdTagPositionListener
         // truly update position
         $pos = 1;
         $updatedAdTags = [];
-        while(array_key_exists($pos, $groups)) {
+        while (array_key_exists($pos, $groups)) {
             $adTagList = $groups[$pos];
             foreach ($adTagList as $adTag) {
                 if ($adTag->getPosition() != $pos) {
@@ -196,7 +194,7 @@ class UpdateAdTagPositionListener
                 }
                 continue;
             }
-            $pos ++;
+            $pos++;
         }
         return $updatedAdTags;
     }

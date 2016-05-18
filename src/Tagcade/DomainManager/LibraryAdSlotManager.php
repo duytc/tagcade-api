@@ -4,7 +4,6 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\PersistentCollection;
 use InvalidArgumentException;
-use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -12,7 +11,6 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -62,7 +60,7 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
      */
     public function save(ModelInterface $libraryAdSlot)
     {
-        if(!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) throw new InvalidArgumentException('expect BaseLibraryAdSlotInterface object');
+        if (!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) throw new InvalidArgumentException('expect BaseLibraryAdSlotInterface object');
 
         $this->getManager($libraryAdSlot)->save($libraryAdSlot);
     }
@@ -72,7 +70,7 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
      */
     public function delete(ModelInterface $libraryAdSlot)
     {
-        if(!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) throw new InvalidArgumentException('expect BaseLibraryAdSlotInterface object');
+        if (!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) throw new InvalidArgumentException('expect BaseLibraryAdSlotInterface object');
 
         $this->getManager($libraryAdSlot)->delete($libraryAdSlot);
     }
@@ -201,21 +199,21 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
         /**
          * @var BaseLibraryAdSlotInterface $libraryAdSlot
          */
-        foreach($libraryAdSlots as $libraryAdSlot) {
+        foreach ($libraryAdSlots as $libraryAdSlot) {
             $adSlots = $libraryAdSlot->getAdSlots();
-            if($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
+            if ($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
 
-            if(!is_array($adSlots) || count($adSlots) < 1) {
+            if (!is_array($adSlots) || count($adSlots) < 1) {
                 $result[] = $libraryAdSlot;
                 continue;
             }
 
-            $adSlots = array_filter($adSlots, function(BaseAdSlotInterface $adSlot) use($site){
-                if($adSlot->getSite()->getId() === $site->getId()) return true;
+            $adSlots = array_filter($adSlots, function (BaseAdSlotInterface $adSlot) use ($site) {
+                if ($adSlot->getSite()->getId() === $site->getId()) return true;
                 else return false;
             });
 
-            if(count($adSlots) < 1) {
+            if (count($adSlots) < 1) {
                 $result[] = $libraryAdSlot;
             }
         }

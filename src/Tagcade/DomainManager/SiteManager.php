@@ -11,6 +11,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class SiteManager implements SiteManagerInterface
@@ -97,6 +98,30 @@ class SiteManager implements SiteManagerInterface
         return $this->repository->getSitesThatHaveAdTagsBelongingToAdNetwork($adNetwork);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getSitesThatHaveAdTagsBelongingToPartnerForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartner(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        return $this->repository->getSitesThatHaveAdTagsBelongingToPartner($adNetwork, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getSitesThatHaveAdTagsBelongingToPartnerWithSubPublisher($adNetwork, $subPublisher, $limit, $offset);
+    }
+
     public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
         return $this->repository->getSiteIdsThatHaveAdTagsBelongingToAdNetwork($adNetwork, $limit, $offset);
@@ -163,5 +188,10 @@ class SiteManager implements SiteManagerInterface
     public function getSiteByDomainAndPublisher($domain, PublisherInterface $publisher)
     {
         return $this->repository->getSitesByDomainAndPublisher($publisher, $domain);
+    }
+
+    public function getUniqueDomainsForPublisher(PublisherInterface $publisher)
+    {
+        return $this->repository->getUniqueDomainsForPublisher($publisher);
     }
 }

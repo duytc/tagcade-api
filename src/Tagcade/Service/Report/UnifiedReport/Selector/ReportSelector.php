@@ -3,88 +3,53 @@
 namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
 
-use Tagcade\Exception\NotSupportedException;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AbstractAccountManagement;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily;
-use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\UnifiedReport\Result\Group\PulsePoint\PulsePointRevenueReportGroup;
-use Tagcade\Service\Report\UnifiedReport\Result\Group\UnifiedReportGroup;
-use Tagcade\Service\Report\UnifiedReport\Result\UnifiedReportCollection;
-use Tagcade\Service\Report\UnifiedReport\Selector\ReportSelectorInterface as UnifiedReportSelectorInterface;
-use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
+use Tagcade\Exception\LogicException;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Service\DateUtilInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\ReportGrouperInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportSelector as BaseReportSelector;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
+use Tagcade\Service\Report\UnifiedReport\Selector\Selectors\SelectorInterface;
 
-
-class ReportSelector implements UnifiedReportSelectorInterface
+class ReportSelector extends BaseReportSelector implements ReportSelectorInterface
 {
-    /** @var SelectorInterface[] */
-    protected $selectors = [];
-    function __construct($selectors)
-    {
-        foreach ($selectors as $selector) {
-            if (!$selector instanceof SelectorInterface) {
-                continue;
-            }
-
-            $this->addSelector($selector);
-        }
-    }
+    /**
+     * @var SelectorInterface[]
+     */
+    protected $selectors;
 
     /**
-     * @inheritdoc
+     * ReportSelector constructor.
+     * @param SelectorInterface[] $selectors
+     * @param ReportGrouperInterface $reportGrouper
+     * @param DateUtilInterface $dateUtil
      */
-    public function getReports(ReportTypeInterface $reportType, UnifiedReportParams $params)
+    public function __construct(array $selectors, ReportGrouperInterface $reportGrouper, DateUtilInterface $dateUtil)
     {
-        /**
-         * @var SelectorInterface $selector
-         */
+        parent::__construct($selectors, $dateUtil, $reportGrouper);
+    }
+
+    public function getDiscrepancies(ReportTypeInterface $reportType, Params $params)
+    {
         $selector = $this->getSelectorFor($reportType);
+        if (!$selector instanceof SelectorInterface) {
+            throw new LogicException(sprintf('expect UnifiedSelectorInterface, %s given', get_class($selector)));
+        }
 
-        $reports = $selector->getReports($reportType, $params);
+        $report = $selector->getDiscrepancy($reportType, $params);
 
-        if (!array_key_exists(AbstractReportRepository::REPORT_PAGINATION_RECORDS, $reports)
-            || !array_key_exists(AbstractReportRepository::REPORT_TOTAL_RECORDS, $reports)
-            || !array_key_exists(AbstractReportRepository::REPORT_AVERAGE_VALUES, $reports)
-        ) {
+        if (!is_array($report) || empty($report)) {
             return false;
         }
 
-        if ($reportType instanceof AbstractAccountManagement || $reportType instanceof Daily) {
-            return new PulsePointRevenueReportGroup($reportType, $params->getStartDate(), $params->getEndDate(),
-                $reports[AbstractReportRepository::REPORT_PAGINATION_RECORDS], $reports[AbstractReportRepository::REPORT_TOTAL_RECORDS],
-                null, $reports[AbstractReportRepository::REPORT_AVERAGE_VALUES]);
+        $reportCollection = new ReportCollection($reportType, $params->getStartDate(), $params->getEndDate(), $report, $reportType->getReportType());
+        $result = $reportCollection;
+
+        if ($params->getGrouped()) {
+            $result = $this->reportGrouper->groupReports($reportCollection);
         }
 
-        return new UnifiedReportGroup($reportType, $params->getStartDate(), $params->getEndDate(),
-            $reports[AbstractReportRepository::REPORT_PAGINATION_RECORDS], $reports[AbstractReportRepository::REPORT_TOTAL_RECORDS],
-            null, $reports[AbstractReportRepository::REPORT_AVERAGE_VALUES]);
-    }
-
-    protected function addSelector(SelectorInterface $selector)
-    {
-        if (!in_array($selector, $this->selectors)) {
-            $this->selectors [] = $selector;
-        }
-
-        return $this;
-    }
-
-    /**
-     * get Selector For a report Type
-     * @param $reportType
-     * @return UnifiedReportSelectorInterface
-     * @throws NotSupportedException
-     */
-    private function getSelectorFor(ReportTypeInterface $reportType)
-    {
-        foreach ($this->selectors as $selector) {
-            /**
-             * @var SelectorInterface $selector
-             */
-            if ($selector->supportReport($reportType)) {
-                return $selector;
-            }
-        }
-
-        throw new NotSupportedException(sprintf('Not found any selector that supports this report type %s', get_class($reportType)));
+        return $result;
     }
 }

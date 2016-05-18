@@ -2,7 +2,6 @@
 
 namespace Tagcade\Handler\Handlers\Core;
 
-use Tagcade\DomainManager\LibraryAdSlotManagerInterface;
 use Tagcade\DomainManager\LibraryExpressionManagerInterface;
 use Tagcade\Handler\RoleHandlerAbstract;
 

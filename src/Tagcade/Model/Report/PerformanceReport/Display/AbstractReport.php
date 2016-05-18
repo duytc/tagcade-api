@@ -2,12 +2,10 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
-use Tagcade\Exception\RuntimeException;
+use DateTime;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
-use DateTime;
-
-abstract class  AbstractReport implements ReportInterface
+abstract class AbstractReport implements ReportInterface
 {
     use CalculateRatiosTrait;
 
@@ -20,6 +18,11 @@ abstract class  AbstractReport implements ReportInterface
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @inheritdoc
@@ -52,7 +55,7 @@ abstract class  AbstractReport implements ReportInterface
      */
     public function setTotalOpportunities($totalOpportunities)
     {
-        $this->totalOpportunities = (int) $totalOpportunities;
+        $this->totalOpportunities = (int)$totalOpportunities;
 
         return $this;
     }
@@ -70,7 +73,7 @@ abstract class  AbstractReport implements ReportInterface
      */
     public function setImpressions($impressions)
     {
-        $this->impressions = (int) $impressions;
+        $this->impressions = (int)$impressions;
 
         return $this;
     }
@@ -88,7 +91,7 @@ abstract class  AbstractReport implements ReportInterface
      */
     public function setPassbacks($passbacks)
     {
-        $this->passbacks = (int) $passbacks;
+        $this->passbacks = (int)$passbacks;
 
         return $this;
     }

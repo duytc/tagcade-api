@@ -13,10 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\ChannelHandlerAbstract;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("Channel")
@@ -100,13 +98,13 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
     }
 
     /**
-     * get Channels Include Sites Unreferenced To Library AdSlot
+     * Get Channels include Sites that have not linked to library AdSlot
      *
      * @Rest\View(
      *      serializerGroups={"channel.summary", "user.summary"}
      * )
      *
-     * @Rest\Get("channels/noreference")
+     * @Rest\Get("channels/nodeployments")
      *
      * @Rest\QueryParam(name="slotLibrary", requirements="\d+")
      *
@@ -164,6 +162,31 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
     }
 
     /**
+     * Get the javascript display ad tags for this channel
+     *
+     * @ApiDoc(
+     *  section="Channels",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     *
+     * @param int $id
+     * @return array
+     */
+    public function getJstagsAction($id)
+    {
+        /** @var ChannelInterface $channel */
+        $channel = $this->one($id);
+
+        return $this->get('tagcade.service.tag_generator')
+            ->getTagsForChannel($channel);
+    }
+
+    /**
      * Create a channel from the submitted data
      *
      * @ApiDoc(
@@ -210,9 +233,9 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
          */
         $channel = $this->one($id);
 
-        if(array_key_exists('publisher', $request->request->all())) {
+        if (array_key_exists('publisher', $request->request->all())) {
             $publisher = (int)$request->get('publisher');
-            if($channel->getPublisherId() != $publisher) {
+            if ($channel->getPublisherId() != $publisher) {
                 throw new InvalidArgumentException('publisher in invalid');
             }
         }

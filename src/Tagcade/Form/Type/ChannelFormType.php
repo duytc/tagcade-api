@@ -68,7 +68,7 @@ class ChannelFormType extends AbstractRoleSpecificFormType
                 $channel = $event->getData();
                 $form = $event->getForm();
 
-                /** @var ChannelSiteInterface[] $channelSites */
+                /** @var Collection|ChannelSiteInterface[] $channelSites */
                 $channelSites = $event->getForm()->get('channelSites')->getData();
 
                 if ($channelSites === null) {
@@ -88,12 +88,6 @@ class ChannelFormType extends AbstractRoleSpecificFormType
 
                 $channelSites = array_unique($channelSites);
                 $channel->setChannelSites($channelSites);
-
-                // validate rtbStatus
-                if (!$channel->getPublisher()->hasRtbModule() && $channel->getRtbStatus() !== RTB_STATUS::RTB_DISABLED) {
-                    $form->get('rtbStatus')->addError(new FormError('this channel belongs to publisher that does not have rtb module enabled'));
-                    return;
-                }
             }
         );
     }

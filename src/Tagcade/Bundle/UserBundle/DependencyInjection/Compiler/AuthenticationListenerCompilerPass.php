@@ -1,4 +1,6 @@
 <?php
+
+
 namespace Tagcade\Bundle\UserBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

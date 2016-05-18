@@ -46,7 +46,7 @@ class TestEventCounter extends AbstractEventCounter
         $this->adSlots = $adSlots;
     }
 
-    public function refreshTestData()
+    public function refreshTestData($minSlotOpportunities = 10000, $maxSlotOpportunities = 100000)
     {
         $this->adSlotData = [];
         $this->adTagData = [];
@@ -58,7 +58,7 @@ class TestEventCounter extends AbstractEventCounter
         foreach($this->adSlots as $adSlot) {
             $this->seedRandomGenerator();
 
-            $slotOpportunities = mt_rand(1000, 100000);
+            $slotOpportunities = mt_rand($minSlotOpportunities, $maxSlotOpportunities);
             $rtbImpressions = mt_rand(0, $slotOpportunities * 0.01);
             $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
 

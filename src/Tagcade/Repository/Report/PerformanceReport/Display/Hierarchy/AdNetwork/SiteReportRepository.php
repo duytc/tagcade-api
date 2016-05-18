@@ -19,17 +19,21 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->setParameter('site', $site)
             ->setParameter('ad_network', $adNetwork)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
-    public function getTopSitesByBilledAmount(DateTime $startDate, $endDate)
+    public function getSiteReportForAllPartners(SiteInterface $site, DateTime $startDate, DateTime $endDate)
+    {
+        // todo: remove
+        return [];
+    }
+
+    public function getTopSitesByBilledAmount()
     {
         $qb = $this->createQueryBuilder('s');
         $qb->select('s.site, sum(s.billedAmount) as billedAmount')
             ->groupBy('s.site')
-            ->orderBy('billedAmount', 'DESC')
-        ;
+            ->orderBy('billedAmount', 'DESC');
 
         return $qb->getQuery()->getResult();
     }

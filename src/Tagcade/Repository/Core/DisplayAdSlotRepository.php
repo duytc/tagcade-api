@@ -4,8 +4,6 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query\ResultSetMapping;
-use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Model\Core\SiteInterface;
 
 class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotRepositoryInterface
@@ -58,7 +56,7 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
     {
         return $this->_em->getConnection()->executeUpdate(
             'UPDATE core_ad_slot set deleted_at = NOW() where site_id = :site_id',
-            array (
+            array(
                 'site_id' => $site->getId()
             )
         );

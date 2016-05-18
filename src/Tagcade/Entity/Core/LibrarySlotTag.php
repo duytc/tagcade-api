@@ -16,6 +16,8 @@ class LibrarySlotTag extends LibrarySlotTagModel {
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;
+    protected $impressionCap;
+    protected $networkOpportunityCap;
 
     function __construct()
     {

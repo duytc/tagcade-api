@@ -8,6 +8,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformRe
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 class Platform extends AbstractCalculatedReportType implements CalculatedReportTypeInterface
 {
@@ -25,14 +26,14 @@ class Platform extends AbstractCalculatedReportType implements CalculatedReportT
                 throw new InvalidArgumentException('parameter must be an array of publishers');
             }
 
+            if ($publisher->isTestAccount()) {
+                continue;
+            }
+
+            /** @var UserEntityInterface $publisher */
             if ($publisher->isEnabled()) {
                 $this->publishers[] = $publisher;
             }
-
-
-//            if ($publisher->getUser()->hasDisplayModule()) {
-//                $this->publishers[] = $publisher;
-//            }
         }
     }
 

@@ -10,24 +10,21 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\LibraryAdTag;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
-use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotSegmentInterface;
 use Tagcade\Model\ModelInterface;
 
-class RonAdSlotChangeListener {
-
+class RonAdSlotChangeListener
+{
     protected $updatingLibraryAdSlots = [];
     protected $updatingRonSlotSegments = [];
-    /**
-     * @var array|ModelInterface[]
-     */
+
+    /** @var array|ModelInterface[] */
     protected $changedEntities = [];
 
     function __construct(EventDispatcherInterface $eventDispatcher)
@@ -47,16 +44,15 @@ class RonAdSlotChangeListener {
         if ($entity instanceof RonAdSlotInterface) {
             $this->dispatchUpdateCacheEventDueToRonAdSlot($entity);
             return;
-        }else if ($entity instanceof LibrarySlotTagInterface) {
+        } else if ($entity instanceof LibrarySlotTagInterface) {
 
             $libAdSlot = $entity->getLibraryAdSlot();
             if (!$libAdSlot->getLibSlotTags()->contains($entity)) {
                 $libAdSlot->getLibSlotTags()->add($entity);
             }
 
-        }
-        else if ($entity instanceof LibraryExpressionInterface) {
-            $libAdSlot =  $entity->getLibraryDynamicAdSlot();
+        } else if ($entity instanceof LibraryExpressionInterface) {
+            $libAdSlot = $entity->getLibraryDynamicAdSlot();
         }
 
         $ronAdSlot = $libAdSlot->getRonAdSlot();
@@ -104,7 +100,7 @@ class RonAdSlotChangeListener {
                 || $args->hasChangedField('expectLibraryAdSlot'))
         )
         ) {
-            $libAdSlot =  $entity->getLibraryDynamicAdSlot();
+            $libAdSlot = $entity->getLibraryDynamicAdSlot();
             if (!in_array($libAdSlot, $this->updatingLibraryAdSlots)) {
                 $this->updatingLibraryAdSlots[] = $libAdSlot;
             }
@@ -144,7 +140,7 @@ class RonAdSlotChangeListener {
         if (!$entity instanceof LibraryExpressionInterface) {
             return [];
         }
-        $libAdSlot =  $entity->getLibraryDynamicAdSlot();
+        $libAdSlot = $entity->getLibraryDynamicAdSlot();
         $ronAdSlot = $libAdSlot->getRonAdSlot();
 
         if (!$ronAdSlot instanceof RonAdSlotInterface) {
@@ -154,7 +150,8 @@ class RonAdSlotChangeListener {
         return [$ronAdSlot];
     }
 
-    protected function getLibAdSlotsFromLibAdTag(LibraryAdTagInterface $libAdTag) {
+    protected function getLibAdSlotsFromLibAdTag(LibraryAdTagInterface $libAdTag)
+    {
         $slotTags = $libAdTag->getLibSlotTags();
         if (null === $slotTags) {
             return [];
@@ -187,14 +184,11 @@ class RonAdSlotChangeListener {
             $this->updatingRonSlotSegments,
             array_filter(
                 $uow->getScheduledEntityDeletions(),
-                function($entity)
-                {
+                function ($entity) {
                     return $entity instanceof RonAdSlotSegmentInterface;
                 }
             )
         );
-
-        $i = 0;
     }
 
     public function onFlush(OnFlushEventArgs $args)
@@ -204,7 +198,9 @@ class RonAdSlotChangeListener {
 
         $tmp = array_merge($uow->getScheduledEntityInsertions()); // handle inserting more segments to ron slot
 
-        $tmpRonSlotSegments = array_filter($tmp, function($item) { return $item instanceof RonAdSlotSegmentInterface; });
+        $tmpRonSlotSegments = array_filter($tmp, function ($item) {
+            return $item instanceof RonAdSlotSegmentInterface;
+        });
         $this->updatingRonSlotSegments = array_merge($tmpRonSlotSegments, $this->updatingRonSlotSegments);
 
         // get all changed ron ad slots
@@ -213,6 +209,7 @@ class RonAdSlotChangeListener {
             return $entity instanceof RonAdSlotInterface;
         });
     }
+
     /**
      * handle event on post update. A Library Display or Native or Dynamic Ad Slot, which Ron Ad Slot using, is updated (to database),
      * so need send event Ron Slot change for updating cache
@@ -221,8 +218,7 @@ class RonAdSlotChangeListener {
     public function postFlush(PostFlushEventArgs $args)
     {
         $ronAdSlots = array_map(
-            function(BaseLibraryAdSlotInterface $libAdSlot)
-            {
+            function (BaseLibraryAdSlotInterface $libAdSlot) {
                 return $libAdSlot->getRonAdSlot();
             },
             $this->updatingLibraryAdSlots
@@ -273,7 +269,9 @@ class RonAdSlotChangeListener {
             $ronAdSlots = array_merge($ronAdSlots, $needBeUpdatedRonAdSlots);
         }
 
-        $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($ronAdSlots));
+        if (count($ronAdSlots) > 0) {
+            $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($ronAdSlots));
+        }
     }
 
     /**

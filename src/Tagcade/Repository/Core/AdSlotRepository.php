@@ -16,13 +16,18 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\Core\SubPublisherSite;
+use Tagcade\Model\PagerParam;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInterface
 {
+
+    protected $SORT_FIELDS = ['id'=>'id','name'=> 'name', 'channel'=>'channel',
+                              'domain'=>'domain', 'size'=>'size','type'=>'type', 'rtb'=>'rtb'];
+
     public function allReportableAdSlotIds()
     {
         $results = $this->getAllReportableAdSlotsQuery()->select('sl.id')->getQuery()->getResult();
@@ -136,17 +141,12 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb;
     }
 
-    protected function getAdSlotsForSiteQuery(SiteInterface $site, $limit = null, $offset = null, $orderById = true)
+    protected function getAdSlotsForSiteQuery(SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('sl')
             ->where('sl.site = :site_id')
             ->setParameter('site_id', $site->getId(), Type::INTEGER)
-            ->addOrderBy('sl.id', 'asc')
         ;
-
-        if (true === $orderById) {
-            $qb->addOrderBy('sl.id', 'asc');
-        }
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -236,7 +236,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             ->leftJoin('sl.libraryAdSlot', 'lsl')
             ->join('lsl.ronAdSlot', 'rsl')
             ->where('rsl.id = :ron_ad_slot_id')
-            ->andWhere('sl.autoCreate = true')
+            /*->andWhere('sl.autoCreate = true') -- don not check autoCreate or not, we get all ad slot images for ron ad slot */
             ->setParameter('ron_ad_slot_id', $ronAdSlot->getId(), TYPE::INTEGER);
 
         if (is_int($limit)) {
@@ -252,7 +252,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
     public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
-        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset, $orderById = false);
+        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset);
         $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
 
         $results = $qb->select('sl.id')->getQuery()->getArrayResult();
@@ -263,6 +263,15 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             }, $results
         );
     }
+
+    public function getReportableAdSlotForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset);
+        $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
+
+        return $qb->getQuery()->getResult();
+    }
+
 
     public function getReportableAdSlotIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
@@ -298,24 +307,31 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
     /**
      * create QueryBuilder For Publisher due to Publisher or SubPublisher
      * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
      * @return QueryBuilder qb with alias 'sl'
      */
-    private function createQueryBuilderForPublisher(PublisherInterface $publisher)
+    protected function createQueryBuilderForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('sl')
             ->leftJoin('sl.site', 'st');
 
         if ($publisher instanceof SubPublisherInterface) {
             $qb
-                ->leftJoin('st.subPublisherSites', 'sps')
-                ->where('sps.subPublisher = :sub_publisher_id')
-//                ->andWhere('sps.access IN (:access)')
+                ->where('st.subPublisher = :sub_publisher_id')
                 ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER);
-//                ->setParameter('access', array_values(SubPublisherSite::$ACCESS_READ_ARRAY));
         } else {
             $qb
                 ->where('st.publisher = :publisher_id')
                 ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
         }
 
         return $qb;
@@ -335,8 +351,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             $qb = $this->getAdSlotsForPublisherQuery($user);
         }
 
-        $qb
-            ->join('st.channelSites', 'cs');
+        $qb->join('st.channelSites', 'cs');
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -371,5 +386,103 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @return QueryBuilder
+     */
+    private function createQueryBuilderForUser(UserRoleInterface $user)
+    {
+        return $user instanceof PublisherInterface ? $this->createQueryBuilderForPublisher($user) : $this->createQueryBuilder('sl');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsForUserWithPagination(UserRoleInterface $user, PagerParam $param =null)
+    {
+        $qb = $this->createQueryBuilderForUser($user);
+        if ($user instanceof AdminInterface) {
+            $qb->join('sl.site', 'st');
+        }
+
+        $qb->join('sl.libraryAdSlot', 'lsl');
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('lsl.name', ':searchKey'), $qb->expr()->like('st.name', ':searchKey')))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()){
+                case $this->SORT_FIELDS['id']:
+                    $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['name']:
+                    $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['domain']:
+                    $qb->addOrderBy('st.' . 'name', $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['rtb']:
+                    $qb->addOrderBy('st.' . 'rtbStatus', $param->getSortDirection());
+                    break;
+                default:
+                    break;
+                    }
+            }
+
+        return $qb;
+    }
+
+    public function getRelatedChannelWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+
+        $qb = $this->createQueryBuilder('sl')
+            ->join('sl.site', 'st');
+
+        if ($user instanceof PublisherInterface) {
+            // override prev $qb
+            $qb = $this->getAdSlotsForPublisherQuery($user);
+        }
+
+        $qb->join('sl.libraryAdSlot', 'lsl');
+
+        $qb->join('st.channelSites', 'cs');
+
+        $qb->join('cs.channel', 'cn');
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('lsl.name', ':searchKey'), $qb->expr()->like('cn.name', ':searchKey')))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()){
+                case $this->SORT_FIELDS['id']:
+                    $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['name']:
+                    $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['channel']:
+                    $qb->addOrderBy('cn.' . 'name', $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
+        }
+        return $qb;
     }
 }

@@ -32,17 +32,30 @@ class Params implements ParamsInterface
     protected $grouped = false;
 
     /**
+     * @var null
+     */
+    private $queryParams;
+
+    /**
      * @param DateTime $startDate
      * @param DateTime|null $endDate
      * @param bool $expanded Expand the results into their sub reports, i.e expand a site report into ad slot reports
      *                       This option has no effect if group is true, it will take priority
      * @param bool $grouped Group the results into one report with aggregated/averaged values
+     * @param null $queryParams
+     * @throws \Exception
      */
-    function __construct(DateTime $startDate, DateTime $endDate = null, $expanded = false, $grouped = false)
+    function __construct(DateTime $startDate, DateTime $endDate = null, $expanded = false, $grouped = false, $queryParams = null)
     {
         $this->setDateRange($startDate, $endDate);
         $this->setExpanded($expanded);
         $this->setGrouped($grouped);
+
+        if ($queryParams != null && !is_array($queryParams)) {
+            throw new \Exception('Expect array to be query params');
+        }
+
+        $this->queryParams = $queryParams;
     }
 
     /**
@@ -123,4 +136,24 @@ class Params implements ParamsInterface
     {
         return $this->grouped;
     }
+
+    /**
+     * @return array
+     */
+    public function getQueryParams()
+    {
+        return $this->queryParams;
+    }
+
+    public function addParam($key, $value)
+    {
+        if ($this->queryParams == null) {
+            $this->queryParams = [];
+        }
+
+        $this->queryParams[$key] = $value;
+
+        return $this->queryParams;
+    }
+
 }

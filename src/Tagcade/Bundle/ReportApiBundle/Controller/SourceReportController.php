@@ -8,6 +8,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Model\Core\SiteInterface;
 
 /**
  * @Rest\RouteResource("SourceReport")
@@ -41,6 +42,7 @@ class SourceReportController extends FOSRestController
     {
         $dateUtil = $this->get('tagcade.service.date_util');
 
+        /** @var SiteInterface $site */
         $site = $this->container->get('tagcade.domain_manager.site')->find($siteId);
 
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true), $returnTodayIfEmpty = true);

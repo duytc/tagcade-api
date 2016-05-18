@@ -14,18 +14,14 @@ use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlo
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportRepositoryInterface as SitePlatformReportRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdTagReportRepositoryInterface as AdTagNetworkReportRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportRepositoryInterface as SiteNetworkReportRepositoryInterface;
-
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface as AdTagPlatformReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReport as SiteReportPlatform;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReport as SiteReportNetwork;
-
 use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport as AdTagPlatformReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReport as AdSlotPlatformReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdTagReport as AdTagNetworkReport;
-
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
-
+use Tagcade\Bundle\UserBundle\Entity\User as AbstractUser;
 
 $env = getenv('SYMFONY_ENV') ?: 'prod';
 $debug = false;
@@ -146,7 +142,7 @@ function mergeAdSlotPlatformReport(AdSlotPlatformReport $keep, AdSlotPlatformRep
     $adSlot = $keep->getAdSlot();
 
     $keep->setSlotOpportunities($keep->getSlotOpportunities() + $merge->getSlotOpportunities());
-    $rateAmount = $billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), $keep->getSlotOpportunities());
+    $rateAmount = $billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $keep->getSlotOpportunities());
     if ($rateAmount->getRate()->isCustom()) {
         $keep->setCustomRate($rateAmount->getRate()->getCpmRate());
     }

@@ -4,12 +4,10 @@ namespace Tagcade\Bundle\AdminApiBundle\Repository;
 
 use DateTime;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\DBAL\Types\Type;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class ActionLogRepository extends EntityRepository implements ActionLogRepositoryInterface
 {
-
     /**
      * @inheritdoc
      */
@@ -55,18 +53,16 @@ class ActionLogRepository extends EntityRepository implements ActionLogRepositor
             ->where($qb->expr()->between('l.createdAt', ':startDate', ':endDate'))
             ->setParameter('startDate', $startDate)
             ->setParameter('endDate', $endDate)
-            ->addOrderBy('l.id', 'desc')
-        ;
+            ->addOrderBy('l.id', 'desc');
 
         if (null !== $publisher) {
-            $qb ->andWhere('l.user = :user')
+            $qb->andWhere('l.user = :user')
                 ->setParameter('user', $publisher);
         }
 
-        $qb ->andWhere($loginLog ? 'l.action = :action' : 'l.action <> :action')
+        $qb->andWhere($loginLog ? 'l.action = :action' : 'l.action <> :action')
             ->setParameter('action', 'LOGIN');
 
         return $qb;
     }
-
 }

@@ -36,18 +36,22 @@ class ReportSelector implements ReportSelectorInterface
     protected $reportGrouper;
 
     /**
+     * initialize $reportCreator as null when we do not need to create new reports, when get unified reports ie.
      * @param SelectorInterface[] $selectors
      * @param DateUtilInterface $dateUtil
-     * @param ReportCreatorInterface $reportCreator
      * @param ReportGrouperInterface $reportGrouper
+     * @param ReportCreatorInterface|null $reportCreator
      */
-    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportCreatorInterface $reportCreator, ReportGrouperInterface $reportGrouper)
+    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportGrouperInterface $reportGrouper, $reportCreator = null)
     {
         foreach($selectors as $selector) {
             $this->addSelector($selector);
         }
 
-        $this->reportCreator = $reportCreator;
+        if ($reportCreator instanceof ReportCreatorInterface) {
+            $this->reportCreator = $reportCreator;
+        }
+
         $this->dateUtil = $dateUtil;
         $this->reportGrouper = $reportGrouper;
     }
@@ -65,7 +69,7 @@ class ReportSelector implements ReportSelectorInterface
 
         $reports = [];
 
-        if ($todayIncludedInDateRange) {
+        if ($todayIncludedInDateRange && $this->reportCreator instanceof ReportCreatorInterface) {
             // Create today's report and add it to the first position in the array
             $reports[] = $this->reportCreator->getReport($reportType);
         }
@@ -81,7 +85,11 @@ class ReportSelector implements ReportSelectorInterface
                 $historicalEndDate = new DateTime('yesterday');
             }
 
-            $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $historicalEndDate);
+            $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $historicalEndDate, $params->getQueryParams());
+
+            if ($historicalReports === null) {
+                $historicalReports = [];
+            }
 
             $reports = array_merge($reports, $historicalReports);
 

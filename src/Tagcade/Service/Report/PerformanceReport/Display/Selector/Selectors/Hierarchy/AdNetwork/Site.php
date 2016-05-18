@@ -20,7 +20,7 @@ class Site extends AbstractSelector
         $this->repository = $repository;
     }
 
-    protected function doGetReports(SiteReportType $reportType, DateTime $startDate, DateTime $endDate)
+    protected function doGetReports(SiteReportType $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null)
     {
         return $this->repository->getReportFor($reportType->getSite(), $reportType->getAdNetwork(), $startDate, $endDate);
     }

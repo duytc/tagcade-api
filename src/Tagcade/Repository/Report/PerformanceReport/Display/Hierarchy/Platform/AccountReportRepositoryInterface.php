@@ -32,4 +32,12 @@ interface AccountReportRepositoryInterface
      * @return array
      */
     public function getTopPublishersByBilledAmount(DateTime $startDate, DateTime $endDate, $limit = 10);
+
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate);
+
 }

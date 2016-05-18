@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
@@ -50,5 +49,4 @@ interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
      * @return int|null
      */
     public function getPublisherId();
-
 }

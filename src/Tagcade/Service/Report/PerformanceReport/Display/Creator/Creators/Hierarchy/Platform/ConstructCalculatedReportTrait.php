@@ -2,14 +2,12 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
-use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;
 
 trait ConstructCalculatedReportTrait {
-
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof CalculatedReportInterface) {
@@ -24,8 +22,16 @@ trait ConstructCalculatedReportTrait {
             ->setFillRate()
         ;
 
+        if (isset($data[PlatformSnapshot::BILLED_AMOUNT])) {
+            $report->setBilledAmount($data[PlatformSnapshot::BILLED_AMOUNT]);
+        }
+
+        if (isset($data[PlatformSnapshot::BILLED_RATE])) {
+            $report->setBilledRate($data[PlatformSnapshot::BILLED_RATE]);
+        }
+
         // TODO latter
         $report->setEstCpm((float)0);
         $report->setEstRevenue((float)0);
     }
-} 
+}

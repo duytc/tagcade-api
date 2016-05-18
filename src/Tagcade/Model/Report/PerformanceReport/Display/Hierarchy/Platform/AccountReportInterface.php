@@ -17,4 +17,9 @@ interface AccountReportInterface extends BillableInterface, CalculatedReportInte
      * @return int|null
      */
     public function getPublisherId();
+
+    /**
+     * @return array
+     */
+    public function getSubPublisherReports();
 }

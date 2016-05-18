@@ -10,7 +10,6 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\RTBEnabledInterface;
 
 // responsible for doing the background tasks assigned by the manager
 // all public methods on the class represent tasks that can be done

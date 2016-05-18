@@ -5,11 +5,8 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -20,13 +17,10 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
 {
     use ConstructCalculatedReportTrait;
 
-    /**
-     * @var AdSlotManagerInterface
-     */
+    /** @var AdSlotManagerInterface */
     private $adSlotManager;
-    /**
-     * @var AdTagManagerInterface
-     */
+
+    /** @var AdTagManagerInterface */
     private $adTagManager;
 
     public function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator)
@@ -37,7 +31,7 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
         $this->adTagManager = $adTagManager;
     }
 
-        /**
+    /**
      * @param SiteReportType $reportType
      * @return SiteReportInterface
      */
@@ -48,15 +42,14 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
         $report
             ->setSite($site)
             ->setName($site->getName())
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $reportableAdSlotIds = $this->adSlotManager->getReportableAdSlotIdsForSite($site);
         $adSlotReportCounts = $this->eventCounter->getAdSlotReports($reportableAdSlotIds);
         unset($reportableAdSlotIds);
 
         $adTagIdsForSite = $this->adTagManager->getAdTagIdsForSite($site);
-        $adTagReportCounts =  $this->eventCounter->getAdTagReports($adTagIdsForSite);
+        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIdsForSite);
         unset($adTagIdsForSite);
 
         $this->parseRawReportData($report, array_merge($adSlotReportCounts, $adTagReportCounts));

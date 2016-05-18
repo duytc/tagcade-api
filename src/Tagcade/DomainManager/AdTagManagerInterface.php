@@ -9,6 +9,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 interface AdTagManagerInterface
 {
@@ -97,11 +98,44 @@ interface AdTagManagerInterface
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
+    /**
+     * get Ad Tags That Have Partner For AdNetwork
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    /**
+     * get Ad Tags That Have Partner For AdNetwork with a SubPublisher
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param SubPublisherInterface $subPublisher
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
+
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
+
+    /**
+     * get AdTags For AdNetwork And Site With SubPublisher
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param SubPublisherInterface $subPublisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdTagsForAdNetworkAndSiteWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
 
     public function getAdTagIdsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
@@ -124,5 +158,21 @@ interface AdTagManagerInterface
 
     public function getAdTagsByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
 
+    /**
+     * get all AdTags By LibraryAdSlot And Differ RefId (not include the ad tag with refId)
+     *
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param $refId
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdTagsByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
+
     public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false);
+
+    public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null);
+
+    public function getAllAdTagsByStatus($status);
+
 }

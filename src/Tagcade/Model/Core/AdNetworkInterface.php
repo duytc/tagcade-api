@@ -4,12 +4,11 @@ namespace Tagcade\Model\Core;
 
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\UserEntityInterface;
 
 interface AdNetworkInterface extends ModelInterface
 {
     /**
-     * @return UserEntityInterface|null
+     * @return PublisherInterface|null
      */
     public function getPublisher();
 
@@ -34,6 +33,33 @@ interface AdNetworkInterface extends ModelInterface
      * @return self
      */
     public function setName($name);
+
+
+    /**
+     * @return string|null
+     */
+
+    public function getUsername();
+
+    /**
+     * @param string $username
+     * @return self
+     */
+    public function setUsername($username);
+
+
+    /**
+     * @return string|null
+     */
+
+    public function getPassword();
+
+    /**
+     * @param string $password
+     * @return self
+     */
+    public function setPassword($password);
+
 
     /**
      * @return string|null
@@ -107,4 +133,47 @@ interface AdNetworkInterface extends ModelInterface
      * @return self
      */
     public function decreasePausedAdTagsCount();
+
+
+    /**
+     * @return AdNetworkPartnerInterface
+     */
+    public function getNetworkPartner();
+
+    /**
+     * @param AdNetworkPartnerInterface $networkPartner
+     */
+    public function setNetworkPartner($networkPartner);
+
+    /**
+     * @return mixed
+     */
+    public function getImpressionCap();
+
+    /**
+     * @param mixed $impressionCap
+     */
+    public function setImpressionCap($impressionCap);
+
+    /**
+     * @return mixed
+     */
+    public function getNetworkOpportunityCap();
+
+    /**
+     * @param mixed $networkOpportunityCap
+     */
+    public function setNetworkOpportunityCap($networkOpportunityCap);
+
+    /**
+     * @return mixed
+     */
+    public function getEncryptedPassword();
+
+    /**
+     * @param mixed $encryptedPassword
+     */
+    public function setEncryptedPassword($encryptedPassword);
+
+    public function createEncryptedPassword();
 }

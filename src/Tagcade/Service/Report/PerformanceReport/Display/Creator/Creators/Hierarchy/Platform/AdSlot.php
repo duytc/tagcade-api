@@ -10,6 +10,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
+use Tagcade\Bundle\UserBundle\Entity\User as AbstractUser;
 
 class AdSlot extends CreatorAbstract implements AdSlotInterface
 {
@@ -47,7 +48,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             $report->setRtbImpressions($this->eventCounter->getRtbImpressionsCount($adSlot->getId()));
         }
 
-        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());

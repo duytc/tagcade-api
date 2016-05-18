@@ -70,7 +70,17 @@ interface UserEntityInterface extends ModelInterface
     /**
      * @return bool
      */
+    public function hasUnifiedReportModule();
+
+    /**
+     * @return bool
+     */
     public function hasRtbModule();
+
+    /**
+     * @return bool
+     */
+    public function hasHeaderBiddingModule();
 
     /**
      * @return array
@@ -82,4 +92,16 @@ interface UserEntityInterface extends ModelInterface
     public function getType();
 
     public function setType($type);
+
+
+    /**
+     * @return boolean
+     */
+    public function isTestAccount();
+
+    /**
+     * @param boolean $testAccount
+     * @return self
+     */
+    public function setTestAccount($testAccount);
 }

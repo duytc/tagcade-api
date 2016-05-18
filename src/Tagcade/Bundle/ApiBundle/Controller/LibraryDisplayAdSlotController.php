@@ -152,9 +152,6 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
      */
     public function postAdtagAction(Request $request, $id)
     {
-        /** @var LibraryDisplayAdSlotInterface $libraryDisplayAdSlot */
-        $libraryDisplayAdSlot = $this->getOr404($id);
-
         $request->request->set('libraryAdSlot', $id);
         $request->request->set('refId', uniqid("", true));
         // move the creating AdTag to library
@@ -201,7 +198,6 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
         return $this->post($request);
     }
 
-
     /**
      * Get those AdSlots which refer to the current AdSlot Library
      * @Rest\View(
@@ -227,7 +223,6 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
         return $entity->getAdSlots();
     }
-
 
     /**
      * Get those AdTags which belong to the given display AdSlot Library

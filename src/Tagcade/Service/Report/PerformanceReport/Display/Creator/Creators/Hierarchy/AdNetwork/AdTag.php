@@ -2,21 +2,16 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork;
 
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdTag as AdTagReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
+use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 
 class AdTag extends CreatorAbstract implements AdTagInterface
 {
-
-    /**
-     * @var EstCpmCalculatorInterface
-     */
+    /** @var EstCpmCalculatorInterface */
     private $cpmCalculator;
 
     function __construct(EstCpmCalculatorInterface $revenueCalculator)
@@ -46,8 +41,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setImpressions($this->eventCounter->getImpressionCount($adTag->getId()))
             ->setFirstOpportunities($firstOpportunities)
             ->setVerifiedImpressions($verifiedImpressions)
-            ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
-        ;
+            ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()));
 
         if (!$isNativeAdSlot) {
             $report
@@ -55,8 +49,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
                 ->setUnverifiedImpressions($this->eventCounter->getUnverifiedImpressionCount($adTag->getId()))
                 ->setBlankImpressions($this->eventCounter->getBlankImpressionCount($adTag->getId()))
                 ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
-                ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
-            ;
+                ->setClicks($this->eventCounter->getClickCount($adTag->getId()));
         }
 
         return $report;

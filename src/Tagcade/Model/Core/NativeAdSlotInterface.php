@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\ModelInterface;
 
 interface NativeAdSlotInterface extends BaseAdSlotInterface
 {
@@ -23,5 +22,4 @@ interface NativeAdSlotInterface extends BaseAdSlotInterface
      * @return NativeAdSlotInterface[]
      */
     public function getCoReferencedAdSlots();
-
 }

@@ -6,6 +6,23 @@ use Doctrine\Common\Cache\Cache;
 
 interface RedisArrayCacheInterface extends Cache
 {
+
+    /**
+     * @param $host
+     * @return mixed
+     */
+    public function multi($host);
+
+    /**
+     * @return mixed
+     */
+    public function exec();
+
+    public function hosts();
+
+    public function target($key);
+
+
     /**
      * @param $hash
      * @return mixed

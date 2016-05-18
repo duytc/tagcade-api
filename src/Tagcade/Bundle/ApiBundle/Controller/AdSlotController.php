@@ -3,19 +3,19 @@
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Tagcade\Model\User\Role\SubPublisherInterface;
 
 /**
  * @Rest\RouteResource("Adslot")
  */
-class AdSlotController extends FOSRestController implements ClassResourceInterface
+class AdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
 
     /**
@@ -24,6 +24,14 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      * @Rest\View(
      *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "site.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section = "Ad Slots",
      *  resource = true,
@@ -32,18 +40,23 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *  }
      * )
      *
+     * @param Request $request
      * @return BaseAdSlotInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
         $role = $this->getUser();
         $adSlotManager = $this->get('tagcade.domain_manager.ad_slot');
+        $adSlotRepository = $this->get('tagcade.repository.ad_slot');
 
-        if ($role instanceof PublisherInterface) {
-            return $adSlotManager->getAdSlotsForPublisher($role);
+        if ($request->query->get('page') > 0) {
+            $qb = $adSlotRepository->getAdSlotsForUserWithPagination($role, $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        return $adSlotManager->all();
+        return ($role instanceof PublisherInterface)
+            ? $adSlotManager->getAdSlotsForPublisher($role)
+            : $adSlotManager->all();
     }
 
     /**
@@ -99,6 +112,13 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *
      * @Rest\Get("/adslots/relatedchannel")
      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="Channels",
      *  resource = true,
@@ -108,10 +128,44 @@ class AdSlotController extends FOSRestController implements ClassResourceInterfa
      *  }
      * )
      *
+     * @param Request $request
      * @return array
      */
-    public function getAdSlotsRelatedChannelAction()
+    public function getAdSlotsRelatedChannelAction( Request $request )
     {
+        $adSlotRepository = $this->get('tagcade.repository.ad_slot');
+        if($request->query->get('page') >0){
+            $qb = $adSlotRepository->getRelatedChannelWithPagination($this->getUser(),$this->getParams());
+            return $this->getPagination($qb,$request);
+        }
+
         return $this->get('tagcade.domain_manager.ad_slot')->getAdSlotsRelatedChannelForUser($this->getUser());
+
+    }
+
+    /**
+     * @return string
+     */
+    protected function getResourceName()
+    {
+        // TODO: Implement getResourceName() method.
+    }
+
+    /**
+     * The 'get' route name to redirect to after resource creation
+     *
+     * @return string
+     */
+    protected function getGETRouteName()
+    {
+        // TODO: Implement getGETRouteName() method.
+    }
+
+    /**
+     * @return HandlerInterface
+     */
+    protected function getHandler()
+    {
+        // TODO: Implement getHandler() method.
     }
 }

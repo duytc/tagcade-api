@@ -55,7 +55,8 @@ class RonAdSlotReport extends BaseAbstractCalculatedReport implements RonAdSlotR
         return $this;
     }
 
-    public function getRonAdSlotId() {
+    public function getRonAdSlotId()
+    {
         if ($this->ronAdSlot instanceof RonAdSlotInterface) {
             return $this->ronAdSlot->getId();
         }
@@ -80,6 +81,12 @@ class RonAdSlotReport extends BaseAbstractCalculatedReport implements RonAdSlotR
         $this->segment = $segment;
         return $this;
     }
+
+    public function setThresholdBilledAmount($chainToSubReports = true)
+    {
+        // We don't need to calculated billed amount for ron slot since it is calculated for all slots already
+    }
+
 
     /**
      * @return null|string

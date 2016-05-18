@@ -4,12 +4,15 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface AdTagRepositoryInterface extends ObjectRepository
 {
@@ -65,11 +68,46 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
+    public function getAdTagsThatHavePartnerConfigForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    /**
+     * get Ad Tags That Have Partner For AdNetwork
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    /**
+     * get Ad Tags That Have Partner For AdNetwork
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param SubPublisherInterface $subPublisher
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return AdTagInterface[]
+     */
+    public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
+
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
+
+    /**
+     * get AdTags For AdNetwork And Site With SubPublisher
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param SubPublisherInterface $subPublisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdTagsForAdNetworkAndSiteWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null);
 
@@ -78,4 +116,42 @@ interface AdTagRepositoryInterface extends ObjectRepository
     public function getAdTagsByAdSlotAndRefId(BaseAdSlotInterface $adSlot, $refId, $limit = null, $offset = null);
 
     public function getAdTagsByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
+
+    /**
+     * get all AdTags By LibraryAdSlot And Differ RefId (not include the ad tag with refId)
+     *
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param $refId
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdTagsByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
+
+    /**
+     * @param AdNetworkPartnerInterface $partner
+     * @param UserRoleInterface $user
+     * @param null $partnerTagId
+     * @return array
+     */
+    public function getAdTagsForPartner(AdNetworkPartnerInterface $partner, UserRoleInterface $user, $partnerTagId = null);
+
+    /**
+     * get AdTags That Have Partner
+     *
+     * @param PublisherInterface $publisher
+     * @param $uniquePartnerTagId
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null);
+
+    /**
+     * @param $partnerTagId
+     * @return mixed
+     */
+    public function getAdTagsThatHavePartnerTagId($partnerTagId);
+
+    public function getAllAdTagsByStatus($status);
 }

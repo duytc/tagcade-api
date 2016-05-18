@@ -25,7 +25,7 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
     public function setNamespace($namespace)
     {
         if ($namespace !== $this->namespace) {
-            $this->namespace = (string) $namespace;
+            $this->namespace = (string)$namespace;
             $this->namespaceVersion = null;
         }
     }
@@ -40,13 +40,15 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
         return $this->namespace;
     }
 
-    public function setNamespaceVersion($version) {
-        $this->namespaceVersion = (int) $version;
+    public function setNamespaceVersion($version)
+    {
+        $this->namespaceVersion = (int)$version;
     }
 
     /**
      * Namespace version
      *
+     * @param bool $forceFromCache
      * @return string $namespaceVersion
      */
     public function getNamespaceVersion($forceFromCache = false)
@@ -135,7 +137,7 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
     public function deleteAll()
     {
         $namespaceCacheKey = $this->getNamespaceCacheKey();
-        $namespaceVersion  = $this->getNamespaceVersion() + 1;
+        $namespaceVersion = $this->getNamespaceVersion() + 1;
 
         $this->namespaceVersion = $namespaceVersion;
 
@@ -145,12 +147,12 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
     /**
      * Prefix the passed id with the configured namespace value
      *
-     * @param string $id  The id to namespace
+     * @param string $id The id to namespace
      * @return string $id The namespaced id
      */
     private function getNamespacedId($id)
     {
-        $namespaceVersion  = $this->getNamespaceVersion();
+        $namespaceVersion = $this->getNamespaceVersion();
 
         return sprintf('%s[%s][%s]', $this->namespace, $id, $namespaceVersion);
     }

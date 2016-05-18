@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dunght163
- * Date: 11/03/2015
- * Time: 08:45
- */
 
 namespace Tagcade\Bundle\AdminApiBundle\DomainManager;
 

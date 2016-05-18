@@ -4,7 +4,6 @@ namespace Tagcade\Bundle\ReportApiBundle\Command;
 
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -36,34 +35,46 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $container = $this->getContainer();
+
+        // run the command with -vv verbosity to show messages
+        // https://symfony.com/doc/current/cookbook/logging/monolog_console.html
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $container->get('logger');
+
         $publisherId   = $input->getOption('id');
         $month = $input->getOption('month');
 
-        $month = null === $month ? new DateTime('yesterday') : DateTime::createFromFormat('Y-m', $month);
+        $yesterday = new DateTime('yesterday');
+        $month = null === $month ? $yesterday : DateTime::createFromFormat('Y-m-d', sprintf('%s-%s', $month, $yesterday->format('d')));
 
         if (false === $month ) {
             throw new InvalidArgumentException('Invalid month input');
         }
 
-        $output->writeln('start updating billed amount for publisher');
-
         $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
+        $billingEditor->setLogger($logger);
 
         if (null === $publisherId) {
-            $updatedCount = $billingEditor->updateBilledAmountThresholdForAllPublishers($month);
+            $logger->info('start updating billed amount for all publishers');
+
+            $billingEditor->updateBilledAmountThresholdForAllPublishers($month);
+
+            $logger->info('finish updating billed amount for all publishers');
         }
         else {
+            $logger->info('start updating billed amount for publisher');
 
             $publisher = $userManager->findPublisher($publisherId);
 
             if (!$publisher instanceof PublisherInterface) {
-                throw new RuntimeException('that publisher is not existed');
+                throw new RuntimeException('that publisher is not valid');
             }
 
-            $updatedCount = $billingEditor->updateBilledAmountThresholdForPublisher($publisher, $month);
+            $billingEditor->updateBilledAmountThresholdForPublisher($publisher, $month);
+
+            $logger->info('finish updating billed amount');
         }
-        
-        $output->writeln( sprintf('finish updating billed amount. Total %d publisher(s) gets updated.', $updatedCount));
     }
 }

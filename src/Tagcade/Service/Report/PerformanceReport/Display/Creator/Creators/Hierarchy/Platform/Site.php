@@ -2,21 +2,25 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
-
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Core\AdSlotRepositoryInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
 
 class Site extends CreatorAbstract implements SiteInterface
 {
     use HasSubReportsTrait;
 
-    public function __construct(AdSlotInterface $subReportCreator)
+    /** @var AdSlotRepositoryInterface */
+    private $adSlotRepository;
+
+    public function __construct(AdSlotInterface $subReportCreator, AdSlotRepositoryInterface $adSlotRepository)
     {
         $this->subReportCreator = $subReportCreator;
+        $this->adSlotRepository = $adSlotRepository;
     }
 
     /**
@@ -32,10 +36,9 @@ class Site extends CreatorAbstract implements SiteInterface
 
         $report
             ->setSite($site)
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
-        $allAdSlots = $site->getReportableAdSlots();
+        $allAdSlots = $this->adSlotRepository->getReportableAdSlotForSite($site);
 
         foreach ($allAdSlots as $adSlot) {
             $report->addSubReport(

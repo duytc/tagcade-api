@@ -2,10 +2,9 @@
 
 namespace Tagcade\Handler\Handlers\Core\Publisher;
 
-use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Handler\Handlers\Core\DynamicAdSlotHandlerAbstract;
-use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class DynamicAdSlotHandler extends DynamicAdSlotHandlerAbstract
 {

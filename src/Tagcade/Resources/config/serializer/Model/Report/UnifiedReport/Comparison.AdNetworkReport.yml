@@ -1,0 +1,12 @@
+Tagcade\Model\Report\UnifiedReport\Comparison\AdNetworkReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getAdNetworkId:
+            type: integer
+    properties:
+        performanceAdNetworkReport:
+            exclude: true
+        unifiedAdNetworkReport:
+            exclude: true
+        adNetwork:
+            exclude: true

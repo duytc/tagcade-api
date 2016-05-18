@@ -2,9 +2,8 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\Collection;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class Channel implements ChannelInterface
 {
@@ -120,7 +119,7 @@ class Channel implements ChannelInterface
         /**
          * @var ChannelSiteInterface $channelSite
          */
-        foreach($channelSites as $channelSite) {
+        foreach ($channelSites as $channelSite) {
             $sites[] = $channelSite->getSite();
         }
 

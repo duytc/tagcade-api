@@ -14,6 +14,9 @@ use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
 {
+    // temporarily store $autoIncreasePosition value get from submitted form
+    protected $autoIncreasePosition = false;
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -31,6 +34,9 @@ class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
                 )
             )
             ->add('refId')
+            ->add('autoIncreasePosition', null, array('mapped' => false))
+            ->add('impressionCap')
+            ->add('networkOpportunityCap')
         ;
 
         $builder->addEventListener(
@@ -44,6 +50,10 @@ class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
                     $form->remove('libraryAdTag');
                     $form->add('libraryAdTag', new LibraryAdTagFormType($this->userRole));
                 }
+
+                if (array_key_exists('autoIncreasePosition', $librarySlotTag)) {
+                    $this->autoIncreasePosition = $librarySlotTag['autoIncreasePosition'];
+                }
             }
         );
 
@@ -52,15 +62,25 @@ class LibrarySlotTagFormType extends AbstractRoleSpecificFormType
             function (FormEvent $event) {
                 /** @var LibrarySlotTagInterface $librarySlotTag */
                 $librarySlotTag = $event->getData();
+
                 // explicitly add LibrarySlotTag to library ad slot when creating new library ad tag
                 if ($librarySlotTag->getId() === null) {
                     $libraryAdSlot = $librarySlotTag->getLibraryAdSlot();
                     $libraryAdSlot->addLibSlotTag($librarySlotTag);
                 }
+
+                if ($this->autoIncreasePosition == true) {
+                    // reset var $autoIncreasePosition
+                    $this->autoIncreasePosition = false;
+
+                    if ($librarySlotTag->getPosition() != null) {
+                        // temporarily set AutoIncreasePosition field to ad tag for using when saving ad tag
+                        $librarySlotTag->setAutoIncreasePosition(true);
+                    }
+                }
             }
         );
     }
-
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

@@ -16,7 +16,6 @@ use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Service\StringUtil;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Service\StringUtilTrait;
 
@@ -26,12 +25,20 @@ use Tagcade\Service\StringUtilTrait;
 class RonAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     use StringUtilTrait;
+
     /**
      *
      * @Rest\View(
      *      serializerGroups={"librarynativeadslot.summary", "librarydynamicadslot.summary", "librarydisplayadslot.summary", "user.summary", "slotlib.summary", "ronadslot.summary", "ronadslotsegment.summary", "segment.summary"}
      * )
      * Get all ron ad slots
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      *
      * @ApiDoc(
      *  section="Smart ad slots",
@@ -41,11 +48,20 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      *  }
      * )
      *
+     * @param Request $request
      * @return DisplayAdSlotInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
+        $ronAdSlotRepository =  $this->get('tagcade.repository.ron_ad_slot');
+
+        if($request->query->get('page') >0) {
+        $qb = $ronAdSlotRepository->getRonAdSlotsWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb,$request);
+        }
+
         return $this->all();
+
     }
 
     /**

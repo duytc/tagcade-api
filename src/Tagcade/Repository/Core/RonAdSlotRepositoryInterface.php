@@ -4,7 +4,9 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\SegmentInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface RonAdSlotRepositoryInterface extends ObjectRepository
 {
@@ -33,4 +35,11 @@ interface RonAdSlotRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getRonDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $pagerParam
+     * @return mixed
+     */
+    public function getRonAdSlotsWithPagination(UserRoleInterface $user, PagerParam $pagerParam);
 }

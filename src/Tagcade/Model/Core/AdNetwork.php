@@ -2,10 +2,6 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
@@ -13,20 +9,131 @@ class AdNetwork implements AdNetworkInterface
 {
     protected $id;
 
-    /**
-     * @var UserEntityInterface
-     */
+    /** @var UserEntityInterface */
     protected $publisher;
     protected $name;
     protected $url;
     protected $active;
     protected $libraryAdTags;
+    protected $username;
+    protected $password;
+    protected $encryptedPassword;
+    /** @var AdNetworkPartnerInterface */
+    protected $networkPartner;
+
     /**
      * This is the default CPM assigned to all ad tags unless it is overwritten
      */
     protected $defaultCpmRate;
     protected $activeAdTagsCount;
     protected $pausedAdTagsCount;
+
+    protected $impressionCap;
+    protected $networkOpportunityCap;
+
+    /**
+     * @return mixed
+     */
+    public function getImpressionCap()
+    {
+        return $this->impressionCap;
+    }
+
+    /**
+     * @param mixed $impressionCap
+     */
+    public function setImpressionCap($impressionCap)
+    {
+        $this->impressionCap = $impressionCap;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNetworkOpportunityCap()
+    {
+        return $this->networkOpportunityCap;
+    }
+
+    /**
+     * @param mixed $networkOpportunityCap
+     */
+    public function setNetworkOpportunityCap($networkOpportunityCap)
+    {
+        $this->networkOpportunityCap = $networkOpportunityCap;
+    }
+
+
+    /**
+     * @return AdNetworkPartnerInterface
+     */
+    public function getNetworkPartner()
+    {
+        return $this->networkPartner;
+    }
+
+    /**
+     * @param AdNetworkPartnerInterface $networkPartner
+     */
+    public function setNetworkPartner($networkPartner)
+    {
+        $this->networkPartner = $networkPartner;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    protected function getEncryptionKey()
+    {
+        if (!$this->getPublisher() instanceof PublisherInterface || empty($this->getPublisher()->getUuid())) {
+            throw new \Exception('Expect to have publisher and publisher uuid in order to set partner credentials');
+        }
+
+        $uuid = preg_replace('[\-]', '', $this->getPublisher()->getUuid());
+
+        return substr($uuid, 0, 16);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this->createEncryptedPassword();
+    }
+
+    public function createEncryptedPassword()
+    {
+        if (!empty($this->password)) {
+            $this->encryptedPassword = \Crypto::Encrypt($this->getPassword(), $this->getEncryptionKey());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
 
     public function __construct()
     {
@@ -63,7 +170,8 @@ class AdNetwork implements AdNetworkInterface
     /**
      * @inheritdoc
      */
-    public function setPublisher(PublisherInterface $publisher) {
+    public function setPublisher(PublisherInterface $publisher)
+    {
         $this->publisher = $publisher->getUser();
         return $this;
     }
@@ -145,8 +253,7 @@ class AdNetwork implements AdNetworkInterface
     {
         if ($this->activeAdTagsCount === null || $this->activeAdTagsCount == 0) {
             $this->activeAdTagsCount = 1;
-        }
-        else ++$this->activeAdTagsCount;
+        } else ++$this->activeAdTagsCount;
 
         return $this;
     }
@@ -158,8 +265,7 @@ class AdNetwork implements AdNetworkInterface
     {
         if ($this->activeAdTagsCount === null || $this->activeAdTagsCount < 2) {
             $this->activeAdTagsCount = 0;
-        }
-        else --$this->activeAdTagsCount;
+        } else --$this->activeAdTagsCount;
 
         return $this;
     }
@@ -190,8 +296,7 @@ class AdNetwork implements AdNetworkInterface
     {
         if ($this->pausedAdTagsCount === null || $this->pausedAdTagsCount == 0) {
             $this->pausedAdTagsCount = 1;
-        }
-        else ++$this->pausedAdTagsCount;
+        } else ++$this->pausedAdTagsCount;
 
         return $this;
     }
@@ -203,12 +308,10 @@ class AdNetwork implements AdNetworkInterface
     {
         if ($this->pausedAdTagsCount === null || $this->pausedAdTagsCount < 2) {
             $this->pausedAdTagsCount = 0;
-        }
-        else --$this->pausedAdTagsCount;
+        } else --$this->pausedAdTagsCount;
 
         return $this;
     }
-
 
     /**
      * @inheritdoc
@@ -217,15 +320,37 @@ class AdNetwork implements AdNetworkInterface
     {
         $allAdTags = [];
         $tagLibs = $this->libraryAdTags->toArray();
+
         array_walk(
             $tagLibs,
-            function(LibraryAdTagInterface $libraryAdTag) use(&$allAdTags){
+            function (LibraryAdTagInterface $libraryAdTag) use (&$allAdTags) {
                 $adTags = $libraryAdTag->getAdTags()->toArray();
                 $allAdTags = array_merge($allAdTags, $adTags);
             }
         );
 
         return array_unique($allAdTags);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEncryptedPassword()
+    {
+        return $this->encryptedPassword;
+    }
+
+    public function getBase64EncryptedPassword()
+    {
+        return $this->encryptedPassword != null ? base64_encode(stream_get_contents($this->encryptedPassword)) : null;
+    }
+
+    /**
+     * @param mixed $encryptedPassword
+     */
+    public function setEncryptedPassword($encryptedPassword)
+    {
+        $this->encryptedPassword = $encryptedPassword;
     }
 
     public function __toString()

@@ -1,0 +1,35 @@
+Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_sub_publisher
+    uniqueConstraints:
+        unique_performance_sub_publisher_report_idx:
+            columns: [date, sub_publisher_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        totalOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+    manyToOne:
+        subPublisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User

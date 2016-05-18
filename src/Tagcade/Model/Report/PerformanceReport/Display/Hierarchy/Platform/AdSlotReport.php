@@ -71,6 +71,12 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
         $this->estRevenue = null;
     }
 
+    public function setThresholdBilledAmount($chainToSubReports = true)
+    {
+        // We don't need to calculate threshold report here. The set billed amount is the threshold billed amount already
+    }
+
+
     /**
      * @return float
      */

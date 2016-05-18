@@ -2,8 +2,6 @@
 
 namespace Tagcade\Model\Core;
 
-use Tagcade\Model\ModelInterface;
-
 interface LibrarySlotTagInterface extends PositionInterface {
 
     /**
@@ -62,9 +60,42 @@ interface LibrarySlotTagInterface extends PositionInterface {
     public function setRotation($rotation);
 
     /**
+     * @return int
+     */
+    public function getImpressionCap();
+
+    /**
+     * @param int $impressionCap
+     * @return self
+     */
+    public function setImpressionCap($impressionCap);
+
+    /**
+     * @return int
+     */
+    public function getNetworkOpportunityCap();
+
+    /**
+     * @param int $networkOpportunityCap
+     * @return self
+     */
+    public function setNetworkOpportunityCap($networkOpportunityCap);
+
+    /**
      * @return null|AdNetworkInterface
      */
     public function getAdNetwork();
+
+    /**
+     * @return boolean
+     */
+    public function getAutoIncreasePosition();
+
+    /**
+     * @param bool $autoIncreasePosition
+     * @return self
+     */
+    public function setAutoIncreasePosition($autoIncreasePosition);
 
     /**
      * @return string

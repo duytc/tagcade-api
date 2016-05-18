@@ -6,7 +6,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class Site implements SiteInterface
@@ -33,12 +32,11 @@ class Site implements SiteInterface
     protected $channelSites;
     protected $players;
 
-    /** @var SubPublisherInterface[] */
-    protected $subPublisherSites;
-
     protected $deletedAt;
 
     protected $rtbStatus;
+
+    protected $subPublisher;
 
     public function __construct()
     {
@@ -339,38 +337,25 @@ class Site implements SiteInterface
     /**
      * @inheritdoc
      */
-    public function setSubPublisherSites($subPublisherSites)
-    {
-        $this->subPublisherSites = $subPublisherSites;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSubPublisherSites()
-    {
-        if(null === $this->subPublisherSites) {
-            $this->subPublisherSites = new ArrayCollection();
-        }
-        return $this->subPublisherSites;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getSubPublishers()
     {
-        $subPublishers = [];
-        $subPublisherSites = $this->getSubPublisherSites();
-        /**
-         * @var SubPublisherSiteInterface $subPublisherSite
-         */
-        foreach($subPublisherSites as $subPublisherSite) {
-            $subPublishers[] = $subPublisherSite->getSubPublisher();
-        }
+        throw new \Exception('should not call this method');
+    }
 
-        return $subPublishers;
+    /**
+     * @return mixed
+     */
+    public function getSubPublisher()
+    {
+        return $this->subPublisher;
+    }
+
+    /**
+     * @param mixed $subPublisher
+     */
+    public function setSubPublisher($subPublisher)
+    {
+        $this->subPublisher = $subPublisher;
     }
 
     public function __toString()

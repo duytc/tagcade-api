@@ -100,7 +100,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
                     $site->setEnableSourceReport(false);
                 }
 
-                /** @var ChannelSiteInterface[] $channelSites */
+                /** @var Collection|ChannelSiteInterface[] $channelSites */
                 $channelSites = $event->getForm()->get('channelSites')->getData();
 
                 if ($channelSites === null) {

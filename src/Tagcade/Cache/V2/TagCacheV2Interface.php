@@ -3,20 +3,46 @@
 namespace Tagcade\Cache\V2;
 
 
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 
-interface TagCacheV2Interface {
-
+interface TagCacheV2Interface
+{
+    /**
+     * refreshCacheForDynamicAdSlot
+     *
+     * @param DynamicAdSlotInterface $dynamicAdSlot
+     * @return mixed
+     */
     public function refreshCacheForDynamicAdSlot(DynamicAdSlotInterface $dynamicAdSlot);
 
-    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot,  $alsoRefreshRelatedDynamicAdSlot = true);
+    /**
+     * refreshCacheForNativeAdSlot
+     *
+     * @param NativeAdSlotInterface $nativeAdSlot
+     * @param bool $alsoRefreshRelatedDynamicAdSlot
+     * @return mixed
+     */
+    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot = true);
 
+    /**
+     * refreshCacheForReportableAdSlot
+     *
+     * @param ReportableAdSlotInterface $adSlot
+     * @param bool $alsoRefreshRelatedDynamicAdSlot
+     * @return mixed
+     */
     public function refreshCacheForReportableAdSlot(ReportableAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true);
 
+    /**
+     * refreshCacheForRonAdSlot
+     *
+     * @param RonAdSlotInterface $ronAdSlot
+     * @param bool $alsoRefreshRelatedDynamicRonAdSlot
+     * @return mixed
+     */
     public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = true);
 
     /**
@@ -38,6 +64,4 @@ interface TagCacheV2Interface {
      * @return mixed
      */
     public function refreshCacheForCdn($id, $cndCacheData, $ron = false);
-
-
-} 
+}

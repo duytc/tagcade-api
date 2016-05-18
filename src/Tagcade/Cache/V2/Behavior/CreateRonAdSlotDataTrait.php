@@ -5,10 +5,8 @@ namespace Tagcade\Cache\V2\Behavior;
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
-use Tagcade\Entity\Core\RonAdSlot;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
@@ -18,7 +16,8 @@ use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdTagInterface;
 use Tagcade\Model\ModelInterface;
 
-trait CreateRonAdSlotDataTrait {
+trait CreateRonAdSlotDataTrait
+{
     /**
      * @param ModelInterface $model
      * @return array
@@ -31,8 +30,6 @@ trait CreateRonAdSlotDataTrait {
 
         return $this->createRonAdSlotCacheData($model);
     }
-
-
 
     /**
      * create Ron Ad Slot cache data, depend on type of library ad slot which ron ad slot uses
@@ -159,15 +156,14 @@ trait CreateRonAdSlotDataTrait {
             return $data;
         }
 
-
         //step 3. build 'tags' for data
         ////sort all adTags by position
         usort($adTags, function (RonAdTagInterface $a, RonAdTagInterface $b) {
-                if ($a->getPosition() == $b->getPosition()) {
-                    return 0;
-                }
-                return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
-            });
+            if ($a->getPosition() == $b->getPosition()) {
+                return 0;
+            }
+            return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+        });
 
         ////group all adTags which same position into a group (array) with key is position
         ////each group can contain one or more items (as {'id', 'tag', 'cap', 'rot'})
@@ -343,7 +339,7 @@ trait CreateRonAdSlotDataTrait {
                 },
                 $libraryExpressions
             );
-            $tmpAdSlotsForSelecting = array_filter($tmpAdSlotsForSelecting, function($ronAdSlot) {
+            $tmpAdSlotsForSelecting = array_filter($tmpAdSlotsForSelecting, function ($ronAdSlot) {
                 return $ronAdSlot instanceof RonAdSlotInterface;
             });
             $ronAdSlotsForSelecting = array_merge($ronAdSlotsForSelecting, $tmpAdSlotsForSelecting);
@@ -365,11 +361,12 @@ trait CreateRonAdSlotDataTrait {
     {
         $segments = $ronAdSlot->getSegments();
         if (count($segments) > 0) {
-            foreach($segments as $segment) {
+            foreach ($segments as $segment) {
                 $data['segments'][] = $segment->getId();
             }
         }
     }
+
     /**
      * @param $groupVals
      * @param $data
@@ -395,7 +392,7 @@ trait CreateRonAdSlotDataTrait {
         if (null !== $convertedExpression) {
 
             $expInJs = [
-                'vars'=> $convertedExpression['vars'],
+                'vars' => $convertedExpression['vars'],
                 'expression' => $convertedExpression['expression']
             ];
 
@@ -404,8 +401,7 @@ trait CreateRonAdSlotDataTrait {
 
             if ($ronAdSlot instanceof RonAdSlotInterface) {
                 $expInJs['expectedAdSlot'] = $ronAdSlot->getId();
-            }
-            else {
+            } else {
                 $expInJs['expectedLibraryAdSlot'] = $expression->getExpectLibraryAdSlot()->getId();
             }
 

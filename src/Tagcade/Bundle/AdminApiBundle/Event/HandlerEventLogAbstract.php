@@ -10,14 +10,14 @@ abstract class HandlerEventLogAbstract extends LogEventAbstract
     const ENTITY_CLASSNAME = 'className';
     const ENTITY_ID = 'id';
     const ENTITY_NAME = 'name';
-    const AFFECTEDENTITY_CLASSNAME = 'className';
-    const AFFECTEDENTITY_ID = 'id';
-    const AFFECTEDENTITY_NAME = 'name';
-    const CHANGEDFIELD_NAME = 'name';
-    const CHANGEDFIELD_OLDVAL = 'oldVal';
-    const CHANGEDFIELD_NEWVAL = 'newVal';
-    const CHANGEDFIELD_STARTDATE = 'startDate';
-    const CHANGEDFIELD_ENDDATE = 'endDate';
+    const AFFECTED_ENTITY_CLASSNAME = 'className';
+    const AFFECTED_ENTITY_ID = 'id';
+    const AFFECTED_ENTITY_NAME = 'name';
+    const CHANGED_FIELD_NAME = 'name';
+    const CHANGED_FIELD_OLDVAL = 'oldVal';
+    const CHANGED_FIELD_NEWVAL = 'newVal';
+    const CHANGED_FIELD_STARTDATE = 'startDate';
+    const CHANGED_FIELD_ENDDATE = 'endDate';
 
     protected $entityClassName;
     protected $entityId;
@@ -139,9 +139,9 @@ abstract class HandlerEventLogAbstract extends LogEventAbstract
     public function addAffectedEntity($entityClassName, $entityId, $entityName)
     {
         $affectedEntity = [
-            self::AFFECTEDENTITY_CLASSNAME => $entityClassName,
-            self::AFFECTEDENTITY_ID => $entityId,
-            self::AFFECTEDENTITY_NAME => $entityName
+            self::AFFECTED_ENTITY_CLASSNAME => $entityClassName,
+            self::AFFECTED_ENTITY_ID => $entityId,
+            self::AFFECTED_ENTITY_NAME => $entityName
         ];
         $this->affectedEntities[] = $affectedEntity;
     }
@@ -160,17 +160,18 @@ abstract class HandlerEventLogAbstract extends LogEventAbstract
 
 
         $changedField = [
-            self::CHANGEDFIELD_NAME => $name,
-            self::CHANGEDFIELD_OLDVAL => $this->getStringMessage($oldVal),
-            self::CHANGEDFIELD_NEWVAL => $this->getStringMessage($newVal),
-            self::CHANGEDFIELD_STARTDATE => $startDate,
-            self::CHANGEDFIELD_ENDDATE => $endDate
+            self::CHANGED_FIELD_NAME => $name,
+            self::CHANGED_FIELD_OLDVAL => $this->getStringMessage($oldVal),
+            self::CHANGED_FIELD_NEWVAL => $this->getStringMessage($newVal),
+            self::CHANGED_FIELD_STARTDATE => $startDate,
+            self::CHANGED_FIELD_ENDDATE => $endDate
         ];
         $this->changedFields[] = $changedField;
     }
 
-    protected function getStringMessage($object) {
-        if (null === $object || is_string($object) || is_numeric($object) ) {
+    protected function getStringMessage($object)
+    {
+        if (null === $object || is_string($object) || is_numeric($object)) {
             return $object;
         }
 

@@ -4,9 +4,10 @@ namespace Tagcade\Model\Core;
 
 use Tagcade\Entity\Core\LibrarySlotTag as entity;
 
-class LibrarySlotTag implements LibrarySlotTagInterface, RonAdTagInterface{
-
+class LibrarySlotTag implements LibrarySlotTagInterface, RonAdTagInterface
+{
     protected $id;
+
     /**
      * @var LibraryAdTagInterface
      */
@@ -38,12 +39,20 @@ class LibrarySlotTag implements LibrarySlotTagInterface, RonAdTagInterface{
      * @var integer
      */
     protected $position;
-
-
+    /**
+     * @var integer
+     */
+    protected $impressionCap;
+    /**
+     * @var integer
+     */
+    protected $networkOpportunityCap;
     /**
      * @var string
      */
     protected $refId;
+
+    protected $_autoIncreasePosition; // temp var
 
     /**
      * @return boolean
@@ -146,6 +155,42 @@ class LibrarySlotTag implements LibrarySlotTagInterface, RonAdTagInterface{
     }
 
     /**
+     * @return int
+     */
+    public function getImpressionCap()
+    {
+        return $this->impressionCap;
+    }
+
+    /**
+     * @param int $impressionCap
+     * @return self
+     */
+    public function setImpressionCap($impressionCap)
+    {
+        $this->impressionCap = $impressionCap;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNetworkOpportunityCap()
+    {
+        return $this->networkOpportunityCap;
+    }
+
+    /**
+     * @param int $networkOpportunityCap
+     * @return self
+     */
+    public function setNetworkOpportunityCap($networkOpportunityCap)
+    {
+        $this->networkOpportunityCap = $networkOpportunityCap;
+        return $this;
+    }
+
+    /**
      * @return LibraryAdTagInterface
      */
     public function getLibraryAdTag()
@@ -238,6 +283,24 @@ class LibrarySlotTag implements LibrarySlotTagInterface, RonAdTagInterface{
         }
 
         return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAutoIncreasePosition()
+    {
+        return $this->_autoIncreasePosition;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAutoIncreasePosition($autoIncreasePosition)
+    {
+        $this->_autoIncreasePosition = $autoIncreasePosition;
+
+        return $this;
     }
 
     /**

@@ -5,18 +5,13 @@ namespace Tagcade\Service\Cdn;
 use Tagcade\Cache\V2\TagCacheV2Interface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
-use Touki\FTP\Connection\AnonymousConnection;
 use Touki\FTP\Connection\Connection;
 use Touki\FTP\ConnectionInterface;
 use Touki\FTP\FTPWrapper;
 
 class CDNUpdater implements CDNUpdaterInterface
 {
-    /**
-     * @var ConnectionInterface|Connection
-     */
+    /** @var ConnectionInterface|Connection */
     private $ftpConnection;
 
     const AD_SLOT_DIR = 'ad_slot_path';
@@ -24,16 +19,13 @@ class CDNUpdater implements CDNUpdaterInterface
     const PUSH_FTP_ENABLED = 'push_ftp_enabled';
     const CDN_TEMPLATE = '[%%JSON_P_BEGIN%%]%s[%%JSON_P_END%%]';
 
-    /**
-     * @var
-     */
+    /** @var mixed */
     private $config;
-    /**
-     * @var TagCacheV2Interface
-     */
+
+    /** @var TagCacheV2Interface */
     private $tagCache;
 
-    function __construct(ConnectionInterface $ftpConnection, TagCacheV2Interface $tagCache,  array $config)
+    function __construct(ConnectionInterface $ftpConnection, TagCacheV2Interface $tagCache, array $config)
     {
         $this->ftpConnection = $ftpConnection;
 
@@ -53,7 +45,7 @@ class CDNUpdater implements CDNUpdaterInterface
     {
         // Creating stream resource
         $adTags = $this->tagCache->getAdTagsForAdSlot($adSlotId);
-        if(false === $adTags) {
+        if (false === $adTags) {
             return false; // nothing to push to cdn
         }
 
@@ -65,13 +57,13 @@ class CDNUpdater implements CDNUpdaterInterface
     public function pushMultipleAdSlots(array $adSlots)
     {
         $adSlotPushedCount = 0;
-        $adSlots = array_filter($adSlots, function($adSlot){
+        $adSlots = array_filter($adSlots, function ($adSlot) {
             return is_numeric($adSlot) && (int)$adSlot > 0;
         });
 
         foreach ($adSlots as $adSlotId) {
             if ($this->pushAdSlot($adSlotId, $closeConnection = false)) {
-                $adSlotPushedCount ++;
+                $adSlotPushedCount++;
             }
 
             usleep(50);
@@ -86,7 +78,7 @@ class CDNUpdater implements CDNUpdaterInterface
     {
         // Creating stream resource
         $ronAdTags = $this->tagCache->getAdTagsForRonAdSlot($ronSlotId);
-        if(false === $ronAdTags) {
+        if (false === $ronAdTags) {
             return false; // nothing to push to cdn
         }
 
@@ -98,13 +90,13 @@ class CDNUpdater implements CDNUpdaterInterface
     public function pushMultipleRonSlots(array $ronSlots)
     {
         $ronAdSlotPushedCount = 0;
-        $ronSlots = array_filter($ronSlots, function($ronSlot) {
+        $ronSlots = array_filter($ronSlots, function ($ronSlot) {
             return is_numeric($ronSlot) && (int)$ronSlot > 0;
         });
 
         foreach ($ronSlots as $ronSlot) {
             if ($this->pushRonSlot($ronSlot, $closeConnection = false)) {
-                $ronAdSlotPushedCount ++;
+                $ronAdSlotPushedCount++;
             }
 
             usleep(50);
@@ -127,8 +119,7 @@ class CDNUpdater implements CDNUpdaterInterface
             }
 
             $this->ftpConnection->close();
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
         }
     }
 
@@ -151,14 +142,13 @@ class CDNUpdater implements CDNUpdaterInterface
                     $this->ftpConnection->open();
                 }
 
-                $result = $ftpWrapper->fput($remotePath , $stream);
+                $result = $ftpWrapper->fput($remotePath, $stream);
             }
 
             if (true === $closeConnection) {
                 $this->closeFtpConnection();
             }
-        }
-        catch(\Exception $e) {
+        } catch (\Exception $e) {
             $result = false;
             $this->closeFtpConnection();
         }
@@ -181,7 +171,7 @@ class CDNUpdater implements CDNUpdaterInterface
             throw new InvalidArgumentException('Expect string data');
         }
 
-        $stream = fopen('php://memory','r+');
+        $stream = fopen('php://memory', 'r+');
         fwrite($stream, $myData);
         rewind($stream);
 

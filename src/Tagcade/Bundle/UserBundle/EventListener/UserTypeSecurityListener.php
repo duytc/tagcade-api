@@ -55,7 +55,7 @@ class UserTypeSecurityListener
 
         $user = $token->getUser();
 
-        foreach($requiredUserTypes as $userType) {
+        foreach ($requiredUserTypes as $userType) {
             $userClass = $userType->getUserClass();
 
             if (!interface_exists($userClass) && !class_exists($userClass)) {

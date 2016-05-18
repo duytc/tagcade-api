@@ -2,16 +2,28 @@ Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
     type:  entity
     table: core_user_sub_publisher
 
+    fields:
+        demandSourceTransparency:
+            type: boolean
+            options:
+                default: false # default demandSourceTransparency is off
+        enableViewTagcadeReport:
+            type: boolean
+            options:
+                default: false # default enableViewTagcadeReport is off
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User
 
     oneToMany:
-        subPublisherSites:
-            targetEntity: Tagcade\Entity\Core\SubPublisherSite
+        segments:
+            targetEntity: Tagcade\Entity\Core\Segment
+            mappedBy: subPublisher
+        subPublisherPartnerRevenue:
+            targetEntity: Tagcade\Entity\Core\SubPublisherPartnerRevenue
             mappedBy: subPublisher
             cascade: ["persist", "remove", "detach"]
             orphanRemoval: true
-        segments:
-            targetEntity: Tagcade\Entity\Core\Segment
+        sites:
+            targetEntity: Tagcade\Entity\Core\Site
             mappedBy: subPublisher

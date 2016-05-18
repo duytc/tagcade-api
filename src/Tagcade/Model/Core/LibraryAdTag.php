@@ -4,6 +4,7 @@ namespace Tagcade\Model\Core;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 
 class LibraryAdTag implements LibraryAdTagInterface{
@@ -13,22 +14,26 @@ class LibraryAdTag implements LibraryAdTagInterface{
     protected $html;
 
     protected $visible = false;
+
     /** int - type of AdTags*/
     protected $adType = 0;
+
     /** array - json_array, descriptor of AdTag*/
     protected $descriptor;
-    /**
-     * @var AdNetworkInterface
-     */
+
+    /** @var AdNetworkInterface */
     protected $adNetwork;
 
+    /** @var Collection */
     protected $adTags;
-    /**
-     * @var LibrarySlotTagInterface
-     */
+
+    /** @var LibrarySlotTagInterface */
     protected $libSlotTags;
 
     protected $name;
+
+    protected $partnerTagId;
+
     /**
      * @inheritdoc
      */
@@ -57,7 +62,6 @@ class LibraryAdTag implements LibraryAdTagInterface{
         return $this;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -84,7 +88,6 @@ class LibraryAdTag implements LibraryAdTagInterface{
         return $this->id;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -95,7 +98,6 @@ class LibraryAdTag implements LibraryAdTagInterface{
         return $this;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -104,7 +106,23 @@ class LibraryAdTag implements LibraryAdTagInterface{
         return $this->visible;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getPartnerTagId()
+    {
+        return $this->partnerTagId;
+    }
 
+    /**
+     * @param mixed $partnerTagId
+     * @return self
+     */
+    public function setPartnerTagId($partnerTagId)
+    {
+        $this->partnerTagId = $partnerTagId;
+        return $this;
+    }
 
     /**
      * @inheritdoc

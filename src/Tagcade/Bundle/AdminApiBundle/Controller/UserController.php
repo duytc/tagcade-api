@@ -2,24 +2,24 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
+use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
      * Get all publisher
+     * @Rest\View(serializerGroups={"user.detail","user.billing"})
      * @Rest\Get("/users")
      * @Rest\QueryParam(name="all", requirements="(true|false)", nullable=true)
      * @ApiDoc(
@@ -46,7 +46,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Get a single publisher for the given id
-     *
+     * @Rest\View(serializerGroups={"user.detail", "user.billing", "billingConfigs.detail","billingConfigs.summary"})
      * @ApiDoc(
      *  section = "admin",
      *  resource = true,

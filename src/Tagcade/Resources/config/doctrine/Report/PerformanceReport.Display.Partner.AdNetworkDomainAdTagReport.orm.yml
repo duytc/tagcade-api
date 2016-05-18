@@ -1,0 +1,43 @@
+Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkDomainAdTagReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Partner\AdNetworkDomainAdTagReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_partner_ad_network_site_tag
+    uniqueConstraints:
+        unique_partner_ad_network_site_ad_tag_report_idx:
+            columns: [date, ad_network_id, domain, partner_tag_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+        domain:
+            type: string
+        totalOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+        partnerTagId:
+            type: string
+    manyToOne:
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork

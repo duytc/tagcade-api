@@ -4,7 +4,6 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -16,7 +15,10 @@ class UpdateAdTagCountForAdNetworkListener
     const AD_TAG_UPDATE = 1;
     const AD_TAG_PERSIST = 2;
     const AD_TAG_DELETE = 3;
+
+    /** @var array|AdNetworkInterface[] */
     private $changedAdNetworks = [];
+
     /**
      * handle event prePersist to detect new ad tag is added, used for updating number of active|paused ad tags of ad network
      * @param LifecycleEventArgs $args
@@ -33,59 +35,52 @@ class UpdateAdTagCountForAdNetworkListener
         $this->increaseActiveAdTagCountForAdNetwork($entity, self::AD_TAG_PERSIST);
     }
 
+    /**
+     * handle event preUpdate to detect new ad tag is updated, used for updating number of active|paused ad tags of ad network
+     * @param PreUpdateEventArgs $args
+     */
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getObject();
 
         if ($entity instanceof LibraryAdTagInterface && $args->hasChangedField('adNetwork')) {
             $adTags = $entity->getAdTags();
-            /** @var AdNetworkInterface $oldAdNetwork, $newAdNetwork */
+
+            /** @var AdNetworkInterface $oldAdNetwork , $newAdNetwork */
             $oldAdNetwork = $args->getOldValue('adNetwork');
+
             /** @var AdNetworkInterface $newAdNetwork */
             $newAdNetwork = $args->getNewValue('adNetwork');
+
             /** @var AdTagInterface $adTag */
-            foreach($adTags as $adTag) {
+            foreach ($adTags as $adTag) {
                 $adTag->isActive() ? $oldAdNetwork->decreaseActiveAdTagsCount() : $oldAdNetwork->decreasePausedAdTagsCount();
                 $adTag->isActive() ? $newAdNetwork->increaseActiveAdTagsCount() : $newAdNetwork->increasePausedAdTagsCount();
+
                 $this->changedAdNetworks[] = $oldAdNetwork;
                 $this->changedAdNetworks[] = $newAdNetwork;
             }
         }
     }
 
+    /**
+     * handle event postFlush to update number of active|paused ad tags of ad network for all recorded changedAdNetworks
+     * @param PostFlushEventArgs $args
+     */
     public function postFlush(PostFlushEventArgs $args)
     {
-        if(count($this->changedAdNetworks) < 1) {
+        if (count($this->changedAdNetworks) < 1) {
             return;
         }
 
         $em = $args->getEntityManager();
-        foreach($this->changedAdNetworks as $adNetwork) {
+        foreach ($this->changedAdNetworks as $adNetwork) {
             $em->merge($adNetwork);
         }
+
         $this->changedAdNetworks = [];
+
         $em->flush();
-
-    }
-
-
-    public function onFlush(OnFlushEventArgs $eventArgs)
-    {
-        $em = $eventArgs->getEntityManager();
-        $uow = $em->getUnitOfWork();
-
-        $entities = array_merge($uow->getScheduledEntityUpdates());
-        foreach ($entities as $entity) {
-            if (!$entity instanceof AdTagInterface || ($entity instanceof AdTagInterface && null !== $entity->getDeletedAt())) {
-                continue;
-            }
-
-            $this->increaseActiveAdTagCountForAdNetwork($entity, self::AD_TAG_UPDATE);
-
-            $uow = $em->getUnitOfWork();
-            $meta = $em->getClassMetadata(get_class($entity->getAdNetwork()));
-            $uow->recomputeSingleEntityChangeSet($meta, $entity->getAdNetwork());
-        }
     }
 
     /**
@@ -111,7 +106,7 @@ class UpdateAdTagCountForAdNetworkListener
             return;
         }
 
-        switch($tagOption) {
+        switch ($tagOption) {
             case self::AD_TAG_PERSIST:
                 $adTag->isActive() ? $adNetwork->increaseActiveAdTagsCount() : $adNetwork->increasePausedAdTagsCount();
 
@@ -124,8 +119,7 @@ class UpdateAdTagCountForAdNetworkListener
                 if ($adTag->isActive()) {
                     $adNetwork->increaseActiveAdTagsCount();
                     $adNetwork->decreasePausedAdTagsCount();
-                }
-                else {
+                } else {
                     $adNetwork->increasePausedAdTagsCount();
                     $adNetwork->decreaseActiveAdTagsCount();
                 }

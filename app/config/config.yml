@@ -27,7 +27,6 @@ framework:
         handler_id: ~
     fragments: ~
     http_method_override: true
-
 # Twig Configuration
 twig:
     debug:                  "%kernel.debug%"
@@ -57,21 +56,12 @@ doctrine:
                 user:       "%database_user%"
                 password:   "%database_password%"
                 charset:    UTF8
+                options:
+                    1002:  "SET NAMES 'UTF8'"
                 mapping_types:
                     enum: string
                 logging: false
                 profiling: false
-
-            unified_report:
-                driver:     "%database_driver_unified_report%"
-                host:       "%database_host_unified_report%"
-                port:       "%database_port_unified_report%"
-                dbname:     "%database_name_unified_report%"
-                user:       "%database_user_unified_report%"
-                password:   "%database_password_unified_report%"
-                charset:    UTF8
-                mapping_types:
-                    enum: string
 
     orm:
         default_entity_manager:         default
@@ -109,53 +99,45 @@ doctrine:
                         prefix:     Tagcade\Entity\Report
                         alias:      TagcadeReportEntity
                         is_bundle:  false
-
-            unified_report:
-                connection:         unified_report
-                naming_strategy:    doctrine.orm.naming_strategy.underscore
-                mappings:
-                    # bundles
-                    # ...current no bundle...
-                    # custom
-                    UnifiedReportPulsePointEntities:
-                        type:       yml
-                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/PulsePoint
-                        prefix:     Tagcade\Entity\Report\UnifiedReport\PulsePoint
-                        alias:      TagcadeUnifiedReportPulsePointEntity
-                        is_bundle:  false
-#                    UnifiedReportAdMetaEntities:
+#                    UnifiedReportPartnerEntities:
 #                        type:       yml
-#                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/AdMeta
-#                        prefix:     Tagcade\Entity\Report\UnifiedReport\AdMeta
-#                        alias:      TagcadeUnifiedReportAdMetaEntity
+#                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/PartnerReport
+#                        prefix:     Tagcade\Entity\Report\PartnerReport
+#                        alias:      TagcadePartnerReportEntity
 #                        is_bundle:  false
-                    CoreEntities:
-                        type:       yml
-                        dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/UnifiedReport/Core
-                        prefix:     Tagcade\Entity\Core
-                        alias:      TagcadeCoreEntity
-                        is_bundle:  false
-            #
-            # This is the config for multiple entity managers, for now, we will put all entities in one database
-            #
-            #reports:
-            #    connection:         reports
-            #    naming_strategy:    doctrine.orm.naming_strategy.underscore
-            #    mappings:
-            #        ReportEntities:
-            #            type:       yml
-            #            dir:        %kernel.root_dir%/../src/Tagcade/Resources/config/doctrine/Report
-            #            prefix:     Tagcade\Entity\Report
-            #            alias:      TagcadeReportEntity
-            #            is_bundle:  false
+
+
 
 jms_serializer:
     metadata:
         directories:
+            entity_core:
+                namespace_prefix:   "Tagcade\\Entity\Core\\"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Entity/Core
+            model_core:
+                namespace_prefix:   "Tagcade\\Model\Core\\"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Model/Core
+            entity_report_performance:
+                namespace_prefix:   "Tagcade\\Entity\Report\\PerformanceReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Entity/Report/PerformanceReport
+            model_report_performance:
+                namespace_prefix:   "Tagcade\\Model\Report\\PerformanceReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Model/Report/PerformanceReport
+            entity_report_unified:
+                namespace_prefix:   "Tagcade\\Entity\Report\\UnifiedReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Entity/Report/UnifiedReport
+            model_report_unified:
+                namespace_prefix:   "Tagcade\\Model\Report\\UnifiedReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Model/Report/UnifiedReport
+            entity_report_rtb:
+                namespace_prefix:   "Tagcade\\Entity\Report\\RtbReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Entity/Report/RtbReport
+            model_report_rtb:
+                namespace_prefix:   "Tagcade\\Model\Report\\RtbReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Model/Report/RtbReport
             tagcade:
                 namespace_prefix:   "Tagcade\\"
                 path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer
-
             FOSUserBundle:
                 namespace_prefix: "FOS\\UserBundle"
                 path: "@TagcadeUserBundle/Resources/config/serializer/fos"

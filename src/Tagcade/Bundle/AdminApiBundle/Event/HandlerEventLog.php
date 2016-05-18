@@ -134,9 +134,9 @@ class HandlerEventLog extends HandlerEventLogAbstract implements HandlerEventLog
     public function addAffectedEntityByObject($entity)
     {
         $affectedEntities = [
-            self::AFFECTEDENTITY_CLASSNAME => $this->getClassNameForEntity($entity),
-            self::AFFECTEDENTITY_ID => $entity->getId(),
-            self::AFFECTEDENTITY_NAME => $this->getNameForEntity($entity)
+            self::AFFECTED_ENTITY_CLASSNAME => $this->getClassNameForEntity($entity),
+            self::AFFECTED_ENTITY_ID => $entity->getId(),
+            self::AFFECTED_ENTITY_NAME => $this->getNameForEntity($entity)
         ];
         $this->affectedEntities[] = $affectedEntities;
     }

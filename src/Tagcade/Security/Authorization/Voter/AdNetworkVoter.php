@@ -2,6 +2,7 @@
 
 namespace Tagcade\Security\Authorization\Voter;
 
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 
@@ -33,6 +34,13 @@ class AdNetworkVoter extends EntityVoterAbstract
      */
     protected function isSubPublisherActionAllowed($adNetwork, UserEntityInterface $user, $action)
     {
+        /**
+         * @var SubPublisherInterface $user
+         */
+        if($action == self::VIEW && $user->isDemandSourceTransparency()) {
+            return true;
+        }
+
         // not allowed
         return false;
     }

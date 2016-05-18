@@ -6,16 +6,16 @@ use Doctrine\Common\Collections\Collection;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;
-use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 
 class TagCache extends TagCacheAbstract implements TagCacheInterface
 {
     const NAMESPACE_CACHE_KEY = 'tagcade_adslot_%d';
     const VERSION = 1;
+
     /**
      * @var DisplayAdSlotManagerInterface
      */
@@ -35,6 +35,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
 
     public function refreshCache()
     {
+        /** @var DisplayAdSlotInterface[] $adSlots */
         $adSlots = $this->displayAdSlotManager->all();
 
         foreach ($adSlots as $adSlot) {

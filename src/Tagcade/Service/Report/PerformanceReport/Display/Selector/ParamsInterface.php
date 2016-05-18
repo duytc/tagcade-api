@@ -44,4 +44,7 @@ interface ParamsInterface
      * @return bool
      */
     public function getGrouped();
+
+    public function getQueryParams();
+
 }

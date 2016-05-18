@@ -4,8 +4,6 @@ namespace Tagcade\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\Expression;
@@ -18,14 +16,17 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('expectAdSlot', 'entity', array(
-                    'class' => AdSlotAbstract::class,
-                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('slot')->select('slot'); }
-                ))
+                'class' => AdSlotAbstract::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('slot')->select('slot');
+                }
+            ))
             ->add('libraryExpression', 'entity', array(
-                    'class' => LibraryExpression::class,
-                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('libEx')->select('libEx'); }
-                ))
-        ;
+                'class' => LibraryExpression::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('libEx')->select('libEx');
+                }
+            ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

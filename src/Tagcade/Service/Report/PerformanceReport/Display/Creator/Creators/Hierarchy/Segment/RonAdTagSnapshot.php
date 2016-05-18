@@ -9,13 +9,10 @@ use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag as RonAdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorAbstract;
-use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 
 class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterface
 {
-
     /**
      * @inheritdoc
      */
@@ -79,6 +76,5 @@ class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterf
                 ->setPosition($report->getRonAdTag()->getPosition())
             ;
         }
-
     }
 }

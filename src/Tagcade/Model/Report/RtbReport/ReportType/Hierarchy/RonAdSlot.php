@@ -2,11 +2,10 @@
 
 namespace Tagcade\Model\Report\RtbReport\ReportType\Hierarchy;
 
-use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
-use Tagcade\Model\Report\RtbReport\ReportInterface;
 use Tagcade\Model\Report\RtbReport\Hierarchy\RonAdSlotReportInterface;
+use Tagcade\Model\Report\RtbReport\ReportInterface;
 use Tagcade\Model\Report\RtbReport\ReportType\AbstractReportType;
 use Tagcade\Model\Report\RtbReport\ReportType\ReportTypeInterface;
 
@@ -14,14 +13,9 @@ class RonAdSlot extends AbstractReportType implements ReportTypeInterface
 {
     const REPORT_TYPE = 'ronAdSlot';
 
-    /**
-     * @var RonAdSlotInterface
-     */
-    private $ronAdSlot;
+    /** @var RonAdSlotInterface private $ronAdSlot;
 
-    /**
-     * @var SegmentInterface
-     */
+    /** @var SegmentInterface */
     private $segment;
 
     public function __construct(RonAdSlotInterface $ronAdSlot, $segment = null)

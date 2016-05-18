@@ -6,7 +6,6 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class TokenController extends Controller
@@ -32,10 +31,9 @@ class TokenController extends Controller
     /**
      * check token for the current authenticated user
      *
-     * @param Request $request
      * @return JsonResponse
      */
-    public function checkTokenAction(Request $request)
+    public function checkTokenAction()
     {
         // The security layer has already checked if the user has a valid token
 

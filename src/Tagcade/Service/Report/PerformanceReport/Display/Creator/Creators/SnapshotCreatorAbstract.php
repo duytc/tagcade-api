@@ -2,16 +2,14 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators;
 
-use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
-use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 use Tagcade\Domain\DTO\Report\Performance\BaseAdSlotReportCountInterface;
 use Tagcade\Domain\DTO\Report\Performance\BaseAdTagReportCountInterface;
 use Tagcade\Domain\DTO\Report\Performance\RedisReportDataInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
-abstract class SnapshotCreatorAbstract extends CreatorAbstract implements SnapshotCreatorInterface {
-
+abstract class SnapshotCreatorAbstract extends CreatorAbstract implements SnapshotCreatorInterface
+{
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
         $result = array(

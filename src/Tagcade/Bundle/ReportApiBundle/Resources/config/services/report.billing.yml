@@ -18,11 +18,15 @@ services:
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
             - @tagcade.service.date_util
+            - @tagcade.repository.billing_configuration
+            - @tagcade.repository.source_report.report
 
     tagcade.service.report.performance_report.display.billing.billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculator
         arguments:
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+            - @tagcade.service.date_util
 
     tagcade.service.report.performance_report.display.billing.billed_amount_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor
@@ -33,8 +37,8 @@ services:
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
             - @tagcade_user.domain_manager.publisher
             - @tagcade.service.date_util
-        calls:
-            - [setOutput, [@tagcade.service.console_output]]
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.ad_slot
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
 
     tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator

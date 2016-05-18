@@ -3,28 +3,21 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\RTBEnabledInterface;
 
 class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
     protected $id;
 
-    /**
-     * @var ExpressionInterface[]
-     */
+    /** @var ExpressionInterface[] */
     protected $expressions;
 
-    /**
-     * @var BaseAdSlotInterface
-     */
+    /** @var BaseAdSlotInterface */
     protected $defaultAdSlot;
 
     protected $deletedAt;
-
 
     public function __construct()
     {
@@ -77,7 +70,7 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function isSupportedNative()
     {
-        if($this->getLibraryAdSlot() == null) return false;
+        if ($this->getLibraryAdSlot() == null) return false;
 
         return $this->getLibraryAdSlot()->isSupportedNative();
     }
@@ -87,15 +80,14 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
      */
     public function getNative()
     {
-        if($this->getLibraryAdSlot() == null) return false;
+        if ($this->getLibraryAdSlot() == null) return false;
 
         return $this->getLibraryAdSlot()->isSupportedNative();
     }
 
     public function setNative($native)
     {
-        if($this->getLibraryAdSlot() != null)
-        {
+        if ($this->getLibraryAdSlot() != null) {
             $this->getLibraryAdSlot()->setNative($native);
         }
 

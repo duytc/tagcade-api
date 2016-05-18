@@ -8,10 +8,11 @@ interface BillingCalculatorInterface
 {
     /**
      * @param PublisherInterface $publisher
-     * @param int $slotOpportunities
+     * @param $module
+     * @param $weight
      * @return RateAmount
      */
-    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $slotOpportunities);
+    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $module, $weight);
 
     /**
      * @param float $cpmRate
@@ -19,5 +20,4 @@ interface BillingCalculatorInterface
      * @return float
      */
     public function calculateBilledAmount($cpmRate, $slotOpportunities);
-
 }

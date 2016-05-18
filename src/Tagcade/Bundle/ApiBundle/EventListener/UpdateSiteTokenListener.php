@@ -4,7 +4,6 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Behaviors\CreateSiteTokenTrait;
 use Tagcade\Entity\Core\Site;
@@ -12,7 +11,7 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 /**
- * This is a work around to have unique constraint working om publisher, domain with soft deleteable support.
+ * This is a work around to have unique constraint working om publisher, domain with soft deletable support.
  *
  * Class UpdateSiteDomainCanonicalListener
  * @package Tagcade\Bundle\ApiBundle\EventListener
@@ -87,9 +86,9 @@ class UpdateSiteTokenListener
         /** @var SiteRepositoryInterface $siteRepository */
         $siteRepository = $args->getEntityManager()->getRepository(Site::class);
 
-        $similarSites = $siteRepository->findBy(array('publisher'=> $entity->getPublisher(), 'domain'=>$entity->getDomain()));
+        $similarSites = $siteRepository->findBy(array('publisher' => $entity->getPublisher(), 'domain' => $entity->getDomain()));
         $hasSameExistingDomain = (empty($similarSites) || count($similarSites) < 1) ? false : true;
 
-        return (!$hasSameExistingDomain || $entity->isAutoCreate()) ?  $this->createSiteHash($entity->getPublisherId(), $entity->getDomain()) : uniqid(null, true);
+        return (!$hasSameExistingDomain || $entity->isAutoCreate()) ? $this->createSiteHash($entity->getPublisherId(), $entity->getDomain()) : uniqid(null, true);
     }
 }

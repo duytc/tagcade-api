@@ -3,15 +3,11 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
-
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\Exchange\ExchangeCacheUpdaterInterface;
 
 class RenameExchangeCommand extends ContainerAwareCommand
@@ -27,8 +23,7 @@ class RenameExchangeCommand extends ContainerAwareCommand
             ->setName('tc:exchange:rename')
             ->addOption('preName', 'pn', InputOption::VALUE_REQUIRED, 'Previous abbreviation name in parameter configuration file')
             ->addOption('newName', 'nn', InputOption::VALUE_REQUIRED, 'New abbreviation name that will be set in parameter configuration file')
-            ->setDescription('Update all existing caches when an exchange\'s name is updated in parameter')
-        ;
+            ->setDescription('Update all existing caches when an exchange\'s name is updated in parameter');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -57,7 +52,7 @@ class RenameExchangeCommand extends ContainerAwareCommand
 
         try {
             $cacheUpdater->updateCacheAfterUpdateExchangeParameter($preName, $newName);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $output->writeln(sprintf('<error>%s</error>', $ex->getMessage()));
             return;
         }

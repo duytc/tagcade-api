@@ -2,11 +2,13 @@
 
 namespace Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
+use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\SegmentInterface;
-use Tagcade\Model\Core\SubPublisherSiteInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -18,14 +20,34 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /** @var PublisherInterface */
     protected $publisher;
 
-    /** @var array|SubPublisherSiteInterface[] */
-    protected $subPublisherSites;
-
     /** @var array */
     protected $enabledModules;
 
+    /** @var bool */
+    protected $demandSourceTransparency;
+
+    /** @var bool enable view tab tagcade report, also tab comparison report, in unified report */
+    protected $enableViewTagcadeReport;
+
     /** @var SegmentInterface[] */
     protected $segments;
+
+    /** @var array|SubPublisherPartnerRevenueInterface[] */
+    protected $subPublisherPartnerRevenue;
+
+    /** @var array|SiteInterface[] */
+    protected $sites;
+
+    /**
+     * this constructor will be called by FormType, must be used to call parent to set default values
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->demandSourceTransparency = false;
+        $this->enableViewTagcadeReport = false;
+    }
 
     /**
      * @inheritdoc
@@ -67,21 +89,25 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /**
      * @inheritdoc
      */
-    public function getSubPublisherSites()
+    public function getEnabledModules()
     {
-        if (null === $this->subPublisherSites) {
-            $this->subPublisherSites = new ArrayCollection();
-        }
-
-        return $this->subPublisherSites;
+        return $this->publisher->getEnabledModules();
     }
 
     /**
      * @inheritdoc
      */
-    public function setSubPublisherSites(array $subPublisherSites)
+    public function isDemandSourceTransparency()
     {
-        $this->subPublisherSites = $subPublisherSites;
+        return $this->demandSourceTransparency;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setDemandSourceTransparency($demandSourceTransparency)
+    {
+        $this->demandSourceTransparency = $demandSourceTransparency;
 
         return $this;
     }
@@ -89,9 +115,19 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /**
      * @inheritdoc
      */
-    public function getEnabledModules()
+    public function isEnableViewTagcadeReport()
     {
-        return $this->publisher->getEnabledModules();
+        return $this->enableViewTagcadeReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEnableViewTagcadeReport($enableViewTagcadeReport)
+    {
+        $this->enableViewTagcadeReport = $enableViewTagcadeReport;
+
+        return $this;
     }
 
     /**
@@ -328,5 +364,123 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     public function setExchanges($exchanges)
     {
         throw new NotSupportedException('setExchanges Not supported by SubPublisher');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBidders()
+    {
+        throw new NotSupportedException('getBidders Not supported by SubPublisher');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBidders($bidders)
+    {
+        throw new NotSupportedException('getBidders Not supported by SubPublisher');
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSubPublisherPartnerRevenue()
+    {
+        return $this->subPublisherPartnerRevenue;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setSubPublisherPartnerRevenue($subPublisherPartnerRevenue)
+    {
+        $this->subPublisherPartnerRevenue = $subPublisherPartnerRevenue;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSites()
+    {
+        $this->sites = $this->sites instanceof Collection ? $this->sites->toArray() : $this->sites;
+
+        return $this->sites;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setSites(array $sites)
+    {
+        $this->sites = $sites;
+
+        return $this;
+    }
+
+    public function isTestAccount()
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
+    public function setTestAccount($testAccount)
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBillingConfigs()
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBillingConfigs($billingConfigs)
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addBillingConfig(BillingConfiguration $billingConfiguration)
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
+    /**
+     * Returns the user roles
+     * -- Override --
+     * NOTE: merge all roles of current SubPublisher and roles of own Publisher!!!
+     *
+     * @return array The roles
+     */
+    public function getRoles()
+    {
+        // get roles of own Publisher, note: WITHOUT role 'ROLE_PUBLISHER'
+        $roles = $this->publisher->getRoles();
+
+        if (($key = array_search('ROLE_PUBLISHER', $roles)) !== false) {
+            unset($roles[$key]);
+        }
+
+        // merge all roles of this and own Publisher
+        $roles = array_merge($this->roles, $roles);
+
+        foreach ($this->getGroups() as $group) {
+            $roles = array_merge($roles, $group->getRoles());
+        }
+
+        // we need to make sure to have at least one role
+        $roles[] = static::ROLE_DEFAULT;
+
+        return array_unique($roles);
     }
 }

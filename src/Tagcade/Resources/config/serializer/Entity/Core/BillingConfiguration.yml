@@ -1,0 +1,21 @@
+Tagcade\Entity\Core\BillingConfiguration:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [billingConfigs.detail, billingConfigs.summary]
+        module:
+            expose: true
+            groups: [billingConfigs.detail, billingConfigs.summary]
+        tiers:
+            expose: true
+            groups: [billingConfigs.detail, billingConfigs.summary]
+        billingFactor:
+            expose: true
+            groups: [billingConfigs.detail]
+        defaultConfig:
+            expose: true
+            groups: [billingConfigs.detail]
+        publisher:
+            expose: true
+            groups: [billingConfigs.detail]

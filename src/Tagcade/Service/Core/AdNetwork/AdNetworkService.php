@@ -4,11 +4,16 @@ namespace Tagcade\Service\Core\AdNetwork;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Domain\DTO\Core\SiteStatus;
+use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 
 class AdNetworkService implements AdNetworkServiceInterface
 {
@@ -24,10 +29,76 @@ class AdNetworkService implements AdNetworkServiceInterface
     }
 
 
-    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
+    public function getSitesForPartnerFilterPublisherAndDomain(AdNetworkPartnerInterface $partner, PublisherInterface $publisher, $domain = null)
+    {
+        /**
+         * @var AdNetworkRepositoryInterface $adNetworkRepository
+         */
+        $adNetworkRepository = $this->em->getRepository(AdNetwork::class);
+
+        $adNetworks = $adNetworkRepository->getAdNetworksForPublisherAndPartner($publisher, $partner);
+        $sites = [];
+
+        foreach ($adNetworks as $nw) {
+            $tmpSites = $this->getSitesForAdNetworkFilterUserRole($nw, $publisher);
+            foreach ($tmpSites as $st) {
+                /**
+                 * @var SiteInterface $st
+                 */
+
+                if ($domain != null && $st->getDomain() != $domain) {
+                    continue;
+                }
+
+                if (!in_array($st, $sites)) {
+                    $sites[] = $st;
+                }
+            }
+        }
+
+        return $sites;
+    }
+    /**
+     * @inheritdoc
+     */
+    public function getSitesForAdNetworkFilterUserRole(AdNetworkInterface $adNetwork, UserRoleInterface $userRole)
     {
         $sites = [];
 
+        foreach ($adNetwork->getAdTags() as $adTag) {
+            /**
+             * @var AdTagInterface $adTag
+             */
+            $site = $adTag->getAdSlot()->getSite();
+
+            $siteDirectOwnerId = null;
+            if ($userRole instanceof SubPublisherInterface) {
+                $subPublisher = $site->getSubPublisher();
+                if (!$subPublisher instanceof SubPublisherInterface) {
+                    continue;
+                }
+
+                $siteDirectOwnerId = $subPublisher->getId();
+            }
+            else if ($userRole instanceof PublisherInterface) {
+                $siteDirectOwnerId = $site->getPublisher()->getId();
+            }
+
+            if ($siteDirectOwnerId != null && $siteDirectOwnerId != $userRole->getId()) {
+                continue;
+            }
+
+            if (!in_array($site, $sites)) {
+                $sites[] = $site;
+            }
+        }
+
+        return $sites;
+    }
+
+    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
+    {
+        $sites = [];
         $siteStatus = [];
 
         foreach ($adNetwork->getAdTags() as $adTag) {
@@ -36,7 +107,14 @@ class AdNetworkService implements AdNetworkServiceInterface
              */
             $site = $adTag->getAdSlot()->getSite();
 
-            if ($publisher != null && $site->getPublisher()->getId() != $publisher->getId()) {
+            if ($publisher instanceof SubPublisherInterface
+                && (!($site->getSubPublisher() instanceof SubPublisherInterface) || $site->getSubPublisher()->getId() != $publisher->getId())
+            ) {
+                    continue;
+            }
+
+            if ($publisher instanceof PublisherInterface && !is_subclass_of($publisher, PublisherInterface::class)
+                && $site->getPublisher()->getId() != $publisher->getId()) {
                 continue;
             }
 

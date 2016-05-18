@@ -2,7 +2,6 @@
 
 namespace Tagcade\Handler\Handlers\Core\Publisher;
 
-use Tagcade\Handler\Handlers\Core\LibraryAdTagHandlerAbstract;
 use Tagcade\Handler\Handlers\Core\LibraryExpressionHandlerAbstract;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;

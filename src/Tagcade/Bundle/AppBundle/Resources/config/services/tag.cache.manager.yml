@@ -28,6 +28,7 @@ services:
             - @tagcade.domain_manager.native_ad_slot
             - @tagcade.domain_manager.dynamic_ad_slot
             - @tagcade.repository.expression
+            - @tagcade.service.tag_generator
 
     tagcade.cache.v2.refresher.ron_ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache

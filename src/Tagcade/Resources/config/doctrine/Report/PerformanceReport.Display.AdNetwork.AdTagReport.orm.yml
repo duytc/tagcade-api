@@ -55,6 +55,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport:
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag
+            cascade: ["detach"]
+        subPublisher:
+            targetEntity: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User
         superReport:
             targetEntity: SiteReport
             inversedBy: subReports

@@ -22,4 +22,4 @@ class SetSubPublisherRoleListener
         /** @var UserEntityInterface $entity */
         $entity->setUserRoles(array(static::ROLE_SUB_PUBLISHER));
     }
-} 
+}

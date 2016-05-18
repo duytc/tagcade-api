@@ -9,8 +9,6 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\Expression;
-use Tagcade\Entity\Core\LibraryDynamicAdSlot;
-use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
@@ -29,39 +27,44 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
-use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
-use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 
 class Replicator implements ReplicatorInterface
 {
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
-    /**
-     * @var ChecksumValidatorInterface
-     */
+
+    /** @var ChecksumValidatorInterface */
     private $checksumValidator;
-    /**
-     * @var AdSlotGeneratorInterface
-     */
+
+    /** @var AdSlotGeneratorInterface */
     private $adSlotGenerator;
-    /**
-     * @var AdSlotManagerInterface
-     */
+
+    /** @var AdSlotManagerInterface */
     private $adSlotManager;
 
+    /**
+     * @param EntityManagerInterface $em
+     * @param ChecksumValidatorInterface $checksumValidator
+     */
     function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator)
     {
         $this->em = $em;
         $this->checksumValidator = $checksumValidator;
     }
 
-    public function setAdSlotGenerator(AdSlotGeneratorInterface $adSlotGenerator) {
+    /**
+     * @param AdSlotGeneratorInterface $adSlotGenerator
+     */
+    public function setAdSlotGenerator(AdSlotGeneratorInterface $adSlotGenerator)
+    {
         $this->adSlotGenerator = $adSlotGenerator;
     }
 
-    public function setAdSlotManager(AdSlotManagerInterface $adSlotManager) {
+    /**
+     * @param AdSlotManagerInterface $adSlotManager
+     */
+    public function setAdSlotManager(AdSlotManagerInterface $adSlotManager)
+    {
         $this->adSlotManager = $adSlotManager;
     }
 
@@ -81,17 +84,17 @@ class Replicator implements ReplicatorInterface
             throw new LogicException('Cannot create more than one ad slots in the same site referring to the same library');
         }
 
-        if(!$libAdSlot instanceof LibraryDisplayAdSlotInterface && !$libAdSlot instanceof LibraryNativeAdSlotInterface) {
+        if (!$libAdSlot instanceof LibraryDisplayAdSlotInterface && !$libAdSlot instanceof LibraryNativeAdSlotInterface) {
             throw new InvalidArgumentException('expect instance of LibraryDisplayAdSlotInterface or LibraryNativeAdSlotInterface');
         }
 
-        if(!$adSlot instanceof DisplayAdSlotInterface && !$adSlot instanceof NativeAdSlotInterface) {
+        if (!$adSlot instanceof DisplayAdSlotInterface && !$adSlot instanceof NativeAdSlotInterface) {
             throw new InvalidArgumentException('expect instance of DisplayAdSlotInterface or NativeAdSlotInterface');
         }
 
         $oldLibrary = $adSlot->getLibraryAdSlot();
 
-        if(null !== $adSlot->getId() && $oldLibrary->getId() === $libAdSlot->getId()) {
+        if (null !== $adSlot->getId() && $oldLibrary->getId() === $libAdSlot->getId()) {
             return $adSlot; // nothing to be replicated
         }
         $this->em->getConnection()->beginTransaction();
@@ -103,20 +106,23 @@ class Replicator implements ReplicatorInterface
             $librarySlotTags = $libAdSlot->getLibSlotTags();
             // remove old ad tags
             $adTags = $adSlot->getAdTags();
-            foreach($adTags as $t) {
+            foreach ($adTags as $t) {
                 $this->em->remove($t);
             }
             $adSlot->getAdTags()->clear();
             // add new ad tags
-            foreach($librarySlotTags as $librarySlotTag) {
+            /** @var LibrarySlotTagInterface $librarySlotTag */
+            foreach ($librarySlotTags as $librarySlotTag) {
                 $newAdTag = new AdTag();
-                $newAdTag->setAdSlot($adSlot);
-                $newAdTag->setRefId($librarySlotTag->getRefId());
-                $newAdTag->setLibraryAdTag($librarySlotTag->getLibraryAdTag());
-                $newAdTag->setFrequencyCap($librarySlotTag->getFrequencyCap());
-                $newAdTag->setPosition($librarySlotTag->getPosition());
-                $newAdTag->setRotation($librarySlotTag->getRotation());
-                $newAdTag->setActive($librarySlotTag->isActive());
+                $newAdTag->setAdSlot($adSlot)
+                    ->setRefId($librarySlotTag->getRefId())
+                    ->setLibraryAdTag($librarySlotTag->getLibraryAdTag())
+                    ->setFrequencyCap($librarySlotTag->getFrequencyCap())
+                    ->setPosition($librarySlotTag->getPosition())
+                    ->setRotation($librarySlotTag->getRotation())
+                    ->setActive($librarySlotTag->isActive())
+                    ->setImpressionCap($librarySlotTag->getImpressionCap())
+                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
                 $adSlot->getAdTags()->add($newAdTag);
             }
 
@@ -126,9 +132,9 @@ class Replicator implements ReplicatorInterface
             /** @var ExpressionRepositoryInterface $expressionRepository */
             $expressionRepository = $this->em->getRepository(Expression::class);
             $expressions = $expressionRepository->getByExpectAdSlot($adSlot);
-            if(!empty($expressions)) {
+            if (!empty($expressions)) {
                 /** @var ExpressionInterface $expression */
-                foreach($expressions as $expression) {
+                foreach ($expressions as $expression) {
                     // replace with the new library ad slot
                     $libraryExpression = $expression->getLibraryExpression();
                     $libraryExpression->setExpectLibraryAdSlot($libAdSlot);
@@ -137,16 +143,12 @@ class Replicator implements ReplicatorInterface
             }
 
             // 2. Check if there are changes in default library ad slot
-            /**
-             * @var DynamicAdSlotRepositoryInterface $dynamicAdSlotRepository
-             */
+            /** @var DynamicAdSlotRepositoryInterface $dynamicAdSlotRepository */
             $dynamicAdSlotRepository = $this->em->getRepository(DynamicAdSlot::class);
             $dynamicAdSlots = $dynamicAdSlotRepository->getDynamicAdSlotsThatHaveDefaultAdSlot($adSlot);
-            if(!empty($dynamicAdSlots)) {
-                /**
-                 * @var DynamicAdSlotInterface $dynamicAdSlot
-                 */
-                foreach($dynamicAdSlots as $dynamicAdSlot) {
+            if (!empty($dynamicAdSlots)) {
+                /** @var DynamicAdSlotInterface $dynamicAdSlot */
+                foreach ($dynamicAdSlots as $dynamicAdSlot) {
                     $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
                     $libraryAdSlot->setDefaultLibraryAdSlot($libraryAdSlot);
                     $this->em->merge($libraryAdSlot);
@@ -157,8 +159,7 @@ class Replicator implements ReplicatorInterface
             $this->checksumValidator->validateAdSlotSynchronization($adSlot);
 
             $this->em->getConnection()->commit();
-        }
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->em->getConnection()->rollback();
             throw new RuntimeException($ex);
         }
@@ -171,26 +172,24 @@ class Replicator implements ReplicatorInterface
      * This function gets invoked when user add a new ad tag to a library ad slot
      *
      * @param LibrarySlotTagInterface $librarySlotTag
+     * @throws \Doctrine\DBAL\ConnectionException
      * @return AdTagInterface[]|null
      */
     public function replicateNewLibrarySlotTagToAllReferencedAdSlots(LibrarySlotTagInterface $librarySlotTag)
     {
         //check if the Library Slot has been referred by any Slot
         $adSlots = $librarySlotTag->getLibraryAdSlot()->getAdSlots();
-        if(null === $adSlots) return null; // no slot refers to this library
+        if (null === $adSlots) return null; // no slot refers to this library
 
-        if($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
+        if ($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
 
         $createdAdTags = [];
 
         $this->em->getConnection()->beginTransaction();
 
         try {
-            /**
-             * @var BaseAdSlotInterface $adSlot
-             */
-            foreach($adSlots as $adSlot)
-            {
+            /** @var BaseAdSlotInterface $adSlot */
+            foreach ($adSlots as $adSlot) {
                 $newAdTag = new AdTag();
                 $newAdTag->setAdSlot($adSlot);
                 $newAdTag->setRefId($librarySlotTag->getRefId());
@@ -199,8 +198,11 @@ class Replicator implements ReplicatorInterface
                 $newAdTag->setPosition($librarySlotTag->getPosition());
                 $newAdTag->setRotation($librarySlotTag->getRotation());
                 $newAdTag->setActive($librarySlotTag->isActive());
+                $newAdTag->setImpressionCap($librarySlotTag->getImpressionCap());
+                $newAdTag->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
 
                 $adSlot->getAdTags()->add($newAdTag);
+
                 $this->em->persist($adSlot);
 
                 $createdAdTags[] = $newAdTag;
@@ -212,8 +214,7 @@ class Replicator implements ReplicatorInterface
 
             $this->em->getConnection()->commit();
 
-        }
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->em->getConnection()->rollback();
             throw new RuntimeException($ex);
         }
@@ -231,15 +232,13 @@ class Replicator implements ReplicatorInterface
         $this->em->getConnection()->beginTransaction();
 
         try {
-            /**
-             * @var AdTagRepositoryInterface $adTagRepository
-             */
+            /** @var AdTagRepositoryInterface $adTagRepository */
             $adTagRepository = $this->em->getRepository(AdTag::class);
             $adTags = $adTagRepository->getAdTagsByLibraryAdSlotAndRefId($librarySlotTag->getLibraryAdSlot(), $librarySlotTag->getRefId());
 
             array_walk(
                 $adTags,
-                function(AdTagInterface $t) use($librarySlotTag, $remove){
+                function (AdTagInterface $t) use ($librarySlotTag, $remove) {
 
                     if (true === $remove) {
                         $this->em->remove($t);
@@ -251,6 +250,8 @@ class Replicator implements ReplicatorInterface
                     $t->setPosition($librarySlotTag->getPosition());
                     $t->setRotation($librarySlotTag->getRotation());
                     $t->setActive($librarySlotTag->isActive());
+                    $t->setImpressionCap($librarySlotTag->getImpressionCap());
+                    $t->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
 
                     $this->em->persist($t);
                 }
@@ -259,9 +260,10 @@ class Replicator implements ReplicatorInterface
             // if there no any more AdTag refer to this LibraryAdTag then it should be removed as well
             $libraryAdTag = $librarySlotTag->getLibraryAdTag();
 
-            if(true === $remove &&
+            if (true === $remove &&
                 $libraryAdTag->getAssociatedTagCount() < 1 &&
-                count($libraryAdTag->getLibSlotTags()) < 2) {
+                count($libraryAdTag->getLibSlotTags()) < 2
+            ) {
                 $this->em->remove($libraryAdTag);
             }
 
@@ -270,8 +272,7 @@ class Replicator implements ReplicatorInterface
             $this->checksumValidator->validateAllAdSlotsSynchronized($librarySlotTag->getLibraryAdSlot()->getAdSlots()->toArray());
 
             $this->em->getConnection()->commit();
-        }
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->em->getConnection()->rollback();
 
             throw new RuntimeException($ex);
@@ -298,9 +299,7 @@ class Replicator implements ReplicatorInterface
             // replicate default library ad slot
             $defaultLibraryAdSlot = $libraryDynamicAdSlot->getDefaultLibraryAdSlot();
             foreach ($dynamicAdSlots as $adSlot) {
-                /**
-                 * @var DynamicAdSlotInterface $adSlot
-                 */
+                /** @var DynamicAdSlotInterface $adSlot */
                 $site = $adSlot->getSite();
                 $this->adSlotGenerator->generateTrueDefaultAdSlotAndExpectAdSlotInExpressionsForLibraryDynamicAdSlotBySite($libraryDynamicAdSlot, $site);
                 $currentReference = ($defaultLibraryAdSlot instanceof LibraryDisplayAdSlotInterface || $defaultLibraryAdSlot instanceof LibraryNativeAdSlotInterface) ? $this->adSlotManager->getReferencedAdSlotsForSite($defaultLibraryAdSlot, $site) : null;
@@ -311,29 +310,31 @@ class Replicator implements ReplicatorInterface
                 // remove expressions of current slot not attaching to this new library expressions
                 $tobeRemoveExpressions = array_filter(
                     $adSlot->getExpressions()->toArray(),
-                    function(ExpressionInterface $exp) use ($libraryExpressions)
-                    {
-                        $newLibraryExpressions = $libraryExpressions !== null ? array_map(function(LibraryExpressionInterface $libExp) { return $libExp->getId();}, $libraryExpressions) : [];
+                    function (ExpressionInterface $exp) use ($libraryExpressions) {
+                        $newLibraryExpressions = $libraryExpressions !== null ? array_map(function (LibraryExpressionInterface $libExp) {
+                                return $libExp->getId();
+                            }, $libraryExpressions) : [];
 
                         return !in_array($exp->getLibraryExpression()->getId(), $newLibraryExpressions);
                     }
                 );
 
                 if (null !== $tobeRemoveExpressions && !empty($tobeRemoveExpressions)) {
-                    array_walk($tobeRemoveExpressions, function (ExpressionInterface $exp) { $this->em->remove($exp); });
+                    array_walk($tobeRemoveExpressions, function (ExpressionInterface $exp) {
+                            $this->em->remove($exp);
+                        });
                 }
 
                 // updating or creating new expressions with respect to new library expressions
                 if (!empty($libraryExpressions)) {
                     array_walk(
                         $libraryExpressions,
-                        function(LibraryExpressionInterface $libraryExpression) use (&$adSlot)
-                        {
+                        function (LibraryExpressionInterface $libraryExpression) use (&$adSlot) {
                             // update with this new expressions
                             // find existing expression use the same library expression
-                            $existingExpressionsToBeUpdated = array_filter($adSlot->getExpressions()->toArray(), function(ExpressionInterface $expression) use($libraryExpression) {
-                                    return ($expression->getLibraryExpression()->getId() === $libraryExpression->getId() && null !== $libraryExpression->getId());
-                                });
+                            $existingExpressionsToBeUpdated = array_filter($adSlot->getExpressions()->toArray(), function (ExpressionInterface $expression) use ($libraryExpression) {
+                                return ($expression->getLibraryExpression()->getId() === $libraryExpression->getId() && null !== $libraryExpression->getId());
+                            });
 
                             $expectAdSlot = $this->adSlotManager->getReferencedAdSlotsForSite($libraryExpression->getExpectLibraryAdSlot(), $adSlot->getSite());
                             $expression = (null === $existingExpressionsToBeUpdated || count($existingExpressionsToBeUpdated) < 1) ? new Expression() : current($existingExpressionsToBeUpdated);
@@ -356,8 +357,7 @@ class Replicator implements ReplicatorInterface
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-        }
-        catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             $this->em->getConnection()->rollback();
 
             throw new RuntimeException($ex);

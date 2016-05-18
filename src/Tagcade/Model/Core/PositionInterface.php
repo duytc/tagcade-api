@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Core;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 
 interface PositionInterface extends ModelInterface {

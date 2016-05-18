@@ -24,21 +24,16 @@ use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
 class AdSlotManager implements AdSlotManagerInterface
 {
-    /**
-     * @var DisplayAdSlotManagerInterface
-     */
+    /** @var DisplayAdSlotManagerInterface */
     private $displayAdSlotManager;
-    /**
-     * @var NativeAdSlotManagerInterface
-     */
+
+    /** @var NativeAdSlotManagerInterface */
     private $nativeAdSlotManager;
-    /**
-     * @var DynamicAdSlotManagerInterface
-     */
+
+    /** @var DynamicAdSlotManagerInterface */
     private $dynamicAdSlotManager;
-    /**
-     * @var AdSlotRepositoryInterface
-     */
+
+    /** @var AdSlotRepositoryInterface */
     private $adSlotRepository;
 
     public function __construct(AdSlotRepositoryInterface $adSlotRepository)
@@ -46,15 +41,18 @@ class AdSlotManager implements AdSlotManagerInterface
         $this->adSlotRepository = $adSlotRepository;
     }
 
-    public function setDisplayAdSlotManager(DisplayAdSlotManagerInterface $displayAdSlotManager) {
+    public function setDisplayAdSlotManager(DisplayAdSlotManagerInterface $displayAdSlotManager)
+    {
         $this->displayAdSlotManager = $displayAdSlotManager;
     }
 
-    public function setNativeAdSlotManager(NativeAdSlotManagerInterface $nativeAdSlotManager) {
+    public function setNativeAdSlotManager(NativeAdSlotManagerInterface $nativeAdSlotManager)
+    {
         $this->nativeAdSlotManager = $nativeAdSlotManager;
     }
 
-    public function setDynamicAdSlotManager(DynamicAdSlotManagerInterface $dynamicAdSlotManager) {
+    public function setDynamicAdSlotManager(DynamicAdSlotManagerInterface $dynamicAdSlotManager)
+    {
         $this->dynamicAdSlotManager = $dynamicAdSlotManager;
     }
 
@@ -71,7 +69,7 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function save(ModelInterface $adSlot)
     {
-        if(!$adSlot instanceof BaseAdSlotInterface) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
+        if (!$adSlot instanceof BaseAdSlotInterface) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
 
         $this->getManager($adSlot)->save($adSlot);
     }
@@ -81,7 +79,7 @@ class AdSlotManager implements AdSlotManagerInterface
      */
     public function delete(ModelInterface $adSlot)
     {
-        if(!$adSlot instanceof BaseAdSlotInterface) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
+        if (!$adSlot instanceof BaseAdSlotInterface) throw new InvalidArgumentException('expect BaseAdSlotInterface object');
 
         $this->getManager($adSlot)->delete($adSlot);
     }
@@ -175,7 +173,6 @@ class AdSlotManager implements AdSlotManagerInterface
 
         throw new LogicException('Do not support manager for this type of ad slot');
 
-
     }
 
     public function persistAndFlush(BaseAdSlotInterface $adSlot)
@@ -232,5 +229,13 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->adSlotRepository->getDisplayAdSlotsForPublisher($publisher, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDisplayAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getDisplayAdSlotsForSite($site, $limit, $offset);
     }
 }

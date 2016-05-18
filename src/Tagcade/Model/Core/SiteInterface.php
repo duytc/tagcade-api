@@ -151,18 +151,12 @@ interface SiteInterface extends ModelInterface, RTBEnabledInterface
     public function setRtbStatus($rtbStatus);
 
     /**
-     * @param $subPublisherSites
-     * @return self
+     * @return SubPublisherInterface
      */
-    public function setSubPublisherSites($subPublisherSites);
+    public function getSubPublisher();
 
     /**
-     * @return array|SubPublisherSiteInterface[]
+     * @param mixed $subPublisher
      */
-    public function getSubPublisherSites();
-
-    /**
-     * @return array|SubPublisherInterface[]
-     */
-    public function getSubPublishers();
+    public function setSubPublisher($subPublisher);
 }

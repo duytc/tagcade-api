@@ -4,9 +4,6 @@ namespace Tagcade\Model\Report\PerformanceReport;
 
 use Doctrine\Common\Util\ClassUtils;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\LogicException;
-use Tagcade\Model\Report\CalculateRatiosTrait;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 trait CalculateWeightedValueTrait
@@ -44,15 +41,13 @@ trait CalculateWeightedValueTrait
         $total = 0;
         $totalWeight = 0;
 
-        foreach($reports as $report) {
+        foreach ($reports as $report) {
             try {
                 $number = $getterFrequencyMethod->invoke($report);
                 $weight = $getterWeightMethod->invoke($report);
                 $total += $number * $weight;
                 $totalWeight += $weight;
-            }
-            catch (\Exception $e) {
-                $i = 0;
+            } catch (\Exception $e) {
             }
         }
 

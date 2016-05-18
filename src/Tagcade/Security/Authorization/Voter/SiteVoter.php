@@ -2,6 +2,7 @@
 
 namespace Tagcade\Security\Authorization\Voter;
 
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\Core\SiteInterface;
 
@@ -33,20 +34,16 @@ class SiteVoter extends EntityVoterAbstract
      */
     protected function isSubPublisherActionAllowed($site, UserEntityInterface $user, $action)
     {
-        if (count($site->getSubPublisherSites()) < 1) {
-            // this site does not allow access to any sub publisher
+        /** @var subPublisherInterface $subPublisher */
+        $subPublisher = $site->getSubPublisher();
+
+        if (!$subPublisher instanceof SubPublisherInterface) {
+            // this site does not belong to any sub publisher
             return false;
         }
 
         // check subPublisherId
-        $isSubPublisherAllowed = false;
-
-        foreach ($site->getSubPublishers() as $subPublisher) {
-            if ($user->getId() === $subPublisher->getId()) {
-                $isSubPublisherAllowed = true;
-                break;
-            }
-        }
+        $isSubPublisherAllowed = ($user->getId() === $subPublisher->getId());
 
         return $isSubPublisherAllowed && strcasecmp($action, 'view') === 0;
     }

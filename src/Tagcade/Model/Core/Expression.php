@@ -2,36 +2,30 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\Core\SiteInterface;
-
 class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
 {
     protected $id;
-    /**
-     * @var BaseAdSlotInterface
-     */
+
+    /** @var BaseAdSlotInterface */
     protected $expectAdSlot;
 
     protected $expressionInJs;
 
-    /**
-     * @var LibraryExpressionInterface
-     */
+    /** @var LibraryExpressionInterface */
     protected $libraryExpression;
 
-    /**
-     * @var DynamicAdSlotInterface
-     */
+    /** @var DynamicAdSlotInterface */
     protected $dynamicAdSlot;
 
     protected $deletedAt;
 
     public function __construct()
     {
-
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getId()
     {
         return $this->id;
@@ -42,7 +36,7 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
      */
     public function getExpressionDescriptor()
     {
-        if($this->libraryExpression === null) return null;
+        if ($this->libraryExpression === null) return null;
 
         return $this->libraryExpression->getExpressionDescriptor();
     }
@@ -55,14 +49,13 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
         return $this->getExpressionDescriptor();
     }
 
-
     /**
      * @param mixed $expressionDescriptor
      * @return $this
      */
     public function setExpressionDescriptor($expressionDescriptor)
     {
-        if($this->libraryExpression instanceof LibraryExpressionInterface) {
+        if ($this->libraryExpression instanceof LibraryExpressionInterface) {
             $this->libraryExpression->setExpressionDescriptor($expressionDescriptor);
         }
 
@@ -74,7 +67,7 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
      */
     public function getStartingPosition()
     {
-        if($this->libraryExpression === null) return null;
+        if ($this->libraryExpression === null) return null;
 
         return $this->libraryExpression->getStartingPosition();
     }
@@ -85,13 +78,12 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
      */
     public function setStartingPosition($startingPosition)
     {
-        if($this->libraryExpression instanceof LibraryExpressionInterface) {
+        if ($this->libraryExpression instanceof LibraryExpressionInterface) {
             $this->libraryExpression->setStartingPosition($startingPosition);
         }
 
         return $this;
     }
-
 
     /**
      * @return BaseAdSlotInterface
@@ -131,18 +123,17 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
         return $this;
     }
 
-
-
     /**
      * @return BaseAdSlotInterface
      */
     public function getDefaultAdSlot()
     {
-        if($this->getDynamicAdSlot() instanceof DynamicAdSlotInterface) {
+        if ($this->getDynamicAdSlot() instanceof DynamicAdSlotInterface) {
             return $this->getDynamicAdSlot()->getDefaultAdSlot();
         }
-    }
 
+        return null;
+    }
 
     /**
      * @param LibraryExpressionInterface $libraryExpression
@@ -188,8 +179,6 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
     {
         return $this->deletedAt;
     }
-
-
 
     public function __toString()
     {

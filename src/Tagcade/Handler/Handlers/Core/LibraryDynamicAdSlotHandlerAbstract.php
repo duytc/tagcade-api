@@ -5,6 +5,7 @@ namespace Tagcade\Handler\Handlers\Core;
 
 use Tagcade\DomainManager\LibraryDynamicAdSlotManagerInterface;
 use Tagcade\Handler\RoleHandlerAbstract;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 
 abstract class LibraryDynamicAdSlotHandlerAbstract extends RoleHandlerAbstract
 {
@@ -30,6 +31,7 @@ abstract class LibraryDynamicAdSlotHandlerAbstract extends RoleHandlerAbstract
         if (array_key_exists('channels', $parameters)) unset($parameters['channels']);
 
         // 2. normal create library ad slot
+        /** @var LibraryDynamicAdSlotInterface $slotLibrary */
         $slotLibrary = parent::post($parameters);
 
         // 3. create links to sites from this library ad slot

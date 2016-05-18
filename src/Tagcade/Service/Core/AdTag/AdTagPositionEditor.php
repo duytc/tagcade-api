@@ -4,16 +4,13 @@ namespace Tagcade\Service\Core\AdTag;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\DomainManager\AdTagManagerInterface;
-use Tagcade\DomainManager\LibrarySlotTagManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
-use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -22,43 +19,72 @@ use Tagcade\Service\TagLibrary\ChecksumValidatorInterface;
 class AdTagPositionEditor implements AdTagPositionEditorInterface
 {
     /**
-     * @var AdTagManagerInterface
+     * @var ContainerInterface
+     *
+     * Using the container to avoid circular dependency injection.
+     * Only inject directly this Replicator service to DomainManager, do not inject DomainManager in to this Replicator service. Use Container to get DomainManager!!!
+     *
+     * e.g: AdTagPositionEditor -> AdTagManager -> Replicator -> AdTagPositionEditor
      */
-    private $adTagManager;
+    private $container;
 
-    /**
-     * @var LibrarySlotTagManagerInterface
-     */
-    private $librarySlotTagManager;
-    /**
-     * @var EntityManagerInterface
-     */
+    /** @var EntityManagerInterface */
     private $em;
 
-    /**
-     * @var ChecksumValidatorInterface
-     */
+    /** @var ChecksumValidatorInterface */
     private $validator;
 
-    function __construct(AdTagManagerInterface $adTagManager, LibrarySlotTagManagerInterface $librarySlotTagManager,  EntityManagerInterface $em)
+    /**
+     * @param ContainerInterface $container
+     * @param EntityManagerInterface $em
+     */
+    function __construct(ContainerInterface $container, EntityManagerInterface $em)
     {
-        $this->adTagManager = $adTagManager;
+        $this->container = $container;
         $this->em = $em;
-        $this->librarySlotTagManager = $librarySlotTagManager;
     }
 
+    /**
+     * @param ChecksumValidatorInterface $validator
+     */
     public function setValidator(ChecksumValidatorInterface $validator) {
         $this->validator = $validator;
     }
 
-    public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null)
+    /**
+     * @inheritdoc
+     */
+    private function getAdTagManager()
+    {
+        return $this->container->get('tagcade.domain_manager.ad_tag');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    private function getLibrarySlotAdTagManager()
+    {
+        return $this->container->get('tagcade.domain_manager.library_slot_tag');
+    }
+
+    /**
+     * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
+     * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param int $position
+     * @param null|SiteInterface|SiteInterface[] $sites optional
+     * @param bool $autoIncreasePosition optional, true if need shift down
+     * @return int
+     */
+    public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null, $autoIncreasePosition = false)
     {
         if (!is_int($position) || $position < 1) {
             throw new InvalidArgumentException('expect positive integer for ad tag position');
         }
 
         if (null === $sites || (is_array($sites) && count($sites) < 1)) {
-            return $this->setAdTagPositionForAdNetwork($adNetwork, $position);
+            return $this->setAdTagPositionForAdNetwork($adNetwork, $position,$autoIncreasePosition);
         }
 
         $filterSites = [];
@@ -74,10 +100,9 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
             throw new InvalidArgumentException('Expect site interface');
         }
 
-        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSites($adNetwork, $filterSites);
+        $adTags = $this->getAdTagManager()->getAdTagsForAdNetworkAndSites($adNetwork, $filterSites);
 
-        return $this->updatePosition($adTags, $position);
-
+        return $this->updatePosition($adTags, $position, $autoIncreasePosition, $notIncludedAdNetworks = [$adNetwork]);
     }
 
     /**
@@ -147,13 +172,13 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                         $libAdSlot = $adTag instanceof AdTagInterface ? $adTag->getAdSlot()->getLibraryAdSlot() : $adTag->getContainer();
                         // update position for library slot tag
                         if ($adTag instanceof AdTagInterface) {
-                            $librarySlotTag = $this->librarySlotTagManager->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+                            $librarySlotTag = $this->getLibrarySlotAdTagManager()->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
                             if ($librarySlotTag instanceof LibrarySlotTagInterface) {
                                 $librarySlotTag->setPosition($pos);
                             }
                         }
                         //update all referenced AdTags if they are shared ad slot library
-                        $referencedTags = $this->adTagManager->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+                        $referencedTags = $this->getAdTagManager()->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
                         if(!empty($referencedTags)) {
                             array_walk($referencedTags, function(AdTagInterface $t) use($pos) { $t->setPosition($pos); });
                         }
@@ -185,36 +210,61 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     }
 
     /**
+     * set AdTag Position For AdNetwork (i.e for all sites),
+     * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
+     *
      * @param AdNetworkInterface $adNetwork
      * @param int $position
+     * @param bool $autoIncreasePosition optional, true if need shift down
      * @return int number of ad tags get position updated
      */
-    protected function setAdTagPositionForAdNetwork(AdNetworkInterface $adNetwork, $position)
+    protected function setAdTagPositionForAdNetwork(AdNetworkInterface $adNetwork, $position, $autoIncreasePosition = false)
     {
-        $adTags = $this->adTagManager->getAdTagsForAdNetwork($adNetwork);
+        $adTags = $this->getAdTagManager()->getAdTagsForAdNetwork($adNetwork);
 
-        return $this->updatePosition($adTags, $position);
+        return $this->updatePosition($adTags, $position, $autoIncreasePosition, $notIncludedAdNetworks = [$adNetwork]);
     }
 
-    protected function updatePosition(array $adTags, $position)
+    /**
+     * update Position for ad tags,
+     * also, we support auto-Increase-Position(shift down) for all ad tags of other ad networks not in the $notIncludedAdNetworks config
+     *
+     * @param array $adTags
+     * @param int $position
+     * @param bool $autoIncreasePosition
+     * @param array $notIncludedAdNetworks optional, empty array for shift down all
+     * @return int
+     */
+    protected function updatePosition(array $adTags, $position, $autoIncreasePosition = false, $notIncludedAdNetworks = [])
     {
         $allTagsToBeUpdated = $adTags;
+        $allTagsToBeIncreasedPosition = [];
+
         foreach($adTags as $adTag) {
             /**
              * @var AdTagInterface $adTag
              */
-            //update to slot tag if this is a shared ad slot
+            // update to slot tag if this is a shared ad slot
             $libAdSlot = $adTag->getAdSlot()->getLibraryAdSlot();
+
             // update position for library slot tag
-            $librarySlotTag = $this->librarySlotTagManager->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+            $librarySlotTag = $this->getLibrarySlotAdTagManager()->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
             if ($librarySlotTag instanceof LibrarySlotTagInterface) {
                 if (!in_array($librarySlotTag, $allTagsToBeUpdated)) {
                     $allTagsToBeUpdated[] = $librarySlotTag;
                 }
             }
 
-            //update all referenced AdTags if they are shared ad slot library
-            $referencedTags = $this->adTagManager->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+            if ($autoIncreasePosition) {
+                $librarySlotTagToBeIncreasedPosition = $this->getLibrarySlotAdTagManager()->getByLibraryAdSlotAndDifferRefId($libAdSlot, $adTag->getRefId());
+
+                if (is_array($librarySlotTagToBeIncreasedPosition)) {
+                    $allTagsToBeIncreasedPosition = array_merge($allTagsToBeIncreasedPosition, $librarySlotTagToBeIncreasedPosition);
+                }
+            }
+
+            // update all referenced AdTags if they are shared ad slot library
+            $referencedTags = $this->getAdTagManager()->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
             if(!empty($referencedTags)) {
                 array_walk(
                     $referencedTags,
@@ -226,9 +276,21 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                     }
                 );
             }
+
+            if ($autoIncreasePosition) {
+                $referencedTagsToBeIncreasedPosition = $this->getAdTagManager()->getAdTagsByLibraryAdSlotAndDifferRefId($libAdSlot, $adTag->getRefId());
+
+                if (is_array($referencedTagsToBeIncreasedPosition)) {
+                    $allTagsToBeIncreasedPosition = array_merge($allTagsToBeIncreasedPosition, $referencedTagsToBeIncreasedPosition);
+                }
+            }
         }
 
         $updateCount = 0;
+
+        // sure unique to avoid duplicate increase position
+        $allTagsToBeUpdated = array_unique($allTagsToBeUpdated);
+
         array_walk(
             $allTagsToBeUpdated,
             function(PositionInterface $adTag) use ($position, &$updateCount)
@@ -245,12 +307,51 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                 }
 
                 if ($adTag->getPosition() != $position ) {
-
                     $adTag->setPosition($position);
                     $updateCount ++;
                 }
             }
         );
+
+        // support autoIncreasePosition
+        if ($autoIncreasePosition) {
+            // mapping $notIncludedAdNetworks to not-Included-AdNetwork-Ids
+            $notIncludedAdNetworkIds = [];
+            foreach ($notIncludedAdNetworks as $adNetwork) {
+                if (!$adNetwork instanceof AdNetworkInterface) {
+                    continue;
+                }
+
+                $notIncludedAdNetworkIds[] = $adNetwork->getId();
+            }
+
+            // sure unique to avoid duplicate increase position
+            $allTagsToBeIncreasedPosition = array_unique($allTagsToBeIncreasedPosition);
+
+            // do increasing
+            array_walk(
+                $allTagsToBeIncreasedPosition,
+                function(PositionInterface $adTag) use ($position, &$updateCount, $notIncludedAdNetworkIds)
+                {
+                    /**
+                     * @var AdTagInterface $adTag
+                     */
+                    if ($adTag instanceof AdTagInterface && !$adTag->getAdSlot() instanceof DisplayAdSlotInterface) {
+                        return; // not updating position for other types of ad slot like native ad slot
+                    }
+
+                    if ($adTag instanceof LibrarySlotTagInterface && !$adTag->getContainer() instanceof LibraryDisplayAdSlotInterface) {
+                        return; // not updating position for other types of ad slot like native ad slot
+                    }
+
+                    // increase Position, notice, if and ONLY IF ad network is not in $notIncludedAdNetworks constrain!!!
+                    if ($adTag->getPosition() >= $position && !in_array($adTag->getAdNetwork()->getId(), $notIncludedAdNetworkIds)) {
+                        $adTag->setPosition($adTag->getPosition() + 1);
+                        $updateCount ++;
+                    }
+                }
+            );
+        }
 
         $this->em->flush(); //!important this will help to trigger update cache listener to refresh cache
 

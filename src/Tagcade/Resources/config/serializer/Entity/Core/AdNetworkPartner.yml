@@ -1,0 +1,15 @@
+Tagcade\Entity\Core\AdNetworkPartner:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [partner.detail, partner.summary]
+        name:
+            expose: true
+            groups: [partner.detail, partner.summary]
+        url:
+            expose: true
+            groups: [partner.detail, partner.summary]
+        nameCanonical:
+            expose: true
+            groups: [partner.detail, partner.summary]

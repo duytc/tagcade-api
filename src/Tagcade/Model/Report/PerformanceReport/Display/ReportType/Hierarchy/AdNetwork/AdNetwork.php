@@ -17,7 +17,7 @@ class AdNetwork extends AbstractCalculatedReportType
      */
     private $adNetwork;
 
-    public function __construct(AdNetworkInterface $adNetwork)
+    public function __construct(AdNetworkInterface $adNetwork = null)
     {
         $this->adNetwork = $adNetwork;
     }

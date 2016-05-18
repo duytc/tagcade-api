@@ -9,14 +9,13 @@ use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\Account;
 use Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\AdSlot;
-use Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\RonAdSlot;
 use Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\Platform;
+use Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\RonAdSlot;
 use Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\Site;
 use Tagcade\Model\Report\RtbReport\ReportType\ReportTypeInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -31,34 +30,25 @@ class ReportBuilder implements ReportBuilderInterface
     const PARAM_EXPAND = 'expand';
     const PARAM_GROUP = 'group';
 
-    /**
-     * @var ReportSelectorInterface
-     */
+    /** @var ReportSelectorInterface */
     protected $reportSelector;
-    /**
-     * @var DateUtilInterface
-     */
+
+    /** @var DateUtilInterface */
     protected $dateUtil;
-    /**
-     * @var PublisherManagerInterface
-     */
+
+    /** @var PublisherManagerInterface */
     protected $userManager;
-    /**
-     * @var AdNetworkManagerInterface
-     */
+
+    /** @var AdNetworkManagerInterface */
     protected $adNetworkManager;
-    /**
-     * @var SiteManagerInterface
-     */
+
+    /** @var SiteManagerInterface */
     protected $siteManager;
-    /**
-     * @var AdSlotManagerInterface
-     */
+
+    /** @var AdSlotManagerInterface */
     protected $adSlotManager;
 
-    /**
-     * @var RonAdSlotManagerInterface
-     */
+    /** @var RonAdSlotManagerInterface */
     protected $ronAdSlotManager;
 
     public function __construct(
@@ -91,7 +81,7 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $publishers = $this->userManager->allActivePublishers();
 
-        $reportTypes = array_map(function(PublisherInterface $publisher) {
+        $reportTypes = array_map(function (PublisherInterface $publisher) {
             return new Account($publisher);
         }, $publishers);
 
@@ -127,11 +117,11 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $sites = $this->siteManager->all();
 
-        $sites = array_filter($sites, function(SiteInterface $site) {
+        $sites = array_filter($sites, function (SiteInterface $site) {
             return $site->isRTBEnabled();
         });
 
-        $reportTypes = array_map(function(SiteInterface $site) {
+        $reportTypes = array_map(function (SiteInterface $site) {
             return new Site($site);
         }, $sites);
 
@@ -142,11 +132,11 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $sites = $this->siteManager->getSitesForPublisher($publisher);
 
-        $sites = array_filter($sites, function(SiteInterface $site) {
-           return $site->isRTBEnabled();
+        $sites = array_filter($sites, function (SiteInterface $site) {
+            return $site->isRTBEnabled();
         });
 
-        $reportTypes = array_map(function($site) {
+        $reportTypes = array_map(function ($site) {
             return new Site($site);
         }, $sites);
 
@@ -162,11 +152,11 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $adSlots = $site->getReportableAdSlots();
 
-        $adSlots = array_filter($adSlots, function(BaseAdSlotInterface $adSlot) {
-           return $adSlot->isRTBEnabled();
+        $adSlots = array_filter($adSlots, function (BaseAdSlotInterface $adSlot) {
+            return $adSlot->isRTBEnabled();
         });
 
-        $reportTypes = array_map(function($adSlot) {
+        $reportTypes = array_map(function ($adSlot) {
             return new AdSlot($adSlot);
         }, $adSlots);
 
@@ -177,11 +167,11 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $adSlots = $this->adSlotManager->getReportableAdSlotsForPublisher($publisher);
 
-        $adSlots = array_filter($adSlots, function(BaseAdSlotInterface $adSlot) {
+        $adSlots = array_filter($adSlots, function (BaseAdSlotInterface $adSlot) {
             return $adSlot->isRTBEnabled();
         });
 
-        $reportTypes = array_map(function($adSlot) {
+        $reportTypes = array_map(function ($adSlot) {
             return new AdSlot($adSlot);
         }, $adSlots);
 
@@ -202,11 +192,11 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $ronAdSlots = $this->ronAdSlotManager->getRonAdSlotsForPublisher($publisher);
 
-        $ronAdSlots = array_filter($ronAdSlots, function(RonAdSlotInterface $ronAdSlot) {
+        $ronAdSlots = array_filter($ronAdSlots, function (RonAdSlotInterface $ronAdSlot) {
             return $ronAdSlot->isRTBEnabled();
         });
 
-        $reportTypes = array_map(function($ronAdSlot) {
+        $reportTypes = array_map(function ($ronAdSlot) {
             return new RonAdSlot($ronAdSlot);
         }, $ronAdSlots);
 
@@ -217,7 +207,7 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $segments = $ronAdSlot->getSegments();
 
-        $reportTypes = array_map(function($segment) use ($ronAdSlot){
+        $reportTypes = array_map(function ($segment) use ($ronAdSlot) {
             return new RonAdSlot($ronAdSlot, $segment);
         }, $segments);
 
@@ -234,11 +224,11 @@ class ReportBuilder implements ReportBuilderInterface
 
         $adSlots = $this->adSlotManager->getAdSlotsForRonAdSlot($ronAdSlot);
 
-        $reportTypes = array_map(function($adSlot) {
+        $reportTypes = array_map(function ($adSlot) {
             return new AdSlot($adSlot);
         }, $adSlots);
 
-        $adSlotReports =  $this->getReports($reportTypes, $params);
+        $adSlotReports = $this->getReports($reportTypes, $params);
 
         if (!$adSlotReports) {
             return false;

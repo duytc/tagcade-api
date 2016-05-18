@@ -1,17 +1,10 @@
 parameters:
     database_driver:   pdo_mysql
     database_host:     127.0.0.1
-    database_port:     ~
-    database_name:     symfony
-    database_user:     root
-    database_password: ~
-
-    database_driver_unified_report:   pdo_mysql
-    database_host_unified_report:     127.0.0.1
-    database_port_unified_report:     ~
-    database_name_unified_report:     symfony
-    database_user_unified_report:     root
-    database_password_unified_report: ~
+    database_port:     null
+    database_name:     tagcade_api
+    database_user:     tagcadedev
+    database_password: tagcadedev
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1
@@ -29,6 +22,12 @@ parameters:
         -
             name: Index Exchange
             abbreviation: index-exchange # This abbreviation will be used in the auction service configuration in order to enable this exchange
+
+    hb.bidders:
+        -
+            name: "openx"
+            abbreviation: bidders # This abbreviation will be used in the auction service configuration in order to enable this exchange
+
     tc.default_page_size: 10
     tc.default_tag_url:
         domain: 'tags.tagcade.dev'
@@ -62,7 +61,21 @@ parameters:
         ron_ad_slot_path: ronadslot/
         push_ftp_enabled: true
 
+    insert_batch_size: 100
+
     jwt_private_key_path: %kernel.root_dir%/var/jwt/private.pem   # ssh private key path
     jwt_public_key_path:  %kernel.root_dir%/var/jwt/public.pem    # ssh public key path
     jwt_key_pass_phrase:  'tagcade'                               # ssh key pass phrase
     jwt_token_ttl:        86400
+
+    partner_tag_id.matching_config:
+        sovrn:
+            pattern: '/z\=([0-9]+)/'
+        33across:
+            pattern: /\(\'([0-9]+x[0-9]+)\'/
+        defy-media:
+            pattern: '/id\=([0-9]+)/'
+        yellow-hammer:
+            pattern: '/BEGIN JS TAG - (.*) </'
+        pulse-point:
+            pattern: '/cwtagid\=([0-9]+)/'

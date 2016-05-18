@@ -2,7 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
-use Symfony\Component\Console\Output\OutputInterface;
+use Psr\Log\LoggerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use DateTime;
 
@@ -30,6 +30,6 @@ interface BilledAmountEditorInterface
      */
     public function updateBilledAmountThresholdForAllPublishers(DateTime $date = null);
 
-    public function setOutput(OutputInterface $output);
+    public function setLogger(LoggerInterface $logger);
 
 }

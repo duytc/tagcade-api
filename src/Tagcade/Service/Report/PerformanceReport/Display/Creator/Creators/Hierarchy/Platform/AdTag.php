@@ -2,19 +2,16 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
+use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 
 class AdTag extends CreatorAbstract implements AdTagInterface
 {
-    /**
-     * @var EstCpmCalculatorInterface
-     */
+    /** @var EstCpmCalculatorInterface */
     private $estCpmCalculator;
 
     function __construct(EstCpmCalculatorInterface $revenueCalculator)
@@ -42,8 +39,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setImpressions($impressions)
             ->setFirstOpportunities($firstOpportunities)
             ->setVerifiedImpressions($verifiedImpressions)
-            ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
-        ;
+            ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()));
 
         if (!$isNativeAdSlot) {
             $report
@@ -52,8 +48,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
                 ->setBlankImpressions($this->eventCounter->getBlankImpressionCount($adTag->getId()))
                 ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
                 ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
-                ->setPosition($adTag->getPosition())
-            ;
+                ->setPosition($adTag->getPosition());
         }
 
         return $report;

@@ -7,18 +7,12 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
-use Tagcade\Exception\RuntimeException;
-use Tagcade\Form\Type\ExpressionFormType;
-use Tagcade\Form\Type\LibraryExpressionFormType;
-use Tagcade\Form\Type\RonAdSlotFormType;
 use Tagcade\Model\Core\ExpressionInterface;
-use Tagcade\Entity\Core\Expression;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 
-class UpdateExpressionInJsListener {
-
+class UpdateExpressionInJsListener
+{
     protected $updatedExpressions = [];
     /**
      * @var ExpressionInJsGeneratorInterface
@@ -29,7 +23,6 @@ class UpdateExpressionInJsListener {
     {
         $this->expressionInJsGenerator = $expressionInJsGenerator;
     }
-
 
     /**
      * handle event prePersist one expression, this auto update expressionInJS field.
@@ -67,7 +60,7 @@ class UpdateExpressionInJsListener {
 
     public function postFlush(PostFlushEventArgs $args)
     {
-        if(!empty($this->updatedExpressions)) {
+        if (!empty($this->updatedExpressions)) {
             $em = $args->getEntityManager();
             foreach ($this->updatedExpressions as $exp) {
                 $em->merge($exp);
@@ -86,14 +79,13 @@ class UpdateExpressionInJsListener {
         if (null !== $convertedExpression) {
 
             $expInJs = [
-                'vars'=> $convertedExpression['vars'],
+                'vars' => $convertedExpression['vars'],
                 'expression' => $convertedExpression['expression']
             ];
 
             if ($expression instanceof ExpressionInterface) {
                 $expInJs['expectedAdSlot'] = $expression->getExpectAdSlot()->getId();
-            }
-            else if ($expression instanceof LibraryExpressionInterface) {
+            } else if ($expression instanceof LibraryExpressionInterface) {
                 $expInJs['expectedLibraryAdSlot'] = $expression->getExpectLibraryAdSlot()->getId();
             }
 

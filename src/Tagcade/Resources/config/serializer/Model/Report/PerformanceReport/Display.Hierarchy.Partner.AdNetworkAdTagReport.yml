@@ -1,0 +1,8 @@
+Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Partner\AdNetworkAdTagReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getAdNetworkId:
+            type: integer
+    properties:
+        adNetwork:
+            exclude: true

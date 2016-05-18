@@ -95,16 +95,31 @@ services:
     tagcade_app.service.core.ad_tag.ad_tag_position_editor:
         class: Tagcade\Service\Core\AdTag\AdTagPositionEditor
         arguments:
-            - @tagcade.domain_manager.ad_tag
-            - @tagcade.domain_manager.library_slot_tag
+            - @service_container
             - @doctrine.orm.default_entity_manager
         calls:
             - [setValidator, ["@tagcade_api.service.tag_library.checksum_validator"]]
+
+    tagcade_app.service.core.ad_tag.partner_tag_id_finder:
+        class: Tagcade\Service\Core\AdTag\PartnerTagIdFinder
+        arguments:
+            - @tagcade.repository.ad_tag
+
+    tagcade_app.service.core.ad_tag.partner_tag_id_matcher:
+        class: Tagcade\Service\Core\AdTag\PartnerTagIdMatcher
+        arguments:
+            - %partner_tag_id.matching_config%
+            - @monolog.logger
 
     tagcade_app.service.core.ad_network.ad_network_service:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService
         arguments:
             - @doctrine.orm.default_entity_manager
+
+    tagcade_app.service.core.site.site_service:
+        class: Tagcade\Service\Core\Site\SiteService
+        arguments:
+            - "@tagcade_app.service.core.ad_network.ad_network_service"
 
     tagcade_app.service.core.exchange.exchange_cache_updater:
         class: Tagcade\Service\Core\Exchange\ExchangeCacheUpdater

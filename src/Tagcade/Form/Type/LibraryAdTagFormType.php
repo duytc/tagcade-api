@@ -68,6 +68,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('descriptor')
             ->add('name')
             ->add('id')
+            ->add('partnerTagId')
         ;
 
         $builder->addEventListener(

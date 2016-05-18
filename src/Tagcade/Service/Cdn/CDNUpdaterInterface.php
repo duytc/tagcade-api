@@ -3,11 +3,8 @@
 namespace Tagcade\Service\Cdn;
 
 
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
-
-interface CDNUpdaterInterface {
-
+interface CDNUpdaterInterface
+{
     /**
      * @param $adSlotId
      * @param $closeConnection
@@ -47,5 +44,4 @@ interface CDNUpdaterInterface {
      * @return mixed
      */
     public function closeFtpConnection();
-
 }

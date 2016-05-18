@@ -7,9 +7,19 @@ Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
     properties:
         id:
             expose: true
-            groups: [user.summary]
+            groups: [subpublisher.summary]
+        demandSourceTransparency:
+            expose: true
+            groups: [subpublisher.summary]
+        enableViewTagcadeReport:
+            expose: true
+            groups: [subpublisher.summary]
         publisher:
             expose: true
-            groups: [user.summary]
-        subPublisherSites:
+            groups: [subpublisher.detail]
+        subPublisherPartnerRevenue:
             expose: true
+            groups: [subpublisher.detail]
+        sites:
+            expose: true
+            groups: [subpublisher.detail]

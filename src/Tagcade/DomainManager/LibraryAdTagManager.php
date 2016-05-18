@@ -6,7 +6,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Exception\LogicException;
-use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -36,16 +35,10 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
      */
     public function save(ModelInterface $libraryAdTag)
     {
-        if(!$libraryAdTag instanceof LibraryAdTagInterface) throw new InvalidArgumentException('expect LibraryAdTagInterface object');
+        if (!$libraryAdTag instanceof LibraryAdTagInterface) throw new InvalidArgumentException('expect LibraryAdTagInterface object');
 
-        $libraryAdTagId = $libraryAdTag->getId();
-
-        if($libraryAdTagId == null){
-
-            $this->em->persist($libraryAdTag);
-            $this->em->flush();
-
-        }
+        $this->em->persist($libraryAdTag);
+        $this->em->flush();
     }
 
     /**
@@ -53,7 +46,7 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
      */
     public function delete(ModelInterface $libraryAdTag)
     {
-        if(!$libraryAdTag instanceof LibraryAdTagInterface) throw new InvalidArgumentException('expect LibraryAdTagInterface object');
+        if (!$libraryAdTag instanceof LibraryAdTagInterface) throw new InvalidArgumentException('expect LibraryAdTagInterface object');
 
         if ($libraryAdTag->getVisible() && count($libraryAdTag->getAdTags()) > 0) {
             throw new LogicException('There are some ad tag still referring to this library');
@@ -85,7 +78,7 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
      */
     public function all($limit = null, $offset = null)
     {
-        return $this->repository->findBy($criteria = ['visible'=>true], $orderBy = null, $limit, $offset);
+        return $this->repository->findBy($criteria = ['visible' => true], $orderBy = null, $limit, $offset);
     }
 
     /**

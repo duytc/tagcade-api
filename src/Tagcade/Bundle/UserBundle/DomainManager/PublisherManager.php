@@ -2,15 +2,14 @@
 
 namespace Tagcade\Bundle\UserBundle\DomainManager;
 
-use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserInterface as FOSUserInterface;
+use FOS\UserBundle\Model\UserInterface;
 use FOS\UserBundle\Model\UserManagerInterface;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use Ramsey\Uuid\Uuid;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User as PublisherEntity;
 
 /**
  * Most of the other handlers talk to doctrine directly
@@ -103,7 +102,6 @@ class PublisherManager implements PublisherManagerInterface
 
         return array_values($publishers);
     }
-
 
     /**
      * @inheritdoc

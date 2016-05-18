@@ -8,3 +8,4 @@ imports:
     - { resource: services/report.unified_report.selectors.yml }
     - { resource: services/report.rtb.selectors.yml }
     - { resource: services/report.rtb_report.snapshot.creators.yml }
+    - { resource: services/unified_report_importer_services.yml }

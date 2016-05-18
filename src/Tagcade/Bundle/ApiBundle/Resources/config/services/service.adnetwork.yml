@@ -18,7 +18,7 @@ services:
     ###### dependencies and base classes for ad slot handler #######
 
     tagcade.repository.ad_network:
-        class: Tagcade\Repository\Core\AdTagRepositoryInterface
+        class: Tagcade\Repository\Core\AdNetworkRepositoryInterface
         factory_service: doctrine.orm.entity_manager
         factory_method: getRepository
         arguments:
@@ -34,6 +34,8 @@ services:
         class: %tagcade.form.type.ad_network.class%
         tags:
             - { name: form.type, alias: tagcade_form_ad_network }
+        arguments:
+          - @tagcade.repository.ad_network_partner
 
     tagcade.handler.handlers.ad_network.abstract:
         class: Tagcade\Handler\Handlers\Core\AdNetworkHandlerAbstract
@@ -48,6 +50,8 @@ services:
         class: Tagcade\Handler\Handlers\Core\Admin\AdNetworkHandler
         parent: tagcade.handler.handlers.ad_network.abstract
         public: false
+        arguments:
+            - @tagcade_user.domain_manager.publisher
 
     tagcade.handler.handlers.ad_network.publisher:
         class: Tagcade\Handler\Handlers\Core\Publisher\AdNetworkHandler

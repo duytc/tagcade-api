@@ -33,7 +33,7 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
 
     manyToOne:
         publisher:
-            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User
     oneToMany:
         libSlotTags:
             targetEntity: Tagcade\Entity\Core\LibrarySlotTag

@@ -11,6 +11,8 @@ use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\SiteR
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\Behaviors\CalculateBilledAmountTrait;
+use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User as AbstractUser;
+
 
 class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 {
@@ -46,10 +48,10 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
     {
         $projectedSlotOpportunities = $this->calculatePublisherProjectedSlotOpportunities($publisher);
 
-        $publisherCpmRate = null === $publisher->getBillingRate() ? $this->cpmRateGetter->getDefaultCpmRate($projectedSlotOpportunities) : $publisher->getBillingRate();
+        $publisherCpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, AbstractUser::MODULE_DISPLAY, $projectedSlotOpportunities)->getCpmRate();
 
         return $this->calculateBilledAmount($publisherCpmRate, $projectedSlotOpportunities);
-;    }
+    }
 
     public function calculateProjectedBilledAmountForSite(SiteInterface $site)
     {
@@ -57,7 +59,7 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 
         $publisher = $site->getPublisher();
 
-        $publisherCpmRate = null === $publisher->getBillingRate() ? $this->cpmRateGetter->getDefaultCpmRate($siteProjectedSlotOpportunities) : $publisher->getBillingRate();
+        $publisherCpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, AbstractUser::MODULE_DISPLAY, $siteProjectedSlotOpportunities)->getCpmRate();
 
         return $this->calculateBilledAmount($publisherCpmRate, $siteProjectedSlotOpportunities);
     }
@@ -99,7 +101,4 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
 
         return $projectedSlotOpportunities;
     }
-
-
-
 }

@@ -60,6 +60,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag
+            cascade: ["detach"]
         superReport:
             targetEntity: AdSlotReport
             inversedBy: subReports

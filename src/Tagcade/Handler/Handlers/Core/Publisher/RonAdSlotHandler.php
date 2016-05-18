@@ -3,7 +3,6 @@
 namespace Tagcade\Handler\Handlers\Core\Publisher;
 
 use Tagcade\Handler\Handlers\Core\RonAdSlotHandlerAbstract;
-use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 

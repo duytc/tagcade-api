@@ -52,6 +52,12 @@ Tagcade\Entity\Core\LibrarySlotTag:
             type: date
             nullable: true
 
+        impressionCap:
+            type: integer
+            nullable: true
+        networkOpportunityCap:
+            type: integer
+            nullable: true
     manyToOne:
         libraryAdTag:
             targetEntity: Tagcade\Entity\Core\LibraryAdTag

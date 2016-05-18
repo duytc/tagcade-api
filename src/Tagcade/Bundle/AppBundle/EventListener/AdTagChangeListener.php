@@ -24,7 +24,7 @@ class AdTagChangeListener
      */
     protected $changedEntities;
 
-    protected $presoftDeleteAdTags = [];
+    protected $preSoftDeleteAdTags = [];
 
     function __construct(EventDispatcherInterface $eventDispatcher)
     {
@@ -36,8 +36,8 @@ class AdTagChangeListener
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        $this->presoftDeleteAdTags = array_merge(
-            $this->presoftDeleteAdTags,
+        $this->preSoftDeleteAdTags = array_merge(
+            $this->preSoftDeleteAdTags,
             array_filter(
                 $uow->getScheduledEntityDeletions(),
                 function($entity)
@@ -61,10 +61,10 @@ class AdTagChangeListener
     // Truly refresh cache invocation
     public function postFlush(PostFlushEventArgs $args)
     {
-        $changedEntities = array_merge($this->presoftDeleteAdTags, $this->changedEntities);
+        $changedEntities = array_merge($this->preSoftDeleteAdTags, $this->changedEntities);
 
         $this->changedEntities = [];
-        $this->presoftDeleteAdTags = [];
+        $this->preSoftDeleteAdTags = [];
 
         $adSlots = [];
 

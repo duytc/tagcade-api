@@ -10,7 +10,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\SubPublisherSite;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -18,6 +18,8 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 {
     use CreateSiteTokenTrait;
+
+    protected $SORT_FIELDS = ['id', 'name', 'domain', 'rtbStatus'];
 
     /**
      * @inheritdoc
@@ -35,7 +37,6 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
         return $qb->getQuery()->getResult();
     }
-
 
     /**
      * @param UserRoleInterface $user
@@ -67,7 +68,7 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $qb->getQuery()->getResult();
     }
 
-    protected function getSitesForUserQuery(UserRoleInterface $user, $limit = null, $offset = null)
+    public function getSitesForUserQuery(UserRoleInterface $user, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilderForUser($user);
 
@@ -106,16 +107,65 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $this->getSitesThatHaveAdTagsBelongingToAdNetworkQuery($adNetwork, $limit, $offset)->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesThatHaveAdTagsBelongingToPartnerQuery($partnerId = 'all', $limit, $offset);
+
+        if ($publisher instanceof SubPublisherInterface) {
+            $qb->andWhere('st.subPublisher = :subPublisherId')
+                ->setParameter('subPublisherId', $publisher->getId());
+        } else {
+            $qb->andWhere('st.publisher = :publisher_id')
+                ->setParameter('publisher_id', $publisher->getId());
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartner(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesThatHaveAdTagsBelongingToPartnerQuery($adNetwork->getId(), $limit, $offset);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesThatHaveAdTagsBelongingToPartnerQuery($adNetwork->getId(), $limit, $offset);
+
+        $qb
+            ->andWhere('st.subPublisher = :subPublisher')
+            ->setParameter('subPublisher', $subPublisher);
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
         $qb = $this->getSitesThatHaveAdTagsBelongingToAdNetworkQuery($adNetwork, $limit, $offset);
         $results = $qb->select('st.id')->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
-
 
     protected function getSitesThatHaveAdTagsBelongingToAdNetworkQuery(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
@@ -126,6 +176,33 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
             ->where('lt.adNetwork = :ad_network_id')
             ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER)
             ->addOrderBy('st.name', 'asc');
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb;
+    }
+
+    protected function getSitesThatHaveAdTagsBelongingToPartnerQuery($adNetworkId = 'all', $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('st')
+            ->join('st.adSlots', 'sl')
+            ->join('sl.adTags', 't')
+            ->join('t.libraryAdTag', 'lt');
+
+        if ($adNetworkId != 'all') {
+            $qb->where('lt.adNetwork = :network_id')
+                ->setParameter('network_id', $adNetworkId, Type::INTEGER);
+        } else {
+            $qb
+                ->join('lt.adNetwork', 'nw')
+                ->where($qb->expr()->isNotNull('nw.networkPartner'));
+        }
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -225,6 +302,35 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getSitesByDomain($domain)
+    {
+        if (!is_string($domain)) {
+            throw new InvalidArgumentException('expect an object of string');
+        }
+
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.domain = :domain')
+            ->setParameter('domain', $domain, TYPE::STRING);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSitesNotBelongToSubPublisherForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getSitesForPublisherQuery($publisher, $limit, $offset);
+
+        $qb
+            ->andWhere('st.subPublisher IS NULL');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * create QueryBuilder For Publisher due to Publisher or SubPublisher
      * @param PublisherInterface $publisher
      * @return QueryBuilder qb with alias 'st'
@@ -235,11 +341,8 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
         if ($publisher instanceof SubPublisherInterface) {
             $qb
-                ->leftJoin('st.subPublisherSites', 'sps')
-                ->where('sps.subPublisher = :sub_publisher_id')
-//                ->andWhere('sps.access IN (:access)')
+                ->where('st.subPublisher = :sub_publisher_id')
                 ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER);
-//                ->setParameter('access', array_values(SubPublisherSite::$ACCESS_READ_ARRAY));
         } else {
             $qb
                 ->where('st.publisher = :publisher_id')
@@ -250,6 +353,18 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
     }
 
     /**
+     * @param PublisherInterface $publisher
+     * @return array
+     */
+    public function getUniqueDomainsForPublisher(PublisherInterface $publisher)
+    {
+        return $this->createQueryBuilderForPublisher($publisher)
+            ->select('st.domain as domain')
+            ->distinct()
+            ->getQuery()->getResult();
+    }
+
+    /**
      * create QueryBuilder For User due to Admin or Publisher|SubPublisher
      * @param UserRoleInterface $user
      * @return QueryBuilder qb with alias 'st'
@@ -257,5 +372,36 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
     private function createQueryBuilderForUser(UserRoleInterface $user)
     {
         return $user instanceof PublisherInterface ? $this->createQueryBuilderForPublisher($user) : $this->createQueryBuilder('st');
+    }
+
+    public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null)
+    {
+        $qb = $this->createQueryBuilderForUser($user);
+
+        if (is_int($autoCreate)) {
+            $qb->andWhere('st.autoCreate = :autoCreate')
+                ->setParameter('autoCreate', $autoCreate);
+        }
+
+        if (is_int($param->getPublisherId()) && $param->getPublisherId() > 0) {
+            $qb->andWhere('st.publisher = :publisherId')
+                ->setParameter('publisherId', $param->getPublisherId());
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('st.name', ':searchKey'), $qb->expr()->like('st.domain', ':searchKey')))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('st.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
     }
 }

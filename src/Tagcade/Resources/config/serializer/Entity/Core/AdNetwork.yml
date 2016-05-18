@@ -1,0 +1,41 @@
+Tagcade\Entity\Core\AdNetwork:
+    exclusion_policy: ALL
+    virtual_properties:
+        getBase64EncryptedPassword:
+            type: string
+            groups: [adnetwork.credential]
+
+    properties:
+        id:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+        publisher:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+        name:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+        url:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.credential]
+        defaultCpmRate:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail]
+        activeAdTagsCount:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail]
+        pausedAdTagsCount:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail]
+        networkPartner:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+        username:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.credential, adnetwork.detail, adnetwork.summary]
+        impressionCap:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+        networkOpportunityCap:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]

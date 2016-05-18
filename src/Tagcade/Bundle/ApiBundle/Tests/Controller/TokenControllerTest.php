@@ -45,6 +45,7 @@ class TokenControllerTest extends WebTestCase
 
     /**
      * @depends testGetTokenAction
+     * @param Response $response
      */
     public function testValidJWTResponse(Response $response)
     {

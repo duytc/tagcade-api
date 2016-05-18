@@ -3,14 +3,10 @@
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Tagcade\Cache\ConfigurationCache;
 use Tagcade\Cache\ConfigurationCacheInterface;
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdTagInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
@@ -91,6 +87,4 @@ class UpdateExistingRonTagSlotCacheListener
             $this->configCache->removeRonTagSlotCacheForRonAdTag($entity);
         }
     }
-
-
 }

@@ -21,9 +21,10 @@ interface NamespaceCacheInterface
     /**
      * Namespace version
      *
+     * @param bool $forceFromCache
      * @return string $namespaceVersion
      */
-    public function getNamespaceVersion($forceFromCache=false);
+    public function getNamespaceVersion($forceFromCache = false);
 
     /**
      * Fetches an entry from the cache.

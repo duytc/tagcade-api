@@ -2,23 +2,16 @@
 
 namespace Tagcade\Cache\V2;
 
-use Doctrine\ORM\PersistentCollection;
-use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;
 use Tagcade\Cache\V2\Refresher\AdSlotCacheInterface;
 use Tagcade\Cache\V2\Refresher\RonAdSlotCacheInterface;
-use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
-use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
-use Tagcade\DomainManager\NativeAdSlotManagerInterface;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
@@ -76,7 +69,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     {
         $namespace = $ron ? $this->ronAdSlotCache->getNamespace($id) : $this->adSlotCache->getNamespace($id);
         $this->cache->setNamespace($namespace);
-        $currentVersion = (int) $this->cache->getNamespaceVersion(true);
+        $currentVersion = (int)$this->cache->getNamespaceVersion(true);
 //        $newVersion = $oldVersion + 1;
         $this->cache->setNamespaceVersion($currentVersion);
 
@@ -116,13 +109,11 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
 
     public function refreshCacheForReportableAdSlot(ReportableAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
-        if($adSlot instanceof DisplayAdSlotInterface) {
+        if ($adSlot instanceof DisplayAdSlotInterface) {
             $this->refreshCacheForDisplayAdSlot($adSlot, $alsoRefreshRelatedDynamicAdSlot);
-        }
-        else if ($adSlot instanceof NativeAdSlotInterface) {
+        } else if ($adSlot instanceof NativeAdSlotInterface) {
             $this->refreshCacheForNativeAdSlot($adSlot, $alsoRefreshRelatedDynamicAdSlot);
-        }
-        else {
+        } else {
             throw new NotSupportedException('Not supported refreshing cache for this type of ad slot yet');
         }
     }
@@ -132,7 +123,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
      */
     public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
-       return $this->adSlotCache->refreshCacheForDisplayAdSlot($adSlot, $alsoRefreshRelatedDynamicAdSlot);
+        return $this->adSlotCache->refreshCacheForDisplayAdSlot($adSlot, $alsoRefreshRelatedDynamicAdSlot);
     }
 
     /**
@@ -146,7 +137,7 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     }
 
 
-    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot,  $alsoRefreshRelatedDynamicAdSlot = true)
+    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
         return $this->adSlotCache->refreshCacheForNativeAdSlot($nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot);
     }

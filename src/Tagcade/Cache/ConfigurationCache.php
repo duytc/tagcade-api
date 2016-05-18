@@ -84,6 +84,7 @@ class ConfigurationCache implements ConfigurationCacheInterface
     /**
      * Add ad tag to ron tag slot cache
      * @param AdTagInterface $adTag
+     * @param RonAdTagInterface $ronAdTag
      * @return int
      */
     public function addAdTagToRonTagSlotCache(AdTagInterface $adTag, RonAdTagInterface $ronAdTag)
@@ -95,7 +96,7 @@ class ConfigurationCache implements ConfigurationCacheInterface
 
         $ronTagSlotKey = $this->getRonTagSlotKey($ronAdTag, $adTag->getAdSlot());
         if (false === $ronTagSlotKey) {
-            return self::NONE; // the ad tag is in slot beloing to duplicated site
+            return self::NONE; // the ad tag is in slot that belonging to duplicated site
         }
 
         $adTagId = $this->redis->hFetch(self::REDIS_HASH_EXISTING_RON_TAG, $ronTagSlotKey);
@@ -112,6 +113,7 @@ class ConfigurationCache implements ConfigurationCacheInterface
      */
     public function removeRonTagSlotCacheForAdTag(AdTagInterface $adTag, RonAdTagInterface $ronAdTag)
     {
+        /** @var ReportableAdSlotInterface $adSlot */
         $adSlot = $adTag->getAdSlot();
         if (!$adSlot->getLibraryAdSlot()->getRonAdSlot() instanceof RonAdSlotInterface) {
             return self::NONE;
@@ -119,7 +121,7 @@ class ConfigurationCache implements ConfigurationCacheInterface
 
         $ronTagSlotKey = $this->getRonTagSlotKey($ronAdTag, $adSlot);
         if (false === $ronTagSlotKey) {
-            return self::NONE; // the ad tag is in slot beloing to duplicated site
+            return self::NONE; // the ad tag is in slot that belonging to duplicated site
         }
 
         $this->redis->hDelete(self::REDIS_HASH_EXISTING_RON_TAG, $ronTagSlotKey);
@@ -131,8 +133,7 @@ class ConfigurationCache implements ConfigurationCacheInterface
     {
         $allRelatedAdTags = array_filter(
             $ronAdTag->getLibraryAdTag()->getAdTags()->toArray(),
-            function(AdTagInterface $adTag)
-            {
+            function (AdTagInterface $adTag) {
                 return $adTag->getAdSlot()->getLibraryAdSlot()->getRonAdSlot() instanceof RonAdSlotInterface;
             }
         );
@@ -155,28 +156,27 @@ class ConfigurationCache implements ConfigurationCacheInterface
     {
         $this->removeAll();
 
-        foreach($ronAdSlots as $ronAdSlot) {
+        foreach ($ronAdSlots as $ronAdSlot) {
             if (!$ronAdSlot instanceof RonAdSlotInterface) {
                 continue;
             }
             /**
              * @var RonAdSlotInterface $ronAdSlot
              */
-            foreach($ronAdSlot->getLibraryAdSlot()->getAdSlots() as $adSlot) {
+            foreach ($ronAdSlot->getLibraryAdSlot()->getAdSlots() as $adSlot) {
                 /**
                  * @var BaseAdSlotInterface $adSlot
                  */
                 $this->addAdSlotToRonSlotDomainCache($adSlot);
             }
 
-            foreach($ronAdSlot->getRonAdTags() as $ronAdTag) {
+            foreach ($ronAdSlot->getRonAdTags() as $ronAdTag) {
                 /**
                  * @var RonAdTagInterface $ronAdTag
                  */
                 $allRelatedAdTags = array_filter(
                     $ronAdTag->getLibraryAdTag()->getAdTags()->toArray(),
-                    function(AdTagInterface $adTag)
-                    {
+                    function (AdTagInterface $adTag) {
                         return $adTag->getAdSlot()->getLibraryAdSlot()->getRonAdSlot() instanceof RonAdSlotInterface;
                     }
                 );

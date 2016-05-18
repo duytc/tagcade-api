@@ -4,9 +4,7 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
 
 /**
  * This is a work around to have unique constraint working om site, library slot, and deleteAt by using deleteToken instead.

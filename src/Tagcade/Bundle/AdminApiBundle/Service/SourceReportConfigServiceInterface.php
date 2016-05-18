@@ -2,12 +2,6 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Service;
 
-use Doctrine\Common\Persistence\ObjectRepository;
-use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
-
 interface SourceReportConfigServiceInterface
 {
     /**
@@ -17,21 +11,21 @@ interface SourceReportConfigServiceInterface
      *
      * {
      *      "reports": {
-     *            "yoursite.com": {
-     *                  "domain": "yoursite.com",
-     *                  "username": "myuser",
+     *            "yourSite.com": {
+     *                  "domain": "yourSite.com",
+     *                  "username": "myUser",
      *                  "pub_id": 1,
      *                  "site_id": 1
      *            },
-     *            "yoursite1.com": {
-     *                  "domain": "yoursite.com",
-     *                  "username": "myuser",
+     *            "yourSite1.com": {
+     *                  "domain": "yourSite.com",
+     *                  "username": "myUser",
      *                  "pub_id": 1,
      *                  "site_id": 2
      *            },
-     *              "yoursite2.com": {
-     *                  "domain": "yoursite.com",
-     *                  "username": "myuser",
+     *              "yourSite2.com": {
+     *                  "domain": "yourSite.com",
+     *                  "username": "myUser",
      *                  "pub_id": 2,
      *                  "site_id": 3
      *            }
@@ -44,10 +38,10 @@ interface SourceReportConfigServiceInterface
      *         },
      *         {
      *             "email": "youremail@address.com",
-     *             "reports": ["yoursite.com"]
+     *             "reports": ["yourSite.com"]
      *         }
      *     ]
      * }
      */
     public function getAllSourceReportConfig();
-} 
+}

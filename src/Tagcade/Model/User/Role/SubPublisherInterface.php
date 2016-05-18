@@ -2,7 +2,8 @@
 
 namespace Tagcade\Model\User\Role;
 
-use Tagcade\Model\Core\SubPublisherSiteInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 
 interface SubPublisherInterface extends UserRoleInterface
 {
@@ -18,18 +19,51 @@ interface SubPublisherInterface extends UserRoleInterface
     public function setPublisher(PublisherInterface $publisher);
 
     /**
-     * @return array|SubPublisherSiteInterface[]
-     */
-    public function getSubPublisherSites();
-
-    /**
-     * @param array|SubPublisherSiteInterface[] $subPublisherSites
-     * @return self
-     */
-    public function setSubPublisherSites(array $subPublisherSites);
-
-    /**
      * @return array
      */
     public function getEnabledModules();
+
+    /**
+     * @return boolean
+     */
+    public function isDemandSourceTransparency();
+
+    /**
+     * @param boolean $demandSourceTransparency
+     * @return self
+     */
+    public function setDemandSourceTransparency($demandSourceTransparency);
+
+    /**
+     * @return boolean
+     */
+    public function isEnableViewTagcadeReport();
+
+    /**
+     * @param boolean $enableViewTagcadeReport
+     * @return self
+     */
+    public function setEnableViewTagcadeReport($enableViewTagcadeReport);
+
+    /**
+     * @return array|SubPublisherPartnerRevenueInterface[]
+     */
+    public function getSubPublisherPartnerRevenue();
+
+    /**
+     * @param array|SubPublisherPartnerRevenueInterface[] $subPublisherPartnerRevenue
+     * @return self
+     */
+    public function setSubPublisherPartnerRevenue($subPublisherPartnerRevenue);
+
+    /**
+     * @return array|SiteInterface[] $sites
+     */
+    public function getSites();
+
+    /**
+     * @param array|SiteInterface[] $sites
+     * @return self
+     */
+    public function setSites(array $sites);
 }

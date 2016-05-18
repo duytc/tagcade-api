@@ -11,10 +11,9 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Form\Type\AbstractRoleSpecificFormType;
-use Tagcade\Form\Type\SubPublisherSiteFormType;
-use Tagcade\Model\Core\SubPublisherSiteInterface;
+use Tagcade\Form\Type\SubPublisherPartnerRevenueFormType;
+use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class SubPublisherFormType extends AbstractRoleSpecificFormType
@@ -24,7 +23,9 @@ class SubPublisherFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('username')
             ->add('plainPassword')
-            ->add('email');
+            ->add('email')
+            ->add('demandSourceTransparency')
+            ->add('enableViewTagcadeReport');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -37,15 +38,32 @@ class SubPublisherFormType extends AbstractRoleSpecificFormType
 
         if (!$this->userRole instanceof SubPublisherInterface) {
             $builder->add('enabled');
+            $builder->add('demandSourceTransparency');
+            $builder->add('enableViewTagcadeReport');
         }
 
-        $builder->add('subPublisherSites', 'collection', array(
+        $builder->add('subPublisherPartnerRevenue', 'collection', array(
                 'mapped' => true,
-                'type' => new SubPublisherSiteFormType(),
+                'type' => new SubPublisherPartnerRevenueFormType(),
                 'allow_add' => true,
                 'allow_delete' => true,
             )
         );
+
+        //$builder->addEventListener(
+        //    FormEvents::PRE_SET_DATA,
+        //    function (FormEvent $event) {
+        //        $form = $event->getForm();
+        //
+        //         // validate 'demandSourceTransparency' before submitting
+        //         if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasUnifiedReportModule()) {
+        //             if ($form->has('demandSourceTransparency') && $form->get('demandSourceTransparency')->getData() !== null) {
+        //                 $form->get('demandSourceTransparency')->addError(new FormError('this sub publisher belongs to publisher that does not have unified report module enabled'));
+        //                 return;
+        //             }
+        //         }
+        //    }
+        //);
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
@@ -54,26 +72,37 @@ class SubPublisherFormType extends AbstractRoleSpecificFormType
                 $subPublisher = $event->getData();
                 $form = $event->getForm();
 
-                /** @var SubPublisherSiteInterface[] $subPublisherSites */
-                $subPublisherSites = $event->getForm()->get('subPublisherSites')->getData();
+                /* validate partners and re-mapping subPublisher and subPublisherPartnerRevenue to relationship for cascading */
+                /** @var Collection|SubPublisherPartnerRevenueInterface[] $subPublisherPartnerRevenues */
+                $subPublisherPartnerRevenues = $event->getForm()->get('subPublisherPartnerRevenue')->getData();
 
-                if($subPublisherSites === null) {
-                    $form->get('subPublisherSites')->addError(new FormError('subPublisherSites must be an array string'));
+                if ($subPublisherPartnerRevenues === null) {
+                    $form->get('subPublisherPartnerRevenue')->addError(new FormError('subPublisherPartnerRevenue must be an array string'));
                     return;
                 }
 
-                foreach ($subPublisherSites as $sps) {
-                    if (!$sps->getSubPublisher() instanceof SubPublisherInterface) {
-                        $sps->setSubPublisher($subPublisher);
+                // validate
+                $ownPublisherId = $subPublisher->getPublisher()->getId();
+                foreach ($subPublisherPartnerRevenues as $sppr) {
+                    if (!in_array($ownPublisherId, $sppr->getAdNetworkPartner()->getPublisherIds())) {
+                        $form->get('subPublisherPartnerRevenue')->addError(new FormError('adNetworkPartner is not allowed by own Publisher'));
+                        return;
                     }
                 }
 
-                if ($subPublisherSites instanceof Collection) {
-                    $subPublisherSites = $subPublisherSites->toArray();
+                // re-mapping
+                foreach ($subPublisherPartnerRevenues as $sppr) {
+                    if (!$sppr->getSubPublisher() instanceof SubPublisherInterface) {
+                        $sppr->setSubPublisher($subPublisher);
+                    }
                 }
 
-                $subPublisherSites = array_unique($subPublisherSites);
-                $subPublisher->setSubPublisherSites($subPublisherSites);
+                if ($subPublisherPartnerRevenues instanceof Collection) {
+                    $subPublisherPartnerRevenues = $subPublisherPartnerRevenues->toArray();
+                }
+
+                $subPublisherPartnerRevenues = array_unique($subPublisherPartnerRevenues);
+                $subPublisher->setSubPublisherPartnerRevenue($subPublisherPartnerRevenues);
             }
         );
     }

@@ -11,9 +11,7 @@ use Tagcade\Model\Report\RtbReport\SuperReportInterface;
 
 trait SubReportsTrait
 {
-    /**
-     * @var ArrayCollection
-     */
+    /** @var ArrayCollection */
     protected $subReports;
 
     /**

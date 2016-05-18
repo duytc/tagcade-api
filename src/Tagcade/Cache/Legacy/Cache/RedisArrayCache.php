@@ -25,6 +25,28 @@ class RedisArrayCache implements RedisArrayCacheInterface
         $this->redis = $redis;
     }
 
+    public function multi($host)
+    {
+        return $this->redis->multi($host);
+    }
+
+    public function exec()
+    {
+        return $this->redis->exec();
+    }
+
+    public function hosts()
+    {
+        return $this->redis->_hosts();
+    }
+
+    public function target($key)
+    {
+        return $this->redis->_target($key);
+    }
+
+
+
     /**
      * {@inheritdoc}
      */

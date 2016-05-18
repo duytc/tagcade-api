@@ -3,9 +3,7 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\RTBEnabledInterface;
 
 class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, ReportableAdSlotInterface
@@ -18,7 +16,6 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
         $this->setSlotType(AdSlotAbstract::TYPE_NATIVE);
     }
-
 
     /**
      * @inheritdoc
@@ -73,14 +70,14 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
         $adTags = $this->getAdTags()->toArray();
 
-        usort($adTags, function(AdTagInterface $a, AdTagInterface $b) {
+        usort($adTags, function (AdTagInterface $a, AdTagInterface $b) {
                 return strcmp($a->getRefId(), $b->getRefId());
             }
         );
 
         /** @var AdTagInterface $t */
-        foreach($adTags as $t){
-            $array[] =  $t->checkSum();
+        foreach ($adTags as $t) {
+            $array[] = $t->checkSum();
         }
 
         return md5(serialize($array));

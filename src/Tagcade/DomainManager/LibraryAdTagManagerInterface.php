@@ -2,7 +2,6 @@
 
 namespace Tagcade\DomainManager;
 
-use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryAdTagManagerInterface extends ManagerInterface
@@ -14,5 +13,4 @@ interface LibraryAdTagManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getLibraryAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
-
 }

@@ -22,11 +22,10 @@ trait OpportunitiesTrait
      */
     public function setOpportunity($opportunities)
     {
-        $this->opportunities = (int) $opportunities;
+        $this->opportunities = (int)$opportunities;
 
         return $this;
     }
-
 
     /**
      * @inheritdoc

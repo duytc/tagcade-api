@@ -3,12 +3,14 @@
 namespace Tagcade\Worker\Workers;
 
 use StdClass;
+use Tagcade\DomainManager\AdNetworkManagerInterface;
+use Tagcade\DomainManager\AdTagManagerInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\RevenueEditorInterface;
-use Tagcade\DomainManager\AdTagManagerInterface;
-use Tagcade\DomainManager\AdNetworkManagerInterface;
-use Tagcade\DomainManager\SiteManagerInterface;
 
 // responsible for doing the background tasks assigned by the manager
 // all public methods on the class represent tasks that can be done
@@ -30,7 +32,8 @@ class UpdateRevenueWorker
         $this->siteManager = $siteManager;
     }
 
-    public function updateRevenueForAdTag(StdClass $params) {
+    public function updateRevenueForAdTag(StdClass $params)
+    {
         $adTag = $this->adTagManager->find($params->adTagId);
 
         if (!$adTag) {
@@ -45,7 +48,9 @@ class UpdateRevenueWorker
         );
     }
 
-    public function updateRevenueForAdNetwork(StdClass $params) {
+    public function updateRevenueForAdNetwork(StdClass $params)
+    {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->adNetworkManager->find($params->adNetworkId);
 
         if (!$adNetwork) {
@@ -60,13 +65,16 @@ class UpdateRevenueWorker
         );
     }
 
-    public function updateRevenueForAdNetworkAndSite(StdClass $params) {
+    public function updateRevenueForAdNetworkAndSite(StdClass $params)
+    {
+        /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->adNetworkManager->find($params->adNetworkId);
 
         if (!$adNetwork) {
             throw new InvalidArgumentException('That ad network does not exist');
         }
 
+        /** @var SiteInterface $site */
         $site = $this->siteManager->find($params->siteId);
 
         if (!$site) {

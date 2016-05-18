@@ -7,7 +7,6 @@ use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
-use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 interface ReplicatorInterface {
@@ -22,8 +21,8 @@ interface ReplicatorInterface {
 
     /**
      * add new ad tag to all slots that refer to the same library slot that is persisting new $librarySlotTag
-     * @param LibrarySlotTagInterface $librarySlotTag
      *
+     * @param LibrarySlotTagInterface $librarySlotTag
      * @return AdTagInterface[]|null
      */
     public function replicateNewLibrarySlotTagToAllReferencedAdSlots(LibrarySlotTagInterface $librarySlotTag);
@@ -41,5 +40,4 @@ interface ReplicatorInterface {
      * @return mixed
      */
     public function replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot);
-
-} 
+}

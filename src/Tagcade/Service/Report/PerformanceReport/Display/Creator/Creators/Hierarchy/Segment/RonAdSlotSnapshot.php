@@ -3,17 +3,11 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment;
 
 use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
-use Tagcade\Model\Core\SegmentInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot as RonAdSlotReportType;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag as RonAdTagReportType;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\BillableSnapshotCreatorAbstract;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\ConstructCalculatedReportTrait;
 
@@ -47,10 +41,10 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
             ->setDate($this->getDate())
         ;
 
-        $ronAdSlotReportCounts[] = $this->eventCounter->getRonAdSlotReport($ronAdSlot->getId(), $segment instanceof SegmentInterface ? $segment->getId() : null);
+        $ronAdSlotReportCounts[] = $this->eventCounter->getRonAdSlotReport($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId() : null);
 
         $ronAdTagIds = $this->ronAdTagRepository->getLibrarySlotTagIdsByLibraryAdSlot($ronAdSlot->getLibraryAdSlot());
-        $ronAdTagCounts = $this->eventCounter->getRonAdTagReports($ronAdTagIds, $segment instanceof SegmentInterface ? $segment->getId() : null);
+        $ronAdTagCounts = $this->eventCounter->getRonAdTagReports($ronAdTagIds, $segment instanceof SegmentModelInterface ? $segment->getId() : null);
 
         $this->parseRawReportData($report, array_merge($ronAdSlotReportCounts, $ronAdTagCounts));
 

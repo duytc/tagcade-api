@@ -3,6 +3,7 @@
 namespace Tagcade\Security\Authorization\Voter;
 
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
 class AdSlotVoter extends EntityVoterAbstract
@@ -33,21 +34,14 @@ class AdSlotVoter extends EntityVoterAbstract
      */
     protected function isSubPublisherActionAllowed($adSlot, UserEntityInterface $user, $action)
     {
-        if (count($adSlot->getSite()->getSubPublisherSites()) < 1) {
-            // this ad slot belongs to a site which does not allow access to any sub publisher
-            return false;
+        /**
+         * @var SubPublisherInterface $user
+         */
+        if($action == self::VIEW ) {
+            return true;
         }
 
-        // check subPublisherId
-        $isSubPublisherAllowed = false;
-
-        foreach ($adSlot->getSite()->getSubPublishers() as $subPublisher) {
-            if ($user->getId() === $subPublisher->getId()) {
-                $isSubPublisherAllowed = true;
-                break;
-            }
-        }
-
-        return $isSubPublisherAllowed && strcasecmp($action, 'view') === 0;
+        // not allowed
+        return false;
     }
 }

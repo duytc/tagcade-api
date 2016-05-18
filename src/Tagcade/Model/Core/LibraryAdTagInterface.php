@@ -3,11 +3,11 @@
 namespace Tagcade\Model\Core;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Model\ModelInterface;
 
-interface LibraryAdTagInterface extends  ModelInterface{
+interface LibraryAdTagInterface extends ModelInterface
+{
     /**
      * @param $id
      * @return self
@@ -24,7 +24,6 @@ interface LibraryAdTagInterface extends  ModelInterface{
      * @return self
      */
     public function setHtml($html);
-
 
     /**
      * @param AdNetworkInterface $adNetwork
@@ -59,6 +58,17 @@ interface LibraryAdTagInterface extends  ModelInterface{
      * @return int
      */
     public function getAdType();
+
+    /**
+     * @return mixed
+     */
+    public function getPartnerTagId();
+
+    /**
+     * @param mixed $partnerTagId
+     * @return self
+     */
+    public function setPartnerTagId($partnerTagId);
 
     /**
      * set AdType

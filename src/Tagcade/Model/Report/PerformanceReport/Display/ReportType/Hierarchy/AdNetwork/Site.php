@@ -23,7 +23,7 @@ class Site extends AbstractCalculatedReportType
      */
     private $adNetwork;
 
-    public function __construct(SiteInterface $site, AdNetworkInterface $adNetwork)
+    public function __construct(SiteInterface $site, AdNetworkInterface $adNetwork = null)
     {
         $this->site = $site;
         $this->adNetwork = $adNetwork;

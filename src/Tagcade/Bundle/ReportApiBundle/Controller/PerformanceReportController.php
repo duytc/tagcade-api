@@ -4,12 +4,14 @@ namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use InvalidArgumentException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -17,7 +19,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 /**
- * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY')) or has_role('ROLE_SUB_PUBLISHER')")
+ * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
  *
  * Only allow admins and publishers with the display module enabled
  */
@@ -104,7 +106,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/accounts/{publisherId}", requirements={"publisherId" = "\d+"})
      *
@@ -134,7 +136,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/accounts/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
      *
@@ -163,7 +165,295 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/all/partners", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getPublisherAllPartnersByPartnerAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getPublisherAllPartnersByDayAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllPartnersReportByDayForPublisher($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/all/sites", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $publisherId
+     *
+     * @return array
+     */
+    public function getPublisherAllPartnersBySiteAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllPartnersReportBySiteForPublisher($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/all/adtags", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $publisherId
+     *
+     * @return array
+     */
+    public function getPublisherAllPartnersByAdTagAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllPartnersReportByAdTagForPublisher($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param $partnerId
+     * @return array
+     */
+    public function getPartnerAllSitesByDayAction($publisherId, $partnerId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+
+        return $this->getResult(
+            $publisher instanceof SubPublisherInterface
+                ? $this->getReportBuilder()->getAllSitesReportByDayForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
+                : $this->getReportBuilder()->getAllSitesReportByDayForPartner($partner, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/all/sites", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $publisherId
+     *
+     * @param $partnerId
+     * @return array
+     */
+    public function getPartnerAllSiteBySiteAction($publisherId, $partnerId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+
+        return $this->getResult(
+            $publisher instanceof SubPublisherInterface
+                ? $this->getReportBuilder()->getAllSitesReportBySiteForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
+                : $this->getReportBuilder()->getAllSitesReportBySiteForPartner($partner, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/all/adtags", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $publisherId
+     *
+     * @param $partnerId
+     * @return array
+     */
+    public function getPartnerAllSitesByAdTagAction($publisherId, $partnerId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+
+        return $this->getResult(
+            $publisher instanceof SubPublisherInterface
+                ? $this->getReportBuilder()->getAllSitesReportByAdTagForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
+                : $this->getReportBuilder()->getAllSitesReportByAdTagForPartner($partner, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/{siteId}", requirements={"publisherId" = "\d+", "partnerId" = "\d+", "siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param $partnerId
+     * @param $siteId
+     * @return array
+     */
+    public function getPartnerSiteByDayAction($publisherId, $partnerId, $siteId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+        $site = $this->getSite($siteId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getSiteReportByDayForPartner($partner, $site, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/{siteId}/adtags", requirements={"publisherId" = "\d+", "partnerId" = "\d+", "siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $publisherId
+     *
+     * @param $partnerId
+     * @param $siteId
+     * @return array
+     */
+    public function getPartnerSiteByAdTagAction($publisherId, $partnerId, $siteId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+        $site = $this->getSite($siteId);
+
+        return $this->getResult(
+            $publisher instanceof SubPublisherInterface
+                ? $this->getReportBuilder()->getSiteReportByAdTagForPartnerWithSubPublisher($partner, $site, $publisher, $this->getParams())
+                : $this->getReportBuilder()->getSiteReportByAdTagForPartner($partner, $site, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adnetworks/{adNetworkId}", requirements={"adNetworkId" = "\d+"})
      *
@@ -192,7 +482,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adnetworks/{adNetworkId}/sites", requirements={"adNetworkId" = "\d+"})
      *
@@ -221,7 +511,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
@@ -253,7 +543,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adnetworks/{adNetworkId}/adtags", requirements={"adNetworkId" = "\d+"})
      *
@@ -284,7 +574,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adnetworks/{adNetworkId}/sites/{siteId}/adtags", requirements={"adNetworkId" = "\d+", "siteId" = "\d+"})
      *
@@ -313,11 +603,6 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     *
-     * @Rest\View(
-     *      serializerGroups={"billed_report_group.summary", "report_type.summary", "site.minimum"}
-     * )
      *
      * @ApiDoc(
      *  section = "Performance Report",
@@ -371,7 +656,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/sites/{siteId}/adnetworks", requirements={"siteId" = "\d+"})
      *
@@ -450,6 +735,9 @@ class PerformanceReportController extends FOSRestController
     {
         $site = $this->getSite($siteId);
 
+        $adTags = $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForSite($site);
+        $this->checkUserPermission($adTags);
+
         return $this->getResult(
             $this->getReportBuilder()->getSiteAdTagsReport($site, $this->getParams())
         );
@@ -482,7 +770,7 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ad slot does not exist');
         }
 
-        $this->checkUserPermission($adSlot);
+      //  $this->checkUserPermission($adSlot);
 
         return $this->getResult(
             $this->getReportBuilder()->getAdSlotReport($adSlot, $this->getParams())
@@ -490,7 +778,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adslots")
      *
@@ -588,7 +876,8 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ad tag does not exist');
         }
 
-        $this->checkUserPermission($adSlot);
+        $adTags = $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdSlot($adSlot);
+        $this->checkUserPermission($adTags);
 
         return $this->getResult(
             $this->getReportBuilder()->getAdSlotAdTagsReport($adSlot, $this->getParams())
@@ -599,7 +888,7 @@ class PerformanceReportController extends FOSRestController
      * There's only on ad slot in a single site that was created from an ron ad slot.
      * Hence report for ron ad slot break down by site is corresponding to break down by ad slot
      *
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/ronadslots/{ronAdSlotId}/segments", requirements={"ronAdSlotId" = "\d+"})
      *
@@ -639,7 +928,7 @@ class PerformanceReportController extends FOSRestController
      * There's only on ad slot in a single site that was created from an ron ad slot.
      * Hence report for ron ad slot break down by site is corresponding to break down by ad slot
      *
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/ronadslots/{ronAdSlotId}/sites", requirements={"ronAdSlotId" = "\d+"})
      *
@@ -676,7 +965,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/ronadslots/{ronAdSlotId}/adtags", requirements={"ronAdSlotId" = "\d+"})
      *
@@ -713,7 +1002,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/segments/{segmentId}", requirements={"segmentId" = "\d+"})
      *
@@ -748,7 +1037,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/segments/{segmentId}/ronadslots", requirements={"segmentId" = "\d+"})
      *
@@ -783,7 +1072,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/adtags/{adTagId}", requirements={"adTagId" = "\d+"})
      *
@@ -819,12 +1108,42 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @param mixed $entity The entity instance
+     * @param ModelInterface|ModelInterface[] $entity The entity instance
+     * @param string $permission
      * @return bool
+     * @throws InvalidArgumentException if you pass an unknown permission
      * @throws AccessDeniedException
      */
-    protected function checkUserPermission($entity)
+    protected function checkUserPermission($entity, $permission = 'view')
     {
+        $toCheckEntities = [];
+        if ($entity instanceof ModelInterface) {
+            $toCheckEntities[] = $entity;
+        }
+        else if (is_array($entity)) {
+            $toCheckEntities = $entity;
+        }
+        else {
+            throw new \InvalidArgumentException('Expect argument to be ModelInterface or array of ModelInterface');
+        }
+
+        foreach ($toCheckEntities as $item) {
+            if (!$item instanceof ModelInterface) {
+                throw new \InvalidArgumentException('Expect Entity Object and implement ModelInterface');
+            }
+
+            $this->checkUserPermissionForSingleEntity($item, $permission);
+        }
+
+        return true;
+    }
+
+    protected function checkUserPermissionForSingleEntity(ModelInterface $entity, $permission)
+    {
+        if (!in_array($permission, ['view', 'edit'])) {
+            throw new InvalidArgumentException('checking for an invalid permission');
+        }
+
         $securityContext = $this->get('security.context');
 
         // allow admins to everything
@@ -833,8 +1152,13 @@ class PerformanceReportController extends FOSRestController
         }
 
         // check voters
-        if (false === $securityContext->isGranted('view', $entity)) {
-            throw new AccessDeniedException(sprintf('You do not have permission to view this'));
+        if (false === $securityContext->isGranted($permission, $entity)) {
+            throw new AccessDeniedException(
+                sprintf(
+                    'You do not have permission to %s this object or it does not exist',
+                    $permission
+                )
+            );
         }
 
         return true;
@@ -894,6 +1218,26 @@ class PerformanceReportController extends FOSRestController
         $this->checkUserPermission($site);
 
         return $site;
+    }
+
+    /**
+     * get ad network by $adNetworkId that has a partner with publisher
+     * @param int $adNetworkId
+     * @param PublisherInterface|SubPublisherInterface $publisher
+     * @return \Tagcade\Model\Core\AdNetworkInterface
+     */
+    protected function getAdNetworkHasPartnerWithPublisher($adNetworkId, PublisherInterface $publisher)
+    {
+        $adNetwork = $this->getAdNetwork($adNetworkId);
+        $publisherId = ($publisher instanceof SubPublisherInterface) ? $publisher->getPublisher()->getId() : $publisher->getId();
+
+        if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface
+            || $adNetwork->getPublisher()->getId() != $publisherId
+        ) {
+            throw new NotFoundHttpException('That ad network does not have partner with publisher');
+        }
+
+        return $adNetwork;
     }
 
     /**

@@ -13,18 +13,21 @@ Tagcade\Bundle\UserBundle\Entity\User:
     virtual_properties:
 #        getUserRoles: ~
         getEnabledModules:
-            groups: [user.summary]
+            groups: [user.summary, user.detail]
 
     properties:
         id:
             expose: true
-            groups: [user.summary]
+            groups: [user.summary, user.detail]
         username:
             expose: true
-            groups: [user.summary]
+            groups: [user.summary, user.detail]
         email:
             expose: true
+            groups: [user.summary, user.detail]
         lastLogin:
             expose: true
+            groups: [user.summary, user.detail]
         enabled:
             expose: true
+            groups: [user.summary, user.detail]

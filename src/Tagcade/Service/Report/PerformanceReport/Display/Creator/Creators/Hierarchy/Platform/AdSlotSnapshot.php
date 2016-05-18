@@ -4,8 +4,6 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
-use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -15,9 +13,8 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotInterface, SnapshotCreatorInterface
 {
     use ConstructCalculatedReportTrait;
-    /**
-     * @var AdTagManagerInterface
-     */
+
+    /** @var AdTagManagerInterface */
     private $adTagManager;
 
     public function __construct(AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator)
@@ -37,8 +34,7 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
         $report
             ->setAdSlot($adSlot)
             ->setName($adSlot->getName())
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $adSlotReportCounts = $this->eventCounter->getAdSlotReports(array($adSlot->getId()));
 

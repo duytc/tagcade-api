@@ -40,4 +40,5 @@ interface CalculatedReportInterface extends ReportInterface, BilledReportDataInt
      */
     public function getRtbImpressions();
 
+    public function setThresholdBilledAmount($chainToSubReports = true);
 }

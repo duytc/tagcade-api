@@ -1,12 +1,13 @@
 <?php
 
 namespace Tagcade\Repository\Core;
+
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 
-interface LibrarySlotTagRepositoryInterface extends ObjectRepository{
+interface LibrarySlotTagRepositoryInterface extends ObjectRepository
+{
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @param int|null $limit
@@ -25,4 +26,13 @@ interface LibrarySlotTagRepositoryInterface extends ObjectRepository{
      * @return LibrarySlotTagInterface|null
      */
     public function getByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId);
+
+    /**
+     * get all librarySlotTags By LibraryAdSlot And Differ RefId (not include the ad tag with refId)
+     *
+     * @param BaseLibraryAdSlotInterface $libraryAdSlot
+     * @param $refId
+     * @return LibrarySlotTagInterface|null
+     */
+    public function getByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId);
 }

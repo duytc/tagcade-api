@@ -1,0 +1,37 @@
+Tagcade\Model\Report\UnifiedReport\Comparison\AbstractReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getTotalOpportunityComparison:
+            type: float
+        getPassbacksComparison:
+            type: float
+        getTagcadeECPM:
+            type: float
+        getECPMComparison:
+            type: float
+        getRevenueOpportunity:
+            type: float
+        getTagcadeFillRate:
+            type: float
+        getPartnerFillRate:
+            type: float
+        getPartnerTotalOpportunities:
+            type: integer
+        getTagcadeTotalOpportunities:
+            type: integer
+        getPartnerImpressions:
+            type: integer
+        getTagcadeImpressions:
+            type: integer
+        getPartnerPassbacks:
+            type: integer
+        getTagcadePassbacks:
+            type: integer
+        getPartnerEstCPM:
+            type: float
+        getTagcadeEstCPM:
+            type: float
+        getPartnerEstRevenue:
+            type: float
+        getTagcadeEstRevenue:
+            type: float

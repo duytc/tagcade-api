@@ -4,13 +4,12 @@ namespace Tagcade\Cache\V2\Refresher;
 
 
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Worker\Manager;
 
-abstract class RefresherAbstract {
-
+abstract class RefresherAbstract
+{
     const NAMESPACE_RON_AD_SLOT_CACHE_KEY = 'tagcade_ron_adslot_v2_%d';
     const NAMESPACE_CACHE_KEY = 'tagcade_adslot_v2_%d';
     const CACHE_KEY_AD_SLOT = 'all_tags_array';
@@ -52,7 +51,8 @@ abstract class RefresherAbstract {
         return $this;
     }
 
-    protected function getNamespaceByEntity(ModelInterface $model) {
+    protected function getNamespaceByEntity(ModelInterface $model)
+    {
         if ($model instanceof RonAdSlotInterface) {
             return sprintf(self::NAMESPACE_RON_AD_SLOT_CACHE_KEY, $model->getId());
         }
@@ -66,6 +66,4 @@ abstract class RefresherAbstract {
     }
 
     protected abstract function createCacheDataForEntity(ModelInterface $entity);
-
-
-} 
+}

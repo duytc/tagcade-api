@@ -5,12 +5,10 @@ namespace Tagcade\Bundle\AppBundle\Command;
 
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\CSV\AdSlotImporter;
 use Tagcade\Service\CSV\AdSlotImporterInterface;
@@ -64,8 +62,7 @@ class AdSlotImportCommand extends ContainerAwareCommand
                 'f',
                 InputOption::VALUE_NONE,
                 'force the service persisting changes to DB'
-            )
-        ;
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -95,21 +92,21 @@ class AdSlotImportCommand extends ContainerAwareCommand
         if ($force === FALSE) {
             $output->writeln('<question>running in dump mode ...</question>');
             $res = $adSlotImporter->dumpChangesFromCsvForPublisher($publisher, $file, $headerRow, $separator);
-            foreach($res[AdSlotImporter::RESULT_DATA_KEY] as $i=>$site) {
-                $output->writeln(sprintf('<question>%d. site "%s" (%s) is being %s</question>', $i+1, $site[AdSlotImporter::DUMP_SITE_NAME_KEY], $site[AdSlotImporter::DUMP_SITE_DOMAIN_KEY], strtoupper($site[AdSlotImporter::DUMP_SITE_STATUS_KEY])));
+            foreach ($res[AdSlotImporter::RESULT_DATA_KEY] as $i => $site) {
+                $output->writeln(sprintf('<question>%d. site "%s" (%s) is being %s</question>', $i + 1, $site[AdSlotImporter::DUMP_SITE_NAME_KEY], $site[AdSlotImporter::DUMP_SITE_DOMAIN_KEY], strtoupper($site[AdSlotImporter::DUMP_SITE_STATUS_KEY])));
 
                 if (count($site[AdSlotImporter::DUMP_NEW_SLOTS_KEY])) {
-                    $output->writeln(sprintf('<info>   ad slots being inserted (%d slots):</info>', count($site[AdSlotImporter::DUMP_NEW_SLOTS_KEY])) );
+                    $output->writeln(sprintf('<info>   ad slots being inserted (%d slots):</info>', count($site[AdSlotImporter::DUMP_NEW_SLOTS_KEY])));
 
-                    foreach($site[AdSlotImporter::DUMP_NEW_SLOTS_KEY] as $slot) {
+                    foreach ($site[AdSlotImporter::DUMP_NEW_SLOTS_KEY] as $slot) {
                         $output->writeln(sprintf('      - name : %s, width : %d, height : %d', $slot[AdSlotImporter::DUMP_SLOT_NAME_KEY], $slot[AdSlotImporter::DUMP_SLOT_WIDTH_KEY], $slot[AdSlotImporter::DUMP_SLOT_HEIGHT_KEY]));
                     }
                 }
 
                 if (count($site[AdSlotImporter::DUMP_DELETING_SLOTS_KEY])) {
-                    $output->writeln(sprintf('<error>   ad slots being deleted (%d slots):</error>', count($site[AdSlotImporter::DUMP_DELETING_SLOTS_KEY])) );
+                    $output->writeln(sprintf('<error>   ad slots being deleted (%d slots):</error>', count($site[AdSlotImporter::DUMP_DELETING_SLOTS_KEY])));
 
-                    foreach($site[AdSlotImporter::DUMP_DELETING_SLOTS_KEY] as $slot) {
+                    foreach ($site[AdSlotImporter::DUMP_DELETING_SLOTS_KEY] as $slot) {
                         $output->writeln(sprintf('      - name : %s, width : %d, height : %d', $slot[AdSlotImporter::DUMP_SLOT_NAME_KEY], $slot[AdSlotImporter::DUMP_SLOT_WIDTH_KEY], $slot[AdSlotImporter::DUMP_SLOT_HEIGHT_KEY]));
                     }
                 }
@@ -127,7 +124,7 @@ class AdSlotImportCommand extends ContainerAwareCommand
 
         $output->writeln('start importing...');
         $result = $adSlotImporter->importCsvForPublisher($publisher, $file, $outputFileName, $headerRow, $separator);
-        $output->writeln(sprintf('<info>%d site and %d ad slot get inserted successfully!</info>', $result[AdSlotImporter::SITE_KEY], $result[AdSlotImporter::SLOT_KEY]) );
+        $output->writeln(sprintf('<info>%d site and %d ad slot get inserted successfully!</info>', $result[AdSlotImporter::SITE_KEY], $result[AdSlotImporter::SLOT_KEY]));
         $output->writeln(sprintf('<info>The output file is located at %s</info>', $result[AdSlotImporter::OUTPUT_FILE_KEY]));
     }
 }

@@ -2,22 +2,15 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Tagcade\Cache\ConfigurationCacheInterface;
-use Tagcade\DomainManager\RonAdSlotManagerInterface;
-use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Model\Core\RonAdTagInterface;
 
 /**
  * Provides a command-line interface for renewing cache using cli
  */
 class RefreshAdSlotCacheCommand extends ContainerAwareCommand
 {
-
     /**
      * Configure the CLI task
      *
@@ -27,8 +20,7 @@ class RefreshAdSlotCacheCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:cache:refresh-adslots')
-            ->setDescription('Create initial ad slot cache if needed to avoid slams');
-        ;
+            ->setDescription('Create initial ad slot cache if needed to avoid slams');;
     }
 
     /**

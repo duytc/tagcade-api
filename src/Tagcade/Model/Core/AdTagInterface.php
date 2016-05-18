@@ -4,8 +4,13 @@ namespace Tagcade\Model\Core;
 
 interface AdTagInterface extends PositionInterface
 {
+    const ACTIVE = 1;
+    const PAUSED = 0;
+    const AUTO_PAUSED = -1;
+
     /**
      * @param mixed $id
+     * @return self
      */
     public function setId($id);
 
@@ -69,11 +74,15 @@ interface AdTagInterface extends PositionInterface
      */
     public function isActive();
 
+    public function isAutoPaused();
+
+    public function activate();
+
     /**
-     * @param $boolean
-     * @return $this
+     * @param int $activeStatus
+     * @return self
      */
-    public function setActive($boolean);
+    public function setActive($activeStatus);
 
     /**
      * @param int $frequencyCap
@@ -89,6 +98,7 @@ interface AdTagInterface extends PositionInterface
     /**
      * set rotation
      * @param int $rotation
+     * @return self
      */
     public function setRotation($rotation);
 
@@ -105,7 +115,7 @@ interface AdTagInterface extends PositionInterface
 
     /**
      * @param LibraryAdTagInterface $libraryAdTag
-     * @return mixed
+     * @return self
      */
     public function setLibraryAdTag($libraryAdTag);
 
@@ -119,4 +129,42 @@ interface AdTagInterface extends PositionInterface
      * @return string
      */
     public function checkSum();
+
+    /**
+     * @return mixed
+     */
+    public function getPartnerTagId();
+
+    /**
+     * @return int
+     */
+    public function getImpressionCap();
+
+    /**
+     * @param int $impressionCap
+     * @return self
+     */
+    public function setImpressionCap($impressionCap);
+
+    /**
+     * @return int
+     */
+    public function getNetworkOpportunityCap();
+
+    /**
+     * @param int $networkOpportunityCap
+     * @return self
+     */
+    public function setNetworkOpportunityCap($networkOpportunityCap);
+
+    /**
+     * @return boolean
+     */
+    public function getAutoIncreasePosition();
+
+    /**
+     * @param bool $autoIncreasePosition
+     * @return self
+     */
+    public function setAutoIncreasePosition($autoIncreasePosition);
 }

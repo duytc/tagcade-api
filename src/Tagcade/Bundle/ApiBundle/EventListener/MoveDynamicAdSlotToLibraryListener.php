@@ -2,19 +2,13 @@
 
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Entity\Core\LibrarySlotTag;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
-use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
-use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 
 /**
@@ -27,7 +21,7 @@ class MoveDynamicAdSlotToLibraryListener
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof LibraryDynamicAdSlotInterface) {
+        if (!$entity instanceof LibraryDynamicAdSlotInterface) {
             return;
         }
 
@@ -36,7 +30,7 @@ class MoveDynamicAdSlotToLibraryListener
             $em = $args->getEntityManager();
             $adSlots = $entity->getAdSlots();
 
-            if($adSlots instanceof PersistentCollection) {
+            if ($adSlots instanceof PersistentCollection) {
                 /** @var DynamicAdSlotInterface $adSlot */
                 $adSlot = $adSlots->current();
 
@@ -62,15 +56,15 @@ class MoveDynamicAdSlotToLibraryListener
         $results = [];
 
         $defaultAdSlot = $dynamicAdSlot->getDefaultAdSlot();
-        if($defaultAdSlot instanceof DisplayAdSlotInterface || $defaultAdSlot instanceof NativeAdSlotInterface) {
+        if ($defaultAdSlot instanceof DisplayAdSlotInterface || $defaultAdSlot instanceof NativeAdSlotInterface) {
             $results[] = $defaultAdSlot;
         }
 
         $expressions = $dynamicAdSlot->getExpressions();
         /** @var ExpressionInterface $expression */
-        foreach($expressions as $expression) {
+        foreach ($expressions as $expression) {
             $expectAdSlot = $expression->getExpectAdSlot();
-            if($expectAdSlot instanceof DisplayAdSlotInterface || $expectAdSlot instanceof NativeAdSlotInterface) {
+            if ($expectAdSlot instanceof DisplayAdSlotInterface || $expectAdSlot instanceof NativeAdSlotInterface) {
                 $results[] = $expectAdSlot;
             }
         }

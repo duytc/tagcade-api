@@ -4,8 +4,6 @@ namespace Tagcade\Service;
 
 use DateTime;
 use Tagcade\Exception\Report\InvalidDateException;
-use DateInterval;
-use DatePeriod;
 
 class DateUtil implements DateUtilInterface
 {
@@ -81,7 +79,6 @@ class DateUtil implements DateUtilInterface
         return new DateTime($date->format('t-m-Y'));
     }
 
-
     /**
      * @return int
      */
@@ -97,7 +94,7 @@ class DateUtil implements DateUtilInterface
      */
     public function getNumberOfDatesPassedInMonth()
     {
-        $today =  new DateTime('today');
+        $today = new DateTime('today');
         return $today->diff($this->getFirstDateInMonth())->days;
     }
 

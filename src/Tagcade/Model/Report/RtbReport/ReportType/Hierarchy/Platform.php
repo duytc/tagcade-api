@@ -13,14 +13,13 @@ class Platform extends AbstractCalculatedReportType implements CalculatedReportT
 {
     const REPORT_TYPE = 'platform';
 
-    /**
-     * @var PublisherInterface[]
-     */
+    /** @var PublisherInterface[] */
     protected $publishers;
 
     public function __construct(array $publishers)
     {
         foreach($publishers as $publisher) {
+            /** @var PublisherInterface $publisher */
             if (!$publisher instanceof PublisherInterface) {
                 throw new InvalidArgumentException('parameter must be an array of publishers');
             }

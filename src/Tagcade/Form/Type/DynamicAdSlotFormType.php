@@ -14,7 +14,6 @@ use Tagcade\Entity\Core\DynamicAdSlot;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\InvalidFormException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
@@ -22,7 +21,6 @@ use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -50,15 +48,18 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
             // allow all sites, default is fine
             $builder->add('site', 'entity', array(
-                    'class' => Site::class,
-                    'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('site')->select('site'); }
+                'class' => Site::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('site')->select('site');
+                }
 
             ))
-            ->add('defaultAdSlot', 'entity', array(
-                'class' => AdSlotAbstract::class,
-                'query_builder' => function (EntityRepository $er) { return $er->createQueryBuilder('adslot')->select('adslot'); }
-            ))
-            ;
+                ->add('defaultAdSlot', 'entity', array(
+                    'class' => AdSlotAbstract::class,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('adslot')->select('adslot');
+                    }
+                ));
 
         } else if ($this->userRole instanceof PublisherInterface) {
 
@@ -80,8 +81,7 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                         $publisher = $this->userRole;
                         return $er->getAdSlotsForPublisherQuery($publisher);
                     }
-                ))
-            ;
+                ));
 
         } else {
             throw new LogicException('A valid user role is required by AdSlotFormType');
@@ -89,15 +89,13 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
         $builder
             ->add('libraryAdSlot', 'entity', array('class' => LibraryDynamicAdSlot::class))
-            ->add('expressions', 'collection',  array(
+            ->add('expressions', 'collection', array(
                     'mapped' => true,
                     'type' => new ExpressionFormType(),
                     'allow_add' => true,
                     'allow_delete' => true,
                 )
-            )
-        ;
-
+            );
 
         $builder->addEventListener(
             FormEvents::PRE_SUBMIT,
@@ -106,13 +104,13 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 $dynamicAdSlot = $event->getData();
 
                 //create new Library
-                if(array_key_exists('libraryAdSlot', $dynamicAdSlot) && is_array($dynamicAdSlot['libraryAdSlot'])){
+                if (array_key_exists('libraryAdSlot', $dynamicAdSlot) && is_array($dynamicAdSlot['libraryAdSlot'])) {
                     $form->remove('libraryAdSlot');
                     $form->add('libraryAdSlot', new LibraryDynamicAdSlotFormType($this->userRole));
 
-                    if($this->userRole instanceof AdminInterface) {
+                    if ($this->userRole instanceof AdminInterface) {
                         $site = $this->siteRepository->find($dynamicAdSlot['site']);
-                        if(!$site instanceof SiteInterface) {
+                        if (!$site instanceof SiteInterface) {
                             $form->get('site')->addError(new FormError('This value is not valid'));
                             return;
                         }
@@ -124,7 +122,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
             }
         );
 
-
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
@@ -133,37 +130,39 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 /** @var LibraryDynamicAdSlotInterface $libraryAdSlot */
                 $libraryAdSlot = $dynamicAdSlot->getLibraryAdSlot();
 
-                if($libraryAdSlot === null) {
+                if ($libraryAdSlot === null) {
                     // return here to let the Validation rules add error to form
                     return;
                 }
 
                 $libraryExpressions = $libraryAdSlot->getLibraryExpressions();
 
-                if(($libraryExpressions === null || ($libraryExpressions instanceof PersistentCollection && count($libraryExpressions) < 1))
-                    && $dynamicAdSlot->getDefaultAdSlot() === null) {
+                if (($libraryExpressions === null || ($libraryExpressions instanceof PersistentCollection && count($libraryExpressions) < 1))
+                    && $dynamicAdSlot->getDefaultAdSlot() === null
+                ) {
                     $event->getForm()->addError(new FormError("DefaultAdSlot and LibraryExpressions can not be both null"));
                     return;
                 }
 
-                if($dynamicAdSlot->getSite() instanceof SiteInterface &&
+                if ($dynamicAdSlot->getSite() instanceof SiteInterface &&
                     $dynamicAdSlot->getDefaultAdSlot() instanceof BaseAdSlotInterface &&
-                    $dynamicAdSlot->getDefaultAdSlot()->getSite()->getId() != $dynamicAdSlot->getSite()->getId()) {
+                    $dynamicAdSlot->getDefaultAdSlot()->getSite()->getId() != $dynamicAdSlot->getSite()->getId()
+                ) {
                     throw new InvalidArgumentException('DynamicAdSlot and DefaultAdSlot do not belong to the same site');
                 }
 
                 // if we create new Dynamic AdSlot from existing Library Dynamic AdSlot
                 // then this form must have child 'expression'
-                if($libraryAdSlot->isVisible() && $libraryAdSlot->getId() !== null) {
+                if ($libraryAdSlot->isVisible() && $libraryAdSlot->getId() !== null) {
                     $expressions = $event->getForm()->get('expressions')->getData();
                     /** @var ExpressionInterface $expression */
-                    foreach($expressions as $expression) {
+                    foreach ($expressions as $expression) {
                         $expression->setDynamicAdSlot($dynamicAdSlot);
                     }
                 } else { // we create new Dynamic AdSlot from scratch
                     $libraryExpressions = $libraryAdSlot->getLibraryExpressions();
 
-                    if($libraryExpressions === null || is_string($libraryExpressions)) {
+                    if ($libraryExpressions === null || is_string($libraryExpressions)) {
                         return;
                     }
 
@@ -172,13 +171,14 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                         $expressions = $libraryExpression->getExpressions();
                         /** @var ExpressionInterface $expression */
                         foreach ($expressions as $expression) {
-                            if(!($expression instanceof ExpressionInterface)) {
+                            if (!($expression instanceof ExpressionInterface)) {
                                 $event->getForm()->addError(new FormError("Expression null or not is array"));
                                 return;
                             }
 
-                            if($dynamicAdSlot->getSite() instanceof SiteInterface &&
-                                $expression->getExpectAdSlot()->getSite()->getId() != $dynamicAdSlot->getSite()->getId()) {
+                            if ($dynamicAdSlot->getSite() instanceof SiteInterface &&
+                                $expression->getExpectAdSlot()->getSite()->getId() != $dynamicAdSlot->getSite()->getId()
+                            ) {
                                 throw new InvalidArgumentException('DynamicAdSlot and ExpectAdSlot do not belong to the same site');
                             }
 
@@ -187,9 +187,9 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                     }
                 }
 
-                if(!$dynamicAdSlot->isSupportedNative()) {
+                if (!$dynamicAdSlot->isSupportedNative()) {
                     // Validate defaultAdSlot for native selected
-                    if($dynamicAdSlot->getDefaultAdSlot() instanceof NativeAdSlotInterface) {
+                    if ($dynamicAdSlot->getDefaultAdSlot() instanceof NativeAdSlotInterface) {
                         $event->getForm()->get('defaultAdSlot')->addError(new FormError('DefaultAdSlot must be only DisplayAdSlot in case of DynamicAdSlot\'s native not supported!'));
 
                         return;
@@ -198,10 +198,10 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
 
                 // implicitly set publisher
                 $site = $dynamicAdSlot->getSite();
-                if($site instanceof SiteInterface) {
+                if ($site instanceof SiteInterface) {
                     $publisher = $site->getPublisher();
 
-                    if($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
+                    if ($libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
                         $libraryAdSlot->setPublisher($publisher);
                         $dynamicAdSlot->setLibraryAdSlot($libraryAdSlot);
                     }
@@ -209,7 +209,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
             }
         );
     }
-
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

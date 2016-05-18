@@ -48,7 +48,7 @@ class SubPublisherHandler extends SubPublisherHandlerAbstract
      */
     protected function processForm(ModelInterface $subPublisher, array $parameters, $method = "PUT")
     {
-        /** @var SubPublisherInterface $subPublisher */
+        /** @var ModelInterface|SubPublisherInterface $subPublisher */
         if (null == $subPublisher->getPublisher()) {
             $subPublisher->setPublisher($this->getUserRole());
         }

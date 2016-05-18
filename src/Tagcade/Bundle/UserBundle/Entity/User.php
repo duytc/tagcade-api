@@ -18,6 +18,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     const MODULE_UNIFIED_REPORT = 'MODULE_UNIFIED_REPORT';
     const MODULE_RTB = 'MODULE_RTB';
     const MODULE_SUB_PUBLISHER = 'MODULE_SUB_PUBLISHER';
+    const MODULE_HEADER_BIDDING = 'MODULE_HEADER_BIDDING';
 
     // we have to redefine the properties we wish to expose with JMS Serializer Bundle
 
@@ -30,6 +31,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     protected $joinDate;
 
     protected $type;
+    protected $testAccount = false;
 
     /**
      * @inheritdoc
@@ -76,6 +78,13 @@ abstract class User extends BaseUser implements UserEntityInterface
         return in_array(static::MODULE_RTB, $this->getEnabledModules());
     }
 
+    /**
+     * @return bool
+     */
+    public function hasHeaderBiddingModule()
+    {
+        return in_array(static::MODULE_HEADER_BIDDING, $this->getEnabledModules());
+    }
 
     /**
      * @inheritdoc
@@ -118,7 +127,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     {
         $roles = $this->getRolesWithPrefix(static::USER_ROLE_PREFIX);
 
-        $roles = array_filter($roles, function($role) {
+        $roles = array_filter($roles, function ($role) {
             return $role !== static::ROLE_DEFAULT;
         });
 
@@ -153,7 +162,7 @@ abstract class User extends BaseUser implements UserEntityInterface
      */
     protected function getRolesWithPrefix($prefix)
     {
-        $roles = array_filter($this->getRoles(), function($role) use($prefix) {
+        $roles = array_filter($this->getRoles(), function ($role) use ($prefix) {
             return $this->checkRoleHasPrefix($role, $prefix);
         });
 
@@ -167,16 +176,35 @@ abstract class User extends BaseUser implements UserEntityInterface
 
     protected function addRoles(array $roles)
     {
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $this->addRole($role);
         }
     }
 
     protected function removeRoles(array $roles)
     {
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             $this->removeRole($role);
         }
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTestAccount()
+    {
+        return $this->testAccount;
+    }
+
+    /**
+     * @param boolean $testAccount
+     * @return $this|\Tagcade\Model\User\UserEntityInterface
+     */
+    public function setTestAccount($testAccount)
+    {
+        $this->testAccount = $testAccount;
+
+        return $this;
     }
 
     /**
@@ -189,7 +217,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     {
         $this->removeRoles($oldRoles);
 
-        foreach($newRoles as $role) {
+        foreach ($newRoles as $role) {
             // converts fraud_detection to FEATURE_FRAUD_DETECTION
             if (!$this->checkRoleHasPrefix($role, $requiredRolePrefix)) {
                 if ($strict) {

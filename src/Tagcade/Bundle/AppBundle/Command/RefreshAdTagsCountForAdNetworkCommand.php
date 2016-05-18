@@ -2,21 +2,19 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * Provides a command-line interface for generating and assigning uuid for all publisher
  */
 class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
 {
-
     /**
      * Configure the CLI task
      *
@@ -37,8 +35,7 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If set, all ad networks will be updated'
-            )
-        ;
+            );
     }
 
     /**
@@ -55,14 +52,13 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
         if ($input->getOption('all')) {
             $allAdNetworks = $adNetworkManager->all();
             /** @var AdNetworkInterface $adNetwork */
-            foreach($allAdNetworks as $adNetwork) {
+            foreach ($allAdNetworks as $adNetwork) {
                 $this->recalculateAdTagCountForAdNetwork($adNetwork);
                 $count++;
             }
 
             $output->writeln(sprintf('%d ad network(s) have been updated', $count));
-        }
-        else {
+        } else {
             $id = $input->getArgument('id');
 
             if ($id) {
@@ -72,12 +68,10 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
                     $this->recalculateAdTagCountForAdNetwork($adNetwork);
                     $count++;
                     $output->writeln(sprintf('%d Ad Network(s) have been updated', $count));
-                }
-                else {
+                } else {
                     $output->writeln('<error>The AdNetwork does not exist</error>');
                 }
-            }
-            else {
+            } else {
                 $output->writeln('<question>Are you missing {id} or --all option ?"</question>');
                 $output->writeln('<question>Try "php app/console tc:ad-network:refresh-ad-tag-count {id}"</question>');
                 $output->writeln('<question>Or "php app/console tc:ad-network:refresh-ad-tag-count --all"</question>');
@@ -89,11 +83,11 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
     {
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
         $adTags = $adNetwork->getAdTags();
-        $activeCount = count(array_filter($adTags, function(AdTagInterface $adTag) {
+        $activeCount = count(array_filter($adTags, function (AdTagInterface $adTag) {
             return $adTag->isActive();
         }));
 
-        $pausedCount = count(array_filter($adTags, function(AdTagInterface $adTag) {
+        $pausedCount = count(array_filter($adTags, function (AdTagInterface $adTag) {
             return !$adTag->isActive();
         }));
 

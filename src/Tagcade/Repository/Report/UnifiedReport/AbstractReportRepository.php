@@ -5,12 +5,16 @@ namespace Tagcade\Repository\Report\UnifiedReport;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Psr\Log\LoggerInterface;
 
 abstract class AbstractReportRepository extends EntityRepository
 {
-    const REPORT_AVERAGE_VALUES = 'averageValues';
-    const REPORT_TOTAL_RECORDS = 'totalRecords';
-    const REPORT_PAGINATION_RECORDS = 'paginationRecords';
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    const BATCH_SIZE = 50;
     protected function getReportsInRange(\DateTime $startDate, \DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -21,29 +25,8 @@ abstract class AbstractReportRepository extends EntityRepository
             ->setParameter('end_date', $endDate, Type::DATE);
     }
 
-    /**
-     * Convert CamelCase to Underscore
-     * @param $input
-     * @return string
-     */
-    protected function underscoreTransform($input)
+    public function setLogger(LoggerInterface $logger)
     {
-        preg_match_all('!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!', $input, $matches);
-        $ret = $matches[0];
-        foreach ($ret as &$match) {
-            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
-        }
-        return implode('_', $ret);
-    }
-
-    /**
-     * @param $field
-     * @param $direction
-     * @param $underscoreTransform
-     * @return string
-     */
-    protected function appendOrderBy($field, $direction, $underscoreTransform = true)
-    {
-        return sprintf(" ORDER BY %s %s", $underscoreTransform ? $this->underscoreTransform($field) : $field, $direction);
+        $this->logger = $logger;
     }
 }

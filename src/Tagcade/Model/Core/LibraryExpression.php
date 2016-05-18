@@ -4,42 +4,29 @@ namespace Tagcade\Model\Core;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\PersistentCollection;
 
 class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProducibleInterface
 {
-
     protected $id;
-    /**
-     * @var string
-     */
+
+    /** @var string */
     protected $expressionDescriptor;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $startingPosition = 1;
 
-    /**
-     * @var ExpressionInterface[]
-     */
+    /** @var ExpressionInterface[] */
     protected $expressions;
 
-    /**
-     * @var LibraryDynamicAdSlotInterface
-     */
+    /** @var LibraryDynamicAdSlotInterface */
     protected $libraryDynamicAdSlot;
 
-    /**
-     * @var BaseLibraryAdSlotInterface
-     */
+    /** @var BaseLibraryAdSlotInterface */
     protected $expectLibraryAdSlot;
-
 
     protected $deletedAt;
 
     protected $expressionInJs;
-
 
     /**
      * @inheritdoc
@@ -76,7 +63,6 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
         return $this->getExpressionDescriptor();
     }
 
-
     /**
      * @param string $expressionDescriptor
      * @return $this
@@ -112,7 +98,7 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
      */
     public function getExpressions()
     {
-        if($this->expressions === null) $this->expressions = new ArrayCollection();
+        if ($this->expressions === null) $this->expressions = new ArrayCollection();
 
         return $this->expressions;
     }
@@ -123,11 +109,6 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
      */
     public function setExpressions($expressions)
     {
-//        if(!empty($expressions) && $expressions === $this->expressions) {
-//            reset($expressions);
-//            $expressions[key($expressions)] = clone current($expressions);
-//        }
-
         $this->expressions = $expressions;
 
         return $this;
@@ -191,6 +172,4 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
     {
         return $this->id . "";
     }
-
-
 }

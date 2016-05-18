@@ -6,7 +6,6 @@ namespace Tagcade\DomainManager;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Model\Core\Segment;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 

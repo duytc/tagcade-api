@@ -6,7 +6,6 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Site as AdNetworkSiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -18,13 +17,10 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
 {
     use HasSubReportsTrait;
 
-    /**
-     * @var AdSlotManagerInterface
-     */
+    /** @var AdSlotManagerInterface */
     private $adSlotManager;
-    /**
-     * @var AdTagManagerInterface
-     */
+
+    /** @var AdTagManagerInterface */
     private $adTagManager;
 
     public function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager)
@@ -44,11 +40,10 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
         $report
             ->setSite($site)
             ->setName($site->getName())
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $adTagIds = $this->adTagManager->getAdTagIdsForAdNetworkAndSite($adNetwork, $site);
-        $adTagReportCounts =  $this->eventCounter->getAdTagReports($adTagIds);
+        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIds);
         unset($adTagIds);
 
         $this->parseRawReportData($report, $adTagReportCounts);
@@ -79,8 +74,7 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setBlankImpressions($data[self::CACHE_KEY_BLANK_IMPRESSION])
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
-            ->setFillRate()
-        ;
+            ->setFillRate();
 
         // TODO latter
         $report->setEstCpm((float)0);

@@ -8,6 +8,8 @@ services:
         arguments:
             - @tagcade_user.domain_manager.publisher
             - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account_snapshot
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AccountSnapshot
@@ -15,6 +17,8 @@ services:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\SiteSnapshot
@@ -22,17 +26,23 @@ services:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotSnapshot
         arguments:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdTagSnapshot
         arguments:
             - @tagcade.service.report.performance_report.est_cpm_calculator
+        calls:
+            - [setLogger, [@logger]]
 
     ### AdNetwork branch
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.adnetwork.adnetwork_snapshot:
@@ -40,26 +50,36 @@ services:
         arguments:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.adnetwork.site_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork\SiteSnapshot
         arguments:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.adnetwork.ad_tag_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\AdNetwork\AdTagSnapshot
         arguments:
             - @tagcade.service.report.performance_report.est_cpm_calculator
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment\RonAdTagSnapshot
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_slot_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment\RonAdSlotSnapshot
         arguments:
             - @tagcade.repository.library_slot_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+        calls:
+            - [setLogger, [@logger]]
 
     tagcade.service.report.performance_report.display.creator.snapshot_report_creator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\SnapshotReportCreator

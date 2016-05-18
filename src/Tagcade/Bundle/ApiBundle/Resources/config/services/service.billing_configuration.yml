@@ -1,0 +1,66 @@
+parameters:
+    # entity class
+    tagcade.entity.core.billing_configuration.class: Tagcade\Entity\Core\BillingConfiguration
+    # form class
+    tagcade.form.type.billing_configuration.class: Tagcade\Form\Type\BillingConfigurationFormType
+services:
+
+    # billing configuration ########################################
+
+    tagcade_api.handler.billing_configuration:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.ad_network
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for billing configuration handler #######
+
+    tagcade.repository.billing_configuration:
+        class: Tagcade\Repository\Core\BillingConfigurationRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.billing_configuration.class%
+
+    tagcade.domain_manager.billing_configuration:
+        class: Tagcade\DomainManager\BillingConfigurationManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.billing_configuration
+
+    tagcade.form.type.billing_configuration:
+        class: %tagcade.form.type.billing_configuration.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_billing_configuration }
+        arguments:
+          - @tagcade.repository.billing_configuration
+
+    tagcade.handler.handlers.billing_configuration.abstract:
+        class: Tagcade\Handler\Handlers\Core\BillingConfigurationHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.billing_configuration
+            - @tagcade.domain_manager.billing_configuration
+
+    tagcade.handler.handlers.billing_configuration.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\BillingConfigurationHandler
+        parent: tagcade.handler.handlers.billing_configuration.abstract
+        public: false
+
+    tagcade.handler.handlers.billing_configuration.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\BillingConfigurationHandler
+        parent: tagcade.handler.handlers.billing_configuration.abstract
+        public: false
+
+    tagcade.handler.handler_manager.billing_configuration:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.billing_configuration.class%
+            -
+                - @tagcade.handler.handlers.billing_configuration.admin
+                - @tagcade.handler.handlers.billing_configuration.publisher
+
+    # end billing configuration #####################################################

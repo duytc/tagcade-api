@@ -2,7 +2,6 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Model\Report\CalculateRevenueTrait;
@@ -258,5 +257,115 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getTotalFillRate()
     {
         return $this->totalFillRate;
+    }
+
+    /**
+     * @param mixed $totalOpportunities
+     * @return self
+     */
+    public function setTotalOpportunities($totalOpportunities)
+    {
+        $this->totalOpportunities = $totalOpportunities;
+        return $this;
+    }
+
+    /**
+     * @param mixed $impressions
+     * @return self
+     */
+    public function setImpressions($impressions)
+    {
+        $this->impressions = $impressions;
+        return $this;
+    }
+
+    /**
+     * @param mixed $passbacks
+     * @return self
+     */
+    public function setPassbacks($passbacks)
+    {
+        $this->passbacks = $passbacks;
+        return $this;
+    }
+
+    /**
+     * @param mixed $estCpm
+     * @return self
+     */
+    public function setEstCpm($estCpm)
+    {
+        $this->estCpm = $estCpm;
+        return $this;
+    }
+
+    /**
+     * @param mixed $estRevenue
+     * @return self
+     */
+    public function setEstRevenue($estRevenue)
+    {
+        $this->estRevenue = $estRevenue;
+        return $this;
+    }
+
+    /**
+     * @param mixed $averageTotalOpportunities
+     * @return self
+     */
+    public function setAverageTotalOpportunities($averageTotalOpportunities)
+    {
+        $this->averageTotalOpportunities = $averageTotalOpportunities;
+        return $this;
+    }
+
+    /**
+     * @param mixed $averageImpressions
+     * @return self
+     */
+    public function setAverageImpressions($averageImpressions)
+    {
+        $this->averageImpressions = $averageImpressions;
+        return $this;
+    }
+
+    /**
+     * @param mixed $averagePassbacks
+     * @return self
+     */
+    public function setAveragePassbacks($averagePassbacks)
+    {
+        $this->averagePassbacks = $averagePassbacks;
+        return $this;
+    }
+
+    /**
+     * @param mixed $averageFillRate
+     * @return self
+     */
+    public function setAverageFillRate($averageFillRate)
+    {
+        $this->averageFillRate = $averageFillRate;
+        return $this;
+    }
+
+    /**
+     * @param mixed $averageEstCpm
+     * @return self
+     */
+    public function setAverageEstCpm($averageEstCpm)
+    {
+        $this->averageEstCpm = $averageEstCpm;
+        return $this;
+    }
+
+    /**
+     * @param mixed $averageEstRevenue
+     * @return self
+     */
+    public function setAverageEstRevenue($averageEstRevenue)
+    {
+        $this->averageEstRevenue = $averageEstRevenue;
+        return $this;
     }
 }

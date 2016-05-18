@@ -4,18 +4,16 @@ namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\RtbReport\Selector\Params;
 use Tagcade\Service\Report\RtbReport\Selector\ReportBuilderInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY') )")
@@ -232,6 +230,7 @@ class RtbReportController extends FOSRestController
      */
     public function getAdSlotAction($adSlotId)
     {
+        /** @var ReportableAdSlotInterface $adSlot */
         $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($adSlotId);
 
         if (!$adSlot) {

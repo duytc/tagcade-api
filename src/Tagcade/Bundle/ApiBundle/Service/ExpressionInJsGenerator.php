@@ -9,6 +9,21 @@ use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 
 class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 {
+    /*
+     * "expressionDescriptor" example:
+     * {
+     *     "groupType":"AND",
+     *     "groupVal":[
+     *         {
+     *             "var":"${USER_AGENT}", // using $INTERNAL_VARIABLE
+     *             "cmp":"contains",
+     *             "val":"blackberry",
+     *             "type":"string"
+     *         }
+     *     ]
+     * }
+     */
+
     /** key groupType in expression */
     const KEY_GROUP_TYPE = 'groupType';
     /** key groupVal in expression */
@@ -62,7 +77,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         '>', '<', '==', '>=', '<=', '!=', '===', '!==',
         //STRING
         'contains', 'startsWith', 'endsWith', 'notContains', 'notEndsWith', 'notStartsWith',
-        'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !='
+        'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !=', 'is', 'isNot'
     ];
 
     static $EXPRESSION_CMP_VALUES_FOR_MATH = [
@@ -70,29 +85,33 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
     ];
 
     static $EXPRESSION_CMP_VALUES_FOR_STRING = [
-        'contains'     => ['func' => 'search',    'cmp' => ''],
-        'notContains' => ['func' => 'search',    'cmp' => ''],
-        'startsWith'   => ['func' => 'search', 'cmp' => ''],
+        'contains' => ['func' => 'search', 'cmp' => ''],
+        'notContains' => ['func' => 'search', 'cmp' => ''],
+        'startsWith' => ['func' => 'search', 'cmp' => ''],
         'notStartsWith' => ['func' => 'search', 'cmp' => ''],
-        'endsWith'     => ['func' => 'search',   'cmp' => ''],
-        'notEndsWith'     => ['func' => 'search',   'cmp' => ''],
-        'length >'     => ['func' => 'length',     'cmp' => '>'],
-        'length <'     => ['func' => 'length',     'cmp' => '<'],
-        'length =='    => ['func' => 'length',     'cmp' => '=='],
-        'length >='    => ['func' => 'length',     'cmp' => '>='],
-        'length <='    => ['func' => 'length',     'cmp' => '<='],
-        'length !='    => ['func' => 'length',     'cmp' => '!='],
+        'endsWith' => ['func' => 'search', 'cmp' => ''],
+        'notEndsWith' => ['func' => 'search', 'cmp' => ''],
+        'length >' => ['func' => 'length', 'cmp' => '>'],
+        'length <' => ['func' => 'length', 'cmp' => '<'],
+        'length ==' => ['func' => 'length', 'cmp' => '=='],
+        'length >=' => ['func' => 'length', 'cmp' => '>='],
+        'length <=' => ['func' => 'length', 'cmp' => '<='],
+        'length !=' => ['func' => 'length', 'cmp' => '!='],
+        'is' => ['func' => 'search', 'cmp' => ''],
+        'isNot' => ['func' => 'search', 'cmp' => ''],
     ];
 
     static $INTERNAL_VARIABLE_MAP = [
-        '${PAGE_URL}'=>'${PAGE_URL}', // location.href
-        '${USER_AGENT}'=>'navigator.userAgent',
-        '${SCREEN_WIDTH}'=>'top.screen.width',
-        '${SCREEN_HEIGHT}'=>'top.screen.height',
-        '${WINDOW_WIDTH}'=>'top.outerWidth',
-        '${WINDOW_HEIGHT}'=>'top.outerHeight',
-        '${DOMAIN}'=>'${DOMAIN}' // top.location.hostname
+        '${PAGE_URL}' => '${PAGE_URL}', // location.href
+        '${USER_AGENT}' => 'navigator.userAgent',
+        '${SCREEN_WIDTH}' => 'top.screen.width',
+        '${SCREEN_HEIGHT}' => 'top.screen.height',
+        '${WINDOW_WIDTH}' => 'top.outerWidth',
+        '${WINDOW_HEIGHT}' => 'top.outerHeight',
+        '${DOMAIN}' => '${DOMAIN}', // top.location.hostname
+        '${DEVICE}' => 'navigator.platform'
     ];
+
     static $SERVER_VARS = ['${COUNTRY}'];
 
     /**
@@ -106,7 +125,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $descriptor = $expression->getDescriptor();
 
         if (null == $descriptor || count($descriptor) < 1) {
-            return array('vars'=>[], 'expression'=>'');
+            return array('vars' => [], 'expression' => '');
         }
 
         $this->validateExpressionDescriptor($descriptor);
@@ -140,7 +159,6 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
             : $this->createExpressionAsConditionObject($expressionDescriptor);
     }
 
-
     /**
      * create Group (And/Or/...) Expression String as A &&/||/... B
      * @param $operator
@@ -164,7 +182,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $expString = '(' . implode(
                 $this->getOperatorInJS($operator),
                 array_map(
-                    function (array $expElement) use (&$vars){
+                    function (array $expElement) use (&$vars) {
 
                         $exp = $this->createExpressionObject($expElement);
                         $vars = array_merge($vars, $exp['vars']);
@@ -179,9 +197,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $vars = array_unique($vars, SORT_REGULAR);
         $vars = array_values($vars);
 
-        return ['vars'=>$vars, 'expression'=>$expString];
-
-
+        return ['vars' => $vars, 'expression' => $expString];
     }
 
     /**
@@ -206,7 +222,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         $exp = $this->getConditionInJS($expressionDescriptor[self::KEY_EXPRESSION_VAR], $expressionDescriptor[self::KEY_EXPRESSION_CMP], $val);
 
-        return ['vars'=>[['name'=>$expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type'=>$type]], 'expression'=>$exp];
+        return ['vars' => [['name' => $expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type' => $type]], 'expression' => $exp];
     }
 
     /**
@@ -259,31 +275,40 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      */
     private function getConditionInJSForMath($var, $cmp, $val)
     {
-        $jsContainer = $this->getJsContainer($var);
         $var = $this->getConvertedVar($var);
 
-        return '(' . $jsContainer. $var . $cmp . $val . ')';
-    }
-
-    private function getConvertedVar($var)
-    {
-        // Convert local variable to js variable
-        if (isset(self::$INTERNAL_VARIABLE_MAP[$var]) && !empty(self::$INTERNAL_VARIABLE_MAP[$var])) {
-            $var = self::$INTERNAL_VARIABLE_MAP[$var];
-        }
-
-        return $var;
+        return '(' . $var . $cmp . $val . ')';
     }
 
     /**
-     * Get js container, either "window." or empty string
-     * @param $var untranslated variable from ui
-     * @return string
+     * get Converted Var
+     * @param $var
+     * @return mixed
+     * - return original when SERVER_VAR,
+     * - return internal mapped var when in $INTERNAL_VARIABLE_MAP,
+     * - return SCOPE_VAR (as ${VAR(...) pattern} when others
      */
-    private function getJsContainer($var)
+    private function getConvertedVar($var)
     {
-        return (in_array($var, self::$SERVER_VARS) || array_key_exists($var, self::$INTERNAL_VARIABLE_MAP)) ? '' : 'window.';
+        // if $SERVER_VARS => return original var
+        if (in_array($var, self::$SERVER_VARS)) {
+            return $var;
+        }
+
+        // if in $INTERNAL_VARIABLE_MAP, return mapped var
+        // e.g: ${SCREEN_WIDTH} => return 'top.screen.width',
+        if (isset(self::$INTERNAL_VARIABLE_MAP[$var]) && !empty(self::$INTERNAL_VARIABLE_MAP[$var])) {
+            return self::$INTERNAL_VARIABLE_MAP[$var];
+        }
+
+        // others, return as $SCOPE var format
+        // e.g: position => return ${VAR(position)}
+        // note:
+        // - "${VAR(a)}" will be translated to "window.a" for normal jsTag of ad slot by tagcade-js-tags module
+        // - "${VAR(a)}" will be kept for hb jsTag of ad slot to support dynamicVars in tagcade bidder params
+        return sprintf('${VAR(%s)}', $var);
     }
+
     /**
      * get condition In JS for MATH. Return condition mapped from UI to Javascript syntax. e.g:
      * + 'b, length >=, 10' => 'b.length >= 10'
@@ -295,60 +320,105 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
     private function getConditionInJSForString($var, $cmp, $val)
     {
         // Convert local variable to js variable
-        $jsContainer = $this->getJsContainer($var);
         $var = $this->getConvertedVar($var);
 
         //return '$var.length . $real-cmp . $val'; e.g: 'a.length > 1'
         if (strpos($cmp, 'length') !== false) { //do not use '!strpos()'
-            return '(' . $jsContainer .
+            return '(' .
             $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['cmp'] . $val .
             ')';
         }
 
         // Below functions use regex, hence we have to remove the quotes from json
         // note: remove quotes and then json_encode to escape js with special chars and then remove quotes again due to json_encode
-        $val = str_replace('"','', $val);
+        $val = str_replace('"', '', $val);
         // do escape js regex, not just concatenate string like this: (/' . $val . '/i)
         $val = json_encode($val);
         // Below functions use regex, hence we have to remove the quotes from json
-        $val = str_replace('"','', $val);
+        $val = str_replace('"', '', $val);
 
         if ($cmp === 'contains') {
-            return '(' . $jsContainer .
+            return '(' .
             $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) > -1' .
             ')';
         }
 
         if ($cmp === 'notContains') {
-            return '(' . $jsContainer .
+            return '(' .
             $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) < 0' .
             ')';
         }
 
         if ($cmp === 'startsWith') {
-            return '(' . $jsContainer .
+            return '(' .
             $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) === 0' .
             ')';
         }
 
         if ($cmp === 'notStartsWith') {
-            return '(' . $jsContainer .
+            return '(' .
             $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '/i) != 0' .
             ')';
         }
 
         if ($cmp === 'endsWith') {
-
-            return '(' . $jsContainer .
-            $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (window.' . $var . '.length - "' . $val . '".length)' .
+            return '(' .
+            $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) === (' .  $var . '.length - "' . $val . '".length)' .
             ')';
         }
 
         if ($cmp === 'notEndsWith') {
-
-            return '(' . $jsContainer .
-            $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (window.' . $var . '.length - "' . $val . '".length)' .
+            return '(' .
+            $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $val . '$/i) != (' .  $var . '.length - "' . $val . '".length)' .
             ')';
+        }
+
+        if ($cmp === 'is') {
+            $inList = explode(',', $val);
+
+            if (!is_array($inList)) {
+                return null;
+            }
+
+            $expForIn = '('; // contains... || contains...
+
+            foreach ($inList as $inListIdx => $element) {
+                $expForIn .= '(' .
+                    $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $element . '/i) > -1' .
+                    ')';
+
+                if ($inListIdx < count($inList) - 1) {
+                    $expForIn .= '||';
+                }
+            }
+
+            $expForIn .= ')';
+
+            return $expForIn;
+        }
+
+        if ($cmp === 'isNot') {
+            $inList = explode(',', $val);
+
+            if (!is_array($inList)) {
+                return null;
+            }
+
+            $expForIn = '(';  // !contains... && !contains...
+
+            foreach ($inList as $inListIdx => $element) {
+                $expForIn .= '(' .
+                    $var . '.' . self::$EXPRESSION_CMP_VALUES_FOR_STRING[$cmp]['func'] . '(/' . $element . '/i) < 0' .
+                    ')';
+
+                if ($inListIdx < count($inList) - 1) {
+                    $expForIn .= '&&';
+                }
+            }
+
+            $expForIn .= ')';
+
+            return $expForIn;
         }
 
         return null;
@@ -360,14 +430,14 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * @throws InvalidFormatException if has one
      * - 'var', 'cmp', 'val' keys not set
      */
-    public function validateExpressionDescriptor(array $expression)
+    public static function validateExpressionDescriptor(array $expression)
     {
         //check if is group
         if (array_key_exists(self::KEY_GROUP_TYPE, $expression)
             && array_key_exists(self::KEY_GROUP_VAL, $expression)
         ) {
             //check as recursive
-            $this->validateGroup($expression);
+            self::validateGroup($expression);
         } else {
             //is condition, then check if not match {'var', 'cmp', 'val'}
             if (!array_key_exists(self::KEY_EXPRESSION_VAR, $expression)
@@ -377,7 +447,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
             ) {
                 throw new InvalidFormatException('"' . self::KEY_EXPRESSION_VAR . '" or "' . self::KEY_EXPRESSION_CMP . '" or "' . self::KEY_EXPRESSION_VAL . '" or "' . self::KEY_EXPRESSION_TYPE . '" can not be empty');
             } else {
-                $this->validateCondition($expression);
+                self::validateCondition($expression);
             }
         }
     }
@@ -388,7 +458,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * @throws InvalidFormatException if has one
      * - $group null or number of item less then GROUP_MIN_ITEM
      */
-    private function validateGroup(array $group)
+    public static function validateGroup(array $group)
     {
         //validate groupType
         $groupType = $group[self::KEY_GROUP_TYPE];
@@ -410,7 +480,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         //validate each expression (child) as recursive
         foreach ($groupVal as $expression) {
-            $this->validateExpressionDescriptor($expression);
+            self::validateExpressionDescriptor($expression);
         }
     }
 
@@ -420,28 +490,27 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * @throws InvalidFormatException if has one
      * - comparator of condition not supported
      */
-    private function validateCondition(array $expression)
+    public static function validateCondition(array $expression)
     {
         //check each key to find un-supported keys
         foreach ($expression as $key => $value) {
             if (!in_array($key, self::$CONDITION_KEYS)) {
-                throw new InvalidFormatException('expect only keys as \'' . self::KEY_EXPRESSION_VAR . '\', \'' . self::KEY_EXPRESSION_CMP . '\', \'' . self::KEY_EXPRESSION_VAL. '\', \'' . self::KEY_EXPRESSION_TYPE . '\' of expression');
+                throw new InvalidFormatException('expect only keys as \'' . self::KEY_EXPRESSION_VAR . '\', \'' . self::KEY_EXPRESSION_CMP . '\', \'' . self::KEY_EXPRESSION_VAL . '\', \'' . self::KEY_EXPRESSION_TYPE . '\' of expression');
             }
         }
 
         //it's ok formatted as {'var', 'cmp', 'val'}, now check each
         ////validate 'var'
-        $this->validateVar($expression[self::KEY_EXPRESSION_VAR]);
+        self::validateVar($expression[self::KEY_EXPRESSION_VAR]);
 
         ////validate 'cmp'
-        $this->validateCmp($expression[self::KEY_EXPRESSION_CMP]);
+        self::validateCmp($expression[self::KEY_EXPRESSION_CMP]);
 
-        $this->validateType($expression[self::KEY_EXPRESSION_TYPE]);
+        self::validateType($expression[self::KEY_EXPRESSION_TYPE]);
 
         ////validate 'val'
-        $this->validateVal($expression[self::KEY_EXPRESSION_VAL], $expression[self::KEY_EXPRESSION_TYPE]);
+        self::validateVal($expression[self::KEY_EXPRESSION_VAL], $expression[self::KEY_EXPRESSION_TYPE]);
     }
-
 
     /**
      * validate Var
@@ -449,7 +518,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * @throws InvalidFormatException if has one
      * - $var null or empty or invalid syntax as variable name
      */
-    private function validateVar($var)
+    public static function validateVar($var)
     {
         if (!isset($var)
             || null == $var
@@ -459,7 +528,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         }
 
         //validate as javascript variable syntax
-        if (!preg_match('/\${PAGE_URL}|\${USER_AGENT}|\${COUNTRY}|\${SCREEN_WIDTH}|\${SCREEN_HEIGHT}|\${WINDOW_WIDTH}|\${WINDOW_HEIGHT}|\${DOMAIN}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
+        if (!preg_match('/\${PAGE_URL}|\${USER_AGENT}|\${COUNTRY}|\${SCREEN_WIDTH}|\${SCREEN_HEIGHT}|\${WINDOW_WIDTH}|\${WINDOW_HEIGHT}|\${DOMAIN}|\${DEVICE}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
             throw new InvalidFormatException('invalid variable name syntax of \'' . $var . '\' of condition');
         }
     }
@@ -470,7 +539,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * @throws InvalidFormatException if has one
      * - $cmp null or empty or not supported
      */
-    private function validateCmp($cmp)
+    public static function validateCmp($cmp)
     {
         if (!isset($cmp)
             || null == $cmp
@@ -485,13 +554,21 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         }
     }
 
-    private function validateType($type) {
+    /**
+     * validate Type
+     *
+     * @param $type
+     * @throws InvalidFormatException
+     */
+    public static function validateType($type)
+    {
         $type = strtolower($type);
 
         if (!in_array($type, self::$SUPPORTED_DATA_TYPES)) {
             throw new InvalidFormatException('not supported data type \'' . $type . '\'');
         }
     }
+
     /**
      * validate Val
      * @param $val
@@ -499,7 +576,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * @throws InvalidFormatException if has one
      * - $variableDescriptorArray null or empty or cascade, injection, ...
      */
-    private function validateVal($val, $type ='string')
+    public static function validateVal($val, $type = 'string')
     {
         $type = strtolower($type);
 
@@ -527,7 +604,5 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
                 }
                 break;
         }
-
     }
-
-} 
+}

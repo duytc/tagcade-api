@@ -4,264 +4,472 @@ namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Util\Codes;
+use InvalidArgumentException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Entity\Core\AdNetworkPartner;
-use Tagcade\Exception\NotSupportedException;
-use Tagcade\Model\Core\PublisherPartner;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AccountManagement as AccountManagementReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagDomainImpression as AdTagDomainImpressionReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\CountryDaily as CountryDailyReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\Daily as DailyReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\DomainImpression as DomainImpressionReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagCountry as AdTagCountryReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagGroupDaily as AdTagGroupDailyReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\PulsePoint\AdTagGroupCountry as AdTagGroupCountryReportType;
-use Tagcade\Model\Report\UnifiedReport\ReportType\ReportTypeInterface;
-use Tagcade\Model\User\Role\AdminInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Entity\Core\AdNetwork;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\Report\UnifiedReport\Selector\UnifiedReportParams;
+use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 /**
- * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_UNIFIED_REPORT') )")
+ * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_UNIFIED_REPORT') and has_role('MODULE_DISPLAY'))")
  *
  * Only allow admins and publishers with the display module enabled
  */
 class UnifiedReportController extends FOSRestController
 {
-    /* report types */
-    const REPORT_TYPE_KEY_AD_TAG = 'pp-ad-tag';
-    const REPORT_TYPE_KEY_DAILY = 'pp-daily-stats';
-    const REPORT_TYPE_KEY_SITE = 'pp-site';
-    const REPORT_TYPE_KEY_AD_TAG_GROUP = 'pp-ad-tag-group';
+    const ALL_SITES = null;
+    const ALL_AD_TAGS = null;
+    const ALL_DEMAND_PARTNER = null;
 
-    /* breakdown types */
-    const BREAK_DOWN_KEY_DAY = 'day';
-    const BREAK_DOWN_KEY_SITE = 'site';
-    const BREAK_DOWN_KEY_COUNTRY = 'country';
-
-    static $BREAKDOWN_MAP = [
-        self::REPORT_TYPE_KEY_DAILY => [self::BREAK_DOWN_KEY_DAY],
-        self::REPORT_TYPE_KEY_AD_TAG => [self::BREAK_DOWN_KEY_DAY, self::BREAK_DOWN_KEY_SITE, self::BREAK_DOWN_KEY_COUNTRY],
-        self::REPORT_TYPE_KEY_SITE => [self::BREAK_DOWN_KEY_DAY],
-        self::REPORT_TYPE_KEY_AD_TAG_GROUP => [self::BREAK_DOWN_KEY_DAY, self::BREAK_DOWN_KEY_COUNTRY]
-    ];
+    const PUBLISHER_KEY = 'publisher';
+    const AD_NETWORK_KEY = 'adNetwork';
 
     /**
-     * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
+     * @Rest\Get("/accounts/{publisherId}/partners/all/partners", requirements={"publisherId" = "\d+"})
      *
-     * @Rest\View(serializerGroups={"acc_mng.summary", "revenue_unified_report.summary", "unified_report.summary", "daily.summary", "ad_tag_domain_impression.summary", "domain_impression.summary", "country_daily.summary"})
-     *
-     * @Rest\Get("/{id}", requirements={"id" = "\d+"})
-     *
-     * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     * @Rest\QueryParam(name="reportType")
-     * @Rest\QueryParam(name="breakDown")
-     * @Rest\QueryParam(name="page")
-     * @Rest\QueryParam(name="size", nullable=true)
-     * @Rest\QueryParam(name="searchField", nullable=true)
-     * @Rest\QueryParam(name="searchKey", nullable=true)
-     * @Rest\QueryParam(name="sortField", nullable=true)
-     * @Rest\QueryParam(name="orderBy", nullable=true)
-     *
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
      *
      * @ApiDoc(
-     *  section = "Unified Reports",
+     *  section = "Performance Report",
      *  resource = true,
      *  statusCodes = {
-     *      200 = "Returned when successful"
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
      *  }
      * )
      *
-     * @param $id
-     * @param Request $request
-     * @throws NotSupportedException
+     * @param int $publisherId
      * @return array
      */
-    public function getPartnerReportsAction($id, Request $request)
+    public function getAllPartnersByPartnerReportsAction($publisherId)
     {
-        /* validate adNetworkPartner by $id */
-        $adNetworkPartner = $this->get('tagcade.repository.ad_network_partner')->find($id);
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
+        $publisher = $result[self::PUBLISHER_KEY];
 
-        if (!$adNetworkPartner instanceof AdNetworkPartner) {
-            return $this->view('Not found that AdNetwork Partner', Codes::HTTP_NOT_FOUND);
-        }
+        //Get all partner for this publisher
+        $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
+        $this->checkUserPermissionByVoter($adNetworks);
 
-        /* validate reportType and breakDown */
-        $reportType = $request->query->get('reportType', null);
-        $breakDown = $request->query->get('breakDown', null);
-        if (!$this->isSupportedReport($adNetworkPartner, $reportType, $breakDown)) {
-            return $this->view(sprintf('Not support that reportType-breakDown as %s-%s', $reportType, $breakDown), Codes::HTTP_BAD_REQUEST);
-        }
-
-        /* validate and get Publisher */
-        $user = $this->getUser();
-        $publisher = $user;
-
-        if ($user instanceof AdminInterface) {
-            $publisherId = $request->query->get('publisher', null);
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
-
-            if (!$publisher instanceof PublisherInterface) {
-                return $this->view('Not found that publisher', Codes::HTTP_NOT_FOUND);
-            }
-        }
-
-        $publisherPartners = $adNetworkPartner->getPublisherPartners()->toArray();
-
-        $existedPublisherIds = array_map(function (PublisherPartner $publisherPartner) {
-            return $publisherPartner->getPublisherId();
-        }, $publisherPartners);
-
-        if (!in_array($publisher->getId(), $existedPublisherIds)) {
-            return $this->view('That AdNetwork is not a partner of this Publisher', Codes::HTTP_BAD_REQUEST);
-        }
-
-        return $this->getResult($this->getReports($publisher, $reportType, $breakDown));
+        return $this->getResult(
+            $this->getReportBuilder()->getAllDemandPartnersByPartnerReport(
+                $publisher,
+                $this->getParams()
+            )
+        );
     }
 
     /**
-     * check if supported breakDown
-     * @param AdNetworkPartner $adNetworkPartner
-     * @param $reportType
-     * @param $breakDown
-     * @return bool|ReportTypeInterface
+     * @Rest\Get("/accounts/{publisherId}/partners", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
      */
-    private function isSupportedReport(AdNetworkPartner $adNetworkPartner, $reportType, $breakDown)
+    public function getAllPartnersByDayReportsAction($publisherId)
     {
-        if (!is_array($adNetworkPartner->getReportTypes()) || !in_array($reportType, $adNetworkPartner->getReportTypes())
-            || !array_key_exists($reportType, self::$BREAKDOWN_MAP)
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
+        $publisher = $result[self::PUBLISHER_KEY];
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllDemandPartnersByDayReport(
+                $publisher,
+                $this->getParams()
+            )
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/all/sites", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getAllPartnersBySitesReportsAction($publisherId)
+    {
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
+        $publisher =  $result[self::PUBLISHER_KEY];
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllDemandPartnersBySiteReport(
+                $publisher,
+                $this->getParams()
+            )
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/all/adtags", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getAllPartnersByAdTagsReportsAction($publisherId)
+    {
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllDemandPartnersByAdTagReport(
+                $result[self::PUBLISHER_KEY],
+                $this->getParams()
+            )
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     * @return array
+     */
+    public function getPartnerAllSitesByDayAction($publisherId, $adNetworkId)
+    {
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
+        $publisher = $result[self::PUBLISHER_KEY];
+
+        if ($publisher instanceof SubPublisherInterface) {
+            return $this->getResult(
+                $this->getReportBuilder()->getPartnerAllSitesByDayForSubPublisherReport(
+                    $publisher,
+                    $result[self::AD_NETWORK_KEY],
+                    $this->getParams()
+                )
+            );
+        }
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPartnerAllSitesByDayReport(
+                $result[self::AD_NETWORK_KEY],
+                $this->getParams()
+            )
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites/all/sites", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     * @return array
+     */
+    public function getPartnerAllSiteBySiteAction($publisherId, $adNetworkId)
+    {
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
+        $publisher = $result[self::PUBLISHER_KEY];
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPartnerAllSitesBySitesReport(
+                $publisher,
+                $result[self::AD_NETWORK_KEY],
+                $this->getParams()
+            )
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites/all/adtags", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     * @return array
+     */
+    public function getPartnerAllSitesByAdTagAction($publisherId, $adNetworkId)
+    {
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
+        $publisher = $result[self::PUBLISHER_KEY];
+
+        //Get all partner for this publisher
+        $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
+        $this->checkUserPermissionByVoter($adNetworks);
+
+        if ($publisher instanceof SubPublisherInterface) {
+            return $this->getResult(
+                $this->getReportBuilder()->getPartnerByAdTagsForSubPublisherReport(
+                    $publisher,
+                    $result[self::AD_NETWORK_KEY],
+                    $this->getParams()
+                )
+            );
+        }
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPartnerAllSitesByAdTagsReport(
+                $result[self::AD_NETWORK_KEY],
+                $this->getParams()
+            )
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites/{siteId}", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+", "siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     * @param int $siteId
+     * @return array
+     */
+    public function getPartnerSiteByDaysReportsAction($publisherId, $adNetworkId, $siteId)
+    {
+        $site = $this->get('tagcade.repository.site')->find($siteId);
+        if (!$site instanceof SiteInterface) {
+            throw new NotFoundHttpException(sprintf('site %d not found', $siteId));
+        }
+
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
+        $publisher = $result[self::PUBLISHER_KEY];
+
+        if (!$publisher instanceof SubPublisherInterface && $site->getPublisherId() !== $publisher->getId()) {
+            throw new AccessDeniedException('you do not have enough permission to view this entity');
+        }
+
+        if ($publisher instanceof SubPublisherInterface &&
+            (
+                ($site->getSubPublisher() instanceof SubPublisherInterface && $site->getSubPublisher()->getId() !== $publisher->getId()) ||
+                !$site->getSubPublisher() instanceof SubPublisherInterface
+            )
         ) {
-            return false;
+            throw new AccessDeniedException('you do not have enough permission to view this entity');
         }
 
-        if (!in_array($breakDown, self::$BREAKDOWN_MAP[$reportType])) {
-            return false;
+        if ($publisher instanceof SubPublisherInterface) {
+            return $this->getResult(
+                $this->getReportBuilder()->getPartnerSiteByDaysForSubPublisherReport(
+                    $publisher,
+                    $result[self::AD_NETWORK_KEY],
+                    $site->getDomain(),
+                    $this->getParams()
+                )
+            );
         }
 
-        return true;
+        return $this->getResult(
+            $this->getReportBuilder()->getPartnerSiteByDaysReport(
+                $result[self::AD_NETWORK_KEY],
+                $site->getDomain(),
+                $this->getParams()
+            )
+        );
     }
 
     /**
-     * get Reports by publisher and breakDown
-     * @param $publisher
-     * @param $reportType
-     * @param $breakDown
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites/{siteId}/adtags", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+", "siteId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     * @param int $siteId
      * @return array
-     * @throws NotSupportedException
      */
-    private function getReports($publisher, $reportType, $breakDown)
+    public function getPartnerSiteByAdTagsReportsAction($publisherId, $adNetworkId, $siteId)
     {
-        if (self::REPORT_TYPE_KEY_AD_TAG === $reportType) {
-            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
-                return $this->getAccountManagementReport($publisher);
-            }
+        $site = $this->get('tagcade.repository.site')->find($siteId);
+        if (!$site instanceof SiteInterface) {
+            throw new NotFoundHttpException(sprintf('site %d not found', $siteId));
+        }
 
-            if (self::BREAK_DOWN_KEY_SITE === $breakDown) {
-                return $this->getAdTagDomainImpressionReport($publisher);
-            }
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
+        $publisher = $result[self::PUBLISHER_KEY];
 
-            if (self::BREAK_DOWN_KEY_COUNTRY === $breakDown) {
-                return $this->getAdTagCountryReport($publisher);
+        //Get all partner for this publisher
+        $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
+        $this->checkUserPermissionByVoter($adNetworks);
+
+        if (!$publisher instanceof SubPublisherInterface && $site->getPublisherId() !== $publisher->getId()) {
+            throw new AccessDeniedException('you do not have enough permission to view this entity');
+        }
+
+        if ($publisher instanceof SubPublisherInterface &&
+            (
+                ($site->getSubPublisher() instanceof SubPublisherInterface && $site->getSubPublisher()->getId() !== $publisher->getId()) ||
+                !$site->getSubPublisher() instanceof SubPublisherInterface
+            )
+        ) {
+            throw new AccessDeniedException('you do not have enough permission to view this entity');
+        }
+
+        if ($publisher instanceof SubPublisherInterface) {
+            return $this->getResult(
+                $this->getReportBuilder()->getPartnerSiteByAdTagsForSubPublisherReport(
+                    $publisher,
+                    $result[self::AD_NETWORK_KEY],
+                    $site,
+                    $this->getParams()
+                )
+            );
+        }
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPartnerSiteByAdTagsReport(
+                $result[self::AD_NETWORK_KEY],
+                $site,
+                $this->getParams()
+            )
+        );
+    }
+
+    /* all private functions */
+    private function verifiedUserPermission(UserRoleInterface $user, $publisherId, $adNetworkId = null)
+    {
+        $adNetwork = null;
+
+        if (null !== $adNetworkId) {
+            $adNetwork = $this->get('tagcade.repository.ad_network')->find($adNetworkId);
+            if (!$adNetwork instanceof AdNetwork) {
+                throw new NotFoundHttpException('Not found that AdNetwork Partner');
             }
         }
 
-        if (self::REPORT_TYPE_KEY_DAILY === $reportType) {
-            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
-                return $this->getDailyReport($publisher);
+        $publisher = $this->get('tagcade_user.domain_manager.sub_publisher')->find($publisherId);
+        if ($publisher instanceof SubPublisherInterface) {
+
+            if ($user instanceof SubPublisherInterface && $user->getId() !== $publisher->getId()) {
+                throw new AccessDeniedException('You do not have enough permission to view this entity');
             }
+
+            return array (
+                self::PUBLISHER_KEY => $publisher,
+                self::AD_NETWORK_KEY => null !== $adNetwork ? $adNetwork : null
+            );
+
         }
 
-        if (self::REPORT_TYPE_KEY_SITE === $reportType) {
-            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
-                return $this->getDomainImpressionReport($publisher);
-            }
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisherId);
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException('Not found that Publisher');
         }
 
-        if (self::REPORT_TYPE_KEY_AD_TAG_GROUP === $reportType) {
-            if (self::BREAK_DOWN_KEY_DAY === $breakDown) {
-                return $this->getAdTagGroupDailyReport($publisher);
-            }
-
-            if (self::BREAK_DOWN_KEY_COUNTRY === $breakDown) {
-                return $this->getAdTagGroupCountryReport($publisher);
-            }
+        if ($user instanceof PublisherInterface && $user->getId() !== $publisher->getId()) {
+            throw new AccessDeniedException('You do not have enough permission to view this entity');
         }
 
-        throw new NotSupportedException(sprintf('Not support that reportType-breakDown as %s-%s', $reportType, $breakDown));
+        return array (
+            self::PUBLISHER_KEY => $publisher,
+            self::AD_NETWORK_KEY => null !== $adNetwork ? $adNetwork : null
+        );
     }
 
     /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getAccountManagementReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new AccountManagementReportType($publisher, $tagId = null), $this->getParams());
-    }
-
-    /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getAdTagGroupDailyReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new AdTagGroupDailyReportType($publisher, $adTagGroup = null), $this->getParams());
-    }
-
-    /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getAdTagGroupCountryReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new AdTagGroupCountryReportType($publisher, $adTagGroup = null), $this->getParams());
-    }
-
-    /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getDailyReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new DailyReportType($publisher, $date = new \DateTime()), $this->getParams());
-    }
-
-    /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getDomainImpressionReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new DomainImpressionReportType($publisher, $domain = null), $this->getParams());
-    }
-
-    /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getAdTagCountryReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new AdTagCountryReportType($publisher, $country = null, $tagId = null), $this->getParams());
-    }
-
-    /**
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getAdTagDomainImpressionReport(PublisherInterface $publisher)
-    {
-        return $this->getReportSelectorService()->getReports(new AdTagDomainImpressionReportType($publisher, $adTag = null, $domain = null, $date = new \DateTime()), $this->getParams());
-    }
-
-    /**
-     * @return UnifiedReportParams
+     * @return Params
      */
     private function getParams()
     {
@@ -270,39 +478,29 @@ class UnifiedReportController extends FOSRestController
     }
 
     /**
-     * create params from query params of request, only startDate + endDate + group
      * @var array $params
-     * @return UnifiedReportParams
+     * @return Params
      */
     private function _createParams(array $params)
     {
         // create a params array with all values set to null
         $defaultParams = array_fill_keys([
-            UnifiedReportParams::PARAM_START_DATE,
-            UnifiedReportParams::PARAM_END_DATE,
-            UnifiedReportParams::PARAM_GROUP,
-            UnifiedReportParams::PARAM_PAGE,
-            UnifiedReportParams::PARAM_SIZE,
-            UnifiedReportParams::PARAM_SEARCH_FIELD,
-            UnifiedReportParams::PARAM_SEARCH_KEY,
-            UnifiedReportParams::PARAM_SORT_FIELD,
-            UnifiedReportParams::PARAM_SORT_DIRECTION,
+            Params::PARAM_START_DATE,
+            Params::PARAM_END_DATE,
+            Params::PARAM_EXPAND,
+            Params::PARAM_GROUP
         ], null);
 
         $params = array_merge($defaultParams, $params);
 
         $dateUtil = $this->get('tagcade.service.date_util');
-        $startDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_START_DATE], true);
-        $endDate = $dateUtil->getDateTime($params[UnifiedReportParams::PARAM_END_DATE]);
-        $group = $params[UnifiedReportParams::PARAM_GROUP];
-        $page = intval($params[UnifiedReportParams::PARAM_PAGE]);
-        $size = intval($params[UnifiedReportParams::PARAM_SIZE]);
-        $searchField = $params[UnifiedReportParams::PARAM_SEARCH_FIELD];
-        $searchKey = $params[UnifiedReportParams::PARAM_SEARCH_KEY];
-        $sortField = $params[UnifiedReportParams::PARAM_SORT_FIELD];
-        $sortDirection = $params[UnifiedReportParams::PARAM_SORT_DIRECTION];
+        $startDate = $dateUtil->getDateTime($params[Params::PARAM_START_DATE], true);
+        $endDate = $dateUtil->getDateTime($params[Params::PARAM_END_DATE]);
 
-        return new UnifiedReportParams($startDate, $endDate, $group, $page, $size, $searchField, $searchKey, $sortField, $sortDirection);
+        $expanded = filter_var($params[Params::PARAM_EXPAND], FILTER_VALIDATE_BOOLEAN);
+        $grouped = filter_var($params[Params::PARAM_GROUP], FILTER_VALIDATE_BOOLEAN);
+
+        return new Params($startDate, $endDate, $expanded, $grouped);
     }
 
     /**
@@ -323,10 +521,69 @@ class UnifiedReportController extends FOSRestController
     }
 
     /**
-     * @return \Tagcade\Service\Report\UnifiedReport\Selector\ReportSelector
+     * @return \Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface
      */
-    private function getReportSelectorService()
+    private function getReportBuilder()
     {
-        return $this->get('tagcade.service.report.unified_report.selector.report_selector');
+        return $this->get('tagcade.service.report.unified_report.selector.report_builder');
     }
+
+    /**
+     * @param ModelInterface|ModelInterface[] $entity The entity instance
+     * @param string $permission
+     * @return bool
+     * @throws InvalidArgumentException if you pass an unknown permission
+     * @throws AccessDeniedException
+     */
+    protected function checkUserPermissionByVoter($entity, $permission = 'view')
+    {
+        $toCheckEntities = [];
+        if ($entity instanceof ModelInterface) {
+            $toCheckEntities[] = $entity;
+        }
+        else if (is_array($entity)) {
+            $toCheckEntities = $entity;
+        }
+        else {
+            throw new \InvalidArgumentException('Expect argument to be ModelInterface or array of ModelInterface');
+        }
+
+        foreach ($toCheckEntities as $item) {
+            if (!$item instanceof ModelInterface) {
+                throw new \InvalidArgumentException('Expect Entity Object and implement ModelInterface');
+            }
+
+            $this->checkUserPermissionForSingleEntity($item, $permission);
+        }
+
+        return true;
+    }
+
+    protected function checkUserPermissionForSingleEntity(ModelInterface $entity, $permission)
+    {
+        if (!in_array($permission, ['view', 'edit'])) {
+            throw new InvalidArgumentException('checking for an invalid permission');
+        }
+
+        $securityContext = $this->get('security.context');
+
+        // allow admins to everything
+        if ($securityContext->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        // check voters
+        if (false === $securityContext->isGranted($permission, $entity)) {
+            throw new AccessDeniedException(
+                sprintf(
+                    'You do not have permission to %s this resource',
+                    $permission
+                )
+            );
+        }
+
+        return true;
+    }
+
+
 }

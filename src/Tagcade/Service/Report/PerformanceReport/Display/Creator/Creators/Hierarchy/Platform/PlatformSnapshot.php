@@ -4,14 +4,12 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport;
-use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\CalculateRatiosTrait;
-use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReport;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Platform as PlatformReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorAbstract;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;
 
@@ -54,14 +52,23 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
         );
 
         $this->accountSnapshotCreator->setEventCounter($this->eventCounter);
+
+        $this->logger->info('Getting all active publishers');
         $allPublishers = $this->publisherManager->allActivePublishers();
 
         $total = 0;
         foreach ($allPublishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                continue;
+            }
             /**
              * @var AccountReport $accountReport
              */
+            $this->logger->info(sprintf('Creating report for publisher %d', $publisher->getId()));
             $accountReport = $this->accountSnapshotCreator->createReport(new AccountReportType($publisher));
+
+            $this->logger->info(sprintf('Finished report for publisher %d', $publisher->getId()));
+
             $result[self::CACHE_KEY_SLOT_OPPORTUNITY] += $accountReport->getSlotOpportunities();
             $result[self::CACHE_KEY_RTB_IMPRESSION] += $accountReport->getRtbImpressions();
             $result[self::CACHE_KEY_OPPORTUNITY] += $accountReport->getTotalOpportunities();
@@ -73,9 +80,14 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
 
         }
 
-        $result[self::BILLED_RATE] = $this->getRatio($total, $result[self::BILLED_AMOUNT]); // weighted billed rate
+        $this->logger->info('Finished getting all active publisher report');
+
+        $billedRate = $this->getRatio($total, $result[self::BILLED_AMOUNT]); // weighted billed rate
+        $result[self::BILLED_RATE] = $billedRate == null ? 0 : $billedRate;
 
         $this->constructReportModel($report, $result);
+
+        $this->logger->info('Finished constructing Platform report');
 
         return $report;
     }

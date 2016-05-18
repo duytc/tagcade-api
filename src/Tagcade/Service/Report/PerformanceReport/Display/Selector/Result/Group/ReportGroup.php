@@ -13,6 +13,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     protected $reportType;
     protected $reports;
     protected $name;
+    protected $date;
     protected $startDate;
     protected $endDate;
     protected $fillRate;
@@ -118,6 +119,10 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         return $this->name;
     }
 
+    public function getDate()
+    {
+        return $this->date;
+    }
     /**
      * @return int
      */

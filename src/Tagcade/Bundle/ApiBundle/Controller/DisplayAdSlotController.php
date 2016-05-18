@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,8 @@ use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 /**
  * @Rest\RouteResource("DisplayAdslot")
@@ -29,6 +29,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class DisplayAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     use UpdateSiteForAdSlotValidator;
+
     /**
      *
      * @Rest\View(
@@ -180,22 +181,21 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function postCloneAction(Request $request, $id)
     {
-        /** @var AdSlotInterface $originAdSlot */
+        /** @var BaseAdSlotInterface $originAdSlot */
         $originAdSlot = $this->one($id);
         $newName = $request->request->get('name');
 
-        if(null === $newName || empty($newName) || !is_string($newName)){
+        if (null === $newName || empty($newName) || !is_string($newName)) {
             return $this->view(null, Codes::HTTP_BAD_REQUEST);
         }
 
         $siteId = $request->request->get('site');
         $site = null != $siteId ? $this->get('tagcade.domain_manager.site')->find($siteId) : null;
 
-        if($site instanceof SiteInterface) {
+        if ($site instanceof SiteInterface) {
             $this->checkUserPermission($site, 'edit');
             $this->get('tagcade_api.service.tag_library.ad_slot_cloner_service')->cloneAdSlot($originAdSlot, $newName, $site);
-        }
-        else {
+        } else {
             $this->get('tagcade_api.service.tag_library.ad_slot_cloner_service')->cloneAdSlot($originAdSlot, $newName);
         }
 
@@ -252,21 +252,20 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         $adSlot = $this->one($id);
         $this->validateSiteWhenUpdatingAdSlot($request, $adSlot);
 
-        if(array_key_exists('libraryAdSlot', $request->request->all()))
-        {
-            if(!is_array($request->request->get('libraryAdSlot'))) {
+        if (array_key_exists('libraryAdSlot', $request->request->all())) {
+            if (!is_array($request->request->get('libraryAdSlot'))) {
                 $libraryAdSlotId = (int)$request->request->get('libraryAdSlot');
                 /** @var DisplayAdSlotInterface $adSlot */
                 $adSlot = $this->getOr404($id);
 
                 $newLibraryAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($libraryAdSlotId);
-                if(!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                if (!$newLibraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
                     throw new InvalidArgumentException('LibraryAdSlot not existed');
                 }
 
                 $this->checkUserPermission($newLibraryAdSlot);
 
-                if($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlotId && $newLibraryAdSlot->isVisible()) {
+                if ($adSlot->getLibraryAdSlot()->getId() !== $libraryAdSlotId && $newLibraryAdSlot->isVisible()) {
                     // create new ad tags
                     $this->get('tagcade_api.service.tag_library.replicator')->replicateFromLibrarySlotToSingleAdSlot($newLibraryAdSlot, $adSlot);
                 }
@@ -296,7 +295,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function deleteAction($id)
     {
-       return $this->delete($id);
+        return $this->delete($id);
     }
 
     /**
@@ -320,7 +319,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      */
     public function getAdtagsAction($id)
     {
-        /** @var DisplayAdSlotInterface $adSlot */
+        /** @var DisplayAdSlotInterface|ReportableAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.domain_manager.ad_tag')

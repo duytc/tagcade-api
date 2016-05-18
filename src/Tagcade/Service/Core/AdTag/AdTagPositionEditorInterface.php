@@ -6,12 +6,11 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
-use Tagcade\Model\Core\PositionInterface;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 
 interface AdTagPositionEditorInterface
 {
-
     /**
      * @param AdNetworkInterface $adNetwork
      * @param $position
@@ -34,5 +33,4 @@ interface AdTagPositionEditorInterface
      * @return LibrarySlotTagInterface[]
      */
     public function setAdTagPositionForLibraryAdSlot(LibraryDisplayAdSlotInterface $libraryAdSlot, array $newAdTagOrderIds);
-
 }

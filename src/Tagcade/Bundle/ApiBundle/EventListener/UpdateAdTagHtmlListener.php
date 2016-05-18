@@ -5,7 +5,6 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 
 class UpdateAdTagHtmlListener {
@@ -22,6 +21,7 @@ class UpdateAdTagHtmlListener {
 
         $this->updateTagHtml($entity);
     }
+
     /**
      * handle event postPersist one site, this auto add site to SourceReportSiteConfig & SourceReportEmailConfig.
      *

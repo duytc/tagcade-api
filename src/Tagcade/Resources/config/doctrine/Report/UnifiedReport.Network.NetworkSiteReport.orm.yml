@@ -1,0 +1,52 @@
+Tagcade\Entity\Report\UnifiedReport\Network\NetworkSiteReport:
+    type: entity
+    table: unified_report_network_site
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\Network\NetworkSiteReportRepository
+    uniqueConstraints:
+        network_site_report_unique_key:
+            columns: # underscore column name
+                - ad_network_id
+                - domain
+                - date
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            nullable: true
+        totalOpportunities:
+            type: integer
+            nullable: true
+            options:
+                default: 0
+        fillRate:
+            type: float
+            scale: 4
+            nullable: true
+        impressions:
+            type: integer
+            nullable: true
+        passbacks:
+            type: integer
+            nullable: true
+        estCpm:
+            type: float
+            scale: 4
+            nullable: true
+        estRevenue:
+            type: float
+            scale: 4
+            nullable: true
+        domain:
+            type: string
+            nullable: true
+    manyToOne:
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork
+
+

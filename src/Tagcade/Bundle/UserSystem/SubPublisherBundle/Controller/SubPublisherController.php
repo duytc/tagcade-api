@@ -9,6 +9,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Handler\HandlerInterface;
 
@@ -19,6 +20,8 @@ use Tagcade\Handler\HandlerInterface;
  */
 class SubPublisherController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use GetEntityFromIdTrait;
+
     /**
      * Get all sub publisher
      *
@@ -39,7 +42,9 @@ class SubPublisherController extends RestControllerAbstract implements ClassReso
 
     /**
      * Get a single sub publisher for the given id
-     *
+     * @Rest\View(
+     *      serializerGroups={"user.summary", "subpublisher.summary"}
+     * )
      * @ApiDoc(
      *  section = "admin|publisher",
      *  resource = true,
@@ -85,6 +90,9 @@ class SubPublisherController extends RestControllerAbstract implements ClassReso
      */
     public function postAction(Request $request)
     {
+        //get Sites from request and override to request
+        $request->request->set('sites', $this->getSites($request->request->get('sites', [])));
+
         return $this->post($request);
     }
 
@@ -109,6 +117,9 @@ class SubPublisherController extends RestControllerAbstract implements ClassReso
      */
     public function patchAction(Request $request, $id)
     {
+        //get Sites from request and override to request
+        $request->request->set('sites', $this->getSites($request->request->get('sites', [])));
+
         return $this->patch($request, $id);
     }
 

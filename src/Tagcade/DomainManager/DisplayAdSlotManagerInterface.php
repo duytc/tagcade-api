@@ -3,13 +3,13 @@
 namespace Tagcade\DomainManager;
 
 
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface DisplayAdSlotManagerInterface extends ManagerInterface{
+interface DisplayAdSlotManagerInterface extends ManagerInterface
+{
     /**
      * @param SiteInterface $site
      * @param int|null $limit

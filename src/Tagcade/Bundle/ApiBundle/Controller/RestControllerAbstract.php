@@ -2,6 +2,8 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use DataDog\PagerBundle\Pagination;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\FOSRestController;
 
@@ -17,6 +19,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use InvalidArgumentException;
+use Tagcade\Model\PagerParam;
 
 abstract class RestControllerAbstract extends FOSRestController
 {
@@ -194,13 +197,37 @@ abstract class RestControllerAbstract extends FOSRestController
     abstract protected function getHandler();
 
     /**
-     * @param ModelInterface $entity The entity instance
+     * @param ModelInterface|ModelInterface[] $entity The entity instance
      * @param string $permission
      * @return bool
      * @throws InvalidArgumentException if you pass an unknown permission
      * @throws AccessDeniedException
      */
-    protected function checkUserPermission(ModelInterface $entity, $permission = 'view')
+    protected function checkUserPermission($entity, $permission = 'view')
+    {
+        $toCheckEntities = [];
+        if ($entity instanceof ModelInterface) {
+            $toCheckEntities[] = $entity;
+        }
+        else if (is_array($entity)) {
+            $toCheckEntities = $entity;
+        }
+        else {
+            throw new \InvalidArgumentException('Expect argument to be ModelInterface or array of ModelInterface');
+        }
+
+        foreach ($toCheckEntities as $item) {
+            if (!$item instanceof ModelInterface) {
+                throw new \InvalidArgumentException('Expect Entity Object and implement ModelInterface');
+            }
+
+            $this->checkUserPermissionForSingleEntity($item, $permission);
+        }
+
+        return true;
+    }
+
+    protected function checkUserPermissionForSingleEntity(ModelInterface $entity, $permission)
     {
         if (!in_array($permission, ['view', 'edit'])) {
             throw new InvalidArgumentException('checking for an invalid permission');
@@ -225,5 +252,46 @@ abstract class RestControllerAbstract extends FOSRestController
         }
 
         return true;
+    }
+
+    /**
+     * @var array $params
+     * @return PagerParam
+     */
+    protected function _createParams(array $params)
+    {
+        // create a params array with all values set to null
+        $defaultParams = array_fill_keys([
+            PagerParam::PARAM_SEARCH_FIELD,
+            PagerParam::PARAM_SEARCH_KEY,
+            PagerParam::PARAM_SORT_FIELD,
+            PagerParam::PARAM_SORT_DIRECTION,
+            PagerParam::PARAM_PUBLISHER_ID
+        ], null);
+
+        $params = array_merge($defaultParams, $params);
+        $publisherId = intval($params[PagerParam::PARAM_PUBLISHER_ID]);
+        return new PagerParam($params[PagerParam::PARAM_SEARCH_FIELD], $params[PagerParam::PARAM_SEARCH_KEY], $params[PagerParam::PARAM_SORT_FIELD], $params[PagerParam::PARAM_SORT_DIRECTION], $publisherId);
+    }
+
+    /**
+     * @return PagerParam
+     */
+    protected function getParams()
+    {
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        return $this->_createParams($params);
+    }
+
+    protected function getPagination(QueryBuilder $qb, Request $request)
+    {
+        $pagination = new Pagination($qb, $request);
+
+        return array(
+            'totalRecord' => $pagination->total(),
+            'records' => $pagination->getArrayCopy(),
+            'itemPerPage' => $pagination->itemsPerPage(),
+            'currentPage' => $pagination->currentPage()
+        );
     }
 }

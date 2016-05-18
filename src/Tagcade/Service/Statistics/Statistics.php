@@ -5,19 +5,17 @@ namespace Tagcade\Service\Statistics;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-
-use Tagcade\Domain\DTO\Statistics\DaySummary;
 use Tagcade\Domain\DTO\Statistics\Dashboard\AdminDashboard;
 use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
-use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics as PlatformStatisticsDTO;
+use Tagcade\Domain\DTO\Statistics\DaySummary;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
-
-use Tagcade\Domain\DTO\Statistics\MonthBilledAmount;
+use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics as PlatformStatisticsDTO;
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
 use Tagcade\Domain\DTO\Statistics\Summary\PlatformSummary;
 use Tagcade\Domain\DTO\Statistics\Summary\Summary;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
@@ -25,34 +23,26 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 use Tagcade\Service\Statistics\Provider\AccountStatisticsInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformTypes;
 use Tagcade\Service\Statistics\Provider\SiteStatisticsInterface;
 
 class Statistics implements StatisticsInterface
 {
-    /**
-     * @var ReportBuilderInterface
-     */
+    /** @var ReportBuilderInterface */
     protected $reportBuilder;
 
-    /**
-     * @var AccountStatisticsInterface
-     */
+    /** @var AccountStatisticsInterface */
     protected $accountStatistics;
-    /**
-     * @var SiteStatisticsInterface
-     */
+
+    /** @var SiteStatisticsInterface */
     protected $siteStatistics;
 
+    /** @var PlatformReportRepositoryInterface */
     protected $platformReportRepository;
 
-    /**
-     * @var DateUtilInterface
-     */
+    /** @var DateUtilInterface */
     protected $dateUtil;
 
     protected $numberOfPreviousDays;
-
 
     /**
      * @param ReportBuilderInterface $reportBuilder
@@ -78,7 +68,7 @@ class Statistics implements StatisticsInterface
         $this->reportBuilder = $reportBuilder;
         $this->accountStatistics = $accountStatistics;
         $this->siteStatistics = $siteStatistics;
-        $this->platformReportRepository =$platformReportRepository;
+        $this->platformReportRepository = $platformReportRepository;
         $this->dateUtil = $dateUtil;
 
         $this->numberOfPreviousDays = $numberOfPreviousDays;
@@ -95,22 +85,22 @@ class Statistics implements StatisticsInterface
         /**
          * @var BilledReportGroup $platformReports
          */
-        $platformReports    = $this->reportBuilder->getPlatformReport($params);
+        $platformReports = $this->reportBuilder->getPlatformReport($params);
         if (false === $platformReports) {
             return new AdminDashboard();
         }
 
         $platformStatistics = new PlatformStatisticsDTO($platformReports);
 
-        $topPublishers      = $this->accountStatistics->getTopPublishersByBilledAmount($params);
-        $topSites           = $this->siteStatistics->getTopSitesByBilledAmount($params);
+        $topPublishers = $this->accountStatistics->getTopPublishersByBilledAmount($params);
+        $topSites = $this->siteStatistics->getTopSitesByBilledAmount($params);
 
         $todayReport = null;
         $yesterdayReport = null;
         if ($isTodayInRange) {
-            $reports            = $platformReports->getReports();
-            $todayReport        = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;
-            $yesterdayReport    = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
+            $reports = $platformReports->getReports();
+            $todayReport = count($reports) > 0 ? array_slice($reports, 0, 1)[0] : null;
+            $yesterdayReport = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
         }
 
         return new AdminDashboard(
@@ -133,11 +123,11 @@ class Statistics implements StatisticsInterface
         /**
          * @var BilledReportGroup $accountReports
          */
-        $accountReports     = $this->reportBuilder->getPublisherReport($publisher, $params);
+        $accountReports = $this->reportBuilder->getPublisherReport($publisher, $params);
         if (false === $accountReports) {
             return new PublisherDashboard();
         }
-        $accountStatistics  = new AccountStatisticsDTO($accountReports);
+        $accountStatistics = new AccountStatisticsDTO($accountReports);
 
         $todayReport = null;
         $yesterdayReport = null;
@@ -147,8 +137,8 @@ class Statistics implements StatisticsInterface
             $yesterdayReport = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
         }
 
-        $topSites           = $this->siteStatistics->getTopSitesForPublisherByEstRevenue($publisher, $params);
-        $topAdNetworks      = $this->accountStatistics->getTopAdNetworksByEstRevenueForPublisher($publisher, $params);
+        $topSites = $this->siteStatistics->getTopSitesForPublisherByEstRevenue($publisher, $params);
+        $topAdNetworks = $this->accountStatistics->getTopAdNetworksByEstRevenueForPublisher($publisher, $params);
 
         return new PublisherDashboard(
             $accountStatistics,
@@ -172,7 +162,7 @@ class Statistics implements StatisticsInterface
         /**
          * @var BilledReportGroup $platformReports
          */
-        $platformReports    = $this->reportBuilder->getPlatformReport($params);
+        $platformReports = $this->reportBuilder->getPlatformReport($params);
 
         $projectedBilledAmount = $this->accountStatistics->getAllPublishersProjectedBilledAmount();
 
@@ -241,7 +231,7 @@ class Statistics implements StatisticsInterface
         }
 
         $interval = new DateInterval('P1M');
-        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
+        $monthRange = new DatePeriod($startMonth, $interval, $endMonth);
 
         $summaries = [];
         foreach ($monthRange as $month) {
@@ -293,5 +283,4 @@ class Statistics implements StatisticsInterface
 
         return (new Params($startDate, $endDate))->setGrouped(true);
     }
-
 }

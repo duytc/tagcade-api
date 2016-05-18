@@ -58,6 +58,9 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param float $averageEstRevenue
      * @param float $averageFillRate
      * @param float $averageSlotOpportunities
+     * @param $averageBilledAmount
+     * @param $rtbImpressions
+     * @param $averageRtbImpressions
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,

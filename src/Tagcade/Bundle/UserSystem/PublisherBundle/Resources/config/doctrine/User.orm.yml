@@ -46,3 +46,12 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         exchanges:
             type: json_array
             nullable: true
+        bidders:
+            type: json_array
+            nullable: true
+    oneToMany:
+        billingConfigs:
+            targetEntity: Tagcade\Entity\Core\BillingConfiguration
+            cascade: ['persist', 'detach', 'remove']
+            mappedBy: publisher
+            orphanRemoval: true

@@ -3,7 +3,6 @@
 namespace Tagcade\Service\Report\RtbReport\Creator\Creators;
 
 
-use Tagcade\Domain\DTO\Report\RtbReport\RtbAdSlotReportCountInterface;
 use Tagcade\Domain\DTO\Report\RtbReport\RtbRedisReportDataInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\RtbReport\ReportInterface;

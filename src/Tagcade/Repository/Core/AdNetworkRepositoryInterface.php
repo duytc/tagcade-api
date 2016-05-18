@@ -4,7 +4,9 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
+use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 interface AdNetworkRepositoryInterface extends ObjectRepository
 {
@@ -16,11 +18,29 @@ interface AdNetworkRepositoryInterface extends ObjectRepository
      */
     public function getAdNetworksForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
+    public function getAdNetworksThatHavePartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getAdNetworksThatHavePartnerForSubPublisher(SubPublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getAdNetworksForPublisherAndPartner(PublisherInterface $publisher, AdNetworkPartnerInterface $partner, $limit = null, $offset = null);
+
+    public function allHasCap($limit = null, $offset = null);
+
+
     /**
-     * @param PublisherInterface $publisher
+     * @param PublisherInterface|SubPublisherInterface $publisher
      * @param int|null $limit
      * @param int|null $offset
      * @return QueryBuilder
      */
     public function getAdNetworksForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    public function getPartnerConfigurationForAllPublishers($partnerCName, $withUnifiedReportModuleEnabled = true);
+
+    /**
+     * @param $publisher
+     * @param $partnerCName
+     * @return mixed
+     */
+    public function getAdNetworkByPublisherAndPartnerCName($publisher, $partnerCName);
 }

@@ -54,7 +54,6 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
 
     $publisherManager->save($publisher);
 
-
     $em->flush();
 
     foreach(xrange(NUM_SITES) as $id) {

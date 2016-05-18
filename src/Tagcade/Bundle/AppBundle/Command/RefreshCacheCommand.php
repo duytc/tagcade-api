@@ -2,24 +2,16 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
-use Doctrine\ORM\PersistentCollection;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Tagcade\Cache\ConfigurationCacheInterface;
-use Tagcade\DomainManager\RonAdSlotManagerInterface;
-use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Model\Core\RonAdTagInterface;
 
 /**
  * Provides a command-line interface for renewing cache using cli
  */
 class RefreshCacheCommand extends ContainerAwareCommand
 {
-
     /**
      * Configure the CLI task
      *
@@ -29,8 +21,7 @@ class RefreshCacheCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:cache:refresh-all')
-            ->setDescription('Refresh ad slot cache and configuration cache if needed to avoid slams');
-        ;
+            ->setDescription('Refresh ad slot cache and configuration cache if needed to avoid slams');;
     }
 
     /**
@@ -52,7 +43,7 @@ class RefreshCacheCommand extends ContainerAwareCommand
         $command->run($greetInput, $output);
 
         $command2 = $this->getApplication()->find('tc:cache:refresh-adslots');
-        $command2->run(new ArrayInput(array('command'=>'tc:cache:refresh-adslots')), $output);
+        $command2->run(new ArrayInput(array('command' => 'tc:cache:refresh-adslots')), $output);
 
         $output->writeln('all cache is now refreshed');
 

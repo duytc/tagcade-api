@@ -35,6 +35,7 @@ services:
         arguments:
             - @tagcade.form.type.sub_publisher
             - @tagcade_user.domain_manager.sub_publisher
+            - @tagcade.domain_manager.site
 
     tagcade.handler.handlers.sub_publisher.admin:
         class: Tagcade\Handler\Handlers\Core\Admin\SubPublisherHandler

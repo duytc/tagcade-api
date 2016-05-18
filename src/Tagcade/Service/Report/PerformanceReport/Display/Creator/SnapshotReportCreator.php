@@ -3,7 +3,6 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator;
 
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;

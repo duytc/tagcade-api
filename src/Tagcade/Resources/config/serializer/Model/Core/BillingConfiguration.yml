@@ -1,0 +1,5 @@
+Tagcade\Model\Core\BillingConfiguration:
+    exclusion_policy: ALL
+    virtual_properties:
+        getPublisherId:
+            type: integer

@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
-use Tagcade\Model\Core\LibraryAdTagInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
@@ -16,9 +16,8 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
 {
     protected $em;
     protected $repository;
-    /**
-     * @var ReplicatorInterface
-     */
+
+    /** @var ReplicatorInterface */
     protected $replicator;
 
     public function __construct(EntityManagerInterface $em, LibrarySlotTagRepositoryInterface $repository)
@@ -27,7 +26,8 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         $this->repository = $repository;
     }
 
-    public function setReplicator(ReplicatorInterface $replicator) {
+    public function setReplicator(ReplicatorInterface $replicator)
+    {
         $this->replicator = $replicator;
     }
 
@@ -44,18 +44,44 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
      */
     public function save(ModelInterface $librarySlotTag)
     {
-        if(!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
+        if (!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
 
         $newSlotTag = $librarySlotTag->getId() === null;
 
         $this->em->persist($librarySlotTag);
-        //make sure libslottag is inserted before adtags
+
+        // support "auto increase position" feature: update for all referenced ad tags
+        if ($librarySlotTag->getAutoIncreasePosition() && $librarySlotTag->getLibraryAdSlot() instanceof LibraryDisplayAdSlotInterface) {
+            // increase for library slot tag
+            $this->autoIncreasePositionForRelatedLibrarySlotTags($librarySlotTag);
+        }
+
+        //make sure libSlotTag is inserted before adTags
         $this->em->flush();
 
-        if(true === $newSlotTag) {
-            $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
+        // replicate Existing LibrarySlotTag To All Referenced AdTags
+        $adSlotLib = $librarySlotTag->getLibraryAdSlot();
+
+        if ($librarySlotTag->getAutoIncreasePosition() && $adSlotLib instanceof LibraryDisplayAdSlotInterface) {
+            foreach ($adSlotLib->getLibSlotTags() as $libSlotTag) {
+                /** @var LibrarySlotTagInterface $libSlotTag */
+                if ($libSlotTag->getPosition() >= $librarySlotTag->getPosition()) {
+                    // if new, we replicate new for only current $librarySlotTag
+                    if (true === $newSlotTag && $libSlotTag->getPosition() == $librarySlotTag->getPosition()) {
+                        $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($libSlotTag);
+                        continue;
+                    }
+
+                    // else, is edit, we replicate existing, include current $librarySlotTag
+                    $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($libSlotTag);
+                }
+            }
         } else {
-            $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
+            if (true === $newSlotTag) {
+                $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
+            } else {
+                $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
+            }
         }
     }
 
@@ -64,7 +90,7 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
      */
     public function delete(ModelInterface $librarySlotTag)
     {
-        if(!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
+        if (!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
 
         $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
 
@@ -118,6 +144,14 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId)
+    {
+        return $this->repository->getByLibraryAdSlotAndDifferRefId($libraryAdSlot, $refId);
+    }
+
+    /**
      * @return EntityManagerInterface
      */
     protected function getEntityManager()
@@ -125,5 +159,56 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         return $this->em;
     }
 
+    /**
+     * auto Increase Position For Related LibrarySlotTags
+     *
+     * @param LibrarySlotTagInterface $librarySlotTag
+     */
+    protected function autoIncreasePositionForRelatedLibrarySlotTags(LibrarySlotTagInterface &$librarySlotTag)
+    {
+        // get libraryAdSlot
+        /** @var BaseLibraryAdSlotInterface $libraryAdSlot */
+        $libraryAdSlot = $librarySlotTag->getLibraryAdSlot();
 
+        // only support LibraryDisplayAdSlot
+        if (!$libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+            return;
+        }
+
+        $newLibSlotTags = [];
+        $includedPersistingTag = false;
+
+        // get all old librarySlotTags of current libraryAdSlot
+        $oldLibSlotTags = $libraryAdSlot->getLibSlotTags();
+
+        // do auto increasing position
+        foreach ($oldLibSlotTags as $oldLibSlotTag) {
+            // add if position small than current persisting/updating ad tag
+            if ($oldLibSlotTag->getId() != null && $oldLibSlotTag->getPosition() < $librarySlotTag->getPosition()) {
+                $newLibSlotTags[] = $oldLibSlotTag;
+                continue;
+            }
+
+            // add current persisting/updating ad tag to new ad tags array, sure add only one time!!!
+            if ($oldLibSlotTag->getId() != null && $oldLibSlotTag->getPosition() == $librarySlotTag->getPosition() && !$includedPersistingTag) {
+                $newLibSlotTags[] = $librarySlotTag;
+                $includedPersistingTag = true;
+            }
+
+            // increase and add if position greater than or equal position of current persisting/updating ad tag
+            /** @var LibrarySlotTagInterface $oldLibSlotTag */
+            if ($oldLibSlotTag->getId() != null
+                && $oldLibSlotTag->getPosition() >= $librarySlotTag->getPosition()
+                && $oldLibSlotTag->getId() != $librarySlotTag->getId() // IMPORTANT: sure not update position of current persisting/updating library slot tag!!!
+            ) {
+                $oldLibSlotTag->setPosition($oldLibSlotTag->getPosition() + 1);
+
+                $newLibSlotTags[] = $oldLibSlotTag;
+            }
+        }
+
+        // update back to input $librarySlotTag
+        $libraryAdSlot->setLibSlotTags($newLibSlotTags);
+        $librarySlotTag->setLibraryAdSlot($libraryAdSlot);
+    }
 }

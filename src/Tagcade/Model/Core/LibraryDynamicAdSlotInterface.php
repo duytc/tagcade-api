@@ -2,9 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
@@ -51,7 +49,7 @@ interface LibraryDynamicAdSlotInterface extends BaseLibraryAdSlotInterface
      * @return BaseLibraryAdSlotInterface
      */
     public function getDefaultLibraryAdSlot();
-    
+
     /**
      * @param BaseLibraryAdSlotInterface $defaultLibraryAdSlot
      * @return self

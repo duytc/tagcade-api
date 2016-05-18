@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators;
 
+use Psr\Log\LoggerInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
 use Tagcade\Exception\RuntimeException;
@@ -12,6 +13,11 @@ abstract class CreatorAbstract implements CreatorInterface
      * @var EventCounterInterface|null
      */
     protected $eventCounter;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * @inheritdoc
@@ -55,4 +61,14 @@ abstract class CreatorAbstract implements CreatorInterface
     {
         return $this->doCreateReport($reportType);
     }
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+
 }

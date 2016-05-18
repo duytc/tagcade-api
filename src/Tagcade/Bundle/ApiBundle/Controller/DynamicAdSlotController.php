@@ -72,6 +72,8 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
+     * @deprecated
+     *
      * @Rest\Get("/dynamicadslots/prospective")
      *
      * @Rest\View(
@@ -140,9 +142,9 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
         /** @var DynamicAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        $jstag = $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
+        $jsTag = $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
 
-        return $jstag;
+        return $jsTag;
     }
 
     /**

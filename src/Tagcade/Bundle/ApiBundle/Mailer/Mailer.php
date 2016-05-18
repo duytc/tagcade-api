@@ -11,7 +11,6 @@
 
 namespace Tagcade\Bundle\ApiBundle\Mailer;
 
-use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

@@ -96,7 +96,7 @@ trait GetEntityFromIdTrait
      * @param string $permission
      * @return mixed
      */
-    protected abstract function checkUserPermission(ModelInterface $entity, $permission = 'view');
+    protected abstract function checkUserPermission($entity, $permission = 'view');
 
     /**
      * Get service instance, this should be called in a controller or a container-aware service which has container to get a service by id

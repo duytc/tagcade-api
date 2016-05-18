@@ -16,16 +16,17 @@ interface CpmRateGetterInterface
 
     /**
      * @param PublisherInterface $publisher
+     * @param $module
      * @param DateTime $date
      * @return float threshold rate of current publisher on a specific month
      */
-    public function getThresholdRateForPublisher(PublisherInterface $publisher, DateTime $date = null);
+    public function getCpmRateForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $date);
 
     /**
      * @param PublisherInterface $publisher
-     * @param int $slotOpportunities - new additional slot opportunities
+     * @param $module
+     * @param int $weight
      * @return CpmRate
      */
-    public function getTodayCpmRateForPublisher(PublisherInterface $publisher, $slotOpportunities = 0);
-
+    public function getCpmRateForPublisher(PublisherInterface $publisher, $module, $weight);
 }

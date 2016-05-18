@@ -2,7 +2,7 @@
 
 namespace Tagcade\Model\User\Role;
 
-
+use Tagcade\Entity\Core\BillingConfiguration;
 
 interface PublisherInterface extends UserRoleInterface
 {
@@ -141,6 +141,17 @@ interface PublisherInterface extends UserRoleInterface
     /**
      * @return bool
      */
+    public function hasUnifiedReportModule();
+
+    /**
+     * @return bool
+     */
+    public function hasHeaderBiddingModule();
+
+
+    /**
+     * @return bool
+     */
     public function hasDisplayModule();
 
     public function getEmail();
@@ -177,4 +188,42 @@ interface PublisherInterface extends UserRoleInterface
      * @return self
      */
     public function setExchanges($exchanges);
+
+    /**
+     * @return mixed
+     */
+    public function getBidders();
+
+    /**
+     * @param array $bidders
+     * @return self
+     */
+    public function setBidders($bidders);
+
+    /**
+     * @return boolean
+     */
+    public function isTestAccount();
+
+    /**
+     * @param boolean $testAccount
+     * @return self
+     */
+    public function setTestAccount($testAccount);
+
+    /**
+     * @return mixed
+     */
+    public function getBillingConfigs();
+
+    /**
+     * @param mixed $billingConfigs
+     */
+    public function setBillingConfigs($billingConfigs);
+
+    /**
+     * @param BillingConfiguration $billingConfiguration
+     * @return $this
+     */
+    public function addBillingConfig(BillingConfiguration $billingConfiguration);
 }

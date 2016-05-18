@@ -20,6 +20,26 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         ;
     }
 
+    public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this->getReportsByDateRangeQuery($startDate, $endDate);
+        $qb ->join('r.publisher', 'p')
+            ->andWhere($qb->expr()->orX('p.testAccount = 0', 'p.testAccount IS NULL'))
+            ->andWhere('p.enabled = 1')
+        ;
+        $qb->select('
+            SUM(r.totalOpportunities) as totalOpportunities,
+            SUM(r.slotOpportunities) as slotOpportunities,
+            SUM(r.impressions) as impressions,
+            SUM(r.rtbImpressions) as rtbImpressions,
+            SUM(r.passbacks) as passbacks,
+            SUM(r.billedAmount) as billedAmount
+            '
+        );
+
+        return current($qb->getQuery()->getArrayResult());
+    }
+
     public function getSumSlotOpportunities(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');

@@ -8,6 +8,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 
 class AdNetworkManager implements AdNetworkManagerInterface
@@ -83,4 +84,21 @@ class AdNetworkManager implements AdNetworkManagerInterface
     {
         return $this->repository->getAdNetworksForPublisher($publisher, $limit, $offset);
     }
+
+    public function getAdNetworksThatHavePartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdNetworksThatHavePartnerForPublisher($publisher, $limit, $offset);
+    }
+
+    public function getAdNetworksThatHavePartnerForSubPublisher(SubPublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->getAdNetworksThatHavePartnerForSubPublisher($publisher, $limit, $offset);
+    }
+
+    public function allHasCap($limit = null, $offset = null)
+    {
+        return $this->repository->allHasCap($limit, $offset);
+    }
+
+
 }

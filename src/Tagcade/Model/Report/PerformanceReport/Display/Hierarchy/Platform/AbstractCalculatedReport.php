@@ -4,7 +4,6 @@ namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractCalculatedReport as BaseAbstractCalculatedReport;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\Fields\SlotOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
@@ -30,7 +29,28 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
     }
 
+    public function setThresholdBilledAmount($chainToSubReports = true)
+    {
+        $this->billedAmount = 0;
+        foreach ($this->subReports as $subReport) {
+            if ($chainToSubReports === true && $subReport instanceof AbstractCalculatedReport) {
+                $subReport->setThresholdBilledAmount(); // chain the calls to setCalculatedFields
+            }
+
+            $this->addBilledAmount($subReport->getBilledAmount());
+
+            unset($subReport);
+        }
+
+        $this->setWeightedBilledRate();
+    }
+
     protected function postCalculateFields()
+    {
+        $this->setWeightedBilledRate();
+    }
+
+    protected function setWeightedBilledRate()
     {
         $weightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'billedRate', 'billedAmount');
         $this->setBilledRate($weightedCpmRate);
@@ -64,5 +84,4 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     {
         $this->billedAmount += (float)$billedAmount;
     }
-
 }

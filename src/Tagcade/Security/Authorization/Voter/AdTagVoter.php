@@ -2,9 +2,9 @@
 
 namespace Tagcade\Security\Authorization\Voter;
 
-use Tagcade\Model\Core\ReportableAdSlotInterface;
-use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 class AdTagVoter extends EntityVoterAbstract
 {
@@ -37,24 +37,15 @@ class AdTagVoter extends EntityVoterAbstract
      */
     protected function isSubPublisherActionAllowed($adTag, UserEntityInterface $user, $action)
     {
-        $adSlot = $adTag->getAdSlot();
+        $subPublisher = $adTag->getAdSlot()->getSite()->getSubPublisher();
 
-        if (count($adSlot->getSite()->getSubPublisherSites()) < 1) {
-            // this ad tag belongs to a site does not allow access to any sub publisher
+        if (!$subPublisher instanceof SubPublisherInterface) {
+            // this ad tag belongs to a site which does not belong to any sub publisher
             return false;
         }
 
         // check subPublisherId
-        $isSubPublisherAllowed = false;
-
-        $subPublishers = $adSlot->getSite()->getSubPublishers();
-
-        foreach ($subPublishers as $subPublisher) {
-            if ($user->getId() === $subPublisher->getId()) {
-                $isSubPublisherAllowed = true;
-                break;
-            }
-        }
+        $isSubPublisherAllowed = ($user->getId() === $subPublisher->getId()) &&($subPublisher->isDemandSourceTransparency());
 
         return $isSubPublisherAllowed && strcasecmp($action, 'view') === 0;
     }

@@ -7,5 +7,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 
 interface AdNetworkReportRepositoryInterface
 {
-    public function getReportFor(AdNetworkInterface $adNetwork, DateTime $startDate, DateTime $endDate);
+    public function getReportFor(AdNetworkInterface $adNetwork, DateTime $startDate, DateTime $endDate, $oneOrNull = false);
+
+    public function getPublisherAllPartnersByDay($publisherId,  DateTime $startDate, DateTime $endDate);
 }

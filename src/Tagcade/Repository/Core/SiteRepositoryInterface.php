@@ -6,7 +6,9 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\SiteInterface;
 
@@ -54,6 +56,39 @@ interface SiteRepositoryInterface extends ObjectRepository
 
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
+    /**
+     * get Sites That Have AdTags Belonging To Partner(s) For Publisher
+     *
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * get Sites That Have AdTags Belonging To a Partner
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param null $limit
+     * @param null $offset
+     * @internal param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartner(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    /**
+     * get Sites That Have AdTags Belonging To a Partner
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param SubPublisherInterface $subPublisher
+     * @param null $limit
+     * @param null $offset
+     * @internal param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
+
     public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     /**
@@ -88,4 +123,42 @@ interface SiteRepositoryInterface extends ObjectRepository
      * @return null|SiteInterface[]
      */
     public function getSitesByDomainAndPublisher(PublisherInterface $publisher, $domain, $useHash = false);
+
+    /**
+     * get Sites Not Belong To SubPublisher for a Publisher
+     *
+     * @param PublisherInterface $publisher
+     * @param int|null $limit
+     * @param int|null $offset
+     * @return null|SiteInterface[]
+     */
+    public function getSitesNotBelongToSubPublisherForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getUniqueDomainsForPublisher(PublisherInterface $publisher);
+
+    /**
+     * @param $domain
+     * @return mixed
+     */
+    public function getSitesByDomain($domain);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getSitesForUserQuery(UserRoleInterface $user, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @param $autoCreate = null
+     * @return QueryBuilder
+     */
+    public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null);
 }

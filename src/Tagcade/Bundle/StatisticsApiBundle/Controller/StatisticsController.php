@@ -133,7 +133,6 @@ class StatisticsController extends FOSRestController
         return $this->get('tagcade.service.statistics')->getPlatformSummaryByMonth($startMonth, $endMonth);
     }
 
-
     /**
      * @Rest\Get("/sites/{siteId}/projectedbill", requirements={"siteId" = "\d+"})
      *
@@ -185,6 +184,4 @@ class StatisticsController extends FOSRestController
 
         return $site;
     }
-
-
 }

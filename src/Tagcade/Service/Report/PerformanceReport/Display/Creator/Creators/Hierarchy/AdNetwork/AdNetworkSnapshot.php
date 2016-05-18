@@ -4,13 +4,10 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
-use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Site as AdNetworkSiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorAbstract;
@@ -20,13 +17,10 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
 {
     use HasSubReportsTrait;
 
-    /**
-     * @var AdSlotManagerInterface
-     */
+    /** @var AdSlotManagerInterface */
     private $adSlotManager;
-    /**
-     * @var AdTagManagerInterface
-     */
+
+    /** @var AdTagManagerInterface */
     private $adTagManager;
 
     public function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager)
@@ -46,11 +40,10 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
         $report
             ->setAdNetwork($adNetwork)
             ->setName($adNetwork->getName())
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $adTagIdsForAdNetwork = $this->adTagManager->getAdTagIdsForAdNetwork($adNetwork);
-        $adTagReportCounts =  $this->eventCounter->getAdTagReports($adTagIdsForAdNetwork);
+        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIdsForAdNetwork);
         unset($adTagIdsForPublisher);
 
         $this->parseRawReportData($report, $adTagReportCounts);
@@ -81,8 +74,7 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
             ->setBlankImpressions($data[self::CACHE_KEY_BLANK_IMPRESSION])
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
-            ->setFillRate()
-        ;
+            ->setFillRate();
 
         // TODO latter
         $report->setEstCpm((float)0);

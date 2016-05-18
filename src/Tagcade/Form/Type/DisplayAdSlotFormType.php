@@ -130,19 +130,12 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
-                $form = $event->getForm();
                 /** @var DisplayAdSlotInterface $displayAdSlot */
                 $displayAdSlot = $event->getData();
 
                 // TODO why we need to remove floor price
                 if (!$displayAdSlot->isRTBEnabled()) {
                     $displayAdSlot->removeFloorPrice();
-                }
-
-                // validate rtbStatus
-                if (!$displayAdSlot->getSite()->getPublisher()->hasRtbModule() && $displayAdSlot->getRtbStatus() !== RTB_STATUS::RTB_DISABLED) {
-                    $form->get('rtbStatus')->addError(new FormError('this display ad slot belongs to publisher that does not have rtb module enabled'));
-                    return;
                 }
             }
         );

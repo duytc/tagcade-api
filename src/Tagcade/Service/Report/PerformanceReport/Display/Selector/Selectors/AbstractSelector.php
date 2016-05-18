@@ -7,8 +7,8 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 
 abstract class AbstractSelector implements SelectorInterface
 {
-    public function getReports(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate)
+    public function getReports(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null)
     {
-        return $this->doGetReports($reportType, $startDate, $endDate);
+        return $queryParams != null ? $this->doGetReports($reportType, $startDate, $endDate, $queryParams) : $this->doGetReports($reportType, $startDate, $endDate);
     }
 }

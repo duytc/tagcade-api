@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Cache\ConfigurationCacheInterface;
@@ -55,7 +56,9 @@ class UpdateExistingRonSlotDomainCacheListener
         }
 
         if ($entity instanceof RonAdSlotInterface) {
+            /** @var Collection|BaseAdSlotInterface[] $adSlots */
             $adSlots = $entity->getLibraryAdSlot()->getAdSlots();
+
             if ($adSlots instanceof PersistentCollection) {
                 $adSlots = $adSlots->toArray();
             }

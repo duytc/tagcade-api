@@ -20,8 +20,13 @@ class AdNetwork extends AbstractSelector
         $this->repository = $repository;
     }
 
-    protected function doGetReports(AdNetworkReportType $reportType, DateTime $startDate, DateTime $endDate)
+    protected function doGetReports(AdNetworkReportType $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null)
     {
+        // partner report
+        if (is_array($queryParams) && array_key_exists('partner', $queryParams) && $queryParams['partner'] == 'all' && array_key_exists('publisher', $queryParams)) {
+            return $this->repository->getPublisherAllPartnersByDay($queryParams['publisher'], $startDate, $endDate);
+        }
+
         return $this->repository->getReportFor($reportType->getAdNetwork(), $startDate, $endDate);
     }
 

@@ -1,0 +1,31 @@
+Tagcade\Entity\Report\UnifiedReport\Comparison\AccountReport:
+    type: entity
+    table: unified_report_comparison_account
+    repositoryClass: Tagcade\Repository\Report\UnifiedReport\Comparison\AccountReportRepository
+    uniqueConstraints:
+        unified_report_comparison_account_report_unique_key:
+            columns: # underscore column name
+                - date
+                - performance_account_report_id
+                - unified_account_report_id
+                - publisher_id
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+            length: 100
+            nullable: true
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToOne:
+        performanceAccountReport:
+            targetEntity: Tagcade\Entity\Report\PerformanceReport\Display\Partner\AccountReport
+        unifiedAccountReport:
+            targetEntity: Tagcade\Entity\Report\UnifiedReport\Publisher\PublisherReport

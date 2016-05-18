@@ -30,13 +30,13 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
                 'Cpm rate that newly defines for this publisher'
             )
             ->addOption(
-                'startDate',
+                'start-date',
                 null,
                 InputOption::VALUE_REQUIRED,
                 'start date (YYYY-MM-DD) that billed amount will be updated with new cpm rate'
             )
             ->addOption(
-                'endDate',
+                'end-date',
                 null,
                 InputOption::VALUE_OPTIONAL,
                 'end date (YYYY-MM-DD) that billed amount will be updated with new cpm rate. If not specified, the date is et to yesterday.'
@@ -46,10 +46,17 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $container = $this->getContainer();
+
+        // run the command with -vv verbosity to show messages
+        // https://symfony.com/doc/current/cookbook/logging/monolog_console.html
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $container->get('logger');
+
         $publisherId   = $input->getArgument('id');
         $cpmRate = $input->getOption('rate');
-        $startDate = $input->getOption('startDate');
-        $endDate = $input->getOption('endDate');
+        $startDate = $input->getOption('start-date');
+        $endDate = $input->getOption('end-date');
 
         $today = (new DateTime('today'))->setTime(0,0,0);
 
@@ -75,11 +82,12 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
             throw new RuntimeException('that publisher is not existed');
         }
 
-        $output->writeln('start updating billing historical report');
+        $logger->info('start updating billing historical report');
 
         $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
+        $billingEditor->setLogger($logger);
         $billingEditor->updateHistoricalBilledAmount($publisher, (float)$cpmRate, $startDate, $endDate);
 
-        $output->writeln('finish updating billing historical report');
+        $logger->info('finish updating billing historical report');
     }
-} 
+}

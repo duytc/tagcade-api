@@ -18,7 +18,11 @@ Tagcade\Bundle\UserBundle\Entity\User:
             gedmo:
                 timestampable:
                     on: create
-
+        testAccount:
+            type: boolean
+            nullable: true
+            options:
+                default: false
     inheritanceType: JOINED
 
     discriminatorColumn:

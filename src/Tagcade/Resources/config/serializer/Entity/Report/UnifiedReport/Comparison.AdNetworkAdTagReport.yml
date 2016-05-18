@@ -1,0 +1,39 @@
+Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkAdTagReport:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+        name:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+        date:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+            type: DateTime<'Y-m-d'>
+        totalOpportunities:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+            type: float
+        impressions:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+        passbacks:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+            type: float
+        fillRate:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+            type: float
+        estRevenue:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+            type: float
+        estCpm:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
+            type: float
+        partnerTagId:
+            expose: true
+            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]

@@ -6,6 +6,7 @@ use DateTime;
 
 interface ReportInterface extends ReportDataInterface
 {
+    public function getId();
     /**
      * @return DateTime|null
      */

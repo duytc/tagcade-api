@@ -3,10 +3,9 @@
 namespace Tagcade\Service\Statistics\Provider;
 
 use DateTime;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
-use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics as AccountStatisticsDTO;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 
 interface AccountStatisticsInterface
 {
@@ -25,7 +24,6 @@ interface AccountStatisticsInterface
      */
     public function getTopAdNetworksByEstRevenueForPublisher(PublisherInterface $publisher, Params $params, $limit = 10);
 
-
     /**
      * @param PublisherInterface $publisher
      * @return float
@@ -37,7 +35,6 @@ interface AccountStatisticsInterface
      * @return float
      */
     public function getAllPublishersProjectedBilledAmount();
-
 
     public function getAccountSummaryByMonth(PublisherInterface $publisher, DateTime $startMonth, DateTime $endMonth = null);
 }

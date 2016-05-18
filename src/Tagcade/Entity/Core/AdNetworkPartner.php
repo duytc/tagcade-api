@@ -9,5 +9,5 @@ class AdNetworkPartner extends AdNetworkPartnerModel
     protected $id;
     protected $name;
     protected $nameCanonical;
-    protected $reportTypes;
-} 
+    protected $url;
+}

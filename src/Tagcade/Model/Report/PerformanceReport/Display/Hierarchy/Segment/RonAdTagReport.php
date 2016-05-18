@@ -11,21 +11,17 @@ use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTra
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
-use Tagcade\Model\Core\AdTagInterface;
 
 class RonAdTagReport extends AbstractReport implements RonAdTagReportInterface, ImpressionBreakdownReportDataInterface
 {
     use SuperReportTrait;
     use CalculateRevenueTrait;
     use ImpressionBreakdownTrait;
-    /**
-     * @var RonAdTagInterface
-     */
+
+    /** @var RonAdTagInterface */
     protected $ronAdTag;
 
-    /**
-     * @var SegmentInterface
-     */
+    /** @var SegmentInterface */
     protected $segment;
 
     protected $position;
@@ -35,36 +31,6 @@ class RonAdTagReport extends AbstractReport implements RonAdTagReportInterface, 
      * So it is the fill rate of this tag, relative to the fill rates of the other tags
      */
     protected $relativeFillRate;
-//
-//    /**
-//     * @return LibrarySlotTagInterface|null
-//     */
-//    public function getAdTag()
-//    {
-//        return $this->ronAdTag;
-//    }
-//
-//    /**
-//     * @return int|null
-//     */
-//    public function getAdTagId()
-//    {
-//        if ($this->ronAdTag instanceof LibrarySlotTagInterface) {
-//            return $this->ronAdTag->getId();
-//        }
-//
-//        return null;
-//    }
-//
-//    /**
-//     * @param LibrarySlotTagInterface $adTag
-//     * @return $this
-//     */
-//    public function setAdTag(LibrarySlotTagInterface $adTag)
-//    {
-//        $this->adTag = $adTag;
-//        return $this;
-//    }
 
     /**
      * @return int|null
@@ -122,7 +88,8 @@ class RonAdTagReport extends AbstractReport implements RonAdTagReportInterface, 
         return $this->ronAdTag;
     }
 
-    public function getRonAdTagId() {
+    public function getRonAdTagId()
+    {
         if ($this->ronAdTag instanceof RonAdTagInterface) {
             return $this->ronAdTag->getId();
         }

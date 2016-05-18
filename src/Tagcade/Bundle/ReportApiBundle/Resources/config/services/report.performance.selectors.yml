@@ -84,6 +84,57 @@ services:
         arguments:
             - \Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdTagReport
 
+    ###
+    tagcade.repository.report.performance_report.display.hierarchy.partner.account:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Partner\AccountReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Partner\AccountReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Partner\AdNetworkDomainReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkDomainReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_ad_tag:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Partner\AdNetworkAdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkAdTagReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain_ad_tag:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Partner\AdNetworkDomainAdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkDomainAdTagReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain_ad_tag_sub_publisher:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Partner\AdNetworkDomainAdTagSubPublisherReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkDomainAdTagSubPublisherReport
+
+    ###
+    tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherReport
+
+    tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher_ad_network:
+        class: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherAdNetworkReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherAdNetworkReport
+
     ### Performance report selectors
 
     tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.platform:
@@ -143,6 +194,38 @@ services:
         arguments:
             - @tagcade.repository.report.performance_report.display.hierarchy.segment.ron_ad_tag
 
+    ###
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.account:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Partner\Account
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.partner.account
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.ad_network.domain:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Partner\AdNetworkDomain
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.ad_net_work.ad_tag:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Partner\AdNetworkAdTag
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_ad_tag
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.ad_net_work.domain_ad_tag_sub_publisher:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Partner\AdNetworkDomainAdTagSubPublisher
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.partner.ad_network_domain_ad_tag_sub_publisher
+
+    ###
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.sub_publisher.sub_publisher:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\SubPublisher\SubPublisher
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher
+
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.sub_publisher.sub_publisher_ad_network:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\SubPublisher\SubPublisherAdNetwork
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher_ad_network
+
     ### Report grouper service
 
     tagcade.service.report.performance_report.display.select.grouper.report_grouper:
@@ -168,10 +251,18 @@ services:
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.segment.segment
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.segment.ron_ad_slot
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.segment.ron_ad_tag
+                # partner selectors
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.account
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.ad_network.domain
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.ad_net_work.ad_tag
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.partner.ad_net_work.domain_ad_tag_sub_publisher
+                # subPublisher selectors
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.sub_publisher.sub_publisher
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.sub_publisher.sub_publisher_ad_network
 
             - @tagcade.service.date_util
-            - @tagcade.service.report.performance_report.display.creator.snapshot_report_creator
             - @tagcade.service.report.performance_report.display.select.grouper.report_grouper
+            - @tagcade.service.report.performance_report.display.creator.snapshot_report_creator
 
     ###
 

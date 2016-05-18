@@ -2,26 +2,17 @@
 
 namespace Tagcade\Bundle\AppBundle\Command;
 
-use Doctrine\ORM\PersistentCollection;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Tagcade\Cache\ConfigurationCacheInterface;
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
-use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Model\Core\RonAdTagInterface;
 
 /**
  * Provides a command-line interface for renewing cache using cli
  */
 class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
 {
-
     const REDIS_SET_BLOCKING_DOMAIN_RON = 'event_processor:domain_ron:blocking'; // for internal code processing only
     const FIELD_RON_SLOT_DOMAIN = 'ron_slot_%d:domain_%s';
 
@@ -36,8 +27,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
             ->setName('tc:ron-slot:remove-blocking')
             ->setDescription('Remove blocking ron slots for a certain domain or all domains for a certain ron slot or unblock everything')
             ->addOption('ronSlot', 'r', InputOption::VALUE_OPTIONAL, 'Id of the ron slot to be unblocked')
-            ->addOption('domain', 'd', InputOption::VALUE_OPTIONAL, 'The domain that ron slot(s) should be unblocked')
-        ;
+            ->addOption('domain', 'd', InputOption::VALUE_OPTIONAL, 'The domain that ron slot(s) should be unblocked');
     }
 
     /**
@@ -117,7 +107,6 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         }
 
         return true;
-
     }
 
     protected function removeBlockingRonSlotOnDomain(\RedisArray $redis, $id, $domain)
@@ -127,7 +116,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         }
 
         $domainRonSlotKey = sprintf(self::FIELD_RON_SLOT_DOMAIN, $id, $domain);
-        if (!$redis->sIsMember(self::REDIS_SET_BLOCKING_DOMAIN_RON, $domainRonSlotKey) ) {
+        if (!$redis->sIsMember(self::REDIS_SET_BLOCKING_DOMAIN_RON, $domainRonSlotKey)) {
             return false;
         }
 

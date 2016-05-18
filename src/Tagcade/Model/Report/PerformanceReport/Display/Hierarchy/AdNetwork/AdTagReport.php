@@ -3,23 +3,27 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
-use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class AdTagReport extends AbstractReport implements AdTagReportInterface, ImpressionBreakdownReportDataInterface
 {
     use SuperReportTrait;
     use CalculateRevenueTrait;
     use ImpressionBreakdownTrait;
-    /**
-     * @var AdTagInterface
-     */
+
+    /** @var AdTagInterface */
     protected $adTag;
+
+    /** @var SubPublisherInterface */
+    protected $subPublisher;
 
     /**
      * @return AdTagInterface|null
@@ -48,6 +52,15 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
     public function setAdTag(AdTagInterface $adTag)
     {
         $this->adTag = $adTag;
+
+        $site = $adTag->getAdSlot()->getSite();
+        if ($site instanceof SiteInterface) {
+            $subPublisher = $site->getSubPublisher();
+            if ($subPublisher instanceof SubPublisherInterface) {
+                $this->subPublisher = $subPublisher;
+            }
+        }
+
         return $this;
     }
 
@@ -81,5 +94,14 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
         if ($this->adTag instanceof AdTagInterface) {
             $this->setName($this->adTag->getName());
         }
+    }
+
+    public function getName()
+    {
+        if ($this->adTag instanceof AdTagInterface) {
+            return sprintf('%s (%s)', $this->adTag->getName(), $this->adTag->getPartnerTagId());
+        }
+
+        return null;
     }
 }

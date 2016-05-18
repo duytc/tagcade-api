@@ -2,18 +2,17 @@
 
 namespace Tagcade\Bundle\UserSystem\PublisherBundle\Controller;
 
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
+use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\Role\SubPublisherInterface;
 
 /**
  * @Rest\RouteResource("publishers/current")
@@ -22,7 +21,9 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
 {
     /**
      * Get current publisher
-     *
+     * @Rest\View(
+     *      serializerGroups={"user.detail"}
+     * )
      * @return \Tagcade\Bundle\UserBundle\Entity\User
      * @throws NotFoundHttpException when the resource does not exist
      */
@@ -98,6 +99,9 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
 
     /**
      * get account as Publisher or SubPublisher by publisherId
+     * @Rest\View(
+     *      serializerGroups={"user.detail"}
+     * )
      * @param integer $publisherId
      * @return PublisherInterface Publisher or SubPublisher
      */

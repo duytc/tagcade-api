@@ -1,0 +1,32 @@
+Tagcade\Entity\Core\BillingConfiguration:
+    type: entity
+    table: core_billing_configuration
+    repositoryClass: Tagcade\Repository\Core\BillingConfigurationRepository
+    uniqueConstraints:
+        publisher_billing_configuration_unique_key:
+            columns: # underscore column name
+                - publisher_id
+                - module
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        module:
+            type: string
+            length: 100
+        tiers:
+            type: json_array
+            nullable: true
+        billingFactor:
+            type: string
+            nullable: false
+        defaultConfig:
+             type: boolean
+             options:
+                default: false
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User
+            inversedBy: billingConfigs

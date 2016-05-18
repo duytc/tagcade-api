@@ -17,17 +17,17 @@ class RtbDailyReportCreator
     private $om;
 
     /** @var RtbReportCreatorInterface */
-    private $reportCreator;
+    private $rtbReportCreator;
 
     /**
      * @var RonAdSlotManagerInterface
      */
     private $ronAdSlotManager;
 
-    public function __construct(ObjectManager $om, RtbReportCreatorInterface $reportCreator, RonAdSlotManagerInterface $ronAdSlotManager)
+    public function __construct(ObjectManager $om, RtbReportCreatorInterface $rtbReportCreator, RonAdSlotManagerInterface $ronAdSlotManager)
     {
         $this->om = $om;
-        $this->reportCreator = $reportCreator;
+        $this->rtbReportCreator = $rtbReportCreator;
         $this->ronAdSlotManager = $ronAdSlotManager;
     }
 
@@ -37,18 +37,15 @@ class RtbDailyReportCreator
      */
     public function createAndSave(array $publishers)
     {
-        /* created reports */
-        $createdReports = [];
-
         /* platform reports */
-        $platformReport = $this->reportCreator->getReport(
+        $platformReport = $this->rtbReportCreator->getReport(
             new PlatformReportType($publishers)
         );
 
         $this->om->persist($platformReport);
-        $createdReports[] = $platformReport;
 
-        $this->om->flush();
+        $this->flushThenDetach($platformReport);
+        unset($platformReport);
 
         /* ron ad slot reports, ron ad slot segment reports,  */
         $ronAdSlots = $this->ronAdSlotManager->all();
@@ -65,29 +62,32 @@ class RtbDailyReportCreator
             }
 
             // create ron ad slot report
-            $ronAdSlotReport = $this->reportCreator->getReport(
+            $ronAdSlotReport = $this->rtbReportCreator->getReport(
                 new RonAdSLotReportType($ronAdSlot)
             );
 
             $this->om->persist($ronAdSlotReport);
-            $createdReports[] = $ronAdSlotReport;
 
             // also, create ron ad slot segment report (notice: same table for ron ad slot report!!!, difference from performance report)
             $segments = $ronAdSlot->getSegments();
             foreach($segments as $segment) {
-                $ronAdSlotSegmentReport = $this->reportCreator->getReport(
+                $ronAdSlotSegmentReport = $this->rtbReportCreator->getReport(
                     new RonAdSLotReportType($ronAdSlot, $segment)
                 );
 
                 $this->om->persist($ronAdSlotSegmentReport);
-                $createdReports[] = $ronAdSlotSegmentReport;
             }
         }
 
         $this->om->flush();
+    }
 
-        foreach ($createdReports as $tempReport) {
-            $this->om->detach($tempReport);
+    protected function flushThenDetach($entities)
+    {
+        $this->om->flush();
+        $myEntities = is_array($entities) ? $entities : [$entities];
+        foreach ($myEntities as $entity) {
+            $this->om->detach($entity);
         }
     }
 
@@ -96,7 +96,7 @@ class RtbDailyReportCreator
      */
     public function getReportDate()
     {
-        return $this->reportCreator->getDate();
+        return $this->rtbReportCreator->getDate();
     }
 
     /**
@@ -105,7 +105,7 @@ class RtbDailyReportCreator
      */
     public function setReportDate(DateTime $reportDate)
     {
-        $this->reportCreator->setDate($reportDate);
+        $this->rtbReportCreator->setDate($reportDate);
 
         return $this;
     }

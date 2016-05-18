@@ -14,7 +14,13 @@ report_api_unified_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\UnifiedReportController
     name_prefix: unified_report_api_1_
-    prefix: /unifiedreports/partners
+    prefix: /unifiedreports
+
+report_api_unified_report_comparison:
+    type: rest
+    resource: Tagcade\Bundle\ReportApiBundle\Controller\UnifiedReportComparisonController
+    name_prefix: unified_report_comparison_api_1_
+    prefix: /unifiedreports/comparison
 
 report_api_rtb_report:
     type: rest

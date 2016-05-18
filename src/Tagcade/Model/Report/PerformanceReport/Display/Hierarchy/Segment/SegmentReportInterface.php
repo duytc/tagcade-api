@@ -3,10 +3,9 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Segment;
 
 use Tagcade\Model\Core\SegmentInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\SuperReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\BillableInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
 
 interface SegmentReportInterface extends BillableInterface, CalculatedReportInterface, SubReportInterface
 {

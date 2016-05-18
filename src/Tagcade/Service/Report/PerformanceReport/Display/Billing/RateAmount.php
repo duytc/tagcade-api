@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: litpu
- * Date: 29/11/2014
- * Time: 22:05
- */
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 

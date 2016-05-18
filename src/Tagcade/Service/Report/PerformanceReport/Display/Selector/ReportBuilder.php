@@ -8,7 +8,6 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
@@ -17,8 +16,11 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment as SegmentReportTypes;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Partner as PartnerReportTypes;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher as SubPublisherReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ExpandedReportCollection;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
@@ -144,6 +146,188 @@ class ReportBuilder implements ReportBuilderInterface
         $reportTypes = array_map(function($site) use($adNetwork) {
             return new AdNetworkReportTypes\Site($site, $adNetwork);
         }, $sites);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllPartnersReportByPartnerForPublisher(PublisherInterface $publisher, Params $params)
+    {
+        $adNetworkPartners = $this->adNetworkManager->getAdNetworksThatHavePartnerForPublisher($publisher);
+
+        $reportTypes = array_map(function ($adNetworkPartner) use ($publisher) {
+                return ($publisher instanceof SubPublisherInterface)
+                    ? new SubPublisherReportTypes\SubPublisherAdNetwork($publisher, $adNetworkPartner)
+                    : new AdNetworkReportTypes\AdNetwork($adNetworkPartner);
+            }
+            , $adNetworkPartners
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllPartnersReportByDayForPublisher(PublisherInterface $publisher, Params $params)
+    {
+        return $publisher instanceof SubPublisherInterface
+            ? $this->getReports(new SubPublisherReportTypes\SubPublisher($publisher), $params)
+            : $this->getReports(new PartnerReportTypes\Account($publisher), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllPartnersReportBySiteForPublisher(PublisherInterface $publisher, Params $params)
+    {
+        $sites = $this->siteManager->getSitesThatHaveAdTagsBelongingToPartnerForPublisher($publisher);
+
+        $reportTypes = array_map(function ($site) {
+                /** @var SiteInterface $site */
+                return new PartnerReportTypes\AdNetworkDomain($partner = null, $site->getDomain());
+                // note: also used for SubPublisher
+            }
+            , $sites
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllPartnersReportByAdTagForPublisher(PublisherInterface $publisher, Params $params)
+    {
+        /** @var AdTagInterface[] $adTags */
+        $adTags = $this->adTagManager->getAdTagsThatHavePartner($publisher, $uniquePartnerTagId = true);
+
+        $reportTypes = array_map(function($adTag) {
+                /** @var AdTagInterface $adTag */
+                return new PartnerReportTypes\AdNetworkAdTag($adNetwork = null, $adTag->getPartnerTagId());
+                // note: also used for SubPublisher
+            }, $adTags);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReportByDayForPartner(AdNetworkInterface $adNetwork, Params $params)
+    {
+        return $this->getReports(new AdNetworkReportTypes\AdNetwork($adNetwork), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReportByDayForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params)
+    {
+        return $this->getReports(new SubPublisherReportTypes\SubPublisherAdNetwork($subPublisher, $adNetwork), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReportBySiteForPartner(AdNetworkInterface $adNetwork, Params $params)
+    {
+        $sites = $this->siteManager->getSitesThatHaveAdTagsBelongingToPartner($adNetwork);
+
+        $reportTypes = array_map(function ($site) use ($adNetwork) {
+                /** @var SiteInterface $site */
+                return new PartnerReportTypes\AdNetworkDomain($adNetwork, $site->getDomain());
+            }
+            , $sites
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReportBySiteForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params)
+    {
+        $sites = $this->siteManager->getSitesThatHaveAdTagsBelongingToPartnerWithSubPublisher($adNetwork, $subPublisher);
+
+        $reportTypes = array_map(function ($site) use ($adNetwork) {
+                /** @var SiteInterface $site */
+                return new PartnerReportTypes\AdNetworkDomain($adNetwork, $site->getDomain());
+            }
+            , $sites
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReportByAdTagForPartner(AdNetworkInterface $adNetwork, Params $params)
+    {
+        $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetwork($adNetwork);
+
+        $reportTypes = array_map(function($adTag) use ($adNetwork) {
+            /** @var AdTagInterface $adTag */
+            return new PartnerReportTypes\AdNetworkAdTag($adNetwork, $adTag->getPartnerTagId());
+        }, $adTags);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAllSitesReportByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params)
+    {
+        $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetworkWithSubPublisher($adNetwork, $subPublisher);
+
+        $reportTypes = array_map(function($adTag) use ($adNetwork) {
+            /** @var AdTagInterface $adTag */
+            return new PartnerReportTypes\AdNetworkAdTag($adNetwork, $adTag->getPartnerTagId());
+        }, $adTags);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSiteReportByDayForPartner(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
+    {
+        // note: also used for SubPublisher
+        return $this->getReports(new PartnerReportTypes\AdNetworkDomain($adNetwork, $site->getDomain()), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSiteReportByAdTagForPartner(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
+    {
+        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
+
+        $reportTypes = array_map(function($adTag) use ($adNetwork) {
+            /** @var AdTagInterface $adTag */
+            return new PartnerReportTypes\AdNetworkAdTag($adNetwork, $adTag->getPartnerTagId());
+        }, $adTags);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSiteReportByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, Params $params)
+    {
+        $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSiteWithSubPublisher($adNetwork, $site, $subPublisher);
+
+        $reportTypes = array_map(function($adTag) use ($adNetwork, $site, $subPublisher) {
+            /** @var AdTagInterface $adTag */
+            return new PartnerReportTypes\AdNetworkDomainAdTagSubPublisher($adNetwork, $site->getDomain(), $adTag->getPartnerTagId(), $subPublisher);
+        }, $adTags);
 
         return $this->getReports($reportTypes, $params);
     }

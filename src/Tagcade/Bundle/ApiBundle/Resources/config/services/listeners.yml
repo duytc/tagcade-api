@@ -7,6 +7,15 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
 
+    ## Update ad tag html before ad tag persisted
+    tagcade_api.event_listener.UpdatePartnerTagIdListener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdatePartnerTagIdListener
+        arguments:
+            - @tagcade_app.service.core.ad_tag.partner_tag_id_matcher
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
     ## Update ad tag position, make sure its continuous
     tagcade_api.event_listener.UpdateAdTagPositionListener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagPositionListener
@@ -48,7 +57,6 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: preSoftDelete }
-            - { name: doctrine.event_listener, event: onFlush}
             - { name: doctrine.event_listener, event: postFlush}
 
     tagcade_api.event_listener.UpdateExistingRonSlotDomainCacheListener:

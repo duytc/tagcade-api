@@ -3,6 +3,7 @@
 namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Model\User\UserEntityInterface;
@@ -28,6 +29,34 @@ class User extends BaseUser implements PublisherInterface
     protected $country;
     protected $settings; //json string represent setting for report bundle
     protected $tagDomain;
+    protected $bidders;
+    /**
+     * @var ArrayCollection
+     */
+    protected $billingConfigs;
+
+
+    /**
+     * @var boolean
+     */
+    protected $testAccount = false;
+
+    /**
+     * @inheritdoc
+     */
+    public function getBidders()
+    {
+        return $this->bidders;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBidders($bidders)
+    {
+        $this->bidders = $bidders;
+    }
+
     /** @var array */
     protected $exchanges;
 
@@ -291,6 +320,55 @@ class User extends BaseUser implements PublisherInterface
     public function setExchanges($exchanges)
     {
         $this->exchanges = $exchanges;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isTestAccount()
+    {
+        return $this->testAccount;
+    }
+
+    /**
+     * @param boolean $testAccount
+     * @return self
+     */
+    public function setTestAccount($testAccount)
+    {
+        $this->testAccount = $testAccount;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBillingConfigs()
+    {
+        return $this->billingConfigs;
+    }
+
+    /**
+     * @param array $billingConfigs
+     */
+    public function setBillingConfigs($billingConfigs)
+    {
+        $this->billingConfigs = $billingConfigs;
+    }
+
+    /**
+     * @param BillingConfiguration $billingConfiguration
+     * @return $this
+     */
+    public function addBillingConfig(BillingConfiguration $billingConfiguration)
+    {
+        if ($this->billingConfigs === null) {
+            $this->billingConfigs = new ArrayCollection();
+        }
+
+        $this->billingConfigs->add($billingConfiguration);
 
         return $this;
     }

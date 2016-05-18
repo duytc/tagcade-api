@@ -2,10 +2,8 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Handler;
 
-use Tagcade\Handler\HandlerAbstract;
-use Symfony\Component\Form\FormFactoryInterface;
-use Symfony\Component\Form\FormTypeInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\Handler\HandlerAbstract;
 
 /**
  * Not using a RoleHandlerInterface because this Handler is local

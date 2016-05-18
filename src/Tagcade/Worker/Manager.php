@@ -71,7 +71,6 @@ class Manager
         $this->queueTask('updateCdnForAdSlot', $params);
     }
 
-
     public function updateCdnForRonSlot($ronSlotId)
     {
         $params = new StdClass;

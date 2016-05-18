@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Tagcade\Model\ModelInterface;
 
 interface DynamicAdSlotInterface extends BaseAdSlotInterface
 {
@@ -22,6 +21,7 @@ interface DynamicAdSlotInterface extends BaseAdSlotInterface
      * @return ArrayCollection
      */
     public function getExpressions();
+
     /**
      * @param ExpressionInterface[] $expressions
      * @return self

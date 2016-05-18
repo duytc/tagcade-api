@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Partner\AggregatePartnerReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -10,11 +11,12 @@ use Tagcade\Model\User\UserEntityInterface;
 class AccountReport extends AbstractCalculatedReport implements AccountReportInterface
 {
     use SuperReportTrait;
+    use AggregatePartnerReportTrait;
 
-    /**
-     * @var UserEntityInterface
-     */
+    /** @var UserEntityInterface */
     protected $publisher;
+
+    protected $subPublisherReports = []; // subPublisherId => SubPublisherReport
 
     /**
      * @inheritdoc
@@ -36,6 +38,11 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
         return null;
     }
 
+    protected function postCalculateFields()
+    {
+        parent::postCalculateFields();
+    }
+
     /**
      * @param PublisherInterface $publisher
      * @return $this
@@ -55,6 +62,14 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
     public function isValidSuperReport(ReportInterface $report)
     {
         return $report instanceof PlatformReportInterface;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubPublisherReports()
+    {
+        return $this->subPublisherReports;
     }
 
     protected function setDefaultName()

@@ -2,23 +2,19 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
-use Tagcade\DomainManager\RonAdSlotManagerInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
-
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
 
 class Account extends CreatorAbstract implements AccountInterface
 {
     use HasSubReportsTrait;
 
-    /**
-     * @var SiteManagerInterface
-     */
+    /** @var SiteManagerInterface */
     protected $siteManager;
 
     public function __construct(SiteManagerInterface $siteManager, SiteInterface $subReportCreator)
@@ -40,8 +36,7 @@ class Account extends CreatorAbstract implements AccountInterface
 
         $report
             ->setPublisher($publisher)
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $sites = $this->siteManager->getSitesForPublisher($publisher);
 

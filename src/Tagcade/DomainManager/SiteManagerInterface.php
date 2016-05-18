@@ -6,6 +6,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 interface SiteManagerInterface extends ManagerInterface
 {
@@ -20,6 +21,37 @@ interface SiteManagerInterface extends ManagerInterface
     public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getSitesThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    /**
+     * get Sites That Have Ad Tags Belonging To Partner(s) for a Publisher
+     *
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * get Sites That Have Ad Tags Belonging To a Partner
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartner(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    /**
+     * get Sites That Have Ad Tags Belonging To a Partner with a SubPublisher
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param SubPublisherInterface $subPublisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getSitesThatHaveAdTagsBelongingToPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
 
     public function getSiteIdsThatHaveAdTagsBelongingToAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
@@ -61,4 +93,10 @@ interface SiteManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getSiteByDomainAndPublisher($domain, PublisherInterface $publisher);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getUniqueDomainsForPublisher(PublisherInterface $publisher);
 }

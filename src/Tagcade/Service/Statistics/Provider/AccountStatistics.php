@@ -2,19 +2,16 @@
 
 namespace Tagcade\Service\Statistics\Provider;
 
-use DateTime;
 use DateInterval;
 use DatePeriod;
-use Tagcade\Bundle\UserBundle\DomainManager\UserManagerInterface;
+use DateTime;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform;
-use Tagcade\Domain\DTO\Statistics\MonthBilledAmount;
-use Tagcade\Domain\DTO\Statistics\MonthRevenue;
-use Tagcade\Domain\DTO\Statistics\PublisherBilledAmount;
-use Tagcade\Domain\DTO\Statistics\PublisherRevenue;
 use Tagcade\Domain\DTO\Statistics\Summary\AccountSummary;
 use Tagcade\Domain\DTO\Statistics\Summary\Summary;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
@@ -22,32 +19,24 @@ use Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCal
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Statistics\Provider\Behaviors\TopListFilterTrait;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork as AdNetworkReportTypes;
 
 class AccountStatistics implements AccountStatisticsInterface
 {
     use TopListFilterTrait;
 
-    /**
-     * @var ReportBuilderInterface
-     */
+    /** @var ReportBuilderInterface */
     protected $reportBuilder;
-    /**
-     * @var ProjectedBillingCalculatorInterface
-     */
+
+    /** @var ProjectedBillingCalculatorInterface */
     protected $projectedBillingCalculator;
-    /**
-     * @var PublisherManagerInterface
-     */
+
+    /** @var PublisherManagerInterface */
     protected $userManager;
-    /**
-     * @var AccountReportRepositoryInterface
-     */
+
+    /** @var AccountReportRepositoryInterface */
     protected $accountReportRepository;
-    /**
-     * @var DateUtilInterface
-     */
+
+    /** @var DateUtilInterface */
     protected $dateUtil;
 
     public function __construct(
@@ -102,7 +91,7 @@ class AccountStatistics implements AccountStatisticsInterface
 
         $sumProjectedBilledAmount = 0;
 
-        foreach($publishers as $publisher) {
+        foreach ($publishers as $publisher) {
             $sumProjectedBilledAmount += $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher);
         }
 
@@ -114,11 +103,11 @@ class AccountStatistics implements AccountStatisticsInterface
         $this->validateMonthRange($startMonth, $endMonth);
 
         $interval = new DateInterval('P1M');
-        $monthRange = new DatePeriod($startMonth, $interval ,$endMonth);
+        $monthRange = new DatePeriod($startMonth, $interval, $endMonth);
 
         $summaryByMonth = [];
 
-        foreach($monthRange as $month) {
+        foreach ($monthRange as $month) {
             $summaryByMonth[] = $this->getAccountSummaryForMonth($publisher, $month);
         }
 
@@ -143,8 +132,6 @@ class AccountStatistics implements AccountStatisticsInterface
         );
     }
 
-
-
     protected function validateMonth(DateTime $month)
     {
         $month = $this->dateUtil->getFirstDateInMonth($month);
@@ -166,6 +153,4 @@ class AccountStatistics implements AccountStatisticsInterface
             throw new InvalidArgumentException('Start month must not exceed end month');
         }
     }
-
-
 }

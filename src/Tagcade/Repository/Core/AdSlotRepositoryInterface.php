@@ -10,12 +10,14 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface AdSlotRepositoryInterface extends ObjectRepository
 {
     public function allReportableAdSlotIds();
+
     /**
      * @inheritdoc
      */
@@ -26,6 +28,7 @@ interface AdSlotRepositoryInterface extends ObjectRepository
     public function getNativeAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 
     public function getDynamicAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
+
     /**
      * @inheritdoc
      */
@@ -68,6 +71,8 @@ interface AdSlotRepositoryInterface extends ObjectRepository
 
     public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    public function getReportableAdSlotForSite(SiteInterface $site, $limit = null, $offset = null);
+
     public function getReportableAdSlotIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork);
@@ -91,4 +96,21 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdSlotsForChannel(ChannelInterface $channel, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @internal param PublisherInterface $publisher
+     * @internal param null $limit
+     * @internal param null $offset
+     * @return mixed
+     */
+    public function getAdSlotsForUserWithPagination(UserRoleInterface $user, PagerParam $param = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getRelatedChannelWithPagination(UserRoleInterface $user, PagerParam $param);
 }

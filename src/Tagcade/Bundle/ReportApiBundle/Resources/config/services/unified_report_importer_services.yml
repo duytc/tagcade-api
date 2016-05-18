@@ -1,0 +1,100 @@
+services:
+    ### importers
+    tagcade_app.service.importer.common.importer_abstract:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\ImporterAbstract
+        abstract: true
+        public: false
+        calls:
+            - [setBatchSize, ["%insert_batch_size%"]]
+
+    tagcade_app.service.importer.unified_report.network.network_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_report
+
+    tagcade_app.service.importer.unified_report.network.network_site_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkSiteReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_site_report
+
+    tagcade_app.service.importer.unified_report.network.network_ad_tag_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkAdTagReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_report
+
+    tagcade_app.service.importer.unified_report.network.network_domain_ad_tag_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkDomainAdTagReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_domain_ad_tag_report
+
+    tagcade_app.service.importer.unified_report.network.network_domain_ad_tag_sub_publisher_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkDomainAdTagSubPublisherReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - "@tagcade.repository.report.unified_report.network.network_domain_ad_tag_sub_publisher_report"
+
+    tagcade_app.service.importer.unified_report.publisher.publisher_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Publisher\PublisherReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.publisher_report
+
+    tagcade_app.service.importer.unified_report.publisher.sub_publisher_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Publisher\SubPublisherReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_report
+
+    tagcade_app.service.importer.unified_report.publisher.sub_publisher_network_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Publisher\SubPublisherNetworkReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_network_report
+
+    tagcade_app.service.importer.unified_report.network.network_ad_tag_sub_publisher_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkAdTagSubPublisherReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_sub_publisher_report
+
+    tagcade_app.service.importer.unified_report.network.network_site_sub_publisher_report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkSiteSubPublisherReportImporter
+        parent: tagcade_app.service.importer.common.importer_abstract
+        arguments:
+            - @tagcade.repository.report.unified_report.network.network_site_sub_publisher_report
+
+    tagcade_app.service.unified_report.generator:
+        class: Tagcade\Service\UnifiedReportImporter\UnifiedReportGenerator
+
+    tagcade_app.service.unified_report.common_report_sub_publisher_handler:
+        class: Tagcade\Service\UnifiedReportImporter\CommonReportSubPublisherHandler
+        arguments:
+            - @tagcade_app.service.core.site.site_service
+            - @tagcade_user.domain_manager.sub_publisher
+            - @tagcade_app.service.core.ad_tag.partner_tag_id_finder
+            - @tagcade.repository.report.unified_report.network.network_domain_ad_tag_report
+            - @monolog.logger
+
+    ### report importer
+    tagcade_app.service.unified_report.report_importer:
+        class: Tagcade\Service\UnifiedReportImporter\ReportImporter
+        arguments:
+            - @tagcade_app.service.unified_report.common_report_sub_publisher_handler
+            - @monolog.logger
+            - @tagcade_app.service.unified_report.generator
+            -
+                - @tagcade_app.service.importer.unified_report.network.network_report_importer
+                - @tagcade_app.service.importer.unified_report.network.network_site_report_importer
+                - @tagcade_app.service.importer.unified_report.network.network_ad_tag_report_importer
+                - @tagcade_app.service.importer.unified_report.network.network_domain_ad_tag_report_importer
+                - @tagcade_app.service.importer.unified_report.publisher.publisher_report_importer
+                - @tagcade_app.service.importer.unified_report.publisher.sub_publisher_report_importer
+                - @tagcade_app.service.importer.unified_report.publisher.sub_publisher_network_report_importer
+                - @tagcade_app.service.importer.unified_report.network.network_ad_tag_sub_publisher_report_importer
+                - @tagcade_app.service.importer.unified_report.network.network_site_sub_publisher_report_importer
+                - @tagcade_app.service.importer.unified_report.network.network_domain_ad_tag_sub_publisher_report_importer
+

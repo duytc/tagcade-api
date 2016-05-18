@@ -3,12 +3,10 @@
 namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\Expr\Base;
 use ReflectionClass;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Entity\Core\RonAdSlot;
-use Tagcade\Entity\Core\RonAdSlotSegment;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
@@ -27,34 +25,26 @@ use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 use Tagcade\Repository\Core\RonAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
-use Tagcade\Service\StringUtil;
 use Tagcade\Service\StringUtilTrait;
 use Tagcade\Service\TagLibrary\AdSlotGeneratorInterface;
 
 class RonAdSlotManager implements RonAdSlotManagerInterface
 {
     use StringUtilTrait;
-    /**
-     * @var EntityManagerInterface
-     */
+
+    /** @var EntityManagerInterface */
     private $em;
-    /**
-     * @var RonAdSlotRepositoryInterface
-     */
+
+    /** @var RonAdSlotRepositoryInterface */
     private $repository;
 
-    /**
-     * @var SiteRepositoryInterface
-     */
+    /** @var SiteRepositoryInterface */
     private $siteRepository;
 
-    /**
-     * @var AdSlotGeneratorInterface
-     */
+    /** @var AdSlotGeneratorInterface */
     private $adSlotGenerator;
-    /**
-     * @var AdSlotManagerInterface
-     */
+
+    /** @var AdSlotManagerInterface */
     private $adSlotManager;
 
     function __construct(EntityManagerInterface $em, RonAdSlotRepositoryInterface $repository, SiteRepositoryInterface $siteRepository, AdSlotManagerInterface $adSlotManager)
@@ -105,7 +95,7 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
                 //check expect library ad slots
                 $libraryExpressions = $libraryAdSlot->getLibraryExpressions();
                 /** @var LibraryExpressionInterface $libraryExpression */
-                foreach($libraryExpressions as $libraryExpression) {
+                foreach ($libraryExpressions as $libraryExpression) {
                     $expectLibrary = $libraryExpression->getExpectLibraryAdSlot();
                     if ($expectLibrary instanceof ReportableLibraryAdSlotInterface) {
                         $this->checkLibraryAdSlotReferredByRonAdSlotExistedAndCreate($expectLibrary, $entity->getRonAdSlotSegments()->toArray());
@@ -128,7 +118,7 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         $ronAdSlot->setLibraryAdSlot($libraryAdSlot);
 
         /** @var RonAdSlotSegmentInterface $ronAdSlotSegment */
-        foreach($ronAdSlotSegments as $ronAdSlotSegment) {
+        foreach ($ronAdSlotSegments as $ronAdSlotSegment) {
             $newRonSegment = clone $ronAdSlotSegment;
             $newRonSegment->setRonAdSlot($ronAdSlot);
             $ronAdSlot->addRonAdSlotSegment($newRonSegment);
@@ -168,25 +158,26 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         if (!$libraryAdSlot instanceof ReportableLibraryAdSlotInterface) {
             return false;
         }
-        /**
-         * @var LibraryExpressionRepositoryInterface $libraryExpressionRepository
-         */
+
+        /** @var LibraryExpressionRepositoryInterface $libraryExpressionRepository */
         $libraryExpressionRepository = $this->em->getRepository(LibraryExpression::class);
+
         /** @var LibraryExpressionInterface[] $libraryExpressions */
         $libraryExpressions = $libraryExpressionRepository->getByExpectLibraryAdSlot($libraryAdSlot);
-        /**
-         * @var LibraryDynamicAdSlotRepositoryInterface $libraryDynamicAdSlotRepository
-         */
+
+        /** @var LibraryDynamicAdSlotRepositoryInterface $libraryDynamicAdSlotRepository */
         $libraryDynamicAdSlotRepository = $this->em->getRepository(LibraryDynamicAdSlot::class);
+
+        /** @var LibraryDynamicAdSlotInterface[] $libraryDynamicAdSlots */
         $libraryDynamicAdSlots = $libraryDynamicAdSlotRepository->getByDefaultLibraryAdSlot($libraryAdSlot);
 
-        foreach($libraryExpressions as $libraryExpression) {
+        foreach ($libraryExpressions as $libraryExpression) {
             if ($libraryExpression->getLibraryDynamicAdSlot()->getRonAdSlot() instanceof RonAdSlotInterface) {
                 return true;
             }
         }
 
-        foreach($libraryDynamicAdSlots as $libraryDynamicAdSlot) {
+        foreach ($libraryDynamicAdSlots as $libraryDynamicAdSlot) {
             if ($libraryDynamicAdSlot->getRonAdSlot() instanceof RonAdSlotInterface) {
                 return true;
             }
@@ -194,6 +185,7 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
 
         return false;
     }
+
     /**
      * @return ModelInterface
      */
@@ -246,7 +238,6 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         return $this->repository->getRonAdSlotsForSegment($segment, $limit, $offset);
     }
 
-
     /**
      *
      * @param RonAdSlotInterface $ronAdSlot
@@ -260,7 +251,7 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         if (!$libraryAdSlot instanceof BaseLibraryAdSlotInterface) {
             throw new LogicException('Invalid RonAdSlot');
         }
-        
+
         $domain = $this->extractDomain($domain);
         $site = $this->siteRepository->getSitesByDomainAndPublisher($libraryAdSlot->getPublisher(), $domain, true);
 
@@ -301,7 +292,7 @@ class RonAdSlotManager implements RonAdSlotManagerInterface
         $result = [];
         $ronAdSlots = $this->repository->findAll();
         /** @var RonAdSlotInterface $ronAdSlot */
-        foreach($ronAdSlots as $ronAdSlot) {
+        foreach ($ronAdSlots as $ronAdSlot) {
             $segments = $ronAdSlot->getSegments();
             if (count($segments) < 1) {
                 $result[] = $ronAdSlot;

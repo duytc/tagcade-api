@@ -3,28 +3,83 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
+use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
+use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
 class CpmRateGetter implements CpmRateGetterInterface
 {
+    const BILLING_FACTOR_SLOT_OPPORTUNITY = 'SLOT_OPPORTUNITY';
+    const BILLING_FACTOR_VIDEO_IMPRESSION = 'VIDEO_IMPRESSION';
+    const BILLING_FACTOR_VIDEO_VISIT = 'VISIT';
 
     protected $defaultCpmRate;
-    /**
-     * @var BillingRateThreshold[]
-     */
+
+    /** @var BillingRateThreshold[] */
     protected $defaultBillingThresholds;
-    /**
-     * @var AccountReportRepositoryInterface
-     */
+
+    /** @var AccountReportRepositoryInterface */
     private $accountReportRepository;
-    /**
-     * @var DateUtilInterface
-     */
+
+    /** @var ReportRepositoryInterface */
+    private $reportRepository;
+
+    /** @var DateUtilInterface */
     private $dateUtil;
+
+    /** @var BillingConfigurationRepositoryInterface */
+    private $billingConfigurationRepository;
+
+    /**
+     * @param float $defaultCpmRate
+     * @param BillingRateThreshold[] $defaultBilledThresholds
+     * @param AccountReportRepositoryInterface $accountReportRepository
+     * @param DateUtilInterface $dateUtil
+     * @param BillingConfigurationRepositoryInterface $billingConfigurationRepository
+     * @param ReportRepositoryInterface $reportRepository
+     */
+    public function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [],
+                                AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil,
+                                BillingConfigurationRepositoryInterface $billingConfigurationRepository,
+                                ReportRepositoryInterface $reportRepository
+    )
+    {
+        if (!is_numeric($defaultCpmRate)) {
+            throw new InvalidArgumentException('Invalid default cpm rate');
+        }
+
+        foreach ($defaultBilledThresholds as $threshold) {
+            if (!$threshold instanceof BillingRateThreshold) {
+                throw new InvalidArgumentException('Invalid array of thresholds');
+            }
+
+            unset($threshold);
+        }
+
+        // sort thresholds, descending order
+        usort($defaultBilledThresholds, function (BillingRateThreshold $a, BillingRateThreshold $b) {
+                if ($a->getThreshold() === $b->getThreshold()) {
+                    return 0;
+                }
+
+                return ($a->getThreshold() > $b->getThreshold()) ? -1 : 1;
+            }
+        );
+
+        $this->defaultCpmRate = (float)$defaultCpmRate;
+        $this->defaultBillingThresholds = $defaultBilledThresholds;
+        $this->accountReportRepository = $accountReportRepository;
+        $this->dateUtil = $dateUtil;
+        $this->billingConfigurationRepository = $billingConfigurationRepository;
+        $this->reportRepository = $reportRepository;
+
+    }
 
     public static function createConfig(array $thresholds)
     {
@@ -41,47 +96,10 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $config;
     }
 
-
-    /**
-     * @param float $defaultCpmRate
-     * @param BillingRateThreshold[] $defaultBilledThresholds
-     * @param AccountReportRepositoryInterface $accountReportRepository
-     * @param DateUtilInterface $dateUtil
-     */
-    public function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [], AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil)
+    public function getDefaultCpmRate($weight)
     {
-        if (!is_numeric($defaultCpmRate)) {
-            throw new InvalidArgumentException('Invalid default cpm rate');
-        }
-
-        foreach ($defaultBilledThresholds as $threshold) {
-            if (!$threshold instanceof BillingRateThreshold) {
-                throw new InvalidArgumentException('Invalid array of thresholds');
-            }
-
-            unset($threshold);
-        }
-
-        // sort thresholds, descending order
-        usort($defaultBilledThresholds, function(BillingRateThreshold $a, BillingRateThreshold $b) {
-                if ($a->getThreshold() === $b->getThreshold()) {
-                    return 0;
-                }
-
-                return ($a->getThreshold() > $b->getThreshold()) ? -1 : 1;
-            }
-        );
-
-        $this->defaultCpmRate = (float) $defaultCpmRate;
-        $this->defaultBillingThresholds = $defaultBilledThresholds;
-        $this->accountReportRepository = $accountReportRepository;
-        $this->dateUtil = $dateUtil;
-    }
-
-    public function getDefaultCpmRate($slotOpportunities)
-    {
-        foreach($this->defaultBillingThresholds as $threshold) {
-            if($slotOpportunities >= $threshold->getThreshold()) {
+        foreach ($this->defaultBillingThresholds as $threshold) {
+            if ($weight >= $threshold->getThreshold()) {
                 return $threshold->getCpmRate();
             }
         }
@@ -89,36 +107,60 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $this->defaultCpmRate;
     }
 
-    public function getTodayCpmRateForPublisher(PublisherInterface $publisher, $todaySlotOpportunities = 0)
+    public function getCpmRateForPublisher(PublisherInterface $publisher, $module, $weight)
     {
-        if (null !== $publisher->getBillingRate()) {
-            return new CpmRate($publisher->getBillingRate(), true);
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
+
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            return new CpmRate(0, true); // Not found any billing configuration => not bill this module then cpm = 0
         }
 
-        $date = new DateTime('yesterday');
-        $currentSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date)
-        );
+        if ($billingConfiguration->isDefaultConfiguration()) {
+            return new CpmRate($this->getDefaultCpmRate($weight));
+        }
 
-        $totalSlotOpportunities = $currentSlotOpportunities + $todaySlotOpportunities;
-        $cpmRate = $this->getDefaultCpmRate($totalSlotOpportunities);
-
-        return new CpmRate($cpmRate);
+        return new CpmRate($billingConfiguration->getCpmRate($weight));
     }
 
-
-    public function getThresholdRateForPublisher(PublisherInterface $publisher, DateTime $date = null)
+    public function getCpmRateForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $month)
     {
-        $monthSlotOpportunities = $this->accountReportRepository->getSumSlotOpportunities(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date, true)
-        );
+        $weight = $this->getBillingWeightForPublisherByMonth($publisher, $module, $month);
 
-        return $this->getDefaultCpmRate($monthSlotOpportunities);
+        return $this->getCpmRateForPublisher($publisher, $module, $weight);
     }
 
+    /**
+     * get weight count for a specific publisher with given module in a month
+     *
+     * @param PublisherInterface $publisher
+     * @param $module
+     * @param DateTime $month
+     * @throws \Exception
+     * @return null when no billing configuration found
+     *         int when at least one configuration found
+     */
+    protected function getBillingWeightForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $month)
+    {
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
 
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(self::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+
+        $billingFactor = $billingConfiguration->getBillingFactor();
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($month);
+        $lastDateInMonth = $this->dateUtil->getLastDateInMonth($month, true);
+
+        switch ($billingFactor) {
+            case self::BILLING_FACTOR_SLOT_OPPORTUNITY:
+                return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $lastDateInMonth);
+            case self::BILLING_FACTOR_VIDEO_IMPRESSION:
+                return $this->reportRepository->getTotalVideoImpressionForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
+            case self::BILLING_FACTOR_VIDEO_VISIT:
+                return $this->reportRepository->getTotalVideoVisitForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
+            default:
+                throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));
+        }
+    }
 }

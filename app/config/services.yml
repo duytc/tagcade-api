@@ -128,6 +128,7 @@ services:
         arguments:
             - %tc.default_tag_url%
             - @tagcade.domain_manager.ron_ad_slot
+            - @tagcade.domain_manager.ad_slot
 
     tagcade.service.console_output:
         class: Symfony\Component\Console\Output\ConsoleOutput

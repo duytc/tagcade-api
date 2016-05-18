@@ -4,7 +4,6 @@ namespace Tagcade\Bundle\AdminApiBundle\DomainManager;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Entity\SourceReportSiteConfig;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;

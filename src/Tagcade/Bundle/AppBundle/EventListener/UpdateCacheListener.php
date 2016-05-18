@@ -6,18 +6,12 @@ use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Cache\TagCacheManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\DynamicAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Worker\Manager;
 
 class UpdateCacheListener
 {
-    /**
-     * @var TagCacheManagerInterface
-     */
+    /** @var TagCacheManagerInterface */
     protected $tagCacheManager;
 
     /**
@@ -37,20 +31,15 @@ class UpdateCacheListener
     {
         $entities = $event->getEntities();
 
-        array_walk($entities, function(ModelInterface $entity) {
+        array_walk($entities, function (ModelInterface $entity) {
                 if ($entity instanceof BaseAdSlotInterface) {
                     $this->tagCacheManager->refreshCacheForAdSlot($entity);
-                }
-                else if ($entity instanceof AdNetworkInterface) {
+                } else if ($entity instanceof AdNetworkInterface) {
                     $this->tagCacheManager->refreshCacheForAdNetwork($entity);
-                }
-                else if ($entity instanceof RonAdSlotInterface) {
+                } else if ($entity instanceof RonAdSlotInterface) {
                     $this->tagCacheManager->refreshCacheForRonAdSlot($entity);
                 }
             }
         );
     }
-
-
-
 }

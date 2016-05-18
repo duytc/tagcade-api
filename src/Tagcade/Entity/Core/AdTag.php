@@ -18,6 +18,9 @@ class AdTag extends AdTagModel
     protected $refId;
     protected $libraryAdTag;
 
+    protected $impressionCap;
+    protected $networkOpportunityCap;
+
     public function __construct()
     {
     }

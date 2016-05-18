@@ -8,8 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Validator\Constraints\DateTime;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator;
 
 class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
 {
@@ -25,8 +27,7 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
             ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'Publisher id')
             ->addOption('startDate', 'f', InputOption::VALUE_REQUIRED, 'Start date (YYYY-MM-DD) of the report. ')
             ->addOption('endDate', 't', InputOption::VALUE_OPTIONAL, 'End date of the report (YYYY-MM-DD). Default is yesterday', (new \DateTime('yesterday'))->format('Ymd'))
-            ->setDescription('Generate dummy performance report for a publisher');
-        ;
+            ->setDescription('Generate dummy performance report for a publisher');;
     }
 
     /**
@@ -54,7 +55,7 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
         }
 
         $interval = new \DateInterval('P1D');
-        $dateRange = new \DatePeriod($startDate, $interval ,$endDate);
+        $dateRange = new \DatePeriod($startDate, $interval, $endDate);
 
         $container = $this->getContainer();
         /**
@@ -89,12 +90,11 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
             $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag')
         ];
 
+        $eventCounter = new TestEventCounter($adSlotManager->getReportableAdSlotsForPublisher($publisher));
+        $reportCreator = new ReportCreator($reportTypes, $eventCounter);
+        $dailyReportCreator = new DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 
-        $eventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->getReportableAdSlotsForPublisher($publisher));
-        $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreator($reportTypes, $eventCounter);
-        $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
-
-        foreach($dateRange as $date){
+        foreach ($dateRange as $date) {
             /**
              * @var \DateTime $date
              */
@@ -117,6 +117,5 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
 
             gc_collect_cycles();
         }
-
     }
 } 

@@ -2,17 +2,14 @@
 
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
 
 /**
  * This listener will be triggered when an ad slot is moved to library. The listener will then update all tags in side that slot to library
@@ -26,7 +23,7 @@ class MoveAdTagToLibraryListener
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
-        if(!$entity instanceof LibraryDisplayAdSlotInterface && !$entity instanceof LibraryNativeAdSlotInterface) {
+        if (!$entity instanceof LibraryDisplayAdSlotInterface && !$entity instanceof LibraryNativeAdSlotInterface) {
             return;
         }
 
@@ -35,12 +32,11 @@ class MoveAdTagToLibraryListener
             // Make sure that there is only one slot refer to this LibraryInstance with visible = false.
             // Otherwise this script will be broken
 
-            if($adSlots instanceof PersistentCollection && $adSlots->count() > 0)
-            {
+            if ($adSlots instanceof PersistentCollection && $adSlots->count() > 0) {
                 /** @var DisplayAdSlotInterface $adSlot */
                 $adSlot = $adSlots->current();
                 $adTags = $adSlot->getAdTags();
-                foreach($adTags as $adTag) {
+                foreach ($adTags as $adTag) {
                     /**
                      * @var AdTagInterface $adTag
                      */
@@ -68,7 +64,7 @@ class MoveAdTagToLibraryListener
 
     public function postFlush(PostFlushEventArgs $event)
     {
-        if(!empty($this->newSlotTags)) {
+        if (!empty($this->newSlotTags)) {
             $em = $event->getEntityManager();
             foreach ($this->newSlotTags as $slotTag) {
                 $em->persist($slotTag);

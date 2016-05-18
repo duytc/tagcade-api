@@ -88,4 +88,14 @@ interface AdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getDisplayAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * get Display AdSlots For Site
+     *
+     * @param SiteInterface $site
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getDisplayAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 }

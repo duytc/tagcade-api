@@ -17,6 +17,7 @@ use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -284,7 +285,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      */
     public function getAdtagsAction($id)
     {
-        /** @var NativeAdSlotInterface $adSlot */
+        /** @var NativeAdSlotInterface|ReportableAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.domain_manager.ad_tag')

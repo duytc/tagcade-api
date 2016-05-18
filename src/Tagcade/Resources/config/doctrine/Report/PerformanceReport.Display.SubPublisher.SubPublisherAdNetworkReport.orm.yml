@@ -1,0 +1,37 @@
+Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherAdNetworkReport:
+    repositoryClass: Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherAdNetworkReportRepository
+    type: entity
+    table: report_performance_display_hierarchy_sub_publisher_ad_network
+    uniqueConstraints:
+        unique_performance_sub_publisher_ad_network_report_idx:
+            columns: [date, sub_publisher_id, ad_network_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        totalOpportunities:
+            type: integer
+        impressions:
+            type: integer
+        passbacks:
+            type: integer
+        fillRate:
+            type: decimal
+            scale: 4
+        estRevenue:
+            type: decimal
+            scale: 4
+            nullable: true
+        estCpm:
+            type: decimal
+            scale: 4
+            nullable: true
+    manyToOne:
+        subPublisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork

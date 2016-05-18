@@ -13,6 +13,7 @@ use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Service\TagGenerator;
 
 trait CreateAdSlotDataTrait
 {
@@ -106,6 +107,7 @@ trait CreateAdSlotDataTrait
             'width' => $adSlot->getWidth(),
             'height' => $adSlot->getHeight(),
             'passbackMode' => $adSlot->getPassbackMode(),
+            'jsTag' => $this->getTagGenerator()->createJsTags($adSlot),
             'tags' => []
         ];
 
@@ -205,6 +207,7 @@ trait CreateAdSlotDataTrait
             'native' =>  $dynamicAdSlot->isSupportedNative(),
             'expressions' => [],
             'defaultAdSlot' => $dynamicAdSlot->getDefaultAdSlot() instanceof ReportableAdSlotInterface ? $dynamicAdSlot->getDefaultAdSlot()->getId() : null,
+            'jsTag' => $this->getTagGenerator()->createJsTags($dynamicAdSlot),
             'slots' => []
         ];
 
@@ -327,4 +330,9 @@ trait CreateAdSlotDataTrait
 
         return $data;
     }
+
+    /**
+     * @return TagGenerator
+     */
+    abstract protected function getTagGenerator();
 }
