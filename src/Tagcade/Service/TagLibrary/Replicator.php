@@ -232,44 +232,84 @@ class Replicator implements ReplicatorInterface
         $this->em->getConnection()->beginTransaction();
 
         try {
-            /** @var AdTagRepositoryInterface $adTagRepository */
-            $adTagRepository = $this->em->getRepository(AdTag::class);
-            $adTags = $adTagRepository->getAdTagsByLibraryAdSlotAndRefId($librarySlotTag->getLibraryAdSlot(), $librarySlotTag->getRefId());
 
-            array_walk(
-                $adTags,
-                function (AdTagInterface $t) use ($librarySlotTag, $remove) {
-
-                    if (true === $remove) {
-                        $this->em->remove($t);
-                        return;
-                    }
-
-                    $t->setLibraryAdTag($librarySlotTag->getLibraryAdTag());
-                    $t->setFrequencyCap($librarySlotTag->getFrequencyCap());
-                    $t->setPosition($librarySlotTag->getPosition());
-                    $t->setRotation($librarySlotTag->getRotation());
-                    $t->setActive($librarySlotTag->isActive());
-                    $t->setImpressionCap($librarySlotTag->getImpressionCap());
-                    $t->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
-
-                    $this->em->persist($t);
-                }
-            );
-
-            // if there no any more AdTag refer to this LibraryAdTag then it should be removed as well
-            $libraryAdTag = $librarySlotTag->getLibraryAdTag();
-
-            if (true === $remove &&
-                $libraryAdTag->getAssociatedTagCount() < 1 &&
-                count($libraryAdTag->getLibSlotTags()) < 2
-            ) {
-                $this->em->remove($libraryAdTag);
-            }
+            $this->doReplicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, $remove);
 
             $this->em->flush();
 
             $this->checksumValidator->validateAllAdSlotsSynchronized($librarySlotTag->getLibraryAdSlot()->getAdSlots()->toArray());
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+
+            throw new RuntimeException($ex);
+        }
+    }
+
+    private function doReplicateExistingLibrarySlotTagToAllReferencedAdTags(LibrarySlotTagInterface $librarySlotTag, $remove = false)
+    {
+        /** @var AdTagRepositoryInterface $adTagRepository */
+        $adTagRepository = $this->em->getRepository(AdTag::class);
+        $adTags = $adTagRepository->getAdTagsByLibraryAdSlotAndRefId($librarySlotTag->getLibraryAdSlot(), $librarySlotTag->getRefId());
+
+        array_walk(
+            $adTags,
+            function (AdTagInterface $t) use ($librarySlotTag, $remove) {
+
+                if (true === $remove) {
+                    $this->em->remove($t);
+                    return;
+                }
+
+                $t->setLibraryAdTag($librarySlotTag->getLibraryAdTag());
+                $t->setFrequencyCap($librarySlotTag->getFrequencyCap());
+                $t->setPosition($librarySlotTag->getPosition());
+                $t->setRotation($librarySlotTag->getRotation());
+                $t->setActive($librarySlotTag->isActive());
+                $t->setImpressionCap($librarySlotTag->getImpressionCap());
+                $t->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
+
+                $this->em->persist($t);
+            }
+        );
+
+        // if there no any more AdTag refer to this LibraryAdTag then it should be removed as well
+        $libraryAdTag = $librarySlotTag->getLibraryAdTag();
+
+        if (true === $remove &&
+            $libraryAdTag->getAssociatedTagCount() < 1 &&
+            count($libraryAdTag->getLibSlotTags()) < 2
+        ) {
+            $this->em->remove($libraryAdTag);
+        }
+    }
+
+    /**
+     * Replicate changes from an library ad tag to all reference ad tags
+     * @param LibrarySlotTagInterface[] $librarySlotTags
+     * @param bool $remove true if we are removing $librarySlotTag
+     */
+    public function replicateExistingLibrarySlotTagsToAllReferencedAdTags(array $librarySlotTags, $remove = false)
+    {
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+
+            foreach ($librarySlotTags as $librarySlotTag) {
+                if (!$librarySlotTag instanceof  LibrarySlotTagInterface) {
+                    continue;
+                }
+
+                $this->doReplicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, $remove);
+            }
+
+            $this->em->flush();
+
+            // validate syncing
+            foreach($librarySlotTags as $librarySlotTag) {
+                $this->checksumValidator->validateAllAdSlotsSynchronized($librarySlotTag->getLibraryAdSlot()->getAdSlots()->toArray());
+            }
 
             $this->em->getConnection()->commit();
         } catch (\Exception $ex) {

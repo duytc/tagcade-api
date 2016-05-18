@@ -147,12 +147,7 @@ class AdTagManager implements AdTagManagerInterface
 
         // replicate Existing LibrarySlotTag To All Referenced AdTags
         if ($adTag->getAutoIncreasePosition() && $adTag->getAdSlot() instanceof DisplayAdSlotInterface) {
-            foreach ($adSlotLib->getLibSlotTags() as $librarySlotTag) {
-                /** @var LibrarySlotTagInterface $librarySlotTag */
-                if ($librarySlotTag->getPosition() >= $adTag->getPosition()) {
-                    $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
-                }
-            }
+            $this->replicator->replicateExistingLibrarySlotTagsToAllReferencedAdTags($adSlotLib->getLibSlotTags()->toArray());
         } else {
             $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
         }
@@ -198,16 +193,7 @@ class AdTagManager implements AdTagManagerInterface
             }
 
             // STEP.2: replicate new for other librarySlotTags
-            foreach ($adSlotLib->getLibSlotTags() as $libSlotTag) {
-                /** @var LibrarySlotTagInterface $librarySlotTag */
-                if ($libSlotTag->getPosition() > $adTag->getPosition()) {
-                    $createdAdTags = $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($libSlotTag);
-
-                    if (is_array($createdAdTags)) {
-                        $allCreatedAdTags = array_merge($allCreatedAdTags, $createdAdTags);
-                    }
-                }
-            }
+            $this->replicator->replicateExistingLibrarySlotTagsToAllReferencedAdTags($adSlotLib->getLibSlotTags()->toArray());
 
             return $allCreatedAdTags;
         } else {
@@ -229,12 +215,9 @@ class AdTagManager implements AdTagManagerInterface
         // support "auto increase position" feature: update for all referenced ad tags
         if ($adTag->getAutoIncreasePosition()) {
             $this->autoIncreasePositionForAdSlotDueToAdTag($adSlot, $adTag);
-
-            $this->em->persist($adSlot);
-        } else {
-            $this->em->persist($adTag);
         }
 
+        $this->em->persist($adTag);
         $this->em->flush();
 
         return $adTag;
