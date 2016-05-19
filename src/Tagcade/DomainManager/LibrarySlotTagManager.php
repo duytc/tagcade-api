@@ -62,26 +62,14 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         // replicate Existing LibrarySlotTag To All Referenced AdTags
         $adSlotLib = $librarySlotTag->getLibraryAdSlot();
 
-        if ($librarySlotTag->getAutoIncreasePosition() && $adSlotLib instanceof LibraryDisplayAdSlotInterface) {
-            foreach ($adSlotLib->getLibSlotTags() as $libSlotTag) {
-                /** @var LibrarySlotTagInterface $libSlotTag */
-                if ($libSlotTag->getPosition() >= $librarySlotTag->getPosition()) {
-                    // if new, we replicate new for only current $librarySlotTag
-                    if (true === $newSlotTag && $libSlotTag->getPosition() == $librarySlotTag->getPosition()) {
-                        $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($libSlotTag);
-                        continue;
-                    }
+        if ($newSlotTag === true) {
+            $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
+        }
 
-                    // else, is edit, we replicate existing, include current $librarySlotTag
-                    $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($libSlotTag);
-                }
-            }
+        if ($librarySlotTag->getAutoIncreasePosition() && $adSlotLib instanceof LibraryDisplayAdSlotInterface) {
+            $this->replicator->replicateExistingLibrarySlotTagsToAllReferencedAdTags($adSlotLib->getLibSlotTags()->toArray());
         } else {
-            if (true === $newSlotTag) {
-                $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
-            } else {
-                $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
-            }
+            $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
         }
     }
 
