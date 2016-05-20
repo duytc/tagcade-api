@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
@@ -158,7 +159,7 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
         $currentUser = $this->getUser();
 
         if ((!$currentUser instanceof  AdminInterface) || ($subPublisher->getPublisher()->getId() != $currentUser->getId())) {
-            throw new NotFoundHttpException(sprintf('The user does not have right to access to sub publisher %s', $subPublisherId));
+            throw new AccessDeniedException(sprintf('The user does not have right to access to sub publisher %s', $subPublisherId));
         }
 
         $jwtManager = $this->get('lexik_jwt_authentication.jwt_manager');
