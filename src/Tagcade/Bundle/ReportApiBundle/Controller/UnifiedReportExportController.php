@@ -13,8 +13,8 @@ use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
-use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReportBuilder;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilder as TagcadeReportBuilder;
+use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReportBuilder;
 
 /**
  * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -484,29 +484,43 @@ class UnifiedReportExportController extends FOSRestController
             throw new NotFoundHttpException('No reports found for that query');
         }
 
-        return $result;
+        // create csv and get real file path on api server
+        $exportedFilePath = $this->createFile($result);
+
+        return $exportedFilePath;
     }
 
-    private function createFile($reportData, $filePath)
+    /**
+     * create csv and get real file path on api server
+     *
+     * @param array $reportData
+     * @return bool|string
+     */
+    private function createFile(array $reportData)
     {
-//        $handle = fopen($filePath, 'w+');
-//
-//        if (!$handle) {
-//            return false;
-//        }
-//
-//        $interator = new Trave
-//
-//        while (false !== ($row = $interator->next())) {
-//            // add a line in the csv file. You need to implement a toArray() method
-//            // to transform your object into an array
-//            fputcsv($handle, $row[0]->toArray());
-//            // used to limit the memory consumption
-//            $em->detach($row[0]);
-//        }
-//
-//        fclose($handle);
+        // create file and return path
+        $EXPORT_DIR = '/public/export/report/unifiedReport';
+        $filePath = sprintf('%s/unifiedReport-%s.csv', $EXPORT_DIR, uniqid('', true));
+
+        $handle = fopen($filePath, 'w+');
+
+        if (!$handle) {
+            return false;
+        }
+
+        try {
+            for ($i = 0; $len = count($reportData); $i++) {
+                fputcsv($handle, $reportData[$i]);
+            }
+
+            fclose($handle);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return $filePath;
     }
+
     /**
      * @return \Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface
      */
