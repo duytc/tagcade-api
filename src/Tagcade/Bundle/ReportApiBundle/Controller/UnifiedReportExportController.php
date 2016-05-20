@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -23,8 +24,11 @@ use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReport
  */
 class UnifiedReportExportController extends FOSRestController
 {
-    const PUBLISHER_KEY = 'publisher';
-    const AD_NETWORK_KEY = 'adNetwork';
+    const EXPORT_DIR = '/public/export/report/unifiedReport';
+
+    private static $HEADER_ROW_UNIFIED_REPORT = ['Date', 'Requests', 'Impressions', 'Passbacks', 'Revenue', 'CPM', 'Fill Rate'];
+    private static $HEADER_ROW_UNIFIED_COMPARISON_REPORT = ['Date', 'Network Opportunities', 'Impressions', 'Passbacks', 'Fill Rate'];
+    private static $HEADER_ROW_TAGCADE_REPORT = ['Date', 'Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison', 'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Revenue Opportunity'];
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -83,9 +87,14 @@ class UnifiedReportExportController extends FOSRestController
     public function getPublisherAllPartnersByDayAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersDiscrepancyByDayForPublisher($publisher, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -113,9 +122,14 @@ class UnifiedReportExportController extends FOSRestController
     public function getPublisherAllPartnersBySiteAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersDiscrepancyBySiteForPublisher($publisher, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -143,9 +157,14 @@ class UnifiedReportExportController extends FOSRestController
     public function getPublisherAllPartnersByAdTagAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersDiscrepancyByAdTagForPublisher($publisher, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -174,11 +193,14 @@ class UnifiedReportExportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getAllSitesDiscrepancyByDayForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getAllSitesDiscrepancyByDayForPartner($partner, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -208,11 +230,14 @@ class UnifiedReportExportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getAllSitesDiscrepancyBySiteForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getAllSitesDiscrepancyBySiteForPartner($partner, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -242,11 +267,14 @@ class UnifiedReportExportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getAllSitesDiscrepancyByAdTagForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getAllSitesDiscrepancyByAdTagForPartner($partner, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -277,9 +305,14 @@ class UnifiedReportExportController extends FOSRestController
         $publisher = $this->getPublisher($publisherId);
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
         $site = $this->getSite($siteId);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $this->getReportBuilder()->getSiteDiscrepancyByDayForPartner($partner, $site, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -311,11 +344,14 @@ class UnifiedReportExportController extends FOSRestController
         $publisher = $this->getPublisher($publisherId);
         $adNetwork = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
         $site = $this->getSite($siteId);
+        $params = $this->getParams();
+
+        $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
 
         return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getSiteDiscrepancyByAdTagForPartnerWithSubPublisher($adNetwork, $site, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getSiteDiscrepancyByAdTagForPartner($adNetwork, $site, $this->getParams())
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
         );
     }
 
@@ -472,60 +508,62 @@ class UnifiedReportExportController extends FOSRestController
 
     /**
      * get Result
-     * @param $result
+     * @param array $unifiedReports
+     * @param array $unifiedComparisonReports
+     * @param array $tagcadePartnerReports
      * @return mixed
-     * @throws NotFoundHttpException
      */
-    private function getResult($result)
+    private function getResult(array $unifiedReports, array $unifiedComparisonReports, array $tagcadePartnerReports)
     {
-        if ($result === false
-            || (is_array($result) && count($result) < 1)
+        if (!is_array($unifiedReports) || count($unifiedReports) < 1
+            || !is_array($unifiedComparisonReports) || count($unifiedComparisonReports) < 1
+            || !is_array($tagcadePartnerReports) || count($tagcadePartnerReports) < 1
         ) {
             throw new NotFoundHttpException('No reports found for that query');
         }
 
         // create csv and get real file path on api server
-        $exportedFilePath = $this->createFile($result);
+        $exportedFilePaths = [
+            $this->createCsvFile($unifiedReports, self::$HEADER_ROW_UNIFIED_REPORT),
+            $this->createCsvFile($unifiedComparisonReports, self::$HEADER_ROW_UNIFIED_COMPARISON_REPORT),
+            $this->createCsvFile($tagcadePartnerReports, self::$HEADER_ROW_TAGCADE_REPORT),
+        ];
 
-        return $exportedFilePath;
+        return $exportedFilePaths;
     }
 
     /**
      * create csv and get real file path on api server
      *
      * @param array $reportData
-     * @return bool|string
+     * @param array $headerRow
+     * @return string
      */
-    private function createFile(array $reportData)
+    private function createCsvFile(array $reportData, array $headerRow)
     {
         // create file and return path
-        $EXPORT_DIR = '/public/export/report/unifiedReport';
-        $filePath = sprintf('%s/unifiedReport-%s.csv', $EXPORT_DIR, uniqid('', true));
+        $filePath = sprintf('%s/unifiedReport-%s.csv', self::EXPORT_DIR, uniqid('', true));
 
         $handle = fopen($filePath, 'w+');
 
         if (!$handle) {
-            return false;
+            throw new RuntimeException('Could not export report to file');
         }
 
         try {
+            // write header row
+            fputcsv($handle, $headerRow);
+
+            // write all report data rows
             for ($i = 0; $len = count($reportData); $i++) {
                 fputcsv($handle, $reportData[$i]);
             }
 
             fclose($handle);
         } catch (\Exception $e) {
-            return false;
+            throw new RuntimeException('Could not export report to file');
         }
 
         return $filePath;
-    }
-
-    /**
-     * @return \Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface
-     */
-    private function getReportBuilder()
-    {
-        return $this->get('tagcade.service.report.unified_report.selector.report_builder');
     }
 }
