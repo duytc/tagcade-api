@@ -411,7 +411,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('lsl.name', ':searchKey'), $qb->expr()->like('st.name', ':searchKey')))
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('lsl.name', ':searchKey'), $qb->expr()->like('sl.id', ':searchKey'), $qb->expr()->like('st.name', ':searchKey')))
                 ->setParameter('searchKey', $searchLike);
         }
 
