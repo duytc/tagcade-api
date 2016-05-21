@@ -11,10 +11,15 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\AbstractReport as AbstractTagcadeReport;
+use Tagcade\Model\Report\UnifiedReport\Comparison\AbstractReport as AbstractUnifiedComparisonReport;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
+use Tagcade\Model\Report\UnifiedReport\AbstractUnifiedReport;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilder as TagcadeReportBuilder;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReportBuilder;
 
 /**
@@ -25,10 +30,21 @@ use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReport
 class UnifiedReportExportController extends FOSRestController
 {
     const EXPORT_DIR = '/public/export/report/unifiedReport';
+    const EXPORT_TYPE_UNIFIED_REPORT = 'unifiedReport';
+    const EXPORT_TYPE_UNIFIED_COMPARISON_REPORT = 'unifiedComparisonReport';
+    const EXPORT_TYPE_TAGCADE_REPORT = 'tagcadePartnerReport';
 
-    private static $HEADER_ROW_UNIFIED_REPORT = ['Date', 'Requests', 'Impressions', 'Passbacks', 'Revenue', 'CPM', 'Fill Rate'];
-    private static $HEADER_ROW_UNIFIED_COMPARISON_REPORT = ['Date', 'Network Opportunities', 'Impressions', 'Passbacks', 'Fill Rate'];
-    private static $HEADER_ROW_TAGCADE_REPORT = ['Date', 'Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison', 'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Revenue Opportunity'];
+    private static $CSV_HEADER_MAP = array(
+        self::EXPORT_TYPE_UNIFIED_REPORT => ['Requests', 'Impressions', 'Passbacks', 'Revenue', 'CPM', 'Fill Rate'],
+        self::EXPORT_TYPE_TAGCADE_REPORT => ['Network Opportunities', 'Impressions', 'Passbacks', 'Fill Rate'],
+        self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT => ['Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison', 'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Revenue Opportunity']
+    );
+
+    private static $REPORT_FIELDS_EXPORT_MAP = array(
+        self::EXPORT_TYPE_UNIFIED_REPORT => ['requests', 'impressions', 'passbacks', 'revenue', 'cpm', 'fillRate'],
+        self::EXPORT_TYPE_TAGCADE_REPORT => ['networkOpportunities', 'impressions', 'passbacks', 'fillRate'],
+        self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT => ['tagcadeOpportunities', 'requests', 'opportunityComparison', 'tagcadePassbacks', 'partnerPassbacks', 'passbackComparison', 'tagcadeEcpm', 'partnerEcpm', 'ecpmComparison', 'revenueOpportunity']
+    );
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -55,12 +71,26 @@ class UnifiedReportExportController extends FOSRestController
         $publisher = $this->getPublisher($publisherId);
         $params = $this->getParams();
 
+        /** @var ReportResultInterface $unifiedReports */
         $unifiedReports = $this->getUnifiedReportBuilder()->getAllDemandPartnersByPartnerReport($publisher, $params);
+        if (!$unifiedReports instanceof ReportResultInterface) {
+            throw new NotFoundHttpException('No reports found for that query');
+        }
+
+        /** @var ReportResultInterface $unifiedReports */
         $unifiedComparisonReports = $this->getUnifiedReportBuilder()->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params);
+        if (!$unifiedComparisonReports instanceof ReportResultInterface) {
+            throw new NotFoundHttpException('No reports found for that query');
+        }
+
+        /** @var ReportResultInterface $unifiedReports */
         $tagcadePartnerReports = $this->getTagcadeReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $params);
+        if (!$tagcadePartnerReports instanceof ReportResultInterface) {
+            throw new NotFoundHttpException('No reports found for that query');
+        }
 
         return $this->getResult(
-            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports
+            $unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports, $params
         );
     }
 
@@ -508,25 +538,26 @@ class UnifiedReportExportController extends FOSRestController
 
     /**
      * get Result
-     * @param array $unifiedReports
-     * @param array $unifiedComparisonReports
-     * @param array $tagcadePartnerReports
+     * @param ReportResultInterface $unifiedReports
+     * @param ReportResultInterface $unifiedComparisonReports
+     * @param ReportResultInterface $tagcadePartnerReports
+     * @param Params $params
      * @return mixed
      */
-    private function getResult(array $unifiedReports, array $unifiedComparisonReports, array $tagcadePartnerReports)
+    private function getResult(ReportResultInterface $unifiedReports, ReportResultInterface $unifiedComparisonReports, ReportResultInterface $tagcadePartnerReports, Params $params)
     {
-        if (!is_array($unifiedReports) || count($unifiedReports) < 1
-            || !is_array($unifiedComparisonReports) || count($unifiedComparisonReports) < 1
-            || !is_array($tagcadePartnerReports) || count($tagcadePartnerReports) < 1
+        if (!is_array($unifiedReports->getReports()) || count($unifiedReports->getReports()) < 1
+            || !is_array($unifiedComparisonReports->getReports()) || count($unifiedComparisonReports->getReports()) < 1
+            || !is_array($tagcadePartnerReports->getReports()) || count($tagcadePartnerReports->getReports()) < 1
         ) {
             throw new NotFoundHttpException('No reports found for that query');
         }
 
         // create csv and get real file path on api server
         $exportedFilePaths = [
-            $this->createCsvFile($unifiedReports, self::$HEADER_ROW_UNIFIED_REPORT),
-            $this->createCsvFile($unifiedComparisonReports, self::$HEADER_ROW_UNIFIED_COMPARISON_REPORT),
-            $this->createCsvFile($tagcadePartnerReports, self::$HEADER_ROW_TAGCADE_REPORT),
+            $this->createCsvFile($unifiedReports->getReports(), self::EXPORT_TYPE_UNIFIED_REPORT, $params),
+            $this->createCsvFile($unifiedComparisonReports->getReports(), self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT, $params),
+            $this->createCsvFile($tagcadePartnerReports->getReports(), self::EXPORT_TYPE_TAGCADE_REPORT, $params),
         ];
 
         return $exportedFilePaths;
@@ -535,16 +566,22 @@ class UnifiedReportExportController extends FOSRestController
     /**
      * create csv and get real file path on api server
      *
-     * @param array $reportData
-     * @param array $headerRow
+     * @param array|ReportResultInterface[] $reportData
+     * @param string $exportType
+     * @param Params $params
      * @return string
      */
-    private function createCsvFile(array $reportData, array $headerRow)
+    private function createCsvFile(array $reportData, $exportType, Params $params)
     {
-        // create file and return path
-        $filePath = sprintf('%s/unifiedReport-%s.csv', self::EXPORT_DIR, uniqid('', true));
+        if (!array_key_exists($exportType, self::$CSV_HEADER_MAP)) {
+            throw new RuntimeException('Could not export report to file');
+        }
 
-        $handle = fopen($filePath, 'w+');
+        // create file and return path
+        $filePath = $this->getReportFilePath($exportType, $params->getStartDate(), $params->getEndDate());
+        $realFilePath = __DIR__ . '/../../../../../web' . $filePath;
+
+        $handle = fopen($realFilePath, 'w+');
 
         if (!$handle) {
             throw new RuntimeException('Could not export report to file');
@@ -552,18 +589,123 @@ class UnifiedReportExportController extends FOSRestController
 
         try {
             // write header row
-            fputcsv($handle, $headerRow);
+            fputcsv($handle, self::$CSV_HEADER_MAP[$exportType]);
 
             // write all report data rows
-            for ($i = 0; $len = count($reportData); $i++) {
-                fputcsv($handle, $reportData[$i]);
+            for ($i = 0, $len = count($reportData); $i < $len; $i++) {
+                $reportData_i = $reportData[$i];
+
+                if (!$reportData_i instanceof ReportDataInterface) {
+                    continue;
+                }
+
+                // convert to array
+                $reportDataArray = $this->getReportDataArray($reportData_i, $exportType);
+
+                if (!is_array($reportDataArray)) {
+                    continue;
+                }
+
+                // mapping reportData_i to rowData
+                $rowData = array_map(function ($field) use ($reportDataArray) {
+                    return array_key_exists($field, $reportDataArray) ? $reportDataArray[$field] : '';
+                }, self::$REPORT_FIELDS_EXPORT_MAP[$exportType]);
+
+                // append rowData to file
+                fputcsv($handle, $rowData);
             }
 
             fclose($handle);
         } catch (\Exception $e) {
-            throw new RuntimeException('Could not export report to file');
+            throw new RuntimeException('Could not export report to file: ' . $e);
         }
 
         return $filePath;
+    }
+
+    /**
+     * get Report File Path
+     *
+     * @param $exportType
+     * @param \DateTime $startDate
+     * @param \DateTime $endDate
+     * @return bool|string
+     */
+    private function getReportFilePath($exportType, \DateTime $startDate, \DateTime $endDate)
+    {
+        $format = '%s - %s - %s.csv'; // <startDate Y-m-d> - <endDate Y-m-d> - <exportType mapping name>
+
+        $mappedName = false;
+
+        if (self::EXPORT_TYPE_UNIFIED_REPORT == $exportType) {
+            $mappedName = 'unifiedReport';
+        } else if (self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT == $exportType) {
+            $mappedName = 'unifiedComparisonReport';
+        } else if (self::EXPORT_TYPE_TAGCADE_REPORT == $exportType) {
+            $mappedName = 'tagcadeReport';
+        }
+
+        if (!$mappedName) {
+            return false;
+        }
+
+        $fileName = sprintf($format, $startDate->format('Y-m-d'), $endDate->format('Y-m-d'), $mappedName);
+
+        return sprintf('%s/%s', self::EXPORT_DIR, $fileName);
+    }
+
+    /**
+     * get Report Data Array from ReportDataInterface
+     *
+     * @param ReportDataInterface $reportData
+     * @param $exportType
+     * @return array|bool
+     */
+    private function getReportDataArray(ReportDataInterface $reportData, $exportType)
+    {
+        //if ($reportData instanceof AbstractUnifiedReport) {
+        if (self::EXPORT_TYPE_UNIFIED_REPORT == $exportType) {
+            // requests, impressions, passbacks, revenue, cpm, fillRate
+            return [
+                'requests' => $reportData->getTotalOpportunities(),
+                'impressions' => $reportData->getImpressions(),
+                'passbacks' => $reportData->getPassbacks(),
+                'revenue' => $reportData->getEstRevenue(),
+                'cpm' => $reportData->getEstCpm(),
+                'fillRate' => $reportData->getFillRate()
+            ];
+        }
+
+        //if ($reportData instanceof AbstractUnifiedComparisonReport) {
+        if (self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT == $exportType) {
+            // tagcadeOpportunities, requests, opportunityComparison, tagcadePassbacks, partnerPassbacks, passbackComparison, tagcadeEcpm, partnerEcpm, ecpmComparison, revenueOpportunity
+            /** @var AbstractUnifiedComparisonReport $reportData */
+            return [
+                'tagcadeOpportunities' => $reportData->getTagcadeTotalOpportunities(),
+                'requests' => $reportData->getTotalOpportunities(),
+                'opportunityComparison' => $reportData->getTotalOpportunityComparison(),
+                'tagcadePassbacks' => $reportData->getTagcadePassbacks(),
+                'partnerPassbacks' => $reportData->getPartnerPassbacks(),
+                'passbackComparison' => $reportData->getPassbacksComparison(),
+                'tagcadeEcpm' => $reportData->getTagcadeECPM(),
+                'partnerEcpm' => $reportData->getPartnerEstCPM(),
+                'ecpmComparison' => $reportData->getECPMComparison(),
+                'revenueOpportunity' => $reportData->getRevenueOpportunity()
+            ];
+        }
+
+        // Important: AbstractTagcadeReport is base AbstractReport, so we must check at the end
+        //if ($reportData instanceof AbstractTagcadeReport) {
+        if (self::EXPORT_TYPE_TAGCADE_REPORT == $exportType) {
+            // networkOpportunities, impressions, passbacks, fillRate
+            return [
+                'networkOpportunities' => $reportData->getTotalOpportunities(),
+                'impressions' => $reportData->getImpressions(),
+                'passbacks' => $reportData->getPassbacks(),
+                'fillRate' => $reportData->getFillRate()
+            ];
+        }
+
+        return false;
     }
 }
