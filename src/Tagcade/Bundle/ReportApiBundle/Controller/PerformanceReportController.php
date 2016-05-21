@@ -19,7 +19,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 /**
- * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+ * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or (has_role('ROLE_SUB_PUBLISHER') and user.isEnableViewTagcadeReport()) ) and has_role('MODULE_DISPLAY'))")
  *
  * Only allow admins and publishers with the display module enabled
  */
