@@ -20,7 +20,7 @@ use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReport
 
 class ReportExporter implements ReportExporterInterface
 {
-    const EXPORT_DIR = '/public/export/report/unifiedReport';
+    const EXPORT_DIR_DEFAULT = '/public/export/report/unifiedReport';
     const EXPORT_TYPE_UNIFIED_REPORT = 'unifiedReport';
     const EXPORT_TYPE_UNIFIED_COMPARISON_REPORT = 'unifiedComparisonReport';
     const EXPORT_TYPE_TAGCADE_REPORT = 'tagcadePartnerReport';
@@ -46,20 +46,26 @@ class ReportExporter implements ReportExporterInterface
     /** @var string we need to inject the root dir of the application to remove "up dir (../)" action */
     protected $__rootDir__;
 
+    /** @var string */
+    protected $exportDir;
+
     /**
      * @param UnifiedReportBuilder $unifiedReportBuilder
      * @param TagcadeReportBuilder $tagcadeReportBuilder
      * @param string $rootDir the root dir of application
+     * @param $exportDir
      */
     public function __construct(
         UnifiedReportBuilder $unifiedReportBuilder,
         TagcadeReportBuilder $tagcadeReportBuilder,
-        $rootDir
+        $rootDir, $exportDir
     )
     {
         $this->unifiedReportBuilder = $unifiedReportBuilder;
         $this->tagcadeReportBuilder = $tagcadeReportBuilder;
         $this->__rootDir__ = $rootDir;
+
+        $this->exportDir = (null == $exportDir || '' == $exportDir) ? self::EXPORT_DIR_DEFAULT : $exportDir;
     }
 
     /**
@@ -365,7 +371,7 @@ class ReportExporter implements ReportExporterInterface
 
         $fileName = sprintf($format, $startDate->format('Y-m-d'), $endDate->format('Y-m-d'), $mappedName);
 
-        return sprintf('%s/%s', self::EXPORT_DIR, $fileName);
+        return sprintf('%s/%s', $this->exportDir, $fileName);
     }
 
     /**
