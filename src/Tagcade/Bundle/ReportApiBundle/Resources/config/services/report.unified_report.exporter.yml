@@ -5,3 +5,4 @@ services:
         arguments:
             - @tagcade.service.report.unified_report.selector.report_builder
             - @tagcade.service.report.performance_report.display.selector.report_builder
+            - %kernel.root_dir%

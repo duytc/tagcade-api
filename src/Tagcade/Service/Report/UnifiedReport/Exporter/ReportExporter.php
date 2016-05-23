@@ -43,13 +43,23 @@ class ReportExporter implements ReportExporterInterface
     /** @var TagcadeReportBuilder */
     protected $tagcadeReportBuilder;
 
+    /** @var string we need to inject the root dir of the application to remove "up dir (../)" action */
+    protected $__rootDir__;
+
+    /**
+     * @param UnifiedReportBuilder $unifiedReportBuilder
+     * @param TagcadeReportBuilder $tagcadeReportBuilder
+     * @param string $rootDir the root dir of application
+     */
     public function __construct(
         UnifiedReportBuilder $unifiedReportBuilder,
-        TagcadeReportBuilder $tagcadeReportBuilder
+        TagcadeReportBuilder $tagcadeReportBuilder,
+        $rootDir
     )
     {
         $this->unifiedReportBuilder = $unifiedReportBuilder;
         $this->tagcadeReportBuilder = $tagcadeReportBuilder;
+        $this->__rootDir__ = $rootDir;
     }
 
     /**
@@ -283,7 +293,7 @@ class ReportExporter implements ReportExporterInterface
 
         // create file and return path
         $filePath = $this->getReportFilePath($exportType, $params->getStartDate(), $params->getEndDate());
-        $realFilePath = __DIR__ . '/../../../../../../web' . $filePath;
+        $realFilePath = $this->__rootDir__ . '/../web' . $filePath;
 
         $handle = fopen($realFilePath, 'w+');
 
