@@ -81,4 +81,4 @@ parameters:
             pattern: '/cwtagid\=([0-9]+)/'
         epom-market:
             pattern: '/^.*?epmads_width = "([\d]+)".*?epmads_height = "([\d]+)".*?$/s'
-            finalize-pattern: '$1x$2  (JS Sync)'
+            finalize-pattern: '$1x$2 (JS Sync)'
