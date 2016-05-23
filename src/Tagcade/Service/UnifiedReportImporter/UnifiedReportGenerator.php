@@ -67,7 +67,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
     public function generateNetworkDomainAdTagReports(array $reports)
     {
         $reports = array_filter($reports, function(CommonReport $report) {
-            return is_string($report->getSite());
+            return is_string($report->getSite()) && is_string($report->getAdTagId());
         });
 
         if (empty($reports)) {
@@ -111,7 +111,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
     public function generateNetworkDomainAdTagForSubPublisherReports(array $reports)
     {
         $reports = array_filter($reports, function(CommonReport $report) {
-            return is_string($report->getSite()) && $report->getSubPublisherId() != null;
+            return is_string($report->getSite()) && is_string($report->getAdTagId()) && $report->getSubPublisherId() != null;
         });
 
         if (empty($reports)) {
@@ -157,6 +157,10 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
      */
     public function generateNetworkAdTagReports(array $reports)
     {
+        $reports = array_filter($reports, function(CommonReport $report) {
+            return is_string($report->getAdTagId());
+        });
+
         if (empty($reports)) {
             return [];
         }
@@ -196,7 +200,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
     public function generateNetworkAdTagForSubPublisherReports(array $reports)
     {
         $reports = array_filter($reports, function(CommonReport $report) {
-            return $report->getSubPublisherId() != null;
+            return $report->getSubPublisherId() != null && is_string($report->getAdTagId());
         });
 
         if (empty($reports)) {

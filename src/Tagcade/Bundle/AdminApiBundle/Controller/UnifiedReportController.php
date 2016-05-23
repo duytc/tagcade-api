@@ -64,6 +64,8 @@ class UnifiedReportController extends FOSRestController
             $override
         );
 
+        return $reportDateRange;
+
         if ($reportDateRange === false || !is_array($reportDateRange)) {
             return $this->view('no date range returned after import', 204);
         }
