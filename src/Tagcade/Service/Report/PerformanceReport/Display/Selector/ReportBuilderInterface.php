@@ -41,11 +41,31 @@ interface ReportBuilderInterface
     public function getPublisherReport(PublisherInterface $publisher, Params $params);
 
     /**
+     * get Publisher AdNetworks Report breakdown by ad network
+     *
      * @param PublisherInterface $publisher
      * @param Params $params
      * @return ReportResultInterface|false
      */
     public function getPublisherAdNetworksReport(PublisherInterface $publisher, Params $params);
+
+    /**
+     * get Publisher AdNetworks Report Breakdown By Day
+     *
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getPublisherAdNetworksByDayReport(PublisherInterface $publisher, Params $params);
+
+    /**
+     * get Publisher AdNetworks Report Breakdown By AdTag
+     *
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getPublisherAdNetworksByAdTagReport(PublisherInterface $publisher, Params $params);
 
     /**
      * @param AdNetworkInterface $adNetwork
@@ -97,8 +117,18 @@ interface ReportBuilderInterface
      */
     public function getSitesReport(array $sites, Params $params);
 
+    /**
+     * get Publisher Sites Report breakdown by day
+     *
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getPublisherSitesByDayReport(PublisherInterface $publisher, Params $params);
 
     /**
+     * get Publisher Sites Report breakdown by site
+     *
      * @param PublisherInterface $publisher
      * @param Params $params
      * @return ReportResultInterface|false

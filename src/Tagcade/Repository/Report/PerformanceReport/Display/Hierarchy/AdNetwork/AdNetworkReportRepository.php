@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\DBAL\Types\Type;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
 
 class AdNetworkReportRepository extends AbstractReportRepository implements AdNetworkReportRepositoryInterface
@@ -16,6 +17,17 @@ class AdNetworkReportRepository extends AbstractReportRepository implements AdNe
         $qb = $this->getReportsInRange($startDate, $endDate)
             ->andWhere('r.adNetwork = :ad_network')
             ->setParameter('ad_network', $adNetwork);
+
+        return $oneOrNull ? $qb->getQuery()->getOneOrNullResult() : $qb->getQuery()->getResult();
+    }
+
+    public function getReportForAllAdNetworkOfPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $oneOrNull = false)
+    {
+        $qb = $this->getReportsInRange($startDate, $endDate)
+            ->join('r.adNetwork', 'nw')
+            ->andWhere('nw.publisher = :publisher_id')
+            ->setParameter('publisher_id', $publisher)
+            ->groupBy('r.date');
 
         return $oneOrNull ? $qb->getQuery()->getOneOrNullResult() : $qb->getQuery()->getResult();
     }

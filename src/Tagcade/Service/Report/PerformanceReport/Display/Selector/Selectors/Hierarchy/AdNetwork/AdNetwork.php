@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork;
 
 use DateTime;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\AbstractSelector;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportRepositoryInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -27,7 +28,10 @@ class AdNetwork extends AbstractSelector
             return $this->repository->getPublisherAllPartnersByDay($queryParams['publisher'], $startDate, $endDate);
         }
 
-        return $this->repository->getReportFor($reportType->getAdNetwork(), $startDate, $endDate);
+        $adNetwork = $reportType->getAdNetwork();
+        return ($adNetwork instanceof AdNetworkInterface)
+            ? $this->repository->getReportFor($adNetwork, $startDate, $endDate)
+            : $this->repository->getReportForAllAdNetworkOfPublisher($reportType->getPublisher(), $startDate, $endDate);
     }
 
     public function supportsReportType(ReportTypeInterface $reportType)

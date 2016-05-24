@@ -123,6 +123,9 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new PlatformReportTypes\Account($publisher), $params);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPublisherAdNetworksReport(PublisherInterface $publisher, Params $params)
     {
         $adNetworks = $this->adNetworkManager->getAdNetworksForPublisher($publisher);
@@ -130,6 +133,32 @@ class ReportBuilder implements ReportBuilderInterface
         $reportTypes = array_map(function($adNetwork) {
             return new AdNetworkReportTypes\AdNetwork($adNetwork);
         }, $adNetworks);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherAdNetworksByDayReport(PublisherInterface $publisher, Params $params)
+    {
+        $reportTypes = ($publisher instanceof SubPublisherInterface)
+            ? new SubPublisherReportTypes\SubPublisherAdNetwork($publisher, $adNetwork = null)
+            : new AdNetworkReportTypes\AdNetwork($adNetwork = null, $publisher);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherAdNetworksByAdTagReport(PublisherInterface $publisher, Params $params)
+    {
+        $adTags = $this->adTagManager->getAdTagsForPublisher($publisher);
+
+        $reportTypes = array_map(function($adTag) {
+            return new AdNetworkReportTypes\AdTag($adTag);
+        }, $adTags);
 
         return $this->getReports($reportTypes, $params);
     }
@@ -394,6 +423,21 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports($reportTypes, $params);
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherSitesByDayReport(PublisherInterface $publisher, Params $params)
+    {
+        $reportTypes = ($publisher instanceof SubPublisherInterface)
+            ? new SubPublisherReportTypes\SubPublisher($publisher)
+            : new PlatformReportTypes\Account($publisher);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getPublisherSitesReport(PublisherInterface $publisher, Params $params)
     {
         $sites = $this->siteManager->getSitesForPublisher($publisher);
