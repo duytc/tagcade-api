@@ -313,6 +313,35 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * @Rest\QueryParam(name="resetToken", requirements="true|false", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return mixed|string
+     */
+    public function getEmailtokenAction($id)
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $resetToken = $paramFetcher->get('resetToken');
+        $resetToken = filter_var($resetToken, FILTER_VALIDATE_BOOLEAN);
+
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->one($id);
+
+        $this->checkUserPermission($adNetwork, 'edit');
+
+        return $this->get('tagcade.domain_manager.ad_network')->getUnifiedReportEmail($adNetwork, $resetToken);
+    }
+
+    /**
      * Create a ad network from the submitted data
      *
      * @ApiDoc(
@@ -331,6 +360,32 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     public function postAction(Request $request)
     {
         return $this->post($request);
+    }
+
+
+    /**
+     *
+     * validate if the [token] belong to the combination of publisherId and partnerCName
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     * @param Request $request
+     * @return boolean
+     */
+    public function postTokenvalidationAction(Request $request)
+    {
+        $parameters = $request->request->all();
+        if (!isset($parameters['publisherId']) || !isset($parameters['token']) || !isset($parameters['partnerCName'])) {
+            throw new InvalidArgumentException('either publisherId or token or partnerCName is missing');
+        }
+
+        return $this->get('tagcade.domain_manager.ad_network')->validateEmailHookToken($parameters['publisherId'], $parameters['partnerCName'], $parameters['token']);
     }
 
     /**
@@ -364,6 +419,25 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $adTagManager = $this->get('tagcade.domain_manager.ad_tag');
         $adTagManager->updateAdTagStatusForAdNetwork($adNetwork, $active);
+
+        return $this->view(null, Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * refresh email hook token for a single ad network
+     *
+     * @param $id
+     * @return View
+     */
+    public function putEmailtokenAction($id)
+    {
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->getOr404($id);
+
+        $this->checkUserPermission($adNetwork, 'edit');
+        //refresh token
+        $adNetwork->setEmailHookToken(uniqid(''));
+        $this->get('tagcade.domain_manager.ad_network')->save($adNetwork);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }

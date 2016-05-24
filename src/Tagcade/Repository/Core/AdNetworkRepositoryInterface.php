@@ -43,4 +43,12 @@ interface AdNetworkRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdNetworkByPublisherAndPartnerCName($publisher, $partnerCName);
+
+    /**
+     * @param $publisherId
+     * @param $partnerCName
+     * @param $emailToken
+     * @return mixed
+     */
+    public function validateEmailToken($publisherId, $partnerCName, $emailToken);
 }

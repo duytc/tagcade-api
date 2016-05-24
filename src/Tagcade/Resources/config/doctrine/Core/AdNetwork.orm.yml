@@ -44,13 +44,15 @@ Tagcade\Entity\Core\AdNetwork:
         networkOpportunityCap:
             type: integer
             nullable: true
+        emailHookToken:
+            type: string
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
         networkPartner:
             targetEntity: Tagcade\Entity\Core\AdNetworkPartner
             inversedBy: publisherPartners
-
     oneToMany:
         libraryAdTags:
             targetEntity: Tagcade\Entity\Core\LibraryAdTag

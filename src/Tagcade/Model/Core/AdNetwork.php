@@ -18,6 +18,7 @@ class AdNetwork implements AdNetworkInterface
     protected $username;
     protected $password;
     protected $encryptedPassword;
+    protected $emailHookToken;
     /** @var AdNetworkPartnerInterface */
     protected $networkPartner;
 
@@ -351,6 +352,24 @@ class AdNetwork implements AdNetworkInterface
     public function setEncryptedPassword($encryptedPassword)
     {
         $this->encryptedPassword = $encryptedPassword;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmailHookToken()
+    {
+        return $this->emailHookToken;
+    }
+
+    /**
+     * @param mixed $emailHookToken
+     * @return self
+     */
+    public function setEmailHookToken($emailHookToken)
+    {
+        $this->emailHookToken = $emailHookToken;
+        return $this;
     }
 
     public function __toString()
