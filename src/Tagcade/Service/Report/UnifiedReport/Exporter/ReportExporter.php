@@ -8,7 +8,6 @@ use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
-use Tagcade\Model\Report\UnifiedReport\Comparison\AbstractReport as AbstractUnifiedComparisonReport;
 use Tagcade\Model\Report\UnifiedReport\Comparison\ComparisonReportInterface;
 use Tagcade\Model\Report\UnifiedReport\ReportType\Comparison as ComparisonReportTypes;
 use Tagcade\Model\Report\UnifiedReport\ReportType\Network as NetworkReportTypes;
@@ -27,7 +26,8 @@ class ReportExporter implements ReportExporterInterface
     const EXPORT_TYPE_UNIFIED_COMPARISON_REPORT = 'unifiedComparisonReport';
     const EXPORT_TYPE_TAGCADE_REPORT = 'tagcadePartnerReport';
 
-    private $headers = ['Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison', 'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Revenue Opportunity'];
+    private $headers = ['Date', 'Name', 'Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Impressions', 'Partner Impressions','Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison',
+        'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Tagcade Revenue', 'Partner Revenue','Revenue Opportunity', 'Tagcade Fill Rate', 'Partner Fill Rate'];
 
     private static $CSV_HEADER_MAP = array(
         self::EXPORT_TYPE_UNIFIED_REPORT => ['Requests', 'Impressions', 'Passbacks', 'Revenue', 'CPM', 'Fill Rate'],
@@ -78,9 +78,7 @@ class ReportExporter implements ReportExporterInterface
     public function getAllDemandPartnersByPartnerReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getAllDemandPartnersByPartnerReport($publisher, $params),
             $this->unifiedReportBuilder->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params),
-            $this->tagcadeReportBuilder->getAllPartnersReportByPartnerForPublisher($publisher, $params),
             $params
         );
     }
@@ -91,9 +89,7 @@ class ReportExporter implements ReportExporterInterface
     public function getAllDemandPartnersByDayReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getAllDemandPartnersByDayReport($publisher, $params),
             $this->unifiedReportBuilder->getAllPartnersDiscrepancyByDayForPublisher($publisher, $params),
-            $this->tagcadeReportBuilder->getAllPartnersReportByDayForPublisher($publisher, $params),
             $params
         );
     }
@@ -104,9 +100,7 @@ class ReportExporter implements ReportExporterInterface
     public function getAllDemandPartnersBySiteReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getAllDemandPartnersBySiteReport($publisher, $params),
             $this->unifiedReportBuilder->getAllPartnersDiscrepancyBySiteForPublisher($publisher, $params),
-            $this->tagcadeReportBuilder->getAllPartnersReportBySiteForPublisher($publisher, $params),
             $params
         );
     }
@@ -117,9 +111,7 @@ class ReportExporter implements ReportExporterInterface
     public function getAllDemandPartnersByAdTagReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params),
             $this->unifiedReportBuilder->getAllPartnersDiscrepancyByAdTagForPublisher($publisher, $params),
-            $this->tagcadeReportBuilder->getAllPartnersReportByAdTagForPublisher($publisher, $params),
             $params
         );
     }
@@ -130,9 +122,7 @@ class ReportExporter implements ReportExporterInterface
     public function getAllDemandPartnersByAdTagReportForSubPublisher(SubPublisherInterface $publisher, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReportForSubPublisher($publisher, $params),
             $this->unifiedReportBuilder->getAllPartnersDiscrepancyByPartnerForPublisher($publisher, $params),
-            $this->tagcadeReportBuilder->getAllPartnersReportByPartnerForPublisher($publisher, $params),
             $params
         );
     }
@@ -143,9 +133,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesByDayReport(AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerAllSitesByDayReport($adNetwork, $params),
             $this->unifiedReportBuilder->getPartnerByDayDiscrepancyReport($adNetwork, $params),
-            $this->tagcadeReportBuilder->getAllSitesReportByDayForPartner($adNetwork, $params),
             $params
         );
     }
@@ -156,9 +144,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesByDayForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerAllSitesByDayForSubPublisherReport($subPublisher, $adNetwork, $params),
             $this->unifiedReportBuilder->getPartnerByDayDiscrepancyReport($adNetwork, $params),
-            $this->tagcadeReportBuilder->getAllSitesReportByDayForPartner($adNetwork, $params),
             $params
         );
     }
@@ -169,9 +155,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesBySitesReport(PublisherInterface $publisher, AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerAllSitesBySitesReport($publisher, $adNetwork, $params),
             $this->unifiedReportBuilder->getAllDemandPartnersBySiteDiscrepancyReport($publisher, $adNetwork, $params),
-            $this->tagcadeReportBuilder->getAllSitesReportBySiteForPartner($adNetwork, $params),
             $params
         );
     }
@@ -182,9 +166,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesByAdTagsReport(AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerAllSitesByAdTagsReport($adNetwork, $params),
             $this->unifiedReportBuilder->getAllSitesDiscrepancyByAdTagForPartner($adNetwork, $params),
-            $this->tagcadeReportBuilder->getAllSitesReportByAdTagForPartner($adNetwork, $params),
             $params
         );
     }
@@ -192,9 +174,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerByAdTagsForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerAllSitesByAdTagsReport($adNetwork, $params),
             $this->unifiedReportBuilder->getAllSitesDiscrepancyByAdTagForPartnerWithSubPublisher($adNetwork, $subPublisher, $params),
-            $this->tagcadeReportBuilder->getAllSitesReportByAdTagForPartnerWithSubPublisher($adNetwork, $subPublisher, $params),
             $params
         );
     }
@@ -205,9 +185,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerSiteByAdTagsReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerSiteByAdTagsReport($adNetwork, $site, $params),
             $this->unifiedReportBuilder->getSiteDiscrepancyByAdTagForPartner($adNetwork, $site, $params),
-            $this->tagcadeReportBuilder->getSiteReportByAdTagForPartner($adNetwork, $site, $params),
             $params
         );
     }
@@ -215,9 +193,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerSiteByAdTagsForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerSiteByAdTagsForSubPublisherReport($subPublisher, $adNetwork, $site, $params),
             $this->unifiedReportBuilder->getSiteDiscrepancyByAdTagForPartnerWithSubPublisher($adNetwork, $site, $subPublisher, $params),
-            $this->tagcadeReportBuilder->getSiteReportByAdTagForPartnerWithSubPublisher($adNetwork, $site, $subPublisher, $params),
             $params
         );
     }
@@ -228,9 +204,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerSiteByDaysReport(AdNetworkInterface $adNetwork, $domain, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerSiteByDaysReport($adNetwork, $domain, $params),
             $this->unifiedReportBuilder->getSiteDiscrepancyByDayForPartner($adNetwork, $domain, $params),
-            $this->tagcadeReportBuilder->getSiteReportByDayForPartner($adNetwork, $domain, $params),
             $params
         );
     }
@@ -238,35 +212,21 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerSiteByDaysForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, $domain, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerSiteByDaysForSubPublisherReport($subPublisher, $adNetwork, $domain, $params),
             $this->unifiedReportBuilder->getSiteDiscrepancyByDayForPartner($adNetwork, $domain, $params),
-            $this->tagcadeReportBuilder->getSiteReportByDayForPartner($adNetwork, $domain, $params),
             $params
         );
     }
 
     /**
      * get Result
-     * @param ReportResultInterface $unifiedReports
      * @param ReportResultInterface $unifiedComparisonReports
-     * @param ReportResultInterface $tagcadePartnerReports
      * @param Params $params
      * @return mixed
      */
-    private function getResult($unifiedReports, $unifiedComparisonReports, $tagcadePartnerReports, Params $params)
+    private function getResult($unifiedComparisonReports, Params $params)
     {
         /** @var ReportResultInterface $unifiedReports */
-        if (!$unifiedReports instanceof ReportResultInterface) {
-            throw new NotFoundHttpException('No reports found for that query');
-        }
-
-        /** @var ReportResultInterface $unifiedReports */
         if (!$unifiedComparisonReports instanceof ReportResultInterface) {
-            throw new NotFoundHttpException('No reports found for that query');
-        }
-
-        /** @var ReportResultInterface $unifiedReports */
-        if (!$tagcadePartnerReports instanceof ReportResultInterface) {
             throw new NotFoundHttpException('No reports found for that query');
         }
 
@@ -393,18 +353,28 @@ class ReportExporter implements ReportExporterInterface
      */
     private function getReportDataArray(ComparisonReportInterface $comparisonReport)
     {
+        $date = $comparisonReport->getDate() ===  null ?
+            sprintf('%s - %s', $comparisonReport->getStartDate()->format('M d, Y'), $comparisonReport->getEndDate()->format('M d, Y')) :
+            $comparisonReport->getDate()->format('M d, Y');
         return [
-            'Date' => $comparisonReport->getDate()->format('Y-m-d'),
+            'date' => $date,
+            'name' => $comparisonReport->getName(),
             'tagcadeOpportunities' => $comparisonReport->getTagcadeTotalOpportunities(),
             'requests' => $comparisonReport->getPartnerTotalOpportunities(),
             'opportunityComparison' => $comparisonReport->getTotalOpportunityComparison(),
+            'tagcadeImpressions' => $comparisonReport->getTagcadeImpressions(),
+            'partnerImpressions' => $comparisonReport->getPartnerImpressions(),
             'tagcadePassbacks' => $comparisonReport->getTagcadePassbacks(),
             'partnerPassbacks' => $comparisonReport->getPartnerPassbacks(),
             'passbackComparison' => $comparisonReport->getPassbacksComparison(),
             'tagcadeEcpm' => $comparisonReport->getTagcadeECPM(),
             'partnerEcpm' => $comparisonReport->getPartnerEstCPM(),
             'ecpmComparison' => $comparisonReport->getECPMComparison(),
-            'revenueOpportunity' => $comparisonReport->getRevenueOpportunity()
+            'tagcadeRevenue' => $comparisonReport->getTagcadeEstRevenue(),
+            'partnerRevenue' => $comparisonReport->getPartnerEstRevenue(),
+            'revenueOpportunity' => $comparisonReport->getRevenueOpportunity(),
+            'tagcadeFillRate' => $comparisonReport->getTagcadeFillRate(),
+            'partnerFillRate' => $comparisonReport->getPartnerFillRate()
         ];
     }
 }
