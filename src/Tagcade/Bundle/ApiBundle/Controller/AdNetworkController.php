@@ -178,7 +178,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $size = $request->query->get('size', 10);
         $offset = ($page - 1) * $size;
         $siteStatus = $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
-        
+
         return array(
             'totalRecord' => count($siteStatus),
             'records' => array_slice($siteStatus, $offset, $size),
