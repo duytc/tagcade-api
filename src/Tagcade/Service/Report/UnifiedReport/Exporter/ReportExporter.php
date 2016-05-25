@@ -4,10 +4,8 @@ namespace Tagcade\Service\Report\UnifiedReport\Exporter;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\UnifiedReport\Comparison\ComparisonReportInterface;
 use Tagcade\Model\Report\UnifiedReport\ReportType\Comparison as ComparisonReportTypes;
 use Tagcade\Model\Report\UnifiedReport\ReportType\Network as NetworkReportTypes;
@@ -15,61 +13,24 @@ use Tagcade\Model\Report\UnifiedReport\ReportType\Publisher as PublisherReportTy
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilder as TagcadeReportBuilder;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilder as UnifiedReportBuilder;
 
 class ReportExporter implements ReportExporterInterface
 {
-    const EXPORT_DIR_DEFAULT = '/public/export/report/unifiedReport';
-    const EXPORT_TYPE_UNIFIED_REPORT = 'unifiedReport';
-    const EXPORT_TYPE_UNIFIED_COMPARISON_REPORT = 'unifiedComparisonReport';
-    const EXPORT_TYPE_TAGCADE_REPORT = 'tagcadePartnerReport';
-
     private $headers = ['Date', 'Name', 'Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Impressions', 'Partner Impressions','Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison',
         'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Tagcade Revenue', 'Partner Revenue','Revenue Opportunity', 'Tagcade Fill Rate', 'Partner Fill Rate'];
-
-    private static $CSV_HEADER_MAP = array(
-        self::EXPORT_TYPE_UNIFIED_REPORT => ['Requests', 'Impressions', 'Passbacks', 'Revenue', 'CPM', 'Fill Rate'],
-        self::EXPORT_TYPE_TAGCADE_REPORT => ['Network Opportunities', 'Impressions', 'Passbacks', 'Fill Rate'],
-        self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT => ['Tagcade Opportunities', 'Requests', 'Opportunity Comparison', 'Tagcade Passbacks', 'Partner Passbacks', 'Passback Comparison', 'Tagcade ECPM', 'Partner ECPM', 'ECPM Comparison', 'Revenue Opportunity']
-    );
-
-    private static $REPORT_FIELDS_EXPORT_MAP = array(
-        self::EXPORT_TYPE_UNIFIED_REPORT => ['requests', 'impressions', 'passbacks', 'revenue', 'cpm', 'fillRate'],
-        self::EXPORT_TYPE_TAGCADE_REPORT => ['networkOpportunities', 'impressions', 'passbacks', 'fillRate'],
-        self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT => ['tagcadeOpportunities', 'requests', 'opportunityComparison', 'tagcadePassbacks', 'partnerPassbacks', 'passbackComparison', 'tagcadeEcpm', 'partnerEcpm', 'ecpmComparison', 'revenueOpportunity']
-    );
 
     /** @var UnifiedReportBuilder */
     protected $unifiedReportBuilder;
 
-    /** @var TagcadeReportBuilder */
-    protected $tagcadeReportBuilder;
-
-    /** @var string we need to inject the root dir of the application to remove "up dir (../)" action */
-    protected $__rootDir__;
-
-    /** @var string */
-    protected $exportDir;
-
     /**
+     * ReportExporter constructor.
      * @param UnifiedReportBuilder $unifiedReportBuilder
-     * @param TagcadeReportBuilder $tagcadeReportBuilder
-     * @param string $rootDir the root dir of application
-     * @param $exportDir
      */
-    public function __construct(
-        UnifiedReportBuilder $unifiedReportBuilder,
-        TagcadeReportBuilder $tagcadeReportBuilder,
-        $rootDir, $exportDir
-    )
+    public function __construct(UnifiedReportBuilder $unifiedReportBuilder )
     {
         $this->unifiedReportBuilder = $unifiedReportBuilder;
-        $this->tagcadeReportBuilder = $tagcadeReportBuilder;
-        $this->__rootDir__ = $rootDir;
-
-        $this->exportDir = (null == $exportDir || '' == $exportDir) ? self::EXPORT_DIR_DEFAULT : $exportDir;
     }
 
     /**
@@ -223,7 +184,7 @@ class ReportExporter implements ReportExporterInterface
      * @param Params $params
      * @return mixed
      */
-    private function getResult($unifiedComparisonReports, Params $params)
+    private function getResult(ReportResultInterface $unifiedComparisonReports, Params $params)
     {
         /** @var ReportResultInterface $unifiedReports */
         if (!$unifiedComparisonReports instanceof ReportResultInterface) {
@@ -252,97 +213,6 @@ class ReportExporter implements ReportExporterInterface
         $response->setContent(ob_get_clean());
 
         return $response;
-    }
-
-    /**
-     * create csv and get real file path on api server
-     *
-     * @param array|ReportResultInterface[] $reportData
-     * @param string $exportType
-     * @param Params $params
-     * @return string
-     */
-    private function createCsvFile(array $reportData, $exportType, Params $params)
-    {
-        if (!array_key_exists($exportType, self::$CSV_HEADER_MAP)) {
-            throw new RuntimeException('Could not export report to file');
-        }
-
-        // create file and return path
-        $filePath = $this->getReportFilePath($exportType, $params->getStartDate(), $params->getEndDate());
-        $realFilePath = $this->__rootDir__ . '/../web' . $filePath;
-
-        $handle = fopen($realFilePath, 'w+');
-
-        if (!$handle) {
-            throw new RuntimeException('Could not export report to file');
-        }
-
-        try {
-            // write header row
-            fputcsv($handle, self::$CSV_HEADER_MAP[$exportType]);
-
-            // write all report data rows
-            for ($i = 0, $len = count($reportData); $i < $len; $i++) {
-                $reportData_i = $reportData[$i];
-
-                if (!$reportData_i instanceof ReportDataInterface) {
-                    continue;
-                }
-
-                // convert to array
-                $reportDataArray = $this->getReportDataArray($reportData_i, $exportType);
-
-                if (!is_array($reportDataArray)) {
-                    continue;
-                }
-
-                // mapping reportData_i to rowData
-                $rowData = array_map(function ($field) use ($reportDataArray) {
-                    return array_key_exists($field, $reportDataArray) ? $reportDataArray[$field] : '';
-                }, self::$REPORT_FIELDS_EXPORT_MAP[$exportType]);
-
-                // append rowData to file
-                fputcsv($handle, $rowData);
-            }
-
-            fclose($handle);
-        } catch (\Exception $e) {
-            throw new RuntimeException('Could not export report to file: ' . $e);
-        }
-
-        return $filePath;
-    }
-
-    /**
-     * get Report File Path
-     *
-     * @param $exportType
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     * @return bool|string
-     */
-    private function getReportFilePath($exportType, \DateTime $startDate, \DateTime $endDate)
-    {
-        $format = '%s - %s - %s.csv'; // <startDate Y-m-d> - <endDate Y-m-d> - <exportType mapping name>
-
-        $mappedName = false;
-
-        if (self::EXPORT_TYPE_UNIFIED_REPORT == $exportType) {
-            $mappedName = 'unifiedReport';
-        } else if (self::EXPORT_TYPE_UNIFIED_COMPARISON_REPORT == $exportType) {
-            $mappedName = 'unifiedComparisonReport';
-        } else if (self::EXPORT_TYPE_TAGCADE_REPORT == $exportType) {
-            $mappedName = 'tagcadeReport';
-        }
-
-        if (!$mappedName) {
-            return false;
-        }
-
-        $fileName = sprintf($format, $startDate->format('Y-m-d'), $endDate->format('Y-m-d'), $mappedName);
-
-        return sprintf('%s/%s', $this->exportDir, $fileName);
     }
 
     /**

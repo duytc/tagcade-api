@@ -79,6 +79,3 @@ parameters:
             pattern: '/BEGIN JS TAG - (.*) </'
         pulse-point:
             pattern: '/cwtagid\=([0-9]+)/'
-
-    # public folder of exported unified report files for downloading
-    unified_report_export_path: '/public/export/report/unifiedReport'
