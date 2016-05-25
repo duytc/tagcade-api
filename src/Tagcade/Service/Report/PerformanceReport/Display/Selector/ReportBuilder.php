@@ -460,14 +460,13 @@ class ReportBuilder implements ReportBuilderInterface
 
         $reportTypes = array_map(
             function ($adNetwork) use($site) {
-                return new AdNetworkReportTypes\Site($site, $adNetwork);
+                return new AdNetworkReportTypes\Site($site, $adNetwork, $groupByAdNetwork = true);
             },
             $adNetworks
         );
 
         return $this->getReports($reportTypes, $params);
     }
-
 
     public function getSiteAdSlotsReport(SiteInterface $site, Params $params)
     {
