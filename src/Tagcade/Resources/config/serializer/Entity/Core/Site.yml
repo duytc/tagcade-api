@@ -13,7 +13,7 @@ Tagcade\Entity\Core\Site:
             groups: [site.detail, site.summary]
         name:
             expose: true
-            groups: [site.detail, site.summary, site.primary]
+            groups: [site.detail, site.summary, site.primary, site.minimum]
         domain:
             expose: true
             groups: [site.detail, site.minimum]

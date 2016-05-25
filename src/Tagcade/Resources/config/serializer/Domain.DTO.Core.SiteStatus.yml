@@ -1,0 +1,12 @@
+Tagcade\Domain\DTO\Core\SiteStatus:
+    exclusion_policy: ALL
+    properties:
+        site:
+            expose: true
+            groups: [sitestatus.detail]
+        activeAdTagsCount:
+            expose: true
+            groups: [sitestatus.detail]
+        pausedAdTagsCount:
+            expose: true
+            groups: [sitestatus.detail]
