@@ -179,7 +179,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         if ($page === null) {
             return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
         }
-        
+
         $size = $request->query->get('size', 10);
         $offset = ($page - 1) * $size;
         $siteStatus = $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
