@@ -71,7 +71,7 @@ class SubPublisherController extends RestControllerAbstract implements ClassReso
      * @Rest\Get("/fullInfo/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"user.summary", "subpublisher.detail", "subPublisherPartnerRevenue.detail", "subpublisher.summary", "site.summary"}
+     *      serializerGroups={"user.summary", "subpublisher.detail", "subPublisherPartnerRevenue.detail", "partner.detail", "subpublisher.summary", "site.summary"}
      * )
      * @ApiDoc(
      *  section = "admin|publisher",
