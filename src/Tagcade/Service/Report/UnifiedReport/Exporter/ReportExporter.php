@@ -231,15 +231,15 @@ class ReportExporter implements ReportExporterInterface
             'name' => $comparisonReport->getName(),
             'tagcadeOpportunities' => $comparisonReport->getTagcadeTotalOpportunities(),
             'requests' => $comparisonReport->getPartnerTotalOpportunities(),
-            'opportunityComparison' => $comparisonReport->getTotalOpportunityComparison(),
+            'opportunityComparison' => $this->getPercentageString($comparisonReport->getTotalOpportunityComparison()),
             'tagcadeImpressions' => $comparisonReport->getTagcadeImpressions(),
             'partnerImpressions' => $comparisonReport->getPartnerImpressions(),
             'tagcadePassbacks' => $comparisonReport->getTagcadePassbacks(),
             'partnerPassbacks' => $comparisonReport->getPartnerPassbacks(),
-            'passbackComparison' => $comparisonReport->getPassbacksComparison(),
+            'passbackComparison' => $this->getPercentageString($comparisonReport->getPassbacksComparison()),
             'tagcadeEcpm' => $comparisonReport->getTagcadeECPM(),
             'partnerEcpm' => $comparisonReport->getPartnerEstCPM(),
-            'ecpmComparison' => $comparisonReport->getECPMComparison(),
+            'ecpmComparison' => $this->getPercentageString($comparisonReport->getECPMComparison()),
             'tagcadeRevenue' => $comparisonReport->getTagcadeEstRevenue(),
             'partnerRevenue' => $comparisonReport->getPartnerEstRevenue(),
             'revenueOpportunity' => $comparisonReport->getRevenueOpportunity(),
@@ -247,4 +247,10 @@ class ReportExporter implements ReportExporterInterface
             'partnerFillRate' => $comparisonReport->getPartnerFillRate()
         ];
     }
+
+    private function getPercentageString($ratio)
+    {
+        return sprintf('%d%%', round($ratio * 100));
+    }
+
 }
