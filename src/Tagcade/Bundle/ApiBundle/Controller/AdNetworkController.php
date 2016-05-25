@@ -138,7 +138,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all sites belonging to this ad network
      *
+     * @Rest\View(serializerGroups={"sitestatus.detail", "site.minimum"})
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="size", requirements="\d+", nullable=true)
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -171,7 +174,17 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             $publisher = $this->getPublisher($publisherId);
         }
 
-        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
+        $page = $request->query->get('page', 1);
+        $size = $request->query->get('size', 10);
+        $offset = ($page - 1) * $size;
+        $siteStatus = $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
+
+        return array(
+            'totalRecord' => count($siteStatus),
+            'records' => array_slice($siteStatus, $offset, $size),
+            'itemPerPage' => $size,
+            'currentPage' => $page
+        );
     }
 
 
