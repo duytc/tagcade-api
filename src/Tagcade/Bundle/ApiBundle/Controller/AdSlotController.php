@@ -4,13 +4,17 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
+use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
 /**
  * @Rest\RouteResource("Adslot")
@@ -88,7 +92,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         if (null === $adSlot) {
             throw new NotFoundHttpException(sprintf('not found ad slot with id %s', $id));
         }
-        
+
         $securityContext = $this->get('security.context');
         if (false === $securityContext->isGranted('view', $adSlot)) {
             throw new AccessDeniedException(
@@ -131,16 +135,76 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
      * @param Request $request
      * @return array
      */
-    public function getAdSlotsRelatedChannelAction( Request $request )
+    public function getAdSlotsRelatedChannelAction(Request $request)
     {
         $adSlotRepository = $this->get('tagcade.repository.ad_slot');
-        if($request->query->get('page') >0){
-            $qb = $adSlotRepository->getRelatedChannelWithPagination($this->getUser(),$this->getParams());
-            return $this->getPagination($qb,$request);
+        if ($request->query->get('page') > 0) {
+            $qb = $adSlotRepository->getRelatedChannelWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
         return $this->get('tagcade.domain_manager.ad_slot')->getAdSlotsRelatedChannelForUser($this->getUser());
 
+    }
+
+    /**
+     * Unlink an existing ad slot from the library ad slot
+     *
+     * @ApiDoc(
+     *  section="Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when resource not exist
+     */
+    public function patchUnlinkAction(Request $request, $id)
+    {
+        /** @var BaseAdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        /** @var UnlinkServiceInterface $unlinkService */
+        $unlinkService = $this->get('tagcade_api.service.tag_library.unlink_service');
+
+        $unlinkService->unlinkForAdSlot($adSlot);
+
+        return $this->view('', Codes::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * find one ad slot by id
+     *
+     * @param int $id
+     * @return null|object|\Tagcade\Model\ModelInterface
+     */
+    protected function one($id)
+    {
+        $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($id);
+
+        if (null === $adSlot) {
+            throw new NotFoundHttpException(sprintf('not found ad slot with id %s', $id));
+        }
+
+        $securityContext = $this->get('security.context');
+        if (false === $securityContext->isGranted('view', $adSlot)) {
+            throw new AccessDeniedException(
+                sprintf(
+                    'You do not have permission to view this ad slot or it does not exist',
+                    'view',
+                    'ad'
+                )
+            );
+        }
+
+        return $adSlot;
     }
 
     /**

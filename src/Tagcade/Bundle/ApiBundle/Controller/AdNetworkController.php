@@ -309,6 +309,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *
      * Get all active ad tags belonging to this ad network
      *
+     * @Rest\View(
+     *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "libraryadtag.detail"}
+     * )
+     *
      * @ApiDoc(
      *  section = "Ad Networks",
      *  resource = true,

@@ -27,3 +27,13 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @event_dispatcher
+
+    tagcade_api.service.tag_library.unlink_service:
+        class: Tagcade\Service\TagLibrary\UnlinkService
+        arguments:
+            - @tagcade.domain_manager.ad_tag
+            - @tagcade.domain_manager.library_ad_tag
+            - @tagcade.domain_manager.ad_slot
+            - @tagcade.domain_manager.library_ad_slot
+            - @doctrine.orm.entity_manager
+            - @tagcade.domain_manager.library_expression

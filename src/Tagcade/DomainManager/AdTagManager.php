@@ -76,8 +76,13 @@ class AdTagManager implements AdTagManagerInterface
      */
     public function save(AdTagInterface &$adTag)
     {
+        $libAdTag = $adTag->getLibraryAdTag();
         $adSlot = $adTag->getAdSlot();
         $adSlotLib = $adSlot->getLibraryAdSlot();
+
+        if (!$libAdTag->getVisible()) {
+            return $this->saveRegularAdTag($adTag);
+        }
 
         if (!$adSlotLib->isVisible()) {
             return $this->saveAdTagForNotSharedAdSlot($adTag);
@@ -85,6 +90,28 @@ class AdTagManager implements AdTagManagerInterface
 
         // Here handles save ad tag for shared ad slot
         return $this->saveAdTagForSharedAdSlot($adTag);
+    }
+
+    /**
+     * save regular ad tag that does not link to a library ad tag
+     * This will only normal persist and flush
+     *
+     * @param AdTagInterface $adTag
+     * @return AdTagInterface
+     */
+    protected function saveRegularAdTag(AdTagInterface &$adTag)
+    {
+        $adTag->setRefId(uniqid('', true));
+
+        // support "auto increase position" feature: update for all referenced ad tags
+        if ($adTag->getAutoIncreasePosition()) {
+            $this->autoIncreasePositionForAdSlotDueToAdTag($adSlot, $adTag);
+        }
+
+        $this->em->persist($adTag);
+        $this->em->flush();
+
+        return $adTag;
     }
 
     protected function saveAdTagForSharedAdSlot(AdTagInterface &$adTag)

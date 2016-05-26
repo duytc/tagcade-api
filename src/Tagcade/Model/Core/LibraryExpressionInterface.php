@@ -6,7 +6,8 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
 
-interface LibraryExpressionInterface extends  ModelInterface{
+interface LibraryExpressionInterface extends ModelInterface
+{
     /**
      * @param $id
      * @return $this
@@ -41,7 +42,7 @@ interface LibraryExpressionInterface extends  ModelInterface{
     public function getExpressions();
 
     /**
-     * @param ExpressionInterface $expressions
+     * @param ExpressionInterface[] $expressions
      * @return $this
      */
     public function setExpressions($expressions);

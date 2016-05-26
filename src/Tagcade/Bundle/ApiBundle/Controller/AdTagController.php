@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +15,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
 /**
  * @Rest\RouteResource("Adtag")
@@ -141,7 +142,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
 
         //check param estCpm is number?
         $estCpmParam = $paramFetcher->get('estCpm');
-        if(!is_numeric($estCpmParam)) {
+        if (!is_numeric($estCpmParam)) {
             throw new InvalidArgumentException('estCpm should be numeric');
         }
 
@@ -196,9 +197,9 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
         /** @var AdTagInterface $adTag */
         $adTag = $this->one($id);
 
-        if(array_key_exists('adSlot', $request->request->all())) {
+        if (array_key_exists('adSlot', $request->request->all())) {
             $adSlot = (int)$request->get('adSlot');
-            if($adTag->getAdSlotId() != $adSlot) {
+            if ($adTag->getAdSlotId() != $adSlot) {
                 throw new InvalidArgumentException('adSlot in invalid');
             }
         }
@@ -214,6 +215,45 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
 //        }
 
         return $this->patch($request, $id);
+    }
+
+    /**
+     * Unlink an existing adTag from the library tag
+     *
+     * @ApiDoc(
+     *  section="Ad Tags",
+     *  resource = true,
+     *  statusCodes = {
+     *      204 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request the request object
+     * @param int $id the resource id
+     *
+     * @return FormTypeInterface|View
+     *
+     * @throws NotFoundHttpException when resource not exist
+     */
+    public function patchUnlinkAction(Request $request, $id)
+    {
+        /** @var AdTagInterface $adTag */
+        $adTag = $this->one($id);
+
+        if (array_key_exists('adSlot', $request->request->all())) {
+            $adSlot = (int)$request->get('adSlot');
+            if ($adTag->getAdSlotId() != $adSlot) {
+                throw new InvalidArgumentException('adSlot in invalid');
+            }
+        }
+
+        /** @var UnlinkServiceInterface $unlinkService */
+        $unlinkService = $this->get('tagcade_api.service.tag_library.unlink_service');
+
+        $unlinkService->unlinkForAdTag($adTag);
+
+        return $this->view('', Codes::HTTP_NO_CONTENT);
     }
 
     /**
