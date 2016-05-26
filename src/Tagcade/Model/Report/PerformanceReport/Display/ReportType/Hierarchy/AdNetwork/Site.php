@@ -23,10 +23,14 @@ class Site extends AbstractCalculatedReportType
      */
     private $adNetwork;
 
-    public function __construct(SiteInterface $site, AdNetworkInterface $adNetwork = null)
+    /** @var bool [optional] temporarily field. If true, the result will return name using ad network name */
+    private $_groupByAdNetwork = false;
+
+    public function __construct(SiteInterface $site, AdNetworkInterface $adNetwork = null, $groupByAdNetwork = false)
     {
         $this->site = $site;
         $this->adNetwork = $adNetwork;
+        $this->_groupByAdNetwork = boolval($groupByAdNetwork);
     }
 
     /**
@@ -75,6 +79,14 @@ class Site extends AbstractCalculatedReportType
     public function getAdNetworkName()
     {
         return $this->adNetwork->getName();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isGroupByAdNetwork()
+    {
+        return $this->_groupByAdNetwork;
     }
 
     /**

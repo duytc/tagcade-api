@@ -46,7 +46,7 @@ class SubPublisherController extends RestControllerAbstract implements ClassReso
      *      serializerGroups={"user.summary", "subpublisher.summary"}
      * )
      * @ApiDoc(
-     *  section = "admin|publisher",
+     *  section = "subpublisher",
      *  resource = true,
      *  statusCodes = {
      *      200 = "Returned when successful",
@@ -63,6 +63,35 @@ class SubPublisherController extends RestControllerAbstract implements ClassReso
     {
         return $this->one($id);
     }
+
+
+    /**
+     * Get full information a single sub publisher for the given id
+     *
+     * @Rest\Get("/fullInfo/{id}", requirements={"id" = "\d+"})
+     *
+     * @Rest\View(
+     *      serializerGroups={"user.summary", "subpublisher.detail", "subPublisherPartnerRevenue.detail", "partner.detail", "subpublisher.summary", "site.summary"}
+     * )
+     * @ApiDoc(
+     *  section = "admin|publisher",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     *
+     * @return \Tagcade\Bundle\UserBundle\Entity\User
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getFullAction($id)
+    {
+        return $this->one($id);
+    }
+
 
     /**
      * Create a user from the submitted data

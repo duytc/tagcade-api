@@ -30,8 +30,8 @@ class PublisherReportRepository extends AbstractReportRepository implements Publ
         }
 
         $sql = 'INSERT INTO `unified_report_publisher`
-                (publisher_id, date, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
-                VALUES (:publisherId, :date, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
+                (publisher_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
+                VALUES (:publisherId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
                 ON DUPLICATE KEY UPDATE
                 est_revenue = est_revenue + :estRevenue,
                 impressions = impressions + :impressions,
@@ -49,6 +49,7 @@ class PublisherReportRepository extends AbstractReportRepository implements Publ
             }
             $qb->bindValue('publisherId', $report->getPublisherId(), Type::INTEGER);
             $qb->bindValue('date', $report->getDate(), Type::DATE);
+            $qb->bindValue('name', $report->getName());
             $qb->bindValue('estCpm', $report->getEstCpm() !== null ? $report->getEstCpm() : 0, Type::FLOAT);
             $qb->bindValue('estRevenue', $report->getEstRevenue() !== null ? $report->getEstRevenue() : 0, Type::FLOAT);
             $qb->bindValue('fillRate', $report->getFillRate() !== null ? $report->getFillRate() : 0, Type::FLOAT);

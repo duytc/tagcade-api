@@ -4,10 +4,13 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwor
 
 use DateTime;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface AdNetworkReportRepositoryInterface
 {
     public function getReportFor(AdNetworkInterface $adNetwork, DateTime $startDate, DateTime $endDate, $oneOrNull = false);
+
+    public function getReportForAllAdNetworkOfPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $oneOrNull = false);
 
     public function getPublisherAllPartnersByDay($publisherId,  DateTime $startDate, DateTime $endDate);
 }

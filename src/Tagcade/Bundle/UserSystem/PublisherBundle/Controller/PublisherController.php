@@ -9,11 +9,13 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManagerInterface;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -131,7 +133,7 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
 
     /**
      * Get token for sub publisher only
-     * @Rest\Get("{subPublisherId}/token", requirements={"subPublisherId" = "\d+"})
+     * @Rest\Get("subpublishers/{subPublisherId}/token", requirements={"subPublisherId" = "\d+"})
      * @ApiDoc(
      *  section = "publisher",
      *  resource = true,
@@ -151,7 +153,13 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
         $subPublisher = $subPublisherManager->find($subPublisherId);
 
         if (!$subPublisher instanceof SubPublisherInterface) {
-            throw new NotFoundHttpException('That sub publisher does not exist');
+            throw new NotFoundHttpException(sprintf('That sub publisher does not exist. The entered id is %s', $subPublisherId));
+        }
+
+        $currentUser = $this->getUser();
+
+        if ((!$currentUser instanceof  AdminInterface) && ($subPublisher->getPublisher()->getId() != $currentUser->getId())) {
+            throw new AccessDeniedException(sprintf('The user does not have right to access to sub publisher %s', $subPublisherId));
         }
 
         $jwtManager = $this->get('lexik_jwt_authentication.jwt_manager');

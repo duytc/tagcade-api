@@ -96,12 +96,12 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
         }
     }
 
-    public function getName()
-    {
-        if ($this->adTag instanceof AdTagInterface) {
-            return sprintf('%s (%s)', $this->adTag->getName(), $this->adTag->getPartnerTagId());
-        }
-
-        return null;
-    }
+//    public function getName()
+//    {
+//        if ($this->adTag instanceof AdTagInterface) {
+//            $this->name = sprintf('%s (%s)', $this->adTag->getName(), $this->adTag->getPartnerTagId());
+//        }
+//
+//        return null;
+//    }
 }
