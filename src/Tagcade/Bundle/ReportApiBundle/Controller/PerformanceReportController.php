@@ -138,7 +138,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_SUB_PUBLISHER'))")
      *
-     * @Rest\Get("/accounts/{publisherId}/subpublishers", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/adnetworks/all/subpublishers", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -162,6 +162,38 @@ class PerformanceReportController extends FOSRestController
 
         return $this->getResult(
             $this->getReportBuilder()->getAllSubPublishersReport($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_SUB_PUBLISHER'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/adnetworks/{adNetworkId}/subpublishers", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     *
+     * @return array
+     */
+    public function getSubPublishersReportByNetworkAction($publisherId, $adNetworkId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $adNetwork = $this->getAdNetworkHasPartnerWithPublisher($adNetworkId, $publisher);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllSubPublishersReportByPartner($adNetwork, $publisher, $this->getParams())
         );
     }
 
