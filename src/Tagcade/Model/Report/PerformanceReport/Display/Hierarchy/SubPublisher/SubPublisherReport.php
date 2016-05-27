@@ -50,6 +50,16 @@ class SubPublisherReport extends AbstractCalculatedReport implements SubPublishe
         return $this;
     }
 
+    public function getSubPublisherId()
+    {
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getId();
+        }
+
+        return null;
+    }
+
+
     public function isValidSubReport(ReportInterface $report)
     {
         return false; // not supported

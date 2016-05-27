@@ -1,0 +1,43 @@
+Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherReport:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        name:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        date:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+            type: DateTime<'Y-m-d'>
+        totalOpportunities:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        impressions:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        passbacks:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        fillRate:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        estRevenue:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]                                                                                    
+        estCpm:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        customRate:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        slotOpportunities:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        billedAmount:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
+        billedRate:
+            expose: true
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]

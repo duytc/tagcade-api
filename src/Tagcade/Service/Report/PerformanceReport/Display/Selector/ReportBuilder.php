@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
@@ -94,6 +95,20 @@ class ReportBuilder implements ReportBuilderInterface
         $reportTypes = array_map(function(PublisherInterface $publisher) {
             return new PlatformReportTypes\Account($publisher);
         }, $publishers);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getAllSubPublishersReport(PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('you do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function(SUbPublisherInterface $subPublisher) {
+            return new SubPublisherReportTypes\SubPublisher($subPublisher);
+        }, $subPublishers);
 
         return $this->getReports($reportTypes, $params);
     }

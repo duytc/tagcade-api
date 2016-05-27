@@ -136,6 +136,36 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
+     * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_SUB_PUBLISHER'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/subpublishers", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     *
+     * @return array
+     */
+    public function getSubPublishersReportAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getAllSubPublishersReport($publisher, $this->getParams())
+        );
+    }
+
+    /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
      * @Rest\Get("/accounts/{publisherId}/adnetworks/all/adnetworks", requirements={"publisherId" = "\d+"})

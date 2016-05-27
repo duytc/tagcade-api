@@ -27,6 +27,13 @@ interface ReportBuilderInterface
     public function getAllPublishersReport(Params $params);
 
     /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getAllSubPublishersReport(PublisherInterface $publisher, Params $params);
+
+    /**
      * @param array $publishers
      * @param Params $params
      * @return mixed
