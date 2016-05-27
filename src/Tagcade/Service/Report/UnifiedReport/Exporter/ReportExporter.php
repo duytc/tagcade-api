@@ -205,9 +205,21 @@ class ReportExporter implements ReportExporterInterface
         $csv = fopen("php://output", 'w');
         fputcsv($csv, $this->headers);
 
+        $subBreakDown = false;
+        if (is_array($params->getQueryParams()) || isset($params->getQueryParams()['subBreakDown'])) {
+            $subBreakDown = filter_var($params->getQueryParams()['subBreakDown'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         /** @var ComparisonReportInterface $report */
         foreach($unifiedComparisonReports->getReports() as $report) {
-            fputcsv($csv, $this->getReportDataArray($report));
+            if ($subBreakDown === true) {
+                foreach($report->getReports() as $r) {
+                    fputcsv($csv, $this->getReportDataArray($r));
+                }
+            } else {
+                fputcsv($csv, $this->getReportDataArray($report));
+            }
+
         }
         fclose($csv);
         $response->setContent(ob_get_clean());
@@ -226,6 +238,7 @@ class ReportExporter implements ReportExporterInterface
         $date = $comparisonReport->getDate() ===  null ?
             sprintf('%s - %s', $comparisonReport->getStartDate()->format('M d, Y'), $comparisonReport->getEndDate()->format('M d, Y')) :
             $comparisonReport->getDate()->format('M d, Y');
+
         return [
             'date' => $date,
             'name' => $comparisonReport->getName(),
