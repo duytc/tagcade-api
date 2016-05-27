@@ -101,6 +101,7 @@ class AdTagManager implements AdTagManagerInterface
      */
     protected function saveRegularAdTag(AdTagInterface &$adTag)
     {
+        $adSlot = $adTag->getAdSlot();
         $adTag->setRefId(uniqid('', true));
 
         // support "auto increase position" feature: update for all referenced ad tags
