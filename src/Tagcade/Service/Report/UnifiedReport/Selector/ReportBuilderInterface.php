@@ -95,7 +95,21 @@ interface ReportBuilderInterface
      */
     public function getPartnerSiteByAdTagsReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
 
+    /**
+     * @param SubPublisherInterface $subPublisher
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param Params $params
+     * @return mixed
+     */
     public function getPartnerSiteByAdTagsForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSubPublishersReport(PublisherInterface $publisher, Params $params);
 
     /**
      * @param PublisherInterface $publisher

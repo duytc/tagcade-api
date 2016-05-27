@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\User\Role;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\BillingConfiguration;
 
 interface PublisherInterface extends UserRoleInterface
@@ -226,4 +227,15 @@ interface PublisherInterface extends UserRoleInterface
      * @return $this
      */
     public function addBillingConfig(BillingConfiguration $billingConfiguration);
+
+    /**
+     * @return array
+     */
+    public function getSubPublishers();
+
+    /**
+     * @param ArrayCollection $subPublishers
+     * @return self
+     */
+    public function setSubPublishers($subPublishers);
 }

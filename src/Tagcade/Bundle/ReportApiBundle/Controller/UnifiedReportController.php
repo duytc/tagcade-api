@@ -427,6 +427,36 @@ class UnifiedReportController extends FOSRestController
         );
     }
 
+    /**
+     * @Rest\Get("/accounts/{publisherId}/subpublishers", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getSubPublishersReportAction($publisherId)
+    {
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+        if (!$publisher instanceof PublisherInterface) {
+            throw new \Tagcade\Exception\InvalidArgumentException(sprintf('the publisher %d does not exist', $publisherId));
+        }
+
+        return $this->getReportBuilder()->getSubPublishersReport($publisher, $this->getParams());
+    }
+
     /* all private functions */
     private function verifiedUserPermission(UserRoleInterface $user, $publisherId, $adNetworkId = null)
     {
