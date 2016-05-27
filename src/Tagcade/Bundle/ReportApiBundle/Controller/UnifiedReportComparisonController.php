@@ -138,7 +138,7 @@ class UnifiedReportComparisonController extends FOSRestController
         $publisher = $this->getPublisher($publisherId);
 
         return $this->getResult(
-            $this->getReportBuilder()->getSubPublishersReport($publisher, $this->getParams())
+            $this->getReportBuilder()->getSubPublishersDiscrepancyReport($publisher, $this->getParams())
         );
     }
 
@@ -170,7 +170,7 @@ class UnifiedReportComparisonController extends FOSRestController
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
 
         return $this->getResult(
-            $this->getReportBuilder()->getSubPublishersReportByPartner($partner, $publisher, $this->getParams())
+            $this->getReportBuilder()->getSubPublishersDiscrepancyReportByPartner($partner, $publisher, $this->getParams())
         );
     }
 
