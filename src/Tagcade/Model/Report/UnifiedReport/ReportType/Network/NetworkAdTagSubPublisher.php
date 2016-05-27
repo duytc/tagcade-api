@@ -8,6 +8,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractReportType;
 use Tagcade\Model\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReport;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class NetworkAdTagSubPublisher extends AbstractReportType
 {
@@ -16,23 +17,29 @@ class NetworkAdTagSubPublisher extends AbstractReportType
     /**
      * @var AdNetworkInterface
      */
-    private $adNetwork;
-    protected  $subPublisherId;
+    protected $adNetwork;
+
+    /**
+     * @var SubPublisherInterface
+     */
+    protected $subPublisher;
 
     /**
      * Account constructor.
      * @param AdNetworkInterface $adNetwork
      * @param $partnerTagId
-     * @param $subPublisherId
+     * @param $subPublisher
      */
-    public function __construct($adNetwork, $partnerTagId, $subPublisherId)
+    public function __construct($adNetwork, $partnerTagId, $subPublisher)
     {
         if ($adNetwork instanceof AdNetworkInterface) {
             $this->adNetwork = $adNetwork;
         }
 
         $this->partnerTagId = $partnerTagId;
-        $this->subPublisherId = $subPublisherId;
+        if ($subPublisher instanceof SubPublisherInterface) {
+            $this->subPublisher = $subPublisher;
+        }
     }
 
     public function matchesReport(ReportInterface $report)
@@ -65,9 +72,17 @@ class NetworkAdTagSubPublisher extends AbstractReportType
         return $this->partnerTagId;
     }
 
+    public function getSubPublisher()
+    {
+        return $this->subPublisher;
+    }
+
     public function getSubPublisherId()
     {
-        return $this->subPublisherId;
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getId();
+        }
 
+        return null;
     }
 }

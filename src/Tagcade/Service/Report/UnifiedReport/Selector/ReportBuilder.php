@@ -285,6 +285,22 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports($reportTypes, $params);
     }
 
+    public function getSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher, $adNetwork) {
+            return new PublisherReportTypes\SubPublisherNetwork($adNetwork, $subPublisher);
+        }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
     /**
      * @inheritdoc
      */

@@ -112,6 +112,14 @@ interface ReportBuilderInterface
     public function getSubPublishersReport(PublisherInterface $publisher, Params $params);
 
     /**
+     * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params);
+
+    /**
      * @param PublisherInterface $publisher
      * @param Params $params
      * @return mixed

@@ -37,8 +37,8 @@ class NetworkAdTagSubPublisher extends AbstractSelector
     protected function doGetReports(NetworkAdTagSubPublisherReportType $reportType, DateTime $startDate, DateTime $endDate)
     {
         return ($reportType->getAdNetwork() instanceof AdNetworkInterface)
-            ? $this->repository->getReportFor($reportType->getAdNetwork(), $reportType->getPartnerTagId(), $reportType->getSubPublisherId() , $startDate, $endDate)
-            : $this->repository->getReportForAllAdNetwork($reportType->getPartnerTagId(), $reportType->getSubPublisherId() , $startDate, $endDate);
+            ? $this->repository->getReportFor($reportType->getAdNetwork(), $reportType->getPartnerTagId(), $reportType->getSubPublisher() , $startDate, $endDate)
+            : $this->repository->getReportForAllAdNetwork($reportType->getPartnerTagId(), $reportType->getSubPublisher() , $startDate, $endDate);
     }
 
     /**
