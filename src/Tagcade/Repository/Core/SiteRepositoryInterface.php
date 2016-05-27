@@ -161,4 +161,11 @@ interface SiteRepositoryInterface extends ObjectRepository
      * @return QueryBuilder
      */
     public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface|null $publisher
+     * @return mixed
+     */
+    public function getSiteHavingAdTagBelongsToAdNetworkFilterByPublisher(AdNetworkInterface $adNetwork, $publisher = null);
 }
