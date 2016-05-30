@@ -35,6 +35,7 @@ class SubPublisherAdNetworkReportRepository extends AbstractReportRepository imp
                 ON DUPLICATE KEY UPDATE
                 est_cpm = :estCpm,
                 est_revenue = :estRevenue,
+                name = :name,
                 fill_rate = :fillRate,
                 impressions = :impressions,
                 passbacks = :passbacks,

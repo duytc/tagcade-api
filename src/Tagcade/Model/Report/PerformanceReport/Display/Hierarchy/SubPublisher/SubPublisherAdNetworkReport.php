@@ -78,12 +78,10 @@ class SubPublisherAdNetworkReport extends AbstractCalculatedReport implements Su
 
     public function getName()
     {
-        if ($this->adNetwork instanceof AdNetworkInterface) {
-            return $this->adNetwork->getName();
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getUser()->getUsername();
         }
 
         return null;
     }
-
-
 }
