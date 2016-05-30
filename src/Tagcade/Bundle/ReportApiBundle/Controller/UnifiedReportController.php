@@ -447,7 +447,7 @@ class UnifiedReportController extends FOSRestController
      * @param int $publisherId
      * @return array
      */
-    public function getSubPublishersReportAction($publisherId)
+    public function getAllPartnersBySubPublishersReportAction($publisherId)
     {
         $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
         if (!$publisher instanceof PublisherInterface) {
@@ -478,7 +478,7 @@ class UnifiedReportController extends FOSRestController
      * @param int $adNetworkId
      * @return array
      */
-    public function getSubPublishersReportForPartnerAction($publisherId, $adNetworkId)
+    public function getPartnerBySubPublishersReportAction($publisherId, $adNetworkId)
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
         $publisher = $result[self::PUBLISHER_KEY];
@@ -650,6 +650,4 @@ class UnifiedReportController extends FOSRestController
 
         return true;
     }
-
-
 }
