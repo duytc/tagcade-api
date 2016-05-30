@@ -207,7 +207,7 @@ class ReportExporter implements ReportExporterInterface
 
         $subBreakDown = false;
         if (is_array($params->getQueryParams()) || isset($params->getQueryParams()['subBreakDown'])) {
-            $subBreakDown = filter_var($params->getQueryParams()['subBreakDown'], FILTER_VALIDATE_BOOLEAN);
+            $subBreakDown = true;
         }
 
         /** @var ComparisonReportInterface $report */
