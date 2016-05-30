@@ -54,6 +54,16 @@ class AdNetwork extends AbstractCalculatedReportType
         return $this->publisher;
     }
 
+    public function getPublisherId()
+    {
+        if ($this->publisher instanceof PublisherInterface) {
+            return $this->publisher->getId();
+        }
+
+        return null;
+    }
+
+
     /**
      * @inheritdoc
      */

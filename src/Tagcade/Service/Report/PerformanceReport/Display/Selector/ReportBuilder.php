@@ -130,8 +130,8 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $adNetworks = $this->adNetworkManager->getAdNetworksForPublisher($publisher);
 
-        $reportTypes = array_map(function($adNetwork) {
-            return new AdNetworkReportTypes\AdNetwork($adNetwork);
+        $reportTypes = array_map(function($adNetwork) use ($publisher) {
+            return new AdNetworkReportTypes\AdNetwork($adNetwork, $publisher);
         }, $adNetworks);
 
         return $this->getReports($reportTypes, $params);
@@ -165,7 +165,7 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAdNetworkReport(AdNetworkInterface $adNetwork, Params $params)
     {
-        return $this->getReports(new AdNetworkReportTypes\AdNetwork($adNetwork), $params);
+        return $this->getReports(new AdNetworkReportTypes\AdNetwork($adNetwork, $adNetwork->getPublisher()), $params);
     }
 
     public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, Params $params)
