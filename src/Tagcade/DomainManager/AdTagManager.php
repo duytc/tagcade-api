@@ -76,13 +76,8 @@ class AdTagManager implements AdTagManagerInterface
      */
     public function save(AdTagInterface &$adTag)
     {
-        $libAdTag = $adTag->getLibraryAdTag();
         $adSlot = $adTag->getAdSlot();
         $adSlotLib = $adSlot->getLibraryAdSlot();
-
-        if (!$libAdTag->getVisible()) {
-            return $this->saveRegularAdTag($adTag);
-        }
 
         if (!$adSlotLib->isVisible()) {
             return $this->saveAdTagForNotSharedAdSlot($adTag);
@@ -90,29 +85,6 @@ class AdTagManager implements AdTagManagerInterface
 
         // Here handles save ad tag for shared ad slot
         return $this->saveAdTagForSharedAdSlot($adTag);
-    }
-
-    /**
-     * save regular ad tag that does not link to a library ad tag
-     * This will only normal persist and flush
-     *
-     * @param AdTagInterface $adTag
-     * @return AdTagInterface
-     */
-    protected function saveRegularAdTag(AdTagInterface &$adTag)
-    {
-        $adSlot = $adTag->getAdSlot();
-        $adTag->setRefId(uniqid('', true));
-
-        // support "auto increase position" feature: update for all referenced ad tags
-        if ($adTag->getAutoIncreasePosition()) {
-            $this->autoIncreasePositionForAdSlotDueToAdTag($adSlot, $adTag);
-        }
-
-        $this->em->persist($adTag);
-        $this->em->flush();
-
-        return $adTag;
     }
 
     protected function saveAdTagForSharedAdSlot(AdTagInterface &$adTag)
@@ -242,7 +214,7 @@ class AdTagManager implements AdTagManagerInterface
 
         // support "auto increase position" feature: update for all referenced ad tags
         if ($adTag->getAutoIncreasePosition()) {
-            $this->autoIncreasePositionForAdSlotDueToAdTag($adSlot, $adTag);
+            $this->autoIncreasePositionForAdSlotDueToAdTag($adTag);
         }
 
         $this->em->persist($adTag);
@@ -561,11 +533,11 @@ class AdTagManager implements AdTagManagerInterface
     /**
      * auto Increase Position For AdSlot Due To AdTag
      *
-     * @param DisplayAdSlotInterface $adSlot
      * @param AdTagInterface $newAdTag
      */
-    protected function autoIncreasePositionForAdSlotDueToAdTag(DisplayAdSlotInterface &$adSlot, AdTagInterface &$newAdTag)
+    protected function autoIncreasePositionForAdSlotDueToAdTag(AdTagInterface &$newAdTag)
     {
+        $adSlot = $newAdTag->getAdSlot();
         $newAdTags = [];
         $adTags = $adSlot->getAdTags();
         $includedPersistingTag = false;

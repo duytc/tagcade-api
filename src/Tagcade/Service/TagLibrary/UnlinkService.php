@@ -90,14 +90,16 @@ class UnlinkService implements UnlinkServiceInterface
             ->setLibSlotTags(null)
             ->setVisible(false);
 
-        $this->libraryAdTagManager->save($newLibraryAdTag);
+        $this->em->persist($newLibraryAdTag);
+        $this->em->flush();
 
         // change relationship of ad tag to the new libAdTag and save
         $adTag
             ->setLibraryAdTag($newLibraryAdTag)
             ->setRefId(uniqid('', true)); // important: reset refId
 
-        $this->adTagManager->save($adTag);
+        $this->em->persist($adTag);
+        $this->em->flush();
 
         return $adTag;
     }
