@@ -145,7 +145,7 @@ class UnifiedReportComparisonController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
-     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/subpublishers", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/all/subpublishers", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
