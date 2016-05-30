@@ -458,7 +458,7 @@ class UnifiedReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/subpublishers", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites/all/subpublishers", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -487,8 +487,8 @@ class UnifiedReportController extends FOSRestController
         }
 
         return $this->getReportBuilder()->getSubPublishersReportByPartner(
-            $publisher,
             $result[self::AD_NETWORK_KEY],
+            $publisher,
             $this->getParams()
         );
     }

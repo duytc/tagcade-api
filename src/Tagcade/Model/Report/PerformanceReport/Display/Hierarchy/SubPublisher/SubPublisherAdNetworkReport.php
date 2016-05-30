@@ -16,6 +16,7 @@ class SubPublisherAdNetworkReport extends AbstractCalculatedReport implements Su
     protected $id;
 
     protected $date;
+    protected $name;
     protected $totalOpportunities;
     protected $impressions;
     protected $passbacks;

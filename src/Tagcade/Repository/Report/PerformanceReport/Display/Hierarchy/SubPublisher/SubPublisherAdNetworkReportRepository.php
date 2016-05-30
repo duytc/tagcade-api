@@ -30,8 +30,8 @@ class SubPublisherAdNetworkReportRepository extends AbstractReportRepository imp
     public function override(SubPublisherAdNetworkReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_sub_publisher_ad_network`
-                (ad_network_id, date, est_cpm, est_revenue, fill_rate, impressions, passbacks, sub_publisher_id, total_opportunities)
-                VALUES (:adNetworkId, :date, :estCpm, :estRevenue, :fillRate, :impressions, :passbacks, :subPublisherId, :totalOpportunities)
+                (ad_network_id, date, name, est_cpm, est_revenue, fill_rate, impressions, passbacks, sub_publisher_id, total_opportunities)
+                VALUES (:adNetworkId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :passbacks, :subPublisherId, :totalOpportunities)
                 ON DUPLICATE KEY UPDATE
                 est_cpm = :estCpm,
                 est_revenue = :estRevenue,
@@ -47,6 +47,7 @@ class SubPublisherAdNetworkReportRepository extends AbstractReportRepository imp
         $qb->bindValue('subPublisherId', $report->getSubPublisher()->getId(), Type::INTEGER);
         $qb->bindValue('adNetworkId', $report->getAdNetwork()->getId(), Type::INTEGER);
         $qb->bindValue('date', $report->getDate(), Type::DATE);
+        $qb->bindValue('name', $report->getName());
         $qb->bindValue('estCpm', $report->getEstCpm(), Type::FLOAT);
         $qb->bindValue('estRevenue', $report->getEstRevenue(), Type::FLOAT);
         $qb->bindValue('fillRate', $report->getFillRate(), Type::FLOAT);

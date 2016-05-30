@@ -15,6 +15,7 @@ class SubPublisherReport extends AbstractCalculatedReport implements SubPublishe
     protected $id;
 
     protected $date;
+    protected $name;
     protected $totalOpportunities;
     protected $impressions;
     protected $passbacks;
@@ -63,5 +64,12 @@ class SubPublisherReport extends AbstractCalculatedReport implements SubPublishe
     public function isValidSubReport(ReportInterface $report)
     {
         return false; // not supported
+    }
+
+    protected function setDefaultName()
+    {
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            $this->setName($this->subPublisher->getUser()->getUsername());
+        }
     }
 }
