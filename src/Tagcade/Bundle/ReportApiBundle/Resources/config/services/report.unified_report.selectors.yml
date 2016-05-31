@@ -153,6 +153,11 @@ services:
         arguments:
             - @tagcade.repository.report.unified_report.network.network_report
 
+    tagcade.service.report.unified_report.selector.selectors.network.network_sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkSubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_network_report
+
     tagcade.service.report.unified_report.selector.selectors.network.network_site_report:
         class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network\NetworkSite
         arguments:
@@ -209,6 +214,11 @@ services:
         arguments:
             - @tagcade.repository.report.unified_report.comparison.ad_network_report
 
+    tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_sub_publisher_report:
+        class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetworkSubPublisher
+        arguments:
+            - @tagcade.repository.report.unified_report.comparison.sub_publisher_ad_network_report
+
     tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_report:
         class: Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Comparison\AdNetworkDomain
         arguments:
@@ -246,6 +256,7 @@ services:
             -
                 # unified reports selector
                 - @tagcade.service.report.unified_report.selector.selectors.network.network_report
+                - @tagcade.service.report.unified_report.selector.selectors.network.network_sub_publisher_report
                 - @tagcade.service.report.unified_report.selector.selectors.network.network_site_report
                 - @tagcade.service.report.unified_report.selector.selectors.network.network_ad_tag_report
                 - @tagcade.service.report.unified_report.selector.selectors.network.network_domain_ad_tag_report
@@ -258,6 +269,7 @@ services:
                 # comparison
                 - @tagcade.service.report.unified_report.selector.selectors.comparison.account_report
                 - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_report
+                - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_sub_publisher_report
                 - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_report
                 - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_ad_tag_report
                 - @tagcade.service.report.unified_report.selector.selectors.comparison.ad_network_domain_ad_tag_report

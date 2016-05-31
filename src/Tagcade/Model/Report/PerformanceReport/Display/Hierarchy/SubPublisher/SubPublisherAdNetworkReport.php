@@ -76,12 +76,12 @@ class SubPublisherAdNetworkReport extends AbstractCalculatedReport implements Su
         return false; // not supported
     }
 
-    public function getName()
-    {
-        if ($this->subPublisher instanceof SubPublisherInterface) {
-            return $this->subPublisher->getUser()->getUsername();
-        }
-
-        return null;
-    }
+//    public function getName()
+//    {
+//        if ($this->subPublisher instanceof SubPublisherInterface) {
+//            return $this->subPublisher->getUser()->getUsername();
+//        }
+//
+//        return null;
+//    }
 }

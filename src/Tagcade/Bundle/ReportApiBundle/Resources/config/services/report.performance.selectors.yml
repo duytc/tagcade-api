@@ -168,6 +168,11 @@ services:
         arguments:
             - @tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_network
 
+    tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_network_sub_publisher:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork\AdNetworkSubPublisher
+        arguments:
+            - @tagcade.repository.report.performance_report.display.hierarchy.sub_publisher.sub_publisher_ad_network
+
     tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.site:
         class: Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork\Site
         arguments:
@@ -245,6 +250,7 @@ services:
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.platform.ad_tag
                 # ad network selectors
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_network
+                - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_network_sub_publisher
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.site
                 - @tagcade.service.report.performance_report.display.selector.selectors.hierarchy.ad_network.ad_tag
                 # segment selectors

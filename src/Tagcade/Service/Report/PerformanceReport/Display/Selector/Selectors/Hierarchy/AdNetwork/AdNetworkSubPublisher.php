@@ -1,16 +1,18 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\SubPublisher;
+namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\AdNetwork;
 
 use DateTime;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\AbstractSelector;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherAdNetworkReportRepositoryInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\AbstractSelector;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher\SubPublisherAdNetwork as SubPublisherAdNetworkReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetworkSubPublisher as AdNetworkSubPublisherReportType;
 
-class SubPublisherAdNetwork extends AbstractSelector
+class AdNetworkSubPublisher extends AbstractSelector
 {
-    /** @var SubPublisherAdNetworkReportRepositoryInterface */
+    /**
+     * @var SubPublisherAdNetworkReportRepositoryInterface
+     */
     protected $repository;
 
     public function __construct(SubPublisherAdNetworkReportRepositoryInterface $repository)
@@ -18,12 +20,12 @@ class SubPublisherAdNetwork extends AbstractSelector
         $this->repository = $repository;
     }
 
-    protected function doGetReports(SubPublisherAdNetworkReportType $reportType, DateTime $startDate, DateTime $endDate)
+    protected function doGetReports(AdNetworkSubPublisherReportType $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null)
     {
         $report = $this->repository->getReportFor($reportType->getSubPublisher(), $reportType->getAdNetwork(), $startDate, $endDate);
         if (is_array($report)) {
             foreach($report as $r) {
-                $r->setName($reportType->getAdNetwork()->getName());
+                $r->setName($reportType->getSubPublisher()->getUser()->getUsername());
             }
         }
 
@@ -32,6 +34,6 @@ class SubPublisherAdNetwork extends AbstractSelector
 
     public function supportsReportType(ReportTypeInterface $reportType)
     {
-        return $reportType instanceof SubPublisherAdNetworkReportType;
+        return $reportType instanceof AdNetworkSubPublisherReportType;
     }
 }
