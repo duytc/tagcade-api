@@ -72,14 +72,13 @@ class UnifiedReportController extends FOSRestController
             return $this->view('not startDate and endDate key in array returned', 204);
 
         }
-        //command to run
+
+        //update comparison by worker
         $startDate = $reportDateRange['startDate'];
         $endDate = $reportDateRange['endDate'];
-        $command = sprintf('tc:unified-report:compare --publisher=%d --start-date=%s --end-date=%s --override', $publisherId, $startDate, $endDate);
+        $override = true;
 
-        $commandToRun = sprintf('%s %s', $this->getAppConsoleCommand(), $command);
-        $process = new Process($commandToRun);
-        $process->start();
+        $this->get('tagcade.worker.manager')->updateComparisonForPublisher($publisherId, $startDate, $endDate, $override);
 
         return $this->view(null, 204);
     }

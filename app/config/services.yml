@@ -186,6 +186,12 @@ services:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ron_ad_slot
 
+    tagcade.worker.workers.update_comparison_for_publisher_worker:
+            class: Tagcade\Worker\Workers\UpdateComparisonForPublisherWorker
+            arguments:
+                - @tagcade.service.report.unified_report.report_comparison_creator
+                - @tagcade_user.domain_manager.publisher
+
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil
 

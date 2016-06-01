@@ -136,6 +136,18 @@ class Manager
         $this->queueTask('updateCacheForPublishers', $params);
     }
 
+    public function updateComparisonForPublisher($publisherId, $startDate, $endDate, $override)
+    {
+        $params = new StdClass();
+
+        $params->publisherId = $publisherId;
+        $params->startDate = $startDate;
+        $params->endDate   = $endDate;
+        $params->override  = $override;
+
+        $this->queueTask('updateComparisonForPublisher', $params);
+    }
+
     /**
      * @param string $task
      * @param StdClass $params
