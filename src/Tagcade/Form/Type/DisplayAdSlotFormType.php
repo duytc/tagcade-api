@@ -40,6 +40,7 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('floorPrice')
+            ->add('headerBiddingPrice')
             ->add('rtbStatus', ChoiceType::class, array(
                 'choices' => array(
                     RTB_STATUS::RTB_ENABLED,
@@ -96,6 +97,14 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
                 if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
                     if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
                         $form->get('rtbStatus')->addError(new FormError('this display ad slot belongs to publisher that does not have rtb module enabled'));
+                        return;
+                    }
+                }
+
+                if($this->userRole instanceof PublisherInterface && !$this->userRole->hasHeaderBiddingModule()) {
+
+                    if($form->has('headerBiddingPrice') && $form->get('headerBiddingPrice')->getData() !=null) {
+                        $form->get('headerBiddingPrice')->addError(new FormError('This publisher does not set header bidding module'));
                         return;
                     }
                 }

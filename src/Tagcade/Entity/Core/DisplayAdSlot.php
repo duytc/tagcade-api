@@ -11,6 +11,7 @@ class DisplayAdSlot extends DisplayAdSlotModel
     protected $rtbStatus;
     protected $floorPrice;
     protected $deletedAt;
+    protected $headerBiddingPrice;
 
     /**
      * this constructor will be called by FormType, must be used to call parent to set default values

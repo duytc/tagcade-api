@@ -12,6 +12,7 @@ class Expression extends ExpressionModel
     protected $expressionInJs;
     protected $libraryExpression;
     protected $dynamicAdSlot;
+    protected $headerBiddingPrice;
 
     public function __construct()
     {}

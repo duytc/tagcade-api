@@ -15,6 +15,23 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     protected $site;
     protected $rtbStatus;
     protected $floorPrice;
+    protected $headerBiddingPrice;
+
+    /**
+     * @return mixed
+     */
+    public function getHeaderBiddingPrice()
+    {
+        return $this->headerBiddingPrice;
+    }
+
+    /**
+     * @param mixed $headerBiddingPrice
+     */
+    public function setHeaderBiddingPrice($headerBiddingPrice)
+    {
+        $this->headerBiddingPrice = $headerBiddingPrice;
+    }
 
     /**
      * constructor

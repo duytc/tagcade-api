@@ -3,11 +3,15 @@
 namespace Tagcade\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use FOS\UserBundle\Event\FormEvent;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Entity\Core\Expression;
 use Tagcade\Entity\Core\LibraryExpression;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 
 class ExpressionFormType extends AbstractRoleSpecificFormType
@@ -21,12 +25,28 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
                     return $er->createQueryBuilder('slot')->select('slot');
                 }
             ))
+            ->add('headerBiddingPrice')
             ->add('libraryExpression', 'entity', array(
                 'class' => LibraryExpression::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('libEx')->select('libEx');
                 }
             ));
+
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA,
+            function (FormEvent $event) {
+                $form = $event->getForm();
+
+                if($this->userRole instanceof PublisherInterface && !$this->userRole->hasHeaderBiddingModule()) {
+                    if($form->has('headerBiddingPrice') && $form->get('headerBiddingPrice')->getData() !=null) {
+                        $form->get('headerBiddingPrice')->addError(new FormError('This publisher does not set header bidding module'));
+                        return;
+                    }
+                }
+            }
+        );
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -18,6 +18,10 @@ Tagcade\Entity\Core\Expression:
         deletedAt:
             type: date
             nullable: true
+        headerBiddingPrice:
+            type: float
+            scale: 4
+            nullable: true
     manyToOne:
         libraryExpression:
             targetEntity: Tagcade\Entity\Core\LibraryExpression

@@ -5,6 +5,9 @@ namespace Tagcade\Model\Core;
 class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
 {
     protected $id;
+    protected $deletedAt;
+    protected $headerBiddingPrice;
+
 
     /** @var BaseAdSlotInterface */
     protected $expectAdSlot;
@@ -16,8 +19,6 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
 
     /** @var DynamicAdSlotInterface */
     protected $dynamicAdSlot;
-
-    protected $deletedAt;
 
     public function __construct()
     {
@@ -183,5 +184,21 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
     public function __toString()
     {
         return (string)$this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeaderBiddingPrice()
+    {
+        return $this->headerBiddingPrice;
+    }
+
+    /**
+     * @param mixed $headerBiddingPrice
+     */
+    public function setHeaderBiddingPrice($headerBiddingPrice)
+    {
+        $this->headerBiddingPrice = $headerBiddingPrice;
     }
 }
