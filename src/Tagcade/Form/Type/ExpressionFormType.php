@@ -33,20 +33,6 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
                 }
             ));
 
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) {
-                $form = $event->getForm();
-
-                if($this->userRole instanceof PublisherInterface && !$this->userRole->hasHeaderBiddingModule()) {
-                    if($form->has('headerBiddingPrice') && $form->get('headerBiddingPrice')->getData() !=null) {
-                        $form->get('headerBiddingPrice')->addError(new FormError('This publisher does not set header bidding module'));
-                        return;
-                    }
-                }
-            }
-        );
-
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
