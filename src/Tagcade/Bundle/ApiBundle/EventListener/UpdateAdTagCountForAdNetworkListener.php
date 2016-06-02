@@ -60,6 +60,18 @@ class UpdateAdTagCountForAdNetworkListener
                 $this->changedAdNetworks[] = $oldAdNetwork;
                 $this->changedAdNetworks[] = $newAdNetwork;
             }
+        } else if ($entity instanceof AdTagInterface && $args->hasChangedField('active') && $args->getNewValue('active') !== null) {
+            $active = filter_var($args->getNewValue('active'), FILTER_VALIDATE_BOOLEAN);
+
+            if ($active === true) {
+                $entity->getAdNetwork()->increaseActiveAdTagsCount();
+                $entity->getAdNetwork()->decreasePausedAdTagsCount();
+            } else {
+                $entity->getAdNetwork()->increasePausedAdTagsCount();
+                $entity->getAdNetwork()->decreaseActiveAdTagsCount();
+            }
+
+            $this->changedAdNetworks[] = $entity->getAdNetwork();
         }
     }
 
@@ -79,7 +91,6 @@ class UpdateAdTagCountForAdNetworkListener
         }
 
         $this->changedAdNetworks = [];
-
         $em->flush();
     }
 

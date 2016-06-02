@@ -19,7 +19,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
 /**
- * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+ * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or (has_role('ROLE_SUB_PUBLISHER') and user.isEnableViewTagcadeReport()) ) and has_role('MODULE_DISPLAY'))")
  *
  * Only allow admins and publishers with the display module enabled
  */
@@ -138,7 +138,7 @@ class PerformanceReportController extends FOSRestController
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
-     * @Rest\Get("/accounts/{publisherId}/adnetworks", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/adnetworks/all/adnetworks", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -161,6 +161,65 @@ class PerformanceReportController extends FOSRestController
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/adnetworks/all", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getPublisherAdNetworksByDayAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherAdNetworksByDayReport($publisher, $this->getParams())
+        );
+    }
+
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/accounts/{publisherId}/adnetworks/all/adtags", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getPublisherAdNetworksByAdTagAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherAdNetworksByAdTagReport($publisher, $this->getParams())
         );
     }
 
@@ -598,7 +657,7 @@ class PerformanceReportController extends FOSRestController
     }
 
     /**
-     * @Rest\Get("/accounts/{publisherId}/sites", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/accounts/{publisherId}/sites/all", requirements={"publisherId" = "\d+"})
      *
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
@@ -616,7 +675,35 @@ class PerformanceReportController extends FOSRestController
      * @param int $publisherId
      * @return array
      */
-    public function getPublisherSitesAction($publisherId)
+    public function getPublisherSitesByDayAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+
+        return $this->getResult(
+            $this->getReportBuilder()->getPublisherSitesByDayReport($publisher, $this->getParams())
+        );
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/sites/all/sites", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getPublisherSitesBySiteAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
 

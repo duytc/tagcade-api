@@ -104,7 +104,7 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
     }
 
     /**
-     * @param ExpressionInterface $expressions
+     * @param ExpressionInterface[] $expressions
      * @return $this
      */
     public function setExpressions($expressions)

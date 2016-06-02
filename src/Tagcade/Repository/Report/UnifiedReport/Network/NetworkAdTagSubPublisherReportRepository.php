@@ -51,8 +51,8 @@ class NetworkAdTagSubPublisherReportRepository extends AbstractReportRepository 
         }
 
         $sql = 'INSERT INTO `unified_report_network_ad_tag_sub_publisher`
-                (sub_publisher_id, ad_network_id, partner_tag_id, date, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
-                VALUES (:subPublisherId, :adNetworkId, :partnerTagId, :date, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
+                (sub_publisher_id, ad_network_id, partner_tag_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
+                VALUES (:subPublisherId, :adNetworkId, :partnerTagId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
                 ON DUPLICATE KEY UPDATE
                 est_revenue = est_revenue + :estRevenue,
                 impressions = impressions + :impressions,
@@ -72,6 +72,7 @@ class NetworkAdTagSubPublisherReportRepository extends AbstractReportRepository 
             $qb->bindValue('subPublisherId', $report->getSubPublisher()->getId(), Type::INTEGER);
             $qb->bindValue('partnerTagId', $report->getPartnerTagId(), Type::STRING);
             $qb->bindValue('date', $report->getDate(), Type::DATE);
+            $qb->bindValue('name', $report->getName());
             $qb->bindValue('estCpm', $report->getEstCpm() !== null ? $report->getEstCpm() : 0, Type::FLOAT);
             $qb->bindValue('estRevenue', $report->getEstRevenue() !== null ? $report->getEstRevenue() : 0, Type::FLOAT);
             $qb->bindValue('fillRate', $report->getFillRate() !== null ? $report->getFillRate() : 0, Type::FLOAT);

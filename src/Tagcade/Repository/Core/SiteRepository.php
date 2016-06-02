@@ -404,4 +404,19 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
         return $qb;
     }
+
+    public function getSiteHavingAdTagBelongsToAdNetworkFilterByPublisher(AdNetworkInterface $adNetwork, $publisher = null)
+    {
+        $qb = $this->getSitesThatHaveAdTagsBelongingToAdNetworkQuery($adNetwork);
+        if ($publisher instanceof PublisherInterface) {
+            if ($publisher instanceof SubPublisherInterface) {
+                $qb->andWhere('st.subPublisher = :publisher');
+            } else {
+                $qb->andWhere('st.publisher = :publisher');
+            }
+            $qb->setParameter('publisher', $publisher);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

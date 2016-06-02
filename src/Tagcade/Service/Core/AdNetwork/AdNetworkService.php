@@ -5,6 +5,7 @@ namespace Tagcade\Service\Core\AdNetwork;
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Entity\Core\AdNetwork;
+use Tagcade\Entity\Core\Site;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -14,6 +15,7 @@ use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
+use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class AdNetworkService implements AdNetworkServiceInterface
 {
@@ -98,32 +100,14 @@ class AdNetworkService implements AdNetworkServiceInterface
 
     public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
     {
-        $sites = [];
         $siteStatus = [];
 
-        foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
-            $site = $adTag->getAdSlot()->getSite();
+        /** @var SiteRepositoryInterface $siteRepository */
+        $siteRepository = $this->em->getRepository(Site::class);
+        $sites = $siteRepository->getSiteHavingAdTagBelongsToAdNetworkFilterByPublisher($adNetwork, $publisher);
 
-            if ($publisher instanceof SubPublisherInterface
-                && (!($site->getSubPublisher() instanceof SubPublisherInterface) || $site->getSubPublisher()->getId() != $publisher->getId())
-            ) {
-                    continue;
-            }
-
-            if ($publisher instanceof PublisherInterface && !is_subclass_of($publisher, PublisherInterface::class)
-                && $site->getPublisher()->getId() != $publisher->getId()) {
-                continue;
-            }
-
-            if (!in_array($site, $sites)) {
-                $sites[] = $site;
-                $siteStatus[] = new SiteStatus($site, $adNetwork);
-            }
-
-            unset($site);
+        foreach($sites as $site) {
+            $siteStatus[] = new SiteStatus($site, $adNetwork);
         }
 
         return $siteStatus;

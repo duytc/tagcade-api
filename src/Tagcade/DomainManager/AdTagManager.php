@@ -214,7 +214,7 @@ class AdTagManager implements AdTagManagerInterface
 
         // support "auto increase position" feature: update for all referenced ad tags
         if ($adTag->getAutoIncreasePosition()) {
-            $this->autoIncreasePositionForAdSlotDueToAdTag($adSlot, $adTag);
+            $this->autoIncreasePositionForAdSlotDueToAdTag($adTag);
         }
 
         $this->em->persist($adTag);
@@ -533,11 +533,11 @@ class AdTagManager implements AdTagManagerInterface
     /**
      * auto Increase Position For AdSlot Due To AdTag
      *
-     * @param DisplayAdSlotInterface $adSlot
      * @param AdTagInterface $newAdTag
      */
-    protected function autoIncreasePositionForAdSlotDueToAdTag(DisplayAdSlotInterface &$adSlot, AdTagInterface &$newAdTag)
+    protected function autoIncreasePositionForAdSlotDueToAdTag(AdTagInterface &$newAdTag)
     {
+        $adSlot = $newAdTag->getAdSlot();
         $newAdTags = [];
         $adTags = $adSlot->getAdTags();
         $includedPersistingTag = false;

@@ -158,7 +158,7 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
 
         $currentUser = $this->getUser();
 
-        if ((!$currentUser instanceof  AdminInterface) || ($subPublisher->getPublisher()->getId() != $currentUser->getId())) {
+        if ((!$currentUser instanceof  AdminInterface) && ($subPublisher->getPublisher()->getId() != $currentUser->getId())) {
             throw new AccessDeniedException(sprintf('The user does not have right to access to sub publisher %s', $subPublisherId));
         }
 
