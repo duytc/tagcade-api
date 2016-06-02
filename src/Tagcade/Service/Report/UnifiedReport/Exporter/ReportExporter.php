@@ -206,13 +206,13 @@ class ReportExporter implements ReportExporterInterface
         fputcsv($csv, $this->headers);
 
         $subBreakDown = false;
-        if (is_array($params->getQueryParams()) || isset($params->getQueryParams()['subBreakDown'])) {
+        if (is_array($params->getQueryParams()) && $params->getQueryParams()['subBreakDown'] === true) {
             $subBreakDown = true;
         }
 
         /** @var ComparisonReportInterface $report */
         foreach($unifiedComparisonReports->getReports() as $report) {
-            if ($subBreakDown === true) {
+            if ($subBreakDown === true && $report->getReports() !== null) {
                 foreach($report->getReports() as $r) {
                     fputcsv($csv, $this->getReportDataArray($r));
                 }
