@@ -17,6 +17,7 @@ class AdNetwork extends AdNetworkModel
     protected $pausedAdTagsCount;
     protected $libraryAdTags;
     protected $username;
+    protected $emailHookToken;
     protected $impressionCap;
     protected $networkOpportunityCap;
 

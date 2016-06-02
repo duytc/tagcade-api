@@ -68,6 +68,8 @@ parameters:
     jwt_key_pass_phrase:  'tagcade'                               # ssh key pass phrase
     jwt_token_ttl:        86400
 
+    unified_report_mail_domain: unifiedreports.tagcade.com
+
     partner_tag_id.matching_config:
         sovrn:
             pattern: '/z\=([0-9]+)/'

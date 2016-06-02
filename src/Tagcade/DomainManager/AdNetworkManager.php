@@ -15,11 +15,13 @@ class AdNetworkManager implements AdNetworkManagerInterface
 {
     protected $om;
     protected $repository;
+    protected $unifiedReportMailDomain;
 
-    public function __construct(ObjectManager $om, AdNetworkRepositoryInterface $repository)
+    public function __construct(ObjectManager $om, AdNetworkRepositoryInterface $repository, $unifiedReportMailDomain)
     {
         $this->om = $om;
         $this->repository = $repository;
+        $this->unifiedReportMailDomain = $unifiedReportMailDomain;
     }
 
     /**
@@ -100,5 +102,18 @@ class AdNetworkManager implements AdNetworkManagerInterface
         return $this->repository->allHasCap($limit, $offset);
     }
 
+    public function validateEmailHookToken($publisherId, $partnerCName, $token)
+    {
+        return $this->repository->validateEmailToken($publisherId, $partnerCName, $token);
+    }
 
+    public function getUnifiedReportEmail(AdNetworkInterface $adNetwork, $resetToken = false)
+    {
+        if ($resetToken === true) {
+            $adNetwork->setEmailHookToken(uniqid(''));
+            $this->save($adNetwork);
+        }
+
+        return sprintf('pub%d.%s.%s@%s', $adNetwork->getPublisherId(), $adNetwork->getNetworkPartner()->getNameCanonical(), $adNetwork->getEmailHookToken(), $this->unifiedReportMailDomain);
+    }
 }

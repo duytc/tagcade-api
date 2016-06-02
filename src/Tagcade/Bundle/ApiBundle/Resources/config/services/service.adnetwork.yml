@@ -29,6 +29,7 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.ad_network
+            - %unified_report_mail_domain%
 
     tagcade.form.type.ad_network:
         class: %tagcade.form.type.ad_network.class%
