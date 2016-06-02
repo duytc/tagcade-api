@@ -12,9 +12,9 @@ Tagcade\Entity\Core\DynamicAdSlot:
         site:
             expose: true
             groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.minimum, dynamicadslot.withChannel]
-#        expressions:
-#            expose: true
-#            groups: [dynamicadslot.detail, dynamicadslot.summary]
+        expressions:
+            expose: true
+            groups: [dynamicadslot.detail, dynamicadslot.summary]
         defaultAdSlot:
             expose: true
             groups: [dynamicadslot.detail, dynamicadslot.summary, dynamicadslot.withChannel]
