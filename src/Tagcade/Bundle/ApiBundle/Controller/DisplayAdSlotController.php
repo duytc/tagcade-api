@@ -54,7 +54,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "expression.detail", "displayadslot.detail", "site.summary", "librarydisplayadslot.detail", "user.summary", "slotlib.summary"}
+     *      serializerGroups={"adslot.detail", "displayadslot.detail", "site.summary", "librarydisplayadslot.detail", "user.summary", "slotlib.summary"}
      * )
      * Get a single display adSlot for the given id
      *

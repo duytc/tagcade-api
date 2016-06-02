@@ -67,7 +67,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
      * @Rest\Get("/adslots/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"libraryexpression.detail", "expression.summary", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
+     *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
      * Get a single adSlot for the given id
      *
