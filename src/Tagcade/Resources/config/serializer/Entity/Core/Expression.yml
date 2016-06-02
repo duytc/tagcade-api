@@ -13,4 +13,7 @@ Tagcade\Entity\Core\Expression:
         libraryExpression:
             expose: true
             groups: [expression.detail]
+        headerBiddingPrice:
+            expose: true
+            groups: [expression.detail]
 
