@@ -15,5 +15,5 @@ Tagcade\Entity\Core\Expression:
             groups: [expression.detail]
         headerBiddingPrice:
             expose: true
-            groups: [expression.detail]
+            groups: [expression.summary]
 
