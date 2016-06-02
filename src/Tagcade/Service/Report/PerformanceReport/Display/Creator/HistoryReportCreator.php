@@ -610,7 +610,7 @@ class HistoryReportCreator
                     ->setAdNetwork($subPublisherNetworkReport->getAdNetwork())
                     ->setSubPublisher($subPublisherNetworkReport->getSubPublisher())
                     ->setDate($subPublisherNetworkReport->getDate())
-                    ->setName($subPublisherNetworkReport->getName());
+                    ->setName($subPublisherNetworkReport->getSubPublisher()->getUser()->getUsername());
 
                 $this->aggregatePartnerReport($r, $subPublisherNetworkReport);
 
@@ -644,7 +644,7 @@ class HistoryReportCreator
                     $r = new SubPublisherReport();
                     $r
                         ->setDate($subPublisherNetworkReport->getDate())
-                        ->setName($subPublisherNetworkReport->getName())
+                        ->setName($subPublisherNetworkReport->getSubPublisher()->getUser()->getUsername())
                         ->setSubPublisher($subPublisherNetworkReport->getSubPublisher());
 
                     $subPublisherReports[$subPublisherId] = $r;

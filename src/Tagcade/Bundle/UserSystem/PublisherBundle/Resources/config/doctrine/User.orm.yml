@@ -55,3 +55,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             cascade: ['persist', 'detach', 'remove']
             mappedBy: publisher
             orphanRemoval: true
+
+        subPublishers:
+            targetEntity: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User
+            mappedBy: publisher

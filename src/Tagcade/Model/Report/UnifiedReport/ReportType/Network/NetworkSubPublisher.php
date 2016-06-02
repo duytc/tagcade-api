@@ -7,44 +7,31 @@ namespace Tagcade\Model\Report\UnifiedReport\ReportType\Network;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractReportType;
-use Tagcade\Model\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReport;
+use Tagcade\Model\Report\UnifiedReport\Publisher\SubPublisherNetworkReport;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
-class NetworkAdTagSubPublisher extends AbstractReportType
+class NetworkSubPublisher extends AbstractReportType
 {
-    const REPORT_TYPE = 'unified.network.adtag.subpublisher';
-    protected $partnerTagId;
+    const REPORT_TYPE = 'unified.networkSubPublisher';
     /**
      * @var AdNetworkInterface
      */
-    protected $adNetwork;
+    private $adNetwork;
 
     /**
      * @var SubPublisherInterface
      */
-    protected $subPublisher;
+    private $subPublisher;
 
     /**
-     * Account constructor.
+     * NetworkSubPublisher constructor.
      * @param AdNetworkInterface $adNetwork
-     * @param $partnerTagId
-     * @param $subPublisher
+     * @param SubPublisherInterface $subPublisher
      */
-    public function __construct($adNetwork, $partnerTagId, $subPublisher)
+    public function __construct(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher)
     {
-        if ($adNetwork instanceof AdNetworkInterface) {
-            $this->adNetwork = $adNetwork;
-        }
-
-        $this->partnerTagId = $partnerTagId;
-        if ($subPublisher instanceof SubPublisherInterface) {
-            $this->subPublisher = $subPublisher;
-        }
-    }
-
-    public function matchesReport(ReportInterface $report)
-    {
-        return $report instanceof NetworkAdTagSubPublisherReport;
+        $this->adNetwork = $adNetwork;
+        $this->subPublisher = $subPublisher;
     }
 
     /**
@@ -64,14 +51,6 @@ class NetworkAdTagSubPublisher extends AbstractReportType
         return null;
     }
 
-    /**
-     * @return null
-     */
-    public function getPartnerTagId()
-    {
-        return $this->partnerTagId;
-    }
-
     public function getSubPublisher()
     {
         return $this->subPublisher;
@@ -84,5 +63,10 @@ class NetworkAdTagSubPublisher extends AbstractReportType
         }
 
         return null;
+    }
+
+    public function matchesReport(ReportInterface $report)
+    {
+        return $report instanceof SubPublisherNetworkReport;
     }
 }

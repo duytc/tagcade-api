@@ -1,17 +1,16 @@
 <?php
+namespace Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Network;
 
-
-namespace Tagcade\Service\Report\UnifiedReport\Selector\Selectors\Publisher;
 
 use DateTime;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\UnifiedReport\ReportType\Publisher\SubPublisherNetwork as SubPublisherNetworkReportType;
+use Tagcade\Model\Report\UnifiedReport\ReportType\Network\NetworkSubPublisher as NetworkSubPublisherReportType;
 use Tagcade\Repository\Report\UnifiedReport\Publisher\SubPublisherNetworkReportRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\UnifiedReport\Selector\Selectors\AbstractSelector;
 
-class SubPublisherNetwork extends AbstractSelector
+class NetworkSubPublisher extends AbstractSelector
 {
     /**
      * @var SubPublisherNetworkReportRepositoryInterface
@@ -28,17 +27,17 @@ class SubPublisherNetwork extends AbstractSelector
     }
 
     /**
-     * @param SubPublisherNetworkReportType $reportType
+     * @param NetworkSubPublisherReportType $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
      * @return mixed
      */
-    protected function doGetReports(SubPublisherNetworkReportType $reportType, DateTime $startDate, DateTime $endDate)
+    protected function doGetReports(NetworkSubPublisherReportType $reportType, DateTime $startDate, DateTime $endDate)
     {
         $reports = $this->repository->getReportFor($reportType->getSubPublisher(), $reportType->getAdNetwork(), $startDate, $endDate);
         if (is_array($reports)) {
             foreach($reports as $report) {
-                $report->setName($reportType->getAdNetwork()->getName());
+                $report->setName($reportType->getSubPublisher()->getUser()->getUsername());
             }
         }
 
@@ -52,11 +51,11 @@ class SubPublisherNetwork extends AbstractSelector
      */
     public function getDiscrepancy(ReportTypeInterface $reportType, Params $params)
     {
-        if (!$reportType instanceof SubPublisherNetworkReportType) {
-            throw new LogicException(sprintf('expect SubPublisherNetworkReportType object, %s given', get_class($reportType)));
+        if (!$reportType instanceof NetworkSubPublisherReportType) {
+            throw new LogicException(sprintf('expect NetworkSubPublisherReportType object, %s given', get_class($reportType)));
         }
 
-        return $this->repository->getDiscrepancy($reportType->getSubPublisher(), $reportType->getAdNetwork(), $params->getStartDate(), $params->getEndDate());
+        return $this->repository->getDiscrepancy($reportType->getAdNetwork(), $params->getStartDate(), $params->getEndDate());
     }
 
     /**
@@ -65,6 +64,6 @@ class SubPublisherNetwork extends AbstractSelector
      */
     public function supportsReportType(ReportTypeInterface $reportType)
     {
-        return $reportType instanceof SubPublisherNetworkReportType && !is_subclass_of($reportType, SubPublisherNetworkReportType::class);
+        return $reportType instanceof NetworkSubPublisherReportType && !is_subclass_of($reportType , NetworkSubPublisherReportType::class);
     }
 }

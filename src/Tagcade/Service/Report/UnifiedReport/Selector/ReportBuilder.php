@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
@@ -266,6 +267,69 @@ class ReportBuilder implements ReportBuilderInterface
     public function getPartnerSiteByDaysForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, $domain, Params $params)
     {
         return $this->getReports(new NetworkReportTypes\NetworkSiteSubPublisher($adNetwork, $domain, $subPublisher), $params);
+    }
+
+    public function getSubPublishersReport(PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher) {
+            return new PublisherReportTypes\SubPublisher($subPublisher);
+            }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSubPublishersDiscrepancyReport(PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher) {
+            return new ComparisonReportTypes\SubPublisher($subPublisher);
+        }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher, $adNetwork) {
+            return new NetworkReportTypes\NetworkSubPublisher($adNetwork, $subPublisher);
+            }, $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSubPublishersDiscrepancyReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher, $adNetwork) {
+            return new ComparisonReportTypes\AdNetworkSubPublisher($adNetwork, $subPublisher);
+        }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
     }
 
     /**

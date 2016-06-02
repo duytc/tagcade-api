@@ -420,8 +420,9 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
                     ->setDate(new \DateTime($date))
                     ->setAdNetwork($adNetwork)
                     ->setSubPublisher($this->aggregateReportData($reports, true))
-                    ->setName($adNetwork->getName())
+                    ->setName($report->getSubPublisher()->getUser()->getUsername())
                 ;
+
                 $this->setReportData($subPublisherNetworkReport);
 
                 $subPublisherNetworkReports[] = $subPublisherNetworkReport;

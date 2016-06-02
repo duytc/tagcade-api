@@ -37,6 +37,15 @@ class SubPublisher extends AbstractCalculatedReportType implements CalculatedRep
         $this->subPublisher = $subPublisher;
     }
 
+    public function getSubPublisherId()
+    {
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getId();
+        }
+
+        return null;
+    }
+
     /**
      * @inheritdoc
      */

@@ -3,6 +3,7 @@
 namespace Tagcade\Bundle\UserSystem\PublisherBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
@@ -34,6 +35,11 @@ class User extends BaseUser implements PublisherInterface
      * @var ArrayCollection
      */
     protected $billingConfigs;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $subPublishers;
 
 
     /**
@@ -370,6 +376,28 @@ class User extends BaseUser implements PublisherInterface
 
         $this->billingConfigs->add($billingConfiguration);
 
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSubPublishers()
+    {
+        if ($this->subPublishers instanceof PersistentCollection) {
+            return $this->subPublishers->toArray();
+        }
+
+        return [];
+    }
+
+    /**
+     * @param ArrayCollection $subPublishers
+     * @return self
+     */
+    public function setSubPublishers($subPublishers)
+    {
+        $this->subPublishers = $subPublishers;
         return $this;
     }
 }

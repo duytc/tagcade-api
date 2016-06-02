@@ -1,17 +1,16 @@
 <?php
 
-namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher;
 
+namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherAdNetworkReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractCalculatedReportType;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\CalculatedReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherAdNetworkReportInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
-class SubPublisherAdNetwork extends AbstractCalculatedReportType implements CalculatedReportTypeInterface
+class AdNetworkSubPublisher extends AbstractCalculatedReportType
 {
-    const REPORT_TYPE = 'subPublisher.subPublisherAdNetwork';
+    const REPORT_TYPE = 'adNetwork.adNetworkSubPublisher';
 
     /** @var SubPublisherInterface */
     private $subPublisher;
@@ -41,9 +40,6 @@ class SubPublisherAdNetwork extends AbstractCalculatedReportType implements Calc
         return $this->adNetwork;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function matchesReport(ReportInterface $report)
     {
         return $report instanceof SubPublisherAdNetworkReportInterface;

@@ -12,9 +12,9 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\UnifiedReport\Publisher\SubPublisherNetworkReportInterface as UnifiedSubPublisherAdNetworkReportInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
-class SubPublisherAdNetworkReport extends AbstractReport implements SubPublisherAdNetworkReportInterface, ReportInterface
+class AdNetworkSubPublisherReport extends AbstractReport implements AdNetworkSubPublisherReportInterface, ReportInterface
 {
-    const ALL_AD_NETWORK = 'all.ad_network';
+    const ALL_SUB_PUBLISHER = 'all.sub_publisher';
 
     use CalculateRatiosTrait;
     use CalculateComparisonRatiosTrait;
@@ -127,6 +127,15 @@ class SubPublisherAdNetworkReport extends AbstractReport implements SubPublisher
     protected function calculateFillRate()
     {
         // TODO: Implement calculateFillRate() method.
+    }
+
+    public function getName()
+    {
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getUser()->getUsername();
+        }
+
+        return self::ALL_SUB_PUBLISHER;
     }
 
     public function getPartnerEstCPM()
