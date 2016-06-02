@@ -43,9 +43,6 @@ class UpdateComparisonForPublisherWorker {
         $publisherId = $params->publisherId;
         $startDate =  new DateTime($params->startDate);
         $endDate   =  new DateTime($params->endDate);
-
-        var_dump($startDate);
-
         $override = $params->override;
 
         $publisher = $this->publisherManager->findPublisher($publisherId);
