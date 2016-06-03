@@ -109,7 +109,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         '${WINDOW_WIDTH}' => 'top.outerWidth',
         '${WINDOW_HEIGHT}' => 'top.outerHeight',
         '${DOMAIN}' => '${DOMAIN}', // top.location.hostname
-        '${DEVICE}' => 'navigator.platform'
+        '${DEVICE}' => 'navigator.userAgent'
     ];
 
     static $SERVER_VARS = ['${COUNTRY}'];
