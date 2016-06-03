@@ -97,7 +97,7 @@ class CommonReportSubPublisherHandler implements CommonReportSubPublisherHandler
                 continue;
             }
 
-            
+
             // allow item without partner tag id to be processed
             if (is_string($item->getAdTagId())) {
                 $adTags = $this->partnerTagIdFinder->getTcTag($adNetwork->getNetworkPartner(), $adNetwork->getPublisher(), $item->getAdTagId());

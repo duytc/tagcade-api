@@ -97,12 +97,12 @@ class ComparisonReportGroup extends ReportGroup implements ReportDataInterface, 
 
     public function getPartnerFillRate()
     {
-        return $this->partnerFillRate;
+        return $this->getRatio($this->getPartnerImpressions(), $this->getPartnerTotalOpportunities());
     }
 
     public function getTagcadeFillRate()
     {
-        return $this->tagcadeFillRate;
+        return $this->getRatio($this->getTagcadeImpressions(), $this->getTagcadeTotalOpportunities());
     }
 
     public function getPartnerTotalOpportunities()
