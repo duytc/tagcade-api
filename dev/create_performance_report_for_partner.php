@@ -17,6 +17,11 @@ const PUBLISHER_ID = 2;
 $START_DATE = new DateTime('2016-04-01');
 $END_DATE = new DateTime('2016-04-05');
 
+$today = new DateTime('today');
+if ($END_DATE >= $today) {
+    $END_DATE = new DateTime('yesterday');
+}
+
 $loader = require_once __DIR__ . '/../app/autoload.php';
 
 require_once __DIR__ . '/../app/AppKernel.php';

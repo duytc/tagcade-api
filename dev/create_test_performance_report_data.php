@@ -41,6 +41,11 @@ $dailyReportCreator->setLogger($container->get('logger'));
 $begin = new DateTime('2016-04-01');
 $end = new DateTime('2016-04-05');
 
+$today = new DateTime('today');
+if ($end >= $today) {
+    $end = new DateTime('yesterday');
+}
+
 // set true if need truncate all performance-partner reports in pass
 $truncateAllHistoryPerformancePartnerReports = false; // false (default) or true
 

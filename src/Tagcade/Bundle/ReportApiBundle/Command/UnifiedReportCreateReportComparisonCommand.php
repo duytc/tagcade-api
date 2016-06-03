@@ -59,6 +59,7 @@ class UnifiedReportCreateReportComparisonCommand extends ContainerAwareCommand
         $today = new \DateTime('today');
 
         if ($endDate >= $today) {
+            $output->writeln('<warning>The end date is greater or equal than today, the tool might not work properly!</warning>');
             $endDate = new \DateTime('yesterday');
         }
         

@@ -24,6 +24,11 @@ $reportComparisonCreator = $container->get('tagcade.service.report.unified_repor
 $begin = new DateTime('2016-04-01');
 $end = new DateTime('2016-04-05');
 
+$today = new DateTime('today');
+if ($end >= $today) {
+    $end = new DateTime('yesterday');
+}
+
 $override = false;
 $publisherId = 2; // Id of publisher to generate data
 $publisher = $userManager->findPublisher($publisherId);
