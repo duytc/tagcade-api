@@ -21,6 +21,6 @@ Tagcade\Entity\Core\DisplayAdSlot:
         rtbStatus:
             expose: true
             groups: [displayadslot.detail, displayadslot.summary, displayadslot.withChannel]
-        headerBiddingPrice:
+        hbBidPrice:
             expose: true
             groups: [displayadslot.detail, displayadslot.summary]

@@ -22,7 +22,8 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 'choices'=>[
                     'SLOT_OPPORTUNITY'  =>'Slot opportunity',
                     'VIDEO_IMPRESSION'  =>'Video impression',
-                    'VISIT'             =>'Visit'
+                    'VISIT'             =>'Visit',
+                    'BID_REQUEST'       => 'Bid Request'
                 ]
             ))
             ->add('tiers')

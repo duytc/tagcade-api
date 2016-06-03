@@ -6,8 +6,7 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
 {
     protected $id;
     protected $deletedAt;
-    protected $headerBiddingPrice;
-
+    protected $hbBidPrice;
 
     /** @var BaseAdSlotInterface */
     protected $expectAdSlot;
@@ -189,16 +188,16 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
     /**
      * @return mixed
      */
-    public function getHeaderBiddingPrice()
+    public function getHbBidPrice()
     {
-        return $this->headerBiddingPrice;
+        return $this->hbBidPrice;
     }
 
     /**
-     * @param mixed $headerBiddingPrice
+     * @param mixed $hbBidPrice
      */
-    public function setHeaderBiddingPrice($headerBiddingPrice)
+    public function setHbBidPrice($hbBidPrice)
     {
-        $this->headerBiddingPrice = $headerBiddingPrice;
+        $this->hbBidPrice = $hbBidPrice;
     }
 }

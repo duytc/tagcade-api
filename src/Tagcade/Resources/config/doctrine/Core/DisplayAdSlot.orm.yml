@@ -13,7 +13,7 @@ Tagcade\Entity\Core\DisplayAdSlot:
             nullable: false
             options:
                 default: 2 # inherit
-        headerBiddingPrice:
+        hbBidPrice:
             type: float
             scale: 4
             nullable: true

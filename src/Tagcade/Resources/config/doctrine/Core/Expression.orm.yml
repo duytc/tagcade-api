@@ -18,7 +18,7 @@ Tagcade\Entity\Core\Expression:
         deletedAt:
             type: date
             nullable: true
-        headerBiddingPrice:
+        hbBidPrice:
             type: float
             scale: 4
             nullable: true
