@@ -25,7 +25,7 @@ class ExpressionFormType extends AbstractRoleSpecificFormType
                     return $er->createQueryBuilder('slot')->select('slot');
                 }
             ))
-            ->add('headerBiddingPrice')
+            ->add('hbBidPrice')
             ->add('libraryExpression', 'entity', array(
                 'class' => LibraryExpression::class,
                 'query_builder' => function (EntityRepository $er) {

@@ -40,7 +40,7 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('floorPrice')
-            ->add('headerBiddingPrice')
+            ->add('hbBidPrice')
             ->add('rtbStatus', ChoiceType::class, array(
                 'choices' => array(
                     RTB_STATUS::RTB_ENABLED,
