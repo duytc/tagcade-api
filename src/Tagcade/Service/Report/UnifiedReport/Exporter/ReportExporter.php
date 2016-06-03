@@ -94,7 +94,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesByDayReport(AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerByDayDiscrepancyReport($adNetwork, $params),
+            $this->unifiedReportBuilder->getAllSitesDiscrepancyByDayForPartner($adNetwork, $params),
             $params
         );
     }
@@ -116,7 +116,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesBySitesReport(PublisherInterface $publisher, AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getAllDemandPartnersBySiteDiscrepancyReport($publisher, $adNetwork, $params),
+            $this->unifiedReportBuilder->getPartnerAllSitesBySitesReport($publisher, $adNetwork, $params),
             $params
         );
     }
