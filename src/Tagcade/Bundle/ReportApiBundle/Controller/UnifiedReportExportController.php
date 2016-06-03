@@ -423,7 +423,7 @@ class UnifiedReportExportController extends FOSRestController
 
         $expanded = filter_var($params[Params::PARAM_EXPAND], FILTER_VALIDATE_BOOLEAN);
         $grouped = filter_var($params[Params::PARAM_GROUP], FILTER_VALIDATE_BOOLEAN);
-        $subBreakDown = filter_var($params[Params::PARAM_SUB_BREAKDOWN], FILTER_VALIDATE_BOOLEAN);
+        $subBreakDown = (isset($params[Params::PARAM_SUB_BREAKDOWN]) && $params[Params::PARAM_SUB_BREAKDOWN] === 'day') ? true : false;
 
         return new Params($startDate, $endDate, $expanded, $grouped, array ('subBreakDown' => $subBreakDown));
     }
