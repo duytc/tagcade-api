@@ -14,7 +14,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 use DateTime;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Partner as PartnerReportType;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Partner as SubPublisherReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher as SubPublisherReportType;
 
 class ReportSelector implements ReportSelectorInterface
 {

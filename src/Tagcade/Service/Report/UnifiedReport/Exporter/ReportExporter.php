@@ -116,7 +116,7 @@ class ReportExporter implements ReportExporterInterface
     public function getPartnerAllSitesBySitesReport(PublisherInterface $publisher, AdNetworkInterface $adNetwork, Params $params)
     {
         return $this->getResult(
-            $this->unifiedReportBuilder->getPartnerAllSitesBySitesReport($publisher, $adNetwork, $params),
+            $this->unifiedReportBuilder->getAllSitesDiscrepancyBySiteForPartner($adNetwork, $params),
             $params
         );
     }
