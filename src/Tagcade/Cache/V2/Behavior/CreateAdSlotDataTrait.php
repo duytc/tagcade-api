@@ -108,7 +108,8 @@ trait CreateAdSlotDataTrait
             'height' => $adSlot->getHeight(),
             'passbackMode' => $adSlot->getPassbackMode(),
             'jsTag' => $this->getTagGenerator()->createJsTags($adSlot),
-            'tags' => []
+            'tags' => [],
+            'cpm' => $adSlot->getHbBidPrice()
         ];
 
         if($adSlot->isAutoFit()) {

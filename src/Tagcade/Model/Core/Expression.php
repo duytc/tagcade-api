@@ -186,7 +186,7 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
     }
 
     /**
-     * @return mixed
+     * @inherited
      */
     public function getHbBidPrice()
     {
@@ -194,10 +194,11 @@ class Expression implements ExpressionInterface, ExpressionJsProducibleInterface
     }
 
     /**
-     * @param mixed $hbBidPrice
+     * @inherited
      */
     public function setHbBidPrice($hbBidPrice)
     {
         $this->hbBidPrice = $hbBidPrice;
+        return $this;
     }
 }

@@ -38,7 +38,8 @@ class AdSlotChangeListener
         }
 
         if ($entity instanceof DisplayAdSlotInterface &&
-            ($args->hasChangedField('rtbStatus') || $args->hasChangedField('floorPrice'))
+            ($args->hasChangedField('rtbStatus') || $args->hasChangedField('floorPrice')
+            || $args->hasChangedField('hbBidPrice'))
         ) {
             $this->updatedAdSlots = array($entity);
         }

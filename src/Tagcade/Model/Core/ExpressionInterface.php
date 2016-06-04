@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Core;
 
+use DateTime;
 use Tagcade\Model\ModelInterface;
 
 interface ExpressionInterface extends ModelInterface
@@ -55,7 +56,6 @@ interface ExpressionInterface extends ModelInterface
      */
     public function getDefaultAdSlot();
 
-
     /**
      * @param LibraryExpressionInterface $libraryExpression
      * @return self
@@ -78,5 +78,19 @@ interface ExpressionInterface extends ModelInterface
      */
     public function setDynamicAdSlot($dynamicAdSlot);
 
+    /**
+     * @return  DateTime
+     */
     public function getDeletedAt();
+
+    /**
+     * @return mixed
+     */
+    public function getHbBidPrice();
+
+    /**
+     * @param mixed $hbBidPrice
+     * @return self
+     */
+    public function setHbBidPrice($hbBidPrice);
 }

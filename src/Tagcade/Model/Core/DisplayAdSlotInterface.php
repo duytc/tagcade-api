@@ -97,4 +97,15 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      * @return self
      */
     public function setRtbStatus($rtbStatus);
+
+    /**
+     * @return mixed
+     */
+    public function getHbBidPrice();
+
+    /**
+     * @param mixed $hbBidPrice
+     * @return self
+     */
+    public function setHbBidPrice($hbBidPrice);
 }

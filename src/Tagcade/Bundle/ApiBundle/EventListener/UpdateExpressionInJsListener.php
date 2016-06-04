@@ -7,6 +7,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
@@ -91,6 +92,10 @@ class UpdateExpressionInJsListener
 
             if (is_int($expression->getStartingPosition())) {
                 $expInJs['startingPosition'] = $expression->getStartingPosition();
+            }
+
+            if($expression->getExpectAdSlot() instanceof DisplayAdSlotInterface){
+                $expInJs['cpm'] = $expression->getHbBidPrice();
             }
 
             $expression->setExpressionInJs($expInJs);

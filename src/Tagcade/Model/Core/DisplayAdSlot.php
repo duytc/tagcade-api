@@ -17,8 +17,6 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     protected $floorPrice;
     protected $hbBidPrice;
 
-
-
     /**
      * constructor
      */
@@ -30,7 +28,7 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getHbBidPrice()
     {
@@ -38,11 +36,12 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     }
 
     /**
-     * @param mixed $hbBidPrice
+     * @inheritdoc
      */
     public function setHbBidPrice($hbBidPrice)
     {
         $this->hbBidPrice = $hbBidPrice;
+        return $this;
     }
 
     /**
