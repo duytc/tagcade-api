@@ -10,6 +10,14 @@ interface ComparisonReportInterface
      */
     public function getRevenueOpportunity();
 
+    public function getTotalOpportunityComparison();
+
+    public function getPassbacksComparison();
+
+    public function getECPMComparison();
+
+    public function getTagcadeECPM();
+
     /**
      * @return mixed
      */

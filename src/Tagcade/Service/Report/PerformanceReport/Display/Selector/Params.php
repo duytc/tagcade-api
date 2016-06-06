@@ -11,6 +11,8 @@ class Params implements ParamsInterface
     const PARAM_END_DATE = 'endDate';
     const PARAM_EXPAND = 'expand';
     const PARAM_GROUP = 'group';
+    const PARAM_SUB_BREAKDOWN = 'subBreakDown';
+
     /**
      * @var DateTime
      */

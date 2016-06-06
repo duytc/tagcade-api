@@ -452,6 +452,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getAllSitesDiscrepancyByAdTagForPartner(AdNetworkInterface $adNetwork, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetwork($adNetwork);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($adNetwork) {
             /** @var AdTagInterface $adTag */
@@ -467,6 +468,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getAllSitesDiscrepancyByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetworkWithSubPublisher($adNetwork, $subPublisher);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($adNetwork) {
             /** @var AdTagInterface $adTag */
@@ -491,6 +493,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getSiteDiscrepancyByAdTagForPartner(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($adNetwork, $site) {
             /** @var AdTagInterface $adTag */
@@ -506,6 +509,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getSiteDiscrepancyByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSiteWithSubPublisher($adNetwork, $site, $subPublisher);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($subPublisher, $adNetwork, $site) {
             /** @var AdTagInterface $adTag */

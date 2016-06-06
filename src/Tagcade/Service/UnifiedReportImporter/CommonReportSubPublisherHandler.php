@@ -76,6 +76,8 @@ class CommonReportSubPublisherHandler implements CommonReportSubPublisherHandler
     {
         $result = [];
 
+        $today = new \DateTime('today');
+
         foreach($rawReports as $report) {
             $item = new CommonReport();
             $item->setAdNetwork($adNetwork)
@@ -90,6 +92,11 @@ class CommonReportSubPublisherHandler implements CommonReportSubPublisherHandler
                 ->setEstRevenue(floatval($report[self::EST_REVENUE_KEY]))
                 ->setSite(isset($report[self::SITE_KEY]) ? $report[self::SITE_KEY] : null)
             ;
+
+            if ($item->getDate() >= $today) {
+                continue;
+            }
+
 
             // allow item without partner tag id to be processed
             if (is_string($item->getAdTagId())) {

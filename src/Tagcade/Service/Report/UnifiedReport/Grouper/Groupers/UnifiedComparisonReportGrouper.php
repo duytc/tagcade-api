@@ -63,7 +63,7 @@ class UnifiedComparisonReportGrouper extends AbstractGrouper
             ->setPassbacks($this->getComparisonPercentage($this->totalTagcadePassbacks, $this->totalPartnerPassbacks))
             ->setEstCpm($this->getComparisonPercentage($this->totalTagcadeEstCpm, $this->totalPartnerEstCpm))
             ->setEstRevenue($this->getComparisonPercentage($this->totalTagcadeEstRevenue, $this->totalPartnerEstRevenue))
-            ->setFillRate();;
+            ->setFillRate();
 
         $reportCount = count($this->getReports());
         $this->setAverageTotalOpportunities($this->getRatio($this->totalOpportunities, $reportCount))

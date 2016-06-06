@@ -58,8 +58,13 @@ class UnifiedReportCreateReportComparisonCommand extends ContainerAwareCommand
 
         $today = new \DateTime('today');
 
-        if ($startDate > $endDate || $endDate >= $today) {
-            throw new \Exception('startDate must be less than or equal to endDate and endDate must not exceed today');
+        if ($endDate >= $today) {
+            $output->writeln('<warning>The end date is greater or equal than today, the tool might not work properly!</warning>');
+            $endDate = new \DateTime('yesterday');
+        }
+        
+        if ($startDate > $endDate) {
+            throw new \Exception('startDate must be less than or equal to endDate');
         }
 
         $publisherId = $input->getOption('publisher');

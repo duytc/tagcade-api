@@ -13,6 +13,9 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreatorInterf
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use DateTime;
 
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Partner as PartnerReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher as SubPublisherReportType;
+
 class ReportSelector implements ReportSelectorInterface
 {
     /**
@@ -70,8 +73,18 @@ class ReportSelector implements ReportSelectorInterface
         $reports = [];
 
         if ($todayIncludedInDateRange && $this->reportCreator instanceof ReportCreatorInterface) {
-            // Create today's report and add it to the first position in the array
-            $reports[] = $this->reportCreator->getReport($reportType);
+            if (
+                !$reportType instanceof PartnerReportType\Account &&
+                !$reportType instanceof PartnerReportType\AdNetworkAdTag &&
+                !$reportType instanceof PartnerReportType\AdNetworkDomain &&
+                !$reportType instanceof PartnerReportType\AdNetworkDomainAdTagSubPublisher &&
+                !$reportType instanceof SubPublisherReportType\SubPublisher &&
+                !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
+            ) {
+                // the report types above do not have creator, they're derived from other reports
+                // Create today's report and add it to the first position in the array
+                $reports[] = $this->reportCreator->getReport($reportType);
+            }
         }
 
         if ($this->dateUtil->isDateBeforeToday($params->getStartDate())) {

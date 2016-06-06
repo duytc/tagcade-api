@@ -50,6 +50,11 @@ $siteRepository = $container->get('tagcade.repository.site');
 $begin = new DateTime('2016-04-01');
 $end = new DateTime('2016-04-05');
 
+$today = new DateTime('today');
+if ($end >= $today) {
+    $end = new DateTime('yesterday');
+}
+
 $unifiedReportMaxVariation = 10; // variation percentage between tagcade and third party data
 $unifiedReportMinCpm = 1; // cent value
 $unifiedReportMaxCpm = 10; // cent value

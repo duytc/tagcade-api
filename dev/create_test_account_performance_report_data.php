@@ -46,6 +46,11 @@ $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Crea
 $begin = new DateTime('2016-04-01');
 $end = new DateTime('2016-04-20');
 
+$today = new DateTime('today');
+if ($end >= $today) {
+    $end = new DateTime('yesterday');
+}
+
 $minSlotOpportunities = 10000;
 $maxSlotOpportunities = 100000;
 
