@@ -20,7 +20,14 @@ class SubPublisher extends AbstractSelector
 
     protected function doGetReports(SubPublisherReportType $reportType, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getReportFor($reportType->getSubPublisher(), $startDate, $endDate);
+        $reports = $this->repository->getReportFor($reportType->getSubPublisher(), $startDate, $endDate);
+        if (is_array($reports)) {
+            foreach($reports as $report) {
+                $report->setName($reportType->getSubPublisher()->getUser()->getUsername());
+            }
+        }
+
+        return $reports;
     }
 
     public function supportsReportType(ReportTypeInterface $reportType)
