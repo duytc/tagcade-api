@@ -10,6 +10,7 @@ use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
+use Tagcade\Model\Core\LibraryExpression;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 
 class UpdateExpressionInJsListener
@@ -78,7 +79,6 @@ class UpdateExpressionInJsListener
         $convertedExpression = $this->expressionInJsGenerator->generateExpressionInJs($expression);
 
         if (null !== $convertedExpression) {
-
             $expInJs = [
                 'vars' => $convertedExpression['vars'],
                 'expression' => $convertedExpression['expression']
@@ -86,16 +86,16 @@ class UpdateExpressionInJsListener
 
             if ($expression instanceof ExpressionInterface) {
                 $expInJs['expectedAdSlot'] = $expression->getExpectAdSlot()->getId();
+
+                if($expression->getExpectAdSlot() instanceof DisplayAdSlotInterface){
+                    $expInJs['cpm'] = $expression->getHbBidPrice();
+                }
             } else if ($expression instanceof LibraryExpressionInterface) {
                 $expInJs['expectedLibraryAdSlot'] = $expression->getExpectLibraryAdSlot()->getId();
             }
 
             if (is_int($expression->getStartingPosition())) {
                 $expInJs['startingPosition'] = $expression->getStartingPosition();
-            }
-
-            if($expression->getExpectAdSlot() instanceof DisplayAdSlotInterface){
-                $expInJs['cpm'] = $expression->getHbBidPrice();
             }
 
             $expression->setExpressionInJs($expInJs);

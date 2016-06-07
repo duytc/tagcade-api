@@ -109,7 +109,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         '${WINDOW_WIDTH}' => 'top.outerWidth',
         '${WINDOW_HEIGHT}' => 'top.outerHeight',
         '${DOMAIN}' => '${DOMAIN}', // top.location.hostname
-        '${DEVICE}' => 'navigator.userAgent'
+        '${DEVICE}' => 'navigator.userAgent',
     ];
 
     static $SERVER_VARS = ['${COUNTRY}'];
@@ -583,7 +583,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         switch ($type) {
             case 'string':
                 //validate as escape syntax
-                if (trim($val) != '' && preg_match("/[^a-zA-Z0-9_=@&!',:;#\.\$\+\*\(\)\[\]\-\/\?\s]/", $val)) {
+                if (trim($val) != '' && preg_match("/[^a-zA-Z0-9_=@&!',:;#\.\$\+\*\(\)\[\]\-\/\?\s\|]/", $val))  {
                     throw new InvalidFormatException('not allow special characters (js injection) in \'' . $val . '\' of condition');
                 }
 
