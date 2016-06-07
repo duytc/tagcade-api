@@ -1,0 +1,34 @@
+Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReport:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        name:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        date:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+            type: DateTime<'Y-m-d'>
+        totalOpportunities:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        impressions:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        passbacks:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        fillRate:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        estRevenue:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        estCpm:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        partnerTagId:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]

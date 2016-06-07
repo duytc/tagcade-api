@@ -10,6 +10,7 @@ class SubPublisherReport extends SubPublisherReportModel
     protected $id;
 
     protected $date;
+    protected $name;
     protected $totalOpportunities;
     protected $impressions;
     protected $passbacks;

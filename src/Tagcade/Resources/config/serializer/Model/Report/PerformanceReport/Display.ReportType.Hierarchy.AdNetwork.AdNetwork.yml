@@ -3,6 +3,10 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Ad
     virtual_properties:
         getAdNetworkId:
             type: integer
+        getPublisherId:
+            type: integer
     properties:
         adNetwork:
+            exclude: true
+        publisher:
             exclude: true

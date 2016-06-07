@@ -175,5 +175,16 @@ interface AdNetworkInterface extends ModelInterface
      */
     public function setEncryptedPassword($encryptedPassword);
 
+    /**
+     * @return mixed
+     */
+    public function getEmailHookToken();
+
+    /**
+     * @param mixed $emailHookToken
+     * @return self
+     */
+    public function setEmailHookToken($emailHookToken);
+
     public function createEncryptedPassword();
 }

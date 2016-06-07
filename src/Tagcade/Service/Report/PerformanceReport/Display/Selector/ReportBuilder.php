@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
@@ -98,6 +99,34 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports($reportTypes, $params);
     }
 
+    public function getAllSubPublishersReport(PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('you do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function(SUbPublisherInterface $subPublisher) {
+            return new SubPublisherReportTypes\SubPublisher($subPublisher);
+        }, $subPublishers);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getAllSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('you do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function(SUbPublisherInterface $subPublisher) use ($adNetwork) {
+            return new AdNetworkReportTypes\AdNetworkSubPublisher($subPublisher, $adNetwork);
+        }, $subPublishers);
+
+        return $this->getReports($reportTypes, $params);
+    }
+
     public function getPublishersReport(array $publishers, Params $params)
     {
         $processedPublishers = [];
@@ -130,8 +159,8 @@ class ReportBuilder implements ReportBuilderInterface
     {
         $adNetworks = $this->adNetworkManager->getAdNetworksForPublisher($publisher);
 
-        $reportTypes = array_map(function($adNetwork) {
-            return new AdNetworkReportTypes\AdNetwork($adNetwork);
+        $reportTypes = array_map(function($adNetwork) use ($publisher) {
+            return new AdNetworkReportTypes\AdNetwork($adNetwork, $publisher);
         }, $adNetworks);
 
         return $this->getReports($reportTypes, $params);
@@ -165,7 +194,7 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAdNetworkReport(AdNetworkInterface $adNetwork, Params $params)
     {
-        return $this->getReports(new AdNetworkReportTypes\AdNetwork($adNetwork), $params);
+        return $this->getReports(new AdNetworkReportTypes\AdNetwork($adNetwork, $adNetwork->getPublisher()), $params);
     }
 
     public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, Params $params)

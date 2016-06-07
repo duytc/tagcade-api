@@ -95,7 +95,29 @@ interface ReportBuilderInterface
      */
     public function getPartnerSiteByAdTagsReport(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
 
+    /**
+     * @param SubPublisherInterface $subPublisher
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param Params $params
+     * @return mixed
+     */
     public function getPartnerSiteByAdTagsForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, SiteInterface $site, Params $params);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSubPublishersReport(PublisherInterface $publisher, Params $params);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params);
 
     /**
      * @param PublisherInterface $publisher
@@ -227,4 +249,19 @@ interface ReportBuilderInterface
      * @return mixed
      */
     public function getSiteDiscrepancyByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, Params $params);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSubPublishersDiscrepancyReport(PublisherInterface $publisher, Params $params);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return mixed
+     */
+    public function getSubPublishersDiscrepancyReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params);
 }

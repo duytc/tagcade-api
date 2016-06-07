@@ -25,4 +25,19 @@ interface AdNetworkManagerInterface extends ManagerInterface
      * @inheritdoc
      */
     public function allHasCap($limit = null, $offset = null);
+
+    /**
+     * @param $publisherId
+     * @param $partnerCName
+     * @param $token
+     * @return mixed
+     */
+    public function validateEmailHookToken($publisherId, $partnerCName, $token);
+
+    /**
+     * @param bool $resetToken
+     * @param AdNetworkInterface $adNetwork
+     * @return mixed
+     */
+    public function getUnifiedReportEmail(AdNetworkInterface $adNetwork, $resetToken = false);
 }

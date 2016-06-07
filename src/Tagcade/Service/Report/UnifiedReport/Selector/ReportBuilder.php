@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\UnifiedReport\Selector;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
@@ -268,6 +269,69 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new NetworkReportTypes\NetworkSiteSubPublisher($adNetwork, $domain, $subPublisher), $params);
     }
 
+    public function getSubPublishersReport(PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher) {
+            return new PublisherReportTypes\SubPublisher($subPublisher);
+            }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSubPublishersDiscrepancyReport(PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher) {
+            return new ComparisonReportTypes\SubPublisher($subPublisher);
+        }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher, $adNetwork) {
+            return new NetworkReportTypes\NetworkSubPublisher($adNetwork, $subPublisher);
+            }, $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
+    public function getSubPublishersDiscrepancyReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params)
+    {
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('You do not have enough permission to view this report');
+        }
+
+        $subPublishers = $publisher->getSubPublishers();
+        $reportTypes = array_map(function ($subPublisher) use ($publisher, $adNetwork) {
+            return new ComparisonReportTypes\AdNetworkSubPublisher($adNetwork, $subPublisher);
+        }
+            , $subPublishers
+        );
+
+        return $this->getReports($reportTypes, $params);
+    }
+
     /**
      * @inheritdoc
      */
@@ -388,6 +452,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getAllSitesDiscrepancyByAdTagForPartner(AdNetworkInterface $adNetwork, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetwork($adNetwork);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($adNetwork) {
             /** @var AdTagInterface $adTag */
@@ -403,6 +468,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getAllSitesDiscrepancyByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetworkWithSubPublisher($adNetwork, $subPublisher);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($adNetwork) {
             /** @var AdTagInterface $adTag */
@@ -427,6 +493,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getSiteDiscrepancyByAdTagForPartner(AdNetworkInterface $adNetwork, SiteInterface $site, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSite($adNetwork, $site);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($adNetwork, $site) {
             /** @var AdTagInterface $adTag */
@@ -442,6 +509,7 @@ class ReportBuilder implements ReportBuilderInterface
     public function getSiteDiscrepancyByAdTagForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, Params $params)
     {
         $adTags = $this->adTagManager->getAdTagsForAdNetworkAndSiteWithSubPublisher($adNetwork, $site, $subPublisher);
+        $this->removeDuplicatedPartnerTagId($adTags);
 
         $reportTypes = array_map(function ($adTag) use ($subPublisher, $adNetwork, $site) {
             /** @var AdTagInterface $adTag */

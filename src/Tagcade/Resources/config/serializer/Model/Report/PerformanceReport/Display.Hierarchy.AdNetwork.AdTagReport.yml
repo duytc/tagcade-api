@@ -3,8 +3,12 @@ Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdTagReport:
     virtual_properties:
         getAdTagId:
             type: integer
+        getSubPublisherId:
+            type: integer
     properties:
         adTag:
+            exclude: true
+        subPublisher:
             exclude: true
         superReport:
             exclude: true

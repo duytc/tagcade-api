@@ -46,6 +46,23 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
     }
 
     /**
+     * @return SubPublisherInterface
+     */
+    public function getSubPublisher()
+    {
+        return $this->subPublisher;
+    }
+
+    public function getSubPublisherId()
+    {
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getId();
+        }
+
+        return null;
+    }
+
+    /**
      * @param AdTagInterface $adTag
      * @return $this
      */

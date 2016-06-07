@@ -20,7 +20,14 @@ class SubPublisherAdNetwork extends AbstractSelector
 
     protected function doGetReports(SubPublisherAdNetworkReportType $reportType, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getReportFor($reportType->getSubPublisher(), $reportType->getAdNetwork(), $startDate, $endDate);
+        $report = $this->repository->getReportFor($reportType->getSubPublisher(), $reportType->getAdNetwork(), $startDate, $endDate);
+        if (is_array($report)) {
+            foreach($report as $r) {
+                $r->setName($reportType->getAdNetwork()->getName());
+            }
+        }
+
+        return $report;
     }
 
     public function supportsReportType(ReportTypeInterface $reportType)

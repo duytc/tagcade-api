@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Entity\Core\BillingConfiguration;
@@ -454,6 +455,17 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     {
         throw new NotSupportedException('this property is currently not supported');
     }
+
+    public function getSubPublishers()
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
+    public function setSubPublishers($subPublishers)
+    {
+        throw new NotSupportedException('this property is currently not supported');
+    }
+
 
     /**
      * Returns the user roles

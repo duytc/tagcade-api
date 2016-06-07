@@ -69,10 +69,17 @@ class CreatePerformanceReportForPartnerCommand extends ContainerAwareCommand
             throw new \Exception(sprintf('Invalid date time format for either start date %s or end date %s', $startDateStr, $endDateStr));
         }
 
+        $today = new \DateTime('today');
+        if ($endDate >= $today) {
+            $output->writeln('<warning>The end date is greater or equal than today, the tool might not work properly!</warning>');
+            $endDate = new \DateTime('yesterday');
+        }
+
         if ($startDate > $endDate) {
             $logger->error('start date must be before end date');
             return self::FAILURE;
         }
+
 
         /** @var HistoryReportCreator $historyReportCreator */
         $historyReportCreator = $container->get('tagcade.service.report.performance_report.display.creator.history_report_creator');

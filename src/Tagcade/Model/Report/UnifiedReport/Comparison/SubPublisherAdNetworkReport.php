@@ -129,15 +129,6 @@ class SubPublisherAdNetworkReport extends AbstractReport implements SubPublisher
         // TODO: Implement calculateFillRate() method.
     }
 
-    public function getName()
-    {
-        if ($this->adNetwork instanceof AdNetworkInterface) {
-            return $this->adNetwork->getName();
-        }
-
-        return self::ALL_AD_NETWORK;
-    }
-
     public function getPartnerEstCPM()
     {
         if ($this->unifiedSubPublisherAdNetworkReport instanceof UnifiedSubPublisherAdNetworkReportInterface) {

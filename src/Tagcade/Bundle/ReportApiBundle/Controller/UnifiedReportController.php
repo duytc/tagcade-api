@@ -427,6 +427,72 @@ class UnifiedReportController extends FOSRestController
         );
     }
 
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/all/subpublishers", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getAllPartnersBySubPublishersReportAction($publisherId)
+    {
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+        if (!$publisher instanceof PublisherInterface) {
+            throw new \Tagcade\Exception\InvalidArgumentException(sprintf('the publisher %d does not exist', $publisherId));
+        }
+
+        return $this->getReportBuilder()->getSubPublishersReport($publisher, $this->getParams());
+    }
+
+    /**
+     * @Rest\Get("/accounts/{publisherId}/partners/{adNetworkId}/sites/all/subpublishers", requirements={"publisherId" = "\d+", "adNetworkId" = "\d+"})
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="expand", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "There's no report for that query"
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @param int $adNetworkId
+     * @return array
+     */
+    public function getPartnerBySubPublishersReportAction($publisherId, $adNetworkId)
+    {
+        $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
+        $publisher = $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof SubPublisherInterface) {
+            throw new AccessDeniedException('you do not have enough permission to view this report');
+        }
+
+        return $this->getReportBuilder()->getSubPublishersReportByPartner(
+            $result[self::AD_NETWORK_KEY],
+            $publisher,
+            $this->getParams()
+        );
+    }
+
     /* all private functions */
     private function verifiedUserPermission(UserRoleInterface $user, $publisherId, $adNetworkId = null)
     {
@@ -584,6 +650,4 @@ class UnifiedReportController extends FOSRestController
 
         return true;
     }
-
-
 }

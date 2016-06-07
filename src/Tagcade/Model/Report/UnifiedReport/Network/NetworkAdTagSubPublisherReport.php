@@ -30,6 +30,15 @@ class NetworkAdTagSubPublisherReport extends AbstractUnifiedReport implements Ne
         return $this->subPublisher;
     }
 
+    public function getSubPublisherId()
+    {
+        if ($this->subPublisher instanceof SubPublisherInterface) {
+            return $this->subPublisher->getId();
+        }
+
+        return null;
+    }
+
     /**
      * @param SubPublisherInterface $subPublisher
      * @return self

@@ -138,4 +138,20 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             ->getOneOrNullResult()
         ;
     }
+
+    public function validateEmailToken($publisherId, $partnerCName, $emailToken)
+    {
+        $adNetwork = $this->createQueryBuilder('r')
+            ->join('r.networkPartner', 'pn')
+            ->where('r.publisher = :publisherId')
+            ->andWhere('r.emailHookToken = :token')
+            ->andWhere('pn.nameCanonical = :cname')
+            ->setParameter('publisherId', $publisherId)
+            ->setParameter('token', $emailToken)
+            ->setParameter('cname', $partnerCName)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        return $adNetwork instanceof AdNetworkInterface;
+    }
 }

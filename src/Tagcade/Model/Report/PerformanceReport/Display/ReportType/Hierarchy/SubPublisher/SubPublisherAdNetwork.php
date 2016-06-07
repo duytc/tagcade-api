@@ -34,27 +34,11 @@ class SubPublisherAdNetwork extends AbstractCalculatedReportType implements Calc
     }
 
     /**
-     * @param SubPublisherInterface $subPublisher
-     */
-    public function setSubPublisher($subPublisher)
-    {
-        $this->subPublisher = $subPublisher;
-    }
-
-    /**
      * @return AdNetworkInterface
      */
     public function getAdNetwork()
     {
         return $this->adNetwork;
-    }
-
-    /**
-     * @param AdNetworkInterface $adNetwork
-     */
-    public function setAdNetwork($adNetwork)
-    {
-        $this->adNetwork = $adNetwork;
     }
 
     /**

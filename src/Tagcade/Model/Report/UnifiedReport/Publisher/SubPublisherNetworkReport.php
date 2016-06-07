@@ -79,13 +79,4 @@ class SubPublisherNetworkReport extends AbstractUnifiedReport implements SubPubl
 
         return $this;
     }
-
-    public function getName()
-    {
-        if ($this->adNetwork instanceof AdNetworkInterface) {
-            return $this->adNetwork->getName();
-        }
-
-        return 'all.ad_network';
-    }
 }

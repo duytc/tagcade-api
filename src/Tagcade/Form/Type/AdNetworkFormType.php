@@ -35,6 +35,7 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
             ->add('username')
             ->add('password')
             ->add('impressionCap')
+            ->add('emailHookToken')
             ->add('networkOpportunityCap')
             ->add('networkPartner', 'entity', array(
                 'class' => AdNetworkPartner::class,

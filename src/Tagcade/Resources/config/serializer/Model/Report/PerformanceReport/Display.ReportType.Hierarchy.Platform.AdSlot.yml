@@ -7,7 +7,7 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdS
             groups: [report_type.summary]
         getAdSlotType:
             type: string
-        getSite:
+        getSiteId:
             groups: [report_type.summary]
 
     properties:
