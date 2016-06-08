@@ -630,4 +630,20 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
         return $qb;
     }
+
+    /**
+     * Get all adTag that set impression cap and by status
+     * @param $status
+     * @return array
+     */
+    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.impressionCap IS NOT NULL')
+            ->andWhere('t.networkOpportunityCap IS NOT NULL')
+            ->andWhere('t.active = :status')
+            ->setParameter('status', $status, Type::INTEGER);
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -27,14 +27,14 @@ class AutoPauseAdTagCommand extends ContainerAwareCommand
          */
         $em = $container->get('doctrine.orm.entity_manager');
         $eventCounter = $container->get('tagcade.service.report.performance_report.display.counter.cache_event_counter');
-        $adTags = $adTagManager->getAllAdTagsByStatus(AdTagInterface::ACTIVE);
+        $adTags = $adTagManager->getAdTagsThatSetImpressionAndOpportunityCapByStatus(AdTagInterface::ACTIVE);
         $pausedAdTags = 0;
 
         /** @var AdTagInterface $adTag */
         foreach ($adTags as $adTag) {
 
-            if (($adTag->getNetworkOpportunityCap() !== null && $adTag->getNetworkOpportunityCap() <= $eventCounter->getOpportunityCount($adTag->getId())) ||
-                ($adTag->getImpressionCap() !== null && $adTag->getImpressionCap() <= $eventCounter->getImpressionCount($adTag->getId()))
+            if ($adTag->getNetworkOpportunityCap() <= $eventCounter->getOpportunityCount($adTag->getId()) ||
+                $adTag->getImpressionCap() <= $eventCounter->getImpressionCount($adTag->getId())
             ) {
                 $adTag->setActive(AdTagInterface::AUTO_PAUSED);
                 $em->merge($adTag);

@@ -568,4 +568,13 @@ class AdTagManager implements AdTagManagerInterface
 
         $adSlot->setAdTags($newAdTags);
     }
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status)
+    {
+      return  $this->repository->getAdTagsThatSetImpressionAndOpportunityCapByStatus($status);
+    }
 }
