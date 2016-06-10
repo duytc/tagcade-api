@@ -21,6 +21,7 @@ class AutoPauseAdTagCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        $logger = $container->get('logger');
         $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
         /**
          * @var EntityManagerInterface $em
@@ -45,10 +46,10 @@ class AutoPauseAdTagCommand extends ContainerAwareCommand
 
         $em->flush();
         if ($pausedAdTags === 0) {
-            $output->writeln('There is no ad tags reaching its impression cap or network opportunity cap');
+          $logger->info('There is no ad tags reaching its impression cap or network opportunity cap');
             return;
         }
 
-        $output->writeln(sprintf('There are %d ad tags get paused', $pausedAdTags));
+        $logger->info(sprintf('There are %d ad tags get paused', $pausedAdTags));
     }
 } 
