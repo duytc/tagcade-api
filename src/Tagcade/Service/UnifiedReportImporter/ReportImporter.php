@@ -62,6 +62,7 @@ class ReportImporter implements ReportImporterInterface
     {
         $commonReports = $this->commonReportSubPublisherHandler->generateCommonReports($adNetwork, $reports, $override);
         if (count($commonReports) === 0) {
+            $this->logger->info(sprintf('%d raw reports given, %d common report generated'), count($reports), count($commonReports));
             return false;
         }
 
@@ -138,7 +139,9 @@ class ReportImporter implements ReportImporterInterface
             }
         }
 
-        return $this->extractDateRangeFromReport($commonReports);
+        $dateRange = $this->extractDateRangeFromReport($commonReports);
+        $this->logger->info(sprintf('import report for AdNetwork %d got date range %s - %s'), $adNetwork->getId(), $dateRange['startDate'], $dateRange['endDate']);
+        return $dateRange;
     }
 
     protected function extractDateRangeFromReport(array $reports)
