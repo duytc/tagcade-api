@@ -25,6 +25,7 @@ class ActivateNetworkCommand extends ContainerAwareCommand
     {
         $adNetwork = $input->getOption('adNetwork');
         $container = $this->getContainer();
+        $logger = $container->get('logger');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
         $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
         $em = $container->get('doctrine.orm.entity_manager');
@@ -53,7 +54,7 @@ class ActivateNetworkCommand extends ContainerAwareCommand
                 continue;
             }
 
-            $output->writeln(sprintf('Ad network %d is being activated', $nw->getId()));
+            $logger->info(sprintf('Ad network %d is being activated', $nw->getId()));
 
             foreach ($adTags as $adTag) {
                 /**
@@ -67,6 +68,6 @@ class ActivateNetworkCommand extends ContainerAwareCommand
 
         $em->flush();
 
-        $output->writeln(sprintf('There are %d ad networks get activated', $pausedNetworkCount));
+        $logger->info(sprintf('There are %d ad networks get activated', $pausedNetworkCount));
     }
 } 

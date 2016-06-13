@@ -153,5 +153,15 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsThatHavePartnerTagId($partnerTagId);
 
+    /**
+     * @param $status
+     * @return mixed
+     */
     public function getAllAdTagsByStatus($status);
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status);
 }

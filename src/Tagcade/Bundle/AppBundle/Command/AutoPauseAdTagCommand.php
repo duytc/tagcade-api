@@ -21,20 +21,21 @@ class AutoPauseAdTagCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        $logger = $container->get('logger');
         $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
         /**
          * @var EntityManagerInterface $em
          */
         $em = $container->get('doctrine.orm.entity_manager');
         $eventCounter = $container->get('tagcade.service.report.performance_report.display.counter.cache_event_counter');
-        $adTags = $adTagManager->getAllAdTagsByStatus(AdTagInterface::ACTIVE);
+        $adTags = $adTagManager->getAdTagsThatSetImpressionAndOpportunityCapByStatus(AdTagInterface::ACTIVE);
         $pausedAdTags = 0;
 
         /** @var AdTagInterface $adTag */
         foreach ($adTags as $adTag) {
 
-            if (($adTag->getNetworkOpportunityCap() !== null && $adTag->getNetworkOpportunityCap() <= $eventCounter->getOpportunityCount($adTag->getId())) ||
-                ($adTag->getImpressionCap() !== null && $adTag->getImpressionCap() <= $eventCounter->getImpressionCount($adTag->getId()))
+            if ($adTag->getNetworkOpportunityCap() <= $eventCounter->getOpportunityCount($adTag->getId()) ||
+                $adTag->getImpressionCap() <= $eventCounter->getImpressionCount($adTag->getId())
             ) {
                 $adTag->setActive(AdTagInterface::AUTO_PAUSED);
                 $em->merge($adTag);
@@ -45,10 +46,10 @@ class AutoPauseAdTagCommand extends ContainerAwareCommand
 
         $em->flush();
         if ($pausedAdTags === 0) {
-            $output->writeln('There is no ad tags reaching its impression cap or network opportunity cap');
+          $logger->info('There is no ad tags reaching its impression cap or network opportunity cap');
             return;
         }
 
-        $output->writeln(sprintf('There are %d ad tags get paused', $pausedAdTags));
+        $logger->info(sprintf('There are %d ad tags get paused', $pausedAdTags));
     }
 } 

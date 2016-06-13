@@ -87,6 +87,10 @@ class ReportImporter implements ReportImporterInterface
 
         if ($override === true) {
             $commonReports = $adjustedCommonReports;
+
+            if (count($commonReports) === 0) {
+                return false;
+            }
         }
 
         foreach($this->importers as $importer) {

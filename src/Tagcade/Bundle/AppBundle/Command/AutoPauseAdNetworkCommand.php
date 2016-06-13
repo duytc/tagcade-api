@@ -25,6 +25,7 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
     {
         $adNetwork = $input->getOption('adNetwork');
         $container = $this->getContainer();
+        $logger = $container->get('logger');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
         $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
         $eventCounter = $container->get('tagcade.service.report.performance_report.display.counter.cache_event_counter');
@@ -60,7 +61,7 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
                 continue; // ignore networks that do not set both impression cap and opportunity cap
             }
 
-            $output->writeln(sprintf('Checking impression cap and network opportunity cap for ad network %d', $nw->getId()));
+            $logger->info(sprintf('Checking impression cap and network opportunity cap for ad network %d', $nw->getId()));
 
             $opportunityCount = 0;
             $impressionCount = 0;
@@ -73,15 +74,15 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
             }
 
             if (($opportunityCap > 0 && $opportunityCap <= $opportunityCount) || ($impressionCap > 0 && $impressionCap <= $impressionCount)) {
-                $output->writeln(sprintf('Ad network %d will be PAUSED shortly', $nw->getId()));
+                $logger->info(sprintf('Ad network %d will be PAUSED shortly', $nw->getId()));
                 $adTagManager->updateAdTagStatusForAdNetwork($nw, $active = AdTagInterface::AUTO_PAUSED);
                 $pausedNetworkCount ++;
             }
             else {
-                $output->writeln(sprintf('Network %d is still RUNNING with (network opportunity cap %d, current opportunities %d) and (network impression cap %d, current impressions %d)', $nw->getId(), $opportunityCap, $opportunityCount, $impressionCap, $impressionCount));
+                $logger->info(sprintf('Network %d is still RUNNING with (network opportunity cap %d, current opportunities %d) and (network impression cap %d, current impressions %d)', $nw->getId(), $opportunityCap, $opportunityCount, $impressionCap, $impressionCount));
             }
         }
 
-        $output->writeln(sprintf('There are %d ad networks get paused', $pausedNetworkCount));
+        $logger->info(sprintf('There are %d ad networks get paused', $pausedNetworkCount));
     }
 } 

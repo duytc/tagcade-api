@@ -20,6 +20,7 @@ class ActivateAdTagCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        $logger = $container->get('logger');
         $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
         $em = $container->get('doctrine.orm.entity_manager');
         $adTags = $adTagManager->getAllAdTagsByStatus(AdTagInterface::AUTO_PAUSED);
@@ -32,6 +33,6 @@ class ActivateAdTagCommand extends ContainerAwareCommand
 
         $em->flush();
 
-        $output->writeln(sprintf('There are %d ad tags get activated', count($adTags)));
+        $logger->info(sprintf('There are %d ad tags get activated', count($adTags)));
     }
 }

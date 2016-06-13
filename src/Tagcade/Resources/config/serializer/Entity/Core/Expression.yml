@@ -15,5 +15,5 @@ Tagcade\Entity\Core\Expression:
             groups: [expression.detail]
         hbBidPrice:
             expose: true
-            groups: [expression.summary]
+            groups: [expression.detail, expression.summary]
 
