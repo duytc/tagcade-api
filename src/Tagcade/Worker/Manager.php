@@ -3,6 +3,7 @@
 namespace Tagcade\Worker;
 
 use DateTime;
+use Pheanstalk_PheanstalkInterface;
 use StdClass;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -19,8 +20,13 @@ use Tagcade\Model\Core\AdTagInterface;
 class Manager
 {
     const TUBE = 'tagcade-api-worker';
+    const EXECUTION_TIME_THRESHOLD = 3600;
 
     protected $dateUtil;
+
+    /**
+     * @var PheanstalkProxyInterface
+     */
     protected $queue;
 
     public function __construct(DateUtilInterface $dateUtil, PheanstalkProxyInterface $queue)
@@ -161,7 +167,10 @@ class Manager
 
         $this->queue
             ->useTube(static::TUBE)
-            ->put(json_encode($payload))
+            ->put(json_encode($payload),
+                Pheanstalk_PheanstalkInterface::DEFAULT_PRIORITY,
+                Pheanstalk_PheanstalkInterface::DEFAULT_DELAY,
+                self::EXECUTION_TIME_THRESHOLD)
         ;
     }
 }
