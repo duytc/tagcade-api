@@ -114,6 +114,10 @@ class AdNetworkManager implements AdNetworkManagerInterface
             $this->save($adNetwork);
         }
 
+        if (empty($adNetwork->getEmailHookToken())) {
+            return '';
+        }
+
         return sprintf('pub%d.%s.%s@%s', $adNetwork->getPublisherId(), $adNetwork->getNetworkPartner()->getNameCanonical(), $adNetwork->getEmailHookToken(), $this->unifiedReportMailDomain);
     }
 }
