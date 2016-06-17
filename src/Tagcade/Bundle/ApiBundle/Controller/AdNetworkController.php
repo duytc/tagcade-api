@@ -358,6 +358,10 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->one($id);
 
+        if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
+            throw new InvalidArgumentException('This AdNetwork does not have any Partner');
+        }
+
         $this->checkUserPermission($adNetwork, 'edit');
 
         return $this->get('tagcade.domain_manager.ad_network')->getUnifiedReportEmail($adNetwork, $resetToken);
