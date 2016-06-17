@@ -143,34 +143,6 @@ class ReportImporter implements ReportImporterInterface
             }
         }
 
-        $dateRange = $this->extractDateRangeFromReport($commonReports);
-        $this->logger->info(sprintf('import report for AdNetwork %d got date range %s - %s'), $adNetwork->getId(), $dateRange['startDate'], $dateRange['endDate']);
-        return $dateRange;
-    }
-
-    protected function extractDateRangeFromReport(array $reports)
-    {
-        $dates = [];
-
-        array_walk($reports, function(CommonReport $report) use (&$dates) {
-            $dateStr = $report->getDate()->format('Y-m-d');
-            if (!array_key_exists($dateStr, $dates)) {
-                $dates[$dateStr] = $dateStr;
-            }
-        });
-
-        usort($dates, function($a, $b) {
-            $v1 = strtotime($a);
-            $v2 = strtotime($b);
-            return $v1 - $v2;
-        });
-
-        $startDate = $dates[0];
-        $endDate = array_pop($dates);
-
-        return array (
-            'startDate' => $startDate,
-            'endDate' => $endDate
-        );
+        return true;
     }
 }

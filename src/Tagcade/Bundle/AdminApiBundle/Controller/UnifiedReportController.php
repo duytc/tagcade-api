@@ -23,8 +23,8 @@ class UnifiedReportController extends FOSRestController
     const PARAMS_PARTNER_CNAME = 'partner';
     const PARAMS_REPORTS = 'reports';
     const PARAMS_OVERRIDE = 'override';
-    const PARAMS_START_DATE = 'startDate';
-    const PARAMS_END_DATE = 'endDate';
+    const PARAMS_START_DATE = 'start-date';
+    const PARAMS_END_DATE = 'end-date';
     /**
      * @Rest\Post("/unifiedreports/import")
      *
@@ -45,6 +45,8 @@ class UnifiedReportController extends FOSRestController
         $data = $request->request->all();
         $publisherId = intval($data[self::PARAMS_PUBLISHER]);
         $partnerCName = $data[self::PARAMS_PARTNER_CNAME];
+        $startDate = $data[self::PARAMS_START_DATE];
+        $endDate = $data[self::PARAMS_END_DATE];
         $override = filter_var($data[self::PARAMS_OVERRIDE], FILTER_VALIDATE_BOOLEAN);
         $reports = $data[self::PARAMS_REPORTS];
         $reports = json_decode($reports, true);
@@ -58,24 +60,13 @@ class UnifiedReportController extends FOSRestController
             throw new InvalidArgumentException('either publisher id or partner canonical name is invalid or they do not work together');
         }
 
-        $reportDateRange = $this->get('tagcade_app.service.unified_report.report_importer')->importReports(
+        $this->get('tagcade_app.service.unified_report.report_importer')->importReports(
             $adNetwork,
             $reports,
             $override
         );
 
-        if ($reportDateRange === false || !is_array($reportDateRange)) {
-            return $this->view('no date range returned after import', 204);
-        }
-
-        if (!array_key_exists('startDate', $reportDateRange) || !array_key_exists('endDate', $reportDateRange)) {
-            return $this->view('not startDate and endDate key in array returned', 204);
-
-        }
-
         //update comparison by worker
-        $startDate = $reportDateRange['startDate'];
-        $endDate = $reportDateRange['endDate'];
         $override = true;
 
         $this->get('tagcade.worker.manager')->updateComparisonForPublisher($publisherId, $startDate, $endDate, $override);
