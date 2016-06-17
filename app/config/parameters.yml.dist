@@ -85,4 +85,4 @@ parameters:
             pattern: '/^.*?epmads_width = "([\d]+)".*?epmads_height = "([\d]+)".*?$/s'
             finalize-pattern: '$1x$2 (JS Sync)'
         native-ads:
-            pattern: '/<!-- (.*) -->/'
+            pattern: '(\d+)_\d+ - DO NOT MODIFY'
