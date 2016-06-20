@@ -4,13 +4,18 @@ namespace Tagcade\Bundle\ApiBundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseAdsSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
 
 /**
@@ -177,6 +182,83 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
     public function deleteAction($id)
     {
         return $this->delete($id);
+    }
+
+    /**
+     *
+     * Create linked ad tag from library ad slot
+     *
+     * @Rest\Post("/libraryadstags/{id}/createlinks", requirements={"id" = "\d+"})
+     *
+     *
+     * @ApiDoc(
+     *  section = "Library Ad Tags",
+     *  resource = true,
+     *  statusCodes = {
+     *      201 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param Request $request
+     *
+     * @param int $id
+     *
+     * @return view
+     */
+    public function postCreateLinksAction(Request $request, $id)
+    {
+        //find and validate slotLibrary
+        /** @var LibraryAdTagInterface $adTagLibrary */
+        $adTagLibrary = $this->get('tagcade.domain_manager.library_ad_tag')->find($id);
+        if (!$adTagLibrary instanceof LibraryAdTagInterface) {
+            throw new NotFoundHttpException(
+                sprintf("The %s resource '%s' was not found or you do not have access", $this->getResourceName(), $id)
+            );
+        }
+
+        $this->checkUserPermission($adTagLibrary, 'view');
+        //get params as ads slotId
+        $allParams = $request->request->all();
+        $adSlotIds = $allParams['adSlots'];
+
+        //get ad slot and check permision
+        /** @var AdSlotInterface[] $sites */
+        $adSlots = $this->getAndValidatePermissionForAdSlots($adSlotIds);
+
+        $this->get('tagcade_api.service.tag_library.ad_tag_generator_service')->generateAdTagFromMultiAdSlot($adTagLibrary, $adSlots);
+
+        return $this->view( null, Codes::HTTP_CREATED );
+    }
+
+    /**
+     * @param array $adSlotIds
+     * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
+     */
+
+   private function getAndValidatePermissionForAdSlots(array $adSlotIds)
+    {
+        /** @var BaseAdSlotInterface[] $adSlots */
+        $adSlots = [];
+        /** @var  $LibraryAdSlotManager */
+        $adsSlotManager = $this->get('tagcade.domain_manager.ad_slot');
+        array_walk(
+            $adSlotIds,
+            function ($adSlotId) use ($adsSlotManager, &$adSlots) {
+                $adSlot = $adsSlotManager->find((int)$adSlotId);
+
+                if (!$adSlot instanceof BaseAdSlotInterface) {
+                    throw new NotFoundHttpException('Some ad slot are not found');
+                }
+
+                if (!in_array($adSlot, $adSlots)) {
+                    $this->checkUserPermission($adSlot, 'edit');
+                    $adSlots[] = $adSlot;
+                }
+            }
+        );
+
+        return $adSlots;
     }
 
     /**
