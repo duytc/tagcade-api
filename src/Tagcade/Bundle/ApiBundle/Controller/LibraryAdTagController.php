@@ -10,11 +10,10 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\BaseAdsSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
 
@@ -208,19 +207,16 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      */
     public function postCreateLinksAction(Request $request, $id)
     {
-        //find and validate slotLibrary
         /** @var LibraryAdTagInterface $adTagLibrary */
-        $adTagLibrary = $this->get('tagcade.domain_manager.library_ad_tag')->find($id);
-        if (!$adTagLibrary instanceof LibraryAdTagInterface) {
-            throw new NotFoundHttpException(
-                sprintf("The %s resource '%s' was not found or you do not have access", $this->getResourceName(), $id)
-            );
-        }
+        $adTagLibrary = $this->one($id);
 
-        $this->checkUserPermission($adTagLibrary, 'view');
         //get params as ads slotId
         $allParams = $request->request->all();
         $adSlotIds = $allParams['adSlots'];
+
+        if (!is_array($adSlotIds)) {
+            throw new InvalidArgumentException('Expect ad slots is array');
+        }
 
         //get ad slot and check permision
         /** @var AdSlotInterface[] $sites */
@@ -235,7 +231,6 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * @param array $adSlotIds
      * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
      */
-
    private function getAndValidatePermissionForAdSlots(array $adSlotIds)
     {
         /** @var BaseAdSlotInterface[] $adSlots */

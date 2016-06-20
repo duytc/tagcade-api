@@ -4,10 +4,14 @@
 namespace Tagcade\Service\TagLibrary;
 
 
-interface AdTagGeneratorInterface {
+use Tagcade\Model\Core\LibraryAdTagInterface;
 
-
-    public function generateAdTagFromMultiAdSlot($adTagLibrary, array $adSlots);
-
-
-} 
+interface AdTagGeneratorInterface
+{
+    /**
+     * @param LibraryAdTagInterface $adTagLibrary
+     * @param array $adSlots
+     * @return mixed
+     */
+    public function generateAdTagFromMultiAdSlot(LibraryAdTagInterface $adTagLibrary, array $adSlots);
+}

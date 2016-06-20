@@ -6,17 +6,15 @@ namespace Tagcade\Service\TagLibrary;
 
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Core\AdTag;
-use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTag;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 
 class AdTagGenerator implements AdTagGeneratorInterface {
     /**
      * @var AdTagManagerInterface
      */
     private $adTagManager;
-
 
     /**
      * @param AdTagManagerInterface $adTagManager
@@ -26,18 +24,11 @@ class AdTagGenerator implements AdTagGeneratorInterface {
         $this->adTagManager = $adTagManager;
     }
 
-
     /**
-     * @param $adTagLibrary
-     * @param array $adSlots
+     * @inheritdoc
      */
-
-    public function generateAdTagFromMultiAdSlot($adTagLibrary, array $adSlots)
+    public function generateAdTagFromMultiAdSlot(LibraryAdTagInterface $adTagLibrary, array $adSlots)
     {
-        if (!$adTagLibrary instanceof LibraryAdTag) {
-            throw new \InvalidArgumentException('Invalid the first parameter, expect ad tag library type');
-        }
-
         foreach ($adSlots as $adSlot) {
             if (!$adSlot instanceof BaseAdSlotInterface) {
                 throw new \InvalidArgumentException('Invalid the second parameter, expect ad slot');
