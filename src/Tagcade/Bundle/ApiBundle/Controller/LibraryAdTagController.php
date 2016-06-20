@@ -188,7 +188,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      *
      * Create linked ad tag from library ad slot
      *
-     * @Rest\Post("/libraryadstags/{id}/createlinks", requirements={"id" = "\d+"})
+     * @Rest\Post("/libraryadtags/{id}/createlinks", requirements={"id" = "\d+"})
      *
      *
      * @ApiDoc(
