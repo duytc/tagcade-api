@@ -240,9 +240,15 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
             throw new InvalidArgumentException(sprintf('There is not publisher that have id = %d in system!', $publisherId));
         }
 
-        $qb = $this->get('tagcade.repository.ad_slot')->getReportableAdSlotQuery($publisher);
+        $adSlotRepository = $this->get('tagcade.repository.ad_slot');
+        if ($request->query->get('page') > 0) {
+            $qb = $adSlotRepository->getReportableAdSlotQuery($publisher);
 
-        return $this->getPagination($qb, $request);
+            return $this->getPagination($qb, $request);
+        } else {
+
+            return $adSlotRepository->getReportableAdSlotsForPublisher($publisher);
+        }
     }
 
     /**

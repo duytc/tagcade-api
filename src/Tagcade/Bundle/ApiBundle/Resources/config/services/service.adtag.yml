@@ -48,6 +48,8 @@ services:
         arguments:
             - @tagcade.form.type.ad_tag
             - @tagcade.domain_manager.ad_tag
+            -
+            - @tagcade_api.service.tag_library.ad_tag_generator_service
 
     tagcade.handler.handlers.ad_tag.admin:
         class: Tagcade\Handler\Handlers\Core\Admin\AdTagHandler
