@@ -208,7 +208,6 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         return $adSlot;
     }
 
-
     /**
      * @Rest\Get("/adSlots/reportable/publisher/{$publisherId}", requirements={"$publisherId" = "\d+"})
      *
