@@ -209,7 +209,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     }
 
     /**
-     * @Rest\Get("/adSlots/reportable/publisher/{$publisherId}", requirements={"$publisherId" = "\d+"})
+     * @Rest\Get("/adSlots/reportable/publisher/{publisherId}", requirements={"publisherId" = "\d+"})
      *
      * @Rest\View(
      *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}

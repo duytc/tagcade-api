@@ -16,6 +16,7 @@ use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
 /**
@@ -90,8 +91,21 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      */
     public function postAction(Request $request)
     {
-        //get Sites from request and override to request
-        $request->request->set('adSlots', $this->getAdSlots($request->request->get('adSlots', [])));
+        /** @var BaseAdSlotInterface[] $adSlots */
+        $adSlots = $this->getAdSlots($request->request->get('adSlots', []));
+        $filteredAdSlots = [];
+        $libAdSlotIdArray = [];
+
+        foreach ($adSlots as $adSlot) {
+            $libAdSlotId = $adSlot->getLibraryAdSlot()->getId();
+            if(!in_array($libAdSlotId, $libAdSlotIdArray)) {
+                $libAdSlotIdArray[]= $libAdSlotId;
+                $filteredAdSlots[] = $adSlot;
+            }
+        }
+
+        $request->request->set('adSlots', $filteredAdSlots);
+
         return $this->post($request);
     }
 
