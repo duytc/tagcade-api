@@ -496,14 +496,35 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
     /**
      * @inheritdoc
      */
-    public function getReportableAdSlotQuery(PublisherInterface $publisher, $limit = null, $offset = null, PagerParam $param)
+    public function getReportableAdSlotQuery(PublisherInterface $publisher, PagerParam $param, $limit = null, $offset = null )
     {
-        $qb = $this->getAdSlotsForPublisherQuery($publisher, $limit, $offset);
+        $qb = $this->createQueryBuilder('sl')
+            ->leftJoin('sl.site', 'st')
+            ->leftJoin('sl.libraryAdSlot','lbs');
+
+        if ($publisher instanceof SubPublisherInterface) {
+            $qb
+                ->where('st.subPublisher = :sub_publisher_id')
+                ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER);
+        } else {
+            $qb
+                ->where('st.publisher = :publisher_id')
+                ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
         $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('sl.name', ':searchKey'), $qb->expr()->like('sl.id', ':searchKey')))
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('lbs.name', ':searchKey'), $qb->expr()->like('st.name', ':searchKey')))
                 ->setParameter('searchKey', $searchLike);
         }
 
@@ -517,7 +538,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                     $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['name']:
-                    $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('sl.libraryAdSlot' . $param->getSortField(), $param->getSortDirection());
                     break;
                 default:
                     break;

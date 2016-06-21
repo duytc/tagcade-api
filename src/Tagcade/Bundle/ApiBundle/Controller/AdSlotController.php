@@ -209,12 +209,22 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
     }
 
     /**
-     * @Rest\Get("/adSlots/reportable/publisher/{publisherId}", requirements={"publisherId" = "\d+"})
+     * @Rest\Get("/adslots/reportable/publisher/{publisherId}", requirements={"publisherId" = "\d+"})
      *
      * @Rest\View(
      *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
      * )
      * Get naitve and display ad slot for one publisher
+     *
+     * @Rest\QueryParam(name="autoCreate", nullable=true)
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering sites")
+     *
      *
      * @ApiDoc(
      *  section = "Ad Slots",
