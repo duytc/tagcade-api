@@ -241,7 +241,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
 
         $adSlotRepository = $this->get('tagcade.repository.ad_slot');
         if ($request->query->get('page') > 0) {
-            $qb = $adSlotRepository->getReportableAdSlotQuery($publisher);
+            $qb = $adSlotRepository->getReportableAdSlotQuery ($publisher, $this->getParams());
 
             return $this->getPagination($qb, $request);
         } else {
