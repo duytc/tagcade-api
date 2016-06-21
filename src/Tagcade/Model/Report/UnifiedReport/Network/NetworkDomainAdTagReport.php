@@ -59,7 +59,7 @@ class NetworkDomainAdTagReport extends AbstractUnifiedReport implements NetworkD
      */
     public function getPartnerTagId()
     {
-        return $this->partnerTagId;
+        return strval($this->partnerTagId);
     }
 
     /**
