@@ -13,8 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
 /**
@@ -22,6 +24,7 @@ use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
  */
 class AdTagController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use GetEntityFromIdTrait;
     /**
      * Get all ad tags
      * @Rest\View(
@@ -88,6 +91,21 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      */
     public function postAction(Request $request)
     {
+        /** @var BaseAdSlotInterface[] $adSlots */
+        $adSlots = $this->getAdSlots($request->request->get('adSlots', []));
+        $filteredAdSlots = [];
+        $libAdSlotIdArray = [];
+
+        foreach ($adSlots as $adSlot) {
+            $libAdSlotId = $adSlot->getLibraryAdSlot()->getId();
+            if(!in_array($libAdSlotId, $libAdSlotIdArray)) {
+                $libAdSlotIdArray[]= $libAdSlotId;
+                $filteredAdSlots[] = $adSlot;
+            }
+        }
+
+        $request->request->set('adSlots', $filteredAdSlots);
+
         return $this->post($request);
     }
 

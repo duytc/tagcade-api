@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -205,6 +206,48 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         }
 
         return $adSlot;
+    }
+
+    /**
+     * @Rest\Get("/adSlots/reportable/publisher/{publisherId}", requirements={"publisherId" = "\d+"})
+     *
+     * @Rest\View(
+     *      serializerGroups={"libraryexpression.detail", "expression.detail", "adslot.detail", "nativeadslot.detail", "displayadslot.detail", "dynamicadslot.detail", "site.summary", "librarynativeadslot.detail", "librarydisplayadslot.detail", "librarydynamicadslot.summary", "user.summary", "slotlib.summary"}
+     * )
+     * Get naitve and display ad slot for one publisher
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param Request $request
+     * @param $publisherId
+     * @internal param int $id the resource id
+     *
+     * @return BaseAdSlotInterface
+     */
+    public function getReportableAdSlotByPublisherAction (Request $request, $publisherId)
+    {
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new InvalidArgumentException(sprintf('There is not publisher that have id = %d in system!', $publisherId));
+        }
+
+        $adSlotRepository = $this->get('tagcade.repository.ad_slot');
+        if ($request->query->get('page') > 0) {
+            $qb = $adSlotRepository->getReportableAdSlotQuery ($publisher, $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        } else {
+
+            return $adSlotRepository->getReportableAdSlotsForPublisher($publisher);
+        }
     }
 
     /**

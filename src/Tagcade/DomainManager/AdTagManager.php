@@ -577,4 +577,17 @@ class AdTagManager implements AdTagManagerInterface
     {
       return  $this->repository->getAdTagsThatSetImpressionAndOpportunityCapByStatus($status);
     }
+
+    /**
+     * @param $adTagId
+     * @return mixed
+     */
+    public function makeStandAlone ($adTagId)
+    {
+        $adTag = $this->find($adTagId);
+        $adTagLibrary = $adTag->getLibraryAdTag();
+        $adTagLibrary->setVisible(true);
+
+        return $adTagLibrary;
+    }
 }

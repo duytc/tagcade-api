@@ -446,9 +446,11 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getRelatedChannelWithPagination(UserRoleInterface $user, PagerParam $param)
     {
-
         $qb = $this->createQueryBuilder('sl')
             ->join('sl.site', 'st');
 
@@ -488,6 +490,40 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                     break;
             }
         }
+        return $qb;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getReportableAdSlotQuery(PublisherInterface $publisher, $limit = null, $offset = null, PagerParam $param)
+    {
+        $qb = $this->getAdSlotsForPublisherQuery($publisher, $limit, $offset);
+        $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('sl.name', ':searchKey'), $qb->expr()->like('sl.id', ':searchKey')))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()){
+                case $this->SORT_FIELDS['id']:
+                    $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['name']:
+                    $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
+        }
+
         return $qb;
     }
 }

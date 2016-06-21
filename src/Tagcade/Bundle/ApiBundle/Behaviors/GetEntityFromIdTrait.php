@@ -4,16 +4,37 @@ namespace Tagcade\Bundle\ApiBundle\Behaviors;
 
 
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\ChannelManagerInterface;
 use Tagcade\DomainManager\ManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
+use Tagcade\Model\Core\DisplayAdSlot;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
 trait GetEntityFromIdTrait
 {
+
+    /**
+     * Get display ad slot of id ad slot array
+     * @param $ids
+     * @return array|\Tagcade\Model\ModelInterface[]
+     */
+    protected function getAdSlots ($ids)
+    {
+        $myIds = $this->convertInputToArray($ids);
+        /** @var AdSlotManagerInterface $channelManager */
+        $adSlotManager = $this->get('tagcade.domain_manager.ad_slot');
+
+        return $this->createEntitiesObject($adSlotManager, $myIds, BaseAdSlotInterface::class);
+    }
+
     /**
      * get channel(s) from id(s)
      *

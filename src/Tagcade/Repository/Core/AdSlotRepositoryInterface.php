@@ -113,4 +113,13 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getRelatedChannelWithPagination(UserRoleInterface $user, PagerParam $param);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getReportableAdSlotQuery(PublisherInterface $publisher, $limit = null, $offset = null, PagerParam $param);
 }

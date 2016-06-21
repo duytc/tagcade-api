@@ -175,4 +175,6 @@ interface AdTagManagerInterface
 
     public function getAllAdTagsByStatus($status);
 
+    public function makeStandAlone ($adTagId);
+
 }
