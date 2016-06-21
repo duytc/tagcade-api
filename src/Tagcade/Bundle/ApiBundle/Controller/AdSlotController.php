@@ -232,7 +232,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
      *
      * @return BaseAdSlotInterface
      */
-    public function getReportableAdSlotByPublisher(Request $request, $publisherId)
+    public function getReportableAdSlotByPublisherAction (Request $request, $publisherId)
     {
         $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
 

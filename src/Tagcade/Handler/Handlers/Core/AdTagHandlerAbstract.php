@@ -12,7 +12,6 @@ use Tagcade\Service\TagLibrary\AdTagGeneratorInterface;
 
 abstract class AdTagHandlerAbstract extends RoleHandlerAbstract
 {
-
     /**
      * @var AdTagGeneratorInterface
      */
@@ -46,7 +45,6 @@ abstract class AdTagHandlerAbstract extends RoleHandlerAbstract
         $adSlots = array_key_exists('adSlots', $parameters) ? $parameters['adSlots']: null;
 
         if (array_key_exists('adSlots', $parameters) && count($adSlots) > 0) {
-
             $parameters['adSlot'] = $adSlots[0]->getId();
             unset ($parameters['adSlots']);
             unset($adSlots[0]);
@@ -54,7 +52,7 @@ abstract class AdTagHandlerAbstract extends RoleHandlerAbstract
 
         $adTag =  parent::post($parameters);
 
-        if (count($adSlots) > 0) { // for multi ad slot
+        if (count($adSlots) > 0) { // for multiple ad slots
             $adTagLibraryId = $this->getDomainManager()->makeStandAlone($adTag);
             $this->adTagGenerator->generateAdTagFromMultiAdSlot($adTagLibraryId, $adSlots);
         }
