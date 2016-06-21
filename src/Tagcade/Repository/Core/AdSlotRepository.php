@@ -446,9 +446,11 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getRelatedChannelWithPagination(UserRoleInterface $user, PagerParam $param)
     {
-
         $qb = $this->createQueryBuilder('sl')
             ->join('sl.site', 'st');
 
@@ -488,6 +490,17 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                     break;
             }
         }
+        return $qb;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getReportableAdSlotQuery(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdSlotsForPublisherQuery($publisher, $limit, $offset);
+        $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
+
         return $qb;
     }
 }

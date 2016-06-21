@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
@@ -22,6 +23,7 @@ use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
  */
 class AdTagController extends RestControllerAbstract implements ClassResourceInterface
 {
+    use GetEntityFromIdTrait;
     /**
      * Get all ad tags
      * @Rest\View(
@@ -88,6 +90,8 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      */
     public function postAction(Request $request)
     {
+        //get Sites from request and override to request
+        $request->request->set('adSlots', $this->getAdSlots($request->request->get('adSlots', [])));
         return $this->post($request);
     }
 
