@@ -41,7 +41,7 @@ class NetworkAdTagReportImporter extends ImporterAbstract implements NetworkAdTa
             return $report instanceof NetworkAdTagReport;
         });
 
-        $this->networkAdTagReportRepository->saveMultipleReport($reports, $this->getBatchSize());
+        $this->networkAdTagReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
 
         return true;
     }

@@ -23,23 +23,38 @@ class PublisherReportRepository extends AbstractReportRepository implements Publ
         return $oneOrNull === true ? $qb->getQuery()->getOneOrNullResult() : $qb->getQuery()->getResult();
     }
 
-    public function saveMultipleReport(array $reports, $batchSize = null)
+    public function saveMultipleReport(array $reports, $override = false, $batchSize = null)
     {
         if ($batchSize === null) {
             $batchSize = self::BATCH_SIZE;
         }
 
-        $sql = 'INSERT INTO `unified_report_publisher`
-                (publisher_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
-                VALUES (:publisherId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
-                ON DUPLICATE KEY UPDATE
-                est_revenue = est_revenue + :estRevenue,
-                impressions = impressions + :impressions,
-                total_opportunities = total_opportunities + :totalOpportunities,
-                passbacks = passbacks + :passbacks,
-                fill_rate = (impressions + :impressions) / (total_opportunities + :totalOpportunities),
-                est_cpm = 1000 * (est_revenue + :estRevenue) / (impressions + :impressions)
-                ';
+        if ($override === false) {
+            $sql = 'INSERT INTO `unified_report_publisher`
+                    (publisher_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
+                    VALUES (:publisherId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
+                    ON DUPLICATE KEY UPDATE
+                    est_revenue = est_revenue + :estRevenue,
+                    impressions = impressions + :impressions,
+                    total_opportunities = total_opportunities + :totalOpportunities,
+                    passbacks = passbacks + :passbacks,
+                    fill_rate = (impressions + :impressions) / (total_opportunities + :totalOpportunities),
+                    est_cpm = 1000 * (est_revenue + :estRevenue) / (impressions + :impressions)
+                    ';
+        } else {
+            $sql = 'INSERT INTO `unified_report_publisher`
+                    (publisher_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
+                    VALUES (:publisherId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
+                    ON DUPLICATE KEY UPDATE
+                    est_revenue = :estRevenue,
+                    impressions = :impressions,
+                    total_opportunities = :totalOpportunities,
+                    passbacks = :passbacks,
+                    fill_rate = :impressions / :totalOpportunities,
+                    est_cpm = 1000 * :estRevenue / :impressions
+                    ';
+        }
+
         $connection = $this->getEntityManager()->getConnection();
         $qb = $connection->prepare($sql);
         $count = 0;

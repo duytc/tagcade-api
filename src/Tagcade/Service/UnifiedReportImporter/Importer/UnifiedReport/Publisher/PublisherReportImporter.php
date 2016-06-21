@@ -40,7 +40,7 @@ class PublisherReportImporter extends ImporterAbstract implements PublisherRepor
             return $report instanceof PublisherReport;
         });
 
-        $this->publisherReportRepository->saveMultipleReport($reports, $this->getBatchSize());
+        $this->publisherReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
 
         return true;
     }

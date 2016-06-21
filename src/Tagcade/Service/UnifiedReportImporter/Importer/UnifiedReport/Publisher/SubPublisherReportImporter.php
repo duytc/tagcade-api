@@ -40,7 +40,7 @@ class SubPublisherReportImporter extends ImporterAbstract implements SubPublishe
             return $report instanceof SubPublisherReport;
         });
 
-        $this->subPublisherReportRepository->saveMultipleReport($reports, $this->getBatchSize());
+        $this->subPublisherReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
 
         return true;
     }
