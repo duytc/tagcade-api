@@ -222,7 +222,17 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
         /** @var AdSlotInterface[] $sites */
         $adSlots = $this->getAndValidatePermissionForAdSlots($adSlotIds);
 
-        $this->get('tagcade_api.service.tag_library.ad_tag_generator_service')->generateAdTagFromMultiAdSlot($adTagLibrary, $adSlots);
+        $libAdSlotIdArray = [];
+        $filteredAdSlots = [];
+        foreach ($adSlots as $adSlot) {
+            $libAdSlotId = $adSlot->getLibraryAdSlot()->getId();
+            if(!in_array($libAdSlotId, $libAdSlotIdArray)) {
+                $libAdSlotIdArray[] = $libAdSlotId;
+                $filteredAdSlots[] = $adSlot;
+            }
+        }
+
+        $this->get('tagcade_api.service.tag_library.ad_tag_generator_service')->generateAdTagFromMultiAdSlot($adTagLibrary, $filteredAdSlots);
 
         return $this->view( null, Codes::HTTP_CREATED );
     }
