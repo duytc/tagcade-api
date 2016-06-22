@@ -66,9 +66,9 @@ class PartnerTagIdMatcher implements PartnerTagIdMatcherInterface
                 return $res;
             }
 
-            return $matches[self::FIRST_PARENTHESIZED_MATCH];
+            return trim($matches[self::FIRST_PARENTHESIZED_MATCH]);
         }
 
-        return preg_replace($config[self::PATTERN_KEY], $config[self::FINALIZE_PATTERN_KEY], $libraryAdTag->getHtml());
+        return trim(preg_replace($config[self::PATTERN_KEY], $config[self::FINALIZE_PATTERN_KEY], $libraryAdTag->getHtml()));
     }
 }
