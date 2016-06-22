@@ -62,7 +62,7 @@ class ReportImporter implements ReportImporterInterface
     {
         $commonReports = $this->commonReportSubPublisherHandler->generateCommonReports($adNetwork, $reports, $override);
         if (count($commonReports) === 0) {
-            $this->logger->info(sprintf('%d raw reports given, %d common report generated'), count($reports), count($commonReports));
+            $this->logger->info(sprintf('%d raw reports given, %d common report generated', count($reports), count($commonReports)));
             return false;
         }
 
