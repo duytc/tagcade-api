@@ -14,6 +14,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
@@ -247,6 +248,13 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
 
         if (!$publisher instanceof PublisherInterface) {
             throw new InvalidArgumentException(sprintf('There is not publisher that have id = %d in system!', $publisherId));
+        }
+
+        $loginUserRole = $this->getUser();
+        $publisherRole = $publisher->getUser();
+
+        if (!$loginUserRole instanceof AdminInterface && $loginUserRole != $publisherRole) {
+            throw new AccessDeniedException(sprintf('You do not have permission access to access this resource '));
         }
 
         $adSlotRepository = $this->get('tagcade.repository.ad_slot');
