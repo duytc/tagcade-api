@@ -524,7 +524,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('lbs.name', ':searchKey'), $qb->expr()->like('st.name', ':searchKey')))
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('sl.id',':searchKey'), $qb->expr()->like('lbs.name', ':searchKey'), $qb->expr()->like('st.name', ':searchKey')))
                 ->setParameter('searchKey', $searchLike);
         }
 
@@ -538,7 +538,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                     $qb->addOrderBy('sl.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['name']:
-                    $qb->addOrderBy('sl.libraryAdSlot' . $param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('lbs.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 default:
                     break;
