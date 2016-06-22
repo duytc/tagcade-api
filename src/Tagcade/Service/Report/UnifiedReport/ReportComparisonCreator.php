@@ -348,6 +348,7 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
         $this->createAdTagComparisonForDate($date, $adNetwork, $adTags, $override);
 
         // Step 3. update ad network,  domain report
+        $adTags = $this->adTagRepository->getAdTagsThatHavePartnerConfigForAdNetwork($adNetwork, $partnerTagIdNullAllowed = true);
         $domains = $this->getDomainsForAdTags($adTags);
         $this->createAdNetworkDomainComparisonForDate($date, $adNetwork, $domains, $override);
 
