@@ -42,11 +42,10 @@ abstract class AdTagHandlerAbstract extends RoleHandlerAbstract
     public function post(array $parameters)
     {
         /** @var BaseAdSlotInterface[] $adSlots */
-        $adSlots = array_key_exists('adSlots', $parameters) ? $parameters['adSlots']: null;
+        $adSlots = array_key_exists('adSlot', $parameters) ? $parameters['adSlot']: null;
 
-        if (array_key_exists('adSlots', $parameters) && count($adSlots) > 0) {
+        if (array_key_exists('adSlot', $parameters) && count($adSlots) > 0) {
             $parameters['adSlot'] = $adSlots[0]->getId();
-            unset ($parameters['adSlots']);
             unset($adSlots[0]);
         }
 

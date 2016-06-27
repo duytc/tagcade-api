@@ -91,8 +91,22 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      */
     public function postAction(Request $request)
     {
+        $adSlotId = [];
+
+        if (!array_key_exists('adSlot', $request->request->all())) {
+            throw new InvalidArgumentException('Expect ad slot parameter.');
+        }
+
+        $inputAdSlots = $request->request->get('adSlot');
+
+        if (!is_array($inputAdSlots)) {
+            $adSlotId[] = $inputAdSlots;
+        } else {
+            $adSlotId = array_merge($adSlotId, $inputAdSlots);
+        }
+
         /** @var BaseAdSlotInterface[] $adSlots */
-        $adSlots = $this->getAdSlots($request->request->get('adSlots', []));
+        $adSlots = $this->getAdSlots($adSlotId);
         $filteredAdSlots = [];
         $libAdSlotIdArray = [];
 
@@ -104,7 +118,7 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
             }
         }
 
-        $request->request->set('adSlots', $filteredAdSlots);
+        $request->request->set('adSlot', $filteredAdSlots);
 
         return $this->post($request);
     }
