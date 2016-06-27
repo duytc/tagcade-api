@@ -101,13 +101,9 @@ class CommonReportSubPublisherHandler implements CommonReportSubPublisherHandler
             // allow item without partner tag id to be processed
             if (is_string($item->getAdTagId())) {
                 $adTags = $this->partnerTagIdFinder->getTcTag($adNetwork->getNetworkPartner(), $adNetwork->getPublisher(), $item->getAdTagId());
-                if (intval($adTags[PartnerTagIdFinder::TAG_COUNT_KEY]) < 1) {
-                    $this->logger->info(sprintf('The partner tag id %s was not found in the system', $item->getAdTagId()));
-                    continue;  // not found any mapping then ignore the record
-                }
 
                 // Set site
-                if (array_key_exists(PartnerTagIdFinder::DOMAIN_COUNT_KEY, $adTags) && $adTags[PartnerTagIdFinder::DOMAIN_COUNT_KEY] == 1) {
+                if (null === $item->getSite() && array_key_exists(PartnerTagIdFinder::DOMAIN_COUNT_KEY, $adTags) && $adTags[PartnerTagIdFinder::DOMAIN_COUNT_KEY] == 1) {
                     $domain = $adTags[PartnerTagIdFinder::TAGS_KEY][0][PartnerTagIdFinder::DOMAIN_KEY];
                     $item->setSite($domain);
                 }
