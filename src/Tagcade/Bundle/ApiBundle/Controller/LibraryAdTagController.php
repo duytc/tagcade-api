@@ -232,7 +232,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
             }
         }
 
-        $this->get('tagcade_api.service.tag_library.ad_tag_generator_service')->generateAdTagFromMultiAdSlot($adTagLibrary, $filteredAdSlots);
+        $this->get('tagcade_api.service.tag_library.ad_tag_generator_service')->generateAdTagForMultiAdSlots($adTagLibrary, $filteredAdSlots);
 
         return $this->view( null, Codes::HTTP_CREATED );
     }
