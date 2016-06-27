@@ -205,10 +205,12 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         return $qb->getQuery()->getResult();
     }
 
-    public function getAdTagsThatHavePartnerConfigForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
+    public function getAdTagsThatHavePartnerConfigForAdNetwork(AdNetworkInterface $adNetwork, $partnerTagIdNullAllowed = false, $limit = null, $offset = null)
     {
         $qb = $this->getAdTagsForAdNetworkQueryBuilder($adNetwork, $limit, $offset);
-        $qb->andWhere('tLib.partnerTagId IS NOT NULL');
+        if ($partnerTagIdNullAllowed === false) {
+            $qb->andWhere('tLib.partnerTagId IS NOT NULL');
+        }
 
         return $qb->getQuery()->getResult();
     }
