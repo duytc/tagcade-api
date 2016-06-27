@@ -2,20 +2,14 @@
 
 namespace Tagcade\Bundle\AdminApiBundle\Controller;
 
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 use Tagcade\Entity\Core\AdNetworkPartner;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 
 class UnifiedReportController extends FOSRestController
 {
@@ -80,54 +74,6 @@ class UnifiedReportController extends FOSRestController
         $pathToSymfonyConsole = $this->getParameter('kernel.root_dir');
 
         return sprintf('php %s/console', $pathToSymfonyConsole);
-    }
-
-
-    /**
-     * @Rest\Post("/unifiedreports/compare")
-     *
-     * @ApiDoc(
-     *  section = "Unified Report Importer",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful",
-     *      400 = "There's no report for that query"
-     *  }
-     * )
-     *
-     * @param Request $request
-     * @return array
-     */
-    public function createComparisonReportsAction(Request $request)
-    {
-        $logger = $this->get('logger');
-        $data = $request->request->all();
-        $publisherId = intval($data[self::PARAMS_PUBLISHER]);
-        $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
-
-        if (!$publisher instanceof PublisherInterface) {
-            $logger->error(sprintf('The publisher %d does not exist', $publisherId));
-            throw new InvalidArgumentException(sprintf('The publisher %d does not exist', $publisherId));
-        }
-
-        $startDate = $data[self::PARAMS_START_DATE];
-        $endDate = $data[self::PARAMS_END_DATE];
-
-        if (!preg_match('/\d{4}-\d{2}-\d{2}/', $startDate) || !preg_match('/\d{4}-\d{2}-\d{2}/', $endDate)) {
-            $logger->error(sprintf('Either %s or %s is a invalid date format, try "YYYY-MM-DD" instead', $startDate, $endDate));
-            throw new InvalidArgumentException(sprintf('Either %s or %s is a invalid date format, try "YYYY-MM-DD" instead', $startDate, $endDate));
-        }
-
-        $override = filter_var($data[self::PARAMS_OVERRIDE], FILTER_VALIDATE_BOOLEAN);
-
-        $reportComparisonCreator = $this->get('tagcade.service.report.unified_report.report_comparison_creator');
-        try {
-            $reportComparisonCreator->updateComparisonForPublisher($publisher, new \DateTime($startDate), new \DateTime($endDate), $override);
-            return TRUE;
-        } catch (UniqueConstraintViolationException $ex) {
-            $logger->error('Some data might have been created before. Use option "--override" instead');
-            throw new RuntimeException('Some data might have been created before. Use option "--override" instead');
-        }
     }
 
     /**
