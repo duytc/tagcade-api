@@ -54,10 +54,11 @@ abstract class AdTagHandlerAbstract extends RoleHandlerAbstract
         }
 
         $parameters['adSlot'] = array_shift($myAdSlots)->getId();
-        $adTag[] =  parent::post($parameters);
+        $adTag =[];
+        $adTag[0] =  parent::post($parameters);
 
         if (count($myAdSlots) > 0) { // for multiple ad slots
-            $adTagLibraryId = $this->getDomainManager()->makeStandAlone($adTag);
+            $adTagLibraryId = $this->getDomainManager()->makeStandAlone($adTag[0]->getId());
             $adTag[] = $this->adTagGenerator->generateAdTagForMultiAdSlots($adTagLibraryId, $myAdSlots);
         }
 
