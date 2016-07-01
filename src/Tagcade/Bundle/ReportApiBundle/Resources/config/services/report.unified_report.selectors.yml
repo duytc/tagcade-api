@@ -289,6 +289,8 @@ services:
             - @tagcade.domain_manager.ad_network
             - @tagcade.domain_manager.site
             - @tagcade.domain_manager.ad_tag
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_report
+            - @tagcade.repository.report.unified_report.network.network_site_report
 
     tagcade.service.report.unified_report.report_comparison_creator:
         class: Tagcade\Service\Report\UnifiedReport\ReportComparisonCreator

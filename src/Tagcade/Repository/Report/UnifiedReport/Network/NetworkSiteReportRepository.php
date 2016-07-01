@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Type;
 use Tagcade\Entity\Report\UnifiedReport\Network\NetworkSiteReport;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 class NetworkSiteReportRepository extends AbstractReportRepository implements NetworkSiteReportRepositoryInterface
 {
@@ -109,5 +110,42 @@ class NetworkSiteReportRepository extends AbstractReportRepository implements Ne
             }
         }
         return $count;
+    }
+
+    /**
+     * @param Params $params
+     * @return array
+     */
+    public function getAllDistinctDomains(Params $params)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->select('r.domain')
+            ->distinct()
+            ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $params->getStartDate(), Type::DATE)
+            ->setParameter('end_date', $params->getEndDate(), Type::DATE)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param AdNetworkInterface $partner
+     * @param Params $params
+     * @return array
+     */
+    public function getAllDistinctDomainsForPartner(AdNetworkInterface $partner, Params $params)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->select('r.domain')
+            ->distinct()
+            ->where('r.adNetwork = :ad_network')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('ad_network', $partner)
+            ->setParameter('start_date', $params->getStartDate(), Type::DATE)
+            ->setParameter('end_date', $params->getEndDate(), Type::DATE)
+            ->getQuery()
+            ->getResult();
     }
 }
