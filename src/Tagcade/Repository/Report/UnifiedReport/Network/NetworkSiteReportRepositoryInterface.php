@@ -6,6 +6,7 @@ namespace Tagcade\Repository\Report\UnifiedReport\Network;
 
 use DateTime;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 interface NetworkSiteReportRepositoryInterface
 {
@@ -27,4 +28,17 @@ interface NetworkSiteReportRepositoryInterface
      * @return mixed
      */
     public function saveMultipleReport(array $reports, $override = false, $batchSize = null);
+
+    /**
+     * @param Params $params
+     * @return array
+     */
+    public function getAllDistinctDomains(Params $params);
+
+    /**
+     * @param AdNetworkInterface $partner
+     * @param Params $params
+     * @return array
+     */
+    public function getAllDistinctDomainsForPartner(AdNetworkInterface $partner, Params $params);
 }

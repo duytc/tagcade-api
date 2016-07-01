@@ -17,6 +17,8 @@ use Tagcade\Model\Report\UnifiedReport\ReportType\Network as NetworkReportTypes;
 use Tagcade\Model\Report\UnifiedReport\ReportType\Publisher as PublisherReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Repository\Report\UnifiedReport\Network\NetworkAdTagReportRepositoryInterface;
+use Tagcade\Repository\Report\UnifiedReport\Network\NetworkSiteReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
@@ -49,13 +51,21 @@ class ReportBuilder implements ReportBuilderInterface
     /** @var AdTagManagerInterface */
     protected $adTagManager;
 
+    /** @var NetworkAdTagReportRepositoryInterface */
+    protected $networkAdTagRepository;
+
+    /** @var NetworkSiteReportRepositoryInterface */
+    protected $networkSiteRepository;
+
     public function __construct(
         ReportSelectorInterface $reportSelector,
         DateUtilInterface $dateUtil,
         PublisherManagerInterface $userManager,
         AdNetworkManagerInterface $adNetworkManager,
         SiteManagerInterface $siteManager,
-        AdTagManagerInterface $adTagManager
+        AdTagManagerInterface $adTagManager,
+        NetworkAdTagReportRepositoryInterface $networkAdTagRepository,
+        NetworkSiteReportRepositoryInterface $networkSiteRepository
     )
     {
         $this->reportSelector = $reportSelector;
@@ -64,6 +74,8 @@ class ReportBuilder implements ReportBuilderInterface
         $this->adNetworkManager = $adNetworkManager;
         $this->siteManager = $siteManager;
         $this->adTagManager = $adTagManager;
+        $this->networkAdTagRepository = $networkAdTagRepository;
+        $this->networkSiteRepository = $networkSiteRepository;
     }
 
     /**
@@ -99,7 +111,7 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getAllDemandPartnersBySiteReport(PublisherInterface $publisher, Params $params)
     {
-        $domains = $this->siteManager->getUniqueDomainsForPublisher($publisher);
+        $domains = $this->networkSiteRepository->getAllDistinctDomains($params);
 
         $reportTypes = array_map(function ($domain) use ($publisher) {
             return $publisher instanceof SubPublisherInterface
@@ -131,10 +143,10 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getAllDemandPartnersByAdTagReport(PublisherInterface $publisher, Params $params)
     {
-        $adTags = $this->adTagManager->getAdTagsThatHavePartner($publisher, $uniquePartnerTagId = true);
+        $adTags = $this->networkAdTagRepository->getAllDistinctAdTags($params);
 
-        $reportTypes = array_map(function (AdTagInterface $adTag) use ($publisher) {
-            $partnerTagId = $adTag->getPartnerTagId();
+        $reportTypes = array_map(function (array $adTag) use ($publisher) {
+            $partnerTagId = $adTag['partnerTagId'];
 
             return $publisher instanceof SubPublisherInterface
                 ? new NetworkReportTypes\NetworkAdTagSubPublisher(null, $partnerTagId, $publisher)
@@ -187,7 +199,7 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getPartnerAllSitesBySitesReport(PublisherInterface $publisher, AdNetworkInterface $adNetwork, Params $params)
     {
-        $domains = $this->siteManager->getUniqueDomainsForPublisher($publisher);
+        $domains = $this->networkSiteRepository->getAllDistinctDomainsForPartner($adNetwork, $params);
 
         $reportTypes = array_map(function ($domain) use ($adNetwork, $publisher) {
             return $publisher instanceof SubPublisherInterface
@@ -203,12 +215,10 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getPartnerAllSitesByAdTagsReport(AdNetworkInterface $adNetwork, Params $params)
     {
-        $adTags = $adNetwork->getAdTags();
+        $adTags = $this->networkAdTagRepository->getAllDistinctAdTagsForPartner($adNetwork, $params);
 
-        $this->removeDuplicatedPartnerTagId($adTags);
-
-        $reportTypes = array_map(function (AdTagInterface $adTag) use ($adNetwork) {
-            return new NetworkReportTypes\NetworkAdTag($adNetwork, $adTag->getPartnerTagId());
+        $reportTypes = array_map(function (array $adTag) use ($adNetwork) {
+            return new NetworkReportTypes\NetworkAdTag($adNetwork, $adTag['partnerTagId']);
         }, $adTags);
 
         return $this->getReports($reportTypes, $params);
