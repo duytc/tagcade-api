@@ -114,6 +114,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
     /**
      * @Rest\Get("/adnetworks/{cname}/publishers")
+     * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      *
      * @Rest\View(serializerGroups={"adnetwork.credential", "user.uuid", "adtag.summary", "partner.summary"})
      *
@@ -130,9 +131,11 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * @return \Tagcade\Model\Core\AdNetworkInterface
      * @throws NotFoundHttpException when the resource does not exist
      */
-    public function getPublishersByCNameAction($cname)
+    public function getPublishersByCNameAction($cname, Request $request)
     {
-        return $this->get('tagcade.repository.ad_network')->getPartnerConfigurationForAllPublishers($cname);
+        $publisherId = $request->query->get('publisher', null);
+
+        return $this->get('tagcade.repository.ad_network')->getPartnerConfigurationForAllPublishers($cname, $publisherId);
     }
 
     /**
