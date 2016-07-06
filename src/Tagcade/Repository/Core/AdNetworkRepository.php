@@ -113,6 +113,8 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             ->join('r.networkPartner', 'np')
             ->where('p.enabled = true')
             ->andWhere('np.nameCanonical = :cname')
+            ->andWhere('r.username is not NULL')
+            ->andWhere('r.encryptedPassword is not NULL')
             ->setParameter('cname', $partnerCName)
             ->getQuery()
             ->getResult();
