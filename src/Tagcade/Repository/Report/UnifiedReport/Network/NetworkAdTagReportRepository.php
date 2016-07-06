@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Type;
 use Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagReport;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 class NetworkAdTagReportRepository extends AbstractReportRepository implements NetworkAdTagReportRepositoryInterface
 {
@@ -110,5 +111,42 @@ class NetworkAdTagReportRepository extends AbstractReportRepository implements N
             }
         }
         return $count;
+    }
+
+    /**
+     * @param Params $params
+     * @return array
+     */
+    public function getAllDistinctAdTags(Params $params)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->select('r.partnerTagId')
+            ->distinct()
+            ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $params->getStartDate(), Type::DATE)
+            ->setParameter('end_date', $params->getEndDate(), Type::DATE)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param AdNetworkInterface $partner
+     * @param Params $params
+     * @return array
+     */
+    public function getAllDistinctAdTagsForPartner(AdNetworkInterface $partner, Params $params)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb->select('r.partnerTagId')
+            ->distinct()
+            ->where('r.adNetwork = :adNetwork')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $params->getStartDate(), Type::DATE)
+            ->setParameter('end_date', $params->getEndDate(), Type::DATE)
+            ->setParameter('adNetwork', $partner)
+            ->getQuery()
+            ->getResult();
     }
 }

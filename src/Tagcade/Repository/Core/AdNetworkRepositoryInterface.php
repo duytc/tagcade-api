@@ -35,7 +35,7 @@ interface AdNetworkRepositoryInterface extends ObjectRepository
      */
     public function getAdNetworksForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null);
 
-    public function getPartnerConfigurationForAllPublishers($partnerCName, $withUnifiedReportModuleEnabled = true);
+    public function getPartnerConfigurationForAllPublishers($partnerCName, $publisherId, $withUnifiedReportModuleEnabled = true);
 
     /**
      * @param $publisher
