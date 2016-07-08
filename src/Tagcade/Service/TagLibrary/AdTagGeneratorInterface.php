@@ -13,5 +13,5 @@ interface AdTagGeneratorInterface
      * @param array $adSlots
      * @return mixed
      */
-    public function generateAdTagFromMultiAdSlot(LibraryAdTagInterface $adTagLibrary, array $adSlots);
+    public function generateAdTagForMultiAdSlots(LibraryAdTagInterface $adTagLibrary, array $adSlots);
 }

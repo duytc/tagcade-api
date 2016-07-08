@@ -27,8 +27,9 @@ class AdTagGenerator implements AdTagGeneratorInterface {
     /**
      * @inheritdoc
      */
-    public function generateAdTagFromMultiAdSlot(LibraryAdTagInterface $adTagLibrary, array $adSlots)
+    public function generateAdTagForMultiAdSlots(LibraryAdTagInterface $adTagLibrary, array $adSlots)
     {
+        $adTags = [];
         foreach ($adSlots as $adSlot) {
             if (!$adSlot instanceof BaseAdSlotInterface) {
                 throw new \InvalidArgumentException('Invalid the second parameter, expect ad slot');
@@ -42,6 +43,9 @@ class AdTagGenerator implements AdTagGeneratorInterface {
             $adTagObj->setAdSlot($adSlot);
 
             $this->adTagManager->save($adTagObj);
+            $adTags[] = $adTagObj;
         }
+
+        return $adTags;
     }
 } 

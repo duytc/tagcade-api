@@ -15,8 +15,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\InvalidFormException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
 /**
@@ -91,8 +93,18 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      */
     public function postAction(Request $request)
     {
+        if (!array_key_exists('adSlot', $request->request->all())) {
+            throw new InvalidArgumentException('Expect ad slot parameter');
+        }
+
+        $inputAdSlots = $request->request->get('adSlot');
+        if (null == $inputAdSlots) {
+            throw new InvalidArgumentException('Ad slot value is invalid');
+        }
+        $adSlotId = !is_array($inputAdSlots) ? [$inputAdSlots] : $inputAdSlots;
+
         /** @var BaseAdSlotInterface[] $adSlots */
-        $adSlots = $this->getAdSlots($request->request->get('adSlots', []));
+        $adSlots = $this->getAdSlots($adSlotId);
         $filteredAdSlots = [];
         $libAdSlotIdArray = [];
 
@@ -104,10 +116,37 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
             }
         }
 
-        $request->request->set('adSlots', $filteredAdSlots);
+        $request->request->set('adSlot', $filteredAdSlots);
 
         return $this->post($request);
     }
+
+    /**
+     * @param Request $request
+     * @return array|View|null|FormTypeInterface
+     * @throws \Exception
+     */
+    protected function post(Request $request)
+    {
+        try {
+            $newEntities = $this->getHandler()->post(
+                $request->request->all()
+            );
+
+            if ( null == $newEntities) {
+                throw new \Exception ('There is a error when creating ad tags');
+            }
+
+            $routeOptions = array(
+                '_format' => $request->get('_format')
+            );
+
+            return $this->redirectView($this->getGETRouteName(), Codes::HTTP_CREATED, $routeOptions);
+        } catch (InvalidFormException $exception) {
+            return $exception->getForm();
+        }
+    }
+
 
     /**
      * Update an existing adTag from the submitted data or create a new adTag

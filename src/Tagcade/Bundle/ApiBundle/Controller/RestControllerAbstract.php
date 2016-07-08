@@ -166,6 +166,10 @@ abstract class RestControllerAbstract extends FOSRestController
      */
     protected function addRedirectToResource($id, $statusCode, array $routeOptions)
     {
+        if (is_array($id)) {
+            
+        }
+
         if ($id instanceof ModelInterface) {
             $id = $id->getId();
         }

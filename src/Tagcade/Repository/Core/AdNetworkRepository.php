@@ -106,14 +106,24 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
         return $qb;
     }
 
-    public function getPartnerConfigurationForAllPublishers($partnerCName, $withUnifiedReportModuleEnabled = true)
+    public function getPartnerConfigurationForAllPublishers($partnerCName, $publisherId, $withUnifiedReportModuleEnabled = true)
     {
-        $result = $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r')
             ->join('r.publisher', 'p')
             ->join('r.networkPartner', 'np')
             ->where('p.enabled = true')
             ->andWhere('np.nameCanonical = :cname')
-            ->setParameter('cname', $partnerCName)
+            ->andWhere('r.username is not NULL')
+            ->andWhere('r.encryptedPassword is not NULL')
+            ->setParameter('cname', $partnerCName);
+
+        if(!!$publisherId) {
+            $qb
+                ->andWhere('p.id = :publisher_id')
+                ->setParameter('publisher_id', intval($publisherId));
+        }
+
+        $result = $qb
             ->getQuery()
             ->getResult();
 

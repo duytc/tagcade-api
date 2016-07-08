@@ -37,27 +37,31 @@ abstract class AdTagHandlerAbstract extends RoleHandlerAbstract
 
     /**
      * @param array $parameters
-     * @return \Tagcade\Model\ModelInterface|void
+     * @return \Tagcade\Model\ModelInterface
+     * @throws \Exception
      */
     public function post(array $parameters)
     {
         /** @var BaseAdSlotInterface[] $adSlots */
-        $adSlots = array_key_exists('adSlots', $parameters) ? $parameters['adSlots']: null;
-
-        if (array_key_exists('adSlots', $parameters) && count($adSlots) > 0) {
-            $parameters['adSlot'] = $adSlots[0]->getId();
-            unset ($parameters['adSlots']);
-            unset($adSlots[0]);
+        $adSlots = array_key_exists('adSlot', $parameters) ? $parameters['adSlot']: null;
+        if ($adSlots == null) {
+            throw new \Exception('Invalid ad slot field');
         }
 
-        $adTag =  parent::post($parameters);
+        $myAdSlots = !is_array($adSlots) ? [$adSlots] : $adSlots;
+        if (count($myAdSlots) < 1) {
+            throw new \Exception('Expect ad slot field');
+        }
 
-        if (count($adSlots) > 0) { // for multiple ad slots
-            $adTagLibraryId = $this->getDomainManager()->makeStandAlone($adTag);
-            $this->adTagGenerator->generateAdTagFromMultiAdSlot($adTagLibraryId, $adSlots);
+        $parameters['adSlot'] = array_shift($myAdSlots)->getId();
+        $adTag =[];
+        $adTag[0] =  parent::post($parameters);
+
+        if (count($myAdSlots) > 0) { // for multiple ad slots
+            $adTagLibraryId = $this->getDomainManager()->makeStandAlone($adTag[0]->getId());
+            $adTag[] = $this->adTagGenerator->generateAdTagForMultiAdSlots($adTagLibraryId, $myAdSlots);
         }
 
         return $adTag;
     }
-
 }
