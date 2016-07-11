@@ -88,7 +88,6 @@ class ReportImporter implements ReportImporterInterface
         if ($override === true) {
             if (count($adjustedCommonReports) > 0) {
                 $commonReports = $adjustedCommonReports;
-                $override = false;
             }
         }
 

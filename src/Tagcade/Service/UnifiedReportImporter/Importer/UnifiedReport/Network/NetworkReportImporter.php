@@ -40,7 +40,7 @@ class NetworkReportImporter extends ImporterAbstract implements NetworkReportImp
             return $report instanceof NetworkReport;
         });
 
-        $this->networkReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
+        $this->networkReportRepository->saveMultipleReport($reports, $this->getBatchSize());
 
         return true;
     }
