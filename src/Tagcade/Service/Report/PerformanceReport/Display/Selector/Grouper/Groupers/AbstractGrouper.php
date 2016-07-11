@@ -102,7 +102,8 @@ abstract class AbstractGrouper implements GrouperInterface
         }
 
         $this->setFillRate();
-        $this->estCpm = $this->calculateWeightedValue($reports, $frequency = 'estCpm', $weight = 'estRevenue');
+//        $this->estCpm = $this->calculateWeightedValue($reports, $frequency = 'estCpm', $weight = 'estRevenue');
+        $this->estCpm = $this->getRatio($this->getEstRevenue() * 1000, $this->getImpressions());
 
         // Calculate average for totalOpportunities,impressions and passbacks
         $reportCount = count($this->getReports());
