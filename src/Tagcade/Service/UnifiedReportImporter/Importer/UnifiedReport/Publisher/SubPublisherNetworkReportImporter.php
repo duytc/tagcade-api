@@ -40,7 +40,7 @@ class SubPublisherNetworkReportImporter extends ImporterAbstract implements SubP
             return $report instanceof SubPublisherNetworkReport;
         });
 
-        $this->subPublisherNetworkReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
+        $this->subPublisherNetworkReportRepository->saveMultipleReport($reports, $this->getBatchSize());
 
         return true;
     }

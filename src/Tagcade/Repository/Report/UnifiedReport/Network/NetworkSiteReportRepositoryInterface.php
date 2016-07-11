@@ -22,12 +22,11 @@ interface NetworkSiteReportRepositoryInterface
 
     /**
      * @param array $reports
-     * @param $override = false
      * @param $batchSize = null
      *
      * @return mixed
      */
-    public function saveMultipleReport(array $reports, $override = false, $batchSize = null);
+    public function saveMultipleReport(array $reports, $batchSize = null);
 
     /**
      * @param Params $params
