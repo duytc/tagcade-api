@@ -116,8 +116,8 @@ abstract class AbstractGrouper implements GrouperInterface
 
     protected function doGroupReport(ReportDataInterface $report)
     {
-        $this->addTotalOpportunities($report->getTotalOpportunities());
         $this->addImpressions($report->getImpressions());
+        $this->addTotalOpportunities($report->getTotalOpportunities());
         $this->addPassbacks($report->getPassbacks());
         $this->addTotalEstCpm($report->getEstCpm());
         $this->addEstRevenue($report->getEstRevenue());
