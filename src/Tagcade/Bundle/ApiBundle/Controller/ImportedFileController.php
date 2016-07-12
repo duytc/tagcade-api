@@ -46,7 +46,7 @@ class ImportedFileController extends FOSRestController implements ClassResourceI
         $importedFile->setHashType($hashType);
         $importedFile->setHash($hash);
 
-        return $this->get('tagcade_app.domain_manager.imported_file')->save($importedFile);
+        $this->get('tagcade_app.domain_manager.imported_file')->save($importedFile);
     }
 
     /**
