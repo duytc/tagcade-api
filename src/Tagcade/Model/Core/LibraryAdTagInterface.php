@@ -52,6 +52,8 @@ interface LibraryAdTagInterface extends ModelInterface
      */
     public function getAdTags();
 
+    public function addAdTag(AdTagInterface $adTag);
+
     /**
      * This indicate ad tag type: image, custom, etc..
      * get AdType

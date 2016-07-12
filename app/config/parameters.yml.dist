@@ -86,6 +86,8 @@ parameters:
             finalize-pattern: '$1x$2 (JS Sync)'
         native-ads:
             pattern: '/(\d+)_\d+ - DO NOT MODIFY/'
+        cpm-base:
+            use-size: true
 
     tc.bulk_upload.site.index:
         name: 0

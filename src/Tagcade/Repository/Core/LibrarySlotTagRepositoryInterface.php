@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 interface LibrarySlotTagRepositoryInterface extends ObjectRepository
@@ -35,4 +36,10 @@ interface LibrarySlotTagRepositoryInterface extends ObjectRepository
      * @return LibrarySlotTagInterface|null
      */
     public function getByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId);
+
+    /**
+     * @param LibraryAdTagInterface $libraryAdTag
+     * @return mixed
+     */
+    public function getByLibraryAdTag(LibraryAdTagInterface $libraryAdTag);
 }

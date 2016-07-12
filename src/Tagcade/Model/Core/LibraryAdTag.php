@@ -136,6 +136,17 @@ class LibraryAdTag implements LibraryAdTagInterface{
         return $this->adTags;
     }
 
+    public function addAdTag(AdTagInterface $adTag)
+    {
+        if( null === $this->adTags) {
+            $this->adTags = new ArrayCollection();
+        }
+
+        $this->adTags->add($adTag);
+        return $this;
+    }
+
+
     /**
      * This indicate ad tag type: image, custom, etc..
      * get AdType
