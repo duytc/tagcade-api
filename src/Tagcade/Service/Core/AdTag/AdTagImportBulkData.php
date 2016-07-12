@@ -167,7 +167,14 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $libraryAdTag = [];
 
         $demandPartnerName = $excelRow[$this->getDemandPartnerIndex()];
+        if(empty($demandPartnerName)) {
+            throw new \Exception('Demand Partner can not be empty!');
+        }
+
         $adNetworkValue = $this->getAdNetWorkByDemandPartNameForPublisher($demandPartnerName, $publisher);
+        if (null == $adNetworkValue) {
+            throw new \Exception(sprintf('Publisher %d has not demand partner name: %s', $publisher->getId(), $demandPartnerName));
+        }
 
         $adTagNameValue = $this->getNameValueForAdTagLibrary($excelRow);
         $htmlValue = $this->getHtmlValue($excelRow);
@@ -242,10 +249,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getPartnerTagIdForAdTagLibrary ($rawAdTag)
     {
-        if (array_key_exists(self::PARTNER_TAG_ID_KEY_OF_AD_TAG, $this->adTagConfigs)) {
-            if (array_key_exists($this->getPartnerTagIdIndex(), $rawAdTag)) {
-                return $rawAdTag[$this->getPartnerTagIdIndex()];
-            }
+        if (array_key_exists(self::PARTNER_TAG_ID_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPartnerTagIdIndex(), $rawAdTag)) {
+           return $rawAdTag[$this->getPartnerTagIdIndex()];
         }
 
         return self::PARTNER_TAG_ID_DEFAULT_VALUE_OF_AD_TAG;
@@ -258,10 +263,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getAdTypeValueForAdTagLibrary($rawAdTag)
     {
-        if (array_key_exists(self::AD_TYPE_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
-            if (array_key_exists($this->getAdTypeIndex(), $rawAdTag)) {
-                return $rawAdTag[$this->getAdTypeIndex()];
-            }
+        if (array_key_exists(self::AD_TYPE_KEY_OF_LIB_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getAdTypeIndex(), $rawAdTag)) {
+            return $rawAdTag[$this->getAdTypeIndex()];
         }
 
         return self::AD_TYPE_DEFAULT_VALUE_OF_LIB_AD_TAG;
@@ -274,10 +277,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getVisibleValueForAdTagLibrary($rawAdTag)
     {
-        if (array_key_exists(self::VISIBLE_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
-            if (array_key_exists($this->getVisibleIndex(), $rawAdTag)) {
-                return $rawAdTag[$this->getVisibleIndex()];
-            }
+        if (array_key_exists(self::VISIBLE_KEY_OF_LIB_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getVisibleIndex(), $rawAdTag)) {
+            return $rawAdTag[$this->getVisibleIndex()];
         }
 
         return self::VISIBLE_DEFAULT_VALUE_OF_LIB_AD_TAG;
@@ -290,10 +291,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getNameValueForAdTagLibrary($rawAdTag)
     {
-        if (array_key_exists(self::NAME_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
-            if (array_key_exists($this->getAdSlotNameIndex(), $rawAdTag)) {
-                return $rawAdTag[$this->getAdSlotNameIndex()];
-            }
+        if (array_key_exists(self::NAME_KEY_OF_LIB_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getAdSlotNameIndex(), $rawAdTag)) {
+            return $rawAdTag[$this->getAdSlotNameIndex()];
         }
 
         return $rawAdTag[$this->getDemandPartnerIndex()]; // Default name of ad tag is demand partner name
@@ -306,12 +305,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getNetworkOpportunityCapValue($rawAdTag)
     {
-        if (array_key_exists(self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs)) {
-            if(array_key_exists($this->getOpportunityCapIndex(), $rawAdTag)) {
-                return $rawAdTag[$this->getOpportunityCapIndex()];
-            } else {
-                throw new \Exception(sprintf('Not found %s in ad tag data', self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG));
-            }
+        if (array_key_exists(self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getOpportunityCapIndex(), $rawAdTag)) {
+          return $rawAdTag[$this->getOpportunityCapIndex()];
         }
 
         return self:: NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
@@ -324,12 +319,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getImpressionCapValue($rawAdTag)
     {
-        if (array_key_exists(self::IMPRESSION_CAP_KEY_OF_AD_TAG, $this->adTagConfigs)) {
-            if(array_key_exists($this->getImpressionCapIndex(), $rawAdTag)) {
-                return $rawAdTag[$this->getImpressionCapIndex()];
-            } else {
-                throw new \Exception(sprintf('Not found %s in ad tag data', self::IMPRESSION_CAP_KEY_OF_AD_TAG));
-            }
+        if (array_key_exists(self::IMPRESSION_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getImpressionCapIndex(), $rawAdTag)) {
+            return $rawAdTag[$this->getImpressionCapIndex()];
         }
 
         return self:: IMPRESSION_CAP_DEFAULT_VALUE;
@@ -341,13 +332,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getRotationValue($rawAdTag)
     {
-        if (array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
-            if(array_key_exists($this->getRotationIndex(), $rawAdTag)) {
+        if (array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getRotationIndex(),$rawAdTag)) {
                 return $rawAdTag[$this->getRotationIndex()];
-            } else {
-                throw new \Exception(sprintf('Not found %s in ad tag data', self::ROTATION_KEY_OF_AD_TAG));
-            }
-
         }
 
         return self:: ROTATION_DEFAULT_VALUE;
@@ -359,7 +345,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getFrequencyCapValue($rawAdTag)
     {
-        if (array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getFrequencyCapIndex(),$rawAdTag)) {
             return $rawAdTag[$this->getFrequencyCapIndex()];
         }
 
@@ -374,7 +360,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getPositionValue($rawAdTag)
     {
-        if (array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPositionIndex(),$rawAdTag)) {
             return $rawAdTag[$this->getPositionIndex()];
         }
 
@@ -388,7 +374,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getActiveValue($rawAdTag)
     {
-        if (array_key_exists(self::ACTIVE_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (array_key_exists(self::ACTIVE_KEY_OF_AD_TAG, $this->adTagConfigs)  && array_key_exists($this->getActiveIndex(),$rawAdTag)) {
             return $rawAdTag[$this->getActiveIndex()];
         }
         return self:: ACTIVE_DEFAULT_VALUE;

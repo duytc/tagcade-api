@@ -111,11 +111,10 @@ parameters:
             expressionAdSlot: 1
             startPosition: 2
             headerBidPrice: 3
-            expression: 4
-            condition: 5
-            conditionType: 6
-            comparison: 7
-            conditionValue: 8
+            condition: 4
+            conditionType: 5
+            comparison: 6
+            conditionValue: 7
     tc.bulk_upload.ad_tag.index:
         adSlotName: 0
         adNetwork: 1
