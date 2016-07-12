@@ -88,3 +88,39 @@ parameters:
             pattern: '/(\d+)_\d+ - DO NOT MODIFY/'
         google-adx:
             pattern: '#google_ad_client\s*=\s*.*\n\s*/\*\s*([^*]+)\s*\*/#'
+        cpm-base:
+            use-size: true
+
+    tc.bulk_upload.site.index:
+        name: 0
+        domain: 1
+        rtbStatus: 2
+        sourceReport: 3
+    tc.bulk_upload.display_ad_slot.index:
+        site: 0
+        name: 1
+        width: 2
+        height: 3
+        autoFit: 4
+        headerBidPrice: 5
+    tc.bulk_upload.dynamic_ad_slot:
+        index:
+            siteName: 0
+            dynamicAdSlotName: 1
+            defaultAdSlot: 2
+        expression_index:
+            dynamicAdSlotName: 0
+            expressionAdSlot: 1
+            startPosition: 2
+            headerBidPrice: 3
+            expression: 4
+            condition: 5
+            conditionType: 6
+            comparison: 7
+            conditionValue: 8
+    tc.bulk_upload.ad_tag.index:
+        adSlotName: 0
+        adNetwork: 1
+        html: 2
+        position: 3
+        rotation: 4

@@ -5,10 +5,14 @@ namespace Tagcade\Service\Core\AdTag;
 
 use Psr\Log\LoggerInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
+use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
+use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 
 class PartnerTagIdMatcher implements PartnerTagIdMatcherInterface
 {
+    const USE_SIZE_KEY = 'use-size';
     const PATTERN_KEY = 'pattern';
     const FINALIZE_PATTERN_KEY = 'finalize-pattern';
     const FIRST_PARENTHESIZED_MATCH = 1;
@@ -58,6 +62,31 @@ class PartnerTagIdMatcher implements PartnerTagIdMatcherInterface
         }
 
         $config = $this->configs[$partnerCName];
+        if (array_key_exists(self::USE_SIZE_KEY, $config) && filter_var($config[self::USE_SIZE_KEY], FILTER_VALIDATE_BOOLEAN) === true) {
+            if ($libraryAdTag->getVisible() === false) {
+                $adTag = $libraryAdTag->getAdTags()[0];
+                $adSlot = $adTag->getAdSlot();
+                if (!$adSlot instanceof DisplayAdSlotInterface) {
+                    return false;
+                }
+
+                return sprintf('%dx%d', $adSlot->getWidth(), $adSlot->getHeight());
+            }
+
+            $librarySlotTags = $libraryAdTag->getLibSlotTags();
+            if (count($librarySlotTags) > 1 || count($librarySlotTags) === 0) {
+                // library ad tag was deployed in multiple ad slot with different size
+                return false;
+            }
+
+            $libraryAdSlot = $librarySlotTags[0]->getLibraryAdSlot();
+            if (!$libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
+                // the ad slot is not Display Ad Slot
+                return false;
+            }
+
+            return sprintf('%dx%d', $libraryAdSlot->getWidth(), $libraryAdSlot->getHeight());
+        }
 
         if (!isset($config[self::FINALIZE_PATTERN_KEY]) || empty($config[self::FINALIZE_PATTERN_KEY])) {
             $res = preg_match($config[self::PATTERN_KEY], $libraryAdTag->getHtml(), $matches);
