@@ -78,6 +78,8 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
     const GROUP_VAL_ARRAY_VAL_KEY                                   =   'val';
     const GROUP_VAL_ARRAY_TYPE_KEY                                  =  'type';
 
+    const OPERATOR_DEFAULT_VALUE                                    =   'AND';
+
 
     protected static $OPERATOR      = [
         'AND'=>'AND',
@@ -472,7 +474,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
             $groupValueObjects[] = $groupValueObject;
         }
 
-        $groupType = $expressionForOneExpectAdSlots[0][$this->getExpressionValueIndexOfExpression()];
+        $groupType = $this->getOperatorValueOfExpression($expressionForOneExpectAdSlots[0]);
         $expressionDescriptorObject[self::EXPRESSION_ARRAY_GROUP_VAL_KEY] = $groupValueObjects;
         $expressionDescriptorObject[self::EXPRESSION_ARRAY_GROUP_TYPE_KEY] = $this->convertGroupType($groupType);
 
@@ -740,7 +742,11 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_CONDITION_VALUE_KEY];
     }
 
-    protected function getExpressionValueIndexOfExpression()
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function getOperatorIndexOfExpression()
     {
         if(!array_key_exists(self::EXPRESSION_INDEX_EXPRESSION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
         {
@@ -752,4 +758,17 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
 
     }
 
+    /**
+     * @param $expressionForOneExpectAdSlots
+     * @return string
+     */
+    protected function getOperatorValueOfExpression($expressionForOneExpectAdSlots)
+    {
+        if(array_key_exists(self::EXPRESSION_INDEX_EXPRESSION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            $index = $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_EXPRESSION_KEY];
+            return $expressionForOneExpectAdSlots[$index];
+        }
+
+        return self::OPERATOR_DEFAULT_VALUE;
+    }
 }
