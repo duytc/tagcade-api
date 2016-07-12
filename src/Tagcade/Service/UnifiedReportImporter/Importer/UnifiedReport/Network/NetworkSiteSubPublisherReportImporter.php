@@ -37,7 +37,7 @@ class NetworkSiteSubPublisherReportImporter extends ImporterAbstract implements 
             return $report instanceof NetworkSiteSubPublisherReport;
         });
 
-        $this->networkSiteSubPublisherReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
+        $this->networkSiteSubPublisherReportRepository->saveMultipleReport($reports, $this->getBatchSize());
 
         return true;
     }
