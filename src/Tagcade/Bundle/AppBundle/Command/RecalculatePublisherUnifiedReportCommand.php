@@ -12,12 +12,12 @@ use Tagcade\Repository\Report\UnifiedReport\Publisher\PublisherReportRepositoryI
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface;
 
-class RecalculatePublisherReportCommand extends ContainerAwareCommand
+class RecalculatePublisherUnifiedReportCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('tc:publisher-report:refresh')
+            ->setName('tc:unified-report:recalculate-publisher-report')
             ->addOption('publisher', null, InputOption::VALUE_REQUIRED, 'publisher id add data')
             ->addOption('start-date', null, InputOption::VALUE_REQUIRED, 'start date with format yyyy-mm-dd')
             ->addOption('end-date', null, InputOption::VALUE_OPTIONAL, 'end date with format yyyy-mm-dd')
@@ -65,10 +65,18 @@ class RecalculatePublisherReportCommand extends ContainerAwareCommand
                 new Params($date, $date, true, true)
             );
 
+            if (!$publisherReport) {
+                continue;
+            }
+
             $publisherReport1 = $reportBuilder->getAllDemandPartnersByDayReport(
                 $publisher,
                 new Params($date, $date, false, false)
-            )->getReports()[0];
+            );
+
+            if ($publisherReport1) {
+                $publisherReport1 = $publisherReport1->getReports()[0];
+            }
 
             if ($publisherReport1 instanceof PublisherReport) {
                 $output->writeln(sprintf('<info>%s - %s :</info>', $publisher->getUsername(), $date->format('Y-m-d')));
