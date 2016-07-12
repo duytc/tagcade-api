@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -99,4 +100,27 @@ interface SiteManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getUniqueDomainsForPublisher(PublisherInterface $publisher);
+
+    /**
+     * @param $siteToken
+     * @return mixed
+     */
+    public function getSiteBySiteToken($siteToken);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $siteName
+     * @return mixed
+     */
+    public function getSiteByPublisherAndSiteName(PublisherInterface $publisher, $siteName);
+
+    /**
+     * @param ModelInterface $sites
+     * @return mixed
+     */
+    public function persists(ModelInterface $sites);
+
+    public function flush();
+
+
 }

@@ -22,4 +22,18 @@ class LibraryAdTag extends LibraryAdTagModel {
     function __construct()
     {
     }
+
+    /**
+     * @param array $fieldValues
+     * @return LibraryAdTag
+     */
+    public static function createAdTagLibraryFromArray(array $fieldValues)
+    {
+        $adTagLibraryObject = new self();
+        foreach($fieldValues as $field=>$value) {
+            $method = sprintf('set%s', ucwords($field));
+            $adTagLibraryObject->$method($value);
+        }
+        return $adTagLibraryObject;
+    }
 }

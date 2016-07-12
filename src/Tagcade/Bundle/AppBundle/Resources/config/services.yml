@@ -126,3 +126,41 @@ services:
         arguments:
             - @tagcade_user.domain_manager.publisher
             - %rtb.exchanges%
+    tagcade_app.service.core.excel_file_processing:
+        class: Tagcade\Service\ExcelFileProcessing
+        arguments:
+            - @monolog.logger
+
+    tagcade_app.service.core.site.bulk_upload:
+        class: Tagcade\Service\Core\Site\SiteImportBulkData
+        arguments:
+            - @tagcade.domain_manager.site
+            - @tagcade_app.service.core.display_ad_slot.bulk_upload
+            - @tagcade_app.service.core.dynamic_ad_slot.bulk_upload
+            - %tc.bulk_upload.site.index%
+            - @monolog.logger
+    tagcade_app.service.core.display_ad_slot.bulk_upload:
+            class: Tagcade\Service\Core\AdSlot\DisplayAdSlotImportBulkData
+            arguments:
+                - @tagcade_app.service.core.ad_tag.bulk_upload
+                - @monolog.logger
+                - %tc.bulk_upload.display_ad_slot.index%
+
+    tagcade_app.service.core.dynamic_ad_slot.bulk_upload:
+            class: Tagcade\Service\Core\AdSlot\DynamicAdSlotImportBulkData
+            arguments:
+                - @tagcade.domain_manager.dynamic_ad_slot
+                - @tagcade.domain_manager.site
+                - @tagcade.domain_manager.library_expression
+                - @tagcade.domain_manager.library_ad_slot
+                - @tagcade.domain_manager.ad_slot
+                - @doctrine.orm.default_entity_manager
+                - @tagcade_api.service.expression_in_js_generator
+                - @monolog.logger
+                - %tc.bulk_upload.dynamic_ad_slot%
+    tagcade_app.service.core.ad_tag.bulk_upload:
+            class: Tagcade\Service\Core\AdTag\AdTagImportBulkData
+            arguments:
+                - @tagcade.domain_manager.ad_network
+                - @monolog.logger
+                - %tc.bulk_upload.ad_tag.index%

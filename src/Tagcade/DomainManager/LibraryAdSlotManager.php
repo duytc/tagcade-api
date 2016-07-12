@@ -220,4 +220,14 @@ class LibraryAdSlotManager implements LibraryAdSlotManagerInterface
 
         return $result;
     }
+
+    /**
+     * @param $libraryAdSlotName
+     * @return mixed|void
+     */
+    public function getLibraryAdSlotByName($libraryAdSlotName)
+    {
+        return $this->libraryAdSlotRepository->getLibraryAdSlotByName($libraryAdSlotName);
+    }
+
 }

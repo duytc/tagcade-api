@@ -419,4 +419,31 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSiteBySiteToken($siteToken)
+    {
+        if (!is_string($siteToken)) {
+            throw new InvalidArgumentException('expect an object of string');
+        }
+
+        $qb = $this->createQueryBuilder('s')
+            ->where('s.siteToken = :siteToken')
+            ->setParameter('siteToken', $siteToken, TYPE::STRING);
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+    public function getSiteByPublisherAndSiteName(PublisherInterface $publisher, $siteName)
+    {
+        $qb = $this->createQueryBuilderForPublisher($publisher);
+        $qb->andWhere('st.name = :siteName')
+           ->setParameter('siteName', $siteName);
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

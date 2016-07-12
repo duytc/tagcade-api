@@ -222,4 +222,17 @@ class LibraryAdSlotRepository extends EntityRepository implements LibraryAdSlotR
 
         return $qb;
     }
+
+    /**
+     * @param $libraryAdSlotName
+     * @return mixed|void
+     */
+    public function getLibraryAdSlotByName ($libraryAdSlotName)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->where('sl.name = :name')
+            ->setParameter('name', $libraryAdSlotName);
+
+        return $qb->getQuery()->getResult();
+    }
 } 

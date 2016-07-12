@@ -25,4 +25,18 @@ class AdTag extends AdTagModel
     {
     }
 
+    /**
+     * @param array $fieldValues
+     * @return AdTag
+     */
+    public static function createAdTagFromArray(array $fieldValues)
+    {
+        $adTagObject = new self();
+        foreach($fieldValues as $field=>$value) {
+            $method = sprintf('set%s', ucwords($field));
+            $adTagObject->$method($value);
+        }
+        return $adTagObject;
+    }
+
 }

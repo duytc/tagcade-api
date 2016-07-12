@@ -26,7 +26,10 @@ Tagcade\Entity\Core\Expression:
         libraryExpression:
             targetEntity: Tagcade\Entity\Core\LibraryExpression
             inversedBy: expressions
+            cascade: ['persist']
         expectAdSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+            cascade: ['persist']
         dynamicAdSlot:
             targetEntity: Tagcade\Entity\Core\DynamicAdSlot
+            cascade: ['persist']

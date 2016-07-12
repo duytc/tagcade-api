@@ -40,7 +40,6 @@ class AppKernel extends Kernel
 
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
-
         );
 
 //        if ($this->getEnvironment() == 'test') {

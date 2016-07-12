@@ -15,4 +15,19 @@ class DynamicAdSlot extends DynamicAdSlotModel
     {
         parent::__construct();
     }
+
+    /**
+     * @param $fieldValues
+     * @return DynamicAdSlot
+     */
+    public static function createDynamicAdSlotFromArray($fieldValues)
+    {
+        $dynamicAdSlot = new self();
+        foreach ($fieldValues as $field=>$value) {
+            $method = sprintf('set%s', ucwords($field));
+            $dynamicAdSlot->$method($value);
+        }
+
+        return $dynamicAdSlot;
+    }
 }

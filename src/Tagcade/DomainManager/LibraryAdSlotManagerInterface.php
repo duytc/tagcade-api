@@ -58,4 +58,10 @@ interface LibraryAdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getUnReferencedLibraryAdSlotForSite(SiteInterface $site, $limit = null, $offset = null);
+
+    /**
+     * @param $libraryAdSlotName
+     * @return mixed
+     */
+    public function getLibraryAdSlotByName($libraryAdSlotName);
 }

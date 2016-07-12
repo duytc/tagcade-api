@@ -27,4 +27,19 @@ class Site extends SiteModel
     {
         parent::__construct();
     }
+
+    /**
+     * @param array $fieldValues
+     * @return Site
+     */
+    public static function createSiteFromArray(array $fieldValues)
+    {
+        $site = new self();
+        foreach ($fieldValues as $nameField=>$value) {
+            $method = sprintf('set%s',ucwords($nameField));
+            $site->$method($value);
+        }
+
+        return $site;
+    }
 }

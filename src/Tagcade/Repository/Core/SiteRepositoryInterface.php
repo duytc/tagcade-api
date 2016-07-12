@@ -168,4 +168,18 @@ interface SiteRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getSiteHavingAdTagBelongsToAdNetworkFilterByPublisher(AdNetworkInterface $adNetwork, $publisher = null);
+
+    /**
+     * @param $siteToken
+     * @return mixed
+     */
+    public function getSiteBySiteToken($siteToken);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $domainName
+     * @return mixed
+     */
+    public function getSiteByPublisherAndSiteName(PublisherInterface $publisher, $domainName);
+
 }

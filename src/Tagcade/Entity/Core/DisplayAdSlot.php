@@ -20,4 +20,19 @@ class DisplayAdSlot extends DisplayAdSlotModel
     {
         parent::__construct();
     }
+
+    /**
+     * @param array $fieldValues
+     * @return DisplayAdSlot
+     */
+    public static function createDisplayAdSlotFromArray(array $fieldValues)
+    {
+        $displayAdSlotObject = new self();
+        foreach ($fieldValues as $field=>$value) {
+            $method = sprintf('set%s', ucwords($field));
+            $displayAdSlotObject->$method($value);
+        }
+
+        return $displayAdSlotObject;
+    }
 }

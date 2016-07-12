@@ -547,4 +547,41 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         return $qb;
     }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $siteName
+     * @param $adSlotName
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getAdSlotBySiteNameAndAdSlotNameForPublisher( PublisherInterface $publisher, $siteName, $adSlotName)
+    {
+        $qb = $this->createQueryBuilder('sl');
+        $qb->leftJoin('sl.site', 'st')
+            ->leftJoin('sl.libraryAdSlot', 'lsl')
+            ->andWhere('st.name = :name')
+            ->andWhere('st.publisher = :publisher_id')
+            ->andWhere('lsl.name = :library_ad_slot_name')
+            ->setParameter('name', $siteName)
+            ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
+            ->setParameter('library_ad_slot_name', $adSlotName, TYPE::STRING);
+
+        return $qb->getQuery()->getResult();
+    }
+
+
+    public function getAdSlotByNameForPublisher( PublisherInterface $publisher, $adSlotName)
+    {
+        $qb = $this->createQueryBuilder('sl');
+        $qb->leftJoin('sl.site', 'st')
+            ->leftJoin('sl.libraryAdSlot', 'lsl')
+            ->andWhere('st.publisher = :publisher_id')
+            ->andWhere('lsl.name = :library_ad_slot_name')
+            ->setParameter('publisher_id', $publisher->getId(), TYPE::INTEGER)
+            ->setParameter('library_ad_slot_name', $adSlotName, TYPE::STRING);
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

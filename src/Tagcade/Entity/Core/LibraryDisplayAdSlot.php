@@ -20,4 +20,20 @@ class LibraryDisplayAdSlot extends LibraryDisplayAdSlotModel
 
     public function __construct()
     {}
+
+    /**
+     * @param array $fieldValues
+     * @return LibraryDisplayAdSlot
+     */
+    public static function createLibraryDisplayAdSlotFromArray(array $fieldValues)
+    {
+        $libraryAdSlotObject = new self();
+        foreach ($fieldValues as $field=>$value) {
+            $method = sprintf('set%s', ucwords($field));
+            $libraryAdSlotObject->$method($value);
+        }
+
+        return $libraryAdSlotObject;
+    }
+
 }

@@ -122,4 +122,19 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getReportableAdSlotQuery(PublisherInterface $publisher, PagerParam $param, $limit = null, $offset = null );
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $siteName
+     * @param $adSlotName
+     * @return mixed
+     */
+    public function getAdSlotBySiteNameAndAdSlotNameForPublisher( PublisherInterface $publisher, $siteName, $adSlotName);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $adSlotName
+     * @return mixed
+     */
+    public function getAdSlotByNameForPublisher( PublisherInterface $publisher, $adSlotName);
 }

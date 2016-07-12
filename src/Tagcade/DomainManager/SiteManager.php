@@ -194,4 +194,40 @@ class SiteManager implements SiteManagerInterface
     {
         return $this->repository->getUniqueDomainsForPublisher($publisher);
     }
+
+    /**
+     * @param $siteToken
+     * @return mixed
+     */
+    public function getSiteBySiteToken($siteToken)
+    {
+        return $this->repository->getSiteBySiteToken($siteToken);
+    }
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $siteName
+     * @return mixed
+     */
+    public function getSiteByPublisherAndSiteName(PublisherInterface $publisher, $siteName)
+    {
+        return $this->repository->getSiteByPublisherAndSiteName($publisher, $siteName);
+    }
+
+    /**
+     * @param ModelInterface $site
+     * @return mixed|void
+     */
+    public function persists(ModelInterface $site)
+    {
+         $this->om->persist($site);
+    }
+
+    /**
+     * Flush message to data base
+     */
+    public function flush()
+    {
+        $this->om->flush();
+    }
 }

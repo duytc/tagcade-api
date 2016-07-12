@@ -16,4 +16,19 @@ class LibraryExpression extends LibraryExpressionModel {
     function __construct()
     {
     }
+
+    /**
+     * @param array $fieldValues
+     * @return LibraryExpression
+     */
+    public static function createLibraryExpression(array $fieldValues)
+    {
+        $libraryExpression = new self();
+
+        foreach ($fieldValues as $field=>$value) {
+            $method = sprintf('set%s', ucwords($field));
+            $libraryExpression->$method($value);
+        }
+        return $libraryExpression;
+    }
 }

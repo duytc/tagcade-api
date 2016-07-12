@@ -79,4 +79,10 @@ interface LibraryAdSlotRepositoryInterface extends ObjectRepository
      * @return \Doctrine\ORM\QueryBuilder|mixed
      */
     public function getLibraryAdSlotsWithPagination(UserRoleInterface $user, PagerParam $param);
+
+    /**
+     * @param $libraryAdSlotName
+     * @return mixed
+     */
+    public function getLibraryAdSlotByName($libraryAdSlotName);
 }

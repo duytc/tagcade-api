@@ -21,4 +21,19 @@ class LibraryDynamicAdSlot extends LibraryDynamicAdSlotModel
     {
         $this->libraryExpressions = new ArrayCollection();
     }
+
+    /**
+     * @param array $fieldValues
+     * @return LibraryDynamicAdSlot
+     */
+    public static function createLibraryDynamicAdSlotFromArray(array $fieldValues)
+    {
+        $libraryDynamicAdSlot = new self();
+
+        foreach ($fieldValues as $field=>$value) {
+            $method = sprintf('set%s',ucwords($field));
+            $libraryDynamicAdSlot->$method($value);
+        }
+        return $libraryDynamicAdSlot;
+    }
 }

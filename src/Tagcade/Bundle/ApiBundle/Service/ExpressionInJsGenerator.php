@@ -134,6 +134,22 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
     }
 
     /**
+     * @param array $descriptor
+     * @return array|\array[ [name:'', type: '], [name:'', type: ']] , 'expression'=>'')
+     * @throws InvalidFormatException
+     */
+    public function generateExpressionInJsFromDescriptor(array $descriptor)
+    {
+        if (null == $descriptor || count($descriptor) < 1) {
+            return array('vars' => [], 'expression' => '');
+        }
+
+        $this->validateExpressionDescriptor($descriptor);
+
+        return $this->simplifyExpression($descriptor);
+    }
+
+    /**
      * simplify Expression, converting from descriptor structure with groupType, etc. into object containing string expression and all available variables
      *
      * @param array $expressionDescriptor
