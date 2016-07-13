@@ -61,12 +61,14 @@ class ReportImporter implements ReportImporterInterface
     public function importReports(AdNetworkInterface $adNetwork, array $reports, $override)
     {
         $commonReports = $this->commonReportSubPublisherHandler->generateCommonReports($adNetwork, $reports, $override);
+        $commonSubPubReports = $commonReports;
         if (count($commonReports) === 0) {
-            $this->logger->info(sprintf('%d raw reports given, %d common report generated'), count($reports), count($commonReports));
+            $this->logger->info(sprintf('%d raw reports given, %d common report generated', count($reports), count($commonReports)));
             return false;
         }
 
         $adjustedCommonReports = [];
+        $adjustedSubPubCommonReports = [];
         foreach($this->importers as $importer) {
             if ($importer instanceof NetworkDomainAdTagReportImporterInterface) {
                 $networkDomainAdTagReports = $this->unifiedReportGenerator->generateNetworkDomainAdTagReports($commonReports);
@@ -77,9 +79,9 @@ class ReportImporter implements ReportImporterInterface
             }
 
             if ($importer instanceof NetworkDomainAdTagSubPublisherReportImporterInterface) {
-                $networkDomainAdTagSubPublisherReports = $this->unifiedReportGenerator->generateNetworkDomainAdTagForSubPublisherReports($commonReports);
+                $networkDomainAdTagSubPublisherReports = $this->unifiedReportGenerator->generateNetworkDomainAdTagForSubPublisherReports($commonSubPubReports);
                 $this->logger->info(sprintf('start importing unified report for importer %s', get_class($importer)));
-                $importer->importReports($networkDomainAdTagSubPublisherReports, $override);
+                $adjustedSubPubCommonReports = $importer->importReports($networkDomainAdTagSubPublisherReports, $override);
                 unset($networkDomainAdTagSubPublisherReports);
                 continue;
             }
@@ -88,6 +90,10 @@ class ReportImporter implements ReportImporterInterface
         if ($override === true) {
             if (count($adjustedCommonReports) > 0) {
                 $commonReports = $adjustedCommonReports;
+            }
+
+            if (count($adjustedSubPubCommonReports) > 0) {
+                $commonSubPubReports = $adjustedSubPubCommonReports;
             }
         }
 
@@ -105,13 +111,13 @@ class ReportImporter implements ReportImporterInterface
                 unset($networkSiteReports);
             }
             elseif ($importer instanceof NetworkSiteSubPublisherReportImporterInterface) {
-                $networkSiteSubPublisherReports = $this->unifiedReportGenerator->generateNetworkSiteForSubPublisherReports($commonReports);
+                $networkSiteSubPublisherReports = $this->unifiedReportGenerator->generateNetworkSiteForSubPublisherReports($commonSubPubReports);
                 $this->logger->info(sprintf('start importing unified report for importer %s', get_class($importer)));
                 $importer->importReports($networkSiteSubPublisherReports, $override);
                 unset($networkSiteReports);
             }
             elseif ($importer instanceof NetworkAdTagSubPublisherReportImporterInterface) {
-                $networkAdTagSubPublisherReports = $this->unifiedReportGenerator->generateNetworkAdTagForSubPublisherReports($commonReports);
+                $networkAdTagSubPublisherReports = $this->unifiedReportGenerator->generateNetworkAdTagForSubPublisherReports($commonSubPubReports);
                 $this->logger->info(sprintf('start importing unified report for importer %s', get_class($importer)));
                 $importer->importReports($networkAdTagSubPublisherReports, $override);
                 unset($networkSiteReports);
@@ -129,12 +135,12 @@ class ReportImporter implements ReportImporterInterface
                 unset($publisherReports);
             }
             elseif ($importer instanceof SubPublisherReportImporterInterface) {
-                $subPublisherReports = $this->unifiedReportGenerator->generateSubPublisherReport($commonReports);
+                $subPublisherReports = $this->unifiedReportGenerator->generateSubPublisherReport($commonSubPubReports);
                 $this->logger->info(sprintf('start importing unified report for importer %s', get_class($importer)));
                 $importer->importReports($subPublisherReports, $override);
                 unset($subPublisherReports);
             } elseif ($importer instanceof SubPublisherNetworkReportImporterInterface) {
-                $subPublisherNetworkReports = $this->unifiedReportGenerator->generateSubPublisherNetworkReport($commonReports);
+                $subPublisherNetworkReports = $this->unifiedReportGenerator->generateSubPublisherNetworkReport($commonSubPubReports);
                 $this->logger->info(sprintf('start importing unified report for importer %s', get_class($importer)));
                 $importer->importReports($subPublisherNetworkReports, $override);
                 unset($subPublisherNetworkReports);

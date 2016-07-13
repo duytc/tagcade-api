@@ -37,8 +37,6 @@ class NetworkDomainAdTagSubPublisherReportImporter extends ImporterAbstract impl
             return $report instanceof NetworkDomainAdTagSubPublisherReport;
         });
 
-        $this->networkDomainAdTagSubPublisherReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
-
-        return true;
+        return $this->networkDomainAdTagSubPublisherReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
     }
 }

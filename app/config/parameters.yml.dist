@@ -86,6 +86,8 @@ parameters:
             finalize-pattern: '$1x$2 (JS Sync)'
         native-ads:
             pattern: '/(\d+)_\d+ - DO NOT MODIFY/'
+        google-adx:
+            pattern: '#google_ad_client\s*=\s*.*\n\s*/\*\s*([^*]+)\s*\*/#'
         cpm-base:
             use-size: true
 
@@ -111,10 +113,11 @@ parameters:
             expressionAdSlot: 1
             startPosition: 2
             headerBidPrice: 3
-            condition: 4
-            conditionType: 5
-            comparison: 6
-            conditionValue: 7
+            expression: 4
+            condition: 5
+            conditionType: 6
+            comparison: 7
+            conditionValue: 8
     tc.bulk_upload.ad_tag.index:
         adSlotName: 0
         adNetwork: 1
