@@ -87,4 +87,44 @@ class SubPublisherReportRepository extends AbstractReportRepository implements S
         }
         return $count;
     }
+
+    public function overrideSingleReport(SubPublisherReport $report)
+    {
+        $sql = 'INSERT INTO `unified_report_publisher_sub_publisher`
+                    (sub_publisher_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks)
+                    VALUES (:subPublisherId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks)
+                    ON DUPLICATE KEY UPDATE
+                    est_revenue = :estRevenue,
+                    impressions = :impressions,
+                    total_opportunities = :totalOpportunities,
+                    passbacks = :passbacks,
+                    fill_rate = :impressions / :totalOpportunities,
+                    est_cpm = 1000 * :estRevenue / :impressions
+                    ';
+        $connection = $this->getEntityManager()->getConnection();
+        $qb = $connection->prepare($sql);
+
+        $qb->bindValue('subPublisherId', $report->getSubPublisherId(), Type::INTEGER);
+        $qb->bindValue('date', $report->getDate(), Type::DATE);
+        $qb->bindValue('name', $report->getName());
+        $qb->bindValue('estCpm', $report->getEstCpm() !== null ? $report->getEstCpm() : 0, Type::FLOAT);
+        $qb->bindValue('estRevenue', $report->getEstRevenue() !== null ? $report->getEstRevenue() : 0, Type::FLOAT);
+        $qb->bindValue('fillRate', $report->getFillRate() !== null ? $report->getFillRate() : 0, Type::FLOAT);
+        $qb->bindValue('impressions', $report->getImpressions() !== null ? $report->getImpressions() : 0, Type::INTEGER);
+        $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
+        $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
+        ;
+        $connection->beginTransaction();
+
+        try {
+            if (false === $qb->execute()) {
+                throw new \Exception('Execute error');
+            }
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+        $connection->commit();
+
+        return true;
+    }
 }

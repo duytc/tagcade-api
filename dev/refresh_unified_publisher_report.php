@@ -6,19 +6,19 @@ use AppKernel;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Entity\Report\UnifiedReport\Publisher\PublisherReport;
+use Tagcade\Entity\Report\UnifiedReport\Publisher\SubPublisherReport;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Report\UnifiedReport\Publisher\SubPublisherReportRepositoryInterface;
 use Tagcade\Repository\Report\UnifiedReport\Publisher\PublisherReportRepositoryInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\HistoryReportCreator;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface;
 
 const PUBLISHER_ID = 2;
-$START_DATE = new DateTime('2016-05-09');
+$START_DATE = new DateTime('2016-06-09');
 $END_DATE = new DateTime('2016-06-15');
 
 $today = new DateTime('today');
@@ -48,6 +48,10 @@ echo 'Recalculating unified publisher report' . "\n";
 $reportBuilder = $container->get('tagcade.service.report.unified_report.selector.report_builder');
 /** @var PublisherReportRepositoryInterface $publisherReportRepository */
 $publisherReportRepository = $container->get('tagcade.repository.report.unified_report.publisher.publisher_report');
+
+/** @var SubPublisherReportRepositoryInterface $subPublisherReportRepository */
+$subPublisherReportRepository = $container->get('tagcade.repository.report.unified_report.publisher.sub_publisher_report');
+
 $publisher = $publisherManager->find(PUBLISHER_ID);
 
 if (!$publisher instanceof PublisherInterface) {
@@ -63,13 +67,32 @@ $start = microtime(true);
 foreach ($dateRange as $date) {
     echo sprintf("%s processing... @ %s\n", $date->format('Y-m-d'), date('c'));
 
+    refreshPublisherReport($publisher, $date);
+
+    $subPublishers = $publisher->getSubPublishers();
+
+    /** @var PublisherInterface $subPublisher */
+    foreach($subPublishers as $subPublisher) {
+        refreshSubPublisherReport($subPublisher, $date);
+    }
+
+    gc_collect_cycles();
+}
+
+echo 'All changes flushed to database' . "\n";
+$totalTime = microtime(true) - $start;
+echo sprintf('DONE after %d ms' . "\n", $totalTime) ;
+
+function refreshPublisherReport(PublisherInterface $publisher, \DateTime $date) {
+
+    global $reportBuilder, $publisherReportRepository;
     $aggregatedPublisherReport = $reportBuilder->getAllDemandPartnersByPartnerReport(
         $publisher,
         new Params($date, $date, true, true)
     );
 
     if (!$aggregatedPublisherReport) {
-        continue;
+        return;
     }
 
     $publisherReport = $reportBuilder->getAllDemandPartnersByDayReport(
@@ -82,13 +105,13 @@ foreach ($dateRange as $date) {
     }
 
     if ($publisherReport instanceof PublisherReport) {
-        echo sprintf('%s - %s :', $publisher->getUsername(), $date->format('Y-m-d')) . "\n";
+        echo sprintf('Publisher - %s :', $publisher->getUsername()) . "\n";
         echo sprintf("\tImpressions: %d ---> %d", $publisherReport->getImpressions(), $aggregatedPublisherReport->getImpressions()) . "\n";
         echo sprintf("\tOpportunities: %d ---> %d", $publisherReport->getTotalOpportunities(), $aggregatedPublisherReport->getTotalOpportunities()) . "\n";
         echo sprintf("\tPassbacks: %d ---> %d", $publisherReport->getPassbacks(), $aggregatedPublisherReport->getPassbacks()) . "\n";
-        echo sprintf("\tFill Rate: %f ---> %f", $publisherReport->getFillRate(), $aggregatedPublisherReport->getFillRate()) . "\n";
-        echo sprintf("\tEstimated CPM: %f ---> %f", $publisherReport->getEstCpm(), $aggregatedPublisherReport->getEstCpm()) . "\n";
-        echo sprintf("\tEstimated Revenue: %f ---> %f", $publisherReport->getEstRevenue(), $aggregatedPublisherReport->getEstRevenue()) . "\n";
+        echo sprintf("\tFill Rate: %g ---> %g", $publisherReport->getFillRate(), $aggregatedPublisherReport->getFillRate()) . "\n";
+        echo sprintf("\tEstimated CPM: %g ---> %g", $publisherReport->getEstCpm(), $aggregatedPublisherReport->getEstCpm()) . "\n";
+        echo sprintf("\tEstimated Revenue: %g ---> %g", $publisherReport->getEstRevenue(), $aggregatedPublisherReport->getEstRevenue()) . "\n";
 
         $report = new PublisherReport();
         $report->setName($publisher->getUsername())
@@ -104,11 +127,52 @@ foreach ($dateRange as $date) {
 
         $publisherReportRepository->overrideSingleReport($report);
     }
-
-    gc_collect_cycles();
 }
 
-echo 'All changes flushed to database' . "\n";
-$totalTime = microtime(true) - $start;
-echo sprintf('DONE after %d ms' . "\n", $totalTime) ;
+function refreshSubPublisherReport(PublisherInterface $subPublisher, $date) {
+    global $reportBuilder, $subPublisherReportRepository;
+    $aggregatedSubPublisherReport = $reportBuilder->getAllDemandPartnersByPartnerReport(
+        $subPublisher,
+        new Params($date, $date, true, true)
+    );
+
+    if (!$aggregatedSubPublisherReport) {
+        return;
+    }
+
+    $subPublisherReport = $reportBuilder->getAllDemandPartnersByDayReport(
+        $subPublisher,
+        new Params($date, $date, false, false)
+    );
+
+    if ($subPublisherReport) {
+        $subPublisherReport = $subPublisherReport->getReports()[0];
+    }
+
+    if ($subPublisherReport instanceof SubPublisherReport) {
+        echo sprintf('SubPublisher - %s :', $subPublisher->getUsername()) . "\n";
+        echo sprintf("\tImpressions: %d ---> %d", $subPublisherReport->getImpressions(), $aggregatedSubPublisherReport->getImpressions()) . "\n";
+        echo sprintf("\tOpportunities: %d ---> %d", $subPublisherReport->getTotalOpportunities(), $aggregatedSubPublisherReport->getTotalOpportunities()) . "\n";
+        echo sprintf("\tPassbacks: %d ---> %d", $subPublisherReport->getPassbacks(), $aggregatedSubPublisherReport->getPassbacks()) . "\n";
+        echo sprintf("\tFill Rate: %g ---> %g", $subPublisherReport->getFillRate(), $aggregatedSubPublisherReport->getFillRate()) . "\n";
+        echo sprintf("\tEstimated CPM: %g ---> %g", $subPublisherReport->getEstCpm(), $aggregatedSubPublisherReport->getEstCpm()) . "\n";
+        echo sprintf("\tEstimated Revenue: %g ---> %g", $subPublisherReport->getEstRevenue(), $aggregatedSubPublisherReport->getEstRevenue()) . "\n";
+
+        $report = new SubPublisherReport();
+        $report->setName($subPublisher->getUsername())
+            ->setTotalOpportunities($aggregatedSubPublisherReport->getTotalOpportunities())
+            ->setImpressions($aggregatedSubPublisherReport->getImpressions())
+            ->setPassbacks($aggregatedSubPublisherReport->getPassbacks())
+            ->setFillRate()
+            ->setSubPublisher($subPublisher)
+            ->setDate($date)
+            ->setEstRevenue($aggregatedSubPublisherReport->getEstRevenue())
+            ->setEstCpm($aggregatedSubPublisherReport->getEstCpm())
+        ;
+
+        $subPublisherReportRepository->overrideSingleReport($report);
+    }
+}
+
+
 
