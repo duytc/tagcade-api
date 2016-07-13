@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Report\UnifiedReport\Publisher;
 
 
 use DateTime;
+use Tagcade\Entity\Report\UnifiedReport\Publisher\PublisherReport;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface PublisherReportRepositoryInterface
@@ -25,4 +26,10 @@ interface PublisherReportRepositoryInterface
      * @return mixed
      */
     public function saveMultipleReport(array $reports, $batchSize = null);
+
+    /**
+     * @param PublisherReport $report
+     * @return mixed
+     */
+    public function overrideSingleReport(PublisherReport $report);
 }
