@@ -89,11 +89,11 @@ class ReportImporter implements ReportImporterInterface
 
         if ($override === true) {
             if (count($adjustedCommonReports) > 0) {
-                $commonReports = $adjustedCommonReports;
+                $this->mergeNetworkDomainAdTagReports($commonReports, $adjustedCommonReports);
             }
 
             if (count($adjustedSubPubCommonReports) > 0) {
-                $commonSubPubReports = $adjustedSubPubCommonReports;
+                $this->mergeNetworkDomainAdTagSubPubReports($commonSubPubReports, $adjustedSubPubCommonReports);
             }
         }
 
@@ -148,5 +148,68 @@ class ReportImporter implements ReportImporterInterface
         }
 
         return true;
+    }
+
+    protected function mergeNetworkDomainAdTagReports(array &$commonReports, array &$adjustedCommonReports)
+    {
+        foreach($adjustedCommonReports as $adjustedCommonReport) {
+            foreach($commonReports as $commonReport) {
+                if ($this->mergeNetworkDomainAdTagReportsIfMatched($commonReport, $adjustedCommonReport) === true) {
+                    continue;
+                }
+            }
+        }
+    }
+
+    protected function mergeNetworkDomainAdTagReportsIfMatched(CommonReport &$commonReport, CommonReport &$adjustedCommonReport)
+    {
+        if ($commonReport->getAdNetwork()->getId() === $adjustedCommonReport->getAdNetwork()->getId() &&
+            $commonReport->getSite() === $adjustedCommonReport->getSite() &&
+            $commonReport->getAdTagId() === $adjustedCommonReport->getAdTagId()
+        ) {
+            $commonReport
+                ->setOpportunities($adjustedCommonReport->getOpportunities())
+                ->setImpressions($adjustedCommonReport->getImpressions())
+                ->setPassbacks($adjustedCommonReport->getPassbacks())
+                ->setFillRate($adjustedCommonReport->getFillRate())
+                ->setEstCpm($adjustedCommonReport->getEstCpm())
+                ->setEstRevenue($adjustedCommonReport->getEstRevenue())
+            ;
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function mergeNetworkDomainAdTagSubPubReports(array &$commonReports, array &$adjustedCommonReports)
+    {
+        foreach($adjustedCommonReports as $adjustedCommonReport) {
+            foreach($commonReports as $commonReport) {
+                if ($this->mergeNetworkDomainAdTagSubPubReportsIfMatched($commonReport, $adjustedCommonReport) === true) {
+                    continue;
+                }
+            }
+        }
+    }
+
+    protected function mergeNetworkDomainAdTagSubPubReportsIfMatched(CommonReport &$commonReport, CommonReport &$adjustedCommonReport)
+    {
+        if ($commonReport->getAdNetwork()->getId() === $adjustedCommonReport->getAdNetwork()->getId() &&
+            $commonReport->getSite() === $adjustedCommonReport->getSite() &&
+            $commonReport->getAdTagId() === $adjustedCommonReport->getAdTagId() &&
+            $commonReport->getSubPublisher()->getId() === $adjustedCommonReport->getSubPublisher()->getId()
+        ) {
+            $commonReport
+                ->setOpportunities($adjustedCommonReport->getOpportunities())
+                ->setImpressions($adjustedCommonReport->getImpressions())
+                ->setPassbacks($adjustedCommonReport->getPassbacks())
+                ->setFillRate($adjustedCommonReport->getFillRate())
+                ->setEstCpm($adjustedCommonReport->getEstCpm())
+                ->setEstRevenue($adjustedCommonReport->getEstRevenue())
+            ;
+            return true;
+        }
+
+        return false;
     }
 }
