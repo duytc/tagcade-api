@@ -3,10 +3,12 @@
 namespace Tagcade\Bundle\AppBundle\Command;
 
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 
@@ -75,7 +77,9 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
 
             if (($opportunityCap > 0 && $opportunityCap <= $opportunityCount) || ($impressionCap > 0 && $impressionCap <= $impressionCount)) {
                 $logger->info(sprintf('Ad network %d will be PAUSED shortly', $nw->getId()));
-                $adTagManager->updateAdTagStatusForAdNetwork($nw, $active = AdTagInterface::AUTO_PAUSED);
+                $cmd = sprintf('%s tc:ad-tag-status:update %d --status %d', $this->getAppConsoleCommand(), $adNetwork->getId(), AdTagInterface::AUTO_PAUSED);
+                $this->executeProcess($process = new Process($cmd), [], $logger);
+//                $adTagManager->updateAdTagStatusForAdNetwork($nw, $active = AdTagInterface::AUTO_PAUSED);
                 $pausedNetworkCount ++;
             }
             else {
@@ -84,5 +88,36 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
         }
 
         $logger->info(sprintf('There are %d ad networks get paused', $pausedNetworkCount));
+    }
+
+    protected function getAppConsoleCommand()
+    {
+        $pathToSymfonyConsole = $this->getContainer()->getParameter('kernel.root_dir');
+        $environment = $this->getContainer()->getParameter('kernel.environment');
+        $debug = $this->getContainer()->getParameter('kernel.debug');
+
+        $command = sprintf('php %s/console --env=%s', $pathToSymfonyConsole, $environment);
+
+        if (!$debug) {
+            $command .= ' --no-debug';
+        }
+
+        return $command;
+    }
+
+    protected function executeProcess(Process $process, array $options, LoggerInterface $logger)
+    {
+        if (array_key_exists('timeout', $options)) {
+            $process->setTimeout($options['timeout']);
+        }
+
+        $process->mustRun(function($type, $buffer) use($logger) {
+            if (Process::ERR === $type) {
+                $logger->error($buffer);
+            } else {
+                $logger->info($buffer);
+            }
+        }
+        );
     }
 } 

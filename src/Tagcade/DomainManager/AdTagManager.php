@@ -24,6 +24,7 @@ use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class AdTagManager implements AdTagManagerInterface
 {
+    const BATCH_SIZE = 50;
     /**
      * @var EntityManagerInterface
      */
@@ -404,16 +405,23 @@ class AdTagManager implements AdTagManagerInterface
     public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true)
     {
         $adTags = $this->getAdTagsForAdNetwork($adNetwork);
-
-        /**
-         * @var AdTagInterface $adTag
-         */
+        $count = 0;
+        /** @var AdTagInterface $adTag */
         foreach($adTags as $adTag) {
             if ($adTag->isActive() !== $active) {
                 $adTag->setActive($active);
-                $this->save($adTag);
+                $this->em->merge($adTag);
+                $count++;
+            }
+
+            if ($count % self::BATCH_SIZE === 0 && $count > 0) {
+                $this->em->flush();
+                $this->em->clear();
             }
         }
+
+        $this->em->flush();
+        $this->em->clear();
     }
 
     /**
@@ -448,15 +456,25 @@ class AdTagManager implements AdTagManagerInterface
 
     public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
     {
+        $count = 0;
         foreach ($adNetwork->getAdTags() as $adTag) {
             /**
              * @var AdTagInterface $adTag
              */
             if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
+                $count++;
                 $adTag->setActive($active);
-                $this->save($adTag);
+                $this->em->merge($adTag);
+            }
+
+            if ($count % self::BATCH_SIZE === 0 && $count > 0) {
+                $this->em->flush();
+                $this->em->clear();
             }
         }
+
+        $this->em->flush();
+        $this->em->clear();
     }
 
     public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null)

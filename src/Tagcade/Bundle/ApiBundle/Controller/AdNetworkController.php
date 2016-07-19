@@ -8,9 +8,12 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Exception\InvalidArgumentException;
@@ -440,14 +443,23 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $adNetwork = $this->getOr404($id);
 
         $this->checkUserPermission($adNetwork, 'edit');
-
+        $logger = $this->get('logger');
         /** @var ParamFetcherInterface $paramFetcher */
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $active = $paramFetcher->get('active');
-        $active = filter_var($active, FILTER_VALIDATE_BOOLEAN);
+        $active = filter_var($active, FILTER_VALIDATE_INT);
 
-        $adTagManager = $this->get('tagcade.domain_manager.ad_tag');
-        $adTagManager->updateAdTagStatusForAdNetwork($adNetwork, $active);
+        $cmd = sprintf('%s tc:ad-tag-status:update %d --status %d', $this->getAppConsoleCommand(), $id, $active);
+        $process = new Process($cmd);
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        echo $process->getOutput();
+//        $this->executeProcess($process = new Process($cmd), [], $logger);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
@@ -947,6 +959,37 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $this->checkUserPermission($publisher);
 
         return $publisher;
+    }
+
+    protected function getAppConsoleCommand()
+    {
+        $pathToSymfonyConsole = $this->getParameter('kernel.root_dir');
+        $environment = $this->getParameter('kernel.environment');
+        $debug = $this->getParameter('kernel.debug');
+
+        $command = sprintf('php %s/console --env=%s', $pathToSymfonyConsole, $environment);
+
+        if (!$debug) {
+            $command .= ' --no-debug';
+        }
+
+        return $command;
+    }
+
+    protected function executeProcess(Process $process, array $options, LoggerInterface $logger)
+    {
+        if (array_key_exists('timeout', $options)) {
+            $process->setTimeout($options['timeout']);
+        }
+
+        $process->mustRun(function($type, $buffer) use($logger) {
+            if (Process::ERR === $type) {
+                $logger->error($buffer);
+            } else {
+                $logger->info($buffer);
+            }
+        }
+        );
     }
 
     protected function getResourceName()

@@ -2,9 +2,7 @@
 namespace Tagcade\Service\UnifiedReportImporter;
 
 use Psr\Log\LoggerInterface;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Report\UnifiedReport\CommonReport;
 use Tagcade\Service\UnifiedReportImporter\Importer\ImporterInterface;
 use Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkAdTagReportImporterInterface;
 use Tagcade\Service\UnifiedReportImporter\Importer\UnifiedReport\Network\NetworkAdTagSubPublisherReportImporterInterface;
