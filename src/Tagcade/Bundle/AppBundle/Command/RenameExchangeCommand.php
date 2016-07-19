@@ -21,8 +21,8 @@ class RenameExchangeCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:exchange:rename')
-            ->addOption('preName', 'pn', InputOption::VALUE_REQUIRED, 'Previous abbreviation name in parameter configuration file')
-            ->addOption('newName', 'nn', InputOption::VALUE_REQUIRED, 'New abbreviation name that will be set in parameter configuration file')
+            ->addOption('pre-name', 'P', InputOption::VALUE_REQUIRED, 'Previous abbreviation name in parameter configuration file')
+            ->addOption('new-name', 'N', InputOption::VALUE_REQUIRED, 'New abbreviation name that will be set in parameter configuration file')
             ->setDescription('Update all existing caches when an exchange\'s name is updated in parameter');
     }
 
@@ -32,11 +32,11 @@ class RenameExchangeCommand extends ContainerAwareCommand
          * @var ExchangeCacheUpdaterInterface $cacheUpdater
          */
         $cacheUpdater = $this->getContainer()->get('tagcade_app.service.core.exchange.exchange_cache_updater');
-        $preName = $input->getOption('preName');
-        $newName = $input->getOption('newName');
+        $preName = $input->getOption('pre-name');
+        $newName = $input->getOption('new-name');
 
         if (empty($preName) || empty($newName)) {
-            $output->writeln('<error>Either "preName" or "newName" is missing</error>');
+            $output->writeln('<error>Either "pre-name" or "new-name" is missing</error>');
             return;
         }
 

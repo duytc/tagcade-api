@@ -25,7 +25,7 @@ class CreatePerformanceReportForPartnerCommand extends ContainerAwareCommand
             ->addOption('publisher', 'p', InputOption::VALUE_OPTIONAL, 'Publisher id to be create performance partner report. Default is all publishers')
             ->addOption('start-date', 'f', InputOption::VALUE_OPTIONAL, 'The start date of report, format as YYYY-MM-DD. Default is yesterday')
             ->addOption('end-date', 't', InputOption::VALUE_OPTIONAL, 'The end date of report, format as YYYY-MM-DD. End date equals to start date if not set')
-            ->addOption('override', 'override', InputOption::VALUE_NONE, 'replace the existing reports with the new data')
+            ->addOption('override', 'r', InputOption::VALUE_NONE, 'replace the existing reports with the new data')
             ->setDescription('Create performance report for partners and sub publishers');
     }
 

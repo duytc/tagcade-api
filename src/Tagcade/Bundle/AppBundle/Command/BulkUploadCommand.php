@@ -8,8 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 
@@ -27,7 +25,7 @@ class BulkUploadCommand extends ContainerAwareCommand
             ->setName('tc:api:bulk-upload')
             ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'path to file to be imported')
             ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'publisher add data')
-            ->addOption('dry','dr',InputOption::VALUE_OPTIONAL,'dry run option',false)
+            ->addOption('dry','D',InputOption::VALUE_OPTIONAL,'dry run option',false)
             ->setDescription('Bulk upload data for site, display ad slot, ad tag and dynamic ad slot');
     }
 

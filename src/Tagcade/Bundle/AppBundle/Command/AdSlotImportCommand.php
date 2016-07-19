@@ -44,15 +44,15 @@ class AdSlotImportCommand extends ContainerAwareCommand
                 'Output file path'
             )
             ->addOption(
-                'headerRow',
-                'hr',
+                'header-row',
+                'R',
                 InputOption::VALUE_OPTIONAL,
                 'Position of the header row, starting at 1',
                 0
             )
             ->addOption(
                 'separator',
-                'se',
+                'S',
                 InputOption::VALUE_OPTIONAL,
                 'Character used as separator in CSV file',
                 ','
@@ -69,7 +69,7 @@ class AdSlotImportCommand extends ContainerAwareCommand
     {
         $file = $input->getOption('input');
         $publisherId = $input->getOption('publisher');
-        $headerRow = $input->getOption('headerRow');
+        $headerRow = $input->getOption('header-row');
         $outputFileName = $input->getOption('output');
         $separator = $input->getOption('separator');
         $force = $input->getOption('force');

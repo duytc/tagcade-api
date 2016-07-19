@@ -27,7 +27,7 @@ class UnifiedReportCreateReportComparisonCommand extends ContainerAwareCommand
             ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'Publisher id')
             ->addOption('start-date', 'f', InputOption::VALUE_REQUIRED, 'Start date (YYYY-MM-DD) of the report. ')
             ->addOption('end-date', 't', InputOption::VALUE_REQUIRED, 'End date of the report (YYYY-MM-DD). Default is yesterday', (new \DateTime('yesterday'))->format('Y-m-d'))
-            ->addOption('override', 'override', InputOption::VALUE_NONE, 'allow override existing data in case of duplicated unique key')
+            ->addOption('override', 'r', InputOption::VALUE_NONE, 'allow override existing data in case of duplicated unique key')
             ->setDescription('Create report comparison between tagcade and unified report ');;
     }
 
