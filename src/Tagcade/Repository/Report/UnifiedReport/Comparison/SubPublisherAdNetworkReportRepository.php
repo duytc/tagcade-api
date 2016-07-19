@@ -11,6 +11,10 @@ class SubPublisherAdNetworkReportRepository extends UnifiedSubPublisherAdNetwork
 {
     public function override(SubPublisherAdNetworkReportInterface $report)
     {
+        if ($report->getPerformanceSubPublisherAdNetworkReport() === null && $report->getUnifiedSubPublisherAdNetworkReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
 
         if (is_int($id)) {

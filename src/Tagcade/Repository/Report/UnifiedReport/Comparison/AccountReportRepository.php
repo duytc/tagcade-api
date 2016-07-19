@@ -11,6 +11,10 @@ class AccountReportRepository extends UnifiedAccountReportRepository implements 
 {
     public function override(AccountReportInterface $report)
     {
+        if ($report->getPerformanceAccountReport() === null && $report->getUnifiedAccountReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
 
         if (is_int($id)) {

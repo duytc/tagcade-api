@@ -365,9 +365,10 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getAllPartnersDiscrepancyByDayForPublisher(PublisherInterface $publisher, Params $params)
     {
-        return $publisher instanceof SubPublisherInterface
+        $report = $publisher instanceof SubPublisherInterface
             ? $this->getReports(new ComparisonReportTypes\SubPublisher($publisher), $params)
             : $this->getReports(new ComparisonReportTypes\Account($publisher), $params);
+        return $report;
     }
 
     /**

@@ -11,6 +11,10 @@ class AdNetworkDomainAdTagSubPublisherReportRepository extends UnifiedAdNetworkD
 {
     public function override(AdNetworkDomainAdTagSubPublisherReportInterface $report)
     {
+        if ($report->getPerformanceAdNetworkDomainAdTagSubPublisherReport() === null && $report->getUnifiedAdNetworkDomainAdTagSubPublisherReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
         if (is_int($id)) {
             $sql = 'UPDATE `unified_report_comparison_ad_network_domain_ad_tag_sub_publisher`

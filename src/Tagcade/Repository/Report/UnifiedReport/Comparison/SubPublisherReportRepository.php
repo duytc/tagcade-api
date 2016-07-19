@@ -11,6 +11,10 @@ class SubPublisherReportRepository extends UnifiedSubPublisherReportRepository i
 {
     public function override(SubPublisherReportInterface $report)
     {
+        if ($report->getPerformanceSubPublisherReport() === null && $report->getUnifiedSubPublisherReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
         if (is_int($id)) {
             $sql = 'UPDATE `unified_report_comparison_sub_publisher`

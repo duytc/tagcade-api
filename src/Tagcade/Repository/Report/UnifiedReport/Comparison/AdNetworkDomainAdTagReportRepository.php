@@ -11,6 +11,10 @@ class AdNetworkDomainAdTagReportRepository extends UnifiedAdNetworkDomainAdTagRe
 {
     public function override(AdNetworkDomainAdTagReportInterface $report)
     {
+        if ($report->getPerformanceAdNetworkDomainAdTagReport() === null && $report->getUnifiedAdNetworkDomainAdTagReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
 
         if (is_int($id)) {

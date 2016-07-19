@@ -11,6 +11,10 @@ class AdNetworkReportRepository extends UnifiedAdNetworkReportRepository impleme
 {
     public function override(AdNetworkReportInterface $report)
     {
+        if ($report->getPerformanceAdNetworkReport() === null && $report->getUnifiedAdNetworkReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
         if (is_int($id)) {
             $sql = 'UPDATE `unified_report_comparison_ad_network`

@@ -11,6 +11,10 @@ class AdNetworkDomainReportRepository extends UnifiedNetworkDomainReportReposito
 {
     public function override(AdNetworkDomainReportInterface $report)
     {
+        if ($report->getPerformanceAdNetworkDomainReport() === null && $report->getUnifiedNetworkSiteReport() === null) {
+            return true;
+        }
+
         $id = $this->getExistingReportId($report);
 
         if (is_int($id)) {
