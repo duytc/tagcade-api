@@ -17,13 +17,13 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:ad-network:do-auto-pause')
-            ->addOption('adNetwork', 'd', InputOption::VALUE_OPTIONAL, 'ad network id to validate and do auto pause.')
+            ->addOption('ad-network', 'd', InputOption::VALUE_OPTIONAL, 'ad network id to validate and do auto pause.')
             ->setDescription('Do pause for ad networks that have reached impression cap and network opportunity cap per day');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adNetwork = $input->getOption('adNetwork');
+        $adNetwork = $input->getOption('ad-network');
         $container = $this->getContainer();
         $logger = $container->get('logger');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');

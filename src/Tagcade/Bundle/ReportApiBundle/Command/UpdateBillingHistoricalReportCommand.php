@@ -25,19 +25,19 @@ class UpdateBillingHistoricalReportCommand extends ContainerAwareCommand
             )
             ->addOption(
                 'rate',
-                null,
+                'r',
                 InputOption::VALUE_REQUIRED,
                 'Cpm rate that newly defines for this publisher'
             )
             ->addOption(
                 'start-date',
-                null,
+                'f',
                 InputOption::VALUE_REQUIRED,
                 'start date (YYYY-MM-DD) that billed amount will be updated with new cpm rate'
             )
             ->addOption(
                 'end-date',
-                null,
+                't',
                 InputOption::VALUE_OPTIONAL,
                 'end date (YYYY-MM-DD) that billed amount will be updated with new cpm rate. If not specified, the date is et to yesterday.'
             )

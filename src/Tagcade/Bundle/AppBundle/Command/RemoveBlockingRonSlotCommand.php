@@ -26,7 +26,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         $this
             ->setName('tc:ron-slot:remove-blocking')
             ->setDescription('Remove blocking ron slots for a certain domain or all domains for a certain ron slot or unblock everything')
-            ->addOption('ronSlot', 'r', InputOption::VALUE_OPTIONAL, 'Id of the ron slot to be unblocked')
+            ->addOption('ron-slot', 'r', InputOption::VALUE_OPTIONAL, 'Id of the ron slot to be unblocked')
             ->addOption('domain', 'd', InputOption::VALUE_OPTIONAL, 'The domain that ron slot(s) should be unblocked');
     }
 
@@ -39,7 +39,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $ronSlotId = $input->getOption('ronSlot');
+        $ronSlotId = $input->getOption('ron-slot');
         $domain = $input->getOption('domain');
 
         /**

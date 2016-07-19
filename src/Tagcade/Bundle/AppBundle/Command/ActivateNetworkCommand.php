@@ -17,13 +17,13 @@ class ActivateNetworkCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:ad-network:activate')
-            ->addOption('adNetwork', 'd', InputOption::VALUE_OPTIONAL, 'ad network id to be activated.')
+            ->addOption('ad-network', 'd', InputOption::VALUE_OPTIONAL, 'ad network id to be activated.')
             ->setDescription('Do activate for ad networks that get paused by exceeding its impression or opportunity cap setting value');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adNetwork = $input->getOption('adNetwork');
+        $adNetwork = $input->getOption('ad-network');
         $container = $this->getContainer();
         $logger = $container->get('logger');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');

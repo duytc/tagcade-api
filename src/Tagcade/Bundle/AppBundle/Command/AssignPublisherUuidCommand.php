@@ -33,7 +33,7 @@ class AssignPublisherUuidCommand extends ContainerAwareCommand
             )
             ->addOption(
                 'all',
-                null,
+                'a',
                 InputOption::VALUE_NONE,
                 'If set, all publishers which have uuid unspecified will get updated'
             )

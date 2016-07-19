@@ -32,7 +32,7 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
             )
             ->addOption(
                 'all',
-                null,
+                'a',
                 InputOption::VALUE_NONE,
                 'If set, all ad networks will be updated'
             );

@@ -20,13 +20,13 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
             ->setDescription('Update billed amount corresponding to total slot opportunities up to current day and pre-configured thresholds')
             ->addOption(
                 'id',
-                null,
+                'i',
                 InputOption::VALUE_OPTIONAL,
                 'Id of publisher to be updated. Otherwise all publishers get updated'
             )
             ->addOption(
                 'month',
-                null,
+                'm',
                 InputOption::VALUE_OPTIONAL,
                 'Month(YYYY-MM) that the billed amount needs to be recalculated. Default is current month'
             )

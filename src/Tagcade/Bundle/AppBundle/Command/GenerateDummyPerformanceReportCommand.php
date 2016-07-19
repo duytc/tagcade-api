@@ -25,8 +25,8 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
         $this
             ->setName('tc:dummy-performance-report:create')
             ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'Publisher id')
-            ->addOption('startDate', 'f', InputOption::VALUE_REQUIRED, 'Start date (YYYY-MM-DD) of the report. ')
-            ->addOption('endDate', 't', InputOption::VALUE_OPTIONAL, 'End date of the report (YYYY-MM-DD). Default is yesterday', (new \DateTime('yesterday'))->format('Ymd'))
+            ->addOption('start-date', 'f', InputOption::VALUE_REQUIRED, 'Start date (YYYY-MM-DD) of the report. ')
+            ->addOption('end-date', 't', InputOption::VALUE_OPTIONAL, 'End date of the report (YYYY-MM-DD). Default is yesterday', (new \DateTime('yesterday'))->format('Ymd'))
             ->setDescription('Generate dummy performance report for a publisher');;
     }
 
@@ -38,15 +38,15 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $startDate = $input->getOption('startDate');
-        $endDate = $input->getOption('endDate');
+        $startDate = $input->getOption('start-date');
+        $endDate = $input->getOption('end-date');
         $startDate = new \DateTime($startDate);
         $endDate = new \DateTime($endDate);
 
         $today = new \DateTime('today');
 
         if ($startDate > $endDate || $endDate >= $today) {
-            throw new \Exception('startDate must be less than or equal to endDate and endDate must not exceed today');
+            throw new \Exception('start-date must be less than or equal to end-date and endDate must not exceed today');
         }
 
         $publisherId = $input->getOption('publisher');
