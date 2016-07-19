@@ -325,8 +325,8 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
         $arguments = array(
             'command' => self::GENERATE_PERFORMANCE_REPORT_COMMAND,
             '--publisher' => $publisher->getId(),
-            '--startDate' => $reportData['startDate'],
-            '--endDate' => $reportData['endDate'],
+            '--start-date' => $reportData['startDate'],
+            '--end-date' => $reportData['endDate'],
 
         );
 
@@ -351,8 +351,8 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
         $arguments = array(
             'command' => self::GENERATE_SOURCE_REPORT_COMMAND,
             '--publisher' => $publisher->getId(),
-            '--startDate' => $reportData['startDate'],
-            '--endDate' => $reportData['endDate'],
+            '--start-date' => $reportData['startDate'],
+            '--end-date' => $reportData['endDate'],
 
         );
 
