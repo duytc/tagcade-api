@@ -4,6 +4,7 @@
 namespace Tagcade\Repository\Report\UnifiedReport\Comparison;
 
 use Doctrine\DBAL\Types\Type;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\UnifiedReport\Comparison\AdNetworkAdTagReportInterface;
 use Tagcade\Repository\Report\UnifiedReport\Network\NetworkAdTagReportRepository as UnifiedAdNetworkAdTagReportRepository;
 
@@ -12,7 +13,7 @@ class AdNetworkAdTagReportRepository extends UnifiedAdNetworkAdTagReportReposito
     public function override(AdNetworkAdTagReportInterface $report)
     {
         if ($report->getPerformanceAdNetworkAdTagReport() === null && $report->getUnifiedAdNetworkAdTagReport() === null) {
-            return true;
+            throw new RuntimeException('both Performance and Unified Report can not be null');
         }
 
         $id = $this->getExistingReportId($report);

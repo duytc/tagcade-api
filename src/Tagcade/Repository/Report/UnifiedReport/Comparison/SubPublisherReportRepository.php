@@ -4,6 +4,7 @@
 namespace Tagcade\Repository\Report\UnifiedReport\Comparison;
 
 use Doctrine\DBAL\Types\Type;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\UnifiedReport\Comparison\SubPublisherReportInterface;
 use Tagcade\Repository\Report\UnifiedReport\Publisher\SubPublisherReportRepository as UnifiedSubPublisherReportRepository;
 
@@ -12,7 +13,7 @@ class SubPublisherReportRepository extends UnifiedSubPublisherReportRepository i
     public function override(SubPublisherReportInterface $report)
     {
         if ($report->getPerformanceSubPublisherReport() === null && $report->getUnifiedSubPublisherReport() === null) {
-            return true;
+            throw new RuntimeException('both Performance and Unified Report can not be null');
         }
 
         $id = $this->getExistingReportId($report);

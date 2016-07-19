@@ -233,15 +233,18 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
             $tcAccountReport = $this->tcAccountRepository->getReportFor($publisher, $date, $date, $oneOrNull = true);
             $unifiedAccountReport = $this->unifiedPublisherRepository->getReportFor($publisher, $date, $date, $oneOrNull = true);
 
-            $accountComparison = new AccountReport();
+            if ($tcAccountReport !== null || $unifiedAccountReport !== null) {
+                $accountComparison = new AccountReport();
 
-            $accountComparison
-                ->setUnifiedAccountReport($unifiedAccountReport)
-                ->setPerformanceAccountReport($tcAccountReport)
-                ->setDate($date)
-                ->setPublisher($publisher);
+                $accountComparison
+                    ->setUnifiedAccountReport($unifiedAccountReport)
+                    ->setPerformanceAccountReport($tcAccountReport)
+                    ->setDate($date)
+                    ->setPublisher($publisher);
 
-            $override === false ? $this->em->persist($accountComparison) : $this->comparisonAccountRepository->override($accountComparison);
+                $override === false ? $this->em->persist($accountComparison) : $this->comparisonAccountRepository->override($accountComparison);
+            }
+
 
             foreach ($subPublishers as $subPublisher) {
                 /** @var SubPublisherInterface $subPublisher */
@@ -268,15 +271,18 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
             $tcSubPublisherNetworkReport = $this->tcSubPublisherAdNetworkRepository->getReportFor($subPublisher, $adNetwork, $date, $date, $oneOrNull = true);
             $unifiedSubPublisherNetworkReport = $this->unifiedSubPublisherNetworkRepository->getReportFor($subPublisher, $adNetwork, $date, $date, $oneOrNull = true);
 
-            $comparisonReport = new SubPublisherAdNetworkReport();
-            $comparisonReport->setDate($date);
-            $comparisonReport->setAdNetwork($adNetwork);
-            $comparisonReport->setSubPublisher($subPublisher);
-            $comparisonReport->setPerformanceSubPublisherAdNetworkReport($tcSubPublisherNetworkReport);
-            $comparisonReport->setName($adNetwork->getName());
-            $comparisonReport->setUnifiedSubPublisherAdNetworkReport($unifiedSubPublisherNetworkReport);
+            if ($tcSubPublisherNetworkReport !== null || $unifiedSubPublisherNetworkReport !== null) {
+                $comparisonReport = new SubPublisherAdNetworkReport();
+                $comparisonReport->setDate($date);
+                $comparisonReport->setAdNetwork($adNetwork);
+                $comparisonReport->setSubPublisher($subPublisher);
+                $comparisonReport->setPerformanceSubPublisherAdNetworkReport($tcSubPublisherNetworkReport);
+                $comparisonReport->setName($adNetwork->getName());
+                $comparisonReport->setUnifiedSubPublisherAdNetworkReport($unifiedSubPublisherNetworkReport);
 
-            $override === false ? $this->em->persist($comparisonReport) : $this->comparisonSubPublisherNetworkRepository->override($comparisonReport);
+                $override === false ? $this->em->persist($comparisonReport) : $this->comparisonSubPublisherNetworkRepository->override($comparisonReport);
+            }
+
 
             $importedKeys = [];
 
@@ -302,6 +308,10 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
 
                     $tcSubPublisherNetworkDomainAdTagReport = $this->tcSubPublisherDomainAdTagRepository->getReportFor($adNetwork, $site->getDomain(), $partnerTagId, $subPublisher, $date, $date, $oneOrNull = true);
                     $unifiedSubPublisherNetworkDomainAdTagReport = $this->unifiedSubPublisherDomainAdTagRepository->getReportFor($adNetwork, $site->getDomain(), $partnerTagId, $subPublisher, $date, $date, $oneOrNull = true);
+                    if ($tcSubPublisherNetworkDomainAdTagReport === null && $unifiedSubPublisherNetworkDomainAdTagReport === null) {
+                        continue;
+                    }
+
                     $subPublisherDomainAdTagComparisonReport = new AdNetworkDomainAdTagSubPublisherReport();
                     $subPublisherDomainAdTagComparisonReport->setDate($date);
                     $subPublisherDomainAdTagComparisonReport->setAdNetwork($adNetwork);
@@ -322,14 +332,16 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
         $tcSubPublisherReport = $this->tcSubPublisherReportRepository->getReportFor($subPublisher, $date, $date, $oneOrNull = true);
         $unifiedSubPublisherReport = $this->unifiedSubPublisherReportRepository->getReportFor($subPublisher, $date, $date, $oneOrNull = true);
 
-        $comparisonReport = new SubPublisherReport();
-        $comparisonReport->setName($subPublisher->getUser()->getUsername());
-        $comparisonReport->setSubPublisher($subPublisher);
-        $comparisonReport->setDate($date);
-        $comparisonReport->setPerformanceSubPublisherReport($tcSubPublisherReport);
-        $comparisonReport->setUnifiedSubPublisherReport($unifiedSubPublisherReport);
+        if ($tcSubPublisherReport !== null || $unifiedSubPublisherReport !== null) {
+            $comparisonReport = new SubPublisherReport();
+            $comparisonReport->setName($subPublisher->getUser()->getUsername());
+            $comparisonReport->setSubPublisher($subPublisher);
+            $comparisonReport->setDate($date);
+            $comparisonReport->setPerformanceSubPublisherReport($tcSubPublisherReport);
+            $comparisonReport->setUnifiedSubPublisherReport($unifiedSubPublisherReport);
 
-        $override === false ? $this->em->persist($comparisonReport) : $this->comparisonSubPublisherRepository->override($comparisonReport);
+            $override === false ? $this->em->persist($comparisonReport) : $this->comparisonSubPublisherRepository->override($comparisonReport);
+        }
 
         if ($override === false) {
             try {
@@ -361,15 +373,17 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
         $tcNetworkReport = $this->tcAdNetworkRepository->getReportFor($adNetwork, $date, $date, $oneOrNull = true);
         $unifiedAdNetworkReport = $this->unifiedAdNetworkRepository->getReportFor($adNetwork, $date, $date, $oneOrNull = true);
 
-        $networkComparison = new AdNetworkReport();
-        $networkComparison
-            ->setUnifiedAdNetworkReport($unifiedAdNetworkReport)
-            ->setPerformanceAdNetworkReport($tcNetworkReport)
-            ->setDate($date)
-            ->setAdNetwork($adNetwork)
-            ->setName($adNetwork->getName());
+        if ($tcNetworkReport !== null || $unifiedAdNetworkReport !== null) {
+            $networkComparison = new AdNetworkReport();
+            $networkComparison
+                ->setUnifiedAdNetworkReport($unifiedAdNetworkReport)
+                ->setPerformanceAdNetworkReport($tcNetworkReport)
+                ->setDate($date)
+                ->setAdNetwork($adNetwork)
+                ->setName($adNetwork->getName());
 
-        $override === false ? $this->em->persist($networkComparison) : $this->comparisonAdNetworkRepository->override($networkComparison);
+            $override === false ? $this->em->persist($networkComparison) : $this->comparisonAdNetworkRepository->override($networkComparison);
+        }
     }
 
     private function createAdNetworkDomainComparisonForDate(\DateTime $date, AdNetworkInterface $adNetwork, $domains, $override = false)
@@ -377,6 +391,10 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
         foreach ($domains as $domain => $value) {
             $tcDomainReport = $this->tcDomainRepository->getReportFor($adNetwork, $domain, $date, $date, $oneOrNull = true);
             $unifiedDomainReport = $this->unifiedDomainRepository->getReportFor($adNetwork, $domain, $date, $date, $oneOrNull = true);
+
+            if ($tcDomainReport === null && $unifiedDomainReport === null) {
+                continue;
+            }
 
             $domainComparisonReport = new AdNetworkDomainReport();
             $domainComparisonReport
@@ -433,18 +451,20 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
         $tcDomainAdTagReport = $this->tcDomainAdTagRepository->getReportFor($adNetwork, $domain, $partnerTagId, $date, $date, $oneOrNull = true);
         $unifiedDomainAdTagReport = $this->unifiedDomainAdTagRepository->getReportFor($adNetwork, $domain, $partnerTagId, $date, $date, $oneOrNull = true);
 
-        $domainAdTagComparisonReport = new AdNetworkDomainAdTagReport();
+        if ($tcDomainAdTagReport !== null || $unifiedDomainAdTagReport !== null) {
+            $domainAdTagComparisonReport = new AdNetworkDomainAdTagReport();
 
-        $domainAdTagComparisonReport
-            ->setUnifiedAdNetworkDomainAdTagReport($unifiedDomainAdTagReport)
-            ->setPerformanceAdNetworkDomainAdTagReport($tcDomainAdTagReport)
-            ->setDate($date)
-            ->setPartnerTagId($partnerTagId)
-            ->setAdNetwork($adNetwork)
-            ->setDomain($domain)
-            ->setName($partnerTagId);
+            $domainAdTagComparisonReport
+                ->setUnifiedAdNetworkDomainAdTagReport($unifiedDomainAdTagReport)
+                ->setPerformanceAdNetworkDomainAdTagReport($tcDomainAdTagReport)
+                ->setDate($date)
+                ->setPartnerTagId($partnerTagId)
+                ->setAdNetwork($adNetwork)
+                ->setDomain($domain)
+                ->setName($partnerTagId);
 
-        $override === false ? $this->em->persist($domainAdTagComparisonReport) : $this->comparisonAdNetworkDomainAdTagRepository->override($domainAdTagComparisonReport);
+            $override === false ? $this->em->persist($domainAdTagComparisonReport) : $this->comparisonAdNetworkDomainAdTagRepository->override($domainAdTagComparisonReport);
+        }
     }
 
     private function doCompareAdNetworkAdTagReport(\DateTime $date, AdNetworkInterface $adNetwork, $partnerTagId, $override = false)
@@ -453,16 +473,18 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
         /** @var NetworkAdTagReportInterface $unifiedAdTagReport */
         $unifiedAdTagReport = $this->unifiedAdTagRepository->getReportFor($adNetwork, $partnerTagId, $date, $date, $oneOrNull = true);
 
-        $adTagComparisonReport = new AdNetworkAdTagReport();
-        $adTagComparisonReport
-            ->setUnifiedAdNetworkAdTagReport($unifiedAdTagReport)
-            ->setPerformanceAdNetworkAdTagReport($tcAdTagReport)
-            ->setDate($date)
-            ->setPartnerTagId($partnerTagId)
-            ->setAdNetwork($adNetwork)
-            ->setName($partnerTagId);
+        if ($tcAdTagReport !== null || $unifiedAdTagReport !== null) {
+            $adTagComparisonReport = new AdNetworkAdTagReport();
+            $adTagComparisonReport
+                ->setUnifiedAdNetworkAdTagReport($unifiedAdTagReport)
+                ->setPerformanceAdNetworkAdTagReport($tcAdTagReport)
+                ->setDate($date)
+                ->setPartnerTagId($partnerTagId)
+                ->setAdNetwork($adNetwork)
+                ->setName($partnerTagId);
 
-        $override === false ? $this->em->persist($adTagComparisonReport) : $this->comparisonAdNetworkAdTagRepository->override($adTagComparisonReport);
+            $override === false ? $this->em->persist($adTagComparisonReport) : $this->comparisonAdNetworkAdTagRepository->override($adTagComparisonReport);
+        }
     }
 
     protected function validReportsForComparisonCreation($tcReport, $unifiedReport)
