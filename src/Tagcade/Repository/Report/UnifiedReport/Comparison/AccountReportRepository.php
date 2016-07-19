@@ -4,6 +4,7 @@
 namespace Tagcade\Repository\Report\UnifiedReport\Comparison;
 
 use Doctrine\DBAL\Types\Type;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\UnifiedReport\Comparison\AccountReportInterface;
 use Tagcade\Repository\Report\UnifiedReport\Publisher\PublisherReportRepository as UnifiedAccountReportRepository;
 
@@ -11,6 +12,10 @@ class AccountReportRepository extends UnifiedAccountReportRepository implements 
 {
     public function override(AccountReportInterface $report)
     {
+        if ($report->getPerformanceAccountReport() === null && $report->getUnifiedAccountReport() === null) {
+             throw new RuntimeException('both Performance and Unified Report can not be null');
+        }
+
         $id = $this->getExistingReportId($report);
 
         if (is_int($id)) {
