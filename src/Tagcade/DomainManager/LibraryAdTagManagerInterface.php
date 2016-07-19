@@ -13,4 +13,5 @@ interface LibraryAdTagManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getLibraryAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+    public function getLibraryAdTagsByHtml( $html, $limit = null, $offset = null);
 }

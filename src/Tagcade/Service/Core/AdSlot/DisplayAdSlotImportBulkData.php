@@ -4,11 +4,13 @@
 namespace Tagcade\Service\Core\AdSlot;
 
 
+use LibraryAdSlot;
 use Monolog\Logger;
 use Tagcade\DomainManager\DisplayAdSlotManager;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\LibraryAdSlotManager;
 use Tagcade\DomainManager\LibraryAdSlotManagerInterface;
+use Tagcade\DomainManager\LibraryDisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\SiteManager;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Core\AdTag;
@@ -62,33 +64,43 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @var AdTagImportBulkDataInterface
      */
     private $importBulkAdTagService;
+    /**
+     * @var LibraryAdSlotManagerInterface
+     */
+    private $libraryAdSlotManager;
 
     /**
      * @param AdTagImportBulkDataInterface $importBulkAdTagService
      * @param Logger $logger
      * @param $adSlotsConfigs
+     * @param LibraryAdSlotManager $libraryAdSlotManager
      */
-    function __construct(AdTagImportBulkDataInterface $importBulkAdTagService, Logger $logger, $adSlotsConfigs)
+    function __construct(AdTagImportBulkDataInterface $importBulkAdTagService, Logger $logger, $adSlotsConfigs, LibraryAdSlotManager $libraryAdSlotManager)
     {
         $this->logger = $logger;
         $this->adSlotsConfigs = $adSlotsConfigs;
         $this->importBulkAdTagService = $importBulkAdTagService;
+        $this->libraryAdSlotManager = $libraryAdSlotManager;
     }
 
     /**
      * @param array $allDisplayAdSlotsData
-     * @param array $allAdTags
+     * @param Site $site
+     * @param PublisherInterface $publisher
      * @param $dryOption
      * @return array|mixed
      */
-    public function importDisplayAdSlots(array $allDisplayAdSlotsData, array $allAdTags, $dryOption)
+    public function importDisplayAdSlots(array $allDisplayAdSlotsData, Site $site ,PublisherInterface $publisher, $dryOption)
     {
         $displayAdSlotObjects = [];
         foreach ($allDisplayAdSlotsData as $displayAdSlot) {
-            $displayAdSlotObject = DisplayAdSlot::createDisplayAdSlotFromArray($displayAdSlot);
+            $expectAdTags = $displayAdSlot['adTags'];
+            unset($displayAdSlot['adTags']);
 
-            $expectAdTags = $this->getAdTagsForOneAdSlot($displayAdSlotObject->getName(), $allAdTags );
-            $adTagObjects = $this->importBulkAdTagService->importAdTagsForOneAdSlot($displayAdSlotObject, $expectAdTags,$dryOption);
+            $displayAdSlot = $this->createDisplayAdSlotDataFromExcelRow($displayAdSlot, $site, $publisher );
+            $displayAdSlotObject    = DisplayAdSlot::createDisplayAdSlotFromArray($displayAdSlot);
+
+            $adTagObjects           = $this->importBulkAdTagService->importAdTagsForOneAdSlot($displayAdSlotObject, $expectAdTags, $dryOption);
             $displayAdSlotObject->setAdTags($adTagObjects);
 
             $displayAdSlotObjects[] = $displayAdSlotObject;
@@ -121,15 +133,16 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
 
     /**
      * @param $excelRows
+     * @param Site $site
      * @param PublisherInterface $publisher
      * @return array|mixed
      */
-    public function createAllDisplayAdSlotsData($excelRows, PublisherInterface $publisher )
+    public function createAllDisplayAdSlotsData($excelRows, Site $site, PublisherInterface $publisher )
     {
         $allDisplayAdSlotsData = [];
 
         foreach($excelRows as  $excelRow) {
-            $displayAdSlotsData = $this->createDisplayAdSlotDataFromExcelRow($excelRow, $publisher);
+            $displayAdSlotsData = $this->createDisplayAdSlotDataFromExcelRow($excelRow, $site ,$publisher);
             $allDisplayAdSlotsData[] = $displayAdSlotsData;
         }
 
@@ -138,27 +151,39 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
 
     /**
      * @param $excelRow
+     * @param Site $site
      * @param PublisherInterface $publisher
      * @return array
      * @throws \Exception
      */
-    protected  function createDisplayAdSlotDataFromExcelRow($excelRow, PublisherInterface $publisher )
-    {
-        $slotTypeValue = $this->getSlotTypeValue();
-        $floorPriceValue = $this->getFloorPriceValue($excelRow);
-        $hbPriceValue = $this->getHbPriceValue($excelRow);
-        $rtbStatusValue = $this->getRtbStatusValue($excelRow);
 
-        $libraryDisplayAdSlotData = $this->createDataForLibraryDisplayAdSlotFromExcelRow($excelRow,$publisher);
-        $libraryDisplayAdSlotObject = LibraryDisplayAdSlot::createLibraryDisplayAdSlotFromArray($libraryDisplayAdSlotData);
+    protected function createDisplayAdSlotDataFromExcelRow($excelRow, Site $site,  PublisherInterface $publisher)
+    {
+        $slotTypeValue          = $this->getSlotTypeValue();
+        $floorPriceValue        = $this->getFloorPriceValue($excelRow);
+        $hbPriceValue           = $this->getHbPriceValue($excelRow);
+        $rtbStatusValue         = $this->getRtbStatusValue($excelRow);
+
+        $libraryDisplayAdSlotData = $this->createDataForLibraryDisplayAdSlotFromExcelRow($excelRow, $publisher);
+
+        $libraryAdSlotName = $libraryDisplayAdSlotData[self::AD_SLOT_NAME_KEY];
+        $libraryDisplayAdSlot = $this->libraryAdSlotManager->getLibraryAdSlotByName($libraryAdSlotName);
+
+        if (empty($libraryDisplayAdSlot) || (count($libraryDisplayAdSlot) > 1)) {
+            $libraryDisplayAdSlotObject = LibraryDisplayAdSlot::createLibraryDisplayAdSlotFromArray($libraryDisplayAdSlotData);
+        } else {
+            /** @var LibraryDisplayAdSlot $libraryDisplayAdSlotObject */
+            $libraryDisplayAdSlotObject = array_shift($libraryDisplayAdSlot);
+            $libraryDisplayAdSlotObject->setVisible(true);
+        }
 
         $displayAdSlot = [];
-        $displayAdSlot[self::SITE_NAME_KEY] = $excelRow[$this->getSiteNameIndex()];
-        $displayAdSlot[self::SLOT_TYPE_KEY] = $slotTypeValue;
-        $displayAdSlot[self::FLOOR_PRICE_KEY] = $floorPriceValue;
-        $displayAdSlot[self::HEADER_BID_PRICE_KEY]=$hbPriceValue;
-        $displayAdSlot[self::RTB_STATUS_KEY] =  $rtbStatusValue;
-        $displayAdSlot[self::LIBRARY_AD_SLOT_KEY] = $libraryDisplayAdSlotObject;
+        $displayAdSlot[self::SITE_NAME_KEY]         = $site;
+        $displayAdSlot[self::SLOT_TYPE_KEY]         = $slotTypeValue;
+        $displayAdSlot[self::FLOOR_PRICE_KEY]       = $floorPriceValue;
+        $displayAdSlot[self::HEADER_BID_PRICE_KEY]  = $hbPriceValue;
+        $displayAdSlot[self::RTB_STATUS_KEY]        =  $rtbStatusValue;
+        $displayAdSlot[self::LIBRARY_AD_SLOT_KEY]   = $libraryDisplayAdSlotObject;
 
         return $displayAdSlot;
     }
@@ -170,23 +195,23 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function createDataForLibraryDisplayAdSlotFromExcelRow($excelRow, PublisherInterface $publisher)
     {
-        $adSlotNameValue = $this->getAdSlotNameValue($excelRow);
-        $visibleValue = $this->getVisibleValue();
-        $typeValue = $this->getSlotTypeValue();
-        $widthValue = $this->getWidthValue($excelRow);
-        $heightValue = $this->getHeightValue($excelRow);
-        $passbackMode = $this->getPassBackModeValue($excelRow);
-        $autoFitValue = $this->getAutoFitValue($excelRow);
+        $adSlotNameValue    = $this->getAdSlotNameValue($excelRow);
+        $visibleValue       = $this->getVisibleValue();
+        $typeValue          = $this->getSlotTypeValue();
+        $widthValue         = $this->getWidthValue($excelRow);
+        $heightValue        = $this->getHeightValue($excelRow);
+        $passbackMode       = $this->getPassBackModeValue($excelRow);
+        $autoFitValue       = $this->getAutoFitValue($excelRow);
 
         $libraryAdSlot =[];
-        $libraryAdSlot[self::AD_SLOT_NAME_KEY] = $adSlotNameValue;
-        $libraryAdSlot[self::VISIBLE_KEY] = $visibleValue;
-        $libraryAdSlot[self::TYPE_KEY] = $typeValue;
-        $libraryAdSlot[self::WIDTH_KEY] = $widthValue;
-        $libraryAdSlot[self::HEIGHT_KEY] = $heightValue;
-        $libraryAdSlot[self::PASS_BACK_MODE_KEY] = $passbackMode;
-        $libraryAdSlot[self::AUTO_FIT_KEY] = $autoFitValue;
-        $libraryAdSlot[self::PUBLISHER_KEY] = $publisher;
+        $libraryAdSlot[self::AD_SLOT_NAME_KEY]      = $adSlotNameValue;
+        $libraryAdSlot[self::VISIBLE_KEY]           = $visibleValue;
+        $libraryAdSlot[self::TYPE_KEY]              = $typeValue;
+        $libraryAdSlot[self::WIDTH_KEY]             = $widthValue;
+        $libraryAdSlot[self::HEIGHT_KEY]            = $heightValue;
+        $libraryAdSlot[self::PASS_BACK_MODE_KEY]    = $passbackMode;
+        $libraryAdSlot[self::AUTO_FIT_KEY]          = $autoFitValue;
+        $libraryAdSlot[self::PUBLISHER_KEY]         = $publisher;
 
         return $libraryAdSlot;
     }
@@ -344,7 +369,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @return mixed
      * @throws \Exception
      */
-    protected function getSiteNameIndex()
+    public function getSiteNameIndex()
     {
         if (!array_key_exists(self::SITE_NAME_KEY, $this->adSlotsConfigs)){
             throw new \Exception(sprintf('There is not key =%s in configuration', self::SITE_NAME_KEY));
@@ -357,7 +382,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @return mixed
      * @throws \Exception
      */
-    protected function getAdSlotNameIndex()
+    public function getAdSlotNameIndex()
     {
         if (!array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs)) {
             throw new \Exception(sprintf('There is not key =%s in config string %s', self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs));

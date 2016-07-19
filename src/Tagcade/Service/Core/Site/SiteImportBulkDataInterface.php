@@ -4,22 +4,18 @@
 namespace Tagcade\Service\Core\Site;
 
 
+use Tagcade\Entity\Core\Site;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SiteImportBulkDataInterface {
     /**
      * @param array $arrayMapSitesData
      * @param PublisherInterface $publisher
-     * @param array $arrayMapDisplayAdSlot
-     * @param array $dynamicAdSlots
-     * @param array $expression
-     * @param array $arrayMapAdTags
      * @param $dryOption
      * @return mixed
      */
-    public function createSites(array $arrayMapSitesData, PublisherInterface $publisher, array $arrayMapDisplayAdSlot,
-                                array $dynamicAdSlots, array $expression , array $arrayMapAdTags, $dryOption);
 
+    public function createSites(array $arrayMapSitesData, PublisherInterface $publisher, $dryOption);
 
     /**
      * @param $excelRows

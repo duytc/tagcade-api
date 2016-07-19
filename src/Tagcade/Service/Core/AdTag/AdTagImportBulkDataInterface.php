@@ -25,4 +25,8 @@ interface AdTagImportBulkDataInterface {
      */
     public function createAllAdTagsData($excelRows, PublisherInterface $publisher);
 
+    /**
+     * @return mixed
+     */
+    public function getAdSlotNameIndex();
 } 

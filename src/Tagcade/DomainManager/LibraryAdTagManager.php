@@ -88,4 +88,9 @@ class LibraryAdTagManager implements LibraryAdTagManagerInterface
     {
         return $this->repository->getLibraryAdTagsForPublisher($publisher, $limit, $offset);
     }
+
+    public function getLibraryAdTagsByHtml( $html, $limit = null, $offset = null)
+    {
+        return $this->repository->getLibraryAdTagsByHtml($html);
+    }
 }

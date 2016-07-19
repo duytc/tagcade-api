@@ -25,4 +25,12 @@ interface LibraryAdTagRepositoryInterface extends ObjectRepository{
      * @return QueryBuilder
      */
     public function getLibraryAdTagsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param $htmlValue
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getLibraryAdTagsByHtml($htmlValue,  $limit = null, $offset = null);
 }

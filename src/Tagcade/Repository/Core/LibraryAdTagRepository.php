@@ -43,4 +43,26 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
 
         return $qb;
     }
+
+    /**
+     * @param $htmlValue
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getLibraryAdTagsByHtml($htmlValue,  $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('tl')
+                    ->andWhere('tl.html = :htmlValue')
+                    ->setParameter('htmlValue',$htmlValue);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+        return $qb->getQuery()->getResult();
+    }
 }

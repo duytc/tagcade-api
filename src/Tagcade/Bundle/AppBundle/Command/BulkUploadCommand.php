@@ -57,9 +57,6 @@ class BulkUploadCommand extends ContainerAwareCommand
         $excelFileProcessingService = $container->get('tagcade_app.service.core.excel_file_processing');
 
         $siteImportBulkDataServer = $container->get('tagcade_app.service.core.site.bulk_upload');
-        $displayAdSlotImportBulkService = $container->get('tagcade_app.service.core.display_ad_slot.bulk_upload');
-        $adTagImportBulkService = $container->get('tagcade_app.service.core.ad_tag.bulk_upload');
-
         $publisher = $publisherManager->find($publisherId);
         if(!$publisher instanceof PublisherInterface) {
             throw new \Exception(sprintf('Not exist Publisher with id =%d', $publisherId));
@@ -68,79 +65,9 @@ class BulkUploadCommand extends ContainerAwareCommand
         $dryOption = $input->getOption('dry');
         $contents = $excelFileProcessingService->getAllContentExcelFile($file);
 
-        $sites = $this->getSitesFromExcelArray($contents);
-        $displayAdSlotData = $this->getDisplayAdSlotsFromExcelArray($contents);
-        $adTagsData = $this->getAdTagsFromExcelArray($contents);
-        $dynamicAdSlotData =$this->getDynamicAdSlotsFromExcelArray($contents);
-        $expressionTargeting = $this->getExpressionTargetingFromExcelArray($contents);
-
-        $sitesMapArray = $siteImportBulkDataServer->createDataForSites($sites, $publisher);
-        $displaysAdSlotMapsArray = $displayAdSlotImportBulkService->createAllDisplayAdSlotsData($displayAdSlotData, $publisher);
-        $adTagsMapArray = $adTagImportBulkService->createAllAdTagsData($adTagsData, $publisher);
-
         $logger->info('Begin import sites to system');
-        $siteImportBulkDataServer->createSites($sitesMapArray, $publisher, $displaysAdSlotMapsArray, $dynamicAdSlotData, $expressionTargeting, $adTagsMapArray, $dryOption);
+        $siteWithFullData = $siteImportBulkDataServer->createFullDataForSites($contents,$publisher);
+        $siteImportBulkDataServer->createSites($siteWithFullData, $publisher, $dryOption);
         $logger->info('End import sites to system');
     }
-
-    /**
-     * @param $contents
-     * @return mixed
-     */
-    protected function getSitesFromExcelArray($contents)
-    {
-        $sites = $contents[self::SITE_SHEET_NAME];
-        array_shift($sites); // Remove header of site sheet
-
-        return $sites;
-    }
-
-    /**
-     * @param $contents
-     * @return mixed
-     */
-    protected function getDisplayAdSlotsFromExcelArray($contents)
-    {
-       $displayAdSlotData = $contents[self::DISPLAY_AD_SLOT_NAME];
-       array_shift($displayAdSlotData); // Remove header of display ad slot
-
-        return $displayAdSlotData;
-    }
-
-    /**
-     * @param $contents
-     * @return mixed
-     */
-    protected function getAdTagsFromExcelArray($contents)
-    {
-        $adTagsData = $contents[self::AD_TAGS_SHEET_NAME];
-        array_shift($adTagsData); // Remove header of display ad slot
-
-        return $adTagsData;
-    }
-
-    /**
-     * @param $contents
-     * @return mixed
-     */
-    protected function getDynamicAdSlotsFromExcelArray($contents)
-    {
-        $dynamicAdSlotData = $contents[self::DYNAMIC_AD_SLOT_NAME];
-        array_shift($dynamicAdSlotData); // Remove header of display ad slot
-
-        return $dynamicAdSlotData;
-    }
-
-    /**
-     * @param $contents
-     * @return mixed
-     */
-    protected function getExpressionTargetingFromExcelArray($contents)
-    {
-        $expressionTargeting = $contents[self::EXPRESSION_TARGETING_NAME];
-        array_shift($expressionTargeting); // Remove header of expression targeting
-
-        return $expressionTargeting;
-    }
-
 } 

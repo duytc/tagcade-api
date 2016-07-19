@@ -70,3 +70,22 @@ TRUNCATE table unified_report_network_site_sub_publisher;
 TRUNCATE table unified_report_network_ad_tag_sub_publisher;
 TRUNCATE table unified_report_network_domain_ad_tag;
 TRUNCATE table unified_report_network_domain_ad_tag_sub_publisher;
+
+
+set foreign_key_checks = 0;
+
+TRUNCATE table core_site;
+TRUNCATE table unified_report_network_ad_tag;
+TRUNCATE table library_display_ad_slot;
+TRUNCATE table library_ad_slot;
+TRUNCATE table core_ad_slot;
+TRUNCATE table core_display_ad_slot;
+TRUNCATE table library_ad_tag;
+TRUNCATE table core_ad_tag;
+TRUNCATE table core_ad_slot;
+TRUNCATE table core_dynamic_ad_slot;
+TRUNCATE table core_expression;
+TRUNCATE table library_ad_slot;
+TRUNCATE table library_dynamic_ad_slot;
+TRUNCATE table library_expression;
+

@@ -137,6 +137,7 @@ services:
             - @tagcade.domain_manager.site
             - @tagcade_app.service.core.display_ad_slot.bulk_upload
             - @tagcade_app.service.core.dynamic_ad_slot.bulk_upload
+            - @tagcade_app.service.core.ad_tag.bulk_upload
             - %tc.bulk_upload.site.index%
             - @monolog.logger
     tagcade_app.service.core.display_ad_slot.bulk_upload:
@@ -145,6 +146,7 @@ services:
                 - @tagcade_app.service.core.ad_tag.bulk_upload
                 - @monolog.logger
                 - %tc.bulk_upload.display_ad_slot.index%
+                - @tagcade.domain_manager.library_ad_slot
 
     tagcade_app.service.core.dynamic_ad_slot.bulk_upload:
             class: Tagcade\Service\Core\AdSlot\DynamicAdSlotImportBulkData
@@ -164,3 +166,4 @@ services:
                 - @tagcade.domain_manager.ad_network
                 - @monolog.logger
                 - %tc.bulk_upload.ad_tag.index%
+                - @tagcade.domain_manager.library_ad_tag

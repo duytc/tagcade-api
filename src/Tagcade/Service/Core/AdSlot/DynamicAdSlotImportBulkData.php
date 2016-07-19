@@ -20,6 +20,7 @@ use Tagcade\Entity\Core\Expression;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -181,24 +182,22 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
 
     /**
      * @param array $dynamicAdSlots
-     * @param array $expressions
      * @param Site $siteObject
      * @param $displayAdSlotsObject
      * @param $dryOption
      * @return array|mixed
      * @throws \Exception
      */
-    public function importDynamicAdSlots(array $dynamicAdSlots, array $expressions, Site $siteObject, $displayAdSlotsObject, $dryOption )
+    public function importDynamicAdSlots(array $dynamicAdSlots, Site $siteObject, $displayAdSlotsObject, $dryOption )
     {
         $publisher = $siteObject->getPublisher();
-        $fullFillExpressions = $this->makeFullForShortTypeExpression($expressions);
         $dynamicAdSlotObjects = [];
 
         foreach ($dynamicAdSlots as $dynamicAdSlot) {
+            $builderExpressions = $dynamicAdSlot['builderExpressions'];
+            unset($dynamicAdSlot['builderExpressions']);
 
-            $allExpressionsAdSlotNames = $this->findAllExpressionAdSlotNamesForOneDynamicAdSlot($dynamicAdSlot[$this->getNameIndexOfDynamicAdSlot()], $fullFillExpressions);
             $defaultAdSlotName = $dynamicAdSlot[$this->getDefaultAdSlotIndexOfDynamicAdSlot()];
-            $dynamicAdSlotName = $dynamicAdSlot[$this->getNameIndexOfDynamicAdSlot()];
 
             /** @var ReportableAdSlotInterface $defaultAdSlot */
             $defaultAdSlot = $this->getDefaultAdSlot($defaultAdSlotName, $displayAdSlotsObject);
@@ -208,11 +207,19 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
             $dynamicAdSlotObject  = $this->createDynamicAdSlot($libraryDynamicAdSlot,$defaultAdSlot, $siteObject);
 
             $expressions =[];
-            foreach ($allExpressionsAdSlotNames as $expressionsAdSlotName) {
-                $expressionForOneExpectAdSlots = $this->findAllExpressionsForOneExpressionAdSlot($dynamicAdSlotName, $expressionsAdSlotName, $fullFillExpressions);
-                $libraryExpression = $this->createLibraryExpressionAdSlot($expressionForOneExpectAdSlots, $expressionsAdSlotName,$libraryDynamicAdSlot, $displayAdSlotsObject);
+            foreach ($builderExpressions as $builderExpression) {
+
+                $expressionsAdSlotName = $builderExpression[$this->getExpressionAdSlotIndexOfExpression()];
+                $position = $builderExpression[$this->getStartPositionIndexOfExpression()];
+                $hbBidPrice = $builderExpression[$this->getHeaderBidPriceIndexOfExpression()];
+
+                $operatorForThisExpressionAdSlots = $builderExpression['operators'];
+                $libraryExpression = $this->createLibraryExpressionAdSlot($operatorForThisExpressionAdSlots, $position ,$expressionsAdSlotName, $libraryDynamicAdSlot, $displayAdSlotsObject);
                 $expectAdSlot = $this->getExpectAdSlot($expressionsAdSlotName,$displayAdSlotsObject);
-                $expression= $this->createDynamicAdSlotExpression($libraryExpression, $dynamicAdSlotObject, $expressionForOneExpectAdSlots, $expectAdSlot);
+                if( null == $expectAdSlot) {
+                    continue;
+                }
+                $expression= $this->createDynamicAdSlotExpression($libraryExpression, $dynamicAdSlotObject, $operatorForThisExpressionAdSlots, $hbBidPrice, $expectAdSlot);
                 $expressions[]  = $expression;
             }
             $dynamicAdSlotObject->setExpressions($expressions);
@@ -252,13 +259,14 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
 
     /**
      * @param $expressionForOneExpectAdSlots
+     * @param $position
      * @param $expressionsAdSlotName
      * @param $libraryDynamicAdSlot
      * @param $displayAdSlotObjects
      * @return LibraryExpression
      * @throws \Exception
      */
-    protected function createLibraryExpressionAdSlot($expressionForOneExpectAdSlots, $expressionsAdSlotName, $libraryDynamicAdSlot, $displayAdSlotObjects)
+    protected function createLibraryExpressionAdSlot($expressionForOneExpectAdSlots, $position, $expressionsAdSlotName, $libraryDynamicAdSlot, $displayAdSlotObjects)
     {
         $libraryExpression = [];
         $expectLibraryAdSlot= $this->getExpectLibraryAdSlot($expressionsAdSlotName, $displayAdSlotObjects);
@@ -269,7 +277,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
         $libraryExpression[self::LIBRARY_EXPRESSION_EXPECT_LIBRARY_AD_SLOT]         = $expectLibraryAdSlot;
         $libraryExpression[self::LIBRARY_EXPRESSION_EXPRESSION_IN_JS]               = $expressionDescriptorInJs;
         $libraryExpression[self::LIBRARY_EXPRESSION_EXPRESSION_DESCRIPTOR]          = $expressionDescriptor;
-        $libraryExpression[self::LIBRARY_EXPRESSION_START_POSITION]                 = $expressionForOneExpectAdSlots[0][$this->getStartPositionIndexOfExpression()];
+        $libraryExpression[self::LIBRARY_EXPRESSION_START_POSITION]                 = $position;
 
         $libraryExpressionObject =  LibraryExpression::createLibraryExpression($libraryExpression);
 
@@ -314,7 +322,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
     {
         /** @var DisplayAdSlotInterface $displayAdSlotObject */
         foreach ($displayAdSlotObjects as $displayAdSlotObject) {
-            if( 0== strcmp($displayAdSlotObject->getName(), $expressionsAdSlotName)) {
+            if( 0 == strcmp($displayAdSlotObject->getName(), $expressionsAdSlotName)) {
                 return $displayAdSlotObject;
             }
         }
@@ -324,10 +332,15 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      * @param $expressionsAdSlotName
      * @param $displayAdSlotObjects
      * @return \Tagcade\Model\Core\BaseLibraryAdSlotInterface
+     * @throws \Exception
      */
     protected function getExpectLibraryAdSlot($expressionsAdSlotName, $displayAdSlotObjects)
     {
         $expectAdSlot = $this->getExpectAdSlot($expressionsAdSlotName, $displayAdSlotObjects);
+        if(!$expectAdSlot instanceof BaseAdSlotInterface) {
+            $this->logger->warning(sprintf('Not found expected ad slot: %s', $expressionsAdSlotName));
+            return null;
+        }
         return $expectAdSlot->getLibraryAdSlot();
     }
 
@@ -335,11 +348,13 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      * @param $libraryExpression
      * @param $dynamicAdSlotObject
      * @param $expressionForOneExpectAdSlots
+     * @param $hbBidPrice
      * @param $expectAdSlot
      * @return Expression
      * @throws \Exception
      */
-    protected function createDynamicAdSlotExpression($libraryExpression, $dynamicAdSlotObject, $expressionForOneExpectAdSlots, $expectAdSlot)
+
+    protected function createDynamicAdSlotExpression($libraryExpression, $dynamicAdSlotObject, $expressionForOneExpectAdSlots, $hbBidPrice ,$expectAdSlot)
     {
         $expressionDescriptor = $this->buildExpressionDescriptorObject($expressionForOneExpectAdSlots);
         $expressionDescriptorInJs = $this->buildExpressionDescriptorObjectInJs($expressionDescriptor);
@@ -348,7 +363,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
         $dynamicExpression[self::EXPRESSION_LIBRARY_EXPRESSION_KEY] = $libraryExpression;
         $dynamicExpression[self::EXPRESSION_EXPECT_AD_SLOT_KEY] = $expectAdSlot;
         $dynamicExpression[self::EXPRESSION_DYNAMIC_AD_SLOT_KEY] = $dynamicAdSlotObject;
-        $dynamicExpression[self::EXPRESSION_HB_BID_PRICE_KEY] = $expressionForOneExpectAdSlots[0][$this->getHeaderBidPriceIndexOfExpression()];
+        $dynamicExpression[self::EXPRESSION_HB_BID_PRICE_KEY] = $hbBidPrice;
         $dynamicExpression[self::EXPRESSION_EXPRESSION_IN_JS_KEY]   = $expressionDescriptorInJs;
 
         $expression =  Expression::createExpressionFromArray($dynamicExpression);
@@ -400,15 +415,60 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
     }
 
     /**
-     * @param $dynamicAdSlotName
-     * @param array $expressions
+     * @param $expressionTargeting
      * @return array
      * @throws \Exception
      */
-    protected function findAllExpressionAdSlotNamesForOneDynamicAdSlot($dynamicAdSlotName, array $expressions)
+    public function convertExpressionTargetingToArray($expressionTargeting)
+    {
+        $expectExpressions = [];
+        $builderExpressions = [];
+        $indexOfCondition = $this->getConditionIndexOfExpression();
+
+        $operatorParts = [];
+        $newExpression = [];
+        $storeDynamicAdSlotName = '';
+        foreach ($expressionTargeting as $excelRow) {
+            $dynamicAdSlotName = $excelRow[$this->getDynamicAdSlotNameIndexOfExpression()];
+            $expressionAdSlotName = $excelRow[$this->getExpressionAdSlotIndexOfExpression()];
+            $expressionPartLength = count($excelRow) - 4; // 4 is length of operator part:condition, condition type, comparison and condition value
+
+            $expressionPart     = array_slice($excelRow, 0, $expressionPartLength);
+            $operatorPart       = array_slice($excelRow,$indexOfCondition, 4);
+
+            if (empty($dynamicAdSlotName) && empty ($expressionAdSlotName)) {
+                $operatorParts [] = $operatorPart;
+                $newExpression['operators'] = $operatorParts;
+                $builderExpressions [] = $newExpression;
+                $expectExpressions[$storeDynamicAdSlotName] = $builderExpressions;
+            }
+
+            if (empty($dynamicAdSlotName) && !empty ($expressionAdSlotName)) {
+                $operatorParts = [];
+                $operatorParts [] = $operatorPart;
+                $newExpression = $expressionPart;
+            }
+
+            if (!empty($dynamicAdSlotName) && !empty ($expressionAdSlotName)) {
+                $operatorParts= [];
+                $operatorParts [] = $operatorPart;
+                $newExpression = $expressionPart;
+                $storeDynamicAdSlotName = $dynamicAdSlotName;
+            }
+        }
+
+        return $expectExpressions;
+    }
+    /**
+     * @param $dynamicAdSlotName
+     * @param array $fullFillExpressions
+     * @return array
+     * @throws \Exception
+     */
+    protected function findAllExpressionAdSlotNamesForOneDynamicAdSlot($dynamicAdSlotName, array $fullFillExpressions)
     {
         $expectExpressionsAdSlotNames = [];
-        foreach ($expressions as $expression) {
+        foreach ($fullFillExpressions as $expression) {
             if( 0 == strcmp($dynamicAdSlotName, $expression[$this->getDynamicAdSlotNameIndexOfExpression()])) {
                 $expectExpressionsAdSlotNames[] = $expression[$this->getExpressionAdSlotIndexOfExpression()];
             }
@@ -424,7 +484,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      * @return array
      * @throws \Exception
      */
-    protected function findAllExpressionsForOneExpressionAdSlot($dynamicAdSlotName, $expressionAdSlotName, array $expressions)
+    protected function findAllOperatorsForOneExpressionAdSlot($dynamicAdSlotName, $expressionAdSlotName, array $expressions)
     {
         $expectExpressions = [];
         foreach ($expressions as $expression) {
@@ -458,12 +518,11 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
         $expressionDescriptorObject =[];
 
         $groupValueObjects=[];
-        foreach ($expressionForOneExpectAdSlots as $expression)
-        {
-            $condition = $expression[$this->getConditionIndexOfExpression()];
-            $conditionType = $expression[$this->getConditionTypeIndexOfExpression()];
-            $conditionComparison = $expression[$this->getComparisonIndexOfExpression()];
-            $conditionValue = $expression[$this->getConditionValueIndexOfExpression()];
+        foreach ($expressionForOneExpectAdSlots as $expression) {
+            $condition = $expression[$this->getConditionIndexOfExpression() - $this->getConditionIndexOfExpression()];
+            $conditionType = $expression[$this->getConditionTypeIndexOfExpression() - $this->getConditionIndexOfExpression()];
+            $conditionComparison = $expression[$this->getComparisonIndexOfExpression() - $this->getConditionIndexOfExpression()];
+            $conditionValue = $expression[$this->getConditionValueIndexOfExpression() - $this->getConditionIndexOfExpression()];
 
             $groupValueObject = [];
             $groupValueObject[self::GROUP_VAL_ARRAY_VAR_KEY] = $condition;
@@ -488,8 +547,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function convertGroupType($groupType)
     {
-        if (!array_key_exists($groupType, self::$OPERATOR))
-        {
+        if (!array_key_exists($groupType, self::$OPERATOR)) {
             throw new \Exception(sprintf('Expression %s it not support', $groupType));
         }
 
@@ -503,8 +561,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function convertConditionType($conditionType)
     {
-        if (!array_key_exists($conditionType, self::$DATA_TYPE))
-        {
+        if (!array_key_exists($conditionType, self::$DATA_TYPE)) {
             throw new \Exception(sprintf('Condition type %s it not support', $conditionType));
         }
 
@@ -520,8 +577,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
     {
         $comparisonType = strtoupper($comparisonType);
 
-        if (!array_key_exists($comparisonType, self::$EXPRESSION_MAP))
-        {
+        if (!array_key_exists($comparisonType, self::$EXPRESSION_MAP)) {
             throw new \Exception(sprintf('Condition type %s it not support', $comparisonType));
         }
 
@@ -545,7 +601,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
             }
         }
 
-        if ($condition == '${COUNTRY}'){
+        if ($condition == '${COUNTRY}') {
 
             $countriesNames = explode(',', $conditionValue);
             $countryCodes =[];
@@ -580,10 +636,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     public function getSiteNameIndexOfDynamicAdSlot()
     {
-        if(!array_key_exists(self::INDEX_SITE_NAME_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::INDEX_SITE_NAME_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY]));
+        if(!array_key_exists(self::INDEX_SITE_NAME_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::INDEX_SITE_NAME_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::INDEX_KEY][self::INDEX_SITE_NAME_KEY];
@@ -593,13 +648,12 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      * @return mixed
      * @throws \Exception
      */
-    protected function getNameIndexOfDynamicAdSlot()
+    public function getNameIndexOfDynamicAdSlot()
     {
 
-        if(!array_key_exists(self::INDEX_DYNAMIC_AD_SLOT_NAME_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::INDEX_DYNAMIC_AD_SLOT_NAME_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY]));
+        if(!array_key_exists(self::INDEX_DYNAMIC_AD_SLOT_NAME_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::INDEX_DYNAMIC_AD_SLOT_NAME_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::INDEX_KEY][self::INDEX_DYNAMIC_AD_SLOT_NAME_KEY];
@@ -611,10 +665,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getDefaultAdSlotIndexOfDynamicAdSlot()
     {
-        if(!array_key_exists(self::INDEX_DEFAULT_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::INDEX_DEFAULT_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY]));
+        if(!array_key_exists(self::INDEX_DEFAULT_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::INDEX_DEFAULT_AD_SLOT_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::INDEX_KEY][self::INDEX_DEFAULT_AD_SLOT_KEY];
@@ -626,10 +679,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getDynamicAdSlotNameIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_DYNAMIC_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_DYNAMIC_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_DYNAMIC_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string ',
+                self::EXPRESSION_INDEX_DYNAMIC_AD_SLOT_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_DYNAMIC_AD_SLOT_KEY];
@@ -642,10 +694,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
     protected function getExpressionAdSlotIndexOfExpression()
     {
 
-        if(!array_key_exists(self::EXPRESSION_INDEX_EXPRESSION_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_EXPRESSION_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_EXPRESSION_AD_SLOT_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::EXPRESSION_INDEX_EXPRESSION_AD_SLOT_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_EXPRESSION_AD_SLOT_KEY];
@@ -658,10 +709,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
     protected function getStartPositionIndexOfExpression()
     {
 
-        if(!array_key_exists(self::EXPRESSION_INDEX_START_POSITION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_START_POSITION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_START_POSITION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string ',
+                self::EXPRESSION_INDEX_START_POSITION_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_START_POSITION_KEY];
@@ -673,10 +723,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getHeaderBidPriceIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_HEADER_BID_PRICE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_HEADER_BID_PRICE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_HEADER_BID_PRICE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string ',
+                self::EXPRESSION_INDEX_HEADER_BID_PRICE_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_HEADER_BID_PRICE_KEY];
@@ -688,10 +737,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getConditionIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_CONDITION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_CONDITION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_CONDITION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::EXPRESSION_INDEX_CONDITION_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_CONDITION_KEY];
@@ -703,10 +751,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getConditionTypeIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_CONDITION_TYPE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_CONDITION_TYPE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_CONDITION_TYPE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::EXPRESSION_INDEX_CONDITION_TYPE_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_CONDITION_TYPE_KEY];
@@ -718,10 +765,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getComparisonIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_COMPARISON_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_COMPARISON_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_COMPARISON_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::EXPRESSION_INDEX_COMPARISON_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_COMPARISON_KEY];
@@ -733,10 +779,9 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getConditionValueIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_CONDITION_VALUE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
-            throw new \Exception (sprintf('There is not %s key in config string %s',
-                self::EXPRESSION_INDEX_CONDITION_VALUE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]));
+        if(!array_key_exists(self::EXPRESSION_INDEX_CONDITION_VALUE_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
+            throw new \Exception (sprintf('There is not %s key in config string',
+                self::EXPRESSION_INDEX_CONDITION_VALUE_KEY));
         }
 
         return $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY][self::EXPRESSION_INDEX_CONDITION_VALUE_KEY];
@@ -748,8 +793,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
      */
     protected function getOperatorIndexOfExpression()
     {
-        if(!array_key_exists(self::EXPRESSION_INDEX_EXPRESSION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY]))
-        {
+        if(!array_key_exists(self::EXPRESSION_INDEX_EXPRESSION_KEY, $this->dynamicAdSlotConfig[self::EXPRESSION_INDEX_KEY])) {
             throw new \Exception (sprintf('There is not %s key in config string',
                 self::EXPRESSION_INDEX_EXPRESSION_KEY));
         }
