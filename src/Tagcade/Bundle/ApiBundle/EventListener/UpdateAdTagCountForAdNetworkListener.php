@@ -41,7 +41,7 @@ class UpdateAdTagCountForAdNetworkListener
      */
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        $entity = $args->getObject();
+        $entity = $args->getEntity();
 
         if ($entity instanceof LibraryAdTagInterface && $args->hasChangedField('adNetwork')) {
             $adTags = $entity->getAdTags();
@@ -63,15 +63,21 @@ class UpdateAdTagCountForAdNetworkListener
         } else if ($entity instanceof AdTagInterface && $args->hasChangedField('active') && $args->getNewValue('active') !== null) {
             $active = filter_var($args->getNewValue('active'), FILTER_VALIDATE_BOOLEAN);
 
-            if ($active === true) {
-                $entity->getAdNetwork()->increaseActiveAdTagsCount();
-                $entity->getAdNetwork()->decreasePausedAdTagsCount();
-            } else {
-                $entity->getAdNetwork()->increasePausedAdTagsCount();
-                $entity->getAdNetwork()->decreaseActiveAdTagsCount();
+            $adNetwork = $entity->getAdNetwork();
+            if (!$adNetwork instanceof AdNetworkInterface) {
+                die(sprintf('ad tag %d does not belong to any ad network', $entity->getId()));
             }
+            if ($adNetwork instanceof AdNetworkInterface) {
+                if ($active === true) {
+                    $entity->getAdNetwork()->increaseActiveAdTagsCount();
+                    $entity->getAdNetwork()->decreasePausedAdTagsCount();
+                } else {
+                    $entity->getAdNetwork()->increasePausedAdTagsCount();
+                    $entity->getAdNetwork()->decreaseActiveAdTagsCount();
+                }
 
-            $this->changedAdNetworks[] = $entity->getAdNetwork();
+                $this->changedAdNetworks[] = $adNetwork;
+            }
         }
     }
 

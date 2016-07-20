@@ -4,6 +4,7 @@ namespace Tagcade\DomainManager;
 
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
+use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -24,7 +25,7 @@ use Tagcade\Service\TagLibrary\ReplicatorInterface;
 
 class AdTagManager implements AdTagManagerInterface
 {
-    const BATCH_SIZE = 50;
+    protected $batchSize;
     /**
      * @var EntityManagerInterface
      */
@@ -49,12 +50,14 @@ class AdTagManager implements AdTagManagerInterface
      * @param EntityManagerInterface $em
      * @param AdTagRepositoryInterface $repository
      * @param LibrarySlotTagRepositoryInterface $librarySlotTagRepository
+     * @param $batchSize
      */
-    public function __construct(EntityManagerInterface $em, AdTagRepositoryInterface $repository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository)
+    public function __construct(EntityManagerInterface $em, AdTagRepositoryInterface $repository, LibrarySlotTagRepositoryInterface $librarySlotTagRepository, $batchSize)
     {
         $this->em = $em;
         $this->repository = $repository;
         $this->librarySlotTagRepository = $librarySlotTagRepository;
+        $this->batchSize = $batchSize;
     }
 
     /**
@@ -404,17 +407,23 @@ class AdTagManager implements AdTagManagerInterface
 
     public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true)
     {
-        $adTags = $this->getAdTagsForAdNetwork($adNetwork);
+        $it = $this->em->getRepository(AdTag::class)->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'lib')
+            ->where('lib.adNetwork = :adNetwork')
+            ->setParameter('adNetwork', $adNetwork)
+            ->getQuery()->iterate();
+
         $count = 0;
         /** @var AdTagInterface $adTag */
-        foreach($adTags as $adTag) {
+        foreach ($it as $row) {
+            $adTag = $row[0];
             if ($adTag->isActive() !== $active) {
                 $adTag->setActive($active);
-                $this->em->merge($adTag);
+                $this->em->persist($adTag);
                 $count++;
             }
 
-            if ($count % self::BATCH_SIZE === 0 && $count > 0) {
+            if ($count % $this->batchSize === 0 && $count > 0) {
                 $this->em->flush();
                 $this->em->clear();
             }
@@ -456,18 +465,23 @@ class AdTagManager implements AdTagManagerInterface
 
     public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
     {
+        $it = $this->em->getRepository(AdTag::class)->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'lib')
+            ->where('lib.adNetwork = :adNetwork')
+            ->setParameter('adNetwork', $adNetwork)
+            ->getQuery()->iterate();
+
         $count = 0;
-        foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
-            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
-                $count++;
+        /** @var AdTagInterface $adTag */
+        foreach ($it as $row) {
+            $adTag = $row[0];
+            if ($adTag->isActive() !== $active && $adTag->getAdSlot()->getSite()->getId() === $site->getId()) {
                 $adTag->setActive($active);
-                $this->em->merge($adTag);
+                $this->em->persist($adTag);
+                $count++;
             }
 
-            if ($count % self::BATCH_SIZE === 0 && $count > 0) {
+            if ($count % $this->batchSize === 0 && $count > 0) {
                 $this->em->flush();
                 $this->em->clear();
             }

@@ -443,23 +443,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $adNetwork = $this->getOr404($id);
 
         $this->checkUserPermission($adNetwork, 'edit');
-        $logger = $this->get('logger');
         /** @var ParamFetcherInterface $paramFetcher */
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $active = $paramFetcher->get('active');
-        $active = filter_var($active, FILTER_VALIDATE_INT);
+        $active = filter_var($active, FILTER_VALIDATE_BOOLEAN);
 
-        $cmd = sprintf('%s tc:ad-tag-status:update %d --status %d', $this->getAppConsoleCommand(), $id, $active);
-        $process = new Process($cmd);
-        $process->run();
-
-        // executes after the command finishes
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-
-        echo $process->getOutput();
-//        $this->executeProcess($process = new Process($cmd), [], $logger);
+        $cmd = sprintf('%s tc:ad-tag-status:update %d --status=%d', $this->getAppConsoleCommand(), $id, $active);
+        $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $this->getLogger());
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
@@ -698,7 +688,9 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
 
-        $this->get('tagcade.domain_manager.ad_tag')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
+//        $this->get('tagcade.domain_manager.ad_tag')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
+        $cmd = sprintf('%s tc:ad-tag-status:update %d --site=%d --status=%d', $this->getAppConsoleCommand(), $id, $siteId, $active);
+        $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $this->getLogger());
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('PUT', $adNetwork);
@@ -990,6 +982,11 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             }
         }
         );
+    }
+
+    protected function getLogger()
+    {
+        return $this->get('logger');
     }
 
     protected function getResourceName()
