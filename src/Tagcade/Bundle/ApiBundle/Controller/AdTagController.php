@@ -141,7 +141,12 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
                 '_format' => $request->get('_format')
             );
 
-            return $this->redirectView($this->getGETRouteName(), Codes::HTTP_CREATED, $routeOptions);
+            if (count($newEntities) == 1) {
+                return $this->addRedirectToResource($newEntities[0], Codes::HTTP_CREATED, $routeOptions);
+            }
+
+            // if we create multiple entities then we cannot add the redirect
+            return $this->view($data = null, Codes::HTTP_CREATED, $routeOptions);
         } catch (InvalidFormException $exception) {
             return $exception->getForm();
         }
