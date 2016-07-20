@@ -146,8 +146,16 @@ class DailyRotateCommand extends ContainerAwareCommand
     protected function getAppConsoleCommand()
     {
         $pathToSymfonyConsole = $this->getContainer()->getParameter('kernel.root_dir');
+        $environment = $this->getContainer()->getParameter('kernel.environment');
+        $debug = $this->getContainer()->getParameter('kernel.debug');
 
-        return sprintf('php %s/console', $pathToSymfonyConsole);
+        $command = sprintf('php %s/console --env=%s', $pathToSymfonyConsole, $environment);
+
+        if (!$debug) {
+            $command .= ' --no-debug';
+        }
+
+        return $command;
     }
 
     protected function executeProcess(Process $process, array $options, LoggerInterface $logger)

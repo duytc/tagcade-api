@@ -30,6 +30,7 @@ services:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.ad_tag
             - @tagcade.repository.library_slot_tag
+            - %insert_batch_size%
         calls:
             - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
 
