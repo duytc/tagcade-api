@@ -33,17 +33,27 @@ class RefreshCacheCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $command = $this->getApplication()->find('tc:cache:refresh-config');
+        $refreshConfigCommand = $this->getApplication()->find('tc:cache:refresh-config');
+        $environment = $this->getContainer()->getParameter('kernel.environment');
+        $debug = $this->getContainer()->getParameter('kernel.debug');
 
-        $arguments = array(
-            'command' => 'tc:cache:refresh-config',
+        $refreshConfigArguments = array(
+            'command'       => 'tc:cache:refresh-config',
+            '--env'         => $environment,
+            '--no-debug'    => $debug,
+        );
+        $refreshConfigInput = new ArrayInput($refreshConfigArguments);
+        $refreshConfigCommand->run($refreshConfigInput, $output);
+
+        $refreshAdSlotsCommand = $this->getApplication()->find('tc:cache:refresh-adslots');
+        $refreshAdSlotsArgument = array (
+            'command'       => 'tc:cache:refresh-adslots',
+            '--env'         => $environment,
+            '--no-debug'    => $debug,
         );
 
-        $greetInput = new ArrayInput($arguments);
-        $command->run($greetInput, $output);
-
-        $command2 = $this->getApplication()->find('tc:cache:refresh-adslots');
-        $command2->run(new ArrayInput(array('command' => 'tc:cache:refresh-adslots')), $output);
+        $refreshAdSlotInput = new ArrayInput($refreshAdSlotsArgument);
+        $refreshAdSlotsCommand->run($refreshAdSlotInput, $output);
 
         $output->writeln('all cache is now refreshed');
 
