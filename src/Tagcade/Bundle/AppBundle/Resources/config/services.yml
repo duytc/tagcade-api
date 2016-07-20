@@ -168,3 +168,4 @@ services:
                 - @monolog.logger
                 - %tc.bulk_upload.ad_tag.index%
                 - @tagcade.domain_manager.library_ad_tag
+                - @tagcade.domain_manager.ad_tag
