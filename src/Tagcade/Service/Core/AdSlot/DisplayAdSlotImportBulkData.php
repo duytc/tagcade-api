@@ -17,6 +17,7 @@ use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\AdTag\AdTagImportBulkDataInterface;
@@ -68,19 +69,28 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @var LibraryAdSlotManagerInterface
      */
     private $libraryAdSlotManager;
+    /**
+     * @var DisplayAdSlotManagerInterface
+     */
+    private $displayAdSlotManager;
+
+    private $displayAdSlotBeforePersists = [];
 
     /**
      * @param AdTagImportBulkDataInterface $importBulkAdTagService
      * @param Logger $logger
      * @param $adSlotsConfigs
      * @param LibraryAdSlotManager $libraryAdSlotManager
+     * @param DisplayAdSlotManagerInterface $displayAdSlotManager
      */
-    function __construct(AdTagImportBulkDataInterface $importBulkAdTagService, Logger $logger, $adSlotsConfigs, LibraryAdSlotManager $libraryAdSlotManager)
+    function __construct(AdTagImportBulkDataInterface $importBulkAdTagService, Logger $logger, $adSlotsConfigs,
+                         LibraryAdSlotManager $libraryAdSlotManager, DisplayAdSlotManagerInterface $displayAdSlotManager)
     {
         $this->logger = $logger;
         $this->adSlotsConfigs = $adSlotsConfigs;
         $this->importBulkAdTagService = $importBulkAdTagService;
         $this->libraryAdSlotManager = $libraryAdSlotManager;
+        $this->displayAdSlotManager = $displayAdSlotManager;
     }
 
     /**
@@ -90,16 +100,36 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @param $dryOption
      * @return array|mixed
      */
-    public function importDisplayAdSlots(array $allDisplayAdSlotsData, Site $site ,PublisherInterface $publisher, $dryOption)
+    public function importDisplayAdSlots(array $allDisplayAdSlotsData, Site $site, PublisherInterface $publisher, $dryOption)
     {
         $displayAdSlotObjects = [];
+        $this->resetDisplayAdSlotBeforePersists();
         foreach ($allDisplayAdSlotsData as $displayAdSlot) {
-            $expectAdTags = $displayAdSlot['adTags'];
-            unset($displayAdSlot['adTags']);
+            $expectAdTags = [];
+            if (array_key_exists('adTags', $displayAdSlot)) {
+                $expectAdTags = $displayAdSlot['adTags'];
+                unset($displayAdSlot['adTags']);
+            }
 
-            $displayAdSlot = $this->createDisplayAdSlotDataFromExcelRow($displayAdSlot, $site, $publisher );
-            $displayAdSlotObject    = DisplayAdSlot::createDisplayAdSlotFromArray($displayAdSlot);
+            $displayAdSlot = $this->createDisplayAdSlotDataFromExcelRow($displayAdSlot, $site, $publisher);
+            /** @var LibraryDisplayAdSlot $libraryDisplayAdSlot */
+            $libraryDisplayAdSlot = $displayAdSlot[self::LIBRARY_AD_SLOT_KEY];
+            $displayAdSlotName = $libraryDisplayAdSlot->getName();
+            $displayAdSlotBeforePersists = $this->getDisplayAdSlotBeforePersists();
+            if (array_key_exists($displayAdSlotName, $displayAdSlotBeforePersists)) {
+                $displayAdSlotInThisSite = $displayAdSlotBeforePersists[$displayAdSlotName];
+            } else {
+                $displayAdSlotInThisSite = $this->displayAdSlotManager->getAdSlotForSiteByName($site, $displayAdSlotName);
+            }
 
+            if (empty($displayAdSlotInThisSite)) {
+                $displayAdSlotObject    = DisplayAdSlot::createDisplayAdSlotFromArray($displayAdSlot);
+                $this->insertDisplayAdSlotBeforePersists($displayAdSlotObject,$displayAdSlotName);
+            } else {
+                /** @var DisplayAdSlot $displayAdSlotObject */
+                $displayAdSlotObject    = $displayAdSlotInThisSite;
+                $displayAdSlotObject->getLibraryAdSlot()->setVisible(false);
+            }
             $adTagObjects           = $this->importBulkAdTagService->importAdTagsForOneAdSlot($displayAdSlotObject, $expectAdTags, $dryOption);
             $displayAdSlotObject->setAdTags($adTagObjects);
 
@@ -247,6 +277,30 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
             }
         }
     }
+
+    /**
+     * @return array
+     */
+    protected  function getDisplayAdSlotBeforePersists()
+    {
+        return $this->displayAdSlotBeforePersists;
+    }
+
+    /**
+     * @param $displayAdSlotBeforePersists
+     * @param $name
+     */
+    protected  function insertDisplayAdSlotBeforePersists($displayAdSlotBeforePersists, $name)
+    {
+        $this->displayAdSlotBeforePersists[$name] = $displayAdSlotBeforePersists;
+    }
+
+    protected function resetDisplayAdSlotBeforePersists()
+    {
+        $this->displayAdSlotBeforePersists = [];
+        return $this->displayAdSlotBeforePersists;
+    }
+
     /**
      * @param $oneAdSlot
      * @return string

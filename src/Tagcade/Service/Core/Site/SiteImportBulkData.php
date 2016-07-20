@@ -88,11 +88,16 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     {
         $siteObjects = [];
         foreach ($arrayMapSitesData as $site) {
-
-            $displayAdSlotsOfThisSite = $this->getDisplayAdSlotForSite($site);
-            $dynamicAdSlotsOfThisSite = $this->getDynamicAdSlotForSite($site);
-            unset($site['displayAdSlots']);
-            unset($site['dynamicAdSlots']);
+            $displayAdSlotsOfThisSite = [];
+            $dynamicAdSlotsOfThisSite = [];
+            if (array_key_exists('displayAdSlots',$site)) {
+                $displayAdSlotsOfThisSite = $this->getDisplayAdSlotForSite($site);
+                unset($site['displayAdSlots']);
+            }
+            if (array_key_exists('dynamicAdSlots', $site)) {
+                $dynamicAdSlotsOfThisSite = $this->getDynamicAdSlotForSite($site);
+                unset($site['dynamicAdSlots']);
+            }
 
             $siteObject = Site::createSiteFromArray($site);
             $siteToken = $this->createSiteHash ($siteObject->getPublisherId(), $siteObject->getDomain());
@@ -263,11 +268,11 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
 
     public function createFullDataForSites($excelFileArray, PublisherInterface $publisher)
     {
-        $excelSites = $this->getSitesFromExcelArray($excelFileArray);
-        $excelDisplayAdSlots = $this->getDisplayAdSlotsFromExcelArray($excelFileArray);
-        $excelAdTags = $this->getAdTagsFromExcelArray($excelFileArray);
-        $excelDynamicAdSlots = $this->getDynamicAdSlotsFromExcelArray($excelFileArray);
-        $excelExpressionsTargeting = $this->getExpressionTargetingFromExcelArray($excelFileArray);
+        $excelSites                  = $this->getSitesFromExcelArray($excelFileArray);
+        $excelDisplayAdSlots         = $this->getDisplayAdSlotsFromExcelArray($excelFileArray);
+        $excelAdTags                 = $this->getAdTagsFromExcelArray($excelFileArray);
+        $excelDynamicAdSlots         = $this->getDynamicAdSlotsFromExcelArray($excelFileArray);
+        $excelExpressionsTargeting   = $this->getExpressionTargetingFromExcelArray($excelFileArray);
 
         $allSites = [];
         foreach ($excelSites as $inputSite) {
@@ -284,12 +289,14 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
             $oneSite[self::RTB_STATUS_KEY]      = $rtbStatusValue;
             $oneSite[self::PLAYER_KEY]          = $playerValue;
 
-            $displayAdSlots = $this->getDisplayAdSlotsForSiteByName($siteName, $excelDisplayAdSlots,$excelAdTags);
-            $dynamicAdSlots = $this->getDynamicAdSlotsForSiteByName($siteName, $excelDynamicAdSlots, $excelExpressionsTargeting);
-
-            $oneSite['displayAdSlots']   = $displayAdSlots;
-            $oneSite['dynamicAdSlots']   = $dynamicAdSlots;
-
+            if (null != $excelDisplayAdSlots) {
+                $displayAdSlots = $this->getDisplayAdSlotsForSiteByName($siteName, $excelDisplayAdSlots,$excelAdTags);
+                $oneSite['displayAdSlots']   = $displayAdSlots;
+            }
+            if (null != $excelDynamicAdSlots && null != $excelExpressionsTargeting) {
+                $dynamicAdSlots = $this->getDynamicAdSlotsForSiteByName($siteName, $excelDynamicAdSlots, $excelExpressionsTargeting);
+                $oneSite['dynamicAdSlots']   = $dynamicAdSlots;
+            }
             $allSites[$siteName] = $oneSite;
         }
 
@@ -302,10 +309,12 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getSitesFromExcelArray($contents)
     {
-        $sites = $contents[self::SITE_SHEET_NAME];
-        array_shift($sites); // Remove header of site sheet
-
-        return $sites;
+        if (array_key_exists(self::SITE_SHEET_NAME, $contents)){
+            $sites = $contents[self::SITE_SHEET_NAME];
+            array_shift($sites); // Remove header of site sheet
+            return $sites;
+        }
+        return null;
     }
 
     /**
@@ -314,10 +323,12 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getDisplayAdSlotsFromExcelArray($contents)
     {
-        $displayAdSlotData = $contents[self::DISPLAY_AD_SLOT_NAME];
-        array_shift($displayAdSlotData); // Remove header of display ad slot
-
-        return $displayAdSlotData;
+        if (array_key_exists(self::DISPLAY_AD_SLOT_NAME,$contents)) {
+            $displayAdSlotData = $contents[self::DISPLAY_AD_SLOT_NAME];
+            array_shift($displayAdSlotData); // Remove header of display ad slot
+            return $displayAdSlotData;
+        }
+        return null;
     }
 
     /**
@@ -326,10 +337,12 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getAdTagsFromExcelArray($contents)
     {
-        $adTagsData = $contents[self::AD_TAGS_SHEET_NAME];
-        array_shift($adTagsData); // Remove header of display ad slot
-
-        return $adTagsData;
+        if (array_key_exists(self::AD_TAGS_SHEET_NAME,$contents)) {
+            $adTagsData = $contents[self::AD_TAGS_SHEET_NAME];
+            array_shift($adTagsData); // Remove header of display ad slot
+            return $adTagsData;
+        }
+        return null;
     }
 
     /**
@@ -338,10 +351,13 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getDynamicAdSlotsFromExcelArray($contents)
     {
-        $dynamicAdSlotData = $contents[self::DYNAMIC_AD_SLOT_NAME];
-        array_shift($dynamicAdSlotData); // Remove header of display ad slot
+        if (array_key_exists(self::DYNAMIC_AD_SLOT_NAME, $contents)) {
+            $dynamicAdSlotData = $contents[self::DYNAMIC_AD_SLOT_NAME];
+            array_shift($dynamicAdSlotData); // Remove header of display ad slot
+            return $dynamicAdSlotData;
+        }
+        return null;
 
-        return $dynamicAdSlotData;
     }
 
     /**
@@ -350,10 +366,13 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getExpressionTargetingFromExcelArray($contents)
     {
-        $expressionTargeting = $contents[self::EXPRESSION_TARGETING_NAME];
-        array_shift($expressionTargeting); // Remove header of expression targeting
+        if (array_key_exists(self::EXPRESSION_TARGETING_NAME,$contents)) {
+            $expressionTargeting = $contents[self::EXPRESSION_TARGETING_NAME];
+            array_shift($expressionTargeting); // Remove header of expression targeting
+            return $expressionTargeting;
+        }
+        return null;
 
-        return $expressionTargeting;
     }
 
 
