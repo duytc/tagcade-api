@@ -448,8 +448,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $active = $paramFetcher->get('active');
         $active = filter_var($active, FILTER_VALIDATE_BOOLEAN);
 
-        $cmd = sprintf('%s tc:ad-tag-status:update %d --status=%d', $this->getAppConsoleCommand(), $id, $active);
-        $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $this->getLogger());
+        $this->get('tagcade.worker.manager')->updateAdTagStatusForAdNetwork($id, $active);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
@@ -688,9 +687,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
 
-//        $this->get('tagcade.domain_manager.ad_tag')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
-        $cmd = sprintf('%s tc:ad-tag-status:update %d --site=%d --status=%d', $this->getAppConsoleCommand(), $id, $siteId, $active);
-        $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $this->getLogger());
+        $this->get('tagcade.worker.manager')->updateAdTagStatusForAdNetwork($id, $active, $siteId);
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('PUT', $adNetwork);
@@ -951,37 +948,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $this->checkUserPermission($publisher);
 
         return $publisher;
-    }
-
-    protected function getAppConsoleCommand()
-    {
-        $pathToSymfonyConsole = $this->getParameter('kernel.root_dir');
-        $environment = $this->getParameter('kernel.environment');
-        $debug = $this->getParameter('kernel.debug');
-
-        $command = sprintf('php %s/console --env=%s', $pathToSymfonyConsole, $environment);
-
-        if (!$debug) {
-            $command .= ' --no-debug';
-        }
-
-        return $command;
-    }
-
-    protected function executeProcess(Process $process, array $options, LoggerInterface $logger)
-    {
-        if (array_key_exists('timeout', $options)) {
-            $process->setTimeout($options['timeout']);
-        }
-
-        $process->mustRun(function($type, $buffer) use($logger) {
-            if (Process::ERR === $type) {
-                $logger->error($buffer);
-            } else {
-                $logger->info($buffer);
-            }
-        }
-        );
     }
 
     protected function getLogger()

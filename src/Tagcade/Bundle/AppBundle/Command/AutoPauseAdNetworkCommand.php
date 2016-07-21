@@ -77,9 +77,9 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
 
             if (($opportunityCap > 0 && $opportunityCap <= $opportunityCount) || ($impressionCap > 0 && $impressionCap <= $impressionCount)) {
                 $logger->info(sprintf('Ad network %d will be PAUSED shortly', $nw->getId()));
-                $cmd = sprintf('%s tc:ad-tag-status:update %d --status %d', $this->getAppConsoleCommand(), $adNetwork->getId(), AdTagInterface::AUTO_PAUSED);
-                $this->executeProcess($process = new Process($cmd), [], $logger);
-//                $adTagManager->updateAdTagStatusForAdNetwork($nw, $active = AdTagInterface::AUTO_PAUSED);
+                $cmd = sprintf('%s tc:ad-tag-status:update %d --status=%d', $this->getAppConsoleCommand(), $adNetwork->getId(), AdTagInterface::AUTO_PAUSED);
+                $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $logger);
+
                 $pausedNetworkCount ++;
             }
             else {

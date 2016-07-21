@@ -154,6 +154,19 @@ class Manager
         $this->queueTask('updateComparisonForPublisher', $params);
     }
 
+    public function updateAdTagStatusForAdNetwork($adNetworkId, $status, $siteId = null)
+    {
+        $params = new StdClass();
+
+        $params->adNetworkId = $adNetworkId;
+        $params->status = $status;
+        if ($siteId !== null) {
+            $params->siteId   = $siteId;
+        }
+
+        $this->queueTask('updateAdTagStatusForAdNetwork', $params);
+    }
+
     /**
      * @param string $task
      * @param StdClass $params
