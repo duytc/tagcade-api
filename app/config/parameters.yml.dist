@@ -112,7 +112,7 @@ parameters:
             dynamicAdSlotName: 0
             expressionAdSlot: 1
             startPosition: 2
-            headerBidPrice: 3
+            hbBidPrice: 3
             expression: 4
             condition: 5
             conditionType: 6

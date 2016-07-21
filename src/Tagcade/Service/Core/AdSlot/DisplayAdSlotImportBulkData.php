@@ -212,7 +212,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
         $displayAdSlot[self::SLOT_TYPE_KEY]         = $slotTypeValue;
         $displayAdSlot[self::FLOOR_PRICE_KEY]       = $floorPriceValue;
         $displayAdSlot[self::HEADER_BID_PRICE_KEY]  = $hbPriceValue;
-        $displayAdSlot[self::RTB_STATUS_KEY]        =  $rtbStatusValue;
+        $displayAdSlot[self::RTB_STATUS_KEY]        = $rtbStatusValue;
         $displayAdSlot[self::LIBRARY_AD_SLOT_KEY]   = $libraryDisplayAdSlotObject;
 
         return $displayAdSlot;
@@ -360,8 +360,10 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAutoFitValue($oneAdSlot)
     {
-        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs)){
-            return $oneAdSlot[$this->getAutoFitIndex()];
+        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs)) {
+            $autoFitValue =  (strtoupper($oneAdSlot[$this->getAutoFitIndex()]) == 'YES')? 1:0;
+
+            return $autoFitValue;
         }
 
         return self::AUTO_FIT_DEFAULT_VALUE;
