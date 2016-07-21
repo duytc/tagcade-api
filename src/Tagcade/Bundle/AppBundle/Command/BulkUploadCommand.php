@@ -13,12 +13,6 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 class BulkUploadCommand extends ContainerAwareCommand
 {
-    const SITE_SHEET_NAME               =   'Sites';
-    const AD_TAGS_SHEET_NAME            =   'Ad Tags';
-    const DISPLAY_AD_SLOT_NAME          =   'Display Ad Slots';
-    const DYNAMIC_AD_SLOT_NAME          =   'Dynamic Ad Slots';
-    const EXPRESSION_TARGETING_NAME     =   'Expression Targeting';
-
     protected function configure()
     {
         $this
@@ -26,7 +20,7 @@ class BulkUploadCommand extends ContainerAwareCommand
             ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'path to file to be imported')
             ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'publisher add data')
             ->addOption('dry','D',InputOption::VALUE_OPTIONAL,'dry run option',false)
-            ->setDescription('Bulk upload data for site, display ad slot, ad tag and dynamic ad slot');
+            ->setDescription('Bulk upload data for sites, display ad slots, ad tag and dynamic ad slots');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -46,7 +40,7 @@ class BulkUploadCommand extends ContainerAwareCommand
             $file = sprintf('%s/%s', $rootDir, $file);
         }
 
-        if(!is_file($file)) {
+        if (!is_file($file)) {
             throw new \Exception(sprintf('The specified file in not found or not accessible %s', $file));
         }
         $logger->debug(sprintf('Full path to data file %s', $file));
@@ -58,7 +52,7 @@ class BulkUploadCommand extends ContainerAwareCommand
 
         $siteImportBulkDataServer = $container->get('tagcade_app.service.core.site.bulk_upload');
         $publisher = $publisherManager->find($publisherId);
-        if(!$publisher instanceof PublisherInterface) {
+        if (!$publisher instanceof PublisherInterface) {
             throw new \Exception(sprintf('Not exist Publisher with id =%d', $publisherId));
         }
 
