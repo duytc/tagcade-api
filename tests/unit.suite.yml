@@ -8,7 +8,7 @@ modules:
             dsn: 'mysql:host=localhost;dbname=tagcade_api'
             user: 'tagcadedev'
             password: 'tagcadedev'
-            dump: 'tests/_data/replicator_unit_test.sql'
+            dump: 'tests/_data/unified_report.sql'
             populate: true
             cleanup: true
 #        Symfony2:
