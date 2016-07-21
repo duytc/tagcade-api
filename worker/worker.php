@@ -31,7 +31,8 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.update_cache_for_site_worker'),
     $container->get('tagcade.worker.workers.update_cache_for_channel_worker'),
     $container->get('tagcade.worker.workers.update_cache_for_publisher_worker'),
-    $container->get('tagcade.worker.workers.update_comparison_for_publisher_worker')
+    $container->get('tagcade.worker.workers.update_comparison_for_publisher_worker'),
+    $container->get('tagcade.worker.workers.update_ad_tag_status_for_ad_network_worker')
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

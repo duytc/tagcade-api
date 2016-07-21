@@ -19,13 +19,13 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:ad-network:do-auto-pause')
-            ->addOption('ad-network', 'd', InputOption::VALUE_OPTIONAL, 'ad network id to validate and do auto pause.')
+            ->addOption('adNetwork', 'd', InputOption::VALUE_OPTIONAL, 'ad network id to validate and do auto pause.')
             ->setDescription('Do pause for ad networks that have reached impression cap and network opportunity cap per day');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $adNetwork = $input->getOption('ad-network');
+        $adNetwork = $input->getOption('adNetwork');
         $container = $this->getContainer();
         $logger = $container->get('logger');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
@@ -77,9 +77,9 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
 
             if (($opportunityCap > 0 && $opportunityCap <= $opportunityCount) || ($impressionCap > 0 && $impressionCap <= $impressionCount)) {
                 $logger->info(sprintf('Ad network %d will be PAUSED shortly', $nw->getId()));
-                $cmd = sprintf('%s tc:ad-tag-status:update %d --status %d', $this->getAppConsoleCommand(), $adNetwork->getId(), AdTagInterface::AUTO_PAUSED);
-                $this->executeProcess($process = new Process($cmd), [], $logger);
-//                $adTagManager->updateAdTagStatusForAdNetwork($nw, $active = AdTagInterface::AUTO_PAUSED);
+                $cmd = sprintf('%s tc:ad-tag-status:update %d --status=%d', $this->getAppConsoleCommand(), $adNetwork->getId(), AdTagInterface::AUTO_PAUSED);
+                $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $logger);
+
                 $pausedNetworkCount ++;
             }
             else {
