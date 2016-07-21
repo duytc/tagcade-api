@@ -164,7 +164,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         $siteNameIndexInDisplayAdSlotSheet = $this->displayAdSlotBulkUpload->getSiteNameIndex();
         $adSlotNameIndex = $this->displayAdSlotBulkUpload->getAdSlotNameIndex();
         foreach ($displayAdSlots as $displayAdSlot) {
-            if( 0 == strcmp($siteName, $displayAdSlot[$siteNameIndexInDisplayAdSlotSheet])) {
+            if (0 == strcmp($siteName, $displayAdSlot[$siteNameIndexInDisplayAdSlotSheet])) {
                 $displayAdSlotName = $displayAdSlot[$adSlotNameIndex];
                 $expectAdSlots[$displayAdSlotName] = $displayAdSlot;
             }
@@ -178,12 +178,12 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
             foreach ($adTags as $adTag) {
                 $adSlotNameIndexOfAdTag = $this->adTagImportBulkData->getAdSlotNameIndex();
                 $adSlotNameInAdTag = $adTag[$adSlotNameIndexOfAdTag];
-                if( 0 == strcmp($displayAdSlotName, $adSlotNameInAdTag)) {
+                if (0 == strcmp($displayAdSlotName, $adSlotNameInAdTag)) {
                     $adTagsOfOneAdSlot[] = $adTag;
                 }
             }
             $expectAdSlot['adTags'] = $adTagsOfOneAdSlot;
-            $expectAdSlotsWithAdTags [$displayAdSlotName] = $expectAdSlot;
+            $expectAdSlotsWithAdTags[$displayAdSlotName] = $expectAdSlot;
         }
 
         return $expectAdSlotsWithAdTags;
@@ -202,7 +202,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         $dynamicAdSlotNameIndex = $this->dynamicAdSlotBulkUpload->getNameIndexOfDynamicAdSlot();
         $targetingExpressionArray = $this->dynamicAdSlotBulkUpload->convertExpressionTargetingToArray($targetingExpression);
         foreach ($dynamicAdSlots as $dynamicAdSlot) {
-            if( 0 == strcmp($siteName, $dynamicAdSlot[$siteNameIndexInDynamicAdSlotSheet])) {
+            if (0 == strcmp($siteName, $dynamicAdSlot[$siteNameIndexInDynamicAdSlotSheet])) {
                 $dynamicAdSlotName                      = $dynamicAdSlot[$dynamicAdSlotNameIndex];
                 $dynamicBuilderExpression               = $targetingExpressionArray[$dynamicAdSlotName];
                 $dynamicAdSlot['builderExpressions']    = $dynamicBuilderExpression;
@@ -250,11 +250,11 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     {
         $oneSite = [];
 
-        $siteName = $this->getNameSiteValue($inputSite);
-        $domain = $this->getDomainValue($inputSite);
-        $sourceReportValue = $this->getEnableSourceReportValue($inputSite);
-        $rtbStatusValue = $this->getRtbStatusValue($inputSite);
-        $playerValue = $this->getPlayerValue($inputSite);
+        $siteName           = $this->getNameSiteValue($inputSite);
+        $domain             = $this->getDomainValue($inputSite);
+        $sourceReportValue  = $this->getEnableSourceReportValue($inputSite);
+        $rtbStatusValue     = $this->getRtbStatusValue($inputSite);
+        $playerValue        = $this->getPlayerValue($inputSite);
 
         $oneSite[self::PUBLISHER_KEY]       = $publisher;
         $oneSite[self::NAME_KEY]            = $siteName;
@@ -309,7 +309,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getSitesFromExcelArray($contents)
     {
-        if (array_key_exists(self::SITE_SHEET_NAME, $contents)){
+        if (array_key_exists(self::SITE_SHEET_NAME, $contents)) {
             $sites = $contents[self::SITE_SHEET_NAME];
             array_shift($sites); // Remove header of site sheet
             return $sites;
@@ -375,7 +375,6 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
 
     }
 
-
     /**
      * @param $oneSite
      * @return mixed
@@ -403,7 +402,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getEnableSourceReportValue($oneSite)
     {
-        if(array_key_exists(self::SOURCE_REPORT_KEY, $this->siteConfigs) && array_key_exists($this->getSourceReportIndex(), $oneSite)){
+        if (array_key_exists(self::SOURCE_REPORT_KEY, $this->siteConfigs) && array_key_exists($this->getSourceReportIndex(), $oneSite)) {
             return    $oneSite[$this->getSourceReportIndex()];
         }
 
@@ -417,7 +416,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getRtbStatusValue($oneSite)
     {
-        if(array_key_exists(self::RTB_STATUS_KEY, $this->siteConfigs) && array_key_exists($this->getRtbStatusIndex(), $oneSite)){
+        if (array_key_exists(self::RTB_STATUS_KEY, $this->siteConfigs) && array_key_exists($this->getRtbStatusIndex(), $oneSite)) {
             return    $oneSite[$this->getRtbStatusIndex()];
         }
 
@@ -431,7 +430,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getPlayerValue($oneSite)
     {
-        if(array_key_exists(self::PLAYER_KEY, $this->siteConfigs) && array_key_exists($this->getPlayerIndex(), $oneSite)){
+        if (array_key_exists(self::PLAYER_KEY, $this->siteConfigs) && array_key_exists($this->getPlayerIndex(), $oneSite)) {
             return    $oneSite[$this->getRtbStatusIndex()];
         }
 
@@ -444,7 +443,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getNameIndex()
     {
-        if(!array_key_exists('name', $this->siteConfigs)){
+        if (!array_key_exists('name', $this->siteConfigs)){
             throw new \Exception('There is not site name in config file');
         }
         return $this->siteConfigs['name'];
@@ -457,7 +456,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     protected function getDomainIndex()
     {
 
-        if(!array_key_exists(self::DOMAIN_KEY, $this->siteConfigs)) {
+        if (!array_key_exists(self::DOMAIN_KEY, $this->siteConfigs)) {
             throw new \Exception ('There is not domain name in config file');
         }
 
@@ -470,7 +469,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getSourceReportIndex()
     {
-        if(!array_key_exists(self::SOURCE_REPORT_KEY, $this->siteConfigs)) {
+        if (!array_key_exists(self::SOURCE_REPORT_KEY, $this->siteConfigs)) {
             throw new \Exception ('There is not source report in config file');
         }
 
@@ -483,7 +482,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getRtbStatusIndex()
     {
-        if(!array_key_exists(self::RTB_STATUS_KEY, $this->siteConfigs)) {
+        if (!array_key_exists(self::RTB_STATUS_KEY, $this->siteConfigs)) {
             throw new \Exception ('There is not source report in config file');
         }
 
@@ -496,7 +495,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getPlayerIndex()
     {
-        if(!array_key_exists(self::PLAYER_KEY, $this->siteConfigs)) {
+        if (!array_key_exists(self::PLAYER_KEY, $this->siteConfigs)) {
             throw new \Exception ('There is not player in config file');
         }
 

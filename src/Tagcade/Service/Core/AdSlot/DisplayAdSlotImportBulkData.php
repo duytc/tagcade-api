@@ -171,7 +171,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     {
         $allDisplayAdSlotsData = [];
 
-        foreach($excelRows as  $excelRow) {
+        foreach ($excelRows as  $excelRow) {
             $displayAdSlotsData = $this->createDisplayAdSlotDataFromExcelRow($excelRow, $site ,$publisher);
             $allDisplayAdSlotsData[] = $displayAdSlotsData;
         }
@@ -256,10 +256,11 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     {
         $expectAdSlots = [];
         foreach ($displayAdSlots as $displayAdSlot) {
-            if(0 == strcmp($displayAdSlot[$this->getSiteNameIndex()], $siteName )) {
+            if (0 == strcmp($displayAdSlot[$this->getSiteNameIndex()], $siteName )) {
                 $expectAdSlots[] = $displayAdSlot;
             }
         }
+
         return $expectAdSlots;
     }
 
@@ -272,7 +273,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     public function getAdSlotDataByAdSlotName($adSlotName, array $allAdSlots)
     {
         foreach ($allAdSlots as $allAdSlot) {
-            if(0 == strcmp($allAdSlot[$this->getAdSlotNameIndex()], $adSlotName )) {
+            if (0 == strcmp($allAdSlot[$this->getAdSlotNameIndex()], $adSlotName )) {
                 return $allAdSlot;
             }
         }
@@ -281,7 +282,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     /**
      * @return array
      */
-    protected  function getDisplayAdSlotBeforePersists()
+    protected function getDisplayAdSlotBeforePersists()
     {
         return $this->displayAdSlotBeforePersists;
     }
@@ -290,7 +291,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @param $displayAdSlotBeforePersists
      * @param $name
      */
-    protected  function insertDisplayAdSlotBeforePersists($displayAdSlotBeforePersists, $name)
+    protected function insertDisplayAdSlotBeforePersists($displayAdSlotBeforePersists, $name)
     {
         $this->displayAdSlotBeforePersists[$name] = $displayAdSlotBeforePersists;
     }
@@ -298,6 +299,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     protected function resetDisplayAdSlotBeforePersists()
     {
         $this->displayAdSlotBeforePersists = [];
+
         return $this->displayAdSlotBeforePersists;
     }
 
@@ -308,9 +310,10 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAdSlotNameValue($oneAdSlot)
     {
-        if(array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs)) {
             return $oneAdSlot[$this->getAdSlotNameIndex()];
         }
+
         return self::AD_SLOT_NAME_DEFAULT_VALUE;
     }
 
@@ -357,9 +360,10 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAutoFitValue($oneAdSlot)
     {
-        if(array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs)){
+        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs)){
             return $oneAdSlot[$this->getAutoFitIndex()];
         }
+
         return self::AUTO_FIT_DEFAULT_VALUE;
     }
 
@@ -370,11 +374,11 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getPassBackModeValue($oneAdSlot)
     {
-        if(array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs)) {
             return $oneAdSlot[$this->getPassBackModeIndex()];
         }
-        return self::PASS_BACK_MODE_DEFAULT_VALUE;
 
+        return self::PASS_BACK_MODE_DEFAULT_VALUE;
     }
 
     /**
@@ -384,11 +388,11 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getRtbStatusValue($oneAdSlot)
     {
-        if(array_key_exists(self::RTB_STATUS_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::RTB_STATUS_KEY, $this->adSlotsConfigs)) {
             return $oneAdSlot[$this->getRtbStatusIndex()];
         }
-        return self::RTB_DEFAULT_VALUE;
 
+        return self::RTB_DEFAULT_VALUE;
     }
     /**
      * @param $oneAdSlot
@@ -397,9 +401,10 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getHbPriceValue($oneAdSlot)
     {
-        if(array_key_exists(self::HEADER_BID_PRICE_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::HEADER_BID_PRICE_KEY, $this->adSlotsConfigs)) {
             return $oneAdSlot[$this->getHeaderPriceIndex()];
         }
+
         return self::HEADER_BID_PRICE_DEFAULT_VALUE;
     }
     /**
@@ -412,11 +417,11 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
 
     protected function getFloorPriceValue ($oneAdSlot)
     {
-        if(array_key_exists(self::FLOOR_PRICE_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::FLOOR_PRICE_KEY, $this->adSlotsConfigs)) {
            return $oneAdSlot[$this->getFloorPriceIndex()];
         }
-        return self::FLOOR_PRICE_DEFAULT_VALUE;
 
+        return self::FLOOR_PRICE_DEFAULT_VALUE;
     }
 
     /**

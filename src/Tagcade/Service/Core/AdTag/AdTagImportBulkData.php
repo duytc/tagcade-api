@@ -51,7 +51,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     const AD_TYPE_DEFAULT_VALUE_OF_LIB_AD_TAG           = 0;
     const PARTNER_TAG_ID_DEFAULT_VALUE_OF_AD_TAG        = null;
 
-    const AD_SLOT_NAME_KEY                             ='adSlotName';
+    const AD_SLOT_NAME_KEY                              ='adSlotName';
 
     const POSITION_DEFAULT_VALUE                        = 1;
     const ACTIVE_DEFAULT_VALUE                          = 1;
@@ -103,26 +103,26 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     public function importAdTagsForOneAdSlot(DisplayAdSlot $displayAdSlotObject, array $allAdTags, $dryOption)
     {
         $adTagObjects = [];
-        $adTagObjectInSystemHaveSameHtml = [];
+        $adTagObjectsInSystemHaveSameHtml = [];
         $publisher = $displayAdSlotObject->getSite()->getPublisher();
         $allAdTags = $this->createAllAdTagsData($allAdTags,$publisher);
 
         $adTagsOfThisAdSlotInSystem = $this->adTagManager->getAdTagsForAdSlot($displayAdSlotObject);
         foreach ($adTagsOfThisAdSlotInSystem as $adTag) {
             $md5 = md5($adTag->getHtml());
-            $adTagObjectInSystemHaveSameHtml [$md5] = $adTag;
+            $adTagObjectsInSystemHaveSameHtml[$md5] = $adTag;
         }
 
-        foreach ($allAdTags as $AdTag) {
-            $AdTag[self::AD_SLOT_KEY_OF_AD_TAG] = $displayAdSlotObject;
+        foreach ($allAdTags as $adTag) {
+            $adTag[self::AD_SLOT_KEY_OF_AD_TAG] = $displayAdSlotObject;
             /** @var LibraryAdTagInterface $libraryAdTag */
-            $libraryAdTag = $AdTag[self::LIBRARY_AD_TAG_KEY_OF_AD_TAG];
+            $libraryAdTag = $adTag[self::LIBRARY_AD_TAG_KEY_OF_AD_TAG];
             $htmlValue = $libraryAdTag->getHtml();
             $md5OfHtmlTag = md5($htmlValue);
 
-            if ((!array_key_exists($md5OfHtmlTag, $adTagObjects)) && (!array_key_exists($md5OfHtmlTag, $adTagObjectInSystemHaveSameHtml))) {
-                $adTagObject = AdTag::createAdTagFromArray($AdTag);
-                $adTagObjects [$md5OfHtmlTag] = $adTagObject;
+            if ((!array_key_exists($md5OfHtmlTag, $adTagObjects)) && (!array_key_exists($md5OfHtmlTag, $adTagObjectsInSystemHaveSameHtml))) {
+                $adTagObject = AdTag::createAdTagFromArray($adTag);
+                $adTagObjects[$md5OfHtmlTag] = $adTagObject;
             } else {
                 $libraryAdTag->setVisible(false);
             }
@@ -144,9 +144,9 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     {
         $allAdTagsData = [];
 
-        foreach ($excelRows as $excelRow){
+        foreach ($excelRows as $excelRow) {
             $adTagData = $this->createAdTagDataFromExcelRow($excelRow, $publisher);
-            $allAdTagsData [] = $adTagData;
+            $allAdTagsData[] = $adTagData;
         }
 
         return $allAdTagsData;
@@ -174,10 +174,10 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $htmlOfLibraryAdTag = $libraryAdTagData[self::HTML_KEY_OF_LIB_AD_TAG];
 
         $libraryAdTagObjects = $this->getLibraryAdTagObjectsInOneSection();
-        if(!array_key_exists($htmlOfLibraryAdTag,$libraryAdTagObjects)) {
+        if (!array_key_exists($htmlOfLibraryAdTag,$libraryAdTagObjects)) {
             /**@var LibraryAdTagInterface[] $libraryAdTagInSystem*/
             $libraryAdTagInSystem = $this->libraryAdTagManager->getLibraryAdTagsByHtml($htmlOfLibraryAdTag);
-            if(empty($libraryAdTagInSystem) || count($libraryAdTagInSystem) > 1) {
+            if (empty($libraryAdTagInSystem) || count($libraryAdTagInSystem) > 1) {
                 $libraryAdTagObject         = LibraryAdTag::createAdTagLibraryFromArray($libraryAdTagData);
                 $this->insertLibraryAdTagObjectsInOneSection($libraryAdTagObject, $htmlOfLibraryAdTag);
             } else  {
@@ -214,7 +214,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $libraryAdTag = [];
 
         $demandPartnerName = $excelRow[$this->getDemandPartnerIndex()];
-        if(empty($demandPartnerName)) {
+        if (empty($demandPartnerName)) {
             throw new \Exception('Demand Partner can not be empty!');
         }
 
@@ -252,12 +252,12 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
          */
         $adNetworks = $this->adNetworkManager->getAdNetworksForPublisher($publisher);
 
-        if( null == $adNetworks) {
+        if (null == $adNetworks) {
             throw new \Exception('Not found demand partner in system!');
         }
 
         foreach ($adNetworks as $adNetwork) {
-            if ( 0 == strcmp($demandPartName, $adNetwork->getName())){
+            if ( 0 == strcmp($demandPartName, $adNetwork->getName())) {
              return $adNetwork;
             }
         }
@@ -599,7 +599,6 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
 
     }
 
-
     /**
      * @return mixed
      * @throws \Exception
@@ -627,7 +626,10 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
 
     }
 
-
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
     protected function  getFrequencyCapIndex()
     {
         if (!array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs)) {

@@ -40,7 +40,7 @@ class BulkUploadCommand extends ContainerAwareCommand
             $file = sprintf('%s/%s', $rootDir, $file);
         }
 
-        if(!is_file($file)) {
+        if (!is_file($file)) {
             throw new \Exception(sprintf('The specified file in not found or not accessible %s', $file));
         }
         $logger->debug(sprintf('Full path to data file %s', $file));
@@ -52,7 +52,7 @@ class BulkUploadCommand extends ContainerAwareCommand
 
         $siteImportBulkDataServer = $container->get('tagcade_app.service.core.site.bulk_upload');
         $publisher = $publisherManager->find($publisherId);
-        if(!$publisher instanceof PublisherInterface) {
+        if (!$publisher instanceof PublisherInterface) {
             throw new \Exception(sprintf('Not exist Publisher with id =%d', $publisherId));
         }
 
