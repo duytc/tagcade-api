@@ -12,12 +12,16 @@ use Tagcade\Model\Core\SiteInterface;
 interface AdTagPositionEditorInterface
 {
     /**
+     * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
+     * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
+     *
      * @param AdNetworkInterface $adNetwork
-     * @param $position
-     * @param SiteInterface[] $sites
-     * @return int number of ad tags get updated
+     * @param int $position
+     * @param null|SiteInterface|SiteInterface[] $sites optional
+     * @param bool $autoIncreasePosition optional, true if need shift down
+     * @return int
      */
-    public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null);
+    public function setAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null, $autoIncreasePosition = false);
 
     /**
      * @param DisplayAdSlotInterface $adSlot

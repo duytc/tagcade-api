@@ -187,17 +187,24 @@ services:
             - @tagcade.domain_manager.ron_ad_slot
 
     tagcade.worker.workers.update_comparison_for_publisher_worker:
-            class: Tagcade\Worker\Workers\UpdateComparisonForPublisherWorker
-            arguments:
-                - @tagcade.service.report.unified_report.report_comparison_creator
-                - @tagcade_user.domain_manager.publisher
+        class: Tagcade\Worker\Workers\UpdateComparisonForPublisherWorker
+        arguments:
+            - @tagcade.service.report.unified_report.report_comparison_creator
+            - @tagcade_user.domain_manager.publisher
 
     tagcade.worker.workers.update_ad_tag_status_for_ad_network_worker:
-            class: Tagcade\Worker\Workers\UpdateAdTagStatusForAdNetworkWorker
-            arguments:
-                - @tagcade.domain_manager.ad_tag
-                - @tagcade.domain_manager.ad_network
-                - @tagcade.domain_manager.site
+        class: Tagcade\Worker\Workers\UpdateAdTagStatusForAdNetworkWorker
+        arguments:
+            - @tagcade.domain_manager.ad_tag
+            - @tagcade.domain_manager.ad_network
+            - @tagcade.domain_manager.site
+
+    tagcade.worker.workers.update_ad_tag_position_for_ad_network_and_sites_worker:
+        class: Tagcade\Worker\Workers\UpdateAdTagPositionForAdNetworkAndSitesWorker
+        arguments:
+            - @tagcade.domain_manager.ad_network
+            - @tagcade.domain_manager.site
+            - @tagcade_app.service.core.ad_tag.ad_tag_position_editor
 
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil

@@ -261,13 +261,22 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $role = $this->get('tagcade.user_role');
 
         if ($role instanceof AdminInterface) {
-            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork);
+            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork);
+        } else {
+            /** @var PublisherInterface $role */
+            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
         }
 
-        /**
-         * @var PublisherInterface $role
-         */
-        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
+        $sites = [];
+        $siteManager = $this->get('tagcade.domain_manager.site');
+        foreach($siteIds as $siteId) {
+            $site = $siteManager->find($siteId);
+            if ($site instanceof SiteInterface) {
+                $sites[] = $site;
+            }
+        }
+
+        return $sites;
     }
 
     /**
@@ -665,15 +674,15 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             throw new NotFoundHttpException('That adNetwork does not exist');
         }
 
-        //get oldValue for action log bellow. Not clone direct $adNetwork->getAdTags() because lazy load and oldValue then be updated as newValue
-        $adTags = $adNetwork->getAdTags();
-
-        /** @var AdTagInterface[] $adTagsOld */
-        $adTagsOld = [];
-
-        foreach ($adTags as $adTag) {
-            $adTagsOld[] = clone $adTag;
-        }
+//        //get oldValue for action log bellow. Not clone direct $adNetwork->getAdTags() because lazy load and oldValue then be updated as newValue
+//        $adTags = $adNetwork->getAdTags();
+//
+//        /** @var AdTagInterface[] $adTagsOld */
+//        $adTagsOld = [];
+//
+//        foreach ($adTags as $adTag) {
+//            $adTagsOld[] = clone $adTag;
+//        }
 
         /** @var SiteInterface $site */
         $site = $this->get('tagcade.domain_manager.site')->find($siteId);
@@ -689,29 +698,29 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $this->get('tagcade.worker.manager')->updateAdTagStatusForAdNetwork($id, $active, $siteId);
 
-        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
-        $event = new HandlerEventLog('PUT', $adNetwork);
-
-        ////add Affected for Site
-        $event->addAffectedEntityByObject($site);
-
-        ////detect and add Affected for AdTags
-        $hasAdTagAffected = false;
-        foreach ($adTagsOld as $adTag) {
-            //only add ad tag to affected list if really has changing
-            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
-                $event->addAffectedEntityByObject($adTag);
-                $hasAdTagAffected = true;
-            }
-        }
-
-        ////add ChangedFields: if really has changing, 'active' changed from !$active to $active, then dispatch Event Log
-        if ($hasAdTagAffected) {
-            $event->addChangedFields('active', !$active, $active);
-
-            ////dispatch Event Log
-            $this->getHandler()->dispatchEvent($event);
-        }
+//        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+//        $event = new HandlerEventLog('PUT', $adNetwork);
+//
+//        ////add Affected for Site
+//        $event->addAffectedEntityByObject($site);
+//
+//        ////detect and add Affected for AdTags
+//        $hasAdTagAffected = false;
+//        foreach ($adTagsOld as $adTag) {
+//            //only add ad tag to affected list if really has changing
+//            if ($adTag->getAdSlot()->getSite() == $site && $active != $adTag->isActive()) {
+//                $event->addAffectedEntityByObject($adTag);
+//                $hasAdTagAffected = true;
+//            }
+//        }
+//
+//        ////add ChangedFields: if really has changing, 'active' changed from !$active to $active, then dispatch Event Log
+//        if ($hasAdTagAffected) {
+//            $event->addChangedFields('active', !$active, $active);
+//
+//            ////dispatch Event Log
+//            $this->getHandler()->dispatchEvent($event);
+//        }
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
@@ -905,22 +914,21 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             return $this->view('position should be greater than zero', Codes::HTTP_BAD_REQUEST);
         }
 
-        // do cascading position
-        $adTagPositionEditor = $this->get('tagcade_app.service.core.ad_tag.ad_tag_position_editor');
-        $adTagPositionEditor->setAdTagPositionForAdNetworkAndSites($adNetwork, $position, $sites, $autoIncreasePosition);
+        // do cascading position by worker background process
+        $this->get('tagcade.worker.manager')->updateAdTagPositionForAdNetworkAndSites($adNetwork, $position, $sites, $autoIncreasePosition);
 
-        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
-        $event = new HandlerEventLog('PUT', $adNetwork);
-
-        $event->addChangedFields('position', '', $position);
-
-        /** @var AdTagInterface[] $adTags */
-        $adTags = $adNetwork->getAdTags();
-        foreach ($adTags as $adTag) {
-            $event->addAffectedEntityByObject($adTag);
-        }
-
-        $this->getHandler()->dispatchEvent($event);
+//        // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
+//        $event = new HandlerEventLog('PUT', $adNetwork);
+//
+//        $event->addChangedFields('position', '', $position);
+//
+//        /** @var AdTagInterface[] $adTags */
+//        $adTags = $adNetwork->getAdTags();
+//        foreach ($adTags as $adTag) {
+//            $event->addAffectedEntityByObject($adTag);
+//        }
+//
+//        $this->getHandler()->dispatchEvent($event);
 
         // return view
         return $this->view(null, Codes::HTTP_NO_CONTENT);

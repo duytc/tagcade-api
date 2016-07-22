@@ -5,16 +5,17 @@ namespace Tagcade\Service\Core\AdNetwork;
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Entity\Core\AdNetwork;
+use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
+use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class AdNetworkService implements AdNetworkServiceInterface
@@ -60,6 +61,7 @@ class AdNetworkService implements AdNetworkServiceInterface
 
         return $sites;
     }
+
     /**
      * @inheritdoc
      */
@@ -68,9 +70,7 @@ class AdNetworkService implements AdNetworkServiceInterface
         $sites = [];
 
         foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
+            /** @var AdTagInterface $adTag */
             $site = $adTag->getAdSlot()->getSite();
 
             $siteDirectOwnerId = null;
@@ -104,59 +104,18 @@ class AdNetworkService implements AdNetworkServiceInterface
 
         /** @var SiteRepositoryInterface $siteRepository */
         $siteRepository = $this->em->getRepository(Site::class);
-        $sites = $siteRepository->getSiteHavingAdTagBelongsToAdNetworkFilterByPublisher($adNetwork, $publisher);
-
-        foreach($sites as $site) {
-            $siteStatus[] = new SiteStatus($site, $adNetwork);
+        /** @var AdTagRepositoryInterface $adTagRepository */
+        $adTagRepository = $this->em->getRepository(AdTag::class);
+        $siteIds = $adTagRepository->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
+        foreach($siteIds as $siteId) {
+            $site = $siteRepository->find($siteId);
+            if ($site instanceof SiteInterface) {
+                $active = $adTagRepository->countAdTagForSiteAndAdNetworkByStatus($adNetwork, $site, AdTagInterface::ACTIVE);
+                $paused = $adTagRepository->countAdTagForSiteAndAdNetworkByStatus($adNetwork, $site, AdTagInterface::PAUSED);
+                $siteStatus[] = new SiteStatus($site, $active, $paused);
+            }
         }
 
         return $siteStatus;
     }
-
-    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
-    {
-        $sites = [];
-
-        foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
-            $site = $adTag->getAdSlot()->getSite();
-
-            if ($publisher != null && $site->getPublisher()->getId() != $publisher->getId()) {
-                continue;
-            }
-
-            if (!in_array($site, $sites) && $this->_isSiteActiveForAdNetwork($adNetwork, $site)) {
-                $sites[] = $site;
-            }
-
-            unset($site);
-            unset($adTag);
-        }
-
-        return $sites;
-    }
-
-    private function _isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site)
-    {
-
-        $activeTags = array_filter(
-
-            $adNetwork->getAdTags(),
-
-            function(AdTagInterface $adTag) use ($site)
-            {
-                if (!$adTag->getAdSlot() instanceof ReportableAdSlotInterface) {
-                    return false;
-                }
-
-                return $adTag->getAdSlot()->getSite() == $site && $adTag->isActive();
-            }
-        );
-
-        return count($activeTags) > 0;
-    }
-
-
 }

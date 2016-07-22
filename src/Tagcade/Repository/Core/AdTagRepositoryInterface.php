@@ -164,4 +164,26 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface|null $publisher
+     * @return mixed
+     */
+    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param SiteInterface $site
+     * @param $status
+     * @return mixed
+     */
+    public function countAdTagForSiteAndAdNetworkByStatus(AdNetworkInterface $adNetwork, SiteInterface $site, $status);
 }

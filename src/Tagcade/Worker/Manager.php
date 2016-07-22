@@ -168,6 +168,37 @@ class Manager
     }
 
     /**
+     * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
+     * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
+     *
+     * @param AdNetworkInterface $adNetwork
+     * @param int $position
+     * @param null|SiteInterface|SiteInterface[] $sites optional
+     * @param bool $autoIncreasePosition optional, true if need shift down
+     * @return int
+     */
+    public function updateAdTagPositionForAdNetworkAndSites(AdNetworkInterface $adNetwork, $position, $sites = null, $autoIncreasePosition = false)
+    {
+        $params = new StdClass();
+
+        $params->adNetworkId = $adNetwork->getId();
+        $params->position = $position;
+        $params->autoIncreasePosition = $autoIncreasePosition;
+        $params->siteIds = null;
+
+        if ($sites !== null) {
+            $sites = is_array($sites) ? $sites : [$sites];
+
+            $params->siteIds = array_map(function ($site) {
+                /** @var SiteInterface $site */
+                return $site->getId();
+            }, $sites);
+        }
+
+        $this->queueTask('updateAdTagPositionForAdNetworkAndSites', $params);
+    }
+
+    /**
      * @param string $task
      * @param StdClass $params
      */
