@@ -206,6 +206,13 @@ services:
             - @tagcade.domain_manager.site
             - @tagcade_app.service.core.ad_tag.ad_tag_position_editor
 
+    tagcade.worker.workers.update_ad_tag_status_for_ad_network_worker:
+            class: Tagcade\Worker\Workers\UpdateAdTagStatusForAdNetworkWorker
+            arguments:
+                - @tagcade.domain_manager.ad_tag
+                - @tagcade.domain_manager.ad_network
+                - @tagcade.domain_manager.site
+
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil
 
