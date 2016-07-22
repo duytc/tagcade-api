@@ -8,9 +8,12 @@ use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Exception\InvalidArgumentException;
@@ -258,13 +261,22 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $role = $this->get('tagcade.user_role');
 
         if ($role instanceof AdminInterface) {
-            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork);
+            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork);
+        } else {
+            /** @var PublisherInterface $role */
+            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
         }
 
-        /**
-         * @var PublisherInterface $role
-         */
-        return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
+        $sites = [];
+        $siteManager = $this->get('tagcade.domain_manager.site');
+        foreach($siteIds as $siteId) {
+            $site = $siteManager->find($siteId);
+            if ($site instanceof SiteInterface) {
+                $sites[] = $site;
+            }
+        }
+
+        return $sites;
     }
 
     /**
@@ -440,14 +452,12 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $adNetwork = $this->getOr404($id);
 
         $this->checkUserPermission($adNetwork, 'edit');
-
         /** @var ParamFetcherInterface $paramFetcher */
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $active = $paramFetcher->get('active');
         $active = filter_var($active, FILTER_VALIDATE_BOOLEAN);
 
-        $adTagManager = $this->get('tagcade.domain_manager.ad_tag');
-        $adTagManager->updateAdTagStatusForAdNetwork($adNetwork, $active);
+        $this->get('tagcade.worker.manager')->updateAdTagStatusForAdNetwork($id, $active);
 
         return $this->view(null, Codes::HTTP_NO_CONTENT);
     }
@@ -686,7 +696,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $active = $paramFetcher->get('active', true) != 0 ? true : false;
 
-        $this->get('tagcade.domain_manager.ad_tag')->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $active);
+        $this->get('tagcade.worker.manager')->updateAdTagStatusForAdNetwork($id, $active, $siteId);
 
         // now dispatch a HandlerEventLog for handling event, for example ActionLog handler...
         $event = new HandlerEventLog('PUT', $adNetwork);
@@ -947,6 +957,11 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $this->checkUserPermission($publisher);
 
         return $publisher;
+    }
+
+    protected function getLogger()
+    {
+        return $this->get('logger');
     }
 
     protected function getResourceName()

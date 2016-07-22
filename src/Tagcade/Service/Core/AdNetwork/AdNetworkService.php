@@ -9,7 +9,6 @@ use Tagcade\Entity\Core\Site;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -60,6 +59,7 @@ class AdNetworkService implements AdNetworkServiceInterface
 
         return $sites;
     }
+
     /**
      * @inheritdoc
      */
@@ -68,9 +68,7 @@ class AdNetworkService implements AdNetworkServiceInterface
         $sites = [];
 
         foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
+            /** @var AdTagInterface $adTag */
             $site = $adTag->getAdSlot()->getSite();
 
             $siteDirectOwnerId = null;
@@ -112,51 +110,4 @@ class AdNetworkService implements AdNetworkServiceInterface
 
         return $siteStatus;
     }
-
-    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
-    {
-        $sites = [];
-
-        foreach ($adNetwork->getAdTags() as $adTag) {
-            /**
-             * @var AdTagInterface $adTag
-             */
-            $site = $adTag->getAdSlot()->getSite();
-
-            if ($publisher != null && $site->getPublisher()->getId() != $publisher->getId()) {
-                continue;
-            }
-
-            if (!in_array($site, $sites) && $this->_isSiteActiveForAdNetwork($adNetwork, $site)) {
-                $sites[] = $site;
-            }
-
-            unset($site);
-            unset($adTag);
-        }
-
-        return $sites;
-    }
-
-    private function _isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site)
-    {
-
-        $activeTags = array_filter(
-
-            $adNetwork->getAdTags(),
-
-            function(AdTagInterface $adTag) use ($site)
-            {
-                if (!$adTag->getAdSlot() instanceof ReportableAdSlotInterface) {
-                    return false;
-                }
-
-                return $adTag->getAdSlot()->getSite() == $site && $adTag->isActive();
-            }
-        );
-
-        return count($activeTags) > 0;
-    }
-
-
 }

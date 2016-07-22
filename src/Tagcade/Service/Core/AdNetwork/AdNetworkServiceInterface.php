@@ -23,13 +23,6 @@ interface AdNetworkServiceInterface
 
     /**
      * @param AdNetworkInterface $adNetwork
-     * @param PublisherInterface $publisher
-     * @return SiteInterface[]
-     */
-    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null);
-
-    /**
-     * @param AdNetworkInterface $adNetwork
      * @param UserRoleInterface $userRole
      * @return SiteInterface[]
      */

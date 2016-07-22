@@ -648,4 +648,36 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
         return $qb->getQuery()->getResult();
     }
+
+    public function isSiteActiveForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'lib')
+            ->join('t.adSlot', 'slot')
+            ->select('count(id)')
+            ->where('lib.adNetwork = :network')
+            ->setParameter('network', $adNetwork)
+            ->andWhere('slot.site = :site')
+            ->setParameter('site', $site)
+            ->getQuery()->getSingleScalarResult() > 0;
+    }
+
+    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'lib')
+            ->join('t.adSlot', 'slot')
+            ->join('slot.site', 'site')
+            ->select('site.id')
+            ->distinct()
+            ->where('lib.adNetwork = :network')
+            ->setParameter('network', $adNetwork);
+
+        if ($publisher instanceof PublisherInterface) {
+            $qb->andWhere('site.publisher = :publisher')
+                ->setParameter('publisher', $publisher);
+        }
+
+        return $qb->getQuery()->getScalarResult();
+    }
 }
