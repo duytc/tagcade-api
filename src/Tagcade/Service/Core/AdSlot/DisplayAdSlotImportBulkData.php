@@ -310,7 +310,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAdSlotNameValue($oneAdSlot)
     {
-        if (array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs) && array_key_exists($this->getAdSlotNameIndex(),$oneAdSlot)) {
             return $oneAdSlot[$this->getAdSlotNameIndex()];
         }
 
@@ -332,7 +332,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getWidthValue($oneAdSlot)
     {
-        if (array_key_exists(self::WIDTH_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::WIDTH_KEY, $this->adSlotsConfigs) && array_key_exists($this->getWidthIndex(),$oneAdSlot)) {
             return $oneAdSlot[$this->getWidthIndex()];
         }
 
@@ -346,7 +346,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getHeightValue($oneAdSlot)
     {
-        if (array_key_exists(self::HEIGHT_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::HEIGHT_KEY, $this->adSlotsConfigs) && array_key_exists($this->getHeightIndex(),$oneAdSlot)) {
             return $oneAdSlot[$this->getHeightIndex()];
         }
 
@@ -360,7 +360,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAutoFitValue($oneAdSlot)
     {
-        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs) && array_key_exists($this->getAutoFitIndex(),$oneAdSlot)) {
             $autoFitValue =  (strtoupper($oneAdSlot[$this->getAutoFitIndex()]) == 'YES')? 1:0;
 
             return $autoFitValue;
@@ -376,7 +376,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getPassBackModeValue($oneAdSlot)
     {
-        if (array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getPassBackModeIndex(),$oneAdSlot)) {
             return $oneAdSlot[$this->getPassBackModeIndex()];
         }
 
@@ -390,7 +390,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getRtbStatusValue($oneAdSlot)
     {
-        if (array_key_exists(self::RTB_STATUS_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::RTB_STATUS_KEY, $this->adSlotsConfigs) && array_key_exists($this->getRtbStatusIndex(), $oneAdSlot)) {
             return $oneAdSlot[$this->getRtbStatusIndex()];
         }
 
@@ -403,7 +403,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getHbPriceValue($oneAdSlot)
     {
-        if (array_key_exists(self::HEADER_BID_PRICE_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::HEADER_BID_PRICE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getHeaderPriceIndex(),$oneAdSlot)) {
             return $oneAdSlot[$this->getHeaderPriceIndex()];
         }
 
@@ -419,7 +419,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
 
     protected function getFloorPriceValue ($oneAdSlot)
     {
-        if (array_key_exists(self::FLOOR_PRICE_KEY, $this->adSlotsConfigs)) {
+        if (array_key_exists(self::FLOOR_PRICE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getFloorPriceIndex(),$oneAdSlot)) {
            return $oneAdSlot[$this->getFloorPriceIndex()];
         }
 
