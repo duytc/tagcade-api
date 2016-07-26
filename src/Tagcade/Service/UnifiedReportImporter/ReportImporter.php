@@ -137,7 +137,8 @@ class ReportImporter implements ReportImporterInterface
         if (count($groupedReport) > 0) {
             $this->importPublisherBranchReports($groupedReport, $override);
             $this->importSubPublisherBranchReports($groupedReport, $override);
-
+            
+            return true;
         }
 
         $this->importPublisherBranchReports($commonReports, $override);
