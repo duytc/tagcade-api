@@ -27,12 +27,6 @@ interface UnifiedReportGeneratorInterface
     public function generateNetworkDomainAdTagReports(array $reports);
 
     /**
-     * @param array $reports
-     * @return mixed
-     */
-    public function generateNetworkDomainAdTagForSubPublisherReports(array $reports);
-
-    /**
      * generate AccountSite reports from common reports
      * @param CommonReport[] $reports
      *
@@ -48,6 +42,12 @@ interface UnifiedReportGeneratorInterface
     public function generatePublisherReport(array $reports);
 
     /**
+     * @param array $reports
+     * @return mixed
+     */
+    public function generateNetworkDomainAdTagForSubPublisherReports(array $reports);
+
+    /**
      * @param CommonReport[] $reports
      * @return array
      */
@@ -55,19 +55,22 @@ interface UnifiedReportGeneratorInterface
 
     /**
      * @param CommonReport[] $reports
+     * @param $shareRevenue = true
      * @return mixed
      */
-    public function generateSubPublisherNetworkReport(array $reports);
+    public function generateSubPublisherNetworkReport(array $reports, $shareRevenue = true);
 
     /**
      * @param array $reports
+     * @param $shareRevenue = true
      * @return mixed
      */
-    public function generateNetworkSiteForSubPublisherReports(array $reports);
+    public function generateNetworkSiteForSubPublisherReports(array $reports, $shareRevenue = true);
 
     /**
      * @param array $reports
+     * @param $shareRevenue = true
      * @return mixed
      */
-    public function generateNetworkAdTagForSubPublisherReports(array $reports);
+    public function generateNetworkAdTagForSubPublisherReports(array $reports, $shareRevenue = true);
 }

@@ -211,11 +211,11 @@ class ReportExporter implements ReportExporterInterface
 
     /**
      * get Result
-     * @param ReportResultInterface $unifiedComparisonReports
+     * @param $unifiedComparisonReports
      * @param Params $params
      * @return mixed
      */
-    private function getResult(ReportResultInterface $unifiedComparisonReports, Params $params)
+    private function getResult($unifiedComparisonReports, Params $params)
     {
         /** @var ReportResultInterface $unifiedReports */
         if (!$unifiedComparisonReports instanceof ReportResultInterface) {

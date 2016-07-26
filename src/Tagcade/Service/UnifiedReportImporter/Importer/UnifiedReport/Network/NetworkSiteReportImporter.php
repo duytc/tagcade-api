@@ -41,8 +41,6 @@ class NetworkSiteReportImporter extends ImporterAbstract implements NetworkSiteR
             return $report instanceof NetworkSiteReport;
         });
 
-        $this->networkSiteReportRepository->saveMultipleReport($reports, $this->getBatchSize());
-
-        return true;
+        return $this->networkSiteReportRepository->saveMultipleReport($reports, $override, $this->getBatchSize());
     }
 }

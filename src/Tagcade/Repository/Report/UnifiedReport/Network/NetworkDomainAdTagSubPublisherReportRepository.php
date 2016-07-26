@@ -6,15 +6,36 @@ namespace Tagcade\Repository\Report\UnifiedReport\Network;
 
 use DateTime;
 use Doctrine\DBAL\Types\Type;
+use Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManagerInterface;
 use Tagcade\Entity\Report\UnifiedReport\Network\NetworkDomainAdTagSubPublisherReport;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 use Tagcade\Model\Report\UnifiedReport\CommonReport;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
+use Tagcade\Service\Core\Site\SiteServiceInterface;
 
 class NetworkDomainAdTagSubPublisherReportRepository extends AbstractReportRepository implements NetworkDomainAdTagSubPublisherReportRepositoryInterface
 {
+    /**
+     * @var SiteServiceInterface
+     */
+    protected $siteService;
+
+    /**
+     * @var SubPublisherManagerInterface
+     */
+    protected $subPublisherManager;
+
+    public function setSiteService(SiteServiceInterface $siteService)
+    {
+        $this->siteService = $siteService;
+    }
+
+    public function setSubPublisherManager(SubPublisherManagerInterface $subPublisherManager)
+    {
+        $this->subPublisherManager = $subPublisherManager;
+    }
+
     /**
      * @inheritdoc
      */
@@ -163,7 +184,6 @@ class NetworkDomainAdTagSubPublisherReportRepository extends AbstractReportRepos
                 throw $ex;
             }
         }
-
         return $adjustedCommonReports;
     }
 
@@ -189,9 +209,9 @@ class NetworkDomainAdTagSubPublisherReportRepository extends AbstractReportRepos
             ->andWhere('r.date = :date')
             ->setParameter('adNetwork', $report->getAdNetwork())
             ->setParameter('domain', $report->getDomain())
-            ->setParameter('subPublisher', $report->getSubPublisher())
             ->setParameter('partnerTagId', $report->getPartnerTagId())
-            ->setParameter('date', $report->getDate())
+            ->setParameter('date', $report->getDate(), Type::DATE)
+            ->setParameter('subPublisher', $report->getSubPublisher())
             ->setParameter('impressions', $report->getImpressions())
             ->setParameter('totalOpportunities', $report->getTotalOpportunities())
             ->setParameter('passbacks', $report->getPassbacks())
@@ -200,22 +220,18 @@ class NetworkDomainAdTagSubPublisherReportRepository extends AbstractReportRepos
 
         $commonReport = new CommonReport();
         $commonReport
+            ->setPublisher($report->getAdNetwork()->getPublisher())
             ->setSubPublisher($report->getSubPublisher())
             ->setAdNetwork($report->getAdNetwork())
             ->setSite($report->getDomain())
             ->setAdTagId($report->getPartnerTagId())
             ->setDate($report->getDate())
         ;
-        $configs = $report->getSubPublisher()->getSubPublisherPartnerRevenue();
 
-        /** @var SubPublisherPartnerRevenueInterface $config */
-        foreach($configs as $config) {
-            if ($config->getAdNetworkPartner()->getId() !== $report->getAdNetwork()->getNetworkPartner()->getId()) {
-                continue;
-            }
-
-            $commonReport->setRevenueShareConfigOption($config->getRevenueOption());
-            $commonReport->setRevenueShareConfigValue($config->getRevenueValue());
+        $subPublishers = $this->siteService->getSubPublisherFromDomain($report->getAdNetwork()->getNetworkPartner(), $report->getAdNetwork()->getPublisher(), $report->getDomain());
+        if (count($subPublishers) == 1) {
+            $commonReport->setRevenueShareConfigOption($subPublishers[0]['revenueConfig']['option']);
+            $commonReport->setRevenueShareConfigValue($subPublishers[0]['revenueConfig']['value']);
         }
 
         // if there are records already existed, common report's values is the differences

@@ -169,6 +169,8 @@ interface SiteRepositoryInterface extends ObjectRepository
      */
     public function getSiteHavingAdTagBelongsToAdNetworkFilterByPublisher(AdNetworkInterface $adNetwork, $publisher = null);
 
+    public function findSubPublisherByDomainFilterPublisher(PublisherInterface $publisher, $domain);
+
     /**
      * @param $siteToken
      * @return mixed

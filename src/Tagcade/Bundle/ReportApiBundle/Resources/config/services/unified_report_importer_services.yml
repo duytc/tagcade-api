@@ -70,6 +70,9 @@ services:
     tagcade_app.service.unified_report.generator:
         class: Tagcade\Service\UnifiedReportImporter\UnifiedReportGenerator
 
+    tagcade_app.service.unified_report.grouper:
+        class: Tagcade\Service\UnifiedReportImporter\UnifiedReportGrouper
+
     tagcade_app.service.unified_report.common_report_sub_publisher_handler:
         class: Tagcade\Service\UnifiedReportImporter\CommonReportSubPublisherHandler
         arguments:
@@ -86,15 +89,17 @@ services:
             - @tagcade_app.service.unified_report.common_report_sub_publisher_handler
             - @monolog.logger
             - @tagcade_app.service.unified_report.generator
-            -
-                - @tagcade_app.service.importer.unified_report.network.network_report_importer
-                - @tagcade_app.service.importer.unified_report.network.network_site_report_importer
-                - @tagcade_app.service.importer.unified_report.network.network_ad_tag_report_importer
-                - @tagcade_app.service.importer.unified_report.network.network_domain_ad_tag_report_importer
-                - @tagcade_app.service.importer.unified_report.publisher.publisher_report_importer
-                - @tagcade_app.service.importer.unified_report.publisher.sub_publisher_report_importer
-                - @tagcade_app.service.importer.unified_report.publisher.sub_publisher_network_report_importer
-                - @tagcade_app.service.importer.unified_report.network.network_ad_tag_sub_publisher_report_importer
-                - @tagcade_app.service.importer.unified_report.network.network_site_sub_publisher_report_importer
-                - @tagcade_app.service.importer.unified_report.network.network_domain_ad_tag_sub_publisher_report_importer
+            - @tagcade_app.service.unified_report.grouper
+            - %insert_batch_size%
+            - @tagcade.repository.report.unified_report.network.network_domain_ad_tag_report
+            - @tagcade.repository.report.unified_report.network.network_domain_ad_tag_sub_publisher_report
+            - @tagcade.repository.report.unified_report.network.network_site_report
+            - @tagcade.repository.report.unified_report.network.network_site_sub_publisher_report
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_report
+            - @tagcade.repository.report.unified_report.network.network_ad_tag_sub_publisher_report
+            - @tagcade.repository.report.unified_report.network.network_report
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_network_report
+            - @tagcade.repository.report.unified_report.publisher.publisher_report
+            - @tagcade.repository.report.unified_report.publisher.sub_publisher_report
+
 

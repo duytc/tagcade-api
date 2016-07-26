@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Report\UnifiedReport\Publisher;
 
 
 use DateTime;
+use Tagcade\Entity\Report\UnifiedReport\Publisher\SubPublisherNetworkReport;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
@@ -27,4 +28,6 @@ interface SubPublisherNetworkReportRepositoryInterface
      * @return mixed
      */
     public function saveMultipleReport(array $reports, $batchSize = null);
+
+    public function createAdjustedCommonReports(array $reports);
 }

@@ -49,6 +49,9 @@ services:
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\Network\NetworkDomainAdTagSubPublisherReport
+        calls:
+            - [setSubPublisherManager, [@tagcade_user.domain_manager.sub_publisher]]
+            - [setSiteService, [@tagcade_app.service.core.site.site_service]]
 
     tagcade.repository.report.unified_report.network.network_site_sub_publisher_report:
         class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkSiteSubPublisherReportRepositoryInterface
@@ -57,6 +60,9 @@ services:
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\Network\NetworkSiteSubPublisherReport
+        calls:
+            - [setSubPublisherManager, [@tagcade_user.domain_manager.sub_publisher]]
+            - [setSiteService, [@tagcade_app.service.core.site.site_service]]
 
     tagcade.repository.report.unified_report.network.network_ad_tag_sub_publisher_report:
         class: Tagcade\Repository\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReportRepositoryInterface
@@ -65,6 +71,9 @@ services:
         factory_method: getRepository
         arguments:
             - Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReport
+        calls:
+            - [setSubPublisherManager, [@tagcade_user.domain_manager.sub_publisher]]
+            - [setSiteService, [@tagcade_app.service.core.site.site_service]]
 
     tagcade.repository.report.unified_report.publisher.publisher_report:
         class: Tagcade\Repository\Report\UnifiedReport\Publisher\PublisherReportRepositoryInterface

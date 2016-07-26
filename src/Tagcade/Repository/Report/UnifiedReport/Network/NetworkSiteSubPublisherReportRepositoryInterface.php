@@ -5,8 +5,10 @@ namespace Tagcade\Repository\Report\UnifiedReport\Network;
 
 
 use DateTime;
+use Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Service\Core\Site\SiteServiceInterface;
 
 interface NetworkSiteSubPublisherReportRepositoryInterface
 {
@@ -33,9 +35,14 @@ interface NetworkSiteSubPublisherReportRepositoryInterface
 
     /**
      * @param array $reports
+     * @param $override = false
      * @param $batchSize = null
      *
      * @return mixed
      */
-    public function saveMultipleReport(array $reports, $batchSize = null);
+    public function saveMultipleReport(array $reports, $override = false, $batchSize = null);
+
+    public function setSiteService(SiteServiceInterface $siteService);
+
+    public function setSubPublisherManager(SubPublisherManagerInterface $subPublisherManager);
 }

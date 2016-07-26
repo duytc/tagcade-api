@@ -4,11 +4,13 @@
 namespace Tagcade\Service\Core\Site;
 
 
+use Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManagerInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Service\Core\AdNetwork\AdNetworkServiceInterface;
 
 class SiteService implements SiteServiceInterface
@@ -23,28 +25,39 @@ class SiteService implements SiteServiceInterface
     protected $adNetworkService;
 
     /**
+     * @var SiteRepositoryInterface
+     */
+    protected $siteRepository;
+
+    /**
+     * @var SubPublisherManagerInterface
+     */
+    protected $subPublisherManager;
+
+    /**
      * SiteService constructor.
      * @param AdNetworkServiceInterface $adNetworkService
+     * @param SiteRepositoryInterface $siteRepository
+     * @param SubPublisherManagerInterface $subPublisherManager
      */
-    public function __construct(AdNetworkServiceInterface $adNetworkService)
+    public function __construct(AdNetworkServiceInterface $adNetworkService, SiteRepositoryInterface $siteRepository, SubPublisherManagerInterface $subPublisherManager)
     {
         $this->adNetworkService = $adNetworkService;
+        $this->siteRepository = $siteRepository;
+        $this->subPublisherManager = $subPublisherManager;
     }
 
     public function getSubPublisherFromDomain(AdNetworkPartnerInterface $adNetworkPartner, PublisherInterface $publisher, $domain)
     {
-        $sites = $this->adNetworkService->getSitesForPartnerFilterPublisherAndDomain($adNetworkPartner, $publisher, $domain);
+        $subPublisherIds = $this->siteRepository->findSubPublisherByDomainFilterPublisher($publisher, $domain);
 
         $subPublishers = [];
-        foreach ($sites as $st) {
-            /**
-             * @var SiteInterface $st
-             */
-            if (!$st->getSubPublisher() instanceof SubPublisherInterface) {
+        foreach($subPublisherIds as $subPublisherId) {
+            $subPublisher = $this->subPublisherManager->find($subPublisherId);
+            if (!$subPublisher instanceof SubPublisherInterface) {
                 continue;
             }
 
-            $subPublisher = $st->getSubPublisher();
             if (!in_array($subPublisher->getId(), $subPublishers)) {
                 $revenueShareConfig = $this->getRevenueShareConfigForSubPublisherAndNetworkPartner($subPublisher, $adNetworkPartner);
                 $subPublishers[] = [
