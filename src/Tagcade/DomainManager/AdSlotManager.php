@@ -254,4 +254,14 @@ class AdSlotManager implements AdSlotManagerInterface
     {
         return $this->adSlotRepository->getAdSlotByNameForPublisher($publisher, $adSlotName);
     }
+
+    /**
+     * @param $libraryDisplayAdSlot
+     * @return mixed|void
+     */
+    public function getDisplayAdSlotByLibrary ($libraryDisplayAdSlot)
+    {
+        return $this->adSlotRepository->getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
+    }
+
 }

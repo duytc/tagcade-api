@@ -150,6 +150,7 @@ services:
                 - %tc.bulk_upload.display_ad_slot.index%
                 - @tagcade.domain_manager.library_ad_slot
                 - @tagcade.domain_manager.display_ad_slot
+                - @tagcade.domain_manager.ad_slot
 
     tagcade_app.service.core.dynamic_ad_slot.bulk_upload:
             class: Tagcade\Service\Core\AdSlot\DynamicAdSlotImportBulkData

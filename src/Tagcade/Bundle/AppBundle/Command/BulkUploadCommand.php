@@ -19,7 +19,7 @@ class BulkUploadCommand extends ContainerAwareCommand
             ->setName('tc:api:bulk-upload')
             ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'path to file to be imported')
             ->addOption('publisher', 'p', InputOption::VALUE_REQUIRED, 'publisher add data')
-            ->addOption('dry','D',InputOption::VALUE_OPTIONAL,'dry run option',false)
+            ->addOption('dry','d',InputOption::VALUE_OPTIONAL,'dry run option', false)
             ->setDescription('Bulk upload data for sites, display ad slots, ad tag and dynamic ad slots');
     }
 

@@ -87,4 +87,5 @@ TRUNCATE table core_expression;
 TRUNCATE table library_ad_slot;
 TRUNCATE table library_dynamic_ad_slot;
 TRUNCATE table library_expression;
+TRUNCATE table library_ad_slot_ad_tag;
 

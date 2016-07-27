@@ -98,7 +98,7 @@ interface LibraryAdTagInterface extends ModelInterface
     public function getLibSlotTags();
 
     /**
-     * @param LibrarySlotTagInterface $libSlotTags
+     * @param LibrarySlotTagInterface[] $libSlotTags
      * @return self
      */
     public function setLibSlotTags($libSlotTags);

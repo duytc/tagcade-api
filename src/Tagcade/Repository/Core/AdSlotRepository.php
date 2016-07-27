@@ -584,4 +584,16 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param $libraryDisplayAdSlot
+     * @return array|mixed
+     */
+    public function getDisplayAdSlostByLibrary ($libraryDisplayAdSlot)
+    {
+        $qb = $this->createQueryBuilder('sl');
+        $qb->andWhere('sl.libraryAdSlot = :libraryDisplayAdSlot')
+            ->setParameter('libraryDisplayAdSlot', $libraryDisplayAdSlot);
+
+        return $qb->getQuery()->getResult();
+    }
 }
