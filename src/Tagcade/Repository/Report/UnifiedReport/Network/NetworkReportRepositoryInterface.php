@@ -25,4 +25,10 @@ interface NetworkReportRepositoryInterface
      * @return mixed
      */
     public function saveMultipleReport(array $reports, $batchSize = null);
+
+    /**
+     * @param array $reports
+     * @return mixed
+     */
+    public function createAdjustedCommonReports(array $reports);
 }

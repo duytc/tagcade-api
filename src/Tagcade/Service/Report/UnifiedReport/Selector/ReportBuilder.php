@@ -226,12 +226,10 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getPartnerByAdTagsForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, Params $params)
     {
-        $adTags = $this->adTagManager->getAdTagsThatHavePartnerForAdNetworkWithSubPublisher($adNetwork, $subPublisher);
+        $adTags = $this->networkAdTagRepository->getAllDistinctAdTagsForPartner($adNetwork, $params);
 
-        $this->removeDuplicatedPartnerTagId($adTags);
-
-        $reportTypes = array_map(function (AdTagInterface $adTag) use ($adNetwork, $subPublisher) {
-            return new NetworkReportTypes\NetworkAdTagSubPublisher($adNetwork, $adTag->getPartnerTagId(), $subPublisher);
+        $reportTypes = array_map(function (array $adTag) use ($adNetwork, $subPublisher) {
+            return new NetworkReportTypes\NetworkAdTagSubPublisher($adNetwork, $adTag['partnerTagId'], $subPublisher);
         }, $adTags);
 
         return $this->getReports($reportTypes, $params);

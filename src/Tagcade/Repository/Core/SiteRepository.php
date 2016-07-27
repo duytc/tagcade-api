@@ -420,6 +420,19 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $qb->getQuery()->getResult();
     }
 
+    public function findSubPublisherByDomainFilterPublisher(PublisherInterface $publisher, $domain)
+    {
+        return $this->createQueryBuilder('s')
+            ->join('s.subPublisher', 'sub')
+            ->select('sub.id')
+            ->distinct()
+            ->where('s.domain = :domain')
+            ->andWhere('sub.publisher = :publisher')
+            ->setParameter('domain', $domain)
+            ->setParameter('publisher', $publisher)
+            ->getQuery()->getScalarResult();
+    }
+
     /**
      * @inheritdoc
      */

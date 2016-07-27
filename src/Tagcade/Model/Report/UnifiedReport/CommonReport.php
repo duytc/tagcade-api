@@ -364,6 +364,8 @@ class CommonReport implements ReportModelInterface
     public function setRevenueShareConfigOption($revenueShareConfigOption)
     {
         $this->revenueShareConfigOption = $revenueShareConfigOption;
+
+        return $this;
     }
 
     /**
@@ -380,6 +382,8 @@ class CommonReport implements ReportModelInterface
     public function setRevenueShareConfigValue($revenueShareConfigValue)
     {
         $this->revenueShareConfigValue = $revenueShareConfigValue;
+
+        return $this;
     }
 
     public function getCommonReportTagId()

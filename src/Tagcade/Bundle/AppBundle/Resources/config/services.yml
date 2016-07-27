@@ -120,6 +120,8 @@ services:
         class: Tagcade\Service\Core\Site\SiteService
         arguments:
             - "@tagcade_app.service.core.ad_network.ad_network_service"
+            - @tagcade.repository.site
+            - @tagcade_user.domain_manager.sub_publisher
 
     tagcade_app.service.core.exchange.exchange_cache_updater:
         class: Tagcade\Service\Core\Exchange\ExchangeCacheUpdater

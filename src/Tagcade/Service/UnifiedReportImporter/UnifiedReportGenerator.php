@@ -197,7 +197,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
     /**
      * @inheritdoc
      */
-    public function generateNetworkAdTagForSubPublisherReports(array $reports)
+    public function generateNetworkAdTagForSubPublisherReports(array $reports, $shareRevenue = true)
     {
         $reports = array_filter($reports, function(CommonReport $report) {
             return $report->getSubPublisherId() != null && is_string($report->getAdTagId());
@@ -219,11 +219,12 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
             foreach($subPublisherAdTagReports as $subPublisherId => $adTagReports) {
                 foreach ($adTagReports as $adTagId => $reports) {
                     $networkAdTagReport = new NetworkAdTagSubPublisherReport();
+                    
                     $networkAdTagReport
                         ->setPartnerTagId($adTagId)
                         ->setDate(new \DateTime($date))
                         ->setAdNetwork($adNetwork)
-                        ->setSubPublisher($this->aggregateReportData($reports, true))
+                        ->setSubPublisher($this->aggregateReportData($reports, $shareRevenue))
                         ->setName($adTagId)
                     ;
                     $this->setReportData($networkAdTagReport);
@@ -280,7 +281,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
     /**
      * @inheritdoc
      */
-    public function generateNetworkSiteForSubPublisherReports(array $reports)
+    public function generateNetworkSiteForSubPublisherReports(array $reports, $shareRevenue = true)
     {
         $reports = array_filter($reports, function(CommonReport $report) {
             return is_string($report->getSite()) && $report->getSubPublisherId() != null;
@@ -302,11 +303,12 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
             foreach($rawReport as $subPublisherId => $subPublisherSiteReport) {
                 foreach ($subPublisherSiteReport as $domain => $siteReport) {
                     $networkSiteReport = new NetworkSiteSubPublisherReport();
+
                     $networkSiteReport
                         ->setDomain($domain)
                         ->setDate(new \DateTime($date))
                         ->setAdNetwork($adNetwork)
-                        ->setSubPublisher($this->aggregateReportData($siteReport, true))
+                        ->setSubPublisher($this->aggregateReportData($siteReport, $shareRevenue))
                         ->setName($domain)
                     ;
                     $this->setReportData($networkSiteReport);
@@ -381,9 +383,10 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
 
                 $subPublisherReport
                     ->setDate(new \DateTime($date))
-                    ->setSubPublisher($this->aggregateReportData($reports, true))
+                    ->setSubPublisher($this->aggregateReportData($reports))
                     ->setName($subPublisherReport->getSubPublisher()->getUser()->getUsername())
                 ;
+
                 $this->setReportData($subPublisherReport);
 
                 $subPublisherReports[] = $subPublisherReport;
@@ -393,7 +396,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
         return $subPublisherReports;
     }
 
-    public function generateSubPublisherNetworkReport(array $reports)
+    public function generateSubPublisherNetworkReport(array $reports, $shareRevenue = true)
     {
         $reports = array_filter($reports, function(CommonReport $report) {
             return is_int($report->getSubPublisherId());
@@ -419,10 +422,9 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
                 $subPublisherNetworkReport
                     ->setDate(new \DateTime($date))
                     ->setAdNetwork($adNetwork)
-                    ->setSubPublisher($this->aggregateReportData($reports, true))
+                    ->setSubPublisher($this->aggregateReportData($reports, $shareRevenue))
                     ->setName($report->getSubPublisher()->getUser()->getUsername())
                 ;
-
                 $this->setReportData($subPublisherNetworkReport);
 
                 $subPublisherNetworkReports[] = $subPublisherNetworkReport;
@@ -558,7 +560,7 @@ class UnifiedReportGenerator implements UnifiedReportGeneratorInterface
                 $this->addEstRevenue($report->getEstRevenue());
             }
 
-            if ($subPublisher === null && $hasSubPublisher === true) {
+            if ($subPublisher === null) {
                 $subPublisher = $report->getSubPublisher();
             }
         }
