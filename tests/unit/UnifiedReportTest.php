@@ -106,7 +106,7 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
         // import sample report files
         $cmd = sprintf('%s tc:unified-report:import %s --publisher=%d --partnerCName=%s --start-date=%s --end-date=%s --override --keep-files',
             $this->getImporterAppConsoleCommand(),
-            '/home/vagrant/tagcade/report-importer/data/komoona/20160705-20160609-20160615/BluTonic_jun9.csv',
+            '/var/www/api.tagcade.dev/tests/_data/unified_report/komoona/BluTonic_jun9.csv',
             2,
             'komoona',
             '2016-06-09',
@@ -126,8 +126,12 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
     {
         $publisher = $this->publisherManager->find(2);
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('2016-06-09'), new \DateTime('2016-06-09'), false, true);
+
         $allPartnerByDayReport = $this->unifiedReportBuilder->getAllDemandPartnersByDayReport($publisher, $params);
         $this->tester->assertNotNull($allPartnerByDayReport);
+
+        $allPartnerByAdTagReport = $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params);
+        $this->tester->assertNotNull($allPartnerByAdTagReport);
 
         $allPartnerByAdTagReport = $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params);
         $this->tester->assertNotNull($allPartnerByAdTagReport);
