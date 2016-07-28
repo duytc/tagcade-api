@@ -23,7 +23,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterfa
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface as UnifiedReportBuilderInterface;
 
-class UnifiedReportTest extends \Codeception\TestCase\Test
+class KomoonaReportTest extends \Codeception\TestCase\Test
 {
     use CalculateRatiosTrait;
     use CalculateWeightedValueTrait;
@@ -32,40 +32,14 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
     /** @var \UnitTester */
     protected $tester;
 
-    /** @var EntityManagerInterface $em */
-    protected $em;
-
     /** @var PublisherManagerInterface $publisherManager */
     protected $publisherManager;
-
-    /** @var SubPublisherManagerInterface */
-    protected $subPublisherManager;
-
-    /** @var AdSlotManagerInterface */
-    protected $adSlotManager;
-
-    /** @var LibraryAdSlotManagerInterface */
-    protected $libraryAdSlotManager;
-
-    /** @var SiteManagerInterface */
-    protected $siteManager;
-
-    /** @var AdTagManagerInterface */
-    protected $adTagManager;
 
     /** @var AdNetworkManagerInterface */
     protected $adNetworkManager;
 
-    /**
-     * @var AdNetworkRepositoryInterface
-     */
+    /** @var AdNetworkRepositoryInterface */
     protected $adNetworkRepository;
-
-    /** @var RonAdSlotManagerInterface */
-    protected $ronAdSlotManager;
-
-    /** @var LibrarySlotTagManagerInterface */
-    protected $librarySlotTagManager;
 
     /** @var ReportBuilderInterface */
     protected $performanceReportBuilder;
@@ -73,39 +47,14 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
     /** @var UnifiedReportBuilderInterface */
     protected $unifiedReportBuilder;
 
-    /** @var EventCounterInterface */
-    protected $testEventCounter;
-
     /** @var LoggerInterface */
     protected $logger;
 
-    protected $publisher;
-    protected $subPublisher;
-    protected $adNetwork;
-    protected $site;
-
-    /**
-     * @var array
-     */
-    protected $libraryAdSlots;
-    /** @var array */
-    protected $adSlots;
-    /** @var array */
-    protected $adTags;
-    /** @var array */
-    protected $ronAdSlots;
-
-
     protected function _before()
     {
-        $this->em = $this->tester->grabServiceFromContainer('doctrine.orm.entity_manager');
         $this->publisherManager = $this->tester->grabServiceFromContainer('tagcade_user.domain_manager.publisher');
-        $this->subPublisherManager = $this->tester->grabServiceFromContainer('tagcade_user.domain_manager.sub_publisher');
-        $this->adSlotManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_slot');
-        $this->siteManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.site');
         $this->adNetworkManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_network');
         $this->adNetworkRepository = $this->tester->grabServiceFromContainer('tagcade.repository.ad_network');
-        $this->adTagManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_tag');
         $this->performanceReportBuilder = $this->tester->grabServiceFromContainer('tagcade.service.report.performance_report.display.selector.report_builder');
         $this->unifiedReportBuilder = $this->tester->grabServiceFromContainer('tagcade.service.report.unified_report.selector.report_builder');
         $this->logger = $this->tester->grabServiceFromContainer('logger');
@@ -113,7 +62,7 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
         // import sample report files
         $cmd = sprintf('%s tc:unified-report:import %s --publisher=%d --partnerCName=%s --start-date=%s --end-date=%s --override --keep-files',
             $this->getImporterAppConsoleCommand(),
-            '/var/www/api.tagcade.dev/tests/_data/unified_report/komoona/BluTonic_jun9.csv',
+            '/var/www/api.tagcade.dev/tests/_data/unified_report/komoona/komoona_report.csv',
             2,
             'komoona',
             '2016-06-09',
