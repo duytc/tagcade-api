@@ -449,7 +449,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getRotationValue($rawAdTag)
     {
         if (array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getRotationIndex(),$rawAdTag)) {
-                return $rawAdTag[$this->getRotationIndex()];
+                return is_int($rawAdTag[$this->getRotationIndex()]) ? $rawAdTag[$this->getRotationIndex()] : self:: ROTATION_DEFAULT_VALUE ;
         }
 
         return self:: ROTATION_DEFAULT_VALUE;

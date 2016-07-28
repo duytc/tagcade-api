@@ -60,10 +60,7 @@ class TagCacheManager implements TagCacheManagerInterface {
         foreach($refreshTagCaches as $tagCache) {
             $tagCache->refreshCacheForDisplayAdSlot($adSlot);
         }
-
     }
-
-
 
     /**
      * @param AdNetworkInterface $adNetwork
