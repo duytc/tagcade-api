@@ -422,7 +422,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getNetworkOpportunityCapValue($rawAdTag)
     {
         if (array_key_exists(self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getOpportunityCapIndex(), $rawAdTag)) {
-          return $rawAdTag[$this->getOpportunityCapIndex()];
+          return is_int($rawAdTag[$this->getOpportunityCapIndex()]) ? $rawAdTag[$this->getOpportunityCapIndex()]:self::NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
         }
 
         return self:: NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
@@ -436,7 +436,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getImpressionCapValue($rawAdTag)
     {
         if (array_key_exists(self::IMPRESSION_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getImpressionCapIndex(), $rawAdTag)) {
-            return $rawAdTag[$this->getImpressionCapIndex()];
+            return is_int($rawAdTag[$this->getImpressionCapIndex()]) ? $rawAdTag[$this->getImpressionCapIndex()] : self::IMPRESSION_CAP_DEFAULT_VALUE ;
         }
 
         return self:: IMPRESSION_CAP_DEFAULT_VALUE;
@@ -462,7 +462,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getFrequencyCapValue($rawAdTag)
     {
         if (array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getFrequencyCapIndex(),$rawAdTag)) {
-            return $rawAdTag[$this->getFrequencyCapIndex()];
+            return is_int($rawAdTag[$this->getFrequencyCapIndex()]) ?$rawAdTag[$this->getFrequencyCapIndex()] : self::FREQUENCY_CAP_DEFAULT_VALUE;
         }
 
         return self:: FREQUENCY_CAP_DEFAULT_VALUE;
@@ -477,7 +477,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getPositionValue($rawAdTag)
     {
         if (array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPositionIndex(),$rawAdTag)) {
-            return $rawAdTag[$this->getPositionIndex()];
+            return is_int($rawAdTag[$this->getPositionIndex()]) ? $rawAdTag[$this->getPositionIndex()]: self::POSITION_DEFAULT_VALUE;
         }
 
         return self:: POSITION_DEFAULT_VALUE;
