@@ -23,7 +23,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterfa
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface as UnifiedReportBuilderInterface;
 
-class UnifiedReportTest extends \Codeception\TestCase\Test
+class Ads4GamesReportTest extends \Codeception\TestCase\Test
 {
     use CalculateRatiosTrait;
     use CalculateWeightedValueTrait;
@@ -113,11 +113,11 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
         // import sample report files
         $cmd = sprintf('%s tc:unified-report:import %s --publisher=%d --partnerCName=%s --start-date=%s --end-date=%s --override --keep-files',
             $this->getImporterAppConsoleCommand(),
-            '/var/www/api.tagcade.dev/tests/_data/unified_report/komoona/BluTonic_jun9.csv',
+            '/var/www/api.tagcade.dev/tests/_data/unified_report/ads4games/ads4games_report.xls',
             2,
-            'komoona',
-            '2016-06-09',
-            '2016-06-15'
+            'ads4games',
+            '2016-06-17',
+            '2016-06-17'
         );
         $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $this->logger);
     }
@@ -132,11 +132,14 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
     public function platformReport()
     {
         $publisher = $this->publisherManager->find(2);
-        $adNetwork = $this->adNetworkRepository->getAdNetworkByPublisherAndPartnerCName(2, 'komoona');
-        $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('2016-06-09'), new \DateTime('2016-06-09'), false, true);
+        $adNetwork = $this->adNetworkRepository->getAdNetworkByPublisherAndPartnerCName(2, 'ads4games');
+        $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('2016-06-17'), new \DateTime('2016-06-17'), false, true);
 
         $allPartnerByDayReport = $this->unifiedReportBuilder->getAllDemandPartnersByDayReport($publisher, $params);
         $this->tester->assertNotNull($allPartnerByDayReport);
+
+        $allPartnerBySiteReport = $this->unifiedReportBuilder->getAllDemandPartnersBySiteReport($publisher, $params);
+        $this->tester->assertNotNull($allPartnerBySiteReport);
 
         $allPartnerByAdTagReport = $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params);
         $this->tester->assertNotNull($allPartnerByAdTagReport);
@@ -165,37 +168,11 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
         $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $partnerByDayReport->getEstRevenue());
         $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $partnerByDayReport->getEstCpm());
 
-
-        $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('2016-06-09'), new \DateTime('2016-06-15'), false, true);
-        $allPartnerByDayReport = $this->unifiedReportBuilder->getAllDemandPartnersByDayReport($publisher, $params);
-        $this->tester->assertNotNull($allPartnerByDayReport);
-
-        $allPartnerByAdTagReport = $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params);
-        $this->tester->assertNotNull($allPartnerByAdTagReport);
-
-        $allPartnerByPartnerReport = $this->unifiedReportBuilder->getAllDemandPartnersByPartnerReport($publisher, $params);
-        $this->tester->assertNotNull($allPartnerByAdTagReport);
-
-        $partnerByDayReport = $this->unifiedReportBuilder->getPartnerAllSitesByDayReport($adNetwork, $params);
-        $this->tester->assertNotNull($partnerByDayReport);
-
-        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerByAdTagReport->getImpressions());
-        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerByAdTagReport->getTotalOpportunities());
-        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerByAdTagReport->getPassbacks());
-        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerByAdTagReport->getEstRevenue());
-        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerByAdTagReport->getEstCpm());
-
-        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerByPartnerReport->getImpressions());
-        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerByPartnerReport->getTotalOpportunities());
-        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerByPartnerReport->getPassbacks());
-        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerByPartnerReport->getEstRevenue());
-        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerByPartnerReport->getEstCpm());
-
-        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $partnerByDayReport->getImpressions());
-        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $partnerByDayReport->getTotalOpportunities());
-        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $partnerByDayReport->getPassbacks());
-        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $partnerByDayReport->getEstRevenue());
-        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $partnerByDayReport->getEstCpm());
+        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerBySiteReport->getImpressions());
+        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerBySiteReport->getTotalOpportunities());
+        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerBySiteReport->getPassbacks());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerBySiteReport->getEstRevenue());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerBySiteReport->getEstCpm());
     }
 
     protected function getImporterAppConsoleCommand()

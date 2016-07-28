@@ -1,0 +1,1596 @@
+GUID: dKcF9O8tar5yQlrkHcnlxd
+Login: gravitytales.com
+"Generated at: 2016-06-12, 22:22:25 EDT"
+"Criteria: [Real Display: Standard IAB|300x250],[Real Display: Standard IAB|728x90],[Real Impact: Interstitial|300x250],[Real Impact: Adhesion|320x50],[Real Impact: Adhesion|320x100],[Real Display: Standard IAB|320x50],[Real Display: Standard IAB|300x50],[Real Impact: Pillar|300x250],[Real Impact: Adhesion|728x90],[Rest of the World],[United States],[mobile],[tablet],[desktop]"
+Date,Region,Device,Ad Type,Ad Size,Ad Requests,Blocked Requests,Imp. Served,CPM,Estimated Revenue
+"Jun 11, 2016",United States,mobile,In-Page,all,12,1,0,n/a,$0.00
+"Jun 11, 2016",Rest of the World,mobile,In-Page,all,9,1,0,n/a,$0.00
+"Jun 10, 2016",United States,tablet,In-Page,all,2,0,0,n/a,$0.00
+"Jun 10, 2016",United States,mobile,In-Page,all,4,2,0,n/a,$0.00
+"Jun 10, 2016",United States,desktop,In-Page,all,1,0,0,n/a,$0.00
+"Jun 10, 2016",Rest of the World,tablet,In-Page,all,16,6,0,n/a,$0.00
+"Jun 10, 2016",Rest of the World,mobile,In-Page,all,56,12,3,$0.00,$0.00
+"Jun 10, 2016",Rest of the World,mobile,In-Page,320x50,13,n/a,2,$0.00,$0.00
+"Jun 10, 2016",Rest of the World,mobile,In-Page,300x250,22,n/a,1,$0.00,$0.00
+"Jun 09, 2016",United States,tablet,In-Page,all,"13,321","3,388","1,453",$0.54,$0.78
+"Jun 09, 2016",United States,tablet,In-Page,728x90,"4,297",n/a,558,$0.52,$0.29
+"Jun 09, 2016",United States,tablet,In-Page,300x250,"5,275",n/a,895,$0.55,$0.49
+"Jun 09, 2016",United States,mobile,In-Page,all,"70,648","19,364","3,706",$0.60,$2.23
+"Jun 09, 2016",United States,mobile,In-Page,320x50,"15,697",n/a,"1,476",$0.54,$0.79
+"Jun 09, 2016",United States,mobile,In-Page,300x50,"6,896",n/a,235,$0.43,$0.10
+"Jun 09, 2016",United States,mobile,In-Page,300x250,"26,240",n/a,"1,995",$0.67,$1.34
+"Jun 09, 2016",United States,desktop,In-Page,all,"10,389","1,341",631,$0.54,$0.34
+"Jun 09, 2016",United States,desktop,In-Page,728x90,"3,006",n/a,327,$0.49,$0.16
+"Jun 09, 2016",United States,desktop,In-Page,300x250,"4,261",n/a,304,$0.59,$0.18
+"Jun 09, 2016",Rest of the World,tablet,In-Page,all,"185,562","57,631","7,807",$0.44,$3.43
+"Jun 09, 2016",Rest of the World,tablet,In-Page,728x90,"52,307",n/a,"2,519",$0.47,$1.18
+"Jun 09, 2016",Rest of the World,tablet,In-Page,300x250,"74,869",n/a,"5,288",$0.43,$2.25
+"Jun 09, 2016",Rest of the World,mobile,In-Page,all,"531,293","133,510","20,427",$0.54,$10.95
+"Jun 09, 2016",Rest of the World,mobile,In-Page,320x50,"130,559",n/a,"7,445",$0.56,$4.14
+"Jun 09, 2016",Rest of the World,mobile,In-Page,300x50,"81,387",n/a,925,$0.50,$0.46
+"Jun 09, 2016",Rest of the World,mobile,In-Page,300x250,"184,944",n/a,"12,057",$0.53,$6.35
+"Jun 09, 2016",Rest of the World,desktop,In-Page,all,"277,629","87,791","5,384",$0.39,$2.09
+"Jun 09, 2016",Rest of the World,desktop,In-Page,728x90,"71,602",n/a,"1,835",$0.46,$0.85
+"Jun 09, 2016",Rest of the World,desktop,In-Page,300x250,"116,481",n/a,"3,549",$0.35,$1.24
+"Jun 08, 2016",United States,tablet,In-Page,all,"61,947","18,597","6,280",$0.59,$3.72
+"Jun 08, 2016",United States,tablet,In-Page,728x90,"16,458",n/a,"2,067",$0.66,$1.36
+"Jun 08, 2016",United States,tablet,In-Page,300x250,"25,439",n/a,"4,213",$0.56,$2.36
+"Jun 08, 2016",United States,mobile,In-Page,all,"210,227","44,714","14,863",$0.57,$8.53
+"Jun 08, 2016",United States,mobile,In-Page,320x50,"61,741",n/a,"6,282",$0.55,$3.43
+"Jun 08, 2016",United States,mobile,In-Page,300x50,"20,996",n/a,755,$0.41,$0.31
+"Jun 08, 2016",United States,mobile,In-Page,300x250,"77,179",n/a,"7,826",$0.61,$4.79
+"Jun 08, 2016",United States,desktop,In-Page,all,"22,153","3,226","2,587",$0.52,$1.35
+"Jun 08, 2016",United States,desktop,In-Page,728x90,"8,132",n/a,"1,409",$0.50,$0.71
+"Jun 08, 2016",United States,desktop,In-Page,300x250,"8,036",n/a,"1,178",$0.54,$0.64
+"Jun 08, 2016",Rest of the World,tablet,In-Page,all,"308,923","92,285","15,615",$0.45,$6.97
+"Jun 08, 2016",Rest of the World,tablet,In-Page,728x90,"90,314",n/a,"4,787",$0.47,$2.27
+"Jun 08, 2016",Rest of the World,tablet,In-Page,300x250,"124,841",n/a,"10,828",$0.43,$4.70
+"Jun 08, 2016",Rest of the World,mobile,In-Page,all,"962,485","249,417","32,461",$0.50,$16.13
+"Jun 08, 2016",Rest of the World,mobile,In-Page,320x50,"267,492",n/a,"11,610",$0.52,$6.03
+"Jun 08, 2016",Rest of the World,mobile,In-Page,300x50,"121,439",n/a,791,$0.54,$0.43
+"Jun 08, 2016",Rest of the World,mobile,In-Page,300x250,"321,901",n/a,"20,060",$0.48,$9.67
+"Jun 08, 2016",Rest of the World,desktop,In-Page,all,"461,776","136,474","13,029",$0.47,$6.06
+"Jun 08, 2016",Rest of the World,desktop,In-Page,728x90,"129,539",n/a,"5,332",$0.51,$2.74
+"Jun 08, 2016",Rest of the World,desktop,In-Page,300x250,"191,955",n/a,"7,697",$0.43,$3.32
+"Jun 07, 2016",United States,tablet,In-Page,all,"80,276","26,667","7,601",$0.66,$5.01
+"Jun 07, 2016",United States,tablet,In-Page,728x90,"29,699",n/a,"2,938",$0.65,$1.91
+"Jun 07, 2016",United States,tablet,In-Page,300x250,"22,755",n/a,"4,663",$0.66,$3.10
+"Jun 07, 2016",United States,mobile,In-Page,all,"266,245","75,127","29,143",$0.65,$18.81
+"Jun 07, 2016",United States,mobile,In-Page,320x50,"89,706",n/a,"11,722",$0.58,$6.83
+"Jun 07, 2016",United States,mobile,In-Page,300x50,"25,249",n/a,"1,652",$0.48,$0.79
+"Jun 07, 2016",United States,mobile,In-Page,300x250,"69,044",n/a,"15,769",$0.71,$11.19
+"Jun 07, 2016",United States,desktop,In-Page,all,"43,463","11,856","6,055",$0.52,$3.13
+"Jun 07, 2016",United States,desktop,In-Page,728x90,"13,577",n/a,"2,355",$0.52,$1.22
+"Jun 07, 2016",United States,desktop,In-Page,300x250,"13,227",n/a,"3,700",$0.52,$1.91
+"Jun 07, 2016",Rest of the World,tablet,In-Page,all,"294,059","111,155","15,040",$0.48,$7.19
+"Jun 07, 2016",Rest of the World,tablet,In-Page,728x90,"98,900",n/a,"5,774",$0.46,$2.68
+"Jun 07, 2016",Rest of the World,tablet,In-Page,300x250,"81,789",n/a,"9,266",$0.49,$4.51
+"Jun 07, 2016",Rest of the World,mobile,In-Page,all,"1,125,283","312,724","40,744",$0.56,$22.93
+"Jun 07, 2016",Rest of the World,mobile,In-Page,320x50,"393,666",n/a,"16,350",$0.49,$8.04
+"Jun 07, 2016",Rest of the World,mobile,In-Page,300x50,"164,096",n/a,992,$0.59,$0.59
+"Jun 07, 2016",Rest of the World,mobile,In-Page,300x250,"252,553",n/a,"23,402",$0.61,$14.30
+"Jun 07, 2016",Rest of the World,desktop,In-Page,all,"471,874","182,906","14,866",$0.42,$6.17
+"Jun 07, 2016",Rest of the World,desktop,In-Page,728x90,"152,428",n/a,"6,850",$0.42,$2.85
+"Jun 07, 2016",Rest of the World,desktop,In-Page,300x250,"132,957",n/a,"8,016",$0.41,$3.32
+"Jun 06, 2016",United States,tablet,In-Page,all,"118,108","20,533","24,748",$0.62,$15.36
+"Jun 06, 2016",United States,tablet,In-Page,728x90,"37,605",n/a,"5,009",$0.56,$2.80
+"Jun 06, 2016",United States,tablet,In-Page,300x250,"58,991",n/a,"19,739",$0.64,$12.56
+"Jun 06, 2016",United States,mobile,In-Page,all,"469,039","127,535","91,159",$0.59,$53.56
+"Jun 06, 2016",United States,mobile,In-Page,320x50,"73,053",n/a,"8,527",$0.60,$5.15
+"Jun 06, 2016",United States,mobile,In-Page,300x50,"23,914",n/a,"1,473",$0.38,$0.56
+"Jun 06, 2016",United States,mobile,In-Page,300x250,"230,542",n/a,"81,159",$0.59,$47.85
+"Jun 06, 2016",United States,desktop,In-Page,all,"84,555","11,109","25,317",$0.54,$13.76
+"Jun 06, 2016",United States,desktop,In-Page,728x90,"23,802",n/a,"5,190",$0.53,$2.74
+"Jun 06, 2016",United States,desktop,In-Page,300x250,"47,596",n/a,"20,127",$0.55,$11.02
+"Jun 06, 2016",Rest of the World,tablet,In-Page,all,"299,763","36,480","24,625",$0.47,$11.57
+"Jun 06, 2016",Rest of the World,tablet,In-Page,728x90,"107,776",n/a,"6,996",$0.48,$3.34
+"Jun 06, 2016",Rest of the World,tablet,In-Page,300x250,"154,593",n/a,"17,629",$0.47,$8.23
+"Jun 06, 2016",Rest of the World,mobile,In-Page,all,"997,772","330,422","51,539",$0.54,$28.01
+"Jun 06, 2016",Rest of the World,mobile,In-Page,320x50,"136,996",n/a,"6,687",$0.46,$3.05
+"Jun 06, 2016",Rest of the World,mobile,In-Page,300x50,"56,901",n/a,351,$0.48,$0.17
+"Jun 06, 2016",Rest of the World,mobile,In-Page,300x250,"463,730",n/a,"44,501",$0.56,$24.79
+"Jun 06, 2016",Rest of the World,desktop,In-Page,all,"490,831","57,926","30,060",$0.42,$12.77
+"Jun 06, 2016",Rest of the World,desktop,In-Page,728x90,"172,794",n/a,"9,987",$0.49,$4.90
+"Jun 06, 2016",Rest of the World,desktop,In-Page,300x250,"258,706",n/a,"20,073",$0.39,$7.87
+"Jun 05, 2016",United States,mobile,In-Page,all,29,8,0,n/a,$0.00
+"Jun 05, 2016",United States,desktop,In-Page,all,0,2,0,n/a,$0.00
+"Jun 05, 2016",Rest of the World,tablet,In-Page,all,33,2,4,$0.00,$0.00
+"Jun 05, 2016",Rest of the World,tablet,In-Page,300x250,21,n/a,4,$0.00,$0.00
+"Jun 05, 2016",Rest of the World,mobile,In-Page,all,55,16,5,$2.00,$0.01
+"Jun 05, 2016",Rest of the World,mobile,In-Page,300x250,39,n/a,5,$2.00,$0.01
+"Jun 05, 2016",Rest of the World,desktop,In-Page,all,31,0,0,n/a,$0.00
+"Jun 04, 2016",United States,tablet,In-Page,all,14,2,0,n/a,$0.00
+"Jun 04, 2016",United States,mobile,In-Page,all,144,27,18,$0.56,$0.01
+"Jun 04, 2016",United States,mobile,In-Page,300x250,88,n/a,18,$0.56,$0.01
+"Jun 04, 2016",United States,desktop,In-Page,all,26,0,5,$2.00,$0.01
+"Jun 04, 2016",United States,desktop,In-Page,300x250,18,n/a,5,$2.00,$0.01
+"Jun 04, 2016",Rest of the World,tablet,In-Page,all,184,36,27,$0.37,$0.01
+"Jun 04, 2016",Rest of the World,tablet,In-Page,728x90,44,n/a,3,$0.00,$0.00
+"Jun 04, 2016",Rest of the World,tablet,In-Page,300x250,102,n/a,24,$0.42,$0.01
+"Jun 04, 2016",Rest of the World,mobile,In-Page,all,411,93,18,$0.56,$0.01
+"Jun 04, 2016",Rest of the World,mobile,In-Page,300x250,243,n/a,18,$0.56,$0.01
+"Jun 04, 2016",Rest of the World,desktop,In-Page,all,75,1,18,$1.11,$0.02
+"Jun 04, 2016",Rest of the World,desktop,In-Page,728x90,21,n/a,4,$2.50,$0.01
+"Jun 04, 2016",Rest of the World,desktop,In-Page,300x250,53,n/a,14,$0.71,$0.01
+"Jun 03, 2016",United States,tablet,In-Page,all,"115,113","34,088","20,790",$0.73,$15.17
+"Jun 03, 2016",United States,tablet,In-Page,728x90,"14,388",n/a,"2,603",$0.73,$1.89
+"Jun 03, 2016",United States,tablet,In-Page,300x250,"64,456",n/a,"18,187",$0.73,$13.28
+"Jun 03, 2016",United States,mobile,In-Page,all,"621,002","81,242","81,131",$0.68,$55.37
+"Jun 03, 2016",United States,mobile,In-Page,320x50,"183,197",n/a,"29,609",$0.64,$18.82
+"Jun 03, 2016",United States,mobile,In-Page,300x50,"46,955",n/a,"4,214",$0.51,$2.15
+"Jun 03, 2016",United States,mobile,In-Page,300x250,"301,130",n/a,"47,308",$0.73,$34.40
+"Jun 03, 2016",United States,desktop,In-Page,all,"92,885","25,005","26,652",$0.66,$17.49
+"Jun 03, 2016",United States,desktop,In-Page,728x90,"10,176",n/a,"2,920",$0.51,$1.48
+"Jun 03, 2016",United States,desktop,In-Page,300x250,"52,194",n/a,"23,732",$0.67,$16.01
+"Jun 03, 2016",Rest of the World,tablet,In-View,300x250,n/a,n/a,1,$0.00,$0.00
+"Jun 03, 2016",Rest of the World,tablet,In-Page,all,"337,478","100,052","23,007",$0.46,$10.66
+"Jun 03, 2016",Rest of the World,tablet,In-Page,728x90,"58,909",n/a,"4,230",$0.46,$1.95
+"Jun 03, 2016",Rest of the World,tablet,In-Page,300x250,"174,649",n/a,"18,777",$0.46,$8.71
+"Jun 03, 2016",Rest of the World,mobile,In-Page,all,"1,231,875","179,958","66,824",$0.49,$32.46
+"Jun 03, 2016",Rest of the World,mobile,In-Page,320x50,"361,080",n/a,"19,522",$0.48,$9.40
+"Jun 03, 2016",Rest of the World,mobile,In-Page,300x50,"139,265",n/a,"1,460",$0.55,$0.81
+"Jun 03, 2016",Rest of the World,mobile,In-Page,300x250,"542,778",n/a,"45,842",$0.49,$22.25
+"Jun 03, 2016",Rest of the World,desktop,In-Page,all,"594,362","177,626","35,021",$0.44,$15.28
+"Jun 03, 2016",Rest of the World,desktop,In-Page,728x90,"101,176",n/a,"7,045",$0.47,$3.31
+"Jun 03, 2016",Rest of the World,desktop,In-Page,300x250,"308,491",n/a,"27,976",$0.43,$11.97
+"Jun 02, 2016",United States,tablet,In-Page,all,"187,390","61,579","23,963",$0.71,$17.01
+"Jun 02, 2016",United States,tablet,In-Page,728x90,"27,391",n/a,"3,871",$0.74,$2.86
+"Jun 02, 2016",United States,tablet,In-Page,300x250,"94,367",n/a,"20,092",$0.70,$14.15
+"Jun 02, 2016",United States,mobile,In-View,all,1,0,0,n/a,$0.00
+"Jun 02, 2016",United States,mobile,In-Page,all,"787,451","102,205","86,968",$0.71,$61.55
+"Jun 02, 2016",United States,mobile,In-Page,320x50,"257,421",n/a,"33,675",$0.70,$23.44
+"Jun 02, 2016",United States,mobile,In-Page,300x50,"70,325",n/a,"6,090",$0.46,$2.78
+"Jun 02, 2016",United States,mobile,In-Page,300x250,"347,119",n/a,"47,203",$0.75,$35.33
+"Jun 02, 2016",United States,desktop,In-Page,all,"136,378","43,370","29,497",$0.64,$18.88
+"Jun 02, 2016",United States,desktop,In-Page,728x90,"16,756",n/a,"3,763",$0.55,$2.07
+"Jun 02, 2016",United States,desktop,In-Page,300x250,"67,535",n/a,"25,734",$0.65,$16.81
+"Jun 02, 2016",Rest of the World,tablet,In-Page,all,"432,636","135,623","27,401",$0.45,$12.35
+"Jun 02, 2016",Rest of the World,tablet,In-Page,728x90,"73,527",n/a,"4,904",$0.43,$2.10
+"Jun 02, 2016",Rest of the World,tablet,In-Page,300x250,"218,297",n/a,"22,497",$0.46,$10.25
+"Jun 02, 2016",Rest of the World,mobile,In-Page,all,"1,554,460","221,233","77,034",$0.49,$37.81
+"Jun 02, 2016",Rest of the World,mobile,In-Page,320x50,"474,423",n/a,"23,008",$0.49,$11.16
+"Jun 02, 2016",Rest of the World,mobile,In-Page,300x50,"179,271",n/a,"1,429",$0.54,$0.77
+"Jun 02, 2016",Rest of the World,mobile,In-Page,300x250,"668,806",n/a,"52,597",$0.49,$25.88
+"Jun 02, 2016",Rest of the World,desktop,In-Page,all,"692,806","228,797","38,651",$0.43,$16.79
+"Jun 02, 2016",Rest of the World,desktop,In-Page,728x90,"122,075",n/a,"8,180",$0.44,$3.56
+"Jun 02, 2016",Rest of the World,desktop,In-Page,300x250,"332,268",n/a,"30,471",$0.43,$13.23
+"Jun 01, 2016",United States,tablet,In-Page,all,"188,337","87,339","16,062",$0.76,$12.24
+"Jun 01, 2016",United States,tablet,In-Page,728x90,"32,082",n/a,"4,762",$0.76,$3.63
+"Jun 01, 2016",United States,tablet,In-Page,300x250,"62,397",n/a,"11,300",$0.76,$8.61
+"Jun 01, 2016",United States,mobile,In-View,all,1,0,0,n/a,$0.00
+"Jun 01, 2016",United States,mobile,In-Page,all,"777,872","104,976","94,169",$0.71,$66.50
+"Jun 01, 2016",United States,mobile,In-Page,320x50,"350,597",n/a,"55,684",$0.71,$39.73
+"Jun 01, 2016",United States,mobile,In-Page,300x50,"89,887",n/a,"7,549",$0.50,$3.74
+"Jun 01, 2016",United States,mobile,In-Page,300x250,"221,494",n/a,"30,936",$0.74,$23.03
+"Jun 01, 2016",United States,desktop,In-Page,all,"156,903","78,734","16,287",$0.61,$9.86
+"Jun 01, 2016",United States,desktop,In-Page,728x90,"18,913",n/a,"4,284",$0.57,$2.44
+"Jun 01, 2016",United States,desktop,In-Page,300x250,"44,877",n/a,"12,003",$0.62,$7.42
+"Jun 01, 2016",Rest of the World,tablet,In-Page,all,"500,250","178,636","27,711",$0.43,$11.89
+"Jun 01, 2016",Rest of the World,tablet,In-Page,728x90,"86,009",n/a,"5,548",$0.39,$2.15
+"Jun 01, 2016",Rest of the World,tablet,In-Page,300x250,"226,645",n/a,"22,163",$0.44,$9.74
+"Jun 01, 2016",Rest of the World,mobile,In-View,all,2,0,0,n/a,$0.00
+"Jun 01, 2016",Rest of the World,mobile,In-Page,all,"1,808,012","252,233","81,071",$0.55,$44.26
+"Jun 01, 2016",Rest of the World,mobile,In-Page,320x50,"666,941",n/a,"25,747",$0.50,$12.86
+"Jun 01, 2016",Rest of the World,mobile,In-Page,300x50,"225,793",n/a,"1,498",$0.54,$0.81
+"Jun 01, 2016",Rest of the World,mobile,In-Page,300x250,"650,458",n/a,"53,826",$0.57,$30.59
+"Jun 01, 2016",Rest of the World,desktop,In-Page,all,"774,057","304,146","30,905",$0.46,$14.13
+"Jun 01, 2016",Rest of the World,desktop,In-Page,728x90,"135,661",n/a,"8,936",$0.45,$4.02
+"Jun 01, 2016",Rest of the World,desktop,In-Page,300x250,"318,269",n/a,"21,969",$0.46,$10.11
+"May 31, 2016",United States,tablet,In-Page,all,"218,981","105,382","17,704",$0.78,$13.89
+"May 31, 2016",United States,tablet,In-Page,728x90,"35,761",n/a,"4,951",$0.77,$3.82
+"May 31, 2016",United States,tablet,In-Page,300x250,"66,499",n/a,"12,753",$0.79,$10.07
+"May 31, 2016",United States,mobile,In-View,all,"9,680",78,"7,566",$1.00,$7.57
+"May 31, 2016",United States,mobile,In-View,320x50,n/a,n/a,"7,535",$1.00,$7.54
+"May 31, 2016",United States,mobile,In-View,320x100,n/a,n/a,31,$0.97,$0.03
+"May 31, 2016",United States,mobile,In-Page,all,"837,902","109,461","132,869",$0.70,$93.41
+"May 31, 2016",United States,mobile,In-Page,320x50,"408,416",n/a,"76,242",$0.71,$54.42
+"May 31, 2016",United States,mobile,In-Page,300x50,"97,565",n/a,"7,998",$0.45,$3.60
+"May 31, 2016",United States,mobile,In-Page,300x250,"209,903",n/a,"48,629",$0.73,$35.39
+"May 31, 2016",United States,desktop,In-Page,all,"176,438","105,500","15,948",$0.59,$9.37
+"May 31, 2016",United States,desktop,In-Page,728x90,"18,651",n/a,"5,125",$0.52,$2.64
+"May 31, 2016",United States,desktop,In-Page,300x250,"34,827",n/a,"10,823",$0.62,$6.73
+"May 31, 2016",Rest of the World,tablet,In-Page,all,"521,267","190,160","29,619",$0.49,$14.58
+"May 31, 2016",Rest of the World,tablet,In-Page,728x90,"87,134",n/a,"5,872",$0.47,$2.77
+"May 31, 2016",Rest of the World,tablet,In-Page,300x250,"232,844",n/a,"23,747",$0.50,$11.81
+"May 31, 2016",Rest of the World,mobile,In-View,all,"37,064",232,"2,706",$0.50,$1.35
+"May 31, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"2,419",$0.50,$1.21
+"May 31, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,287,$0.49,$0.14
+"May 31, 2016",Rest of the World,mobile,In-Page,all,"1,780,783","242,759","103,813",$0.56,$58.31
+"May 31, 2016",Rest of the World,mobile,In-Page,320x50,"682,833",n/a,"35,917",$0.53,$18.91
+"May 31, 2016",Rest of the World,mobile,In-Page,300x50,"219,893",n/a,"2,804",$0.57,$1.59
+"May 31, 2016",Rest of the World,mobile,In-Page,300x250,"620,981",n/a,"65,092",$0.58,$37.81
+"May 31, 2016",Rest of the World,desktop,In-Page,all,"824,921","343,479","30,404",$0.45,$13.62
+"May 31, 2016",Rest of the World,desktop,In-Page,728x90,"146,691",n/a,"9,427",$0.45,$4.23
+"May 31, 2016",Rest of the World,desktop,In-Page,300x250,"309,809",n/a,"20,977",$0.45,$9.39
+"May 30, 2016",United States,tablet,In-Page,all,"176,590","96,749","15,507",$0.79,$12.23
+"May 30, 2016",United States,tablet,In-Page,728x90,"27,825",n/a,"5,163",$0.76,$3.92
+"May 30, 2016",United States,tablet,In-Page,300x250,"50,266",n/a,"10,344",$0.80,$8.31
+"May 30, 2016",United States,mobile,In-View,all,"11,297",56,"9,113",$1.00,$9.11
+"May 30, 2016",United States,mobile,In-View,320x50,n/a,n/a,"9,041",$1.00,$9.04
+"May 30, 2016",United States,mobile,In-View,320x100,n/a,n/a,72,$0.97,$0.07
+"May 30, 2016",United States,mobile,In-Page,all,"583,422","78,340","116,942",$0.73,$85.10
+"May 30, 2016",United States,mobile,In-Page,320x50,"308,045",n/a,"76,390",$0.69,$52.50
+"May 30, 2016",United States,mobile,In-Page,300x50,"64,413",n/a,"7,596",$0.44,$3.35
+"May 30, 2016",United States,mobile,In-Page,300x250,"130,016",n/a,"32,956",$0.89,$29.25
+"May 30, 2016",United States,desktop,In-Page,all,"122,983","86,448","11,760",$0.69,$8.10
+"May 30, 2016",United States,desktop,In-Page,728x90,"9,064",n/a,"2,538",$0.59,$1.49
+"May 30, 2016",United States,desktop,In-Page,300x250,"20,797",n/a,"9,222",$0.72,$6.61
+"May 30, 2016",Rest of the World,tablet,In-Page,all,"425,120","162,973","26,957",$0.51,$13.84
+"May 30, 2016",Rest of the World,tablet,In-Page,728x90,"69,710",n/a,"5,401",$0.49,$2.64
+"May 30, 2016",Rest of the World,tablet,In-Page,300x250,"190,190",n/a,"21,556",$0.52,$11.20
+"May 30, 2016",Rest of the World,mobile,In-View,all,"38,485",217,"3,084",$0.50,$1.55
+"May 30, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"2,811",$0.50,$1.41
+"May 30, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,273,$0.51,$0.14
+"May 30, 2016",Rest of the World,mobile,In-Page,all,"1,409,843","195,042","90,042",$0.60,$54.21
+"May 30, 2016",Rest of the World,mobile,In-Page,320x50,"548,934",n/a,"36,265",$0.53,$19.10
+"May 30, 2016",Rest of the World,mobile,In-Page,300x50,"172,850",n/a,"3,131",$0.61,$1.92
+"May 30, 2016",Rest of the World,mobile,In-Page,300x250,"489,344",n/a,"50,646",$0.66,$33.19
+"May 30, 2016",Rest of the World,desktop,In-Page,all,"660,670","298,045","27,557",$0.44,$12.15
+"May 30, 2016",Rest of the World,desktop,In-Page,728x90,"116,719",n/a,"8,552",$0.44,$3.75
+"May 30, 2016",Rest of the World,desktop,In-Page,300x250,"238,850",n/a,"19,005",$0.44,$8.40
+"May 29, 2016",United States,tablet,In-Page,all,"187,708","94,011","13,063",$0.84,$11.02
+"May 29, 2016",United States,tablet,In-Page,728x90,"27,461",n/a,"4,312",$0.74,$3.17
+"May 29, 2016",United States,tablet,In-Page,300x250,"58,298",n/a,"8,751",$0.90,$7.85
+"May 29, 2016",United States,mobile,In-View,all,"8,453",62,"6,135",$1.00,$6.13
+"May 29, 2016",United States,mobile,In-View,320x50,n/a,n/a,"6,123",$1.00,$6.12
+"May 29, 2016",United States,mobile,In-View,320x100,n/a,n/a,12,$0.83,$0.01
+"May 29, 2016",United States,mobile,In-Page,all,"574,193","66,371","115,778",$0.71,$82.33
+"May 29, 2016",United States,mobile,In-Page,320x50,"310,515",n/a,"79,596",$0.66,$52.59
+"May 29, 2016",United States,mobile,In-Page,300x50,"57,969",n/a,"7,306",$0.42,$3.06
+"May 29, 2016",United States,mobile,In-Page,300x250,"131,759",n/a,"28,876",$0.92,$26.68
+"May 29, 2016",United States,desktop,In-Page,all,"111,918","75,080","9,438",$0.70,$6.58
+"May 29, 2016",United States,desktop,In-Page,728x90,"7,022",n/a,"1,878",$0.59,$1.10
+"May 29, 2016",United States,desktop,In-Page,300x250,"17,769",n/a,"7,560",$0.72,$5.48
+"May 29, 2016",Rest of the World,tablet,In-View,all,2,1,0,n/a,$0.00
+"May 29, 2016",Rest of the World,tablet,In-Page,all,"449,077","164,061","25,101",$0.49,$12.29
+"May 29, 2016",Rest of the World,tablet,In-Page,728x90,"73,663",n/a,"5,665",$0.43,$2.42
+"May 29, 2016",Rest of the World,tablet,In-Page,300x250,"201,273",n/a,"19,436",$0.51,$9.87
+"May 29, 2016",Rest of the World,mobile,In-View,all,"41,342",243,"3,051",$0.50,$1.52
+"May 29, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"2,805",$0.50,$1.40
+"May 29, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,246,$0.49,$0.12
+"May 29, 2016",Rest of the World,mobile,In-Page,all,"1,442,987","190,034","88,201",$0.57,$50.65
+"May 29, 2016",Rest of the World,mobile,In-Page,320x50,"559,570",n/a,"32,937",$0.53,$17.33
+"May 29, 2016",Rest of the World,mobile,In-Page,300x50,"178,829",n/a,"3,064",$0.56,$1.72
+"May 29, 2016",Rest of the World,mobile,In-Page,300x250,"500,914",n/a,"52,200",$0.61,$31.60
+"May 29, 2016",Rest of the World,desktop,In-View,all,1,0,0,n/a,$0.00
+"May 29, 2016",Rest of the World,desktop,In-Page,all,"621,034","267,687","25,483",$0.44,$11.23
+"May 29, 2016",Rest of the World,desktop,In-Page,728x90,"109,423",n/a,"8,592",$0.41,$3.56
+"May 29, 2016",Rest of the World,desktop,In-Page,300x250,"221,601",n/a,"16,891",$0.45,$7.67
+"May 28, 2016",United States,tablet,In-Page,all,"109,710","53,493","10,811",$0.83,$8.99
+"May 28, 2016",United States,tablet,In-Page,728x90,"18,719",n/a,"3,806",$0.71,$2.72
+"May 28, 2016",United States,tablet,In-Page,300x250,"32,743",n/a,"7,005",$0.90,$6.27
+"May 28, 2016",United States,mobile,In-View,all,"5,670",38,"4,160",$1.00,$4.16
+"May 28, 2016",United States,mobile,In-View,320x50,n/a,n/a,"4,159",$1.00,$4.16
+"May 28, 2016",United States,mobile,In-View,320x100,n/a,n/a,1,$0.00,$0.00
+"May 28, 2016",United States,mobile,In-Page,all,"391,096","54,743","73,653",$0.71,$52.17
+"May 28, 2016",United States,mobile,In-Page,320x50,"192,777",n/a,"45,957",$0.63,$28.92
+"May 28, 2016",United States,mobile,In-Page,300x50,"35,461",n/a,"4,752",$0.43,$2.03
+"May 28, 2016",United States,mobile,In-Page,300x250,"101,274",n/a,"22,944",$0.92,$21.22
+"May 28, 2016",United States,desktop,In-Page,all,"71,169","43,870","7,167",$0.67,$4.78
+"May 28, 2016",United States,desktop,In-Page,728x90,"5,690",n/a,"1,455",$0.60,$0.87
+"May 28, 2016",United States,desktop,In-Page,300x250,"14,449",n/a,"5,712",$0.68,$3.91
+"May 28, 2016",Rest of the World,tablet,In-Page,all,"367,745","126,246","24,100",$0.46,$11.14
+"May 28, 2016",Rest of the World,tablet,In-Page,728x90,"63,026",n/a,"5,002",$0.43,$2.17
+"May 28, 2016",Rest of the World,tablet,In-Page,300x250,"172,792",n/a,"19,098",$0.47,$8.97
+"May 28, 2016",Rest of the World,mobile,In-View,all,"31,827",165,"2,305",$0.50,$1.15
+"May 28, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"2,068",$0.50,$1.03
+"May 28, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,237,$0.51,$0.12
+"May 28, 2016",Rest of the World,mobile,In-Page,all,"1,183,439","174,563","77,194",$0.56,$43.45
+"May 28, 2016",Rest of the World,mobile,In-Page,320x50,"413,172",n/a,"24,472",$0.50,$12.17
+"May 28, 2016",Rest of the World,mobile,In-Page,300x50,"137,212",n/a,"2,767",$0.55,$1.51
+"May 28, 2016",Rest of the World,mobile,In-Page,300x250,"448,909",n/a,"49,955",$0.60,$29.77
+"May 28, 2016",Rest of the World,desktop,In-View,all,1,1,0,n/a,$0.00
+"May 28, 2016",Rest of the World,desktop,In-Page,all,"496,473","196,929","21,126",$0.43,$9.12
+"May 28, 2016",Rest of the World,desktop,In-Page,728x90,"95,821",n/a,"7,086",$0.39,$2.74
+"May 28, 2016",Rest of the World,desktop,In-Page,300x250,"191,764",n/a,"14,040",$0.45,$6.38
+"May 27, 2016",United States,tablet,In-Page,all,"82,639","23,768","13,017",$0.81,$10.50
+"May 27, 2016",United States,tablet,In-Page,728x90,"18,137",n/a,"3,829",$0.73,$2.80
+"May 27, 2016",United States,tablet,In-Page,300x250,"38,688",n/a,"9,188",$0.84,$7.70
+"May 27, 2016",United States,mobile,In-View,all,"3,753",25,"2,963",$1.00,$2.96
+"May 27, 2016",United States,mobile,In-View,320x50,n/a,n/a,"2,963",$1.00,$2.96
+"May 27, 2016",United States,mobile,In-Page,all,"327,028","63,112","45,171",$0.73,$32.87
+"May 27, 2016",United States,mobile,In-Page,320x50,"101,422",n/a,"16,302",$0.62,$10.04
+"May 27, 2016",United States,mobile,In-Page,300x50,"19,512",n/a,"1,829",$0.42,$0.76
+"May 27, 2016",United States,mobile,In-Page,300x250,"135,567",n/a,"27,040",$0.82,$22.07
+"May 27, 2016",United States,desktop,In-Page,all,"45,524","12,909","7,740",$0.65,$5.04
+"May 27, 2016",United States,desktop,In-Page,728x90,"8,316",n/a,"1,866",$0.58,$1.08
+"May 27, 2016",United States,desktop,In-Page,300x250,"19,700",n/a,"5,874",$0.67,$3.96
+"May 27, 2016",Rest of the World,tablet,In-Page,all,"315,486","99,006","27,368",$0.51,$13.94
+"May 27, 2016",Rest of the World,tablet,In-Page,728x90,"56,392",n/a,"5,077",$0.48,$2.43
+"May 27, 2016",Rest of the World,tablet,In-Page,300x250,"156,448",n/a,"22,291",$0.52,$11.51
+"May 27, 2016",Rest of the World,mobile,In-View,all,"25,772",142,"1,798",$0.50,$0.90
+"May 27, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"1,570",$0.50,$0.79
+"May 27, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,228,$0.48,$0.11
+"May 27, 2016",Rest of the World,mobile,In-Page,all,"1,012,582","167,241","71,432",$0.53,$37.63
+"May 27, 2016",Rest of the World,mobile,In-Page,320x50,"314,653",n/a,"19,643",$0.45,$8.80
+"May 27, 2016",Rest of the World,mobile,In-Page,300x50,"109,036",n/a,"1,440",$0.51,$0.74
+"May 27, 2016",Rest of the World,mobile,In-Page,300x250,"413,511",n/a,"50,349",$0.56,$28.09
+"May 27, 2016",Rest of the World,desktop,In-Page,all,"471,193","160,913","22,213",$0.43,$9.54
+"May 27, 2016",Rest of the World,desktop,In-Page,728x90,"92,779",n/a,"6,116",$0.43,$2.63
+"May 27, 2016",Rest of the World,desktop,In-Page,300x250,"211,068",n/a,"16,097",$0.43,$6.91
+"May 26, 2016",United States,tablet,In-Page,all,"116,991","38,910","15,244",$0.72,$10.95
+"May 26, 2016",United States,tablet,In-Page,728x90,"28,032",n/a,"5,452",$0.67,$3.63
+"May 26, 2016",United States,tablet,In-Page,300x250,"47,668",n/a,"9,792",$0.75,$7.32
+"May 26, 2016",United States,mobile,In-View,all,"6,385",34,"4,929",$1.00,$4.93
+"May 26, 2016",United States,mobile,In-View,320x50,n/a,n/a,"4,907",$1.00,$4.91
+"May 26, 2016",United States,mobile,In-View,320x100,n/a,n/a,22,$0.91,$0.02
+"May 26, 2016",United States,mobile,In-Page,all,"398,771","82,050","54,070",$0.66,$35.69
+"May 26, 2016",United States,mobile,In-Page,320x50,"135,127",n/a,"24,356",$0.61,$14.85
+"May 26, 2016",United States,mobile,In-Page,300x50,"32,423",n/a,"2,942",$0.42,$1.24
+"May 26, 2016",United States,mobile,In-Page,300x250,"138,851",n/a,"26,772",$0.73,$19.60
+"May 26, 2016",United States,desktop,In-Page,all,"72,690","22,684","13,381",$0.63,$8.40
+"May 26, 2016",United States,desktop,In-Page,728x90,"13,856",n/a,"3,691",$0.57,$2.12
+"May 26, 2016",United States,desktop,In-Page,300x250,"29,930",n/a,"9,690",$0.65,$6.28
+"May 26, 2016",Rest of the World,tablet,In-Page,all,"351,833","119,085","27,471",$0.49,$13.39
+"May 26, 2016",Rest of the World,tablet,In-Page,728x90,"67,225",n/a,"5,550",$0.43,$2.36
+"May 26, 2016",Rest of the World,tablet,In-Page,300x250,"160,821",n/a,"21,921",$0.50,$11.03
+"May 26, 2016",Rest of the World,mobile,In-View,all,"39,280",135,"2,980",$0.50,$1.49
+"May 26, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"2,694",$0.50,$1.35
+"May 26, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,286,$0.49,$0.14
+"May 26, 2016",Rest of the World,mobile,In-Page,all,"1,218,206","203,276","79,897",$0.53,$42.22
+"May 26, 2016",Rest of the World,mobile,In-Page,320x50,"410,965",n/a,"26,903",$0.47,$12.57
+"May 26, 2016",Rest of the World,mobile,In-Page,300x50,"155,258",n/a,"1,653",$0.48,$0.80
+"May 26, 2016",Rest of the World,mobile,In-Page,300x250,"438,618",n/a,"51,341",$0.56,$28.85
+"May 26, 2016",Rest of the World,desktop,In-View,all,1,1,0,n/a,$0.00
+"May 26, 2016",Rest of the World,desktop,In-Page,all,"574,583","204,157","26,336",$0.47,$12.33
+"May 26, 2016",Rest of the World,desktop,In-Page,728x90,"115,400",n/a,"8,328",$0.45,$3.72
+"May 26, 2016",Rest of the World,desktop,In-Page,300x250,"245,619",n/a,"18,008",$0.48,$8.61
+"May 25, 2016",United States,tablet,In-Page,all,"75,927","25,929","11,889",$0.79,$9.35
+"May 25, 2016",United States,tablet,In-Page,728x90,"23,762",n/a,"5,542",$0.69,$3.84
+"May 25, 2016",United States,tablet,In-Page,300x250,"24,001",n/a,"6,347",$0.87,$5.51
+"May 25, 2016",United States,mobile,In-View,all,"7,594",95,"5,849",$1.00,$5.85
+"May 25, 2016",United States,mobile,In-View,320x50,n/a,n/a,"5,834",$1.00,$5.83
+"May 25, 2016",United States,mobile,In-View,320x100,n/a,n/a,15,$1.33,$0.02
+"May 25, 2016",United States,mobile,In-Page,all,"313,126","80,817","37,824",$0.68,$25.77
+"May 25, 2016",United States,mobile,In-Page,320x50,"115,159",n/a,"19,973",$0.61,$12.11
+"May 25, 2016",United States,mobile,In-Page,300x50,"23,998",n/a,"2,424",$0.41,$0.99
+"May 25, 2016",United States,mobile,In-Page,300x250,"83,046",n/a,"15,427",$0.82,$12.67
+"May 25, 2016",United States,desktop,In-Page,all,"71,696","27,113","12,732",$0.63,$7.99
+"May 25, 2016",United States,desktop,In-Page,728x90,"15,191",n/a,"4,609",$0.54,$2.49
+"May 25, 2016",United States,desktop,In-Page,300x250,"21,856",n/a,"8,123",$0.68,$5.50
+"May 25, 2016",Rest of the World,tablet,In-Page,all,"287,027","115,475","17,689",$0.47,$8.27
+"May 25, 2016",Rest of the World,tablet,In-Page,728x90,"64,967",n/a,"4,882",$0.42,$2.05
+"May 25, 2016",Rest of the World,tablet,In-Page,300x250,"101,287",n/a,"12,807",$0.49,$6.22
+"May 25, 2016",Rest of the World,mobile,In-View,all,"77,582",295,"5,996",$0.50,$3.00
+"May 25, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"5,497",$0.50,$2.75
+"May 25, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,499,$0.50,$0.25
+"May 25, 2016",Rest of the World,mobile,In-Page,all,"1,039,760","192,683","58,625",$0.54,$31.43
+"May 25, 2016",Rest of the World,mobile,In-Page,320x50,"404,062",n/a,"23,466",$0.47,$10.94
+"May 25, 2016",Rest of the World,mobile,In-Page,300x50,"154,221",n/a,"2,315",$0.48,$1.11
+"May 25, 2016",Rest of the World,mobile,In-Page,300x250,"278,147",n/a,"32,844",$0.59,$19.38
+"May 25, 2016",Rest of the World,desktop,In-View,all,1,0,0,n/a,$0.00
+"May 25, 2016",Rest of the World,desktop,In-Page,all,"479,131","198,257","22,089",$0.44,$9.73
+"May 25, 2016",Rest of the World,desktop,In-Page,728x90,"109,392",n/a,"8,253",$0.44,$3.61
+"May 25, 2016",Rest of the World,desktop,In-Page,300x250,"162,414",n/a,"13,836",$0.44,$6.12
+"May 24, 2016",United States,tablet,In-Page,all,"116,724","35,981","17,468",$0.73,$12.72
+"May 24, 2016",United States,tablet,In-Page,728x90,"41,756",n/a,"8,983",$0.73,$6.55
+"May 24, 2016",United States,tablet,In-Page,300x250,"35,851",n/a,"8,485",$0.73,$6.17
+"May 24, 2016",United States,mobile,In-View,all,"19,253",52,"15,561",$1.00,$15.56
+"May 24, 2016",United States,mobile,In-View,320x50,n/a,n/a,"15,517",$1.00,$15.52
+"May 24, 2016",United States,mobile,In-View,320x100,n/a,n/a,44,$0.91,$0.04
+"May 24, 2016",United States,mobile,In-Page,all,"443,325","132,382","52,858",$0.69,$36.46
+"May 24, 2016",United States,mobile,In-Page,320x50,"137,728",n/a,"23,859",$0.59,$14.19
+"May 24, 2016",United States,mobile,In-Page,300x50,"45,630",n/a,"4,588",$0.43,$1.98
+"May 24, 2016",United States,mobile,In-Page,300x250,"113,816",n/a,"24,411",$0.83,$20.29
+"May 24, 2016",United States,desktop,In-Page,all,"73,294","21,284","12,292",$0.62,$7.62
+"May 24, 2016",United States,desktop,In-Page,728x90,"23,276",n/a,"5,356",$0.60,$3.23
+"May 24, 2016",United States,desktop,In-Page,300x250,"23,241",n/a,"6,936",$0.63,$4.39
+"May 24, 2016",Rest of the World,tablet,In-View,all,1,1,0,n/a,$0.00
+"May 24, 2016",Rest of the World,tablet,In-Page,all,"291,613","76,552","18,880",$0.48,$9.01
+"May 24, 2016",Rest of the World,tablet,In-Page,728x90,"106,905",n/a,"6,498",$0.44,$2.84
+"May 24, 2016",Rest of the World,tablet,In-Page,300x250,"104,479",n/a,"12,382",$0.50,$6.17
+"May 24, 2016",Rest of the World,mobile,In-View,all,"92,590",208,"8,141",$0.50,$4.07
+"May 24, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"7,592",$0.50,$3.80
+"May 24, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,549,$0.49,$0.27
+"May 24, 2016",Rest of the World,mobile,In-Page,all,"1,020,795","318,120","45,495",$0.52,$23.88
+"May 24, 2016",Rest of the World,mobile,In-Page,320x50,"262,914",n/a,"14,309",$0.44,$6.35
+"May 24, 2016",Rest of the World,mobile,In-Page,300x50,"138,726",n/a,"1,907",$0.39,$0.74
+"May 24, 2016",Rest of the World,mobile,In-Page,300x250,"285,432",n/a,"29,279",$0.57,$16.79
+"May 24, 2016",Rest of the World,desktop,In-View,all,2,2,0,n/a,$0.00
+"May 24, 2016",Rest of the World,desktop,In-Page,all,"484,230","130,256","23,263",$0.41,$9.61
+"May 24, 2016",Rest of the World,desktop,In-Page,728x90,"179,187",n/a,"11,218",$0.41,$4.62
+"May 24, 2016",Rest of the World,desktop,In-Page,300x250,"168,421",n/a,"12,045",$0.41,$4.99
+"May 23, 2016",United States,tablet,In-Page,all,"127,573","28,126","18,715",$0.73,$13.60
+"May 23, 2016",United States,tablet,In-Page,728x90,"56,125",n/a,"11,084",$0.75,$8.27
+"May 23, 2016",United States,tablet,In-Page,300x250,"43,685",n/a,"7,631",$0.70,$5.33
+"May 23, 2016",United States,mobile,In-View,all,"19,048",71,"15,926",$1.00,$15.93
+"May 23, 2016",United States,mobile,In-View,320x50,n/a,n/a,"15,890",$1.00,$15.89
+"May 23, 2016",United States,mobile,In-View,320x100,n/a,n/a,36,$1.11,$0.04
+"May 23, 2016",United States,mobile,In-Page,all,"460,875","183,983","44,459",$0.70,$31.34
+"May 23, 2016",United States,mobile,In-Page,320x50,"76,939",n/a,"13,160",$0.57,$7.47
+"May 23, 2016",United States,mobile,In-Page,300x50,"52,852",n/a,"4,499",$0.49,$2.21
+"May 23, 2016",United States,mobile,In-Page,300x250,"142,156",n/a,"26,800",$0.81,$21.66
+"May 23, 2016",United States,desktop,In-Page,all,"70,626","15,548","12,376",$0.58,$7.22
+"May 23, 2016",United States,desktop,In-Page,728x90,"27,994",n/a,"6,025",$0.57,$3.45
+"May 23, 2016",United States,desktop,In-Page,300x250,"24,578",n/a,"6,351",$0.59,$3.77
+"May 23, 2016",Rest of the World,tablet,In-Page,all,"310,827","66,745","20,780",$0.46,$9.66
+"May 23, 2016",Rest of the World,tablet,In-Page,728x90,"126,801",n/a,"7,790",$0.44,$3.44
+"May 23, 2016",Rest of the World,tablet,In-Page,300x250,"118,299",n/a,"12,990",$0.48,$6.22
+"May 23, 2016",Rest of the World,mobile,In-View,all,"71,612",428,"8,040",$0.50,$4.02
+"May 23, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"7,567",$0.50,$3.78
+"May 23, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,473,$0.51,$0.24
+"May 23, 2016",Rest of the World,mobile,In-Page,all,"1,049,964","417,187","37,430",$0.55,$20.66
+"May 23, 2016",Rest of the World,mobile,In-Page,320x50,"145,215",n/a,"7,399",$0.46,$3.43
+"May 23, 2016",Rest of the World,mobile,In-Page,300x50,"156,256",n/a,328,$0.24,$0.08
+"May 23, 2016",Rest of the World,mobile,In-Page,300x250,"335,459",n/a,"29,703",$0.58,$17.15
+"May 23, 2016",Rest of the World,desktop,In-Page,all,"516,226","114,850","26,434",$0.50,$13.23
+"May 23, 2016",Rest of the World,desktop,In-Page,728x90,"207,336",n/a,"13,224",$0.50,$6.63
+"May 23, 2016",Rest of the World,desktop,In-Page,300x250,"195,323",n/a,"13,210",$0.50,$6.60
+"May 22, 2016",United States,tablet,In-View,all,55,60,0,n/a,$0.00
+"May 22, 2016",United States,tablet,In-Page,all,"97,694","29,335","20,303",$0.73,$14.84
+"May 22, 2016",United States,tablet,In-Page,728x90,"40,922",n/a,"11,596",$0.74,$8.62
+"May 22, 2016",United States,tablet,In-Page,300x250,"35,997",n/a,"8,707",$0.71,$6.22
+"May 22, 2016",United States,mobile,In-View,all,"10,535",117,"11,611",$1.00,$11.61
+"May 22, 2016",United States,mobile,In-View,320x50,n/a,n/a,"11,562",$1.00,$11.56
+"May 22, 2016",United States,mobile,In-View,320x100,n/a,n/a,49,$1.02,$0.05
+"May 22, 2016",United States,mobile,In-Page,all,"298,514","163,450","40,165",$0.79,$31.75
+"May 22, 2016",United States,mobile,In-Page,320x50,"35,060",n/a,"8,578",$0.61,$5.27
+"May 22, 2016",United States,mobile,In-Page,300x50,"42,122",n/a,"4,972",$0.52,$2.59
+"May 22, 2016",United States,mobile,In-Page,300x250,"99,364",n/a,"26,615",$0.90,$23.89
+"May 22, 2016",United States,desktop,In-View,all,22,20,0,n/a,$0.00
+"May 22, 2016",United States,desktop,In-Page,all,"39,915","12,835","11,214",$0.66,$7.36
+"May 22, 2016",United States,desktop,In-Page,728x90,"16,184",n/a,"5,314",$0.59,$3.11
+"May 22, 2016",United States,desktop,In-Page,300x250,"13,568",n/a,"5,900",$0.72,$4.25
+"May 22, 2016",Rest of the World,tablet,In-View,all,207,232,0,n/a,$0.00
+"May 22, 2016",Rest of the World,tablet,In-Page,all,"246,324","71,846","20,538",$0.50,$10.18
+"May 22, 2016",Rest of the World,tablet,In-Page,728x90,"99,056",n/a,"7,446",$0.48,$3.55
+"May 22, 2016",Rest of the World,tablet,In-Page,300x250,"96,590",n/a,"13,092",$0.51,$6.63
+"May 22, 2016",Rest of the World,mobile,In-View,all,"42,623",650,"6,355",$0.50,$3.17
+"May 22, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"5,889",$0.50,$2.94
+"May 22, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,466,$0.49,$0.23
+"May 22, 2016",Rest of the World,mobile,In-Page,all,"716,819","397,664","36,001",$0.53,$19.09
+"May 22, 2016",Rest of the World,mobile,In-Page,320x50,"76,580",n/a,"5,363",$0.46,$2.48
+"May 22, 2016",Rest of the World,mobile,In-Page,300x50,"114,011",n/a,373,$0.29,$0.11
+"May 22, 2016",Rest of the World,mobile,In-Page,300x250,"240,639",n/a,"30,265",$0.55,$16.50
+"May 22, 2016",Rest of the World,desktop,In-View,all,228,252,0,n/a,$0.00
+"May 22, 2016",Rest of the World,desktop,In-Page,all,"359,030","108,320","25,772",$0.54,$13.98
+"May 22, 2016",Rest of the World,desktop,In-Page,728x90,"143,340",n/a,"12,669",$0.57,$7.20
+"May 22, 2016",Rest of the World,desktop,In-Page,300x250,"137,354",n/a,"13,103",$0.52,$6.78
+"May 21, 2016",United States,tablet,In-View,all,"1,763","2,343",0,n/a,$0.00
+"May 21, 2016",United States,tablet,In-Page,all,"84,538","20,233","17,096",$0.75,$12.81
+"May 21, 2016",United States,tablet,In-Page,728x90,"39,093",n/a,"10,924",$0.77,$8.37
+"May 21, 2016",United States,tablet,In-Page,300x250,"29,661",n/a,"6,172",$0.72,$4.44
+"May 21, 2016",United States,mobile,In-View,all,"12,787","1,609","11,552",$1.00,$11.56
+"May 21, 2016",United States,mobile,In-View,320x50,n/a,n/a,"11,497",$1.00,$11.50
+"May 21, 2016",United States,mobile,In-View,320x100,n/a,n/a,55,$1.09,$0.06
+"May 21, 2016",United States,mobile,In-Page,all,"231,468","136,569","29,156",$0.72,$21.09
+"May 21, 2016",United States,mobile,In-Page,320x50,"22,710",n/a,"5,615",$0.59,$3.34
+"May 21, 2016",United States,mobile,In-Page,300x50,"22,153",n/a,"3,577",$0.49,$1.77
+"May 21, 2016",United States,mobile,In-Page,300x250,"77,522",n/a,"19,964",$0.80,$15.98
+"May 21, 2016",United States,desktop,In-View,all,526,585,0,n/a,$0.00
+"May 21, 2016",United States,desktop,In-Page,all,"30,686","8,135","9,347",$0.59,$5.54
+"May 21, 2016",United States,desktop,In-Page,728x90,"13,663",n/a,"5,040",$0.56,$2.80
+"May 21, 2016",United States,desktop,In-Page,300x250,"9,861",n/a,"4,307",$0.64,$2.74
+"May 21, 2016",Rest of the World,tablet,In-View,all,"6,715","8,562",0,n/a,$0.00
+"May 21, 2016",Rest of the World,tablet,In-Page,all,"242,423","48,801","19,026",$0.48,$9.12
+"May 21, 2016",Rest of the World,tablet,In-Page,728x90,"106,010",n/a,"7,534",$0.43,$3.25
+"May 21, 2016",Rest of the World,tablet,In-Page,300x250,"96,670",n/a,"11,492",$0.51,$5.87
+"May 21, 2016",Rest of the World,mobile,In-View,all,"53,904","3,090","7,382",$0.50,$3.69
+"May 21, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"6,937",$0.50,$3.47
+"May 21, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,445,$0.49,$0.22
+"May 21, 2016",Rest of the World,mobile,In-Page,all,"650,156","371,049","36,183",$0.52,$18.74
+"May 21, 2016",Rest of the World,mobile,In-Page,320x50,"57,898",n/a,"3,777",$0.49,$1.84
+"May 21, 2016",Rest of the World,mobile,In-Page,300x50,"55,629",n/a,228,$0.48,$0.11
+"May 21, 2016",Rest of the World,mobile,In-Page,300x250,"233,983",n/a,"32,178",$0.52,$16.79
+"May 21, 2016",Rest of the World,desktop,In-View,all,"10,282","12,936",0,n/a,$0.00
+"May 21, 2016",Rest of the World,desktop,In-Page,all,"346,669","71,747","24,589",$0.43,$10.67
+"May 21, 2016",Rest of the World,desktop,In-Page,728x90,"149,672",n/a,"12,948",$0.46,$5.90
+"May 21, 2016",Rest of the World,desktop,In-Page,300x250,"138,078",n/a,"11,641",$0.41,$4.77
+"May 20, 2016",United States,tablet,In-View,all,"1,208","1,544",0,n/a,$0.00
+"May 20, 2016",United States,tablet,In-Page,all,"72,301","17,160","16,853",$0.71,$11.92
+"May 20, 2016",United States,tablet,In-Page,728x90,"33,388",n/a,"9,933",$0.74,$7.32
+"May 20, 2016",United States,tablet,In-Page,300x250,"25,037",n/a,"6,920",$0.66,$4.60
+"May 20, 2016",United States,mobile,In-View,all,"14,910","2,158","12,411",$1.00,$12.41
+"May 20, 2016",United States,mobile,In-View,320x50,n/a,n/a,"12,346",$1.00,$12.35
+"May 20, 2016",United States,mobile,In-View,320x100,n/a,n/a,64,$0.94,$0.06
+"May 20, 2016",United States,mobile,In-View,300x250,n/a,n/a,1,$0.00,$0.00
+"May 20, 2016",United States,mobile,In-Page,all,"279,207","161,341","32,939",$0.69,$22.61
+"May 20, 2016",United States,mobile,In-Page,320x50,"27,343",n/a,"6,687",$0.61,$4.10
+"May 20, 2016",United States,mobile,In-Page,300x50,"26,250",n/a,"4,739",$0.47,$2.25
+"May 20, 2016",United States,mobile,In-Page,300x250,"94,103",n/a,"21,513",$0.76,$16.26
+"May 20, 2016",United States,desktop,In-View,all,"1,003","1,001",1,$0.00,$0.00
+"May 20, 2016",United States,desktop,In-View,728x90,n/a,n/a,1,$0.00,$0.00
+"May 20, 2016",United States,desktop,In-Page,all,"49,555","11,175","13,924",$0.60,$8.41
+"May 20, 2016",United States,desktop,In-Page,728x90,"22,125",n/a,"7,413",$0.60,$4.42
+"May 20, 2016",United States,desktop,In-Page,300x250,"16,931",n/a,"6,511",$0.61,$3.99
+"May 20, 2016",Rest of the World,tablet,In-View,all,"6,079","7,780",1,$0.00,$0.00
+"May 20, 2016",Rest of the World,tablet,In-View,728x90,n/a,n/a,1,$0.00,$0.00
+"May 20, 2016",Rest of the World,tablet,In-Page,all,"228,675","45,402","19,732",$0.46,$8.99
+"May 20, 2016",Rest of the World,tablet,In-Page,728x90,"98,408",n/a,"7,275",$0.41,$3.01
+"May 20, 2016",Rest of the World,tablet,In-Page,300x250,"93,472",n/a,"12,457",$0.48,$5.98
+"May 20, 2016",Rest of the World,mobile,In-View,all,"52,215","3,140","7,059",$0.50,$3.53
+"May 20, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"6,601",$0.50,$3.30
+"May 20, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,458,$0.50,$0.23
+"May 20, 2016",Rest of the World,mobile,In-Page,all,"673,897","368,086","34,798",$0.52,$18.16
+"May 20, 2016",Rest of the World,mobile,In-Page,320x50,"58,324",n/a,"4,034",$0.46,$1.85
+"May 20, 2016",Rest of the World,mobile,In-Page,300x50,"56,578",n/a,357,$0.31,$0.11
+"May 20, 2016",Rest of the World,mobile,In-Page,300x250,"255,034",n/a,"30,407",$0.53,$16.20
+"May 20, 2016",Rest of the World,desktop,In-View,all,"11,235","13,791",2,$5.00,$0.01
+"May 20, 2016",Rest of the World,desktop,In-View,728x90,n/a,n/a,1,$0.00,$0.00
+"May 20, 2016",Rest of the World,desktop,In-View,300x250,n/a,n/a,1,$10.00,$0.01
+"May 20, 2016",Rest of the World,desktop,In-Page,all,"392,886","76,584","26,609",$0.42,$11.23
+"May 20, 2016",Rest of the World,desktop,In-Page,728x90,"164,806",n/a,"13,440",$0.41,$5.57
+"May 20, 2016",Rest of the World,desktop,In-Page,300x250,"163,512",n/a,"13,169",$0.43,$5.66
+"May 19, 2016",United States,tablet,In-View,all,"2,004","2,515",0,n/a,$0.00
+"May 19, 2016",United States,tablet,In-Page,all,"77,744","16,824","16,383",$0.71,$11.64
+"May 19, 2016",United States,tablet,In-Page,728x90,"40,834",n/a,"11,009",$0.73,$8.08
+"May 19, 2016",United States,tablet,In-Page,300x250,"23,186",n/a,"5,374",$0.66,$3.56
+"May 19, 2016",United States,mobile,In-View,all,"15,204","2,494","11,518",$1.00,$11.52
+"May 19, 2016",United States,mobile,In-View,320x50,n/a,n/a,"11,481",$1.00,$11.48
+"May 19, 2016",United States,mobile,In-View,320x100,n/a,n/a,37,$1.08,$0.04
+"May 19, 2016",United States,mobile,In-Page,all,"265,884","169,238","24,935",$0.64,$15.87
+"May 19, 2016",United States,mobile,In-Page,320x50,"22,959",n/a,"5,086",$0.63,$3.21
+"May 19, 2016",United States,mobile,In-Page,300x50,"21,713",n/a,"3,868",$0.49,$1.90
+"May 19, 2016",United States,mobile,In-Page,300x250,"78,947",n/a,"15,981",$0.67,$10.76
+"May 19, 2016",United States,desktop,In-View,all,"1,029",917,0,n/a,$0.00
+"May 19, 2016",United States,desktop,In-Page,all,"52,787","10,819","14,505",$0.56,$8.17
+"May 19, 2016",United States,desktop,In-Page,728x90,"24,057",n/a,"7,946",$0.56,$4.48
+"May 19, 2016",United States,desktop,In-Page,300x250,"18,376",n/a,"6,559",$0.56,$3.69
+"May 19, 2016",Rest of the World,tablet,In-View,all,"8,781","9,992",0,n/a,$0.00
+"May 19, 2016",Rest of the World,tablet,In-Page,all,"223,003","38,748","19,345",$0.44,$8.56
+"May 19, 2016",Rest of the World,tablet,In-Page,728x90,"91,999",n/a,"6,276",$0.41,$2.58
+"May 19, 2016",Rest of the World,tablet,In-Page,300x250,"97,340",n/a,"13,069",$0.46,$5.98
+"May 19, 2016",Rest of the World,mobile,In-View,all,"49,957","2,816","6,156",$0.50,$3.08
+"May 19, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"5,571",$0.50,$2.79
+"May 19, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,585,$0.50,$0.29
+"May 19, 2016",Rest of the World,mobile,In-Page,all,"657,843","329,900","32,342",$0.48,$15.48
+"May 19, 2016",Rest of the World,mobile,In-Page,320x50,"51,558",n/a,"2,813",$0.48,$1.35
+"May 19, 2016",Rest of the World,mobile,In-Page,300x50,"48,926",n/a,203,$0.25,$0.05
+"May 19, 2016",Rest of the World,mobile,In-Page,300x250,"270,818",n/a,"29,326",$0.48,$14.08
+"May 19, 2016",Rest of the World,desktop,In-View,all,"15,989","18,452",0,n/a,$0.00
+"May 19, 2016",Rest of the World,desktop,In-Page,all,"400,620","72,046","24,829",$0.39,$9.79
+"May 19, 2016",Rest of the World,desktop,In-Page,728x90,"163,626",n/a,"11,069",$0.39,$4.36
+"May 19, 2016",Rest of the World,desktop,In-Page,300x250,"173,799",n/a,"13,760",$0.39,$5.43
+"May 18, 2016",United States,tablet,In-View,all,"2,333","2,903",0,n/a,$0.00
+"May 18, 2016",United States,tablet,In-Page,all,"39,194","12,238","9,384",$0.79,$7.41
+"May 18, 2016",United States,tablet,In-Page,728x90,"21,327",n/a,"7,923",$0.82,$6.47
+"May 18, 2016",United States,tablet,In-Page,300x250,"7,450",n/a,"1,461",$0.64,$0.94
+"May 18, 2016",United States,mobile,In-View,all,"14,067","1,673","11,361",$1.00,$11.37
+"May 18, 2016",United States,mobile,In-View,320x50,n/a,n/a,"11,316",$1.00,$11.32
+"May 18, 2016",United States,mobile,In-View,320x100,n/a,n/a,45,$1.11,$0.05
+"May 18, 2016",United States,mobile,In-Page,all,"130,647","86,164","9,137",$0.60,$5.46
+"May 18, 2016",United States,mobile,In-Page,320x50,"15,981",n/a,"2,857",$0.61,$1.74
+"May 18, 2016",United States,mobile,In-Page,300x50,"14,625",n/a,"1,907",$0.46,$0.88
+"May 18, 2016",United States,mobile,In-Page,300x250,"26,347",n/a,"4,373",$0.65,$2.84
+"May 18, 2016",United States,desktop,In-View,all,"1,416","1,383",0,n/a,$0.00
+"May 18, 2016",United States,desktop,In-Page,all,"39,044","8,021","10,092",$0.55,$5.57
+"May 18, 2016",United States,desktop,In-Page,728x90,"14,315",n/a,"4,480",$0.59,$2.63
+"May 18, 2016",United States,desktop,In-Page,300x250,"16,976",n/a,"5,612",$0.52,$2.94
+"May 18, 2016",Rest of the World,tablet,In-View,all,"11,240","13,222",0,n/a,$0.00
+"May 18, 2016",Rest of the World,tablet,In-Page,all,"198,375","37,072","15,514",$0.43,$6.61
+"May 18, 2016",Rest of the World,tablet,In-Page,728x90,"56,776",n/a,"3,371",$0.41,$1.38
+"May 18, 2016",Rest of the World,tablet,In-Page,300x250,"109,368",n/a,"12,143",$0.43,$5.23
+"May 18, 2016",Rest of the World,mobile,In-View,all,"48,308","4,764","5,565",$0.50,$2.79
+"May 18, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"5,210",$0.50,$2.61
+"May 18, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,355,$0.51,$0.18
+"May 18, 2016",Rest of the World,mobile,In-Page,all,"506,163","184,066","27,798",$0.46,$12.74
+"May 18, 2016",Rest of the World,mobile,In-Page,320x50,"40,748",n/a,"1,903",$0.47,$0.89
+"May 18, 2016",Rest of the World,mobile,In-Page,300x50,"38,427",n/a,226,$0.31,$0.07
+"May 18, 2016",Rest of the World,mobile,In-Page,300x250,"265,994",n/a,"25,669",$0.46,$11.78
+"May 18, 2016",Rest of the World,desktop,In-View,all,"17,264","20,607",0,n/a,$0.00
+"May 18, 2016",Rest of the World,desktop,In-Page,all,"300,250","58,353","19,167",$0.38,$7.22
+"May 18, 2016",Rest of the World,desktop,In-Page,728x90,"84,219",n/a,"6,312",$0.40,$2.53
+"May 18, 2016",Rest of the World,desktop,In-Page,300x250,"165,953",n/a,"12,855",$0.36,$4.69
+"May 17, 2016",United States,tablet,In-View,all,"2,913","3,420",0,n/a,$0.00
+"May 17, 2016",United States,tablet,In-Page,all,"18,899","12,597","1,725",$0.70,$1.20
+"May 17, 2016",United States,tablet,In-Page,728x90,"1,156",n/a,351,$0.80,$0.28
+"May 17, 2016",United States,tablet,In-Page,300x250,"6,431",n/a,"1,374",$0.67,$0.92
+"May 17, 2016",United States,mobile,In-View,all,"15,134","1,768","10,126",$1.00,$10.12
+"May 17, 2016",United States,mobile,In-View,320x50,n/a,n/a,"10,072",$1.00,$10.07
+"May 17, 2016",United States,mobile,In-View,320x100,n/a,n/a,54,$0.93,$0.05
+"May 17, 2016",United States,mobile,In-Page,all,"51,974","4,464","7,481",$0.53,$3.97
+"May 17, 2016",United States,mobile,In-Page,320x50,"16,539",n/a,"2,758",$0.56,$1.54
+"May 17, 2016",United States,mobile,In-Page,300x50,"14,812",n/a,"1,835",$0.39,$0.72
+"May 17, 2016",United States,mobile,In-Page,300x250,"17,214",n/a,"2,888",$0.59,$1.71
+"May 17, 2016",United States,desktop,In-View,all,"1,811","1,700",0,n/a,$0.00
+"May 17, 2016",United States,desktop,In-Page,all,"21,706","7,690","4,695",$0.60,$2.83
+"May 17, 2016",United States,desktop,In-Page,728x90,773,n/a,256,$0.55,$0.14
+"May 17, 2016",United States,desktop,In-Page,300x250,"12,801",n/a,"4,439",$0.61,$2.69
+"May 17, 2016",Rest of the World,tablet,In-View,all,"10,919","11,583",0,n/a,$0.00
+"May 17, 2016",Rest of the World,tablet,In-Page,all,"90,249","32,498","6,735",$0.40,$2.70
+"May 17, 2016",Rest of the World,tablet,In-Page,728x90,"1,008",n/a,80,$0.25,$0.02
+"May 17, 2016",Rest of the World,tablet,In-Page,300x250,"58,362",n/a,"6,655",$0.40,$2.68
+"May 17, 2016",Rest of the World,mobile,In-View,all,"56,733","3,435","6,104",$0.50,$3.06
+"May 17, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"5,671",$0.50,$2.84
+"May 17, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,433,$0.51,$0.22
+"May 17, 2016",Rest of the World,mobile,In-Page,all,"247,296","6,120","22,480",$0.41,$9.21
+"May 17, 2016",Rest of the World,mobile,In-Page,320x50,"42,348",n/a,"2,062",$0.46,$0.94
+"May 17, 2016",Rest of the World,mobile,In-Page,300x50,"39,590",n/a,950,$0.40,$0.38
+"May 17, 2016",Rest of the World,mobile,In-Page,300x250,"161,067",n/a,"19,468",$0.41,$7.89
+"May 17, 2016",Rest of the World,desktop,In-View,all,"19,878","21,211",0,n/a,$0.00
+"May 17, 2016",Rest of the World,desktop,In-Page,all,"156,450","54,469","9,426",$0.43,$4.03
+"May 17, 2016",Rest of the World,desktop,In-Page,728x90,"2,130",n/a,124,$0.32,$0.04
+"May 17, 2016",Rest of the World,desktop,In-Page,300x250,"102,368",n/a,"9,302",$0.43,$3.99
+"May 16, 2016",United States,tablet,In-View,all,"3,105","3,149",0,n/a,$0.00
+"May 16, 2016",United States,tablet,In-Page,all,"33,917","11,768","5,785",$0.74,$4.27
+"May 16, 2016",United States,tablet,In-Page,728x90,"9,991",n/a,"3,631",$0.81,$2.94
+"May 16, 2016",United States,tablet,In-Page,300x250,"12,177",n/a,"2,154",$0.62,$1.33
+"May 16, 2016",United States,mobile,In-View,all,"16,762","2,802","11,488",$1.00,$11.49
+"May 16, 2016",United States,mobile,In-View,320x50,n/a,n/a,"11,447",$1.00,$11.45
+"May 16, 2016",United States,mobile,In-View,320x100,n/a,n/a,41,$0.98,$0.04
+"May 16, 2016",United States,mobile,In-Page,all,"107,336","29,187","10,680",$0.57,$6.12
+"May 16, 2016",United States,mobile,In-Page,320x50,"17,595",n/a,"2,819",$0.57,$1.60
+"May 16, 2016",United States,mobile,In-Page,300x50,"15,906",n/a,"1,713",$0.41,$0.71
+"May 16, 2016",United States,mobile,In-Page,300x250,"41,607",n/a,"6,148",$0.62,$3.81
+"May 16, 2016",United States,desktop,In-View,all,"1,763","1,439",0,n/a,$0.00
+"May 16, 2016",United States,desktop,In-Page,all,"29,044","7,546","6,036",$0.62,$3.74
+"May 16, 2016",United States,desktop,In-Page,728x90,"5,409",n/a,"1,714",$0.72,$1.23
+"May 16, 2016",United States,desktop,In-Page,300x250,"14,916",n/a,"4,322",$0.58,$2.51
+"May 16, 2016",Rest of the World,tablet,In-View,all,"10,486","10,830",0,n/a,$0.00
+"May 16, 2016",Rest of the World,tablet,In-Page,all,"148,233","31,773","10,093",$0.44,$4.47
+"May 16, 2016",Rest of the World,tablet,In-Page,728x90,"29,352",n/a,"1,694",$0.44,$0.74
+"May 16, 2016",Rest of the World,tablet,In-Page,300x250,"87,401",n/a,"8,399",$0.44,$3.73
+"May 16, 2016",Rest of the World,mobile,In-View,all,"56,556","3,390","3,331",$0.50,$1.67
+"May 16, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"2,958",$0.50,$1.48
+"May 16, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,373,$0.51,$0.19
+"May 16, 2016",Rest of the World,mobile,In-Page,all,"423,935","89,468","27,736",$0.44,$12.30
+"May 16, 2016",Rest of the World,mobile,In-Page,320x50,"44,396",n/a,"2,701",$0.39,$1.06
+"May 16, 2016",Rest of the World,mobile,In-Page,300x50,"41,747",n/a,"1,352",$0.36,$0.49
+"May 16, 2016",Rest of the World,mobile,In-Page,300x250,"243,588",n/a,"23,683",$0.45,$10.75
+"May 16, 2016",Rest of the World,desktop,In-View,all,"20,576","21,187",0,n/a,$0.00
+"May 16, 2016",Rest of the World,desktop,In-Page,all,"276,920","56,195","13,706",$0.42,$5.81
+"May 16, 2016",Rest of the World,desktop,In-Page,728x90,"55,384",n/a,"3,207",$0.40,$1.28
+"May 16, 2016",Rest of the World,desktop,In-Page,300x250,"165,334",n/a,"10,499",$0.43,$4.53
+"May 15, 2016",United States,tablet,In-View,all,"3,524","3,386",0,n/a,$0.00
+"May 15, 2016",United States,tablet,In-Page,all,"63,741","12,897","14,992",$0.74,$11.10
+"May 15, 2016",United States,tablet,In-Page,728x90,"35,174",n/a,"12,333",$0.79,$9.69
+"May 15, 2016",United States,tablet,In-Page,300x250,"14,722",n/a,"2,659",$0.53,$1.41
+"May 15, 2016",United States,mobile,In-View,all,"17,787","2,890","10,893",$1.00,$10.89
+"May 15, 2016",United States,mobile,In-View,320x50,n/a,n/a,"10,841",$1.00,$10.84
+"May 15, 2016",United States,mobile,In-View,320x100,n/a,n/a,52,$0.96,$0.05
+"May 15, 2016",United States,mobile,In-Page,all,"183,265","86,169","11,690",$0.58,$6.75
+"May 15, 2016",United States,mobile,In-Page,320x50,"17,744",n/a,"2,727",$0.52,$1.42
+"May 15, 2016",United States,mobile,In-Page,300x50,"16,033",n/a,"1,592",$0.36,$0.58
+"May 15, 2016",United States,mobile,In-Page,300x250,"54,702",n/a,"7,371",$0.64,$4.75
+"May 15, 2016",United States,desktop,In-View,all,"1,019",726,0,n/a,$0.00
+"May 15, 2016",United States,desktop,In-Page,all,"30,734","5,067","7,534",$0.62,$4.66
+"May 15, 2016",United States,desktop,In-Page,728x90,"13,330",n/a,"4,281",$0.63,$2.71
+"May 15, 2016",United States,desktop,In-Page,300x250,"11,104",n/a,"3,253",$0.60,$1.95
+"May 15, 2016",Rest of the World,tablet,In-View,all,"11,328","11,083",0,n/a,$0.00
+"May 15, 2016",Rest of the World,tablet,In-Page,all,"216,020","32,618","15,962",$0.45,$7.21
+"May 15, 2016",Rest of the World,tablet,In-Page,728x90,"62,833",n/a,"4,262",$0.44,$1.87
+"May 15, 2016",Rest of the World,tablet,In-Page,300x250,"118,823",n/a,"11,700",$0.46,$5.34
+"May 15, 2016",Rest of the World,mobile,In-View,all,"62,160","3,835","4,076",$0.50,$2.04
+"May 15, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"3,672",$0.50,$1.84
+"May 15, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,404,$0.50,$0.20
+"May 15, 2016",Rest of the World,mobile,In-Page,all,"609,242","178,784","32,027",$0.46,$14.84
+"May 15, 2016",Rest of the World,mobile,In-Page,320x50,"50,116",n/a,"2,999",$0.42,$1.27
+"May 15, 2016",Rest of the World,mobile,In-Page,300x50,"46,150",n/a,"1,105",$0.30,$0.33
+"May 15, 2016",Rest of the World,mobile,In-Page,300x250,"325,037",n/a,"27,923",$0.47,$13.24
+"May 15, 2016",Rest of the World,desktop,In-View,all,"19,910","19,484",0,n/a,$0.00
+"May 15, 2016",Rest of the World,desktop,In-Page,all,"349,059","52,400","18,684",$0.38,$7.16
+"May 15, 2016",Rest of the World,desktop,In-Page,728x90,"99,053",n/a,"5,750",$0.37,$2.13
+"May 15, 2016",Rest of the World,desktop,In-Page,300x250,"195,008",n/a,"12,934",$0.39,$5.03
+"May 14, 2016",United States,tablet,In-View,all,"2,790","2,677",0,n/a,$0.00
+"May 14, 2016",United States,tablet,In-Page,all,"50,484","9,793","11,444",$0.79,$9.09
+"May 14, 2016",United States,tablet,In-Page,728x90,"27,417",n/a,"9,436",$0.82,$7.78
+"May 14, 2016",United States,tablet,In-Page,300x250,"12,654",n/a,"2,008",$0.65,$1.31
+"May 14, 2016",United States,mobile,In-View,all,"16,166","3,017","9,720",$1.00,$9.73
+"May 14, 2016",United States,mobile,In-View,320x50,n/a,n/a,"9,685",$1.00,$9.69
+"May 14, 2016",United States,mobile,In-View,320x100,n/a,n/a,35,$1.14,$0.04
+"May 14, 2016",United States,mobile,In-Page,all,"176,890","80,768","12,335",$0.57,$7.05
+"May 14, 2016",United States,mobile,In-Page,320x50,"15,544",n/a,"2,481",$0.50,$1.24
+"May 14, 2016",United States,mobile,In-Page,300x50,"14,876",n/a,"1,520",$0.34,$0.52
+"May 14, 2016",United States,mobile,In-Page,300x250,"58,334",n/a,"8,334",$0.63,$5.29
+"May 14, 2016",United States,desktop,In-View,all,"1,065",837,0,n/a,$0.00
+"May 14, 2016",United States,desktop,In-Page,all,"27,707","4,855","7,341",$0.62,$4.53
+"May 14, 2016",United States,desktop,In-Page,728x90,"11,849",n/a,"4,074",$0.61,$2.48
+"May 14, 2016",United States,desktop,In-Page,300x250,"10,108",n/a,"3,267",$0.63,$2.05
+"May 14, 2016",Rest of the World,tablet,In-View,all,"11,429","11,283",0,n/a,$0.00
+"May 14, 2016",Rest of the World,tablet,In-Page,all,"208,010","31,924","14,880",$0.43,$6.43
+"May 14, 2016",Rest of the World,tablet,In-Page,728x90,"58,487",n/a,"3,941",$0.40,$1.58
+"May 14, 2016",Rest of the World,tablet,In-Page,300x250,"116,278",n/a,"10,939",$0.44,$4.85
+"May 14, 2016",Rest of the World,mobile,In-View,all,"53,031","3,800","3,677",$0.50,$1.84
+"May 14, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"3,317",$0.50,$1.66
+"May 14, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,360,$0.50,$0.18
+"May 14, 2016",Rest of the World,mobile,In-Page,all,"514,072","148,249","28,347",$0.49,$13.92
+"May 14, 2016",Rest of the World,mobile,In-Page,320x50,"41,631",n/a,"2,515",$0.42,$1.05
+"May 14, 2016",Rest of the World,mobile,In-Page,300x50,"39,832",n/a,956,$0.40,$0.38
+"May 14, 2016",Rest of the World,mobile,In-Page,300x250,"278,413",n/a,"24,876",$0.50,$12.49
+"May 14, 2016",Rest of the World,desktop,In-View,all,"16,755","16,360",0,n/a,$0.00
+"May 14, 2016",Rest of the World,desktop,In-Page,all,"290,705","43,885","16,707",$0.38,$6.38
+"May 14, 2016",Rest of the World,desktop,In-Page,728x90,"81,169",n/a,"5,300",$0.34,$1.78
+"May 14, 2016",Rest of the World,desktop,In-Page,300x250,"163,598",n/a,"11,407",$0.40,$4.60
+"May 13, 2016",United States,tablet,In-View,all,"2,590","2,288",0,n/a,$0.00
+"May 13, 2016",United States,tablet,In-Page,all,"49,491","9,125","11,390",$0.75,$8.58
+"May 13, 2016",United States,tablet,In-Page,728x90,"26,169",n/a,"9,138",$0.78,$7.16
+"May 13, 2016",United States,tablet,In-Page,300x250,"13,048",n/a,"2,252",$0.63,$1.42
+"May 13, 2016",United States,mobile,In-View,all,"16,521","3,711","10,030",$1.00,$10.03
+"May 13, 2016",United States,mobile,In-View,320x50,n/a,n/a,"9,990",$1.00,$9.99
+"May 13, 2016",United States,mobile,In-View,320x100,n/a,n/a,40,$1.00,$0.04
+"May 13, 2016",United States,mobile,In-Page,all,"180,838","84,891","12,162",$0.62,$7.55
+"May 13, 2016",United States,mobile,In-Page,320x50,"15,829",n/a,"2,501",$0.58,$1.45
+"May 13, 2016",United States,mobile,In-Page,300x50,"14,989",n/a,"1,559",$0.48,$0.75
+"May 13, 2016",United States,mobile,In-Page,300x250,"57,461",n/a,"8,102",$0.66,$5.35
+"May 13, 2016",United States,desktop,In-View,all,"1,329","1,026",0,n/a,$0.00
+"May 13, 2016",United States,desktop,In-Page,all,"35,832","6,090","8,818",$0.59,$5.19
+"May 13, 2016",United States,desktop,In-Page,728x90,"14,473",n/a,"4,499",$0.57,$2.57
+"May 13, 2016",United States,desktop,In-Page,300x250,"14,032",n/a,"4,319",$0.61,$2.62
+"May 13, 2016",Rest of the World,tablet,In-View,all,"8,813","8,892",0,n/a,$0.00
+"May 13, 2016",Rest of the World,tablet,In-Page,all,"161,711","25,525","13,905",$0.49,$6.77
+"May 13, 2016",Rest of the World,tablet,In-Page,728x90,"45,532",n/a,"3,562",$0.58,$2.05
+"May 13, 2016",Rest of the World,tablet,In-Page,300x250,"90,157",n/a,"10,343",$0.46,$4.72
+"May 13, 2016",Rest of the World,mobile,In-View,all,"49,951","2,629","4,543",$0.50,$2.27
+"May 13, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"4,101",$0.50,$2.05
+"May 13, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,442,$0.50,$0.22
+"May 13, 2016",Rest of the World,mobile,In-Page,all,"493,503","143,981","28,836",$0.46,$13.26
+"May 13, 2016",Rest of the World,mobile,In-Page,320x50,"39,865",n/a,"2,410",$0.43,$1.03
+"May 13, 2016",Rest of the World,mobile,In-Page,300x50,"38,321",n/a,893,$0.44,$0.39
+"May 13, 2016",Rest of the World,mobile,In-Page,300x250,"266,359",n/a,"25,533",$0.46,$11.84
+"May 13, 2016",Rest of the World,desktop,In-View,all,"16,781","16,497",0,n/a,$0.00
+"May 13, 2016",Rest of the World,desktop,In-Page,all,"294,401","44,827","18,344",$0.39,$7.15
+"May 13, 2016",Rest of the World,desktop,In-Page,728x90,"81,265",n/a,"5,253",$0.34,$1.80
+"May 13, 2016",Rest of the World,desktop,In-Page,300x250,"166,331",n/a,"13,091",$0.41,$5.35
+"May 12, 2016",United States,tablet,In-View,all,"2,346","2,255",0,n/a,$0.00
+"May 12, 2016",United States,tablet,In-Page,all,"39,576","8,861","10,676",$0.83,$8.82
+"May 12, 2016",United States,tablet,In-Page,728x90,"24,984",n/a,"9,396",$0.83,$7.81
+"May 12, 2016",United States,tablet,In-Page,300x250,"4,973",n/a,"1,280",$0.79,$1.01
+"May 12, 2016",United States,mobile,In-View,all,"15,485","2,064","10,623",$1.00,$10.62
+"May 12, 2016",United States,mobile,In-View,320x50,n/a,n/a,"10,553",$1.00,$10.55
+"May 12, 2016",United States,mobile,In-View,320x100,n/a,n/a,70,$1.00,$0.07
+"May 12, 2016",United States,mobile,In-Page,all,"146,770","86,861","7,850",$0.50,$3.95
+"May 12, 2016",United States,mobile,In-Page,320x50,"15,235",n/a,"2,219",$0.53,$1.18
+"May 12, 2016",United States,mobile,In-Page,300x50,"15,076",n/a,"1,499",$0.46,$0.69
+"May 12, 2016",United States,mobile,In-Page,300x250,"21,643",n/a,"4,132",$0.50,$2.08
+"May 12, 2016",United States,desktop,In-View,all,"1,828","1,470",0,n/a,$0.00
+"May 12, 2016",United States,desktop,In-Page,all,"40,484","7,836","8,875",$0.61,$5.40
+"May 12, 2016",United States,desktop,In-Page,728x90,"17,804",n/a,"5,351",$0.60,$3.21
+"May 12, 2016",United States,desktop,In-Page,300x250,"13,286",n/a,"3,524",$0.62,$2.19
+"May 12, 2016",Rest of the World,tablet,In-View,all,"8,018","7,917",0,n/a,$0.00
+"May 12, 2016",Rest of the World,tablet,In-Page,all,"131,495","25,398","11,732",$0.45,$5.27
+"May 12, 2016",Rest of the World,tablet,In-Page,728x90,"48,360",n/a,"4,184",$0.41,$1.73
+"May 12, 2016",Rest of the World,tablet,In-Page,300x250,"56,709",n/a,"7,548",$0.47,$3.54
+"May 12, 2016",Rest of the World,mobile,In-View,all,"51,191","2,736","6,404",$0.50,$3.20
+"May 12, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"5,778",$0.50,$2.89
+"May 12, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,626,$0.50,$0.31
+"May 12, 2016",Rest of the World,mobile,In-Page,all,"421,581","158,297","22,264",$0.40,$8.90
+"May 12, 2016",Rest of the World,mobile,In-Page,320x50,"41,585",n/a,"2,423",$0.33,$0.80
+"May 12, 2016",Rest of the World,mobile,In-Page,300x50,"40,991",n/a,928,$0.38,$0.35
+"May 12, 2016",Rest of the World,mobile,In-Page,300x250,"175,135",n/a,"18,913",$0.41,$7.75
+"May 12, 2016",Rest of the World,desktop,In-View,all,"17,906","17,619",0,n/a,$0.00
+"May 12, 2016",Rest of the World,desktop,In-Page,all,"249,889","48,645","16,729",$0.34,$5.74
+"May 12, 2016",Rest of the World,desktop,In-Page,728x90,"89,932",n/a,"6,974",$0.31,$2.17
+"May 12, 2016",Rest of the World,desktop,In-Page,300x250,"109,371",n/a,"9,755",$0.37,$3.57
+"May 11, 2016",United States,tablet,In-View,all,"2,503","2,376",0,n/a,$0.00
+"May 11, 2016",United States,tablet,In-Page,all,"42,770","10,895","10,480",$0.72,$7.51
+"May 11, 2016",United States,tablet,In-Page,728x90,"27,453",n/a,"9,862",$0.72,$7.14
+"May 11, 2016",United States,tablet,In-Page,300x250,"3,484",n/a,618,$0.60,$0.37
+"May 11, 2016",United States,mobile,In-View,all,"16,184","2,149","10,907",$1.00,$10.91
+"May 11, 2016",United States,mobile,In-View,320x50,n/a,n/a,"10,841",$1.00,$10.84
+"May 11, 2016",United States,mobile,In-View,320x100,n/a,n/a,66,$1.06,$0.07
+"May 11, 2016",United States,mobile,In-Page,all,"154,506","92,731","10,719",$0.40,$4.28
+"May 11, 2016",United States,mobile,In-Page,320x50,"18,164",n/a,"2,329",$0.62,$1.44
+"May 11, 2016",United States,mobile,In-Page,300x50,"17,028",n/a,"1,442",$0.46,$0.66
+"May 11, 2016",United States,mobile,In-Page,300x250,"17,531",n/a,"6,948",$0.31,$2.18
+"May 11, 2016",United States,desktop,In-View,all,"2,116","1,699",0,n/a,$0.00
+"May 11, 2016",United States,desktop,In-Page,all,"46,399","7,845","9,908",$0.64,$6.33
+"May 11, 2016",United States,desktop,In-Page,728x90,"20,380",n/a,"5,627",$0.51,$2.87
+"May 11, 2016",United States,desktop,In-Page,300x250,"16,318",n/a,"4,281",$0.81,$3.46
+"May 11, 2016",Rest of the World,tablet,In-View,all,"8,650","8,538",0,n/a,$0.00
+"May 11, 2016",Rest of the World,tablet,In-Page,all,"166,508","28,262","13,379",$0.43,$5.72
+"May 11, 2016",Rest of the World,tablet,In-Page,728x90,"50,534",n/a,"3,721",$0.38,$1.40
+"May 11, 2016",Rest of the World,tablet,In-Page,300x250,"86,519",n/a,"9,658",$0.45,$4.32
+"May 11, 2016",Rest of the World,mobile,In-View,all,"56,103","3,698","7,977",$0.50,$3.99
+"May 11, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"7,190",$0.50,$3.60
+"May 11, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,787,$0.50,$0.39
+"May 11, 2016",Rest of the World,mobile,In-Page,all,"551,855","170,481","38,363",$0.38,$14.51
+"May 11, 2016",Rest of the World,mobile,In-Page,320x50,"51,506",n/a,"2,863",$0.32,$0.91
+"May 11, 2016",Rest of the World,mobile,In-Page,300x50,"48,733",n/a,973,$0.38,$0.37
+"May 11, 2016",Rest of the World,mobile,In-Page,300x250,"274,577",n/a,"34,527",$0.38,$13.23
+"May 11, 2016",Rest of the World,desktop,In-View,all,"18,713","18,472",0,n/a,$0.00
+"May 11, 2016",Rest of the World,desktop,In-Page,all,"326,663","54,545","22,191",$0.37,$8.16
+"May 11, 2016",Rest of the World,desktop,In-Page,728x90,"96,604",n/a,"7,559",$0.33,$2.51
+"May 11, 2016",Rest of the World,desktop,In-Page,300x250,"173,387",n/a,"14,632",$0.39,$5.65
+"May 10, 2016",United States,tablet,In-Page,all,"56,495","7,972","9,318",$0.63,$5.84
+"May 10, 2016",United States,tablet,In-Page,728x90,"28,690",n/a,"5,948",$0.66,$3.94
+"May 10, 2016",United States,tablet,In-Page,300x250,"19,076",n/a,"3,370",$0.56,$1.90
+"May 10, 2016",United States,mobile,In-View,all,"5,083",462,"3,233",$1.00,$3.24
+"May 10, 2016",United States,mobile,In-View,320x50,n/a,n/a,"3,217",$1.00,$3.22
+"May 10, 2016",United States,mobile,In-View,320x100,n/a,n/a,16,$1.25,$0.02
+"May 10, 2016",United States,mobile,In-Page,all,"209,388","99,706","18,944",$0.44,$8.26
+"May 10, 2016",United States,mobile,In-Page,320x50,"20,048",n/a,"1,515",$0.71,$1.08
+"May 10, 2016",United States,mobile,In-Page,300x50,"12,694",n/a,542,$0.46,$0.25
+"May 10, 2016",United States,mobile,In-Page,300x250,"67,107",n/a,"16,887",$0.41,$6.93
+"May 10, 2016",United States,desktop,In-Page,all,"63,605","8,417","16,217",$0.74,$12.01
+"May 10, 2016",United States,desktop,In-Page,728x90,"22,847",n/a,"6,184",$0.54,$3.32
+"May 10, 2016",United States,desktop,In-Page,300x250,"30,440",n/a,"10,033",$0.87,$8.69
+"May 10, 2016",Rest of the World,tablet,In-Page,all,"204,465","38,205","15,110",$0.44,$6.59
+"May 10, 2016",Rest of the World,tablet,In-Page,728x90,"53,045",n/a,"3,857",$0.37,$1.43
+"May 10, 2016",Rest of the World,tablet,In-Page,300x250,"112,637",n/a,"11,253",$0.46,$5.16
+"May 10, 2016",Rest of the World,mobile,In-View,all,"69,608","2,942","5,159",$0.50,$2.58
+"May 10, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,"4,747",$0.50,$2.37
+"May 10, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,412,$0.51,$0.21
+"May 10, 2016",Rest of the World,mobile,In-Page,all,"749,747","178,537","40,011",$0.43,$17.23
+"May 10, 2016",Rest of the World,mobile,In-Page,320x50,"118,586",n/a,"3,961",$0.44,$1.75
+"May 10, 2016",Rest of the World,mobile,In-Page,300x50,"98,148",n/a,700,$0.36,$0.25
+"May 10, 2016",Rest of the World,mobile,In-Page,300x250,"352,154",n/a,"35,350",$0.43,$15.23
+"May 10, 2016",Rest of the World,desktop,In-Page,all,"393,554","80,351","25,045",$0.39,$9.88
+"May 10, 2016",Rest of the World,desktop,In-Page,728x90,"100,347",n/a,"7,202",$0.35,$2.51
+"May 10, 2016",Rest of the World,desktop,In-Page,300x250,"212,205",n/a,"17,843",$0.41,$7.37
+"May 09, 2016",United States,tablet,In-Page,all,"49,987","2,477","9,653",$0.59,$5.66
+"May 09, 2016",United States,tablet,In-Page,728x90,"8,341",n/a,"1,198",$0.54,$0.65
+"May 09, 2016",United States,tablet,In-Page,300x250,"39,036",n/a,"8,455",$0.59,$5.01
+"May 09, 2016",United States,mobile,In-View,all,"1,079",77,774,$0.99,$0.77
+"May 09, 2016",United States,mobile,In-View,320x50,n/a,n/a,773,$1.00,$0.77
+"May 09, 2016",United States,mobile,In-View,320x100,n/a,n/a,1,$0.00,$0.00
+"May 09, 2016",United States,mobile,In-Page,all,"148,749","26,340","17,827",$0.60,$10.75
+"May 09, 2016",United States,mobile,In-Page,320x50,"6,834",n/a,647,$0.57,$0.37
+"May 09, 2016",United States,mobile,In-Page,300x50,"2,121",n/a,95,$0.42,$0.04
+"May 09, 2016",United States,mobile,In-Page,300x250,"111,067",n/a,"17,085",$0.61,$10.34
+"May 09, 2016",United States,desktop,In-Page,all,"57,439","5,916","16,734",$0.81,$13.52
+"May 09, 2016",United States,desktop,In-Page,728x90,"7,164",n/a,"2,230",$0.48,$1.08
+"May 09, 2016",United States,desktop,In-Page,300x250,"43,921",n/a,"14,504",$0.86,$12.44
+"May 09, 2016",Rest of the World,tablet,In-Page,all,"147,293","13,214","12,750",$0.44,$5.63
+"May 09, 2016",Rest of the World,tablet,In-Page,728x90,"8,085",n/a,573,$0.30,$0.17
+"May 09, 2016",Rest of the World,tablet,In-Page,300x250,"125,762",n/a,"12,177",$0.45,$5.46
+"May 09, 2016",Rest of the World,mobile,In-View,all,"15,607","1,118","1,008",$0.50,$0.50
+"May 09, 2016",Rest of the World,mobile,In-View,320x50,n/a,n/a,944,$0.50,$0.47
+"May 09, 2016",Rest of the World,mobile,In-View,320x100,n/a,n/a,64,$0.47,$0.03
+"May 09, 2016",Rest of the World,mobile,In-Page,all,"531,601","35,664","40,608",$0.47,$19.21
+"May 09, 2016",Rest of the World,mobile,In-Page,320x50,"49,893",n/a,"1,558",$0.44,$0.68
+"May 09, 2016",Rest of the World,mobile,In-Page,300x50,"33,581",n/a,194,$0.31,$0.06
+"May 09, 2016",Rest of the World,mobile,In-Page,300x250,"415,008",n/a,"38,856",$0.48,$18.47
+"May 09, 2016",Rest of the World,desktop,In-Page,all,"302,000","28,459","24,128",$0.38,$9.12
+"May 09, 2016",Rest of the World,desktop,In-Page,728x90,"16,036",n/a,"1,166",$0.38,$0.44
+"May 09, 2016",Rest of the World,desktop,In-Page,300x250,"257,093",n/a,"22,962",$0.38,$8.68
+"May 08, 2016",United States,tablet,In-Page,all,"15,549",0,"3,375",$0.56,$1.88
+"May 08, 2016",United States,tablet,In-Page,300x250,"15,549",n/a,"3,375",$0.56,$1.88
+"May 08, 2016",United States,mobile,In-Page,all,"30,903",0,"6,024",$0.59,$3.55
+"May 08, 2016",United States,mobile,In-Page,300x250,"30,903",n/a,"6,024",$0.59,$3.55
+"May 08, 2016",United States,desktop,In-Page,all,"15,326",0,"6,847",$0.90,$6.13
+"May 08, 2016",United States,desktop,In-Page,300x250,"15,326",n/a,"6,847",$0.90,$6.13
+"May 08, 2016",Rest of the World,tablet,In-Page,all,"73,752",0,"8,662",$0.43,$3.74
+"May 08, 2016",Rest of the World,tablet,In-Page,300x250,"73,752",n/a,"8,662",$0.43,$3.74
+"May 08, 2016",Rest of the World,mobile,In-Page,all,"196,548",0,"20,978",$0.47,$9.93
+"May 08, 2016",Rest of the World,mobile,In-Page,300x250,"196,548",n/a,"20,978",$0.47,$9.93
+"May 08, 2016",Rest of the World,desktop,In-Page,all,"128,118",0,"13,760",$0.37,$5.15
+"May 08, 2016",Rest of the World,desktop,In-Page,300x250,"128,118",n/a,"13,760",$0.37,$5.15
+"May 07, 2016",United States,tablet,In-Page,all,"5,324",0,"1,304",$0.54,$0.70
+"May 07, 2016",United States,tablet,In-Page,300x250,"5,324",n/a,"1,304",$0.54,$0.70
+"May 07, 2016",United States,mobile,In-Page,all,"13,047",5,"2,704",$0.59,$1.59
+"May 07, 2016",United States,mobile,In-Page,300x250,"13,042",n/a,"2,704",$0.59,$1.59
+"May 07, 2016",United States,desktop,In-Page,all,"3,254",0,"1,498",$0.67,$1.01
+"May 07, 2016",United States,desktop,In-Page,728x90,4,n/a,1,$0.00,$0.00
+"May 07, 2016",United States,desktop,In-Page,300x250,"3,250",n/a,"1,497",$0.67,$1.01
+"May 07, 2016",Rest of the World,tablet,In-Page,all,"20,190",0,"2,972",$0.41,$1.22
+"May 07, 2016",Rest of the World,tablet,In-Page,300x250,"20,187",n/a,"2,972",$0.41,$1.22
+"May 07, 2016",Rest of the World,mobile,In-Page,all,"50,262",9,"6,212",$0.56,$3.47
+"May 07, 2016",Rest of the World,mobile,In-Page,300x250,"50,253",n/a,"6,212",$0.56,$3.47
+"May 07, 2016",Rest of the World,desktop,In-Page,all,"30,097",0,"3,468",$0.40,$1.38
+"May 07, 2016",Rest of the World,desktop,In-Page,300x250,"30,092",n/a,"3,468",$0.40,$1.38
+"May 06, 2016",United States,tablet,In-Page,all,"9,003",0,"2,214",$0.53,$1.17
+"May 06, 2016",United States,tablet,In-Page,300x250,"9,003",n/a,"2,214",$0.53,$1.17
+"May 06, 2016",United States,mobile,In-View,300x250,n/a,n/a,1,$10.00,$0.01
+"May 06, 2016",United States,mobile,In-Page,all,"19,808",0,"3,963",$0.58,$2.31
+"May 06, 2016",United States,mobile,In-Page,300x250,"19,808",n/a,"3,963",$0.58,$2.31
+"May 06, 2016",United States,desktop,In-Page,all,"6,241",0,"2,007",$0.73,$1.47
+"May 06, 2016",United States,desktop,In-Page,300x250,"6,240",n/a,"2,007",$0.73,$1.47
+"May 06, 2016",Rest of the World,tablet,In-Page,all,"37,048",0,"5,060",$0.44,$2.22
+"May 06, 2016",Rest of the World,tablet,In-Page,300x250,"37,048",n/a,"5,060",$0.44,$2.22
+"May 06, 2016",Rest of the World,mobile,In-Page,all,"107,317",0,"15,298",$0.53,$8.08
+"May 06, 2016",Rest of the World,mobile,In-Page,300x250,"107,317",n/a,"15,298",$0.53,$8.08
+"May 06, 2016",Rest of the World,desktop,In-Page,all,"81,086",0,"8,231",$0.40,$3.33
+"May 06, 2016",Rest of the World,desktop,In-Page,300x250,"81,086",n/a,"8,231",$0.40,$3.33
+"May 05, 2016",United States,tablet,In-Page,all,"8,402",0,"1,660",$0.53,$0.88
+"May 05, 2016",United States,tablet,In-Page,300x250,"8,402",n/a,"1,660",$0.53,$0.88
+"May 05, 2016",United States,mobile,In-Page,all,"19,786",0,"3,282",$0.61,$2.00
+"May 05, 2016",United States,mobile,In-Page,300x250,"19,786",n/a,"3,282",$0.61,$2.00
+"May 05, 2016",United States,desktop,In-Page,all,"6,247",0,"2,032",$0.68,$1.38
+"May 05, 2016",United States,desktop,In-Page,300x250,"6,247",n/a,"2,032",$0.68,$1.38
+"May 05, 2016",Rest of the World,tablet,In-Page,all,"36,467",0,"4,374",$0.40,$1.76
+"May 05, 2016",Rest of the World,tablet,In-Page,300x250,"36,467",n/a,"4,374",$0.40,$1.76
+"May 05, 2016",Rest of the World,mobile,In-Page,all,"110,101",0,"13,329",$0.48,$6.38
+"May 05, 2016",Rest of the World,mobile,In-Page,300x250,"110,101",n/a,"13,329",$0.48,$6.38
+"May 05, 2016",Rest of the World,desktop,In-Page,all,"81,168",0,"7,213",$0.39,$2.78
+"May 05, 2016",Rest of the World,desktop,In-Page,300x250,"81,168",n/a,"7,213",$0.39,$2.78
+"May 04, 2016",United States,tablet,In-Page,all,"2,269",0,317,$0.60,$0.19
+"May 04, 2016",United States,tablet,In-Page,300x250,"2,269",n/a,317,$0.60,$0.19
+"May 04, 2016",United States,mobile,In-Page,all,"7,392",0,991,$0.57,$0.56
+"May 04, 2016",United States,mobile,In-Page,300x250,"7,392",n/a,991,$0.57,$0.56
+"May 04, 2016",United States,desktop,In-Page,all,"2,499",0,"1,028",$0.64,$0.66
+"May 04, 2016",United States,desktop,In-Page,300x250,"2,499",n/a,"1,028",$0.64,$0.66
+"May 04, 2016",Rest of the World,tablet,In-Page,all,"8,525",0,"1,069",$0.37,$0.40
+"May 04, 2016",Rest of the World,tablet,In-Page,300x250,"8,525",n/a,"1,069",$0.37,$0.40
+"May 04, 2016",Rest of the World,mobile,In-Page,all,"30,957",1,"3,731",$0.44,$1.66
+"May 04, 2016",Rest of the World,mobile,In-Page,300x250,"30,957",n/a,"3,731",$0.44,$1.66
+"May 04, 2016",Rest of the World,desktop,In-Page,all,"17,969",0,"1,600",$0.37,$0.59
+"May 04, 2016",Rest of the World,desktop,In-Page,300x250,"17,969",n/a,"1,600",$0.37,$0.59
+"May 03, 2016",United States,tablet,In-Page,all,"2,281",0,503,$0.54,$0.27
+"May 03, 2016",United States,tablet,In-Page,300x250,"2,281",n/a,503,$0.54,$0.27
+"May 03, 2016",United States,mobile,In-Page,all,"13,347",0,"2,397",$0.58,$1.38
+"May 03, 2016",United States,mobile,In-Page,300x250,"13,347",n/a,"2,397",$0.58,$1.38
+"May 03, 2016",United States,desktop,In-Page,all,"8,132",0,"2,647",$0.80,$2.13
+"May 03, 2016",United States,desktop,In-Page,300x250,"8,132",n/a,"2,647",$0.80,$2.13
+"May 03, 2016",Rest of the World,tablet,In-Page,all,"37,390",0,"3,458",$0.42,$1.45
+"May 03, 2016",Rest of the World,tablet,In-Page,300x250,"37,390",n/a,"3,458",$0.42,$1.45
+"May 03, 2016",Rest of the World,mobile,In-Page,all,"118,799",1,"11,721",$0.43,$5.09
+"May 03, 2016",Rest of the World,mobile,In-Page,300x250,"118,798",n/a,"11,721",$0.43,$5.09
+"May 03, 2016",Rest of the World,desktop,In-Page,all,"78,245",0,"6,308",$0.37,$2.36
+"May 03, 2016",Rest of the World,desktop,In-Page,300x250,"78,245",n/a,"6,308",$0.37,$2.36
+"May 02, 2016",United States,tablet,In-Page,all,"4,405",0,"1,108",$0.57,$0.63
+"May 02, 2016",United States,tablet,In-Page,300x250,"4,405",n/a,"1,108",$0.57,$0.63
+"May 02, 2016",United States,mobile,In-Page,all,"21,567",0,"4,186",$0.61,$2.54
+"May 02, 2016",United States,mobile,In-Page,300x250,"21,567",n/a,"4,186",$0.61,$2.54
+"May 02, 2016",United States,desktop,In-Page,all,"17,245",0,"7,617",$0.67,$5.09
+"May 02, 2016",United States,desktop,In-Page,300x250,"17,245",n/a,"7,617",$0.67,$5.09
+"May 02, 2016",Rest of the World,tablet,In-Page,all,"45,278",0,"4,625",$0.44,$2.02
+"May 02, 2016",Rest of the World,tablet,In-Page,300x250,"45,278",n/a,"4,625",$0.44,$2.02
+"May 02, 2016",Rest of the World,mobile,In-Page,all,"148,337",1,"13,653",$0.46,$6.30
+"May 02, 2016",Rest of the World,mobile,In-Page,300x250,"148,335",n/a,"13,653",$0.46,$6.30
+"May 02, 2016",Rest of the World,desktop,In-Page,all,"98,298",0,"9,019",$0.42,$3.76
+"May 02, 2016",Rest of the World,desktop,In-Page,300x250,"98,298",n/a,"9,019",$0.42,$3.76
+"May 01, 2016",United States,tablet,In-Page,all,"8,034",0,"1,764",$0.59,$1.04
+"May 01, 2016",United States,tablet,In-Page,300x250,"8,034",n/a,"1,764",$0.59,$1.04
+"May 01, 2016",United States,mobile,In-Page,all,"34,226",2,"7,446",$0.57,$4.23
+"May 01, 2016",United States,mobile,In-Page,300x250,"34,224",n/a,"7,446",$0.57,$4.23
+"May 01, 2016",United States,desktop,In-Page,all,"22,040",0,"8,889",$0.61,$5.40
+"May 01, 2016",United States,desktop,In-Page,300x250,"22,040",n/a,"8,889",$0.61,$5.40
+"May 01, 2016",Rest of the World,tablet,In-Page,all,"80,140",0,"7,285",$0.46,$3.35
+"May 01, 2016",Rest of the World,tablet,In-Page,300x250,"80,140",n/a,"7,285",$0.46,$3.35
+"May 01, 2016",Rest of the World,mobile,In-View,all,0,2,0,n/a,$0.00
+"May 01, 2016",Rest of the World,mobile,In-Page,all,"248,804",2,"23,170",$0.49,$11.30
+"May 01, 2016",Rest of the World,mobile,In-Page,300x250,"248,802",n/a,"23,170",$0.49,$11.30
+"May 01, 2016",Rest of the World,desktop,In-Page,all,"163,496",0,"14,639",$0.41,$6.07
+"May 01, 2016",Rest of the World,desktop,In-Page,300x250,"163,495",n/a,"14,639",$0.41,$6.07
+"Apr 30, 2016",United States,tablet,In-Page,all,"5,159",0,"1,199",$0.61,$0.73
+"Apr 30, 2016",United States,tablet,In-Page,300x250,"5,159",n/a,"1,199",$0.61,$0.73
+"Apr 30, 2016",United States,mobile,In-Page,all,"17,574",0,"4,275",$0.59,$2.54
+"Apr 30, 2016",United States,mobile,In-Page,300x250,"17,574",n/a,"4,275",$0.59,$2.54
+"Apr 30, 2016",United States,desktop,In-Page,all,"17,904",0,"7,717",$0.59,$4.53
+"Apr 30, 2016",United States,desktop,In-Page,300x250,"17,904",n/a,"7,717",$0.59,$4.53
+"Apr 30, 2016",Rest of the World,tablet,In-Page,all,"83,587",0,"8,953",$0.45,$4.02
+"Apr 30, 2016",Rest of the World,tablet,In-Page,300x250,"83,587",n/a,"8,953",$0.45,$4.02
+"Apr 30, 2016",Rest of the World,mobile,In-View,all,0,3,0,n/a,$0.00
+"Apr 30, 2016",Rest of the World,mobile,In-Page,all,"269,390",1,"32,200",$0.48,$15.51
+"Apr 30, 2016",Rest of the World,mobile,In-Page,300x250,"269,389",n/a,"32,200",$0.48,$15.51
+"Apr 30, 2016",Rest of the World,desktop,In-Page,all,"163,757",0,"16,007",$0.40,$6.36
+"Apr 30, 2016",Rest of the World,desktop,In-Page,300x250,"163,757",n/a,"16,007",$0.40,$6.36
+"Apr 29, 2016",United States,tablet,In-Page,all,"2,550",0,766,$0.56,$0.43
+"Apr 29, 2016",United States,tablet,In-Page,300x250,"2,550",n/a,766,$0.56,$0.43
+"Apr 29, 2016",United States,mobile,In-Page,all,"9,787",0,"2,488",$0.57,$1.43
+"Apr 29, 2016",United States,mobile,In-Page,300x250,"9,787",n/a,"2,488",$0.57,$1.43
+"Apr 29, 2016",United States,desktop,In-Page,all,"10,135",0,"4,139",$0.59,$2.46
+"Apr 29, 2016",United States,desktop,In-Page,300x250,"10,135",n/a,"4,139",$0.59,$2.46
+"Apr 29, 2016",Rest of the World,tablet,In-Page,all,"43,507",0,"6,203",$0.43,$2.65
+"Apr 29, 2016",Rest of the World,tablet,In-Page,300x250,"43,507",n/a,"6,203",$0.43,$2.65
+"Apr 29, 2016",Rest of the World,mobile,In-Page,all,"148,939",1,"19,772",$0.47,$9.22
+"Apr 29, 2016",Rest of the World,mobile,In-Page,300x250,"148,938",n/a,"19,772",$0.47,$9.22
+"Apr 29, 2016",Rest of the World,desktop,In-Page,all,"90,973",0,"9,977",$0.40,$4.03
+"Apr 29, 2016",Rest of the World,desktop,In-Page,300x250,"90,973",n/a,"9,977",$0.40,$4.03
+"Apr 28, 2016",United States,tablet,In-Page,all,"1,937",0,447,$0.56,$0.25
+"Apr 28, 2016",United States,tablet,In-Page,728x90,1,n/a,1,$0.00,$0.00
+"Apr 28, 2016",United States,tablet,In-Page,300x250,"1,936",n/a,446,$0.56,$0.25
+"Apr 28, 2016",United States,mobile,In-Page,all,"7,528",1,"1,458",$0.58,$0.85
+"Apr 28, 2016",United States,mobile,In-Page,300x250,"7,527",n/a,"1,458",$0.58,$0.85
+"Apr 28, 2016",United States,desktop,In-Page,all,"10,967",0,"3,561",$0.66,$2.35
+"Apr 28, 2016",United States,desktop,In-Page,300x250,"10,967",n/a,"3,561",$0.66,$2.35
+"Apr 28, 2016",Rest of the World,tablet,In-Page,all,"36,876",0,"5,016",$0.42,$2.12
+"Apr 28, 2016",Rest of the World,tablet,In-Page,300x250,"36,875",n/a,"5,016",$0.42,$2.12
+"Apr 28, 2016",Rest of the World,mobile,In-Page,all,"125,957",1,"14,520",$0.46,$6.71
+"Apr 28, 2016",Rest of the World,mobile,In-Page,300x250,"125,956",n/a,"14,520",$0.46,$6.71
+"Apr 28, 2016",Rest of the World,desktop,In-Page,all,"84,925",0,"8,765",$0.39,$3.43
+"Apr 28, 2016",Rest of the World,desktop,In-Page,728x90,3,n/a,1,$0.00,$0.00
+"Apr 28, 2016",Rest of the World,desktop,In-Page,300x250,"84,922",n/a,"8,764",$0.39,$3.43
+"Apr 27, 2016",United States,tablet,In-Page,all,"3,529",0,995,$0.58,$0.58
+"Apr 27, 2016",United States,tablet,In-Page,300x250,"3,528",n/a,995,$0.58,$0.58
+"Apr 27, 2016",United States,mobile,In-Page,all,"18,946",0,"3,936",$0.61,$2.39
+"Apr 27, 2016",United States,mobile,In-Page,300x250,"18,946",n/a,"3,936",$0.61,$2.39
+"Apr 27, 2016",United States,desktop,In-Page,all,"23,562",0,"9,051",$0.57,$5.16
+"Apr 27, 2016",United States,desktop,In-Page,300x250,"23,562",n/a,"9,051",$0.57,$5.16
+"Apr 27, 2016",Rest of the World,tablet,In-Page,all,"72,032",0,"10,166",$0.40,$4.08
+"Apr 27, 2016",Rest of the World,tablet,In-Page,300x250,"72,032",n/a,"10,166",$0.40,$4.08
+"Apr 27, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 27, 2016",Rest of the World,mobile,In-Page,all,"247,737",1,"29,322",$0.44,$13.02
+"Apr 27, 2016",Rest of the World,mobile,In-Page,300x250,"247,736",n/a,"29,322",$0.44,$13.02
+"Apr 27, 2016",Rest of the World,desktop,In-Page,all,"163,546",0,"15,006",$0.42,$6.24
+"Apr 27, 2016",Rest of the World,desktop,In-Page,300x250,"163,546",n/a,"15,006",$0.42,$6.24
+"Apr 26, 2016",United States,tablet,In-Page,all,"5,146",0,"1,149",$0.61,$0.70
+"Apr 26, 2016",United States,tablet,In-Page,300x250,"5,145",n/a,"1,149",$0.61,$0.70
+"Apr 26, 2016",United States,mobile,In-Page,all,"21,796",0,"4,265",$0.61,$2.61
+"Apr 26, 2016",United States,mobile,In-Page,300x250,"21,796",n/a,"4,265",$0.61,$2.61
+"Apr 26, 2016",United States,desktop,In-Page,all,"21,535",0,"8,226",$0.55,$4.56
+"Apr 26, 2016",United States,desktop,In-Page,300x250,"21,535",n/a,"8,226",$0.55,$4.56
+"Apr 26, 2016",Rest of the World,tablet,In-Page,all,"77,445",0,"10,421",$0.38,$4.01
+"Apr 26, 2016",Rest of the World,tablet,In-Page,300x250,"77,444",n/a,"10,421",$0.38,$4.01
+"Apr 26, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 26, 2016",Rest of the World,mobile,In-Page,all,"261,479",2,"30,503",$0.43,$13.12
+"Apr 26, 2016",Rest of the World,mobile,In-Page,300x250,"261,477",n/a,"30,503",$0.43,$13.12
+"Apr 26, 2016",Rest of the World,desktop,In-Page,all,"162,895",0,"12,578",$0.41,$5.18
+"Apr 26, 2016",Rest of the World,desktop,In-Page,300x250,"162,894",n/a,"12,578",$0.41,$5.18
+"Apr 25, 2016",United States,tablet,In-Page,all,"7,021",0,"1,435",$0.60,$0.86
+"Apr 25, 2016",United States,tablet,In-Page,300x250,"7,021",n/a,"1,435",$0.60,$0.86
+"Apr 25, 2016",United States,mobile,In-Page,all,"32,478",1,"5,611",$0.62,$3.49
+"Apr 25, 2016",United States,mobile,In-Page,300x250,"32,476",n/a,"5,611",$0.62,$3.49
+"Apr 25, 2016",United States,desktop,In-Page,all,"23,069",0,"9,083",$0.47,$4.26
+"Apr 25, 2016",United States,desktop,In-Page,300x250,"23,069",n/a,"9,083",$0.47,$4.26
+"Apr 25, 2016",Rest of the World,tablet,In-Page,all,"82,066",0,"10,134",$0.40,$4.09
+"Apr 25, 2016",Rest of the World,tablet,In-Page,300x250,"82,066",n/a,"10,134",$0.40,$4.09
+"Apr 25, 2016",Rest of the World,mobile,In-View,all,0,4,0,n/a,$0.00
+"Apr 25, 2016",Rest of the World,mobile,In-Page,all,"265,061",0,"29,795",$0.46,$13.56
+"Apr 25, 2016",Rest of the World,mobile,In-Page,300x250,"265,061",n/a,"29,795",$0.46,$13.56
+"Apr 25, 2016",Rest of the World,desktop,In-Page,all,"172,864",0,"13,409",$0.41,$5.52
+"Apr 25, 2016",Rest of the World,desktop,In-Page,300x250,"172,864",n/a,"13,409",$0.41,$5.52
+"Apr 24, 2016",United States,tablet,In-Page,all,"17,753",0,"3,531",$0.57,$2.01
+"Apr 24, 2016",United States,tablet,In-Page,300x250,"17,753",n/a,"3,531",$0.57,$2.01
+"Apr 24, 2016",United States,mobile,In-Page,all,"69,791",1,"10,590",$0.61,$6.41
+"Apr 24, 2016",United States,mobile,In-Page,300x250,"69,790",n/a,"10,590",$0.61,$6.41
+"Apr 24, 2016",United States,desktop,In-Page,all,"17,837",0,"7,950",$0.50,$3.98
+"Apr 24, 2016",United States,desktop,In-Page,300x250,"17,837",n/a,"7,950",$0.50,$3.98
+"Apr 24, 2016",Rest of the World,tablet,In-Page,all,"84,620",0,"11,522",$0.43,$4.90
+"Apr 24, 2016",Rest of the World,tablet,In-Page,300x250,"84,617",n/a,"11,522",$0.43,$4.90
+"Apr 24, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 24, 2016",Rest of the World,mobile,In-Page,all,"266,467",2,"27,180",$0.47,$12.71
+"Apr 24, 2016",Rest of the World,mobile,In-Page,300x250,"266,465",n/a,"27,180",$0.47,$12.71
+"Apr 24, 2016",Rest of the World,desktop,In-Page,all,"171,053",0,"14,609",$0.40,$5.85
+"Apr 24, 2016",Rest of the World,desktop,In-Page,300x250,"171,052",n/a,"14,609",$0.40,$5.85
+"Apr 23, 2016",United States,tablet,In-Page,all,"15,513",0,"3,676",$0.60,$2.21
+"Apr 23, 2016",United States,tablet,In-Page,300x250,"15,512",n/a,"3,676",$0.60,$2.21
+"Apr 23, 2016",United States,mobile,In-Page,all,"64,371",1,"12,134",$0.59,$7.18
+"Apr 23, 2016",United States,mobile,In-Page,300x250,"64,370",n/a,"12,134",$0.59,$7.18
+"Apr 23, 2016",United States,desktop,In-Page,all,"21,131",0,"10,842",$0.55,$5.93
+"Apr 23, 2016",United States,desktop,In-Page,300x250,"21,131",n/a,"10,842",$0.55,$5.93
+"Apr 23, 2016",Rest of the World,tablet,In-Page,all,"89,087",0,"11,694",$0.42,$4.86
+"Apr 23, 2016",Rest of the World,tablet,In-Page,300x250,"89,085",n/a,"11,694",$0.42,$4.86
+"Apr 23, 2016",Rest of the World,mobile,In-View,all,0,2,0,n/a,$0.00
+"Apr 23, 2016",Rest of the World,mobile,In-Page,all,"278,113",1,"33,933",$0.46,$15.68
+"Apr 23, 2016",Rest of the World,mobile,In-Page,300x250,"278,112",n/a,"33,933",$0.46,$15.68
+"Apr 23, 2016",Rest of the World,desktop,In-Page,all,"181,907",0,"16,705",$0.43,$7.10
+"Apr 23, 2016",Rest of the World,desktop,In-Page,300x250,"181,906",n/a,"16,705",$0.43,$7.10
+"Apr 22, 2016",United States,tablet,In-Page,all,"10,496",0,"2,194",$0.64,$1.40
+"Apr 22, 2016",United States,tablet,In-Page,300x250,"10,496",n/a,"2,194",$0.64,$1.40
+"Apr 22, 2016",United States,mobile,In-Page,all,"38,336",0,"6,238",$0.63,$3.92
+"Apr 22, 2016",United States,mobile,In-Page,300x250,"38,336",n/a,"6,238",$0.63,$3.92
+"Apr 22, 2016",United States,desktop,In-Page,all,"18,995",0,"8,427",$0.42,$3.51
+"Apr 22, 2016",United States,desktop,In-Page,300x250,"18,994",n/a,"8,427",$0.42,$3.51
+"Apr 22, 2016",Rest of the World,tablet,In-Page,all,"50,985",0,"7,687",$0.30,$2.32
+"Apr 22, 2016",Rest of the World,tablet,In-Page,728x90,1,n/a,1,$0.00,$0.00
+"Apr 22, 2016",Rest of the World,tablet,In-Page,300x250,"50,984",n/a,"7,686",$0.30,$2.32
+"Apr 22, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 22, 2016",Rest of the World,mobile,In-Page,all,"173,504",4,"25,544",$0.34,$8.62
+"Apr 22, 2016",Rest of the World,mobile,In-Page,300x250,"173,499",n/a,"25,544",$0.34,$8.62
+"Apr 22, 2016",Rest of the World,desktop,In-Page,all,"120,484",0,"15,770",$0.25,$3.94
+"Apr 22, 2016",Rest of the World,desktop,In-Page,300x250,"120,483",n/a,"15,770",$0.25,$3.94
+"Apr 21, 2016",United States,tablet,In-Page,all,"2,419",0,455,$0.53,$0.24
+"Apr 21, 2016",United States,tablet,In-Page,300x250,"2,419",n/a,455,$0.53,$0.24
+"Apr 21, 2016",United States,mobile,In-Page,all,"9,097",9,"1,768",$0.58,$1.03
+"Apr 21, 2016",United States,mobile,In-Page,300x250,"9,088",n/a,"1,768",$0.58,$1.03
+"Apr 21, 2016",United States,desktop,In-Page,all,"6,784",0,"1,834",$0.53,$0.98
+"Apr 21, 2016",United States,desktop,In-Page,728x90,4,n/a,1,$0.00,$0.00
+"Apr 21, 2016",United States,desktop,In-Page,300x250,"6,780",n/a,"1,833",$0.53,$0.98
+"Apr 21, 2016",Rest of the World,tablet,In-Page,all,"21,853",0,"2,760",$0.50,$1.38
+"Apr 21, 2016",Rest of the World,tablet,In-Page,300x250,"21,846",n/a,"2,760",$0.50,$1.38
+"Apr 21, 2016",Rest of the World,mobile,In-View,all,0,2,0,n/a,$0.00
+"Apr 21, 2016",Rest of the World,mobile,In-Page,all,"78,951",13,"10,119",$0.50,$5.06
+"Apr 21, 2016",Rest of the World,mobile,In-Page,300x250,"78,938",n/a,"10,119",$0.50,$5.06
+"Apr 21, 2016",Rest of the World,desktop,In-Page,all,"56,341",0,"5,075",$0.50,$2.54
+"Apr 21, 2016",Rest of the World,desktop,In-Page,300x250,"56,335",n/a,"5,075",$0.50,$2.54
+"Apr 20, 2016",United States,tablet,In-Page,all,"11,685",0,"3,050",$0.53,$1.61
+"Apr 20, 2016",United States,tablet,In-Page,728x90,5,n/a,1,$0.00,$0.00
+"Apr 20, 2016",United States,tablet,In-Page,300x250,"11,680",n/a,"3,049",$0.53,$1.61
+"Apr 20, 2016",United States,mobile,In-Page,all,"33,908",4,"9,576",$0.61,$5.85
+"Apr 20, 2016",United States,mobile,In-Page,300x250,"33,904",n/a,"9,576",$0.61,$5.85
+"Apr 20, 2016",United States,desktop,In-View,all,0,1,0,n/a,$0.00
+"Apr 20, 2016",United States,desktop,In-Page,all,"13,242",0,"8,067",$0.56,$4.52
+"Apr 20, 2016",United States,desktop,In-Page,728x90,2,n/a,1,$0.00,$0.00
+"Apr 20, 2016",United States,desktop,In-Page,300x250,"13,240",n/a,"8,066",$0.56,$4.52
+"Apr 20, 2016",Rest of the World,tablet,In-Page,all,"24,707",0,"3,121",$0.50,$1.56
+"Apr 20, 2016",Rest of the World,tablet,In-Page,300x250,"24,704",n/a,"3,121",$0.50,$1.56
+"Apr 20, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 20, 2016",Rest of the World,mobile,In-Page,all,"81,278",14,"10,359",$0.50,$5.18
+"Apr 20, 2016",Rest of the World,mobile,In-Page,300x250,"81,263",n/a,"10,359",$0.50,$5.18
+"Apr 20, 2016",Rest of the World,desktop,In-Page,all,"55,045",0,"5,884",$0.50,$2.94
+"Apr 20, 2016",Rest of the World,desktop,In-Page,728x90,12,n/a,1,$0.00,$0.00
+"Apr 20, 2016",Rest of the World,desktop,In-Page,300x250,"55,033",n/a,"5,883",$0.50,$2.94
+"Apr 19, 2016",United States,tablet,In-Page,all,"14,217",0,"3,777",$0.57,$2.17
+"Apr 19, 2016",United States,tablet,In-Page,300x250,"14,212",n/a,"3,777",$0.57,$2.17
+"Apr 19, 2016",United States,mobile,In-Page,all,"45,388",8,"11,940",$0.62,$7.46
+"Apr 19, 2016",United States,mobile,In-Page,300x250,"45,379",n/a,"11,940",$0.62,$7.46
+"Apr 19, 2016",United States,desktop,In-Page,all,"16,255",0,"9,596",$0.50,$4.80
+"Apr 19, 2016",United States,desktop,In-Page,728x90,8,n/a,3,$0.00,$0.00
+"Apr 19, 2016",United States,desktop,In-Page,300x250,"16,247",n/a,"9,593",$0.50,$4.80
+"Apr 19, 2016",Rest of the World,tablet,In-Page,all,"24,437",0,"2,854",$0.50,$1.43
+"Apr 19, 2016",Rest of the World,tablet,In-Page,300x250,"24,433",n/a,"2,854",$0.50,$1.43
+"Apr 19, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 19, 2016",Rest of the World,mobile,In-Page,all,"79,658",16,"9,180",$0.50,$4.59
+"Apr 19, 2016",Rest of the World,mobile,In-Page,300x250,"79,642",n/a,"9,180",$0.50,$4.59
+"Apr 19, 2016",Rest of the World,desktop,In-Page,all,"53,117",0,"5,785",$0.50,$2.89
+"Apr 19, 2016",Rest of the World,desktop,In-Page,728x90,13,n/a,1,$0.00,$0.00
+"Apr 19, 2016",Rest of the World,desktop,In-Page,300x250,"53,104",n/a,"5,784",$0.50,$2.89
+"Apr 18, 2016",United States,tablet,In-Page,all,"12,720",0,"3,012",$0.58,$1.76
+"Apr 18, 2016",United States,tablet,In-Page,300x250,"12,718",n/a,"3,012",$0.58,$1.76
+"Apr 18, 2016",United States,mobile,In-Page,all,"42,224",5,"9,575",$0.62,$5.90
+"Apr 18, 2016",United States,mobile,In-Page,300x250,"42,219",n/a,"9,575",$0.62,$5.90
+"Apr 18, 2016",United States,desktop,In-Page,all,"15,185",0,"8,897",$0.50,$4.45
+"Apr 18, 2016",United States,desktop,In-Page,300x250,"15,185",n/a,"8,897",$0.50,$4.45
+"Apr 18, 2016",Rest of the World,tablet,In-Page,all,"23,257",0,"2,515",$0.50,$1.26
+"Apr 18, 2016",Rest of the World,tablet,In-Page,300x250,"23,255",n/a,"2,515",$0.50,$1.26
+"Apr 18, 2016",Rest of the World,mobile,In-Page,all,"74,679",16,"7,967",$0.50,$3.98
+"Apr 18, 2016",Rest of the World,mobile,In-Page,300x250,"74,663",n/a,"7,967",$0.50,$3.98
+"Apr 18, 2016",Rest of the World,desktop,In-Page,all,"51,027",0,"4,869",$0.50,$2.43
+"Apr 18, 2016",Rest of the World,desktop,In-Page,300x250,"51,023",n/a,"4,869",$0.50,$2.43
+"Apr 17, 2016",United States,tablet,In-Page,all,"16,321",0,"3,461",$0.59,$2.04
+"Apr 17, 2016",United States,tablet,In-Page,300x250,"16,315",n/a,"3,461",$0.59,$2.04
+"Apr 17, 2016",United States,mobile,In-Page,all,"38,804",17,"9,862",$0.62,$6.16
+"Apr 17, 2016",United States,mobile,In-Page,300x250,"38,786",n/a,"9,862",$0.62,$6.16
+"Apr 17, 2016",United States,desktop,In-Page,all,"12,289",0,"7,379",$0.54,$4.01
+"Apr 17, 2016",United States,desktop,In-Page,300x250,"12,286",n/a,"7,379",$0.54,$4.01
+"Apr 17, 2016",Rest of the World,tablet,In-View,all,0,1,0,n/a,$0.00
+"Apr 17, 2016",Rest of the World,tablet,In-Page,all,"29,025",0,"2,920",$0.50,$1.46
+"Apr 17, 2016",Rest of the World,tablet,In-Page,300x250,"29,017",n/a,"2,920",$0.50,$1.46
+"Apr 17, 2016",Rest of the World,mobile,In-View,all,0,2,0,n/a,$0.00
+"Apr 17, 2016",Rest of the World,mobile,In-Page,all,"83,343",36,"8,932",$0.51,$4.58
+"Apr 17, 2016",Rest of the World,mobile,In-Page,300x250,"83,307",n/a,"8,932",$0.51,$4.58
+"Apr 17, 2016",Rest of the World,desktop,In-Page,all,"54,985",0,"6,124",$0.50,$3.06
+"Apr 17, 2016",Rest of the World,desktop,In-Page,728x90,15,n/a,1,$0.00,$0.00
+"Apr 17, 2016",Rest of the World,desktop,In-Page,300x250,"54,970",n/a,"6,123",$0.50,$3.06
+"Apr 16, 2016",United States,tablet,In-Page,all,"15,367",0,"3,416",$0.54,$1.84
+"Apr 16, 2016",United States,tablet,In-Page,300x250,"15,364",n/a,"3,416",$0.54,$1.84
+"Apr 16, 2016",United States,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 16, 2016",United States,mobile,In-Page,all,"38,284",14,"9,572",$0.61,$5.88
+"Apr 16, 2016",United States,mobile,In-Page,300x250,"38,270",n/a,"9,572",$0.61,$5.88
+"Apr 16, 2016",United States,desktop,In-Page,all,"9,884",0,"5,945",$0.56,$3.30
+"Apr 16, 2016",United States,desktop,In-Page,300x250,"9,883",n/a,"5,945",$0.56,$3.30
+"Apr 16, 2016",Rest of the World,tablet,In-Page,all,"30,346",0,"3,054",$0.50,$1.53
+"Apr 16, 2016",Rest of the World,tablet,In-Page,728x90,10,n/a,1,$0.00,$0.00
+"Apr 16, 2016",Rest of the World,tablet,In-Page,300x250,"30,336",n/a,"3,053",$0.50,$1.53
+"Apr 16, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 16, 2016",Rest of the World,mobile,In-Page,all,"82,382",40,"9,140",$0.50,$4.57
+"Apr 16, 2016",Rest of the World,mobile,In-Page,300x250,"82,340",n/a,"9,140",$0.50,$4.57
+"Apr 16, 2016",Rest of the World,desktop,In-Page,all,"53,157",0,"6,156",$0.50,$3.08
+"Apr 16, 2016",Rest of the World,desktop,In-Page,728x90,11,n/a,2,$0.00,$0.00
+"Apr 16, 2016",Rest of the World,desktop,In-Page,300x250,"53,146",n/a,"6,154",$0.50,$3.08
+"Apr 15, 2016",United States,tablet,In-Page,all,"13,350",0,"2,900",$0.50,$1.45
+"Apr 15, 2016",United States,tablet,In-Page,728x90,14,n/a,2,$0.00,$0.00
+"Apr 15, 2016",United States,tablet,In-Page,300x250,"13,336",n/a,"2,898",$0.50,$1.45
+"Apr 15, 2016",United States,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 15, 2016",United States,mobile,In-Page,all,"39,270",41,"9,326",$0.60,$5.61
+"Apr 15, 2016",United States,mobile,In-Page,300x250,"39,221",n/a,"9,326",$0.60,$5.61
+"Apr 15, 2016",United States,desktop,In-Page,all,"10,831",0,"5,148",$0.55,$2.84
+"Apr 15, 2016",United States,desktop,In-Page,300x250,"10,830",n/a,"5,148",$0.55,$2.84
+"Apr 15, 2016",Rest of the World,tablet,In-Page,all,"26,213",0,"2,859",$0.50,$1.43
+"Apr 15, 2016",Rest of the World,tablet,In-Page,300x250,"26,188",n/a,"2,859",$0.50,$1.43
+"Apr 15, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 15, 2016",Rest of the World,mobile,In-Page,all,"80,625",133,"9,223",$0.50,$4.61
+"Apr 15, 2016",Rest of the World,mobile,In-Page,300x250,"80,489",n/a,"9,223",$0.50,$4.61
+"Apr 15, 2016",Rest of the World,desktop,In-Page,all,"53,312",0,"5,910",$0.50,$2.95
+"Apr 15, 2016",Rest of the World,desktop,In-Page,728x90,36,n/a,1,$0.00,$0.00
+"Apr 15, 2016",Rest of the World,desktop,In-Page,300x250,"53,276",n/a,"5,909",$0.50,$2.95
+"Apr 14, 2016",United States,tablet,In-Page,all,"18,303",0,"3,944",$0.55,$2.17
+"Apr 14, 2016",United States,tablet,In-Page,728x90,"6,138",n/a,"1,550",$0.61,$0.94
+"Apr 14, 2016",United States,tablet,In-Page,300x250,"12,165",n/a,"2,394",$0.51,$1.23
+"Apr 14, 2016",United States,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 14, 2016",United States,mobile,In-Page,all,"57,766","21,558","7,286",$0.58,$4.23
+"Apr 14, 2016",United States,mobile,In-Page,300x250,"34,579",n/a,"7,286",$0.58,$4.23
+"Apr 14, 2016",United States,desktop,In-Page,all,"16,564",0,"5,925",$0.54,$3.22
+"Apr 14, 2016",United States,desktop,In-Page,728x90,"6,598",n/a,"2,316",$0.59,$1.36
+"Apr 14, 2016",United States,desktop,In-Page,300x250,"9,966",n/a,"3,609",$0.52,$1.86
+"Apr 14, 2016",Rest of the World,tablet,In-Page,all,"38,121",0,"3,716",$0.50,$1.86
+"Apr 14, 2016",Rest of the World,tablet,In-Page,728x90,"13,639",n/a,856,$0.50,$0.43
+"Apr 14, 2016",Rest of the World,tablet,In-Page,300x250,"24,482",n/a,"2,860",$0.50,$1.43
+"Apr 14, 2016",Rest of the World,mobile,In-View,all,0,3,0,n/a,$0.00
+"Apr 14, 2016",Rest of the World,mobile,In-Page,all,"121,726","45,054","8,940",$0.50,$4.47
+"Apr 14, 2016",Rest of the World,mobile,In-Page,300x250,"76,497",n/a,"8,940",$0.50,$4.47
+"Apr 14, 2016",Rest of the World,desktop,In-Page,all,"73,391",0,"5,983",$0.50,$2.99
+"Apr 14, 2016",Rest of the World,desktop,In-Page,728x90,"25,597",n/a,"1,436",$0.50,$0.72
+"Apr 14, 2016",Rest of the World,desktop,In-Page,300x250,"47,794",n/a,"4,547",$0.50,$2.27
+"Apr 13, 2016",United States,tablet,In-Page,all,"23,336",0,"4,521",$0.54,$2.45
+"Apr 13, 2016",United States,tablet,In-Page,728x90,"13,197",n/a,"2,743",$0.57,$1.56
+"Apr 13, 2016",United States,tablet,In-Page,300x250,"10,139",n/a,"1,778",$0.50,$0.89
+"Apr 13, 2016",United States,mobile,In-Page,all,"78,644","44,808","5,921",$0.57,$3.40
+"Apr 13, 2016",United States,mobile,In-Page,300x250,"30,889",n/a,"5,921",$0.57,$3.40
+"Apr 13, 2016",United States,desktop,In-Page,all,"19,098",0,"6,465",$0.62,$4.00
+"Apr 13, 2016",United States,desktop,In-Page,728x90,"13,767",n/a,"4,724",$0.62,$2.95
+"Apr 13, 2016",United States,desktop,In-Page,300x250,"5,331",n/a,"1,741",$0.60,$1.05
+"Apr 13, 2016",Rest of the World,tablet,In-Page,all,"53,102",0,"4,354",$0.50,$2.18
+"Apr 13, 2016",Rest of the World,tablet,In-Page,728x90,"24,828",n/a,"1,410",$0.50,$0.71
+"Apr 13, 2016",Rest of the World,tablet,In-Page,300x250,"28,274",n/a,"2,944",$0.50,$1.47
+"Apr 13, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 13, 2016",Rest of the World,mobile,In-Page,all,"151,735","72,148","8,480",$0.50,$4.24
+"Apr 13, 2016",Rest of the World,mobile,In-Page,300x250,"79,429",n/a,"8,480",$0.50,$4.24
+"Apr 13, 2016",Rest of the World,desktop,In-Page,all,"88,169",0,"6,224",$0.50,$3.11
+"Apr 13, 2016",Rest of the World,desktop,In-Page,728x90,"40,117",n/a,"2,022",$0.50,$1.01
+"Apr 13, 2016",Rest of the World,desktop,In-Page,300x250,"48,052",n/a,"4,202",$0.50,$2.10
+"Apr 12, 2016",United States,tablet,In-Page,all,"27,561",0,"5,053",$0.51,$2.60
+"Apr 12, 2016",United States,tablet,In-Page,728x90,"14,458",n/a,"2,554",$0.53,$1.35
+"Apr 12, 2016",United States,tablet,In-Page,300x250,"13,103",n/a,"2,499",$0.50,$1.25
+"Apr 12, 2016",United States,mobile,In-Page,all,"87,549","47,327","6,583",$0.60,$3.98
+"Apr 12, 2016",United States,mobile,In-Page,300x250,"37,239",n/a,"6,583",$0.60,$3.98
+"Apr 12, 2016",United States,desktop,In-Page,all,"24,343",0,"7,867",$0.58,$4.59
+"Apr 12, 2016",United States,desktop,In-Page,728x90,"13,224",n/a,"4,151",$0.60,$2.47
+"Apr 12, 2016",United States,desktop,In-Page,300x250,"11,119",n/a,"3,716",$0.57,$2.12
+"Apr 12, 2016",Rest of the World,tablet,In-Page,all,"54,298",0,"4,411",$0.50,$2.21
+"Apr 12, 2016",Rest of the World,tablet,In-Page,728x90,"25,619",n/a,"1,295",$0.50,$0.65
+"Apr 12, 2016",Rest of the World,tablet,In-Page,300x250,"28,679",n/a,"3,116",$0.50,$1.56
+"Apr 12, 2016",Rest of the World,mobile,In-View,all,0,3,0,n/a,$0.00
+"Apr 12, 2016",Rest of the World,mobile,In-Page,all,"158,407","76,268","8,750",$0.50,$4.38
+"Apr 12, 2016",Rest of the World,mobile,In-Page,300x250,"81,940",n/a,"8,750",$0.50,$4.38
+"Apr 12, 2016",Rest of the World,desktop,In-Page,all,"94,855",0,"6,843",$0.50,$3.42
+"Apr 12, 2016",Rest of the World,desktop,In-Page,728x90,"42,994",n/a,"2,104",$0.50,$1.05
+"Apr 12, 2016",Rest of the World,desktop,In-Page,300x250,"51,861",n/a,"4,739",$0.50,$2.37
+"Apr 11, 2016",United States,tablet,In-View,all,0,1,0,n/a,$0.00
+"Apr 11, 2016",United States,tablet,In-Page,all,"27,736",0,"4,850",$0.59,$2.85
+"Apr 11, 2016",United States,tablet,In-Page,728x90,"14,028",n/a,"2,344",$0.61,$1.42
+"Apr 11, 2016",United States,tablet,In-Page,300x250,"13,708",n/a,"2,506",$0.57,$1.43
+"Apr 11, 2016",United States,mobile,In-View,all,0,2,0,n/a,$0.00
+"Apr 11, 2016",United States,mobile,In-Page,all,"99,229","49,001","8,990",$0.65,$5.80
+"Apr 11, 2016",United States,mobile,In-Page,300x250,"47,054",n/a,"8,990",$0.65,$5.80
+"Apr 11, 2016",United States,desktop,In-Page,all,"30,817",0,"11,749",$0.56,$6.54
+"Apr 11, 2016",United States,desktop,In-Page,728x90,"14,566",n/a,"5,484",$0.55,$3.02
+"Apr 11, 2016",United States,desktop,In-Page,300x250,"16,251",n/a,"6,265",$0.56,$3.52
+"Apr 11, 2016",Rest of the World,tablet,In-Page,all,"52,992",0,"4,054",$0.50,$2.03
+"Apr 11, 2016",Rest of the World,tablet,In-Page,728x90,"24,998",n/a,"1,311",$0.50,$0.66
+"Apr 11, 2016",Rest of the World,tablet,In-Page,300x250,"27,994",n/a,"2,743",$0.50,$1.37
+"Apr 11, 2016",Rest of the World,mobile,In-View,all,0,2,0,n/a,$0.00
+"Apr 11, 2016",Rest of the World,mobile,In-Page,all,"160,321","77,144","9,439",$0.55,$5.16
+"Apr 11, 2016",Rest of the World,mobile,In-Page,300x250,"83,314",n/a,"9,439",$0.55,$5.16
+"Apr 11, 2016",Rest of the World,desktop,In-Page,all,"100,993",0,"8,507",$0.50,$4.26
+"Apr 11, 2016",Rest of the World,desktop,In-Page,728x90,"45,832",n/a,"2,736",$0.50,$1.37
+"Apr 11, 2016",Rest of the World,desktop,In-Page,300x250,"55,161",n/a,"5,771",$0.50,$2.89
+"Apr 10, 2016",United States,tablet,In-Page,all,"33,312",0,"6,043",$0.57,$3.47
+"Apr 10, 2016",United States,tablet,In-Page,728x90,"16,719",n/a,"2,850",$0.58,$1.64
+"Apr 10, 2016",United States,tablet,In-Page,300x250,"16,593",n/a,"3,193",$0.57,$1.83
+"Apr 10, 2016",United States,mobile,In-Page,all,"91,812","45,951","9,217",$0.63,$5.82
+"Apr 10, 2016",United States,mobile,In-Page,300x250,"42,954",n/a,"9,217",$0.63,$5.82
+"Apr 10, 2016",United States,desktop,In-Page,all,"24,221",0,"10,211",$0.61,$6.27
+"Apr 10, 2016",United States,desktop,In-Page,728x90,"11,846",n/a,"4,720",$0.62,$2.91
+"Apr 10, 2016",United States,desktop,In-Page,300x250,"12,375",n/a,"5,491",$0.61,$3.36
+"Apr 10, 2016",Rest of the World,tablet,In-View,all,0,1,0,n/a,$0.00
+"Apr 10, 2016",Rest of the World,tablet,In-Page,all,"60,930",0,"5,153",$0.50,$2.57
+"Apr 10, 2016",Rest of the World,tablet,In-Page,728x90,"28,677",n/a,"1,566",$0.50,$0.78
+"Apr 10, 2016",Rest of the World,tablet,In-Page,300x250,"32,253",n/a,"3,587",$0.50,$1.79
+"Apr 10, 2016",Rest of the World,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 10, 2016",Rest of the World,mobile,In-Page,all,"169,436","82,453","9,229",$0.54,$5.00
+"Apr 10, 2016",Rest of the World,mobile,In-Page,300x250,"87,024",n/a,"9,229",$0.54,$5.00
+"Apr 10, 2016",Rest of the World,desktop,In-Page,all,"100,281",0,"8,128",$0.50,$4.06
+"Apr 10, 2016",Rest of the World,desktop,In-Page,728x90,"45,625",n/a,"2,625",$0.50,$1.31
+"Apr 10, 2016",Rest of the World,desktop,In-Page,300x250,"54,656",n/a,"5,503",$0.50,$2.75
+"Apr 09, 2016",United States,tablet,In-Page,all,"30,639",0,"5,601",$0.57,$3.18
+"Apr 09, 2016",United States,tablet,In-Page,728x90,"15,689",n/a,"2,633",$0.57,$1.51
+"Apr 09, 2016",United States,tablet,In-Page,300x250,"14,950",n/a,"2,968",$0.56,$1.67
+"Apr 09, 2016",United States,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 09, 2016",United States,mobile,In-Page,all,"84,208","41,945","8,933",$0.63,$5.62
+"Apr 09, 2016",United States,mobile,In-Page,300x250,"39,177",n/a,"8,933",$0.63,$5.62
+"Apr 09, 2016",United States,desktop,In-Page,all,"22,603",0,"9,608",$0.63,$6.09
+"Apr 09, 2016",United States,desktop,In-Page,728x90,"11,060",n/a,"4,557",$0.65,$2.94
+"Apr 09, 2016",United States,desktop,In-Page,300x250,"11,543",n/a,"5,051",$0.62,$3.15
+"Apr 09, 2016",Rest of the World,tablet,In-View,all,0,1,0,n/a,$0.00
+"Apr 09, 2016",Rest of the World,tablet,In-Page,all,"53,889",0,"4,724",$0.50,$2.36
+"Apr 09, 2016",Rest of the World,tablet,In-Page,728x90,"25,253",n/a,"1,528",$0.50,$0.76
+"Apr 09, 2016",Rest of the World,tablet,In-Page,300x250,"28,636",n/a,"3,196",$0.50,$1.60
+"Apr 09, 2016",Rest of the World,mobile,In-View,all,0,4,0,n/a,$0.00
+"Apr 09, 2016",Rest of the World,mobile,In-Page,all,"157,724","76,587","9,776",$0.53,$5.18
+"Apr 09, 2016",Rest of the World,mobile,In-Page,300x250,"81,391",n/a,"9,776",$0.53,$5.18
+"Apr 09, 2016",Rest of the World,desktop,In-Page,all,"92,108",0,"7,767",$0.50,$3.88
+"Apr 09, 2016",Rest of the World,desktop,In-Page,728x90,"41,389",n/a,"2,463",$0.50,$1.23
+"Apr 09, 2016",Rest of the World,desktop,In-Page,300x250,"50,719",n/a,"5,304",$0.50,$2.65
+"Apr 08, 2016",United States,tablet,In-Page,all,"27,434",0,"4,479",$0.58,$2.61
+"Apr 08, 2016",United States,tablet,In-Page,728x90,"14,110",n/a,"2,129",$0.58,$1.23
+"Apr 08, 2016",United States,tablet,In-Page,300x250,"13,324",n/a,"2,350",$0.59,$1.38
+"Apr 08, 2016",United States,mobile,In-Page,all,"83,941","41,458","8,603",$0.63,$5.42
+"Apr 08, 2016",United States,mobile,In-Page,300x250,"39,535",n/a,"8,603",$0.63,$5.42
+"Apr 08, 2016",United States,desktop,In-Page,all,"22,786",0,"8,383",$0.59,$4.93
+"Apr 08, 2016",United States,desktop,In-Page,728x90,"10,710",n/a,"3,919",$0.58,$2.28
+"Apr 08, 2016",United States,desktop,In-Page,300x250,"12,076",n/a,"4,464",$0.59,$2.65
+"Apr 08, 2016",Rest of the World,tablet,In-Page,all,"48,377",0,"4,202",$0.53,$2.23
+"Apr 08, 2016",Rest of the World,tablet,In-Page,728x90,"22,865",n/a,"1,323",$0.50,$0.66
+"Apr 08, 2016",Rest of the World,tablet,In-Page,300x250,"25,512",n/a,"2,879",$0.55,$1.57
+"Apr 08, 2016",Rest of the World,mobile,In-View,all,0,4,0,n/a,$0.00
+"Apr 08, 2016",Rest of the World,mobile,In-Page,all,"146,953","70,684","9,251",$0.55,$5.13
+"Apr 08, 2016",Rest of the World,mobile,In-Page,300x250,"76,382",n/a,"9,251",$0.55,$5.13
+"Apr 08, 2016",Rest of the World,desktop,In-Page,all,"88,275",0,"7,676",$0.50,$3.84
+"Apr 08, 2016",Rest of the World,desktop,In-Page,728x90,"39,902",n/a,"2,373",$0.50,$1.19
+"Apr 08, 2016",Rest of the World,desktop,In-Page,300x250,"48,373",n/a,"5,303",$0.50,$2.65
+"Apr 07, 2016",United States,tablet,In-Page,all,"45,922",0,"8,644",$0.60,$5.17
+"Apr 07, 2016",United States,tablet,In-Page,728x90,"22,582",n/a,"3,702",$0.59,$2.19
+"Apr 07, 2016",United States,tablet,In-Page,300x250,"23,340",n/a,"4,942",$0.60,$2.98
+"Apr 07, 2016",United States,mobile,In-View,all,0,1,0,n/a,$0.00
+"Apr 07, 2016",United States,mobile,In-Page,all,"137,826","66,126","16,854",$0.63,$10.58
+"Apr 07, 2016",United States,mobile,In-Page,300x250,"67,232",n/a,"16,854",$0.63,$10.58
+"Apr 07, 2016",United States,desktop,In-Page,all,"38,419",0,"14,047",$0.61,$8.59
+"Apr 07, 2016",United States,desktop,In-Page,728x90,"18,400",n/a,"6,642",$0.60,$3.99
+"Apr 07, 2016",United States,desktop,In-Page,300x250,"20,019",n/a,"7,405",$0.62,$4.60
+"Apr 07, 2016",Rest of the World,tablet,In-Page,all,"82,835",0,"7,095",$0.51,$3.63
+"Apr 07, 2016",Rest of the World,tablet,In-Page,728x90,"38,524",n/a,"1,982",$0.50,$0.99
+"Apr 07, 2016",Rest of the World,tablet,In-Page,300x250,"44,311",n/a,"5,113",$0.52,$2.64
+"Apr 07, 2016",Rest of the World,mobile,In-View,all,0,8,0,n/a,$0.00
+"Apr 07, 2016",Rest of the World,mobile,In-Page,all,"256,313","118,424","16,720",$0.54,$9.02
+"Apr 07, 2016",Rest of the World,mobile,In-Page,300x250,"137,845",n/a,"16,720",$0.54,$9.02
+"Apr 07, 2016",Rest of the World,desktop,In-Page,all,"154,881",0,"13,454",$0.50,$6.73
+"Apr 07, 2016",Rest of the World,desktop,In-Page,728x90,"68,983",n/a,"3,990",$0.50,$2.00
+"Apr 07, 2016",Rest of the World,desktop,In-Page,300x250,"85,898",n/a,"9,464",$0.50,$4.73
+"Apr 06, 2016",United States,tablet,In-Page,all,"76,613",0,"12,485",$0.61,$7.56
+"Apr 06, 2016",United States,tablet,In-Page,728x90,"37,618",n/a,"5,052",$0.60,$3.03
+"Apr 06, 2016",United States,tablet,In-Page,300x250,"38,995",n/a,"7,433",$0.61,$4.53
+"Apr 06, 2016",United States,mobile,In-View,all,0,4,0,n/a,$0.00
+"Apr 06, 2016",United States,mobile,In-Page,all,"231,163","108,223","25,757",$0.64,$16.36
+"Apr 06, 2016",United States,mobile,In-Page,300x250,"115,975",n/a,"25,757",$0.64,$16.36
+"Apr 06, 2016",United States,desktop,In-Page,all,"70,575",0,"22,661",$0.62,$13.98
+"Apr 06, 2016",United States,desktop,In-Page,728x90,"33,249",n/a,"10,211",$0.61,$6.21
+"Apr 06, 2016",United States,desktop,In-Page,300x250,"37,326",n/a,"12,450",$0.62,$7.77
+"Apr 06, 2016",Rest of the World,tablet,In-View,all,0,9,0,n/a,$0.00
+"Apr 06, 2016",Rest of the World,tablet,In-Page,all,"122,424",0,"10,313",$0.52,$5.35
+"Apr 06, 2016",Rest of the World,tablet,In-Page,728x90,"57,167",n/a,"2,735",$0.50,$1.37
+"Apr 06, 2016",Rest of the World,tablet,In-Page,300x250,"65,257",n/a,"7,578",$0.53,$3.98
+"Apr 06, 2016",Rest of the World,mobile,In-View,all,0,18,0,n/a,$0.00
+"Apr 06, 2016",Rest of the World,mobile,In-Page,all,"375,283","173,877","21,630",$0.52,$11.26
+"Apr 06, 2016",Rest of the World,mobile,In-Page,300x250,"200,830",n/a,"21,630",$0.52,$11.26
+"Apr 06, 2016",Rest of the World,desktop,In-Page,all,"225,353",0,"19,397",$0.50,$9.70
+"Apr 06, 2016",Rest of the World,desktop,In-Page,728x90,"101,155",n/a,"5,171",$0.50,$2.59
+"Apr 06, 2016",Rest of the World,desktop,In-Page,300x250,"124,198",n/a,"14,226",$0.50,$7.11
+"Apr 05, 2016",United States,tablet,In-View,all,0,3,0,n/a,$0.00
+"Apr 05, 2016",United States,tablet,In-Page,all,"64,479",0,"9,405",$0.69,$6.45
+"Apr 05, 2016",United States,tablet,In-Page,728x90,"31,544",n/a,"3,688",$0.66,$2.44
+"Apr 05, 2016",United States,tablet,In-Page,300x250,"32,935",n/a,"5,717",$0.70,$4.01
+"Apr 05, 2016",United States,mobile,In-View,all,0,9,0,n/a,$0.00
+"Apr 05, 2016",United States,mobile,In-Page,all,"192,015","89,924","19,911",$0.65,$13.00
+"Apr 05, 2016",United States,mobile,In-Page,300x250,"97,167",n/a,"19,911",$0.65,$13.00
+"Apr 05, 2016",United States,desktop,In-Page,all,"59,438",0,"17,294",$0.65,$11.27
+"Apr 05, 2016",United States,desktop,In-Page,728x90,"28,051",n/a,"7,738",$0.64,$4.96
+"Apr 05, 2016",United States,desktop,In-Page,300x250,"31,387",n/a,"9,556",$0.66,$6.31
+"Apr 05, 2016",Rest of the World,tablet,In-View,all,0,3,0,n/a,$0.00
+"Apr 05, 2016",Rest of the World,tablet,In-Page,all,"92,141",0,"8,522",$0.50,$4.26
+"Apr 05, 2016",Rest of the World,tablet,In-Page,728x90,"43,312",n/a,"2,658",$0.50,$1.33
+"Apr 05, 2016",Rest of the World,tablet,In-Page,300x250,"48,829",n/a,"5,864",$0.50,$2.93
+"Apr 05, 2016",Rest of the World,mobile,In-View,all,0,24,0,n/a,$0.00
+"Apr 05, 2016",Rest of the World,mobile,In-Page,all,"272,813","126,878","17,826",$0.51,$9.11
+"Apr 05, 2016",Rest of the World,mobile,In-Page,300x250,"145,598",n/a,"17,826",$0.51,$9.11
+"Apr 05, 2016",Rest of the World,desktop,In-View,all,0,1,0,n/a,$0.00
+"Apr 05, 2016",Rest of the World,desktop,In-Page,all,"163,566",0,"15,516",$0.50,$7.76
+"Apr 05, 2016",Rest of the World,desktop,In-Page,728x90,"73,629",n/a,"4,252",$0.50,$2.13
+"Apr 05, 2016",Rest of the World,desktop,In-Page,300x250,"89,937",n/a,"11,264",$0.50,$5.63
+"Apr 04, 2016",United States,tablet,In-View,all,0,1,0,n/a,$0.00
+"Apr 04, 2016",United States,tablet,In-Page,all,"42,112",0,"7,413",$0.70,$5.20
+"Apr 04, 2016",United States,tablet,In-Page,728x90,"20,559",n/a,"2,812",$0.67,$1.87
+"Apr 04, 2016",United States,tablet,In-Page,300x250,"21,553",n/a,"4,601",$0.72,$3.33
+"Apr 04, 2016",United States,mobile,In-View,all,0,9,0,n/a,$0.00
+"Apr 04, 2016",United States,mobile,In-Page,all,"127,425","59,901","13,411",$0.64,$8.65
+"Apr 04, 2016",United States,mobile,In-Page,300x250,"63,431",n/a,"13,411",$0.64,$8.65
+"Apr 04, 2016",United States,desktop,In-Page,all,"41,366",0,"13,307",$0.65,$8.70
+"Apr 04, 2016",United States,desktop,In-Page,728x90,"19,682",n/a,"6,267",$0.64,$4.03
+"Apr 04, 2016",United States,desktop,In-Page,300x250,"21,684",n/a,"7,040",$0.66,$4.67
+"Apr 04, 2016",Rest of the World,tablet,In-View,all,0,7,0,n/a,$0.00
+"Apr 04, 2016",Rest of the World,tablet,In-Page,all,"69,022",0,"5,639",$0.50,$2.82
+"Apr 04, 2016",Rest of the World,tablet,In-Page,728x90,"32,714",n/a,"1,737",$0.50,$0.87
+"Apr 04, 2016",Rest of the World,tablet,In-Page,300x250,"36,308",n/a,"3,902",$0.50,$1.95
+"Apr 04, 2016",Rest of the World,mobile,In-View,all,0,24,0,n/a,$0.00
+"Apr 04, 2016",Rest of the World,mobile,In-Page,all,"200,738","93,828","11,363",$0.50,$5.71
+"Apr 04, 2016",Rest of the World,mobile,In-Page,300x250,"106,820",n/a,"11,363",$0.50,$5.71
+"Apr 04, 2016",Rest of the World,desktop,In-Page,all,"114,825",0,"10,015",$0.50,$5.01
+"Apr 04, 2016",Rest of the World,desktop,In-Page,728x90,"52,010",n/a,"2,892",$0.50,$1.45
+"Apr 04, 2016",Rest of the World,desktop,In-Page,300x250,"62,815",n/a,"7,123",$0.50,$3.56
+"Apr 03, 2016",United States,tablet,In-View,all,0,5,0,n/a,$0.00
+"Apr 03, 2016",United States,tablet,In-Page,all,"48,032",0,"9,389",$0.69,$6.46
+"Apr 03, 2016",United States,tablet,In-Page,728x90,"23,575",n/a,"3,335",$0.68,$2.26
+"Apr 03, 2016",United States,tablet,In-Page,300x250,"24,457",n/a,"6,054",$0.69,$4.20
+"Apr 03, 2016",United States,mobile,In-View,all,0,10,0,n/a,$0.00
+"Apr 03, 2016",United States,mobile,In-Page,all,"123,686","58,620","15,041",$0.64,$9.70
+"Apr 03, 2016",United States,mobile,In-Page,300x250,"61,757",n/a,"15,041",$0.64,$9.70
+"Apr 03, 2016",United States,desktop,In-Page,all,"37,921",0,"14,067",$0.66,$9.29
+"Apr 03, 2016",United States,desktop,In-Page,728x90,"18,105",n/a,"6,333",$0.67,$4.22
+"Apr 03, 2016",United States,desktop,In-Page,300x250,"19,816",n/a,"7,734",$0.66,$5.07
+"Apr 03, 2016",Rest of the World,tablet,In-View,all,0,1,0,n/a,$0.00
+"Apr 03, 2016",Rest of the World,tablet,In-Page,all,"76,577",0,"6,607",$0.50,$3.31
+"Apr 03, 2016",Rest of the World,tablet,In-Page,728x90,"36,418",n/a,"1,950",$0.50,$0.98
+"Apr 03, 2016",Rest of the World,tablet,In-Page,300x250,"40,159",n/a,"4,657",$0.50,$2.33
+"Apr 03, 2016",Rest of the World,mobile,In-View,all,0,38,0,n/a,$0.00
+"Apr 03, 2016",Rest of the World,mobile,In-Page,all,"215,625","102,021","12,440",$0.51,$6.34
+"Apr 03, 2016",Rest of the World,mobile,In-Page,300x250,"113,404",n/a,"12,440",$0.51,$6.34
+"Apr 03, 2016",Rest of the World,desktop,In-View,all,0,1,0,n/a,$0.00
+"Apr 03, 2016",Rest of the World,desktop,In-Page,all,"128,043",0,"10,695",$0.50,$5.35
+"Apr 03, 2016",Rest of the World,desktop,In-Page,728x90,"59,556",n/a,"3,192",$0.50,$1.60
+"Apr 03, 2016",Rest of the World,desktop,In-Page,300x250,"68,487",n/a,"7,503",$0.50,$3.75
+"Apr 02, 2016",United States,tablet,In-View,all,0,3,0,n/a,$0.00
+"Apr 02, 2016",United States,tablet,In-Page,all,"28,303",0,"7,057",$0.63,$4.48
+"Apr 02, 2016",United States,tablet,In-Page,728x90,"13,778",n/a,"2,363",$0.67,$1.58
+"Apr 02, 2016",United States,tablet,In-Page,300x250,"14,525",n/a,"4,694",$0.62,$2.90
+"Apr 02, 2016",United States,mobile,In-View,all,0,14,0,n/a,$0.00
+"Apr 02, 2016",United States,mobile,In-Page,all,"85,996","39,963","14,678",$0.57,$8.41
+"Apr 02, 2016",United States,mobile,In-Page,300x250,"43,707",n/a,"14,678",$0.57,$8.41
+"Apr 02, 2016",United States,desktop,In-Page,all,"25,492",0,"9,321",$0.70,$6.55
+"Apr 02, 2016",United States,desktop,In-Page,728x90,"11,832",n/a,"4,024",$0.72,$2.90
+"Apr 02, 2016",United States,desktop,In-Page,300x250,"13,660",n/a,"5,297",$0.69,$3.65
+"Apr 02, 2016",Rest of the World,tablet,In-View,all,0,5,0,n/a,$0.00
+"Apr 02, 2016",Rest of the World,tablet,In-Page,all,"55,155",0,"5,456",$0.50,$2.73
+"Apr 02, 2016",Rest of the World,tablet,In-Page,728x90,"25,758",n/a,"1,543",$0.50,$0.77
+"Apr 02, 2016",Rest of the World,tablet,In-Page,300x250,"29,397",n/a,"3,913",$0.50,$1.96
+"Apr 02, 2016",Rest of the World,mobile,In-View,all,0,96,0,n/a,$0.00
+"Apr 02, 2016",Rest of the World,mobile,In-Page,all,"157,655","73,047","10,934",$0.50,$5.47
+"Apr 02, 2016",Rest of the World,mobile,In-Page,300x250,"84,005",n/a,"10,934",$0.50,$5.47
+"Apr 02, 2016",Rest of the World,desktop,In-View,all,0,3,0,n/a,$0.00
+"Apr 02, 2016",Rest of the World,desktop,In-Page,all,"91,056",0,"8,913",$0.50,$4.46
+"Apr 02, 2016",Rest of the World,desktop,In-Page,728x90,"41,281",n/a,"2,320",$0.50,$1.16
+"Apr 02, 2016",Rest of the World,desktop,In-Page,300x250,"49,775",n/a,"6,593",$0.50,$3.30
+"Apr 01, 2016",United States,tablet,In-View,all,0,9,0,n/a,$0.00
+"Apr 01, 2016",United States,tablet,In-Page,all,"27,384",0,"5,228",$0.71,$3.70
+"Apr 01, 2016",United States,tablet,In-Page,728x90,"13,279",n/a,"1,961",$0.74,$1.46
+"Apr 01, 2016",United States,tablet,In-Page,300x250,"14,105",n/a,"3,267",$0.69,$2.24
+"Apr 01, 2016",United States,mobile,In-View,all,0,63,0,n/a,$0.00
+"Apr 01, 2016",United States,mobile,In-Page,all,"91,177","42,073","12,106",$0.55,$6.71
+"Apr 01, 2016",United States,mobile,In-Page,300x250,"46,104",n/a,"12,106",$0.55,$6.71
+"Apr 01, 2016",United States,desktop,In-View,all,0,10,0,n/a,$0.00
+"Apr 01, 2016",United States,desktop,In-Page,all,"32,355",0,"10,392",$0.70,$7.31
+"Apr 01, 2016",United States,desktop,In-Page,728x90,"15,080",n/a,"4,782",$0.69,$3.30
+"Apr 01, 2016",United States,desktop,In-Page,300x250,"17,275",n/a,"5,610",$0.71,$4.01
+"Apr 01, 2016",Rest of the World,tablet,In-View,all,0,13,0,n/a,$0.00
+"Apr 01, 2016",Rest of the World,tablet,In-Page,all,"51,318",0,"4,990",$0.50,$2.50
+"Apr 01, 2016",Rest of the World,tablet,In-Page,728x90,"24,122",n/a,"1,540",$0.50,$0.77
+"Apr 01, 2016",Rest of the World,tablet,In-Page,300x250,"27,196",n/a,"3,450",$0.50,$1.73
+"Apr 01, 2016",Rest of the World,mobile,In-View,all,0,303,0,n/a,$0.00
+"Apr 01, 2016",Rest of the World,mobile,In-Page,all,"165,784","76,911","12,162",$0.50,$6.08
+"Apr 01, 2016",Rest of the World,mobile,In-Page,300x250,"88,586",n/a,"12,162",$0.50,$6.08
+"Apr 01, 2016",Rest of the World,desktop,In-View,all,0,12,0,n/a,$0.00
+"Apr 01, 2016",Rest of the World,desktop,In-Page,all,"101,631",0,"9,902",$0.50,$4.96
+"Apr 01, 2016",Rest of the World,desktop,In-Page,728x90,"45,447",n/a,"2,910",$0.50,$1.46
+"Apr 01, 2016",Rest of the World,desktop,In-Page,300x250,"56,184",n/a,"6,992",$0.50,$3.50
+"Mar 31, 2016",United States,tablet,In-View,all,0,"2,807",0,n/a,$0.00
+"Mar 31, 2016",United States,tablet,In-Page,all,"29,754",0,"7,351",$0.64,$4.68
+"Mar 31, 2016",United States,tablet,In-Page,728x90,"14,609",n/a,"3,083",$0.61,$1.88
+"Mar 31, 2016",United States,tablet,In-Page,300x250,"15,145",n/a,"4,268",$0.66,$2.80
+"Mar 31, 2016",United States,mobile,In-View,all,0,"15,723",0,n/a,$0.00
+"Mar 31, 2016",United States,mobile,In-Page,all,"87,097","41,325","6,299",$0.51,$3.19
+"Mar 31, 2016",United States,mobile,In-Page,300x250,"42,650",n/a,"6,299",$0.51,$3.19
+"Mar 31, 2016",United States,desktop,In-View,all,0,"1,122",0,n/a,$0.00
+"Mar 31, 2016",United States,desktop,In-Page,all,"26,357",0,"10,925",$0.57,$6.25
+"Mar 31, 2016",United States,desktop,In-Page,728x90,"12,495",n/a,"5,122",$0.56,$2.85
+"Mar 31, 2016",United States,desktop,In-Page,300x250,"13,862",n/a,"5,803",$0.59,$3.40
+"Mar 31, 2016",Rest of the World,tablet,In-View,all,0,"5,342",0,n/a,$0.00
+"Mar 31, 2016",Rest of the World,tablet,In-Page,all,"43,025",0,"5,166",$0.50,$2.58
+"Mar 31, 2016",Rest of the World,tablet,In-Page,728x90,"22,135",n/a,"1,965",$0.50,$0.98
+"Mar 31, 2016",Rest of the World,tablet,In-Page,300x250,"20,890",n/a,"3,201",$0.50,$1.60
+"Mar 31, 2016",Rest of the World,mobile,In-View,all,0,"30,191",0,n/a,$0.00
+"Mar 31, 2016",Rest of the World,mobile,In-Page,all,"136,599","71,595","6,039",$0.50,$3.02
+"Mar 31, 2016",Rest of the World,mobile,In-Page,300x250,"65,210",n/a,"6,039",$0.50,$3.02
+"Mar 31, 2016",Rest of the World,desktop,In-View,all,0,"2,636",0,n/a,$0.00
+"Mar 31, 2016",Rest of the World,desktop,In-Page,all,"81,550",0,"8,849",$0.50,$4.43
+"Mar 31, 2016",Rest of the World,desktop,In-Page,728x90,"40,666",n/a,"3,714",$0.50,$1.86
+"Mar 31, 2016",Rest of the World,desktop,In-Page,300x250,"40,884",n/a,"5,135",$0.50,$2.57
+"Mar 30, 2016",United States,tablet,In-View,all,0,"7,647",0,n/a,$0.00
+"Mar 30, 2016",United States,tablet,In-Page,all,"30,183",0,"8,213",$0.76,$6.22
+"Mar 30, 2016",United States,tablet,In-Page,728x90,"14,726",n/a,"3,525",$0.69,$2.44
+"Mar 30, 2016",United States,tablet,In-Page,300x250,"15,457",n/a,"4,688",$0.81,$3.78
+"Mar 30, 2016",United States,mobile,In-View,all,0,"36,644",0,n/a,$0.00
+"Mar 30, 2016",United States,mobile,In-Page,all,"84,517","47,211",44,$0.45,$0.02
+"Mar 30, 2016",United States,mobile,In-Page,300x250,"37,277",n/a,44,$0.45,$0.02
+"Mar 30, 2016",United States,desktop,In-View,all,0,"3,096",0,n/a,$0.00
+"Mar 30, 2016",United States,desktop,In-Page,all,"24,069",0,"12,114",$0.73,$8.85
+"Mar 30, 2016",United States,desktop,In-Page,728x90,"11,837",n/a,"5,934",$0.73,$4.36
+"Mar 30, 2016",United States,desktop,In-Page,300x250,"12,232",n/a,"6,180",$0.73,$4.49
+"Mar 30, 2016",Rest of the World,tablet,In-View,all,0,"10,867",0,n/a,$0.00
+"Mar 30, 2016",Rest of the World,tablet,In-Page,all,"45,098",0,"4,173",$0.55,$2.28
+"Mar 30, 2016",Rest of the World,tablet,In-Page,728x90,"26,059",n/a,"2,173",$0.53,$1.15
+"Mar 30, 2016",Rest of the World,tablet,In-Page,300x250,"19,039",n/a,"2,000",$0.57,$1.13
+"Mar 30, 2016",Rest of the World,mobile,In-View,all,0,"52,223",0,n/a,$0.00
+"Mar 30, 2016",Rest of the World,mobile,In-Page,all,"145,864","92,581",81,$0.62,$0.05
+"Mar 30, 2016",Rest of the World,mobile,In-Page,300x250,"53,300",n/a,81,$0.62,$0.05
+"Mar 30, 2016",Rest of the World,desktop,In-View,all,0,"4,806",0,n/a,$0.00
+"Mar 30, 2016",Rest of the World,desktop,In-Page,all,"90,416",0,"6,862",$0.54,$3.73
+"Mar 30, 2016",Rest of the World,desktop,In-Page,728x90,"48,445",n/a,"3,643",$0.53,$1.94
+"Mar 30, 2016",Rest of the World,desktop,In-Page,300x250,"41,971",n/a,"3,219",$0.56,$1.79
+"Mar 29, 2016",United States,tablet,In-View,all,0,"8,943",0,n/a,$0.00
+"Mar 29, 2016",United States,tablet,In-Page,all,"41,406",0,"8,207",$0.83,$6.80
+"Mar 29, 2016",United States,tablet,In-Page,728x90,"19,926",n/a,"3,211",$0.75,$2.42
+"Mar 29, 2016",United States,tablet,In-Page,300x250,"21,480",n/a,"4,996",$0.88,$4.38
+"Mar 29, 2016",United States,mobile,In-View,all,0,"64,622",0,n/a,$0.00
+"Mar 29, 2016",United States,mobile,In-Page,all,"142,757","76,974",26,$0.77,$0.02
+"Mar 29, 2016",United States,mobile,In-Page,300x250,"65,768",n/a,26,$0.77,$0.02
+"Mar 29, 2016",United States,desktop,In-View,all,0,"2,999",0,n/a,$0.00
+"Mar 29, 2016",United States,desktop,In-Page,all,"44,880",0,"13,178",$0.81,$10.63
+"Mar 29, 2016",United States,desktop,In-Page,728x90,"22,109",n/a,"6,269",$0.84,$5.28
+"Mar 29, 2016",United States,desktop,In-Page,300x250,"22,771",n/a,"6,909",$0.77,$5.35
+"Mar 29, 2016",Rest of the World,tablet,In-View,all,0,"13,319",0,n/a,$0.00
+"Mar 29, 2016",Rest of the World,tablet,In-Page,all,"60,487",0,"3,498",$0.61,$2.12
+"Mar 29, 2016",Rest of the World,tablet,In-Page,728x90,"35,869",n/a,"1,692",$0.60,$1.02
+"Mar 29, 2016",Rest of the World,tablet,In-Page,300x250,"24,618",n/a,"1,806",$0.61,$1.10
+"Mar 29, 2016",Rest of the World,mobile,In-View,all,0,"68,671",0,n/a,$0.00
+"Mar 29, 2016",Rest of the World,mobile,In-Page,all,"195,095","124,941",62,$0.65,$0.04
+"Mar 29, 2016",Rest of the World,mobile,In-Page,300x250,"70,133",n/a,62,$0.65,$0.04
+"Mar 29, 2016",Rest of the World,desktop,In-View,all,0,"7,079",0,n/a,$0.00
+"Mar 29, 2016",Rest of the World,desktop,In-Page,all,"130,504",0,"6,696",$0.61,$4.11
+"Mar 29, 2016",Rest of the World,desktop,In-Page,728x90,"75,541",n/a,"3,527",$0.57,$2.01
+"Mar 29, 2016",Rest of the World,desktop,In-Page,300x250,"54,963",n/a,"3,169",$0.66,$2.10
+"Mar 28, 2016",United States,tablet,In-View,all,0,"3,202",0,n/a,$0.00
+"Mar 28, 2016",United States,tablet,In-Page,all,"14,088",0,"2,051",$0.71,$1.45
+"Mar 28, 2016",United States,tablet,In-Page,728x90,"6,786",n/a,771,$0.66,$0.51
+"Mar 28, 2016",United States,tablet,In-Page,300x250,"7,302",n/a,"1,280",$0.73,$0.94
+"Mar 28, 2016",United States,mobile,In-View,all,0,"17,292",0,n/a,$0.00
+"Mar 28, 2016",United States,mobile,In-Page,all,"37,320","19,711",1,$0.00,$0.00
+"Mar 28, 2016",United States,mobile,In-Page,300x250,"17,595",n/a,1,$0.00,$0.00
+"Mar 28, 2016",United States,desktop,In-View,all,0,"1,010",0,n/a,$0.00
+"Mar 28, 2016",United States,desktop,In-Page,all,"14,813",0,"3,969",$0.75,$2.97
+"Mar 28, 2016",United States,desktop,In-Page,728x90,"7,344",n/a,"2,038",$0.79,$1.62
+"Mar 28, 2016",United States,desktop,In-Page,300x250,"7,469",n/a,"1,931",$0.70,$1.35
+"Mar 28, 2016",Rest of the World,tablet,In-View,all,0,"3,582",0,n/a,$0.00
+"Mar 28, 2016",Rest of the World,tablet,In-Page,all,"16,422",0,912,$0.60,$0.55
+"Mar 28, 2016",Rest of the World,tablet,In-Page,728x90,"9,483",n/a,464,$0.54,$0.25
+"Mar 28, 2016",Rest of the World,tablet,In-Page,300x250,"6,939",n/a,448,$0.67,$0.30
+"Mar 28, 2016",Rest of the World,mobile,In-View,all,0,"18,432",0,n/a,$0.00
+"Mar 28, 2016",Rest of the World,mobile,In-Page,all,"49,342","30,573",21,$0.48,$0.01
+"Mar 28, 2016",Rest of the World,mobile,In-Page,300x250,"18,767",n/a,21,$0.48,$0.01
+"Mar 28, 2016",Rest of the World,desktop,In-View,all,0,"2,347",0,n/a,$0.00
+"Mar 28, 2016",Rest of the World,desktop,In-Page,all,"35,122",0,"2,372",$0.56,$1.34
+"Mar 28, 2016",Rest of the World,desktop,In-Page,728x90,"20,278",n/a,"1,325",$0.53,$0.70
+"Mar 28, 2016",Rest of the World,desktop,In-Page,300x250,"14,844",n/a,"1,047",$0.61,$0.64
+"Mar 27, 2016",United States,tablet,In-View,all,0,360,0,n/a,$0.00
+"Mar 27, 2016",United States,tablet,In-Page,all,"2,553",0,564,$0.74,$0.42
+"Mar 27, 2016",United States,tablet,In-Page,728x90,"1,195",n/a,240,$0.83,$0.20
+"Mar 27, 2016",United States,tablet,In-Page,300x250,"1,358",n/a,324,$0.68,$0.22
+"Mar 27, 2016",United States,mobile,In-View,all,0,"4,740",0,n/a,$0.00
+"Mar 27, 2016",United States,mobile,In-Page,all,"9,948","5,124",0,n/a,$0.00
+"Mar 27, 2016",United States,desktop,In-View,all,0,140,0,n/a,$0.00
+"Mar 27, 2016",United States,desktop,In-Page,all,"2,736",0,"1,561",$0.72,$1.13
+"Mar 27, 2016",United States,desktop,In-Page,728x90,"1,259",n/a,814,$0.77,$0.63
+"Mar 27, 2016",United States,desktop,In-Page,300x250,"1,477",n/a,747,$0.67,$0.50
+"Mar 27, 2016",Rest of the World,tablet,In-View,all,0,771,0,n/a,$0.00
+"Mar 27, 2016",Rest of the World,tablet,In-Page,all,"4,839",0,502,$0.54,$0.27
+"Mar 27, 2016",Rest of the World,tablet,In-Page,728x90,"2,515",n/a,224,$0.58,$0.13
+"Mar 27, 2016",Rest of the World,tablet,In-Page,300x250,"2,324",n/a,278,$0.50,$0.14
+"Mar 27, 2016",Rest of the World,mobile,In-View,all,0,"7,721",0,n/a,$0.00
+"Mar 27, 2016",Rest of the World,mobile,In-Page,all,"17,364","9,482",8,$0.00,$0.00
+"Mar 27, 2016",Rest of the World,mobile,In-Page,300x250,"7,874",n/a,8,$0.00,$0.00
+"Mar 27, 2016",Rest of the World,desktop,In-View,all,0,712,0,n/a,$0.00
+"Mar 27, 2016",Rest of the World,desktop,In-Page,all,"15,627",0,"1,274",$0.52,$0.66
+"Mar 27, 2016",Rest of the World,desktop,In-Page,728x90,"8,298",n/a,718,$0.50,$0.36
+"Mar 27, 2016",Rest of the World,desktop,In-Page,300x250,"7,329",n/a,556,$0.54,$0.30
+"Mar 26, 2016",United States,tablet,In-View,all,0,424,0,n/a,$0.00
+"Mar 26, 2016",United States,tablet,In-Page,all,"2,931",0,739,$0.69,$0.51
+"Mar 26, 2016",United States,tablet,In-Page,728x90,"1,369",n/a,300,$0.70,$0.21
+"Mar 26, 2016",United States,tablet,In-Page,300x250,"1,562",n/a,439,$0.68,$0.30
+"Mar 26, 2016",United States,mobile,In-View,all,0,"4,982",0,n/a,$0.00
+"Mar 26, 2016",United States,mobile,In-Page,all,"10,411","5,353",0,n/a,$0.00
+"Mar 26, 2016",United States,desktop,In-View,all,0,118,0,n/a,$0.00
+"Mar 26, 2016",United States,desktop,In-Page,all,"2,360",0,"1,375",$0.73,$1.00
+"Mar 26, 2016",United States,desktop,In-Page,728x90,"1,276",n/a,860,$0.77,$0.66
+"Mar 26, 2016",United States,desktop,In-Page,300x250,"1,084",n/a,515,$0.66,$0.34
+"Mar 26, 2016",Rest of the World,tablet,In-View,all,0,951,0,n/a,$0.00
+"Mar 26, 2016",Rest of the World,tablet,In-Page,all,"6,001",0,674,$0.55,$0.37
+"Mar 26, 2016",Rest of the World,tablet,In-Page,728x90,"2,788",n/a,233,$0.60,$0.14
+"Mar 26, 2016",Rest of the World,tablet,In-Page,300x250,"3,213",n/a,441,$0.52,$0.23
+"Mar 26, 2016",Rest of the World,mobile,In-View,all,0,"10,833",0,n/a,$0.00
+"Mar 26, 2016",Rest of the World,mobile,In-Page,all,"21,796","10,726",8,$0.00,$0.00
+"Mar 26, 2016",Rest of the World,mobile,In-Page,300x250,"11,058",n/a,8,$0.00,$0.00
+"Mar 26, 2016",Rest of the World,desktop,In-View,all,0,887,0,n/a,$0.00
+"Mar 26, 2016",Rest of the World,desktop,In-Page,all,"18,806",0,"1,652",$0.54,$0.90
+"Mar 26, 2016",Rest of the World,desktop,In-Page,728x90,"9,077",n/a,741,$0.54,$0.40
+"Mar 26, 2016",Rest of the World,desktop,In-Page,300x250,"9,729",n/a,911,$0.55,$0.50
+"Mar 25, 2016",United States,tablet,In-View,all,0,494,0,n/a,$0.00
+"Mar 25, 2016",United States,tablet,In-Page,all,"2,939",0,689,$0.74,$0.51
+"Mar 25, 2016",United States,tablet,In-Page,728x90,"1,363",n/a,273,$0.66,$0.18
+"Mar 25, 2016",United States,tablet,In-Page,300x250,"1,576",n/a,416,$0.79,$0.33
+"Mar 25, 2016",United States,mobile,In-View,all,0,"5,926",0,n/a,$0.00
+"Mar 25, 2016",United States,mobile,In-Page,all,"12,007","6,033",0,n/a,$0.00
+"Mar 25, 2016",United States,desktop,In-View,all,0,239,0,n/a,$0.00
+"Mar 25, 2016",United States,desktop,In-Page,all,"4,489",0,"2,706",$0.73,$1.97
+"Mar 25, 2016",United States,desktop,In-Page,728x90,"1,918",n/a,"1,212",$0.77,$0.93
+"Mar 25, 2016",United States,desktop,In-Page,300x250,"2,571",n/a,"1,494",$0.70,$1.04
+"Mar 25, 2016",Rest of the World,tablet,In-View,all,0,"1,088",0,n/a,$0.00
+"Mar 25, 2016",Rest of the World,tablet,In-Page,all,"7,187",0,747,$0.56,$0.42
+"Mar 25, 2016",Rest of the World,tablet,In-Page,728x90,"3,337",n/a,260,$0.62,$0.16
+"Mar 25, 2016",Rest of the World,tablet,In-Page,300x250,"3,850",n/a,487,$0.53,$0.26
+"Mar 25, 2016",Rest of the World,mobile,In-View,all,0,"14,919",0,n/a,$0.00
+"Mar 25, 2016",Rest of the World,mobile,In-Page,all,"28,661","13,612",5,$0.00,$0.00
+"Mar 25, 2016",Rest of the World,mobile,In-Page,300x250,"15,041",n/a,5,$0.00,$0.00
+"Mar 25, 2016",Rest of the World,desktop,In-View,all,0,"1,520",0,n/a,$0.00
+"Mar 25, 2016",Rest of the World,desktop,In-Page,all,"25,253",0,"2,327",$0.58,$1.34
+"Mar 25, 2016",Rest of the World,desktop,In-Page,728x90,"12,173",n/a,"1,093",$0.56,$0.61
+"Mar 25, 2016",Rest of the World,desktop,In-Page,300x250,"13,080",n/a,"1,234",$0.59,$0.73
+"Mar 24, 2016",United States,tablet,In-View,all,0,205,0,n/a,$0.00
+"Mar 24, 2016",United States,tablet,In-Page,all,"1,692",0,273,$0.70,$0.19
+"Mar 24, 2016",United States,tablet,In-Page,728x90,773,n/a,105,$0.67,$0.07
+"Mar 24, 2016",United States,tablet,In-Page,300x250,919,n/a,168,$0.71,$0.12
+"Mar 24, 2016",United States,mobile,In-View,all,0,"2,711",0,n/a,$0.00
+"Mar 24, 2016",United States,mobile,In-Page,all,"5,536","2,232",0,n/a,$0.00
+"Mar 24, 2016",United States,desktop,In-View,all,0,205,0,n/a,$0.00
+"Mar 24, 2016",United States,desktop,In-Page,all,"3,702",0,"1,430",$0.66,$0.95
+"Mar 24, 2016",United States,desktop,In-Page,728x90,"1,538",n/a,649,$0.68,$0.44
+"Mar 24, 2016",United States,desktop,In-Page,300x250,"2,164",n/a,781,$0.65,$0.51
+"Mar 24, 2016",Rest of the World,tablet,In-View,all,0,325,0,n/a,$0.00
+"Mar 24, 2016",Rest of the World,tablet,In-Page,all,"2,485",0,208,$0.53,$0.11
+"Mar 24, 2016",Rest of the World,tablet,In-Page,728x90,"1,136",n/a,68,$0.59,$0.04
+"Mar 24, 2016",Rest of the World,tablet,In-Page,300x250,"1,349",n/a,140,$0.50,$0.07
+"Mar 24, 2016",Rest of the World,mobile,In-View,all,0,"4,174",0,n/a,$0.00
+"Mar 24, 2016",Rest of the World,mobile,In-Page,all,"8,230","3,718",1,$0.00,$0.00
+"Mar 24, 2016",Rest of the World,mobile,In-Page,300x250,"4,387",n/a,1,$0.00,$0.00
+"Mar 24, 2016",Rest of the World,desktop,In-View,all,0,514,0,n/a,$0.00
+"Mar 24, 2016",Rest of the World,desktop,In-Page,all,"8,390",0,737,$0.54,$0.40
+"Mar 24, 2016",Rest of the World,desktop,In-Page,728x90,"4,033",n/a,338,$0.53,$0.18
+"Mar 24, 2016",Rest of the World,desktop,In-Page,300x250,"4,357",n/a,399,$0.55,$0.22
