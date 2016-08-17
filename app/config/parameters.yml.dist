@@ -90,6 +90,8 @@ parameters:
             pattern: '#google_ad_client\s*=\s*.*\n\s*/\*\s*([^*]+)\s*\*/#'
         cpm-base:
             use-size: true
+        rubicon:
+            pattern: '#Zone:\s*([^ ]+)#'
 
     tc.bulk_upload.site.index:
         name: 0
