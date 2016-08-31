@@ -11,8 +11,9 @@ class RedisNamespacedCache extends NamespaceCacheProvider
      */
     protected $redis;
 
-    public function __construct($host = '127.0.0.1', $port = 6379)
+    public function __construct($maxCacheVersion, $host = '127.0.0.1', $port = 6379)
     {
+        parent::__construct($maxCacheVersion);
         $redis = new Redis();
         $redis->connect($host, $port);
 

@@ -39,7 +39,7 @@ parameters:
     tc.legacy.tag_cache.redis_port: 6379
 
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
-
+    tc.max_cache_version: 20 # maximum cache version of a specific key is kept in Redis cache
     tc.billing.default_cpm_rate: 0.025
     tc.billing.thresholds:
         - {threshold: 100000000, cpmRate: 0.022}

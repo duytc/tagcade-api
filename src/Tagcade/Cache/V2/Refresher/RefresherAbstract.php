@@ -38,12 +38,7 @@ abstract class RefresherAbstract
 
         // create the new version of the cache first
         $this->cache->setNamespaceVersion($newVersion);
-
         $this->cache->save($cacheKey, $this->createCacheDataForEntity($model));
-
-        // delete the old version of the cache
-        $this->cache->setNamespaceVersion($oldVersion);
-
         $this->cache->deleteAll();
 
         $this->workerManager->updateCdnForEntity($model);

@@ -3,6 +3,7 @@ services:
     tagcade.cache.legacy.cache.tag.redis_namespace_cache:
         class: Tagcade\Cache\Legacy\Cache\Tag\RedisNamespacedCache
         arguments:
+            - %tc.max_cache_version%
             - %tc.legacy.tag_cache.redis_host%
             - %tc.legacy.tag_cache.redis_port%
 
@@ -51,4 +52,3 @@ services:
         class: Tagcade\Cache\ConfigurationCache
         arguments:
             - @tagcade.legacy.cache.performance_report_data
-
