@@ -8,6 +8,7 @@ use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface TagCacheManagerInterface
 {
@@ -26,10 +27,13 @@ interface TagCacheManagerInterface
     public function refreshCacheForAdNetwork(AdNetworkInterface $adNetwork, $version = 'All');
 
     /**
-     * @param $version
+     * refresh cache for a/all publisher(s) with version
+     * 
+     * @param null|PublisherInterface $publisher null if refresh all publisher, default = null
+     * @param $version, default = All for all version
      * @return $this
      */
-    public function refreshCache($version = 'All');
+    public function refreshCache($publisher = null, $version = 'All');
 
     public function refreshCacheForDynamicAdSlot(DynamicAdSlotInterface $dynamicAdSlot);
 

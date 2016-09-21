@@ -1,0 +1,55 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport:
+    exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+            type: DateTime<'Y-m-d'>
+        requests:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        bids:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        bidRate:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        errors:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        errorRate:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        impressions:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        fillRate:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        clicks:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        clickThroughRate:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        billedAmount:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        billedRate:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        adTagRequests:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        adTagErrors:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        adTagBids:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        blocks:
+            expose: true
+            groups: [platform_account.detail, platform_account.summary]
+        publisher:
+            expose: true
+            groups: [platform_account.detail]

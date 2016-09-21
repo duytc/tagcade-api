@@ -8,25 +8,22 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\ChannelManagerInterface;
 use Tagcade\DomainManager\ManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
+use Tagcade\DomainManager\VideoWaterfallTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
-use Tagcade\Model\Core\DisplayAdSlot;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Core\VideoWaterfallTag;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
 trait GetEntityFromIdTrait
 {
-
     /**
      * Get display ad slot of id ad slot array
      * @param $ids
      * @return array|\Tagcade\Model\ModelInterface[]
      */
-    protected function getAdSlots ($ids)
+    protected function getAdSlots($ids)
     {
         $myIds = $this->convertInputToArray($ids);
         /** @var AdSlotManagerInterface $channelManager */
@@ -65,6 +62,22 @@ trait GetEntityFromIdTrait
         $siteManager = $this->get('tagcade.domain_manager.site');
 
         return $this->createEntitiesObject($siteManager, $myIds, SiteInterface::class);
+    }
+
+    /**
+     * get VideoWaterfallTag(s) from id(s)
+     *
+     * @param mixed $ids one or array of videoWaterfallTag ids
+     * @return array|VideoWaterfallTag[]
+     */
+    protected function getVideoWaterfallTags($ids)
+    {
+        $myIds = $this->convertInputToArray($ids);
+
+        /** @var VideoWaterfallTagManagerInterface $videoWaterfallTagManager */
+        $videoWaterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');
+
+        return $this->createEntitiesObject($videoWaterfallTagManager, $myIds, VideoWaterfallTag::class);
     }
 
     /**

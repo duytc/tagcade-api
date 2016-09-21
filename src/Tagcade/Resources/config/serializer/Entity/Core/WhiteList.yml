@@ -1,0 +1,18 @@
+Tagcade\Entity\Core\WhiteList:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [whitelist.detail, whitelist.summary]
+        name:
+            expose: true
+            groups: [whitelist.detail, whitelist.summary]
+        suffixKey:
+            expose: true
+            groups: [whitelist.detail, whitelist.summary]
+        publisher:
+            expose: true
+            groups: [whitelist.detail, whitelist.summary]
+        domains:
+            expose: true
+            groups: [whitelist.detail, whitelist.summary]

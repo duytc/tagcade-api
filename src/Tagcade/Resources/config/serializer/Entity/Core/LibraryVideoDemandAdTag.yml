@@ -1,0 +1,34 @@
+Tagcade\Entity\Core\LibraryVideoDemandAdTag:
+    exclusion_policy: ALL
+    virtual_properties:
+        getLinkedCount:
+            type: string
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail]
+    properties:
+        id:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+        tagURL:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+        name:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+        timeout:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail]
+        targeting:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail]
+        sellPrice:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail]
+#        deletedAt:
+#            expose: true
+#            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+        videoDemandPartner:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+#        videoDemandAdTags:
+#            expose: true
+#            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]

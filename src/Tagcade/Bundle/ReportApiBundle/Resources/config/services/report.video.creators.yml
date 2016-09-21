@@ -1,0 +1,75 @@
+parameters:
+    tagcade.repository.source_report.report.class: Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface
+
+services:
+
+    ### Performance report creators
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.platform.demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\DemandAdTag
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.platform.waterfall_tag:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\WaterfallTag
+        arguments:
+            - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.demand_ad_tag'
+            - '@tagcade.service.report.video_report.billing.billing_calculator'
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.platform.publisher:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\Publisher
+        arguments:
+            - '@tagcade.domain_manager.video_waterfall_tag'
+            - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.waterfall_tag'
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.platform.account:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\Account
+        arguments:
+            - '@tagcade.domain_manager.video_publisher'
+            - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.publisher'
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.platform.platform:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\Platform
+        arguments:
+            - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.account'
+
+    ## Demand partner report creators
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.demand_partner.demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\DemandPartner\DemandAdTag
+
+    tagcade.service.report.video_report.creator.creators.hierarchy.demand_partner.demand_partner:
+        class: Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\DemandPartner\DemandPartner
+        arguments:
+            - '@tagcade.domain_manager.video_demand_ad_tag'
+            - '@tagcade.service.report.video_report.creator.creators.hierarchy.demand_partner.demand_ad_tag'
+
+    # legacy access to live performance report data
+    tagcade.service.report.video_report.counter.cache_event_counter:
+        class: Tagcade\Service\Report\VideoReport\Counter\VideoCacheEventCounter
+        arguments:
+            - '@tagcade.legacy.cache.performance_report_data'
+
+    ### Report creator service
+
+    tagcade.service.report.video_report.creator.report_creator:
+        class: Tagcade\Service\Report\VideoReport\Creator\ReportCreator
+        arguments:
+            -
+                # platform hierarchy
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.demand_ad_tag'
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.waterfall_tag'
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.account'
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.publisher'
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.platform.platform'
+                # demand partner hierarchy
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.demand_partner.demand_ad_tag'
+                - '@tagcade.service.report.video_report.creator.creators.hierarchy.demand_partner.demand_partner'
+
+            - '@tagcade.service.report.video_report.counter.cache_event_counter'
+
+    tagcade.service.report.video_report.creator.daily_report_creator:
+        class: Tagcade\Service\Report\VideoReport\Creator\DailyReportCreator
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade.service.report.video_report.creator.report_creator'
+        calls:
+            - [setLogger, [@logger]]

@@ -1,14 +1,13 @@
 services:
-
     ## Update ad tag html before ad tag persisted
-    tagcade_api.event_listener.UpdateAdTagHtmlListener:
+    tagcade_api.event_listener.update_ad_tag_html_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagHtmlListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
 
     ## Update ad tag html before ad tag persisted
-    tagcade_api.event_listener.UpdatePartnerTagIdListener:
+    tagcade_api.event_listener.update_partner_tag_id_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdatePartnerTagIdListener
         arguments:
             - @tagcade_app.service.core.ad_tag.partner_tag_id_matcher
@@ -17,7 +16,7 @@ services:
             - { name: doctrine.event_listener, event: preUpdate }
 
     ## Update ad tag position, make sure its continuous
-    tagcade_api.event_listener.UpdateAdTagPositionListener:
+    tagcade_api.event_listener.update_ad_tag_position_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagPositionListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
@@ -25,7 +24,7 @@ services:
             - { name: doctrine.event_listener, event: preSoftDelete }
 
     ## Update expression in js, for tagcache latter
-    tagcade_api.event_listener.UpdateExpressionInJstListener:
+    tagcade_api.event_listener.update_expression_in_js_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExpressionInJsListener
         arguments:
             - @tagcade_api.service.expression_in_js_generator
@@ -34,24 +33,24 @@ services:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postFlush }
 
-    tagcade_api.event_listener.MoveAdTagToLibraryListener:
+    tagcade_api.event_listener.move_ad_tag_to_library_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\MoveAdTagToLibraryListener
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postFlush }
 
-    tagcade_api.event_listener.MoveDynamicAdSlotToLibraryListener:
+    tagcade_api.event_listener.move_dynamic_ad_slot_to_library_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\MoveDynamicAdSlotToLibraryListener
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
 
-    tagcade_api.event_listener.ResetStartingPositionListener:
+    tagcade_api.event_listener.reset_starting_position_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\ResetStartingPositionListener
         tags:
             - { name: doctrine.event_listener, event: preUpdate, priority: 100 }
             - { name: doctrine.event_listener, event: postSoftDelete }
 
-    tagcade_api.event_listener.UpdateAdTagCountForAdNetworkListener:
+    tagcade_api.event_listener.update_ad_tag_count_for_ad_network_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagCountForAdNetworkListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
@@ -59,7 +58,15 @@ services:
             - { name: doctrine.event_listener, event: preSoftDelete }
             - { name: doctrine.event_listener, event: postFlush}
 
-    tagcade_api.event_listener.UpdateExistingRonSlotDomainCacheListener:
+    tagcade_api.event_listener.update_demand_ad_tag_count_for_video_demand_partner_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateDemandAdTagCountForVideoDemandPartnerListener
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preSoftDelete }
+            - { name: doctrine.event_listener, event: postFlush}
+
+    tagcade_api.event_listener.update_existing_ron_slot_domain_cache_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonSlotDomainCacheListener
         arguments:
             - @tagcade.cache.configuration_cache
@@ -67,7 +74,7 @@ services:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postSoftDelete }
 
-    tagcade_api.event_listener.UpdateExistingRonTagSlotCacheListener:
+    tagcade_api.event_listener.update_existing_ron_tag_slot_cache_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonTagSlotCacheListener
         arguments:
             - @tagcade.cache.configuration_cache
@@ -75,26 +82,60 @@ services:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postSoftDelete }
 
-    tagcade_api.event_listener.UpdateSiteTokenListener:
+    tagcade_api.event_listener.update_site_token_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateSiteTokenListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preSoftDelete }
             - { name: doctrine.event_listener, event: preUpdate }
 
-    tagcade_api.event_listener.UpdateDeleteTokenForAdSlotListener:
+    tagcade_api.event_listener.update_delete_token_for_ad_slot_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateDeleteTokenForAdSlotListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preSoftDelete }
 
-    tagcade_api.event_listener.CorrectSiteDomainListener:
+    tagcade_api.event_listener.correct_site_domain_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\CorrectSiteDomainListener
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
 
-    tagcade_api.event_listener.CreateSubPublisherSegmentListener:
+    tagcade_api.event_listener.create_sub_publisher_segment_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\CreateSubPublisherSegmentListener
         tags:
             - { name: doctrine.event_listener, event: postPersist }
+
+    tagcade_api.event_listener.update_blacklist_cache_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateBlacklistCacheListener
+        arguments:
+            - '@tagcade.cache.video.domain_list_manager'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.update_white_list_cache_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateWhiteListCacheListener
+        arguments:
+            - '@tagcade.cache.video.domain_list_manager'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.video_demand_ad_tag_change_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\VideoDemandAdTagChangeListener
+        arguments:
+            - '@tagcade.cache.video.domain_list_manager'
+            - '%tc.builtin.black_list%'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.library_video_demand_ad_tag_change_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\LibraryVideoDemandAdTagChangeListener
+        arguments:
+            - '@tagcade.cache.video.domain_list_manager'
+            - '%tc.builtin.black_list%'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }

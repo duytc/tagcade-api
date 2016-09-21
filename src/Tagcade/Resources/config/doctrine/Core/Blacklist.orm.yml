@@ -1,0 +1,25 @@
+Tagcade\Entity\Core\Blacklist:
+    type: entity
+    table: core_black_list
+    repositoryClass: Tagcade\Repository\Core\BlacklistRepository
+    uniqueConstraints:
+        blacklist_unique_constrains:
+            columns:
+                - suffix_key
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        domains:
+             type: json_array
+        suffixKey:
+            type: string
+            nullable: true
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

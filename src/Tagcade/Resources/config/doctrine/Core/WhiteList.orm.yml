@@ -1,0 +1,25 @@
+Tagcade\Entity\Core\WhiteList:
+    type: entity
+    table: core_white_list
+    repositoryClass: Tagcade\Repository\Core\WhiteListRepository
+    uniqueConstraints:
+        white_list_unique_constrains:
+            columns:
+                - suffix_key
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        suffixKey:
+            type: string
+            nullable: true
+        domains:
+             type: json_array
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

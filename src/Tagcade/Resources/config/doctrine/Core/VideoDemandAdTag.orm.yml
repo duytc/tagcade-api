@@ -1,0 +1,43 @@
+Tagcade\Entity\Core\VideoDemandAdTag:
+    type: entity
+    table: video_demand_ad_tag
+    repositoryClass: Tagcade\Repository\Core\VideoDemandAdTagRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        priority:
+            type: integer
+            nullable: true
+        rotationWeight:
+            type: integer
+            nullable: true
+        active:
+            type: boolean
+            options:
+                default: true
+        deletedAt:
+            type: date
+            nullable: true
+        targeting:
+            type: json_array
+            nullable: true
+        targetingOverride:
+            type: boolean
+            options:
+                default: false
+    manyToOne:
+        libraryVideoDemandAdTag:
+            targetEntity: Tagcade\Entity\Core\LibraryVideoDemandAdTag
+            inversedBy: videoDemandAdTags
+            cascade: ['persist']
+        videoWaterfallTagItem:
+            targetEntity: Tagcade\Entity\Core\VideoWaterfallTagItem
+            inversedBy: videoDemandAdTags
+#            cascade: ['persist']

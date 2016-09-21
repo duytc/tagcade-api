@@ -1,0 +1,178 @@
+services:
+
+    ### Video report repositories
+
+    tagcade.repository.report.video_report.hierarchy.platform.platform:
+        class: Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoPlatformReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PlatformReport
+
+    tagcade.repository.report.video_report.hierarchy.platform.account:
+        class: Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoAccountReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport
+
+    tagcade.repository.report.video_report.hierarchy.platform.demand_ad_tag:
+        class: Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoDemandAdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\DemandAdTagReport
+
+    tagcade.repository.report.video_report.hierarchy.platform.waterfall_tag:
+        class: Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoWaterfallTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\WaterfallTagReport
+
+    tagcade.repository.report.video_report.hierarchy.platform.video_publisher:
+            class: Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoPublisherReportRepositoryInterface
+            factory_service: doctrine.orm.entity_manager
+            factory_method: getRepository
+            arguments:
+                - \Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PublisherReport
+
+    tagcade.repository.report.video_report.hierarchy.demand_partner.demand_partner:
+        class: Tagcade\Repository\Report\VideoReport\Hierarchy\DemandPartner\VideoDemandPartnerReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\VideoReport\Hierarchy\DemandPartner\DemandPartnerReport
+
+    tagcade.repository.report.video_report.hierarchy.demand_partner.demand_ad_tag:
+        class: Tagcade\Repository\Report\VideoReport\Hierarchy\DemandPartner\VideoDemandAdTagReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\VideoReport\Hierarchy\DemandPartner\DemandAdTagReport
+
+    ### Video report selectors
+
+    tagcade.service.report.video_report.selector.selectors.hierarchy.platform.platform:
+        class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\Platform\Platform
+        arguments:
+            - @tagcade.repository.report.video_report.hierarchy.platform.platform
+
+    tagcade.service.report.video_report.selector.selectors.hierarchy.platform.account:
+        class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\Platform\Account
+        arguments:
+            - @tagcade.repository.report.video_report.hierarchy.platform.account
+
+    tagcade.service.report.video_report.selector.selectors.hierarchy.platform.publisher:
+        class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\Platform\VideoPublisher
+        arguments:
+            - @tagcade.repository.report.video_report.hierarchy.platform.video_publisher
+
+    tagcade.service.report.video_report.selector.selectors.hierarchy.platform.demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\Platform\DemandAdTag
+        arguments:
+            - @tagcade.repository.report.video_report.hierarchy.platform.demand_ad_tag
+
+    tagcade.service.report.video_report.selector.selectors.hierarchy.platform.waterfall_tag:
+            class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\Platform\WaterfallTag
+            arguments:
+                - @tagcade.repository.report.video_report.hierarchy.platform.waterfall_tag
+
+    tagcade.service.report.video_report.selector.selectors.hierarchy.demand_partner.demand_partner:
+            class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\DemandPartner\DemandPartner
+            arguments:
+                - @tagcade.repository.report.video_report.hierarchy.demand_partner.demand_partner
+    tagcade.service.report.video_report.selector.selectors.hierarchy.demand_partner.demand_ad_tag:
+                class: Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\DemandPartner\DemandAdTag
+                arguments:
+                    - @tagcade.repository.report.video_report.hierarchy.demand_partner.demand_ad_tag
+
+    ### Video report transformers
+    tagcade.service.report.video_report.selector.transformers.account_demand_partner:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\AccountDemandPartnerTransformer
+
+    tagcade.service.report.video_report.selector.transformers.account_demand_waterfall_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\AccountWaterfallTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.account_demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\AccountDemandAdTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.account_video_publisher:
+            class: Tagcade\Service\Report\VideoReport\Selector\Transformers\AccountVideoPublisherTransformer
+
+    tagcade.service.report.video_report.selector.transformers.demand_partner_waterfall_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\DemandPartnerWaterfallTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.demand_partner_demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\DemandPartnerDemandAdTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.demand_partner_waterfal_tag_demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\DemandPartnerWaterfallTagDemandAdTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.waterfall_tag_demand_ad_tag:
+        class: Tagcade\Service\Report\VideoReport\Selector\Transformers\WaterfallTagDemandAdTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.video_publisher_demand_partner_demand_ad_tag:
+            class: Tagcade\Service\Report\VideoReport\Selector\Transformers\VideoPublisherDemandPartnerDemandAdTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.video_publisher_demand_ad_tag:
+            class: Tagcade\Service\Report\VideoReport\Selector\Transformers\VideoPublisherDemandAdTagTransformer
+
+    tagcade.service.report.video_report.selector.transformers.video_publisher_waterfall_tag:
+                class: Tagcade\Service\Report\VideoReport\Selector\Transformers\VideoPublisherWaterfallTagTransformer
+    ### Video report transformer
+    tagcade.service.report.video_report.selector.report_transformer:
+        class: Tagcade\Service\Report\VideoReport\Selector\VideoReportTransformer
+        arguments:
+            -
+                - @tagcade.service.report.video_report.selector.transformers.account_demand_partner
+                - @tagcade.service.report.video_report.selector.transformers.account_demand_waterfall_tag
+                - @tagcade.service.report.video_report.selector.transformers.account_demand_ad_tag
+                - @tagcade.service.report.video_report.selector.transformers.account_video_publisher
+                - @tagcade.service.report.video_report.selector.transformers.demand_partner_waterfall_tag
+                - @tagcade.service.report.video_report.selector.transformers.demand_partner_demand_ad_tag
+                - @tagcade.service.report.video_report.selector.transformers.waterfall_tag_demand_ad_tag
+                - @tagcade.service.report.video_report.selector.transformers.demand_partner_waterfal_tag_demand_ad_tag
+                - @tagcade.service.report.video_report.selector.transformers.video_publisher_demand_partner_demand_ad_tag
+                - @tagcade.service.report.video_report.selector.transformers.video_publisher_demand_ad_tag
+                - @tagcade.service.report.video_report.selector.transformers.video_publisher_waterfall_tag
+
+    ### Report grouper service
+
+    tagcade.service.report.video_report.grouper.report_grouper:
+        class: Tagcade\Service\Report\VideoReport\Selector\Grouper\VideoReportGrouper
+
+    ### Report selector service
+
+    tagcade.service.report.video_report.selector.report_selector:
+        class: Tagcade\Service\Report\VideoReport\Selector\ReportSelector
+        arguments:
+            -
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.platform.platform
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.platform.account
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.platform.publisher
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.platform.waterfall_tag
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.platform.demand_ad_tag
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.demand_partner.demand_partner
+                - @tagcade.service.report.video_report.selector.selectors.hierarchy.demand_partner.demand_ad_tag
+            - @tagcade.service.report.video_report.selector.report_transformer
+            - @tagcade.service.report.video_report.grouper.report_grouper
+            - @tagcade.service.date_util
+            - @tagcade.service.report.video_report.creator.report_creator
+
+    tagcade.service.report.video_report.selector.video_report_builder:
+        class: Tagcade\Service\Report\VideoReport\Selector\VideoReportBuilder
+        arguments:
+            - @tagcade.service.report.video_report.selector.report_selector
+            - @tagcade.service.report.video_report.selector.video_entity_service
+
+    tagcade.service.report.video_report.selector.video_entity_service:
+        class: Tagcade\Service\Report\VideoReport\VideoEntityService
+        arguments:
+            - @tagcade.repository.video_demand_ad_tag
+            - @tagcade.repository.video_waterfall_tag
+            - @tagcade.repository.video_demand_partner
+            - @tagcade_user.domain_manager.publisher
+            - @tagcade.repository.video_publisher
+
+

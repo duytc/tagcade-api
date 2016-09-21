@@ -1,0 +1,51 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\DemandPartner\DemandAdTagReport:
+    repositoryClass: Tagcade\Repository\Report\VideoReport\Hierarchy\DemandPartner\VideoDemandAdTagReportRepository
+    type: entity
+    table: video_report_demand_partner_demand_ad_tag_report
+    uniqueConstraints:
+        unique_platform_report_idx:
+            columns: [date, video_demand_ad_tag_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        requests:
+            type: integer
+        bids:
+            type: integer
+        bidRate:
+            type: decimal
+            scale: 4
+        errors:
+            type: integer
+            nullable: true
+        errorRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        impressions:
+            type: decimal
+        fillRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        clicks:
+            type: integer
+            nullable: true
+        clickThroughRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        blocks:
+            type: integer
+            nullable: true
+    manyToOne:
+        videoDemandAdTag:
+            targetEntity: Tagcade\Entity\Core\VideoDemandAdTag
+        superReport:
+            targetEntity: DemandPartnerReport
+            inversedBy: subReports

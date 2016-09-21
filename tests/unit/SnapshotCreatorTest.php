@@ -125,7 +125,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
             for($k=0;$k<3;$k++) {
                 $adTag = (new Tagcade\Entity\Core\AdTag())
                     ->setLibraryAdTag(
-                        (new Tagcade\Entity\Core\LibraryAdTag())->setName(sprintf('AdTag %d', $k) )
+                        (new Tagcade\Entity\Core\LibraryAdTag())->setName(sprintf('WaterfallTag %d', $k) )
                             ->setVisible(false)
                             ->setHtml(sprintf('ad tag %d html', $k))
                             ->setAdType(0)

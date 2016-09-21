@@ -1,0 +1,67 @@
+parameters:
+    # entity class
+    tagcade.entity.core.blacklist.class: Tagcade\Entity\Core\Blacklist
+    # form class
+    tagcade.form.type.blacklist.class: Tagcade\Form\Type\BlacklistFormType
+
+services:
+
+    # blacklist handler #####################################################
+
+    tagcade_api.handler.blacklist:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.blacklist
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for blacklist handler ##############
+
+    tagcade.repository.blacklist:
+        class: Tagcade\Repository\Core\BlacklistRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\Blacklist
+        calls:
+            - [setBuiltinBlacklist, [%tc.builtin.black_list%]]
+
+    tagcade.domain_manager.blacklist:
+        class: Tagcade\DomainManager\BlacklistManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.blacklist
+
+    tagcade.form.type.blacklist:
+        class: %tagcade.form.type.blacklist.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_blacklist }
+
+    tagcade.handler.handlers.blacklist.abstract:
+        class: Tagcade\Handler\Handlers\Core\BlacklistHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.blacklist
+            - @tagcade.domain_manager.blacklist
+
+    tagcade.handler.handlers.blacklist.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\BlacklistHandler
+        parent: tagcade.handler.handlers.blacklist.abstract
+        public: false
+
+    tagcade.handler.handlers.blacklist.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\BlacklistHandler
+        parent: tagcade.handler.handlers.blacklist.abstract
+        public: false
+
+    tagcade.handler.handler_manager.blacklist:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.blacklist.class%
+            -
+                - @tagcade.handler.handlers.blacklist.admin
+                - @tagcade.handler.handlers.blacklist.publisher
+
+    # end blacklist #####################################################

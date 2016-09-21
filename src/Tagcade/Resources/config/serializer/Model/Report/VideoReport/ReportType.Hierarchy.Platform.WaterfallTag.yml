@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\WaterfallTag:
+    exclusion_policy: ALL
+    virtual_properties:
+        getVideoWaterfallTagId:
+            type: integer
+    properties:
+        videoWaterfallTag:
+            expose: true
+            groups: [video_report_type_waterfall_tag.detail, video_report_type_waterfall_tag.summary]

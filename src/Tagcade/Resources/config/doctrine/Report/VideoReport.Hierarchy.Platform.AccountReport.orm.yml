@@ -1,0 +1,71 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport:
+    repositoryClass: Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoAccountReportRepository
+    type: entity
+    table: video_report_platform_account_report
+    uniqueConstraints:
+        unique_platform_report_idx:
+            columns: [date, publisher_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        requests:
+            type: integer
+        bids:
+            type: integer
+        bidRate:
+            type: decimal
+            scale: 4
+        errors:
+            type: integer
+            nullable: true
+        errorRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        impressions:
+            type: decimal
+        fillRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        clicks:
+            type: integer
+            nullable: true
+        clickThroughRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        adTagRequests:
+            type: integer
+        adTagBids:
+            type: integer
+        adTagErrors:
+            type: integer
+        billedRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        billedAmount:
+            type: decimal
+            scale: 4
+            nullable: true
+        blocks:
+            type: integer
+            nullable: true
+    oneToMany:
+        subReports:
+            targetEntity: PublisherReport
+            orderBy: { 'requests': 'DESC' }
+            mappedBy: superReport
+            cascade: ["persist", "remove", "detach"]
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+        superReport:
+            targetEntity: PlatformReport
+            inversedBy: subReports

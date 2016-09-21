@@ -71,6 +71,15 @@ TRUNCATE table unified_report_network_ad_tag_sub_publisher;
 TRUNCATE table unified_report_network_domain_ad_tag;
 TRUNCATE table unified_report_network_domain_ad_tag_sub_publisher;
 
+-- truncate all video report data
+set foreign_key_checks = 0;
+
+TRUNCATE table video_report_platform_platform_report;
+TRUNCATE table video_report_platform_account_report;
+TRUNCATE table video_report_platform_ad_tag_report;
+TRUNCATE table video_report_platform_ad_source_report;
+TRUNCATE table video_report_demand_partner_ad_source_report;
+TRUNCATE table video_report_demand_partner_demand_partner_report;
 
 set foreign_key_checks = 0;
 

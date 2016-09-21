@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\DemandAdTag:
+    exclusion_policy: ALL
+    virtual_properties:
+        getVideoDemandAdTagId:
+            type: integer
+    properties:
+        videoDemandAdTag:
+            expose: true
+            groups: [video_report_type_demand_ad_tag.detail, video_report_type_demand_ad_tag.summary]

@@ -1,0 +1,17 @@
+Tagcade\Entity\Core\VideoPublisher:
+    type: entity
+    table: video_publisher
+    repositoryClass: Tagcade\Repository\Core\VideoPublisherRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+            nullable: false
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User

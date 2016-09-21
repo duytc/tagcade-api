@@ -1,0 +1,33 @@
+Tagcade\Entity\Core\VideoWaterfallTag:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+        videoPublisher:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+#        uuid:
+#            expose: true
+#            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+        platform:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+#        adDuration:
+#            expose: true
+#            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+#        companionAds:
+#            expose: true
+#            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+        name:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+#        videoWaterfallTagItems:
+#            expose: true
+#            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+        targeting:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+        buyPrice:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]

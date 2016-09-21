@@ -117,7 +117,48 @@ api_bidders:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\BidderController
     name_prefix:  api_1_
+
 api_imported_file:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\ImportedFileController
+    name_prefix:  api_1_
+
+api_video_demand_partner:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\VideoDemandPartnerController
+    name_prefix:  api_1_
+
+api_video_demand_ad_tag:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\VideoDemandAdTagController
+    name_prefix:  api_1_
+
+api_library_video_demand_ad_tag:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\LibraryVideoDemandAdTagController
+    name_prefix:  api_1_
+
+api_video_waterfall_tag_item:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\VideoWaterfallTagItemController
+    name_prefix:  api_1_
+
+api_video_waterfall_tag:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\VideoWaterfallTagController
+    name_prefix:  api_1_
+
+api_video_publisher:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\VideoPublisherController
+    name_prefix:  api_1_
+
+api_blacklist:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\BlacklistController
+    name_prefix:  api_1_
+
+api_white_list:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\WhiteListController
     name_prefix:  api_1_

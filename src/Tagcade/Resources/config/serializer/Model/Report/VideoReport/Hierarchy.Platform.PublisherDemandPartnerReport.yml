@@ -1,0 +1,43 @@
+Tagcade\Model\Report\VideoReport\Hierarchy\Platform\PublisherDemandPartnerReport:
+    exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+            type: DateTime<'Y-m-d'>
+        requests:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        bids:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        bidRate:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        errors:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        errorRate:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        impressions:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        fillRate:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        clicks:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        clickThroughRate:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        blocks:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        videoDemandPartner:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
+        videoPublisher:
+            expose: true
+            groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]

@@ -3,8 +3,8 @@
 namespace Tagcade\Cache;
 
 
-use Tagcade\Cache\V2\TagCache;
 use Tagcade\Cache\Legacy\TagCache as LegacyCache;
+use Tagcade\Cache\V2\TagCache;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -13,8 +13,8 @@ use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 
-class TagCacheManager implements TagCacheManagerInterface {
-
+class TagCacheManager implements TagCacheManagerInterface
+{
     /**
      * @var TagCacheInterface[]
      */
@@ -25,7 +25,7 @@ class TagCacheManager implements TagCacheManagerInterface {
 
     function __construct(array $tagCaches)
     {
-        foreach($tagCaches as $tagCache) {
+        foreach ($tagCaches as $tagCache) {
             if (!$tagCache instanceof TagCacheInterface) {
                 throw new InvalidArgumentException('expect TagCacheInterface');
             }
@@ -38,15 +38,12 @@ class TagCacheManager implements TagCacheManagerInterface {
     {
         if ($adSlot instanceof DisplayAdSlotInterface) {
             $this->refreshCacheForDisplayAdSlot($adSlot);
-        }
-        else if ($adSlot instanceof NativeAdSlotInterface) {
+        } else if ($adSlot instanceof NativeAdSlotInterface) {
             $this->refreshCacheForNativeAdSlot($adSlot);
-        }
-        else if ($adSlot instanceof DynamicAdSlotInterface) {
+        } else if ($adSlot instanceof DynamicAdSlotInterface) {
             $this->refreshCacheForDynamicAdSlot($adSlot);
         }
     }
-
 
     /**
      * @param DisplayAdSlotInterface $adSlot
@@ -57,7 +54,7 @@ class TagCacheManager implements TagCacheManagerInterface {
     {
         $refreshTagCaches = $this->getTagCachesForVersion($version);
 
-        foreach($refreshTagCaches as $tagCache) {
+        foreach ($refreshTagCaches as $tagCache) {
             $tagCache->refreshCacheForDisplayAdSlot($adSlot);
         }
     }
@@ -71,7 +68,7 @@ class TagCacheManager implements TagCacheManagerInterface {
     {
         $refreshTagCaches = $this->getTagCachesForVersion($version);
 
-        foreach($refreshTagCaches as $tagCache) {
+        foreach ($refreshTagCaches as $tagCache) {
             $tagCache->refreshCacheForAdNetwork($adNetwork);
         }
     }
@@ -122,23 +119,20 @@ class TagCacheManager implements TagCacheManagerInterface {
         }
     }
 
-
     /**
-     * @param $version
-     * @return $this
+     * @inheritdoc
      */
-    public function refreshCache($version = 'All')
+    public function refreshCache($publisher = null, $version = 'All')
     {
         $refreshTagCaches = $this->getTagCachesForVersion($version);
 
         foreach ($refreshTagCaches as $tagCache) {
-            $tagCache->refreshCache();
+            $tagCache->refreshCache($publisher);
         }
     }
 
-
-    protected function getTagCachesForVersion($version = 'All') {
-
+    protected function getTagCachesForVersion($version = 'All')
+    {
         if ('All' === $version) {
             return $this->tagCaches;
         }
@@ -152,6 +146,4 @@ class TagCacheManager implements TagCacheManagerInterface {
 
         return $affectedTagCaches;
     }
-
-
 }

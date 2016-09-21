@@ -1,0 +1,13 @@
+Tagcade\Model\Report\VideoReport\AbstractReport:
+    exclusion_policy: NONE
+    properties:
+        id:
+            exclude: true
+        bidRate:
+            type: double
+        errorRate:
+            type: double
+        fillRate:
+            type: double
+        clickThroughRate:
+            type: double

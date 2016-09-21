@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\DemandPartner\DemandPartnerWaterfallTag:
+    exclusion_policy: ALL
+    properties:
+        videoWaterfallTag:
+            expose: true
+            groups: [video_report_type_demand_partner_waterfall_tag.detail, video_report_type_demand_partner_waterfall_tag.summary]
+        videoDemandPartner:
+            expose: true
+            groups: [video_report_type_demand_partner_waterfall_tag.detail, video_report_type_demand_partner_waterfall_tag.summary]

@@ -1,0 +1,69 @@
+Tagcade\Service\Report\VideoReport\Selector\Result\Group\ReportGroup:
+    exclusion_policy: ALL
+    properties:
+        reportType:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        reports:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        requests:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        bids:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        bidRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        errors:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        errorRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        impressions:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        fillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        clicks:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        clickThroughRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        blocks:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageRequests:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageBids:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageBidRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageErrors:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageErrorRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageImpressions:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageFillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageClicks:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageClickThroughRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageBlocks:
+            expose: true
+            groups: [report_group.detail, report_group.summary]

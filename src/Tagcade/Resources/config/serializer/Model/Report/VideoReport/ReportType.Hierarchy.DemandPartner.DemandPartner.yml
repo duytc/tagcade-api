@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\DemandPartner\DemandPartner:
+    exclusion_policy: ALL
+    virtual_properties:
+        getVideoDemandPartnerId:
+            type: integer
+    properties:
+        videoDemandPartner:
+            expose: true
+            groups: [video_report_type_demand_partner.detail, video_report_type_demand_partner.summary]

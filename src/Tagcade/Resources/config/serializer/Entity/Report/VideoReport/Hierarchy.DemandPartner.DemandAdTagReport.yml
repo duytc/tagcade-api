@@ -1,0 +1,53 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\DemandPartner\DemandAdTagReport:
+    exclusion_policy: ALL
+    virtual_properties:
+        getAdTagRequests:
+            type: integer
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        getAdTagBids:
+            type: integer
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        getAdTagErrors:
+            type: integer
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+    properties:
+        date:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+            type: DateTime<'Y-m-d'>
+        requests:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        bids:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        bidRate:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        errors:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        errorRate:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        impressions:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        fillRate:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        clicks:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        clickThroughRate:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        blocks:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail, demand_partner_demand_ad_tag.summary]
+        videoDemandAdTag:
+            expose: true
+            groups: [demand_partner_demand_ad_tag.detail]

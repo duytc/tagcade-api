@@ -104,7 +104,7 @@ trait SlotOpportunitiesTrait
             throw new RuntimeException('slot opportunities must be defined to calculate fill rates');
         }
 
-        // note that we use slot opportunities to calculate fill rate in this Reports except for AdTagReport
+        // note that we use slot opportunities to calculate fill rate in this Reports except for WaterfallTagReport
         return $this->getPercentage($this->getImpressions(), $this->getSlotOpportunities());
     }
 

@@ -22,6 +22,14 @@ imports:
     - { resource: services/service.csv.yml }
     - { resource: services/service.imported_file.yml }
     - { resource: services/service.billing_configuration.yml }
+    - { resource: services/service.video.demand.partner.yml }
+    - { resource: services/service.video.demandadtag.yml }
+    - { resource: services/service.video.waterfalltagitem.yml }
+    - { resource: services/service.video.waterfalltag.yml }
+    - { resource: services/service.video.librarydemandadtag.yml }
+    - { resource: services/service.video.publisher.yml }
+    - { resource: services/service.blacklist.yml }
+    - { resource: services/service.whitelist.yml }
 
 
 parameters:

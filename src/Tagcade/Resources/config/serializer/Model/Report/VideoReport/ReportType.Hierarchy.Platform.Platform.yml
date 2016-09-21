@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\Platform:
+    exclusion_policy: ALL
+    properties:
+        publishers:
+            exclude: true
+    properties:
+        publishers:
+            expose: true
+            groups: [video_report_type_platform.detail, video_report_type_platform.summary]

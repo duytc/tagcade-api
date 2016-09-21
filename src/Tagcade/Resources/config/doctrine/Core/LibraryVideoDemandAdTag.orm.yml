@@ -1,0 +1,43 @@
+Tagcade\Entity\Core\LibraryVideoDemandAdTag:
+    type: entity
+    table: library_video_demand_ad_tag
+    repositoryClass: Tagcade\Repository\Core\LibraryVideoDemandAdTagRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        tagURL:
+            type: string
+            length: 240
+        name:
+            type: string
+            length: 240
+        timeout:
+            type: integer
+            options:
+                default: 3
+        targeting:
+            type: json_array
+            nullable: true
+        sellPrice:
+            type: float
+            scale: 4
+            nullable: true
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        videoDemandPartner:
+            targetEntity: Tagcade\Entity\Core\VideoDemandPartner
+            inversedBy: libraryVideoDemandAdTags
+    oneToMany:
+        videoDemandAdTags:
+            targetEntity: Tagcade\Entity\Core\VideoDemandAdTag
+            cascade: ['remove', 'detach']
+            mappedBy: libraryVideoDemandAdTag

@@ -167,6 +167,35 @@ class Manager
         $this->queueTask('updateAdTagStatusForAdNetwork', $params);
     }
 
+    public function updateCacheForVideoWaterfallTag(array $videoWaterfallTags)
+    {
+        $param = new StdClass();
+
+        $param->videoWaterfallTags = $videoWaterfallTags;
+        $this->queueTask('updateCacheForVideoWaterfallTag',$param);
+    }
+
+    public function removeCacheForVideoWaterfallTag(array $videoWaterfallTags)
+    {
+        $param = new StdClass();
+
+        $param->videoWaterfallTags = $videoWaterfallTags;
+        $this->queueTask('removeCacheForVideoWaterfallTag',$param);
+    }
+
+    public function updateVideoDemandAdTagStatusForDemandPartner($videoDemandPartner, $status = false, $waterfallTagId = null)
+    {
+        $param = new StdClass();
+
+        $param->videoDemandPartner = $videoDemandPartner;
+        $param->status = $status;
+        if ($waterfallTagId !== null) {
+            $param->waterfallTagId = $waterfallTagId;
+        }
+
+        $this->queueTask('updateVideoDemandAdTagStatusForDemandPartner', $param);
+    }
+
     /**
      * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network

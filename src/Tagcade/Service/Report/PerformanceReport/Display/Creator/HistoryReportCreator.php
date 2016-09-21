@@ -196,11 +196,11 @@ class HistoryReportCreator
 
                 $allAdNetworkReports = array_merge($allAdNetworkReports, $partnerNetworkReports);
 
-                // create Domain And AdTag Reports For Partner
+                // create Domain And WaterfallTag Reports For Partner
                 $this->createDomainAndAdTagReportsForPartner($partnerReports, $override);
                 $this->logger->info('finish saving domain ad tag reports');
 
-                // create Domain And AdTag SubPublisher Reports For Partner
+                // create Domain And WaterfallTag SubPublisher Reports For Partner
                 $this->createDomainAdTagSubPublisherReportsForPartner($partnerReports, $override);
                 $this->logger->info('finish saving domain ad tag sub publisher reports');
 
@@ -498,7 +498,7 @@ class HistoryReportCreator
     }
 
     /**
-     * create Domain And AdTag Reports For Partner
+     * create Domain And WaterfallTag Reports For Partner
      *
      * @param $partnerReports
      * @param bool $override
@@ -563,7 +563,7 @@ class HistoryReportCreator
     }
 
     /**
-     * create Domain-AdTag-SubPublisher Reports For Partner
+     * create Domain-WaterfallTag-SubPublisher Reports For Partner
      *
      * @param $partnerReports
      * @param bool $override

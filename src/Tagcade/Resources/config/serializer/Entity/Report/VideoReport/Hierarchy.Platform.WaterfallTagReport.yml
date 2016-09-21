@@ -1,0 +1,58 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\WaterfallTagReport:
+    exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+            type: DateTime<'Y-m-d'>
+        requests:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        bids:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        bidRate:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        errors:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        errorRate:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        impressions:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        fillRate:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        clicks:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        clickThroughRate:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        adTagRequests:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        adTagErrors:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        adTagBids:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        billedAmount:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        billedRate:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        blocks:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        videoAdTag:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        videoWaterfallTag:
+            expose: true
+            groups: [platform_waterfall_tag.detail]

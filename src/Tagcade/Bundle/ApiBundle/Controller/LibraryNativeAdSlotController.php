@@ -95,7 +95,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
         $request->request->set('libraryAdSlot', $id);
 
         $request->request->set('refId', uniqid("", true));
-        // move the creating AdTag to library
+        // move the creating WaterfallTag to library
         $libraryAdTag = $request->request->get('libraryAdTag');
 
         if (is_array($libraryAdTag)) {
@@ -192,7 +192,7 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     }
 
     /**
-     * Get those AdTags which belong to the given AdSlot Library, also have been moved to AdTag Library
+     * Get those AdTags which belong to the given AdSlot Library, also have been moved to WaterfallTag Library
      *
      * @ApiDoc(
      *  section = "Library Ad Slots",

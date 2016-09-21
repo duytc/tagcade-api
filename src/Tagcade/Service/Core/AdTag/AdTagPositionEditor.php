@@ -68,7 +68,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     }
 
     /**
-     * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
+     * set WaterfallTag Position For AdNetwork And Sites (optional, one or array or null for all),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
      *
      * @param AdNetworkInterface $adNetwork
@@ -210,7 +210,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     }
 
     /**
-     * set AdTag Position For AdNetwork (i.e for all sites),
+     * set WaterfallTag Position For AdNetwork (i.e for all sites),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
      *
      * @param AdNetworkInterface $adNetwork

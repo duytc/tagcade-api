@@ -57,7 +57,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof AdTagReport) {
-            throw new InvalidArgumentException('Expect AdTagReport instance');
+            throw new InvalidArgumentException('Expect WaterfallTagReport instance');
         }
 
         $report->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])

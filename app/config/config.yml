@@ -135,6 +135,12 @@ jms_serializer:
             model_report_rtb:
                 namespace_prefix:   "Tagcade\\Model\Report\\RtbReport"
                 path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Model/Report/RtbReport
+            entity_report_video:
+                namespace_prefix:   "Tagcade\\Entity\Report\\VideoReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Entity/Report/VideoReport
+            model_report_video:
+                namespace_prefix:   "Tagcade\\Model\Report\\VideoReport"
+                path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer/Model/Report/VideoReport
             tagcade:
                 namespace_prefix:   "Tagcade\\"
                 path:               %kernel.root_dir%/../src/Tagcade/Resources/config/serializer

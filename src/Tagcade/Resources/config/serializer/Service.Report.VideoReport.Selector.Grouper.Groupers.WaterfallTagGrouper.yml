@@ -1,0 +1,113 @@
+Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers\WaterfallTagGrouper:
+    exclusion_policy: ALL
+    properties:
+        # inherited from abstract grouper
+        reportType:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        reports:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        requests:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        bids:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        bidRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        errors:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        errorRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        impressions:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        fillRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        clicks:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        clickThroughRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageRequests:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageBids:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageBidRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageErrors:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageErrorRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageImpressions:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageFillRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageClicks:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageClickThroughRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        totalBidRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        totalErrorRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        totalFillRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        totalClickThroughRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        # special for ad tag grouper
+        adTagRequests:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        adTagErrors:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        adTagBids:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageAdTagRequest:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageAdTagError:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageAdTagBid:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        billedAmount:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageBilledAmount:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        billedRate:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        blocks:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        averageBlocks:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
+        totalBlocks:
+            expose: true
+            groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]

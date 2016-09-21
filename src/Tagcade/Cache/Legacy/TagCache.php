@@ -10,6 +10,7 @@ use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class TagCache extends TagCacheAbstract implements TagCacheInterface
 {
@@ -33,10 +34,15 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
         return $version === self::VERSION;
     }
 
-    public function refreshCache()
+    /**
+     * @inheritdoc
+     */
+    public function refreshCache($publisher = null)
     {
         /** @var DisplayAdSlotInterface[] $adSlots */
-        $adSlots = $this->displayAdSlotManager->all();
+        $adSlots = ($publisher instanceof PublisherInterface)
+            ? $this->displayAdSlotManager->getAdSlotsForPublisher($publisher)
+            : $this->displayAdSlotManager->all();
 
         foreach ($adSlots as $adSlot) {
             $this->refreshCacheForDisplayAdSlot($adSlot);

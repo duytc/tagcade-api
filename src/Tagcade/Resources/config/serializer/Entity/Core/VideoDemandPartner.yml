@@ -1,0 +1,21 @@
+Tagcade\Entity\Core\VideoDemandPartner:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+        publisher:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+        name:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+        activeAdTagsCount:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+        pausedAdTagsCount:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+        defaultTagURL:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail]

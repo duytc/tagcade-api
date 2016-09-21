@@ -564,7 +564,7 @@ class AdTagManager implements AdTagManagerInterface
     }
 
     /**
-     * auto Increase Position For AdSlot Due To AdTag
+     * auto Increase Position For AdSlot Due To WaterfallTag
      *
      * @param AdTagInterface $newAdTag
      */

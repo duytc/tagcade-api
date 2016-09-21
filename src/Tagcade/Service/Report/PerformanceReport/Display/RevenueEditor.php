@@ -81,7 +81,7 @@ class RevenueEditor implements RevenueEditorInterface
         $this->writeln(sprintf("%s START updating revenue for ad tag '%s' in ad slot '%s' in site '%s'... from Date %s to Date %s\n",
                     date('c'), $adTag->getName(), $adTag->getAdSlot()->getName(), $adTag->getAdSlot()->getSite()->getName(), $startDate->format('Y-m-d'), $endDate->format('Y-m-d')));
 
-        // Step 1. Update cpm in AdTag report (base of calculation for AdSlot, Site, Account and Platform report
+        // Step 1. Update cpm in WaterfallTag report (base of calculation for AdSlot, Site, Account and Platform report
         foreach($baseReportTypes as $reportType) {
             $reports = $this->reportSelector->getReports($reportType, $params);
 
@@ -91,7 +91,7 @@ class RevenueEditor implements RevenueEditorInterface
 
             foreach($reports->getReports() as $report) {
                 if (!$report instanceof BaseAdTagReportInterface) {
-                    throw new LogicException('Expected an AdTagReport');
+                    throw new LogicException('Expected an WaterfallTagReport');
                 }
 
                 $report->setEstCpm($cpmRate);

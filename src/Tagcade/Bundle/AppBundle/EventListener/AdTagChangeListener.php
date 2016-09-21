@@ -93,7 +93,7 @@ class AdTagChangeListener
 //                    $tmpAdTags = $entity->getLibraryAdTag()->getAdTags()->toArray();
 //                    $tmpAdTags = array_filter( // filter for ad tags in the same library slot
 //                        $tmpAdTags,
-//                        function(AdTagInterface $adTag) use($entity) {
+//                        function(WaterfallTagInterface $adTag) use($entity) {
 //                            return $adTag->getAdSlot()->getLibraryAdSlot()->getId() === $entity->getLibraryAdSlot()->getId();
 //                        }
 //                    );

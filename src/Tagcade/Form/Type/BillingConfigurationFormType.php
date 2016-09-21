@@ -33,6 +33,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 'choices' => [
                     'MODULE_DISPLAY'         => 'Display',
                     'MODULE_VIDEO_ANALYTICS' => 'Video',
+                    'MODULE_VIDEO'         => 'VideoAds',
                     'MODULE_ANALYTICS'       => 'Analytics',
                     'MODULE_FRAUD_DETECTION' => 'Fraud Detection',
                     'MODULE_UNIFIED_REPORT'  => 'Unified Report',

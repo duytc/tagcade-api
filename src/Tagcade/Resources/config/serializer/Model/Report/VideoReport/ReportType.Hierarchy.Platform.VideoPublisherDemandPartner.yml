@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\VideoPublisherDemandPartner:
+    exclusion_policy: ALL
+    properties:
+        videoPublisher:
+            expose: true
+            groups: [video_report_type_video_publisher_demand_partner.detail, video_report_type_video_publisher_demand_partner.summary]
+        videoDemandPartner:
+            expose: true
+            groups: [video_report_type_video_publisher_demand_partner.detail, video_report_type_video_publisher_demand_partner.summary]
