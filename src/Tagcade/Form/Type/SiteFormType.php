@@ -61,7 +61,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 $form = $event->getForm();
 
                 // validate players before submitting if Publisher and Publisher does not have Video Module
-                if ($this->userRole instanceof PublisherInterface && !$this->userRole->getUser()->hasVideoModule()) {
+                if ($this->userRole instanceof PublisherInterface && !$this->userRole->getUser()->hasVideoAnalyticsModule()) {
                     $form = $event->getForm();
 
                     if ($form->has('players') && null !== $form->get('players')->getData()) {
@@ -123,7 +123,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
                 // validate players after submitting if Publisher and Publisher has Video Module
                 $players = $form->get('players')->getData();
-                if ($this->userRole instanceof PublisherInterface && $this->userRole->getUser()->hasVideoModule()) {
+                if ($this->userRole instanceof PublisherInterface && $this->userRole->getUser()->hasVideoAnalyticsModule()) {
                     if (!is_array($players)) {
                         $form->get('players')->addError(new FormError('expect player config to be an array object'));
                         return;
