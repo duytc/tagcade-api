@@ -45,7 +45,7 @@ foreach(xrange(NUM_PUBLISHER) as $publisherId) {
     $demandPartners = [];
 
     $publisher = new User();
-    $username = sprintf('tctest%d', $publisherId);
+    $username = sprintf('test%d', $publisherId);
     $publisher
         ->setUsername($username)
         ->setPlainPassword('123456')
@@ -59,6 +59,7 @@ foreach(xrange(NUM_PUBLISHER) as $publisherId) {
     $publisherManager->save($publisher);
     $em->flush();
 
+    echo sprintf('start inserting Publisher "%s"'. "\n", $publisher->getUsername()) ;
     // create video publisher
     foreach(xrange(NUM_VIDEO_PUBLISHER) as $videoPublisherId) {
         gc_enable();
@@ -135,11 +136,12 @@ foreach(xrange(NUM_PUBLISHER) as $publisherId) {
         }
 
         gc_collect_cycles();
-        echo sprintf('finish inserting Video Publisher "%s"'. "\n", $videoPublisher->getName()) ;
+        echo sprintf("\t". '- finish inserting Video Publisher "%s"'. "\n", $videoPublisher->getName()) ;
         unset($tempObjs);
     }
 
     $em->detach($publisher);
+    echo sprintf('finish inserting Publisher "%s"'. "\n\n", $publisher->getUsername()) ;
     unset($publisher);
 }
 
