@@ -71,8 +71,8 @@ parameters:
             # the redis key should be 'video:domain_blacklist:aol_default'
             builtin: true
         -
-            name: 'SportX Standard Blacklist'
-            suffixKey: 'sportx_standard'
+            name: 'SpotX Standard Blacklist'
+            suffixKey: 'spotx_standard'
             # the redis key should be 'video:domain_blacklist:sportx_standard'
             builtin: true
 
