@@ -16,6 +16,7 @@ use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\VideoWaterfallTagRepository;
 
 
 /**
@@ -28,7 +29,13 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      *
      * @Rest\View(serializerGroups={"videoWaterfallTag.summary", "user.summary", "videoPublisher.summary", "videoWaterfallTagItem.summary", "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary"})
      *
-     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
+     * @Rest\QueryParam(name="publisherId", nullable=true, requirements="\d+", description="the publisher id")
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      *
      * @ApiDoc(
      *  section = "Video Waterfall Tags",
@@ -38,25 +45,19 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      *  }
      * )
      *
+     * @param $request
      * @return VideoWaterfallTagInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $publisherId = $paramFetcher->get('publisher');
-
-        if (!$this->getUser() instanceof AdminInterface || ($this->getUser() instanceof AdminInterface && $publisherId == null)) {
-            $all = $this->all();
-        } else {
-            /** @var PublisherInterface $publisher */
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
-
-            $all = $this->get('tagcade.domain_manager.video_waterfall_tag')->getVideoWaterfallTagsForPublisher($publisher);
+        if ($request->query->count() < 1) {
+            return $this->all();
         }
 
-        $this->checkUserPermission($all);
-
-        return $all;
+        /** @var VideoWaterfallTagRepository $waterfallTagRepository */
+        $waterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
+        $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
     }
 
     /**

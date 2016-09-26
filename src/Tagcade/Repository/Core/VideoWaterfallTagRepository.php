@@ -3,18 +3,23 @@
 
 namespace Tagcade\Repository\Core;
 
-
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
+use Tagcade\Model\PagerParam;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 
 class VideoWaterfallTagRepository extends EntityRepository implements VideoWaterfallTagRepositoryInterface
 {
+    protected $SORT_FIELDS = ['id', 'name'];
+
     /**
      * @inheritdoc
      */
@@ -34,6 +39,23 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+
+    /**
+     * create QueryBuilder For Publisher
+     * @param PublisherInterface $publisher
+     * @return QueryBuilder qb with alias 'st'
+     */
+    public function createQueryBuilderForPublisher(PublisherInterface $publisher)
+    {
+        $qb = $this->createQueryBuilder('wt')
+            ->leftJoin('wt.videoPublisher', 'vp')
+            ->where('vp.publisher = :publisher_id')
+            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
+
+
+        return $qb;
     }
 
     /**
@@ -138,5 +160,45 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * create QueryBuilder For User due to Admin or Publisher|SubPublisher
+     * @param UserRoleInterface $user
+     * @return QueryBuilder qb with alias 'wt'
+     */
+    private function createQueryBuilderForUser(UserRoleInterface $user)
+    {
+        return $user instanceof PublisherInterface ? $this->createQueryBuilderForPublisher($user) : $this->createQueryBuilder('wt');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilderForUser($user);
+
+        if (is_int($param->getPublisherId()) && $param->getPublisherId() > 0 && $user instanceof AdminInterface) {
+            $qb ->join('wt.videoPublisher', 'vp')
+                ->andWhere('vp.publisher = :publisherId')
+                ->setParameter('publisherId', $param->getPublisherId());
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX($qb->expr()->like('wt.name', ':searchKey'), $qb->expr()->like('wt.id', ':searchKey')))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('wt.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
     }
 }
