@@ -12,7 +12,7 @@ class AdTag
     }
 
     /**
-     * get All AdTag
+     * get All WaterfallTag
      * @param ApiTester $I
      */
     public function getAllAdTag(ApiTester $I)
@@ -23,7 +23,7 @@ class AdTag
     }
 
     /**
-     * get AdTag By Id
+     * get WaterfallTag By Id
      * @param ApiTester $I
      */
     public function getAdTagById(ApiTester $I) {
@@ -33,7 +33,7 @@ class AdTag
     }
 
     /**
-     * get AdTag By Id Not Existed
+     * get WaterfallTag By Id Not Existed
      * @param ApiTester $I
      */
     public function getAdTagByIdNotExisted(ApiTester $I)
@@ -43,7 +43,7 @@ class AdTag
     }
 
     /**
-     * add AdTag
+     * add WaterfallTag
      * @param ApiTester $I
      */
     public function addAdTag(ApiTester $I)
@@ -71,7 +71,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by missing field
+     * add WaterfallTag failed by missing field
      * @param ApiTester $I
      */
     public function addAdTagMissingField(ApiTester $I)
@@ -97,7 +97,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by null field
+     * add WaterfallTag failed by null field
      * @param ApiTester $I
      */
     public function addAdTagNullField(ApiTester $I)
@@ -114,7 +114,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by wrong data type
+     * add WaterfallTag failed by wrong data type
      * @param ApiTester $I
      */
     public function addAdTagWrongDataType(ApiTester $I)
@@ -140,7 +140,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by wrong data
+     * add WaterfallTag failed by wrong data
      * @param ApiTester $I
      */
     public function addAdTagWrongData(ApiTester $I)
@@ -166,7 +166,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by contains unexpected field
+     * add WaterfallTag failed by contains unexpected field
      * @param ApiTester $I
      */
     public function addAdTagWithUnexpectedField(ApiTester $I)
@@ -193,7 +193,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by descriptor invalid on Missing field
+     * add WaterfallTag failed by descriptor invalid on Missing field
      * @param ApiTester $I
      */
     public function addAdTagWithDescriptorInvalidByMissingField(ApiTester $I)
@@ -219,7 +219,7 @@ class AdTag
     }
 
     /**
-     * add AdTag SUCCESSFULLY by descriptor valid although Unexpected field
+     * add WaterfallTag SUCCESSFULLY by descriptor valid although Unexpected field
      * @param ApiTester $I
      */
     public function addAdTagWithDescriptorValidByUnexpectedField(ApiTester $I)
@@ -246,7 +246,7 @@ class AdTag
     }
 
     /**
-     * add AdTag failed by descriptor url invalid
+     * add WaterfallTag failed by descriptor url invalid
      * @param ApiTester $I
      */
     public function addAdTagWithDescriptorURLInvalid(ApiTester $I)
@@ -272,7 +272,7 @@ class AdTag
     }
 
 /**
-     * add AdTag failed by descriptor url invalid on image url endWith
+     * add WaterfallTag failed by descriptor url invalid on image url endWith
      * @param ApiTester $I
      */
     public function addAdTagWithDescriptorURLInvalidOnImageUrlEndWith(ApiTester $I)
@@ -299,7 +299,7 @@ class AdTag
     }
 
     /**
-     * edit AdTag
+     * edit WaterfallTag
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -331,7 +331,7 @@ class AdTag
     }
 
     /**
-     * edit AdTag failed by null field
+     * edit WaterfallTag failed by null field
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -352,7 +352,7 @@ class AdTag
     }
 
     /**
-     * edit AdTag failed by unexpected field
+     * edit WaterfallTag failed by unexpected field
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -385,7 +385,7 @@ class AdTag
     }
 
     /**
-     * edit AdTag failed by wrong data
+     * edit WaterfallTag failed by wrong data
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -417,7 +417,7 @@ class AdTag
     }
 
     /**
-     * edit AdTag failed by wrong data type
+     * edit WaterfallTag failed by wrong data type
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -449,7 +449,7 @@ class AdTag
     }
 
     /**
-     * patch AdTag
+     * patch WaterfallTag
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -469,7 +469,7 @@ class AdTag
     }
 
     /**
-     * patch AdTag
+     * patch WaterfallTag
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -489,7 +489,7 @@ class AdTag
     }
 
     /**
-     * patch AdTag failed by null field
+     * patch WaterfallTag failed by null field
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -507,7 +507,7 @@ class AdTag
     }
 
     /**
-     * patch AdTag failed by unexpected field
+     * patch WaterfallTag failed by unexpected field
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -528,7 +528,7 @@ class AdTag
     }
 
     /**
-     * patch AdTag failed by wrong data
+     * patch WaterfallTag failed by wrong data
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -548,7 +548,7 @@ class AdTag
     }
 
     /**
-     * patch AdTag failed by wrong data type
+     * patch WaterfallTag failed by wrong data type
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -568,7 +568,7 @@ class AdTag
     }
 
     /**
-     * delete AdTag
+     * delete WaterfallTag
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -582,7 +582,7 @@ class AdTag
     }
 
     /**
-     * delete AdTag failed cause by Not Existed
+     * delete WaterfallTag failed cause by Not Existed
      * @depends addAdTag
      * @param ApiTester $I
      */
@@ -593,7 +593,7 @@ class AdTag
     }
 
     /**
-     * edit EstCpm of AdTag
+     * edit EstCpm of WaterfallTag
      * @param ApiTester $I
      */
     public function editEstCpmAdTag(ApiTester $I)
@@ -603,7 +603,7 @@ class AdTag
     }
 
     /**
-     * edit EstCpm of AdTag failed by invalid
+     * edit EstCpm of WaterfallTag failed by invalid
      * @param ApiTester $I
      */
     public function editEstCpmAdTagInvalid(ApiTester $I)
@@ -613,7 +613,7 @@ class AdTag
     }
 
     /**
-     * edit EstCpm of AdTag failed by wrong data type
+     * edit EstCpm of WaterfallTag failed by wrong data type
      * @param ApiTester $I
      */
     public function editEstCpmAdTagWrongDataType(ApiTester $I)

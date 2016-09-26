@@ -1,0 +1,5 @@
+Tagcade\Model\Report\VideoReport\Hierarchy\DemandPartner\DemandAdTagReport:
+    exclusion_policy: NONE
+    properties:
+        superReport:
+            exclude: true

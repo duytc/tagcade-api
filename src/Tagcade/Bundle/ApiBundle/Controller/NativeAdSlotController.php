@@ -311,7 +311,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
     }
 
     /**
-     * compare AdTag By Position
+     * compare WaterfallTag By Position
      *
      * @param AdTagInterface $adTag_1
      * @param AdTagInterface $adTag_2

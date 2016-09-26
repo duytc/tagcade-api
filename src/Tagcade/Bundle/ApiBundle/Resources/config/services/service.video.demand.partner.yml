@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.video_demand_partner.class: Tagcade\Entity\Core\VideoDemandPartner
+    # form class
+    tagcade.form.type.video_demand_partner.class: Tagcade\Form\Type\VideoDemandPartnerFormType
+
+services:
+
+    # video_demand_partner ######################################################
+
+    tagcade_api.handler.video_demand_partner:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.video_demand_partner
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.video_demand_partner:
+        class: Tagcade\Repository\Core\VideoDemandPartnerRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.video_demand_partner.class%
+
+    tagcade.domain_manager.video_demand_partner:
+        class: Tagcade\DomainManager\VideoDemandPartnerManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.video_demand_partner
+
+    tagcade.form.type.video_demand_partner:
+        class: %tagcade.form.type.video_demand_partner.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_video_demand_partner }
+
+    tagcade.handler.handlers.video_demand_partner.abstract:
+        class: Tagcade\Handler\Handlers\Core\VideoDemandPartnerHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.video_demand_partner
+            - @tagcade.domain_manager.video_demand_partner
+
+    tagcade.handler.handlers.video_demand_partner.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\VideoDemandPartnerHandler
+        parent: tagcade.handler.handlers.video_demand_partner.abstract
+        public: false
+
+    tagcade.handler.handlers.video_demand_partner.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\VideoDemandPartnerHandler
+        parent: tagcade.handler.handlers.video_demand_partner.abstract
+        public: false
+
+    tagcade.handler.handler_manager.video_demand_partner:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.video_demand_partner.class%
+            -
+                - @tagcade.handler.handlers.video_demand_partner.admin
+                - @tagcade.handler.handlers.video_demand_partner.publisher
+
+    # end video_demand_partner #####################################################

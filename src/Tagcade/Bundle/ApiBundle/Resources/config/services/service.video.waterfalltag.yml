@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.video_waterfall_tag.class: Tagcade\Entity\Core\VideoWaterfallTag
+    # form class
+    tagcade.form.type.video_waterfall_tag.class: Tagcade\Form\Type\VideoWaterfallTagFormType
+
+services:
+
+    # video_waterfall_tag ######################################################
+
+    tagcade_api.handler.video_waterfall_tag:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.video_waterfall_tag
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.video_waterfall_tag:
+        class: Tagcade\Repository\Core\VideoWaterfallTagRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.video_waterfall_tag.class%
+
+    tagcade.domain_manager.video_waterfall_tag:
+        class: Tagcade\DomainManager\VideoWaterfallTagManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.video_waterfall_tag
+
+    tagcade.form.type.video_waterfall_tag:
+        class: %tagcade.form.type.video_waterfall_tag.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_video_waterfall_tag }
+
+    tagcade.handler.handlers.video_waterfall_tag.abstract:
+        class: Tagcade\Handler\Handlers\Core\VideoWaterfallTagHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.video_waterfall_tag
+            - @tagcade.domain_manager.video_waterfall_tag
+
+    tagcade.handler.handlers.video_waterfall_tag.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\VideoWaterfallTagHandler
+        parent: tagcade.handler.handlers.video_waterfall_tag.abstract
+        public: false
+
+    tagcade.handler.handlers.video_waterfall_tag.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\VideoWaterfallTagHandler
+        parent: tagcade.handler.handlers.video_waterfall_tag.abstract
+        public: false
+
+    tagcade.handler.handler_manager.video_waterfall_tag:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.video_waterfall_tag.class%
+            -
+                - @tagcade.handler.handlers.video_waterfall_tag.admin
+                - @tagcade.handler.handlers.video_waterfall_tag.publisher
+
+    # end video_waterfall_tag #####################################################

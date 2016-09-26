@@ -1,0 +1,7 @@
+Tagcade\Model\Report\VideoReport\Hierarchy\Platform\AccountReport:
+    exclusion_policy: NONE
+    properties:
+        superReport:
+            exclude: true
+        subReports:
+            exclude: true

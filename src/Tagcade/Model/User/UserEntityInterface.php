@@ -70,6 +70,11 @@ interface UserEntityInterface extends ModelInterface
     /**
      * @return bool
      */
+    public function hasVideoAnalyticsModule();
+
+    /**
+     * @return bool
+     */
     public function hasUnifiedReportModule();
 
     /**

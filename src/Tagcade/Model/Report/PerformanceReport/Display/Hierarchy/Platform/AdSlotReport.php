@@ -127,7 +127,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     protected function doCalculateFields()
     {
         if ($this->slotOpportunities === null) {
-            throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an AdTagReport');
+            throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an WaterfallTagReport');
         }
 
         parent::doCalculateFields();
@@ -136,7 +136,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     protected function aggregateSubReport(ReportInterface $subReport)
     {
         if (!$subReport instanceof AdTagReportInterface) {
-            throw new InvalidArgumentException('Expected AdTagReportInterface');
+            throw new InvalidArgumentException('Expected WaterfallTagReportInterface');
         }
 
         $subReport->setRelativeFillRate($this->getSlotOpportunities());

@@ -13,8 +13,10 @@ use Tagcade\DomainManager\LibraryAdTagManagerInterface;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryAdTag;
+use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
@@ -103,14 +105,19 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     public function importAdTagsForOneAdSlot(DisplayAdSlot $displayAdSlotObject, array $allAdTags, $dryOption)
     {
         $adTagObjects = [];
-        $adTagObjectsInSystemHaveSameHtml = [];
+        $libraryAdSlotAdTags = [];
+        $adTagObjectsInSystemOfAdSlot = [];
+        $numberOfNewAdTags = 0;
+        $numberOfExitedAdTags = 0;
+
         $publisher = $displayAdSlotObject->getSite()->getPublisher();
         $allAdTags = $this->createAllAdTagsData($allAdTags,$publisher);
+        $isLibraryDisplayAdSlot = $displayAdSlotObject->getLibraryAdSlot()->isVisible()? true : false;
 
         $adTagsOfThisAdSlotInSystem = $this->adTagManager->getAdTagsForAdSlot($displayAdSlotObject);
         foreach ($adTagsOfThisAdSlotInSystem as $adTag) {
             $md5 = md5($adTag->getHtml());
-            $adTagObjectsInSystemHaveSameHtml[$md5] = $adTag;
+            $adTagObjectsInSystemOfAdSlot[$md5] = $adTag;
         }
 
         foreach ($allAdTags as $adTag) {
@@ -120,21 +127,48 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
             $htmlValue = $libraryAdTag->getHtml();
             $md5OfHtmlTag = md5($htmlValue);
 
-            if ((!array_key_exists($md5OfHtmlTag, $adTagObjects)) && (!array_key_exists($md5OfHtmlTag, $adTagObjectsInSystemHaveSameHtml))) {
+            if ((!array_key_exists($md5OfHtmlTag, $adTagObjects)) && (!array_key_exists($md5OfHtmlTag, $adTagObjectsInSystemOfAdSlot))) {
                 $adTagObject = AdTag::createAdTagFromArray($adTag);
                 $adTagObjects[$md5OfHtmlTag] = $adTagObject;
+
+                if (true == $isLibraryDisplayAdSlot) {
+                    $libraryAdSlotAdTags[] =  $this->makeLibraryAdSlotAdTag($adTagObject, $displayAdSlotObject);
+                }
+                $numberOfNewAdTags ++;
             } else {
-                $libraryAdTag->setVisible(false);
+                $numberOfExitedAdTags ++;
             }
+
         }
 
+        $displayAdSlotObject->getLibraryAdSlot()->setLibSlotTags($libraryAdSlotAdTags);
+
         if (true == $dryOption) {
-            $this->logger->info(sprintf('       Total %d ad tags import to display ad slot: %s', count($adTagObjects), $displayAdSlotObject->getName()));
+            $this->logger->info(sprintf('       Total new ad tags imported: %d, total existed ad tag: %d in display ad slot: %s', $numberOfNewAdTags, $numberOfExitedAdTags, $displayAdSlotObject->getName()));
         }
 
         return $adTagObjects;
     }
 
+    /**
+     * @param AdTagInterface $adTag
+     * @param DisplayAdSlotInterface $displayAdSlot
+     * @return LibrarySlotTag
+     */
+    public function makeLibraryAdSlotAdTag(AdTagInterface $adTag, DisplayAdSlotInterface $displayAdSlot)
+    {
+        $librarySlotTag = new LibrarySlotTag();
+
+        $librarySlotTag->setActive($adTag->isActive());
+        $librarySlotTag->setRotation($adTag->getRotation());
+        $librarySlotTag->setPosition($adTag->getPosition());
+        $librarySlotTag->setFrequencyCap($adTag->getFrequencyCap());
+        $librarySlotTag->setLibraryAdSlot($displayAdSlot->getLibraryAdSlot());
+        $librarySlotTag->setLibraryAdTag($adTag->getLibraryAdTag());
+        $librarySlotTag->setRefId($adTag->getRefId());
+
+        return $librarySlotTag;
+    }
     /**
      * @param $excelRows
      * @param PublisherInterface $publisher
@@ -172,23 +206,41 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $libraryAdTagData           = $this->createLibraryAdTagDataFromExcelRow($excelRow, $publisher);
 
         $htmlOfLibraryAdTag = $libraryAdTagData[self::HTML_KEY_OF_LIB_AD_TAG];
+        $md5OfHtml = md5($htmlOfLibraryAdTag);
+        $displayAdSlotName = $excelRow[$this->getAdSlotNameIndex()];
 
         $libraryAdTagObjects = $this->getLibraryAdTagObjectsInOneSection();
-        if (!array_key_exists($htmlOfLibraryAdTag,$libraryAdTagObjects)) {
+
+        if (!array_key_exists($md5OfHtml, $libraryAdTagObjects)) {
             /**@var LibraryAdTagInterface[] $libraryAdTagInSystem*/
             $libraryAdTagInSystem = $this->libraryAdTagManager->getLibraryAdTagsByHtml($htmlOfLibraryAdTag);
             if (empty($libraryAdTagInSystem) || count($libraryAdTagInSystem) > 1) {
                 $libraryAdTagObject         = LibraryAdTag::createAdTagLibraryFromArray($libraryAdTagData);
-                $this->insertLibraryAdTagObjectsInOneSection($libraryAdTagObject, $htmlOfLibraryAdTag);
+                $libraryAdTagObject->setName($displayAdSlotName); //Temporary set name to check below
+                $this->insertLibraryAdTagObjectsInOneSection($libraryAdTagObject, $md5OfHtml);
             } else  {
                 $libraryAdTagObject = array_shift($libraryAdTagInSystem);
-                $libraryAdTagObject->setVisible(true);
+                /**@var AdTagInterface[] $adTagsHaveTheSameLibAdTag */
+                $adTagsHaveTheSameLibAdTag = $this->adTagManager->getAdTagsHaveTheSameAdTabLib($libraryAdTagObject);
+                foreach ($adTagsHaveTheSameLibAdTag as $adTagSame) {
+                    if (0 != strcmp($adTagSame->getAdSlot()->getName(), $displayAdSlotName)) {
+                        $libraryAdTagObject->setVisible(true);
+                        break;
+                    }
+                }
             }
+
         } else {
             /**@var LibraryAdTagInterface[] $libraryAdTagObjects*/
-            $libraryAdTagObject = $libraryAdTagObjects[$htmlOfLibraryAdTag];
-            $libraryAdTagObject->setVisible(true);
+            $libraryAdTagObject = $libraryAdTagObjects[$md5OfHtml];
+            $displayAdSlotNameInBuffer = $libraryAdTagObject->getName(); //Get name to set library or no
+            if ( 0 != strcmp($displayAdSlotName, $displayAdSlotNameInBuffer)) {
+                $libraryAdTagObject->setVisible(true);
+            }
         }
+
+        $adNetWorkName = $libraryAdTagObject->getAdNetwork()->getName();
+        $libraryAdTagObject->setName($adNetWorkName);
 
         $adTag[self::POSITION_KEY_OF_AD_TAG]                = $positionValue;
         $adTag[self::ACTIVE_KEY_OF_AD_TAG]                  = $activeValue;
@@ -299,11 +351,11 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
 
     /**
      * @param $libraryAdTagObjectsInOneSection
-     * @param $libraryAdSlotName
+     * @param $md5Value
      */
-    public function insertLibraryAdTagObjectsInOneSection($libraryAdTagObjectsInOneSection, $libraryAdSlotName)
+    public function insertLibraryAdTagObjectsInOneSection($libraryAdTagObjectsInOneSection, $md5Value)
     {
-        $this->libraryAdTagObjectsInOneSection [$libraryAdSlotName] = $libraryAdTagObjectsInOneSection;
+        $this->libraryAdTagObjectsInOneSection [$md5Value] = $libraryAdTagObjectsInOneSection;
     }
 
     /**
@@ -370,7 +422,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getNetworkOpportunityCapValue($rawAdTag)
     {
         if (array_key_exists(self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getOpportunityCapIndex(), $rawAdTag)) {
-          return $rawAdTag[$this->getOpportunityCapIndex()];
+          return is_int($rawAdTag[$this->getOpportunityCapIndex()]) ? $rawAdTag[$this->getOpportunityCapIndex()]:self::NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
         }
 
         return self:: NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
@@ -384,7 +436,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getImpressionCapValue($rawAdTag)
     {
         if (array_key_exists(self::IMPRESSION_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getImpressionCapIndex(), $rawAdTag)) {
-            return $rawAdTag[$this->getImpressionCapIndex()];
+            return is_int($rawAdTag[$this->getImpressionCapIndex()]) ? $rawAdTag[$this->getImpressionCapIndex()] : self::IMPRESSION_CAP_DEFAULT_VALUE ;
         }
 
         return self:: IMPRESSION_CAP_DEFAULT_VALUE;
@@ -397,7 +449,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getRotationValue($rawAdTag)
     {
         if (array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getRotationIndex(),$rawAdTag)) {
-                return $rawAdTag[$this->getRotationIndex()];
+                return is_int($rawAdTag[$this->getRotationIndex()]) ? $rawAdTag[$this->getRotationIndex()] : self:: ROTATION_DEFAULT_VALUE ;
         }
 
         return self:: ROTATION_DEFAULT_VALUE;
@@ -410,7 +462,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getFrequencyCapValue($rawAdTag)
     {
         if (array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getFrequencyCapIndex(),$rawAdTag)) {
-            return $rawAdTag[$this->getFrequencyCapIndex()];
+            return is_int($rawAdTag[$this->getFrequencyCapIndex()]) ?$rawAdTag[$this->getFrequencyCapIndex()] : self::FREQUENCY_CAP_DEFAULT_VALUE;
         }
 
         return self:: FREQUENCY_CAP_DEFAULT_VALUE;
@@ -425,7 +477,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getPositionValue($rawAdTag)
     {
         if (array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPositionIndex(),$rawAdTag)) {
-            return $rawAdTag[$this->getPositionIndex()];
+            return is_int($rawAdTag[$this->getPositionIndex()]) ? $rawAdTag[$this->getPositionIndex()]: self::POSITION_DEFAULT_VALUE;
         }
 
         return self:: POSITION_DEFAULT_VALUE;

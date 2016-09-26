@@ -1,0 +1,12 @@
+Tagcade\Domain\DTO\Core\WaterfallTagStatus:
+    exclusion_policy: ALL
+    properties:
+        waterfallTag:
+            expose: true
+            groups: [waterfalltagstatus.detail]
+        activeAdTagsCount:
+            expose: true
+            groups: [waterfalltagstatus.detail]
+        pausedAdTagsCount:
+            expose: true
+            groups: [waterfalltagstatus.detail]

@@ -11,6 +11,7 @@ use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 use Tagcade\Worker\Manager;
@@ -36,11 +37,11 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
     private $expressionInJsGenerator;
 
     function __construct(NamespaceCacheInterface $cache,
-        Manager $workerManager,
-        RonAdSlotManagerInterface $ronAdSlotManager,
-        LibraryExpressionRepositoryInterface $libExpressionRepository,
-        LibraryDynamicAdSlotRepositoryInterface $libDynamicAdSlotRepository,
-        ExpressionInJsGeneratorInterface $expressionInJsGenerator
+                         Manager $workerManager,
+                         RonAdSlotManagerInterface $ronAdSlotManager,
+                         LibraryExpressionRepositoryInterface $libExpressionRepository,
+                         LibraryDynamicAdSlotRepositoryInterface $libDynamicAdSlotRepository,
+                         ExpressionInJsGeneratorInterface $expressionInJsGenerator
     )
     {
         parent::__construct($cache, $workerManager);
@@ -51,13 +52,14 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
     }
 
     /**
-     * public api, refresh Cache of all ad slot (display, native, dynamic, ron ad slot)
-     * @return mixed
+     * @inheritdoc
      */
-    public function refreshCache()
+    public function refreshCache($publisher = null)
     {
         /** @var RonAdSlotInterface[] $ronAdSlots */
-        $ronAdSlots = $this->ronAdSlotManager->all();
+        $ronAdSlots = ($publisher instanceof PublisherInterface)
+            ? $this->ronAdSlotManager->getRonAdSlotsForPublisher($publisher)
+            : $this->ronAdSlotManager->all();
         $dynamicRonAdSlots = [];
 
         // refresh cache for ron display and native first. Otherwise values (referencing ron slot) in Dynamic ron will not be updated.
@@ -69,7 +71,7 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
             $dynamicRonAdSlots[] = $ronAdSlot;
         }
 
-        foreach($dynamicRonAdSlots as $ronAdSlot) {
+        foreach ($dynamicRonAdSlots as $ronAdSlot) {
             $this->refreshCacheForRonAdSlot($ronAdSlot);
         }
     }
@@ -96,7 +98,7 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
 
         $cacheKey = 'all_tags_array';
 
-        $namespaceVersion  = $this->cache->getNamespaceVersion(true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
+        $namespaceVersion = $this->cache->getNamespaceVersion(true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
         $this->cache->setNamespaceVersion($namespaceVersion);
 
         if ($this->cache->contains($cacheKey)) {
@@ -110,7 +112,6 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
     {
         return sprintf(self::NAMESPACE_RON_AD_SLOT_CACHE_KEY, $slotId);
     }
-
 
     /**
      * refresh Cache For Referencing Dynamic Ron Ad Slot (ron ad slot related to a library dynamic ad slot)
@@ -182,6 +183,4 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
     {
         return $this->expressionInJsGenerator;
     }
-
-
 }

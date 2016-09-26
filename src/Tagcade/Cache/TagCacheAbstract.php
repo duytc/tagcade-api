@@ -35,9 +35,6 @@ abstract class TagCacheAbstract
         $this->cache->setNamespaceVersion($newVersion);
         $this->cache->save(static::CACHE_KEY_AD_SLOT, $this->createAdSlotCacheData($adSlot));
 
-        // delete the old version of the cache
-        $this->cache->setNamespaceVersion($oldVersion);
-
         $this->cache->deleteAll();
 
         return $this;

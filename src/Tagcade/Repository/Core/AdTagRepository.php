@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -644,6 +645,19 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->where('t.impressionCap IS NOT NULL OR t.networkOpportunityCap IS NOT NULL')
             ->andWhere('t.active = :status')
             ->setParameter('status', $status, Type::INTEGER);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param LibraryAdTag $libraryAdTag
+     * @return array
+     */
+    public function getAdTagsHaveTheSameAdTabLib(LibraryAdTag $libraryAdTag)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->andWhere('t.libraryAdTag =:libraryAdTag')
+            ->setParameter('libraryAdTag', $libraryAdTag);
 
         return $qb->getQuery()->getResult();
     }

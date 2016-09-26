@@ -52,7 +52,6 @@ class ReportGrouper implements ReportGrouperInterface
             return new ImpressionBreakdownGrouper($reportCollection);
         }
 
-
         return new DefaultGrouper($reportCollection);
     }
 } 

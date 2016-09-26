@@ -1,0 +1,53 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\DemandAdTagReport:
+    exclusion_policy: ALL
+    virtual_properties:
+        getAdTagRequests:
+            type: integer
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        getAdTagBids:
+            type: integer
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        getAdTagErrors:
+            type: integer
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+    properties:
+        date:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+            type: DateTime<'Y-m-d'>
+        requests:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        bids:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        bidRate:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        errors:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        errorRate:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        impressions:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        fillRate:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        clicks:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        clickThroughRate:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        blocks:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        videoDemandAdTag:
+            expose: true
+            groups: [platform_demand_ad_tag.detail]

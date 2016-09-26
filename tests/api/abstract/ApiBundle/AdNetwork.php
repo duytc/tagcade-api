@@ -67,7 +67,7 @@ class AdNetwork
     }
 
     /**
-     * get AdTag Active By AdNetwork
+     * get WaterfallTag Active By AdNetwork
      * @param ApiTester $I
      */
     public function getAdTagActiveByAdNetwork(ApiTester $I)
@@ -78,7 +78,7 @@ class AdNetwork
     }
 
     /**
-     * get AdTag Active By AdNetwork failed cause by AdNetwork Not Existed
+     * get WaterfallTag Active By AdNetwork failed cause by AdNetwork Not Existed
      * @param ApiTester $I
      */
     public function getAdTagActiveByAdNetworkNotExisted(ApiTester $I)
@@ -111,7 +111,7 @@ class AdNetwork
     }
 
     /**
-     * get AdTag Active By Site And By AdNetwork
+     * get WaterfallTag Active By Site And By AdNetwork
      * @param ApiTester $I
      */
     public function getAdTagActiveBySiteAndByAdNetwork(ApiTester $I)
@@ -122,7 +122,7 @@ class AdNetwork
     }
 
     /**
-     * get AdTag Active By Site And By AdNetwork failed cause by Site Not Existed
+     * get WaterfallTag Active By Site And By AdNetwork failed cause by Site Not Existed
      * @param ApiTester $I
      */
     public function getAdTagActiveBySiteNotExistedAndByAdNetwork(ApiTester $I)
@@ -133,7 +133,7 @@ class AdNetwork
     }
 
     /**
-     * get AdTag Active By Site And By AdNetwork failed cause by AdNetwork Not Existed
+     * get WaterfallTag Active By Site And By AdNetwork failed cause by AdNetwork Not Existed
      * @param ApiTester $I
      */
     public function getAdTagActiveBySiteAndByAdNetworkNotExisted(ApiTester $I)

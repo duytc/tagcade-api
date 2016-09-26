@@ -128,7 +128,7 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
                     }
 
                     $libraryAdSlot->setRonAdSlot($ronAdSlot);
-                    //make $libraryAdSlot visible to force AdSlotGenerator service replicating AdTag also
+                    //make $libraryAdSlot visible to force AdSlotGenerator service replicating WaterfallTag also
                     $libraryAdSlot->setVisible(true);
                 }
 

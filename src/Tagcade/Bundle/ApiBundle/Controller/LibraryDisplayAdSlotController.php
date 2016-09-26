@@ -154,7 +154,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
     {
         $request->request->set('libraryAdSlot', $id);
         $request->request->set('refId', uniqid("", true));
-        // move the creating AdTag to library
+        // move the creating WaterfallTag to library
         $libraryAdTag = $request->request->get('libraryAdTag');
         if(is_array($libraryAdTag)){
             $libraryAdTag['visible'] = true;

@@ -76,7 +76,7 @@ class UpdateAdTagPositionListener
     }
 
     /**
-     * Update AdTag position. It should be continues according to current list of ad tag in the same ad slot
+     * Update WaterfallTag position. It should be continues according to current list of ad tag in the same ad slot
      *
      * @param PositionInterface $updatingAdTag
      * @return array

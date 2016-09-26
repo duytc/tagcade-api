@@ -1,0 +1,34 @@
+Tagcade\Entity\Core\VideoWaterfallTagItem:
+    type: entity
+    table: video_waterfall_tag_item
+    repositoryClass: Tagcade\Repository\Core\VideoWaterfallTagItemRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        position:
+            type: integer
+            nullable: false
+            options:
+        strategy:
+            type: string
+            nullable: false
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        videoWaterfallTag:
+            targetEntity: Tagcade\Entity\Core\VideoWaterfallTag
+            inversedBy: videoWaterfallTagItems
+    oneToMany:
+        videoDemandAdTags:
+            targetEntity: Tagcade\Entity\Core\VideoDemandAdTag
+            mappedBy: videoWaterfallTagItem
+            cascade: ['persist', 'remove', 'detach']
+            orphanRemoval: true

@@ -66,3 +66,4 @@ Tagcade\Entity\Core\LibrarySlotTag:
         libraryAdSlot:
             targetEntity: Tagcade\Entity\Core\LibraryAdSlotAbstract
             inversedBy: libSlotTags
+            cascade: ["persist"]

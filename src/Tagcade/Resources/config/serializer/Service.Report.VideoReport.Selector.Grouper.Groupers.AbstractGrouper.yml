@@ -1,0 +1,84 @@
+Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers\AbstractGrouper:
+    exclusion_policy: ALL
+    properties:
+        reportType:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        reports:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        requests:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        bids:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        bidRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        errors:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        errorRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        impressions:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        fillRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        clicks:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        clickThroughRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageRequests:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageBids:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageBidRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageErrors:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageErrorRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageImpressions:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageFillRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageClicks:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageClickThroughRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        totalBidRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        totalErrorRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        totalFillRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        totalClickThroughRate:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        blocks:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        averageBlocks:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]
+        totalBlocks:
+            expose: true
+            groups: [abstract_grouper.detail, abstract_grouper.summary]

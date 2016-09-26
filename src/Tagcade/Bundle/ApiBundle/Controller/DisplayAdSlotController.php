@@ -372,7 +372,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         /** @var AdTagInterface[] $adTags */
         $adTags = $adSlot->getAdTags();
         foreach ($adTags as $adTag) {
-            $event->addAffectedEntity('AdTag', $adTag->getId(), $adTag->getName());
+            $event->addAffectedEntity('WaterfallTag', $adTag->getId(), $adTag->getName());
         }
 
         return $event;
@@ -397,7 +397,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     }
 
     /**
-     * compare AdTag By Position
+     * compare WaterfallTag By Position
      *
      * @param AdTagInterface $adTag_1
      * @param AdTagInterface $adTag_2

@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.whitelist.class: Tagcade\Entity\Core\WhiteList
+    # form class
+    tagcade.form.type.whitelist.class: Tagcade\Form\Type\WhiteListFormType
+
+services:
+
+    # whitelist handler #####################################################
+
+    tagcade_api.handler.whitelist:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.whitelist
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for whitelist handler ##############
+
+    tagcade.repository.whitelist:
+        class: Tagcade\Repository\Core\WhiteListRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\WhiteList
+
+    tagcade.domain_manager.whitelist:
+        class: Tagcade\DomainManager\WhiteListManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.whitelist
+
+    tagcade.form.type.whitelist:
+        class: %tagcade.form.type.whitelist.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_white_list }
+
+    tagcade.handler.handlers.whitelist.abstract:
+        class: Tagcade\Handler\Handlers\Core\WhiteListHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.whitelist
+            - @tagcade.domain_manager.whitelist
+
+    tagcade.handler.handlers.whitelist.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\WhiteListHandler
+        parent: tagcade.handler.handlers.whitelist.abstract
+        public: false
+
+    tagcade.handler.handlers.whitelist.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\WhiteListHandler
+        parent: tagcade.handler.handlers.whitelist.abstract
+        public: false
+
+    tagcade.handler.handler_manager.whitelist:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.whitelist.class%
+            -
+                - @tagcade.handler.handlers.whitelist.admin
+                - @tagcade.handler.handlers.whitelist.publisher
+
+    # end whitelist #####################################################

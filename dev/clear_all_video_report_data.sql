@@ -1,0 +1,14 @@
+
+-- truncate all video report data
+set foreign_key_checks = 0;
+
+TRUNCATE table video_report_platform_platform_report;
+TRUNCATE table video_report_platform_account_report;
+TRUNCATE table video_report_platform_publisher_report;
+TRUNCATE table video_report_platform_waterfall_tag_report;
+TRUNCATE table video_report_platform_demand_ad_tag_report;
+TRUNCATE table video_report_demand_partner_demand_ad_tag_report;
+TRUNCATE table video_report_demand_partner_demand_partner_report;
+
+
+

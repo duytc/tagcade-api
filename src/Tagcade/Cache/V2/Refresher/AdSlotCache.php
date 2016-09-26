@@ -16,6 +16,7 @@ use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
 use Tagcade\Service\TagGenerator;
 use Tagcade\Worker\Manager;
@@ -46,12 +47,12 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     private $tagGenerator;
 
     public function __construct(NamespaceCacheInterface $cache,
-        Manager $workerManager,
-        DisplayAdSlotManagerInterface $displayAdSlotManager,
-        NativeAdSlotManagerInterface $nativeAdSlotManager,
-        DynamicAdSlotManagerInterface $dynamicAdSlotManager,
-        ExpressionRepositoryInterface $expressionRepository,
-        TagGenerator $tagGenerator)
+                                Manager $workerManager,
+                                DisplayAdSlotManagerInterface $displayAdSlotManager,
+                                NativeAdSlotManagerInterface $nativeAdSlotManager,
+                                DynamicAdSlotManagerInterface $dynamicAdSlotManager,
+                                ExpressionRepositoryInterface $expressionRepository,
+                                TagGenerator $tagGenerator)
     {
         parent::__construct($cache, $workerManager);
 
@@ -62,22 +63,31 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $this->tagGenerator = $tagGenerator;
     }
 
-    public function refreshCache()
+    /**
+     * @inheritdoc
+     */
+    public function refreshCache($publisher = null)
     {
         /** @var DisplayAdSlotInterface[] $adSlots */
-        $adSlots = $this->displayAdSlotManager->all();
+        $adSlots = ($publisher instanceof PublisherInterface)
+            ? $this->displayAdSlotManager->getAdSlotsForPublisher($publisher)
+            : $this->displayAdSlotManager->all();
         foreach ($adSlots as $adSlot) {
             $this->refreshCacheForDisplayAdSlot($adSlot, false);
         }
 
         /** @var NativeAdSlotInterface[] $nativeAdSlots */
-        $nativeAdSlots = $this->nativeAdSlotManager->all();
+        $nativeAdSlots = ($publisher instanceof PublisherInterface)
+            ? $this->nativeAdSlotManager->getNativeAdSlotsForPublisher($publisher)
+            : $this->nativeAdSlotManager->all();
         foreach ($nativeAdSlots as $nativeAdSlot) {
             $this->refreshCacheForNativeAdSlot($nativeAdSlot, false);
         }
 
         /** @var DynamicAdSlotInterface[] $dynamicAdSlots */
-        $dynamicAdSlots = $this->dynamicAdSlotManager->all();
+        $dynamicAdSlots = ($publisher instanceof PublisherInterface)
+            ? $this->dynamicAdSlotManager->getDynamicAdSlotsForPublisher($publisher)
+            : $this->dynamicAdSlotManager->all();
         foreach ($dynamicAdSlots as $dynamicAdSlot) {
             $this->refreshCacheForDynamicAdSlot($dynamicAdSlot);
         }
@@ -101,7 +111,10 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         return $this->refreshCacheForReferencingDynamicAdSlot($adSlot);
     }
 
-    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot,  $alsoRefreshRelatedDynamicAdSlot = true)
+    /**
+     * @inheritdoc
+     */
+    public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
         $this->refreshForCacheKey(self::CACHE_KEY_AD_SLOT, $nativeAdSlot);
 
@@ -124,6 +137,9 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     }
 
 
+    /**
+     * @inheritdoc
+     */
     public function refreshForCacheKey($cacheKey, ModelInterface $model)
     {
         if ($cacheKey !== self::CACHE_KEY_AD_SLOT) {
@@ -133,13 +149,16 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         return parent::refreshForCacheKey($cacheKey, $model);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAdTagsForAdSlot($slotId)
     {
-        $namespace= $this->getNamespace($slotId);
+        $namespace = $this->getNamespace($slotId);
         $this->cache->setNamespace($namespace);
         $cacheKey = 'all_tags_array';
 
-        $namespaceVersion  = $this->cache->getNamespaceVersion(true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
+        $namespaceVersion = $this->cache->getNamespaceVersion(true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
         $this->cache->setNamespaceVersion($namespaceVersion);
 
         if ($this->cache->contains($cacheKey)) {
@@ -175,8 +194,7 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $expressions = $this->expressionRepository->findBy(array('expectAdSlot' => $updatingAdSlot));
 
         $dynamicAdSlotsWithExpressionReference = array_map(
-            function(ExpressionInterface $expression)
-            {
+            function (ExpressionInterface $expression) {
                 return $expression->getDynamicAdSlot();
             },
             $expressions

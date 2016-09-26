@@ -274,7 +274,7 @@ class Replicator implements ReplicatorInterface
             }
         );
 
-        // if there no any more AdTag refer to this LibraryAdTag then it should be removed as well
+        // if there no any more WaterfallTag refer to this LibraryAdTag then it should be removed as well
         $libraryAdTag = $librarySlotTag->getLibraryAdTag();
 
         if (true === $remove &&

@@ -3,6 +3,7 @@
 namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
+use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
@@ -164,6 +165,12 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status);
+
+    /**
+     * @param LibraryAdTag $libraryAdTag
+     * @return mixed
+     */
+    public function getAdTagsHaveTheSameAdTabLib(LibraryAdTag $libraryAdTag);
 
     /**
      * @param AdNetworkInterface $adNetwork

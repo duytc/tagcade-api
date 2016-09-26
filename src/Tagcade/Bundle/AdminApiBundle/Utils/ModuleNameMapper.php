@@ -11,6 +11,7 @@ trait ModuleNameMapper {
             if($key === 'MODULE_DISPLAY') return 'displayAds';
             elseif($key === 'MODULE_ANALYTICS') return 'analytics';
             elseif($key === 'MODULE_VIDEO_ANALYTICS') return 'videoAnalytics';
+            elseif($key === 'MODULE_VIDEO') return 'video';
             elseif($key === 'MODULE_FRAUD_DETECTION') return 'fraudDetection';
             elseif($key === 'MODULE_UNIFIED_REPORT') return 'unifiedReport';
             elseif($key === 'MODULE_HEADER_BIDDING') return 'headerBidding';
@@ -38,6 +39,10 @@ trait ModuleNameMapper {
                 case 'MODULE_VIDEO_ANALYTICS':
                     $moduleConfigs['videoAnalytics'] = $moduleConfigs['MODULE_VIDEO_ANALYTICS'];
                     unset($moduleConfigs['MODULE_VIDEO_ANALYTICS']);
+                    break;
+                case 'MODULE_VIDEO':
+                    $moduleConfigs['video'] = $moduleConfigs['MODULE_VIDEO'];
+                    unset($moduleConfigs['MODULE_VIDEO']);
                     break;
                 case 'MODULE_FRAUD_DETECTION':
                     $moduleConfigs['fraudDetection'] = $moduleConfigs['MODULE_FRAUD_DETECTION'];

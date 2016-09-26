@@ -39,14 +39,13 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     }
 
     /**
-     * refresh Cache
-     * @return $this
+     * @inheritdoc
      */
-    public function refreshCache()
+    public function refreshCache($publisher = null)
     {
-        $this->adSlotCache->refreshCache();
+        $this->adSlotCache->refreshCache($publisher);
 
-        $this->ronAdSlotCache->refreshCache();
+        $this->ronAdSlotCache->refreshCache($publisher);
 
         return $this;
     }
@@ -107,6 +106,9 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function refreshCacheForReportableAdSlot(ReportableAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
         if ($adSlot instanceof DisplayAdSlotInterface) {
@@ -137,6 +139,9 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     }
 
 
+    /**
+     * @inheritdoc
+     */
     public function refreshCacheForNativeAdSlot(NativeAdSlotInterface $nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot = true)
     {
         return $this->adSlotCache->refreshCacheForNativeAdSlot($nativeAdSlot, $alsoRefreshRelatedDynamicAdSlot);

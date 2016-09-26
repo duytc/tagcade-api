@@ -1,0 +1,9 @@
+Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\Publisher:
+    exclusion_policy: ALL
+    virtual_properties:
+        getVideoPublisherId:
+            type: integer
+    properties:
+        videoPublisher:
+            expose: true
+            groups: [video_report_type_platform_publisher.detail, video_report_type_platform_publisher.summary]

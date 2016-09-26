@@ -74,7 +74,7 @@ interface ReportBuilderInterface
     public function getPublisherAdNetworksByDayReport(PublisherInterface $publisher, Params $params);
 
     /**
-     * get Publisher AdNetworks Report Breakdown By AdTag
+     * get Publisher AdNetworks Report Breakdown By WaterfallTag
      *
      * @param PublisherInterface $publisher
      * @param Params $params

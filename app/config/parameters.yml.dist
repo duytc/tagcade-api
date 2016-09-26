@@ -33,13 +33,16 @@ parameters:
         domain: 'tags.tagcade.dev'
         secure: true
 
-    tc.legacy.live_performance_report.redis_hosts: [127.0.0.1:6379] # host:port pairs
+    tc.video_vast_tag_base_url: http://vast-tag-server.tagcade.dev:9999/tag.php?id=UUID # keep pattern "UUID" for replacing by real uuid of video waterfall tag
 
+    tc.legacy.live_performance_report.redis_hosts: [127.0.0.1:6379] # host:port pairs
+    tc.cache.video.redis_hosts:
+        - '127.0.0.1:6379'
     tc.legacy.tag_cache.redis_host: 127.0.0.1
     tc.legacy.tag_cache.redis_port: 6379
 
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
-
+    tc.max_cache_version: 20 # maximum cache version of a specific key is kept in Redis cache
     tc.billing.default_cpm_rate: 0.025
     tc.billing.thresholds:
         - {threshold: 100000000, cpmRate: 0.022}
@@ -60,6 +63,18 @@ parameters:
         ad_slot_path: adslot/
         ron_ad_slot_path: ronadslot/
         push_ftp_enabled: true
+        
+    tc.builtin.black_list:
+        -
+            name: 'Aol Default Blacklist'
+            suffixKey: 'aol_default'
+            # the redis key should be 'video:domain_blacklist:aol_default'
+            builtin: true
+        -
+            name: 'SpotX Standard Blacklist'
+            suffixKey: 'spotx_standard'
+            # the redis key should be 'video:domain_blacklist:sportx_standard'
+            builtin: true
 
     insert_batch_size: 100
 

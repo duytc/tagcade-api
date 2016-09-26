@@ -87,6 +87,9 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     public function createSites(array $arrayMapSitesData, PublisherInterface $publisher, $dryOption)
     {
         $siteObjects = [];
+        $sitesExitsInSystem = 0;
+        $newSiteImport = 0;
+
         foreach ($arrayMapSitesData as $site) {
             $displayAdSlotsOfThisSite = [];
             $dynamicAdSlotsOfThisSite = [];
@@ -103,13 +106,16 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
             $siteToken = $this->createSiteHash ($siteObject->getPublisherId(), $siteObject->getDomain());
 
             $existSites = $this->siteManager->getSiteBySiteToken($siteToken);
-            if (count($existSites) >0) {
+            if (count($existSites) > 0) {
+                $sitesExitsInSystem ++;
                 $siteObject = array_shift($existSites);
                 $this->logger->warning(sprintf('This site %s of publisher = %d has existed in system!', $siteObject->getDomain(), $publisher->getId()));
+            } else {
+                $newSiteImport ++;
             }
 
             if (true == $dryOption) {
-                $this->logger->info(sprintf('Import Site: %s', $siteObject->getName()));
+                $this->logger->info(sprintf('Site: %s', $siteObject->getName()));
             }
 
             $adSlots =[];
@@ -133,9 +139,8 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
             $siteObjects[] = $siteObject;
         }
 
-        $numSite = count($siteObjects);
         if (true == $dryOption) {
-            $this->logger->info(sprintf('Total Site import: %d', $numSite));
+            $this->logger->info(sprintf('Total Site has exit in system: %d, total site import new: %d', $sitesExitsInSystem, $newSiteImport));
         }
 
         return $siteObjects;

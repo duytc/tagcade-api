@@ -1,0 +1,52 @@
+Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PlatformReport:
+    exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+            type: DateTime<'Y-m-d'>
+        requests:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        bids:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        bidRate:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        errors:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        errorRate:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        impressions:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        fillRate:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        clicks:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        clickThroughRate:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        billedAmount:
+            expose: true
+            groups: [platform_platform.detail, platform_account.summary]
+        billedRate:
+            expose: true
+            groups: [platform_platform.detail, platform_account.summary]
+        adTagRequests:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        adTagErrors:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        adTagBids:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        blocks:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]

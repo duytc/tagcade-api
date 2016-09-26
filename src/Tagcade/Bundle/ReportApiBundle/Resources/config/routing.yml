@@ -42,3 +42,9 @@ report_api_functional_billing:
     resource: Tagcade\Bundle\ReportApiBundle\Controller\BillingEditorController
     name_prefix: functional_report_api_1_
     prefix: /billing
+
+report_api_video_report:
+    type: rest
+    resource: Tagcade\Bundle\ReportApiBundle\Controller\VideoReportController
+    name_prefix: video_report_api_1_
+    prefix: /videoreports

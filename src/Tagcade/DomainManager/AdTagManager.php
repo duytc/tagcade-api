@@ -5,6 +5,7 @@ namespace Tagcade\DomainManager;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Tagcade\Entity\Core\AdTag;
+use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -563,7 +564,7 @@ class AdTagManager implements AdTagManagerInterface
     }
 
     /**
-     * auto Increase Position For AdSlot Due To AdTag
+     * auto Increase Position For AdSlot Due To WaterfallTag
      *
      * @param AdTagInterface $newAdTag
      */
@@ -621,5 +622,14 @@ class AdTagManager implements AdTagManagerInterface
         $adTagLibrary->setVisible(true);
 
         return $adTagLibrary;
+    }
+
+    /**
+     * @param LibraryAdTag $libraryAdTag
+     * @return mixed
+     */
+    public function getAdTagsHaveTheSameAdTabLib(LibraryAdTag $libraryAdTag)
+    {
+        return $this->repository->getAdTagsHaveTheSameAdTabLib($libraryAdTag);
     }
 }

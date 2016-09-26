@@ -10,4 +10,6 @@ interface DisplayAdSlotRepositoryInterface extends ObjectRepository
     public function getAdSlotForSiteByName(SiteInterface $site, $name);
 
     public function deleteAdSlotForSite(SiteInterface $site);
+
+    public function getSitesByLibraryDisplayAdSlot($libraryDisplayAdSlotId);
 }

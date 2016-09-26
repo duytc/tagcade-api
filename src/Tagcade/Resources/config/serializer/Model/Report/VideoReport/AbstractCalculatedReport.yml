@@ -1,0 +1,7 @@
+Tagcade\Model\Report\VideoReport\AbstractCalculatedReport:
+    exclusion_policy: NONE
+    properties:
+        subReports:
+            exclude: true
+        superReport:
+            exclude: true

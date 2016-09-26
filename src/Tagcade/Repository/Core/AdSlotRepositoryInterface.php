@@ -137,4 +137,10 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdSlotByNameForPublisher( PublisherInterface $publisher, $adSlotName);
+
+    /**
+     * @param $libraryDisplayAdSlot
+     * @return mixed
+     */
+    public function getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
 }

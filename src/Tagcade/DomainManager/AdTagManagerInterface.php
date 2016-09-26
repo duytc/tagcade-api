@@ -2,6 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
+use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -176,5 +177,7 @@ interface AdTagManagerInterface
     public function getAllAdTagsByStatus($status);
 
     public function makeStandAlone ($adTagId);
+
+    public function getAdTagsHaveTheSameAdTabLib(LibraryAdTag $libraryAdTag);
 
 }

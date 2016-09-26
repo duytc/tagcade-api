@@ -132,6 +132,4 @@ class BilledReportGrouper extends AbstractGrouper
     {
         return $this->averageBilledAmount;
     }
-
-
 }

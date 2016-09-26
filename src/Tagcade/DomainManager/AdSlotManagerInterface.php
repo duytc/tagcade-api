@@ -114,4 +114,10 @@ interface AdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getAdSlotByNameForPublisher(PublisherInterface $publisherInterface, $adSlotName);
+
+    /**
+     * @param $libraryDisplayAdSlot
+     * @return mixed
+     */
+    public function getDisplayAdSlotByLibrary($libraryDisplayAdSlot);
 }

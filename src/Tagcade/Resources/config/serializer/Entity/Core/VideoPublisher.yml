@@ -1,0 +1,15 @@
+Tagcade\Entity\Core\VideoPublisher:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [videoPublisher.summary, videoPublisher.detail, videoPublisher.report]
+        publisher:
+            expose: true
+            groups: [videoPublisher.summary, videoPublisher.detail, videoPublisher.report]
+        name:
+            expose: true
+            groups: [videoPublisher.summary, videoPublisher.detail, videoPublisher.report]
+#        videoWaterfallTags:
+#            expose: true
+#            groups: [videoPublisher.summary, videoPublisher.detail]

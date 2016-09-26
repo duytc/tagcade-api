@@ -20,8 +20,15 @@ parameters:
     tagcade.security.auth.voter.ad_network.class: Tagcade\Security\Authorization\Voter\AdNetworkVoter
     tagcade.security.auth.voter.user.class: Tagcade\Security\Authorization\Voter\PublisherVoter
     tagcade.security.auth.voter.channel.class: Tagcade\Security\Authorization\Voter\ChannelVoter
-
+    tagcade.security.auth.voter.video_demand_partner.class: Tagcade\Security\Authorization\Voter\VideoDemandPartnerVoter
+    tagcade.security.auth.voter.video_publisher.class: Tagcade\Security\Authorization\Voter\VideoPublisherVoter
+    tagcade.security.auth.voter.video_demand_ad_tag.class: Tagcade\Security\Authorization\Voter\VideoDemandAdTagVoter
+    tagcade.security.auth.voter.video_waterfall_tag.class: Tagcade\Security\Authorization\Voter\VideoWaterfallTagVoter
+    tagcade.security.auth.voter.video_waterfall_tag_item.class: Tagcade\Security\Authorization\Voter\VideoWaterfallTagItemVoter
+    tagcade.security.auth.voter.blacklist.class: Tagcade\Security\Authorization\Voter\BlacklistVoter
+    tagcade.security.auth.voter.white_list.class: Tagcade\Security\Authorization\Voter\WhiteListVoter
     tagcade.security.auth.voter.library_expresison.class: Tagcade\Security\Authorization\Voter\LibraryExpressionVoter
+    tagcade.security.auth.voter.library_video_demand_ad_tag.class: Tagcade\Security\Authorization\Voter\LibraryVideoDemandAdTagVoter
 
     # event dispatched on user action such as add, remove, delete
     tagcade.events.handler_event: 'tagcade.events.handler_event'
@@ -123,12 +130,68 @@ services:
             tags:
                 - { name: security.voter }
 
+    tagcade.security.auth.voter.video_demand_partner:
+        class:  %tagcade.security.auth.voter.video_demand_partner.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.video_demand_ad_tag:
+        class:  %tagcade.security.auth.voter.video_demand_ad_tag.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.video_publisher:
+        class:  %tagcade.security.auth.voter.video_publisher.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.video_waterfall_tag:
+        class:  %tagcade.security.auth.voter.video_waterfall_tag.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.video_waterfall_tag_item:
+        class:  %tagcade.security.auth.voter.video_waterfall_tag_item.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.blacklist:
+        class:  %tagcade.security.auth.voter.blacklist.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.white_list:
+        class:  %tagcade.security.auth.voter.white_list.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.library_video_demand_ad_tag:
+        class:  %tagcade.security.auth.voter.library_video_demand_ad_tag.class%
+        public: false
+        tags:
+            - { name: security.voter }
+
     tagcade.service.tag_generator:
         class: Tagcade\Service\TagGenerator
         arguments:
             - %tc.default_tag_url%
             - @tagcade.domain_manager.ron_ad_slot
             - @tagcade.domain_manager.ad_slot
+
+    tagcade.service.video_vast_tag_generator:
+        class: Tagcade\Service\VideoVastTagGenerator
+        arguments:
+            - %tc.video_vast_tag_base_url%
+            - @tagcade.domain_manager.video_waterfall_tag
+            - @tagcade.domain_manager.video_publisher
+            - @tagcade.domain_manager.video_demand_ad_tag
 
     tagcade.service.console_output:
         class: Symfony\Component\Console\Output\ConsoleOutput
@@ -206,12 +269,23 @@ services:
             - @tagcade.domain_manager.site
             - @tagcade_app.service.core.ad_tag.ad_tag_position_editor
 
-    tagcade.worker.workers.update_ad_tag_status_for_ad_network_worker:
-            class: Tagcade\Worker\Workers\UpdateAdTagStatusForAdNetworkWorker
-            arguments:
-                - @tagcade.domain_manager.ad_tag
-                - @tagcade.domain_manager.ad_network
-                - @tagcade.domain_manager.site
+    tagcade.worker.workers.update_cache_for_video_waterfall_tag_worker:
+        class: Tagcade\Worker\Workers\UpdateCacheForVideoWaterfallTagWorker
+        arguments:
+            - @tagcade.cache.video.video_cache_manager
+
+    tagcade.worker.workers.remove_cache_for_video_waterfall_tag_worker:
+        class: Tagcade\Worker\Workers\RemoveCacheForVideoWaterfallTagWorker
+        arguments:
+            - @tagcade.cache.video.video_cache_manager
+
+    tagcade.worker.workers.update_video_demand_ad_tag_status_worker:
+        class: Tagcade\Worker\Workers\UpdateVideoDemandAdTagStatusForDemandPartnerWorker
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.domain_manager.video_demand_ad_tag
+            - @tagcade.domain_manager.video_waterfall_tag
+            - @tagcade.domain_manager.video_demand_partner
 
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil

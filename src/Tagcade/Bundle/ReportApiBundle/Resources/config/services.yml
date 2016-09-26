@@ -1,6 +1,7 @@
 imports:
     - { resource: services/revenue.editor.yml }
     - { resource: services/report.performance.creators.yml }
+    - { resource: services/report.video.creators.yml }
     - { resource: services/report.performance.snapshot.creators.yml }
     - { resource: services/report.performance.selectors.yml }
     - { resource: services/report.source.selector.yml }
@@ -10,3 +11,4 @@ imports:
     - { resource: services/report.rtb_report.snapshot.creators.yml }
     - { resource: services/unified_report_importer_services.yml }
     - { resource: services/report.unified_report.exporter.yml }
+    - { resource: services/report.video_report.selectors.yml }

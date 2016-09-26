@@ -1,0 +1,5 @@
+Tagcade\Model\Report\VideoReport\ReportType\AbstractReportType:
+    exclusion_policy: NONE
+    virtual_properties:
+        getReportType:
+            type: string

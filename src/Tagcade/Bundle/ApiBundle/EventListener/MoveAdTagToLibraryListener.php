@@ -10,6 +10,7 @@ use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
+use Tagcade\Model\Core\LibrarySlotTagInterface;
 
 /**
  * This listener will be triggered when an ad slot is moved to library. The listener will then update all tags in side that slot to library
@@ -54,9 +55,11 @@ class MoveAdTagToLibraryListener
                     $librarySlotTag->setLibraryAdTag($adTag->getLibraryAdTag());
                     $librarySlotTag->setRefId($adTag->getRefId());
 
-                    $entity->getLibSlotTags()->add($librarySlotTag); // add to LibrarySlot
+                    if (!$this->isLibrarySlotTagExisted($librarySlotTag, $entity->getLibSlotTags()->toArray())) {
+                        $entity->getLibSlotTags()->add($librarySlotTag); // add to LibrarySlot
 
-                    $this->newSlotTags[] = $librarySlotTag;
+                        $this->newSlotTags[] = $librarySlotTag;
+                    }
                 }
             }
         }
@@ -74,5 +77,29 @@ class MoveAdTagToLibraryListener
 
             $em->flush();
         }
+    }
+
+    /**
+     * @param LibrarySlotTagInterface $librarySlotTag
+     * @param array $librarySlotTags
+     * @return bool
+     */
+    private function isLibrarySlotTagExisted(LibrarySlotTagInterface $librarySlotTag, array $librarySlotTags)
+    {
+        foreach ($librarySlotTags as $libSlotTag) {
+            /**
+             * @var LibrarySlotTagInterface $libSlotTag
+             */
+            if (!$libSlotTag instanceof  LibrarySlotTagInterface) {
+                continue;
+            }
+
+            if ($libSlotTag->getLibraryAdSlot()->getId() == $librarySlotTag->getLibraryAdSlot()->getId()
+                && $libSlotTag->getLibraryAdTag()->getId() ==  $librarySlotTag->getLibraryAdTag()->getId() ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -18,6 +18,7 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
+use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 use Tagcade\Service\Report\UnifiedReport\Selector\ReportBuilderInterface as UnifiedReportBuilderInterface;
@@ -54,6 +55,11 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
 
     /** @var AdNetworkManagerInterface */
     protected $adNetworkManager;
+
+    /**
+     * @var AdNetworkRepositoryInterface
+     */
+    protected $adNetworkRepository;
 
     /** @var RonAdSlotManagerInterface */
     protected $ronAdSlotManager;
@@ -98,6 +104,7 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
         $this->adSlotManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_slot');
         $this->siteManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.site');
         $this->adNetworkManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_network');
+        $this->adNetworkRepository = $this->tester->grabServiceFromContainer('tagcade.repository.ad_network');
         $this->adTagManager = $this->tester->grabServiceFromContainer('tagcade.domain_manager.ad_tag');
         $this->performanceReportBuilder = $this->tester->grabServiceFromContainer('tagcade.service.report.performance_report.display.selector.report_builder');
         $this->unifiedReportBuilder = $this->tester->grabServiceFromContainer('tagcade.service.report.unified_report.selector.report_builder');
@@ -106,7 +113,7 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
         // import sample report files
         $cmd = sprintf('%s tc:unified-report:import %s --publisher=%d --partnerCName=%s --start-date=%s --end-date=%s --override --keep-files',
             $this->getImporterAppConsoleCommand(),
-            '/home/vagrant/tagcade/report-importer/data/komoona/20160705-20160609-20160615/BluTonic_jun9.csv',
+            '/var/www/api.tagcade.dev/tests/_data/unified_report/komoona/BluTonic_jun9.csv',
             2,
             'komoona',
             '2016-06-09',
@@ -125,18 +132,70 @@ class UnifiedReportTest extends \Codeception\TestCase\Test
     public function platformReport()
     {
         $publisher = $this->publisherManager->find(2);
+        $adNetwork = $this->adNetworkRepository->getAdNetworkByPublisherAndPartnerCName(2, 'komoona');
         $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('2016-06-09'), new \DateTime('2016-06-09'), false, true);
+
         $allPartnerByDayReport = $this->unifiedReportBuilder->getAllDemandPartnersByDayReport($publisher, $params);
         $this->tester->assertNotNull($allPartnerByDayReport);
 
         $allPartnerByAdTagReport = $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params);
         $this->tester->assertNotNull($allPartnerByAdTagReport);
 
+        $allPartnerByPartnerReport = $this->unifiedReportBuilder->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $this->tester->assertNotNull($allPartnerByAdTagReport);
+
+        $partnerByDayReport = $this->unifiedReportBuilder->getPartnerAllSitesByDayReport($adNetwork, $params);
+        $this->tester->assertNotNull($partnerByDayReport);
+
         $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerByAdTagReport->getImpressions());
         $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerByAdTagReport->getTotalOpportunities());
         $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerByAdTagReport->getPassbacks());
         $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerByAdTagReport->getEstRevenue());
         $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerByAdTagReport->getEstCpm());
+
+        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerByPartnerReport->getImpressions());
+        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerByPartnerReport->getTotalOpportunities());
+        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerByPartnerReport->getPassbacks());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerByPartnerReport->getEstRevenue());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerByPartnerReport->getEstCpm());
+
+        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $partnerByDayReport->getImpressions());
+        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $partnerByDayReport->getTotalOpportunities());
+        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $partnerByDayReport->getPassbacks());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $partnerByDayReport->getEstRevenue());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $partnerByDayReport->getEstCpm());
+
+
+        $params = new Tagcade\Service\Report\PerformanceReport\Display\Selector\Params(new \DateTime('2016-06-09'), new \DateTime('2016-06-15'), false, true);
+        $allPartnerByDayReport = $this->unifiedReportBuilder->getAllDemandPartnersByDayReport($publisher, $params);
+        $this->tester->assertNotNull($allPartnerByDayReport);
+
+        $allPartnerByAdTagReport = $this->unifiedReportBuilder->getAllDemandPartnersByAdTagReport($publisher, $params);
+        $this->tester->assertNotNull($allPartnerByAdTagReport);
+
+        $allPartnerByPartnerReport = $this->unifiedReportBuilder->getAllDemandPartnersByPartnerReport($publisher, $params);
+        $this->tester->assertNotNull($allPartnerByAdTagReport);
+
+        $partnerByDayReport = $this->unifiedReportBuilder->getPartnerAllSitesByDayReport($adNetwork, $params);
+        $this->tester->assertNotNull($partnerByDayReport);
+
+        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerByAdTagReport->getImpressions());
+        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerByAdTagReport->getTotalOpportunities());
+        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerByAdTagReport->getPassbacks());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerByAdTagReport->getEstRevenue());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerByAdTagReport->getEstCpm());
+
+        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $allPartnerByPartnerReport->getImpressions());
+        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $allPartnerByPartnerReport->getTotalOpportunities());
+        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $allPartnerByPartnerReport->getPassbacks());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $allPartnerByPartnerReport->getEstRevenue());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $allPartnerByPartnerReport->getEstCpm());
+
+        $this->tester->assertEquals($allPartnerByDayReport->getImpressions(), $partnerByDayReport->getImpressions());
+        $this->tester->assertEquals($allPartnerByDayReport->getTotalOpportunities(), $partnerByDayReport->getTotalOpportunities());
+        $this->tester->assertEquals($allPartnerByDayReport->getPassbacks(), $partnerByDayReport->getPassbacks());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstRevenue(), $partnerByDayReport->getEstRevenue());
+        $this->tester->assertEquals($allPartnerByDayReport->getEstCpm(), $partnerByDayReport->getEstCpm());
     }
 
     protected function getImporterAppConsoleCommand()

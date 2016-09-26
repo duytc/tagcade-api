@@ -30,7 +30,6 @@ class AdNetwork extends AdNetworkModel
     {
         $this->activeAdTagsCount = 0;
         $this->pausedAdTagsCount = 0;
-        $this->activeAdTagsCount = 0;
         $this->libraryAdTags = new ArrayCollection();
     }
 }

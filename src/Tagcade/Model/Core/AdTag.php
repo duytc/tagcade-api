@@ -343,7 +343,7 @@ class AdTag implements AdTagInterface
 
 
     /**
-     * Calculate CheckSum string of an given AdTag
+     * Calculate CheckSum string of an given WaterfallTag
      * by concatenating major properties together with null value ignored, then returning the MD5 hash
      * @return string
      */

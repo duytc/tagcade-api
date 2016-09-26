@@ -23,7 +23,7 @@ interface HandlerEventLogInterface extends LogEventInterface
     public function getNewEntity();
 
     /**
-     * get name (name value) of entity as User name or Site name or AdTag name or etc...
+     * get name (name value) of entity as User name or Site name or WaterfallTag name or etc...
      * @param ModelInterface $entity
      * @return string
      */

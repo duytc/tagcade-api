@@ -168,7 +168,7 @@ class RonAdSlotReport extends BaseAbstractCalculatedReport implements RonAdSlotR
     protected function doCalculateFields()
     {
         if ($this->slotOpportunities === null) {
-            throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an AdTagReport');
+            throw new RuntimeException('slotOpportunities must be set for an AdSlotReport, it is required to calculate the relative fill rate for an WaterfallTagReport');
         }
 
         parent::doCalculateFields();

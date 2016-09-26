@@ -115,7 +115,7 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
 
 //    public function getName()
 //    {
-//        if ($this->adTag instanceof AdTagInterface) {
+//        if ($this->adTag instanceof WaterfallTagInterface) {
 //            $this->name = sprintf('%s (%s)', $this->adTag->getName(), $this->adTag->getPartnerTagId());
 //        }
 //

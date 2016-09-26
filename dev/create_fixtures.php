@@ -99,7 +99,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             $tempObjs[] = $adSlot;
             $tempObjs[] = $libraryAdSlot;
             // create ad tag
-            $libraryAdTag = (new LibraryAdTag())->setName('AdTag 1')
+            $libraryAdTag = (new LibraryAdTag())->setName('WaterfallTag 1')
                 ->setVisible(false)
                 ->setHtml('ad tag 1 html')
                 ->setAdType(0)
@@ -118,7 +118,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             unset($libraryAdTag);
             unset($adTag);
 
-            $libraryAdTag = (new LibraryAdTag())->setName('AdTag 2')
+            $libraryAdTag = (new LibraryAdTag())->setName('WaterfallTag 2')
                 ->setVisible(false)
                 ->setHtml('ad tag 2 html')
                 ->setAdType(0)

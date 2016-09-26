@@ -1,0 +1,18 @@
+Tagcade\Entity\Core\Blacklist:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [blacklist.detail, blacklist.summary]
+        name:
+            expose: true
+            groups: [blacklist.detail, blacklist.summary]
+        suffixKey:
+            expose: true
+            groups: [blacklist.detail, blacklist.summary]
+        publisher:
+            expose: true
+            groups: [blacklist.detail, blacklist.summary]
+        domains:
+            expose: true
+            groups: [blacklist.detail, blacklist.summary]

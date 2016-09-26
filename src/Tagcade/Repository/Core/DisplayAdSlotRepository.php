@@ -41,6 +41,12 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
         return parent::findOneBy($criteria, $orderBy);
     }
 
+    /**
+     * @param SiteInterface $site
+     * @param $name
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getAdSlotForSiteByName(SiteInterface $site, $name)
     {
         return $this->createQueryBuilder('d')
@@ -52,6 +58,11 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
             ->getQuery()->getOneOrNullResult();
     }
 
+    /**
+     * @param SiteInterface $site
+     * @return int
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function deleteAdSlotForSite(SiteInterface $site)
     {
         return $this->_em->getConnection()->executeUpdate(
@@ -61,4 +72,14 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
             )
         );
     }
+
+    public function getSitesByLibraryDisplayAdSlot($libraryDisplayAdSlotId)
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER)
+            ->setParameter('name', $name, Type::STRING)
+            ->getQuery()->getOneOrNullResult();
+    }
+
 }

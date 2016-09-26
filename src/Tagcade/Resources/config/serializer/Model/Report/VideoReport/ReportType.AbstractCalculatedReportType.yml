@@ -1,0 +1,2 @@
+Tagcade\Model\Report\VideoReport\ReportType\AbstractCalculatedReportType:
+    exclusion_policy: NONE

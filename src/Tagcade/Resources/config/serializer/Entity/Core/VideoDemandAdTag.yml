@@ -1,0 +1,36 @@
+Tagcade\Entity\Core\VideoDemandAdTag:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail]
+        tagURL:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        name:
+            expose: true
+            groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail]
+        priority:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        timeout:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        rotationWeight:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        targeting:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        targetingOverride:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        active:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+        videoWaterfallTagItem:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport]
+        libraryVideoDemandAdTag:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport]

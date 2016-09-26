@@ -3,6 +3,7 @@ services:
     tagcade.cache.legacy.cache.tag.redis_namespace_cache:
         class: Tagcade\Cache\Legacy\Cache\Tag\RedisNamespacedCache
         arguments:
+            - %tc.max_cache_version%
             - %tc.legacy.tag_cache.redis_host%
             - %tc.legacy.tag_cache.redis_port%
 
@@ -52,3 +53,31 @@ services:
         arguments:
             - @tagcade.legacy.cache.performance_report_data
 
+# service for update video ad tag cache
+    tagcade.cache.cache_namespace.redis_array_namespace_cache:
+        class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
+        arguments:
+            - %tc.legacy.live_performance_report.redis_hosts%
+            - %tc.max_cache_version%
+
+    tagcade.cache.cache_namespace.video.redis_array_namespace_cache:
+        class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
+        arguments:
+            - %tc.cache.video.redis_hosts%
+            - %tc.max_cache_version%
+
+    tagcade.cache.video.domain_list_manager:
+        class: Tagcade\Cache\Video\DomainListManager
+        arguments:
+            - %tc.cache.video.redis_hosts%
+
+    tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher:
+        class: Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresher
+        arguments:
+            - @tagcade.cache.cache_namespace.video.redis_array_namespace_cache
+
+    tagcade.cache.video.video_cache_manager:
+        class: Tagcade\Cache\Video\VideoCacheManager
+        arguments:
+            - @tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher
+            - @tagcade.domain_manager.video_waterfall_tag

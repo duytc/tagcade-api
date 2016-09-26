@@ -1,0 +1,40 @@
+Tagcade\Entity\Core\VideoDemandPartner:
+    type: entity
+    table: video_demand_partner
+    repositoryClass: Tagcade\Repository\Core\VideoDemandPartnerRepository
+    uniqueConstraints:
+        video_demand_partner_name_unique_key:
+            columns:
+                - name_canonical
+                - publisher_id
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            nullable: false
+        nameCanonical:
+            type: string
+            nullable: false
+        defaultTagURL:
+            type: string
+            nullable: true
+        activeAdTagsCount:
+            type: integer
+            options:
+                default: 0
+        pausedAdTagsCount:
+            type: integer
+            options:
+                default: 0
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        libraryVideoDemandAdTags:
+            targetEntity: Tagcade\Entity\Core\LibraryVideoDemandAdTag
+            mappedBy: videoDemandPartner
+            cascade: ['remove']

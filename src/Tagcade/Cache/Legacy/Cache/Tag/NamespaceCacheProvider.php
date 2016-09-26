@@ -9,12 +9,23 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
     /**
      * @var string The namespace to prefix all cache ids with
      */
-    private $namespace = '';
+    protected $namespace = '';
 
     /**
      * @var string The namespace version
      */
-    private $namespaceVersion;
+    protected $namespaceVersion = null;
+
+    protected $maxCacheVersion;
+
+    /**
+     * NamespaceCacheProvider constructor.
+     * @param $maxCacheVersion
+     */
+    public function __construct($maxCacheVersion)
+    {
+        $this->maxCacheVersion = $maxCacheVersion;
+    }
 
     /**
      * Set the namespace to prefix all cache ids with.
@@ -42,7 +53,12 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
 
     public function setNamespaceVersion($version)
     {
-        $this->namespaceVersion = (int)$version;
+        $version = (int) $version;
+        if ($version > $this->maxCacheVersion) {
+            $version = 1;
+        }
+
+        $this->namespaceVersion = $version;
     }
 
     /**
@@ -137,9 +153,7 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
     public function deleteAll()
     {
         $namespaceCacheKey = $this->getNamespaceCacheKey();
-        $namespaceVersion = $this->getNamespaceVersion() + 1;
-
-        $this->namespaceVersion = $namespaceVersion;
+        $namespaceVersion = (int) $this->getNamespaceVersion();
 
         return $this->doSave($namespaceCacheKey, $namespaceVersion);
     }

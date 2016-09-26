@@ -1,0 +1,65 @@
+parameters:
+    # entity class
+    tagcade.entity.core.video_publisher.class: Tagcade\Entity\Core\VideoPublisher
+    # form class
+    tagcade.form.type.video_publisher.class: Tagcade\Form\Type\VideoPublisherFormType
+
+services:
+
+    # video_publisher ######################################################
+
+    tagcade_api.handler.video_publisher:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.video_publisher
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ad slot handler #######
+
+    tagcade.repository.video_publisher:
+        class: Tagcade\Repository\Core\VideoPublisherRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.video_publisher.class%
+
+    tagcade.domain_manager.video_publisher:
+        class: Tagcade\DomainManager\VideoPublisherManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.video_publisher
+
+    tagcade.form.type.video_publisher:
+        class: %tagcade.form.type.video_publisher.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_video_publisher }
+
+    tagcade.handler.handlers.video_publisher.abstract:
+        class: Tagcade\Handler\Handlers\Core\VideoPublisherHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.video_publisher
+            - @tagcade.domain_manager.video_publisher
+
+    tagcade.handler.handlers.video_publisher.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\VideoPublisherHandler
+        parent: tagcade.handler.handlers.video_publisher.abstract
+        public: false
+
+    tagcade.handler.handlers.video_publisher.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\VideoPublisherHandler
+        parent: tagcade.handler.handlers.video_publisher.abstract
+        public: false
+
+    tagcade.handler.handler_manager.video_publisher:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.video_publisher.class%
+            -
+                - @tagcade.handler.handlers.video_publisher.admin
+                - @tagcade.handler.handlers.video_publisher.publisher
+
+    # end video_publisher #####################################################

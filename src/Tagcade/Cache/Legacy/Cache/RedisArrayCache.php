@@ -45,8 +45,6 @@ class RedisArrayCache implements RedisArrayCacheInterface
         return $this->redis->_target($key);
     }
 
-
-
     /**
      * {@inheritdoc}
      */
@@ -95,7 +93,6 @@ class RedisArrayCache implements RedisArrayCacheInterface
     {
         return $this->redis->hSet($hash, $field, $data);
     }
-
 
     /**
      * {@inheritdoc}

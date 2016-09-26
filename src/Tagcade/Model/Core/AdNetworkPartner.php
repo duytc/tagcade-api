@@ -6,9 +6,11 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
+use Tagcade\Service\StringUtilTrait;
 
 class AdNetworkPartner implements AdNetworkPartnerInterface
 {
+    use StringUtilTrait;
     protected $id;
     protected $name;
     protected $nameCanonical;
@@ -171,15 +173,5 @@ class AdNetworkPartner implements AdNetworkPartnerInterface
         $this->tagSizeRegex = $tagSizeRegex;
 
         return $this;
-    }
-
-    private function normalizeName($name)
-    {
-        $name = strtolower($name);
-
-        $string = str_replace(' ', '-', $name); // Replaces all spaces with hyphens.
-        $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
-
-        return preg_replace('/-+/', '-', $string); // Replaces multiple hyphens with single one.
     }
 }

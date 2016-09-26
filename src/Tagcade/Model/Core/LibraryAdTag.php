@@ -18,7 +18,7 @@ class LibraryAdTag implements LibraryAdTagInterface{
     /** int - type of AdTags*/
     protected $adType = 0;
 
-    /** array - json_array, descriptor of AdTag*/
+    /** array - json_array, descriptor of WaterfallTag*/
     protected $descriptor;
 
     /** @var AdNetworkInterface */

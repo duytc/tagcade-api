@@ -1,0 +1,9 @@
+Tagcade\Entity\Core\VideoDemandPartner:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: ["publisher", "nameCanonical"]
+            errorPath: name
+            message: "A video demand partner with that name exists"
+    properties:
+        name:
+            - NotBlank: ~
