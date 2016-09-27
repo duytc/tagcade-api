@@ -8,12 +8,14 @@ use Psr\Log\LoggerInterface;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Partner\AggregatePartnerReportTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Platform as PlatformReportType;
@@ -122,8 +124,19 @@ class DailyReportCreator
 
     }
 
-    public function createPlatformReport(DateTime $reportDate)
+    public function createPlatformReport(DateTime $reportDate, $override = false)
     {
+        $platformReportRepository = $this->om->getRepository(PlatformReport::class);
+        $report = current($platformReportRepository->getReportFor($reportDate, $reportDate));
+        if ($report instanceof ReportInterface && $override === false) {
+            throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+        }
+
+        if ($override === true && $report instanceof ReportInterface) {
+            $this->om->remove($report);
+            $this->om->flush();
+        }
+
         $report = new PlatformReport();
         $report->setDate($reportDate);
 

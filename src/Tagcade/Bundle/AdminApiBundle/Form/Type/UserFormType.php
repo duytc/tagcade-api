@@ -45,6 +45,7 @@ class UserFormType extends AbstractRoleSpecificFormType
         'errorRate',
         'clicks',
         'clickThroughRate',
+        'blocks',
         'adTagRequests',
         'adTagImpressions',
         'adTagErrors',
@@ -53,15 +54,17 @@ class UserFormType extends AbstractRoleSpecificFormType
 
     static $REPORT_SETTINGS_VR_FILTERS_KEYS = [
         'publisher',
+        'videoPublisher',
         'demandPartner',
-        'adTag',
+        'waterfallTag',
         'videoDemandAdTag',
     ];
 
     static $REPORT_SETTINGS_VR_BREAKDOWNS_KEYS = [
         'publisher',
+        'videoPublisher',
         'demandPartner',
-        'adTag',
+        'waterfallTag',
         'videoDemandAdTag',
         'day'
     ];

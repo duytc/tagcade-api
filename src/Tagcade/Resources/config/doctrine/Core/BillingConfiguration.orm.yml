@@ -2,11 +2,11 @@ Tagcade\Entity\Core\BillingConfiguration:
     type: entity
     table: core_billing_configuration
     repositoryClass: Tagcade\Repository\Core\BillingConfigurationRepository
-    uniqueConstraints:
-        publisher_billing_configuration_unique_key:
-            columns: # underscore column name
-                - publisher_id
-                - module
+#    uniqueConstraints:
+#        publisher_billing_configuration_unique_key:
+#            columns: # underscore column name
+#                - publisher_id
+#                - module
     id:
         id:
             type: integer

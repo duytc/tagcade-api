@@ -8,7 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -18,6 +20,9 @@ class DailyRotateCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:report:daily-rotate')
+            ->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'date to rotate data')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'force to override existing data on the given date')
+            ->addOption('skip-update-billing', null, InputOption::VALUE_NONE, 'check whether to update billing threshold or not')
             ->addOption('timeout', 't', InputOption::VALUE_OPTIONAL, 'Timeout (in seconds) to process for each publisher or ad network. Set to -1 to disable timeout', -1)
             ->setDescription('Daily rotate report')
         ;
@@ -30,6 +35,20 @@ class DailyRotateCommand extends ContainerAwareCommand
         if ($timeout == -1) {
             $timeout = null;
         }
+
+        $date = $input->getOption('date');
+
+        if (empty($date)) {
+            $date = new DateTime('yesterday');
+        } else if (!preg_match('/\d{4}-\d{2}-\d{2}/', $date)) {
+            throw new InvalidArgumentException('expect date format to be "YYYY-MM-DD"');
+        } else {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+        }
+
+        $skipUpdateBillingThreshold = filter_var($input->getOption('skip-update-billing'), FILTER_VALIDATE_BOOLEAN) ;
+        $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
+
         // run the command with -vv verbosity to show messages
         // https://symfony.com/doc/current/cookbook/logging/monolog_console.html
         /** @var \Psr\Log\LoggerInterface $logger */
@@ -43,29 +62,29 @@ class DailyRotateCommand extends ContainerAwareCommand
 
         // Creating network hierarchy reports
         $allAdNetworks = $adNetworkManager->all();
-        $this->rotateNetworkReports($allAdNetworks, $timeout, $logger);
+        $this->rotateNetworkReports($date, $allAdNetworks, $timeout, $logger, $override);
         unset($allAdNetworks);
 
         // Creating accounts reports
         $allPublishers = $publisherManager->allActivePublishers();
-        $this->rotateAccountReports($allPublishers, $timeout, $logger);
+        $this->rotateAccountReports($date, $allPublishers, $timeout, $logger, $override);
 
         // Creating platform reports
-        $reportDate = new DateTime('yesterday');
-        $dailyReportCreator->createPlatformReport($reportDate);
-
+        $dailyReportCreator->setReportDate($date);
+        $dailyReportCreator->createPlatformReport($date, $override);
         $dailyReportCreator->createSegmentReports();
         $dailyReportCreator->createRonSlotReports();
 
         $logger->info('finished daily rotation');
 
-        $this->updateBilledAmountThreshold($allPublishers, $timeout, $logger);
+        if ($skipUpdateBillingThreshold === false) {
+            $this->updateBilledAmountThreshold($allPublishers, $timeout, $logger);
+        }
 
-        $this->createPerformanceReportForPartner($allPublishers,$timeout,$logger);
-
+        $this->createPerformanceReportForPartner($date, $allPublishers, $timeout, $logger, $override);
     }
 
-    protected function createPerformanceReportForPartner(array $publishers, $timeout, LoggerInterface $logger)
+    protected function createPerformanceReportForPartner(DateTime $date, array $publishers, $timeout, LoggerInterface $logger, $override = false)
     {
         $logger->info('Start updating performance report for partner');
 
@@ -77,7 +96,7 @@ class DailyRotateCommand extends ContainerAwareCommand
             $id = $publisher->getId();
             $logger->info(sprintf('Start updating performance report for partner of publisher %d',$id));
 
-            $cmd = sprintf('%s tc:report:create-partner-report --publisher %d', $this->getAppConsoleCommand(), $id);
+            $cmd = sprintf('%s tc:report:create-partner-report --publisher %d --start-date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--override' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('Finish updating performance report for partner of publisher %d',$id));
@@ -109,7 +128,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         $logger->info('finished update threshold billed amount');
     }
 
-    protected function rotateNetworkReports(array $allAdNetworks, $timeout, LoggerInterface $logger)
+    protected function rotateNetworkReports(DateTime $date, array $allAdNetworks, $timeout, LoggerInterface $logger, $override = false)
     {
         foreach ($allAdNetworks as $adNetwork) {
             if (!$adNetwork instanceof AdNetworkInterface) {
@@ -119,14 +138,14 @@ class DailyRotateCommand extends ContainerAwareCommand
             $id = $adNetwork->getId();
             $logger->info(sprintf('start daily rotate for ad network %d', $id));
 
-            $cmd = sprintf('%s tc:report:daily-rotate:ad-network --id %d', $this->getAppConsoleCommand(), $id);
+            $cmd = sprintf('%s tc:report:daily-rotate:ad-network --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('finished daily rotate for ad network %d', $id));
         }
     }
 
-    protected function rotateAccountReports(array $publishers, $timeout, LoggerInterface $logger)
+    protected function rotateAccountReports(DateTime $date, array $publishers, $timeout, LoggerInterface $logger, $override = false)
     {
         foreach ($publishers as $publisher) {
             if (!$publisher instanceof PublisherInterface) {
@@ -136,7 +155,7 @@ class DailyRotateCommand extends ContainerAwareCommand
             $id = $publisher->getId();
             $logger->info(sprintf('start daily rotate for publisher %d', $id));
 
-            $cmd = sprintf('%s tc:report:daily-rotate:account --id %d', $this->getAppConsoleCommand(), $id);
+            $cmd = sprintf('%s tc:report:daily-rotate:account --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('finished daily rotate for publisher %d', $id));
@@ -164,13 +183,17 @@ class DailyRotateCommand extends ContainerAwareCommand
             $process->setTimeout($options['timeout']);
         }
 
-        $process->mustRun(function($type, $buffer) use($logger) {
-                if (Process::ERR === $type) {
-                    $logger->error($buffer);
-                } else {
-                    $logger->info($buffer);
+        try {
+            $process->mustRun(function($type, $buffer) use($logger) {
+                    if (Process::ERR === $type) {
+                        $logger->error($buffer);
+                    } else {
+                        $logger->info($buffer);
+                    }
                 }
-            }
-        );
+            );
+        } catch (ProcessFailedException $ex) {
+            throw $ex;
+        }
     }
 }
