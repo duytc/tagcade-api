@@ -7,8 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport as AdNetworkSiteReport;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
 
 class DailyAdNetworkRotateCommand extends ContainerAwareCommand
@@ -17,6 +22,8 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:report:daily-rotate:ad-network')
+            ->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'the date to rotate data')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'force to override existing data on the given date')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'ad network id')
             ->setDescription('Daily rotate ad network report.')
         ;
@@ -26,6 +33,16 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $id = $input->getOption('id');
+        $date = $input->getOption('date');
+        $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
+
+        if (empty($date)) {
+            $date = new DateTime('yesterday');
+        } else if (!preg_match('/\d{4}-\d{2}-\d{2}/', $date)) {
+            throw new InvalidArgumentException('expect date format to be "YYYY-MM-DD"');
+        } else {
+            $date = DateTime::createFromFormat('Y-m-d', $date);
+        }
 
         /** @var \Psr\Log\LoggerInterface $logger */
         $logger = $container->get('logger');
@@ -33,18 +50,29 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
         $entityManager = $container->get('doctrine.orm.entity_manager');
         $reportCreator = $container->get('tagcade.service.report.performance_report.display.creator.report_creator');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
+        $adNetworkReportRepository = $container->get('tagcade.repository.report.performance_report.display.hierarchy.ad_network.ad_network');
 
         $adNetwork = $adNetworkManager->find($id);
         if (!$adNetwork instanceof AdNetworkInterface) {
             throw new \Exception(sprintf('Not found that ad network %s', $id));
         }
 
-        $reportCreator->setDate(new DateTime('yesterday'));
+        $report = current($adNetworkReportRepository->getReportFor($adNetwork, $date, $date));
+        if ($report instanceof ReportInterface && $override === false) {
+            throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+        }
+
+        if ($override === true && $report instanceof ReportInterface) {
+            $entityManager->remove($report);
+            $entityManager->flush();
+        }
+
+        $reportCreator->setDate($date);
         
         /* create performance and billing reports */
         $logger->info('start daily rotate for performance');
         /**
-         * @var AdNetworkReport $adNetworkReport
+         * @var AdNetworkReport $adNetworkReport$networkSiteReports
          */
         $adNetworkReport = $reportCreator->getReport(
             new AdNetworkReportType($adNetwork)
