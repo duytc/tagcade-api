@@ -34,8 +34,7 @@ class AutoPauseAdTagCommand extends ContainerAwareCommand
         /** @var AdTagInterface $adTag */
         foreach ($adTags as $adTag) {
 
-            if (
-                ($adTag->getNetworkOpportunityCap() !== null && $adTag->getNetworkOpportunityCap() <= $eventCounter->getOpportunityCount($adTag->getId())) ||
+            if (($adTag->getNetworkOpportunityCap() !== null && $adTag->getNetworkOpportunityCap() <= $eventCounter->getOpportunityCount($adTag->getId())) ||
                 ($adTag->getImpressionCap() !== null && $adTag->getImpressionCap() <= $eventCounter->getImpressionCount($adTag->getId()))
             ) {
                 $adTag->setActive(AdTagInterface::AUTO_PAUSED);
