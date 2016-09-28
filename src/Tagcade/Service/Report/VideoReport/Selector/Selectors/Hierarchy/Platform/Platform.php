@@ -31,7 +31,7 @@ class Platform extends AbstractSelector
         $startDate = $filterParameter->getStartDate();
         $endDate = $filterParameter->getEndDate();
 
-        return $this->videoPlatformReportRepository->getReportsFor($reportType, $startDate, $endDate);
+        return $this->videoPlatformReportRepository->getReportsFor($startDate, $endDate);
     }
 
     /**
