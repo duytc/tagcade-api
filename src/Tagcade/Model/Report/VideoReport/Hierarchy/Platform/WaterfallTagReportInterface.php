@@ -24,4 +24,14 @@ interface WaterfallTagReportInterface extends CalculatedReportInterface, SuperRe
      * @return int
      */
     public function getVideoWaterfallTagId();
+
+    /**
+     * @return float
+     */
+    public function getCustomRate();
+
+    /**
+     * @param float $customRate
+     */
+    public function setCustomRate($customRate);
 } 

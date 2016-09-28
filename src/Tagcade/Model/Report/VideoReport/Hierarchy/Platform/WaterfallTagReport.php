@@ -97,4 +97,9 @@ class WaterfallTagReport extends BaseAbstractCalculatedReport implements Waterfa
 
         return $this->getRatio($this->getErrors(), $this->getBids());
     }
+
+    public function setThresholdBilledAmount($chainToSubReports = true)
+    {
+        // TODO: Implement setThresholdBilledAmount() method.
+    }
 }

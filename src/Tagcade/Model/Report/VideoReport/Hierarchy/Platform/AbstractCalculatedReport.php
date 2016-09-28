@@ -36,6 +36,22 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->setWeightedBilledRate();
     }
 
+    public function setThresholdBilledAmount($chainToSubReports = true)
+    {
+        $this->billedAmount = 0;
+        foreach ($this->subReports as $subReport) {
+            if ($chainToSubReports === true && $subReport instanceof AbstractCalculatedReport) {
+                $subReport->setThresholdBilledAmount(); // chain the calls to setCalculatedFields
+            }
+
+            $this->addBilledAmount($subReport->getBilledAmount());
+
+            unset($subReport);
+        }
+
+        $this->setWeightedBilledRate();
+    }
+
     protected function setWeightedBilledRate()
     {
         $weightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'billedRate', 'billedAmount');
