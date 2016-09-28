@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
+use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BillingConfigurationInterface;
@@ -10,6 +11,8 @@ use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
+use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoAccountReportRepositoryInterface;
+use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoWaterfallTagReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
@@ -29,6 +32,10 @@ class CpmRateGetter implements CpmRateGetterInterface
 
     /** @var ReportRepositoryInterface */
     private $reportRepository;
+    /**
+     * @var VideoAccountReportRepositoryInterface
+     */
+    private $videoAccountReportRepository;
 
     /** @var DateUtilInterface */
     private $dateUtil;
@@ -43,11 +50,13 @@ class CpmRateGetter implements CpmRateGetterInterface
      * @param DateUtilInterface $dateUtil
      * @param BillingConfigurationRepositoryInterface $billingConfigurationRepository
      * @param ReportRepositoryInterface $reportRepository
+     * @param VideoAccountReportRepositoryInterface $videoAccountReportRepository
      */
     public function __construct($defaultCpmRate = 0.0025, array $defaultBilledThresholds = [],
                                 AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil,
                                 BillingConfigurationRepositoryInterface $billingConfigurationRepository,
-                                ReportRepositoryInterface $reportRepository
+                                ReportRepositoryInterface $reportRepository,
+                                VideoAccountReportRepositoryInterface $videoAccountReportRepository
     )
     {
         if (!is_numeric($defaultCpmRate)) {
@@ -78,7 +87,7 @@ class CpmRateGetter implements CpmRateGetterInterface
         $this->dateUtil = $dateUtil;
         $this->billingConfigurationRepository = $billingConfigurationRepository;
         $this->reportRepository = $reportRepository;
-
+        $this->videoAccountReportRepository = $videoAccountReportRepository;
     }
 
     public static function createConfig(array $thresholds)
@@ -156,6 +165,10 @@ class CpmRateGetter implements CpmRateGetterInterface
             case self::BILLING_FACTOR_SLOT_OPPORTUNITY:
                 return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $lastDateInMonth);
             case self::BILLING_FACTOR_VIDEO_IMPRESSION:
+                if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
+                    return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
+                }
+
                 return $this->reportRepository->getTotalVideoImpressionForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
             case self::BILLING_FACTOR_VIDEO_VISIT:
                 return $this->reportRepository->getTotalVideoVisitForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
