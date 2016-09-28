@@ -25,4 +25,9 @@ interface AdTagReportDataInterface extends ReportDataInterface
      * @return float
      */
     public function getBilledAmount();
+
+    /**
+     * @return float
+     */
+    public function getBilledRate();
 }

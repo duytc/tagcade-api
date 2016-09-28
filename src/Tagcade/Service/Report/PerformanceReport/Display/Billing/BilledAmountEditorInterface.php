@@ -25,11 +25,27 @@ interface BilledAmountEditorInterface
     public function updateBilledAmountThresholdForPublisher(PublisherInterface $publisher, DateTime $date = null);
 
     /**
+     * @param PublisherInterface $publisher
+     * @param DateTime|null $date
+     * @return mixed
+     */
+    public function updateVideoBilledAmountThresholdForPublisher(PublisherInterface $publisher, DateTime $date = null);
+
+    /**
      * @param DateTime $date month that the update should happens. Default is yesterday
      * @return int number of updated publishers.
      */
     public function updateBilledAmountThresholdForAllPublishers(DateTime $date = null);
 
-    public function setLogger(LoggerInterface $logger);
+    /**
+     * @param DateTime|null $date
+     * @return mixed
+     */
+    public function updateVideoBilledAmountThresholdForAllPublishers(DateTime $date = null);
 
+    /**
+     * @param LoggerInterface $logger
+     * @return mixed
+     */
+    public function setLogger(LoggerInterface $logger);
 }

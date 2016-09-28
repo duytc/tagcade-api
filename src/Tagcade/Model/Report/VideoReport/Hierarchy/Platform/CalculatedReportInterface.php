@@ -30,4 +30,12 @@ interface CalculatedReportInterface extends ReportInterface, AdTagReportDataInte
      * @return self
      */
     public function setBilledAmount($billedAmount);
+
+    /**
+     * @param float $billedRate
+     */
+    public function setBilledRate($billedRate);
+
+
+    public function setThresholdBilledAmount($chainToSubReports = true);
 }

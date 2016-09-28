@@ -20,6 +20,7 @@ services:
             - @tagcade.service.date_util
             - @tagcade.repository.billing_configuration
             - @tagcade.repository.source_report.report
+            - @tagcade.repository.report.video_report.hierarchy.platform.account
 
     tagcade.service.report.performance_report.display.billing.billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculator
@@ -46,6 +47,7 @@ services:
             - @tagcade.service.date_util
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.ad_slot
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+            - @tagcade.repository.report.video_report.hierarchy.platform.waterfall_tag
 
     tagcade.service.report.performance_report.display.billing.projected_billing_calculator:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\ProjectedBillingCalculator
