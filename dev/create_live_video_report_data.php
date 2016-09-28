@@ -1,8 +1,6 @@
 <?php
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Tagcade\DomainManager\VideoAdSourceManagerInterface;
-use Tagcade\DomainManager\VideoAdTagManagerInterface;
 use Tagcade\DomainManager\VideoDemandAdTagManagerInterface;
 use Tagcade\DomainManager\VideoWaterfallTagManagerInterface;
 use Tagcade\Service\Report\VideoReport\Counter\VideoCacheEventCounter;
@@ -22,9 +20,9 @@ $videoWaterfallTagManager = $container->get('tagcade.domain_manager.video_waterf
 
 /** @var VideoDemandAdTagManagerInterface $videoDemandAdTagManager */
 $videoDemandAdTagManager = $container->get('tagcade.domain_manager.video_demand_ad_tag');
-
+$dateToRotate = new DateTime('yesterday');
 $videoTestEventCounter = new VideoTestEventCounter($videoWaterfallTagManager->all(), $videoDemandAdTagManager);
-$videoTestEventCounter->setDate(new DateTime('today'));
+$videoTestEventCounter->setDate($dateToRotate);
 
 writeln('');
 writeln('### Start creating test live data for all video ad tag ###');
@@ -57,6 +55,7 @@ writeln('');
 writeln('   --> Start saving data to redis');
 writeln('       ...');
 $videoCacheEventCounter = new VideoCacheEventCounter($cache);
+$videoCacheEventCounter->setDate($dateToRotate);
 
 // generate for video ad tag
 foreach ($videoTestEventCounter->getAllVideoWaterfallTagsData() as $videoAdTagId => $videoAdTagData) {
