@@ -3,6 +3,7 @@
 namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform;
 
 use DateTime;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface AccountReportRepositoryInterface
@@ -40,4 +41,5 @@ interface AccountReportRepositoryInterface
      */
     public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate);
 
+    public function overrideReport(AccountReportInterface $report);
 }

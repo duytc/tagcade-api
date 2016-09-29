@@ -127,14 +127,9 @@ class DailyReportCreator
     public function createPlatformReport(DateTime $reportDate, $override = false)
     {
         $platformReportRepository = $this->om->getRepository(PlatformReport::class);
-        $report = current($platformReportRepository->getReportFor($reportDate, $reportDate));
-        if ($report instanceof ReportInterface && $override === false) {
+        $platformReport = current($platformReportRepository->getReportFor($reportDate, $reportDate));
+        if ($platformReport instanceof ReportInterface && $override === false) {
             throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
-        }
-
-        if ($override === true && $report instanceof ReportInterface) {
-            $this->om->remove($report);
-            $this->om->flush();
         }
 
         $report = new PlatformReport();
@@ -144,21 +139,16 @@ class DailyReportCreator
         if (!$accountReportRepository instanceof AccountReportRepositoryInterface) {
             throw new \Exception('Invalid repository');
         }
-        /**
-         * @var AccountReportRepositoryInterface|AbstractReportRepository $accountReportRepository
-         */
 
+        /** @var AccountReportRepositoryInterface|AbstractReportRepository $accountReportRepository */
         $platformCounts = $accountReportRepository->getAggregatedReportsByDateRange($reportDate, $reportDate);
-
 
         $accountReports = $accountReportRepository->getReportsByDateRange($reportDate, $reportDate);
         foreach ($accountReports as $accountReport) {
-            /**
-             * @var AccountReport $accountReport
-             */
-            if ($accountReport->getSuperReport() != null) {
-                throw new \Exception('Something went wrong. Platform report has not been created but the account report already has reference');
-            }
+            /** @var AccountReport $accountReport */
+//            if ($accountReport->getSuperReport() != null) {
+//                throw new \Exception('Something went wrong. Platform report has not been created but the account report already has reference');
+//            }
 
             $accountReport->setSuperReport($report);
             $report->addSubReport($accountReport);
@@ -168,6 +158,17 @@ class DailyReportCreator
             ->setFillRate()
             ->setThresholdBilledAmount($chainToSubReports = false) // we don't need to calculate for sub reports
         ;
+
+        if ($override === true && $platformReport instanceof ReportInterface) {
+            $platformReportRepository->overrideReport($report);
+            foreach ($accountReports as $accountReport) {
+                $this->om->detach($accountReport);
+            }
+            unset($accountReports);
+            $this->om->detach($report);
+            unset($report);
+            return;
+        }
 
         $this->om->persist($report);
         $this->om->flush();

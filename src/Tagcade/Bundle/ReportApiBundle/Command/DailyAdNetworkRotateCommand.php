@@ -3,16 +3,19 @@
 namespace Tagcade\Bundle\ReportApiBundle\Command;
 
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport as AdNetworkSiteReport;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
 
@@ -62,13 +65,7 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
             throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
         }
 
-        if ($override === true && $report instanceof ReportInterface) {
-            $entityManager->remove($report);
-            $entityManager->flush();
-        }
-
         $reportCreator->setDate($date);
-        
         /* create performance and billing reports */
         $logger->info('start daily rotate for performance');
         /**
@@ -78,14 +75,35 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
             new AdNetworkReportType($adNetwork)
         );
 
+        if ($override === true && $report instanceof ReportInterface) {
+            $logger->info(sprintf('Persisting report for ad network %s', $id));
+            $this->overrideReport($adNetworkReport, $entityManager);
+            $logger->info(sprintf('Flushing report for ad network %s', $id));
+            $logger->info('finished daily rotation');
+            return;
+        }
+
         $logger->info(sprintf('Persisting report for ad network %s', $id));
-
         $entityManager->persist($adNetworkReport);
-
         $logger->info(sprintf('Flushing report for ad network %s', $id));
-
         $entityManager->flush();
-
         $logger->info('finished daily rotation');
+    }
+
+    protected function overrideReport(AdNetworkReportInterface $report, EntityManagerInterface $em)
+    {
+        $adTagReportRepository = $em->getRepository(AdTagReport::class);
+        $siteReportRepository = $em->getRepository(SiteReport::class);
+        $adNetworkReportRepository = $em->getRepository(AdNetworkReport::class);
+
+        $siteReports = $report->getSubReports();
+        foreach($siteReports as $siteReport) {
+            $adTagReports = $siteReport->getSubReports();
+            foreach($adTagReports as $adTagReport) {
+                $adTagReportRepository->overrideReport($adTagReport);
+            }
+            $siteReportRepository->overrideReport($siteReport);
+        }
+        $adNetworkReportRepository->overrideReport($report);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\BaseAdTagReportInterface;
 
 interface AdTagReportInterface extends BaseAdTagReportInterface
@@ -14,6 +15,10 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
      */
     public function setRelativeFillRate($totalOpportunities);
 
+    /**
+     * @return mixed
+     */
+    public function getRelativeFillRate();
 
     /**
      * @return mixed
@@ -52,4 +57,34 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
      */
     public function setVerifiedImpressions($verifiedImpressions);
 
+    /**
+     * @return int|null
+     */
+    public function getPosition();
+
+    /**
+     * It is important to record the position of the ad tag on the day on this report
+     * so we can show the correct ad tag order
+     *
+     * @param int $position
+     * @return $this
+     */
+    public function setPosition($position);
+
+    /**
+     * @return AdTagInterface|null
+     */
+    public function getAdTag();
+
+    /**
+     * @return mixed
+     */
+    public function getClicks();
+
+    public function setClicks($clicks);
+
+    /**
+     * @return mixed
+     */
+    public function getVoidImpressions();
 }

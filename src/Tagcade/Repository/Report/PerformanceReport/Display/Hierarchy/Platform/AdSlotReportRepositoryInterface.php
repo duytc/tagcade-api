@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform
 
 use DateTime;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface AdSlotReportRepositoryInterface
@@ -18,4 +19,6 @@ interface AdSlotReportRepositoryInterface
     public function getAllReportInRange(DateTime $startDate, DateTime $endDate);
 
     public function getAllReportInRangeForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    public function overrideReport(AdSlotReportInterface $report);
 }

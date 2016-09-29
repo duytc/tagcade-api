@@ -4,6 +4,7 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform
 
 use DateTime;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SiteReportRepositoryInterface
@@ -35,4 +36,5 @@ interface SiteReportRepositoryInterface
      */
     public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10);
 
+    public function overrideReport(SiteReportInterface $report);
 }
