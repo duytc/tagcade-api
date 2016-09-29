@@ -13,4 +13,47 @@ interface AdNetworkReportInterface extends CalculatedReportInterface, RootReport
      */
     public function getAdNetwork();
 
+    public function getAdNetworkId();
+
+    /**
+     * @return mixed
+     */
+    public function getBlankImpressions();
+
+    public function setBlankImpressions($blankImpressions);
+
+    /**
+     * @return mixed
+     */
+    public function getFirstOpportunities();
+
+    public function setFirstOpportunities($firstOpportunities);
+
+    /**
+     * @return mixed
+     */
+    public function getUnverifiedImpressions();
+
+    public function setUnverifiedImpressions($unverifiedImpressions);
+
+    /**
+     * @return mixed
+     */
+    public function getVerifiedImpressions();
+
+    public function setVerifiedImpressions($verifiedImpressions);
+
+    /**
+     * @return mixed
+     */
+    public function getClicks();
+
+    public function setClicks($clicks);
+
+    /**
+     * @return mixed
+     */
+    public function getVoidImpressions();
+
+    public function setVoidImpressions($voidImpressions);
 }

@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\AdNetwor
 use DateTime;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportInterface;
 
 interface SiteReportRepositoryInterface
 {
@@ -17,4 +18,6 @@ interface SiteReportRepositoryInterface
      * @return array
      */
     public function getSiteReportForAllPartners(SiteInterface $site, DateTime $startDate, DateTime $endDate);
+
+    public function overrideReport(SiteReportInterface $report);
 }

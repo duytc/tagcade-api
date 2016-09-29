@@ -9,6 +9,8 @@ interface SubReportInterface
      */
     public function getSuperReport();
 
+    public function getSuperReportId();
+
     /**
      * @param ReportInterface $report
      * @return bool

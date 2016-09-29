@@ -22,6 +22,15 @@ trait SuperReportTrait
         return $this->superReport;
     }
 
+    public function getSuperReportId()
+    {
+        if ($this->superReport instanceof ReportInterface) {
+            return $this->superReport->getId();
+        }
+
+        return null;
+    }
+
     /**
      * @param ReportInterface $report
      * @return bool

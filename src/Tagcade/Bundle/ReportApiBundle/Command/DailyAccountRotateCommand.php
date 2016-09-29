@@ -3,13 +3,18 @@
 namespace Tagcade\Bundle\ReportApiBundle\Command;
 
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -51,9 +56,7 @@ class DailyAccountRotateCommand extends ContainerAwareCommand
         $accountReportRepository = $container->get('tagcade.repository.report.performance_report.display.hierarchy.platform.account');
 
         $publisher = $publisherManager->findPublisher($id);
-        /**
-         * @var PublisherInterface|UserEntityInterface $publisher
-         */
+        /** @var PublisherInterface|UserEntityInterface $publisher */
         if (!$publisher instanceof PublisherInterface || $publisher->isTestAccount() || !$publisher->isEnabled()) {
             throw new \Exception(sprintf('Not found that publisher %s', $id));
         }
@@ -63,13 +66,7 @@ class DailyAccountRotateCommand extends ContainerAwareCommand
             throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
         }
 
-        if ($override === true && $report instanceof ReportInterface) {
-            $entityManager->remove($report);
-            $entityManager->flush();
-        }
-
         $reportCreator->setDate($date);
-
         $logger->info('start daily rotate for account');
         /**
          * @var AccountReport $accountReport
@@ -78,14 +75,40 @@ class DailyAccountRotateCommand extends ContainerAwareCommand
             new AccountReportType($publisher)
         );
 
+        if ($override === true && $report instanceof ReportInterface) {
+            $logger->info(sprintf('Persisting report for publisher %s', $id));
+            $this->overrideReport($accountReport, $entityManager);
+            $logger->info(sprintf('Flushing report for publisher %s', $id));
+            $logger->info('finished account daily rotation');
+            return;
+        }
+
         $logger->info(sprintf('Persisting report for publisher %s', $id));
-
         $entityManager->persist($accountReport);
-
         $logger->info(sprintf('Flushing report for publisher %s', $id));
-
         $entityManager->flush();
-
         $logger->info('finished account daily rotation');
+    }
+
+    protected function overrideReport(AccountReportInterface $report, EntityManagerInterface $em)
+    {
+        $adTagReportRepository = $em->getRepository(AdTagReport::class);
+        $adSlotReportRepository = $em->getRepository(AdSlotReport::class);
+        $siteReportRepository = $em->getRepository(SiteReport::class);
+        $accountReportRepository = $em->getRepository(AccountReport::class);
+
+        $siteReports = $report->getSubReports();
+        foreach($siteReports as $siteReport) {
+            $adSlotReports = $siteReport->getSubReports();
+            foreach($adSlotReports as $adSlotReport) {
+                $adTagReports = $adSlotReport->getSubReports();
+                foreach($adTagReports as $adTagReport) {
+                    $adTagReportRepository->overrideReport($adTagReport);
+                }
+                $adSlotReportRepository->overrideReport($adSlotReport);
+            }
+            $siteReportRepository->overrideReport($siteReport);
+        }
+        $accountReportRepository->overrideReport($report);
     }
 }

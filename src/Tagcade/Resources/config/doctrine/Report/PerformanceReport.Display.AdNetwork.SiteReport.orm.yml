@@ -26,6 +26,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
         fillRate:
             type: decimal
             scale: 4
+            nullable: true
         estRevenue:
             type: decimal
             scale: 4
