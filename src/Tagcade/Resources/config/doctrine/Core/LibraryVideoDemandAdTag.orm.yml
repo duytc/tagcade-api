@@ -14,7 +14,7 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
     fields:
         tagURL:
             type: string
-            length: 240
+            length: 1000
         name:
             type: string
             length: 240
