@@ -13,8 +13,6 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BlacklistInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
-use Tagcade\Model\Core\VideoWaterfallTagItemInterface;
 use Tagcade\Model\Core\WhiteListInterface;
 
 
