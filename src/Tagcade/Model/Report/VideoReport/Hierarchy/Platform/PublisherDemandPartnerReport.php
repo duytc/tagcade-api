@@ -7,14 +7,10 @@ namespace Tagcade\Model\Report\VideoReport\Hierarchy\Platform;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
-use Tagcade\Model\Report\VideoReport\AbstractCalculatedReport;
-use Tagcade\Model\Report\VideoReport\Hierarchy\Platform\Fields\VideoWaterfallTagTrait;
 use Tagcade\Model\Report\VideoReport\ReportInterface;
 
 class PublisherDemandPartnerReport extends AbstractCalculatedReport implements PublisherDemandPartnerReportInterface
 {
-    use VideoWaterfallTagTrait;
-
     /** @var VideoDemandPartnerInterface */
     protected $videoDemandPartner;
 
