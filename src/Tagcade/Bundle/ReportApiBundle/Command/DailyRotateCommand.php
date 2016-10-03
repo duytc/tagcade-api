@@ -72,7 +72,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         // Creating platform reports
         $dailyReportCreator->setReportDate($date);
         $dailyReportCreator->createPlatformReport($date, $override);
-        $dailyReportCreator->createSegmentReports();
+        $dailyReportCreator->createSegmentReports($autoFlush = true, $override = true);
         $dailyReportCreator->createRonSlotReports();
 
         $logger->info('finished daily rotation');
