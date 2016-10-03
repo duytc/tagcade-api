@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\Segment\SegmentReport;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
@@ -222,11 +223,11 @@ class DailyReportCreator
         }
     }
 
-    public function createSegmentReports($autoFlush = true)
+    public function createSegmentReports($autoFlush = true, $override = false)
     {
         $this->logger->info('Getting all segments');
         $segments = $this->segmentRepository->findAll();
-
+        $segmentReportRepository = $this->om->getRepository(SegmentReport::class);
         foreach($segments as $segment) {
             if (!$segment instanceof SegmentInterface) {
                 continue;
@@ -234,9 +235,19 @@ class DailyReportCreator
 
             $this->logger->info(sprintf('Getting report for segment %d', $segment->getId()));
 
+            $report = current($segmentReportRepository->getReportFor($segment, $this->reportCreator->getDate(), $this->reportCreator->getDate()));
+            if ($report instanceof ReportInterface && $override === false) {
+                throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+            }
+
             $segmentReport = $this->reportCreator->getReport(
                 new SegmentReportType($segment)
             );
+
+            if ($report instanceof ReportInterface && $override === true) {
+                $this->om->remove($report);
+                $this->om->flush();
+            }
 
             $this->logger->info(sprintf('Persisting segment %d', $segment->getId()));
 

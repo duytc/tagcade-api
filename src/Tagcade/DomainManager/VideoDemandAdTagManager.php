@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Entity\Core\VideoDemandAdTag;
+use Tagcade\Entity\Core\VideoWaterfallTagItem;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
@@ -170,17 +171,13 @@ class VideoDemandAdTagManager implements VideoDemandAdTagManagerInterface
         $oldVideoWaterfallTagItems = $videoWaterfallTag->getVideoWaterfallTagItems();
 
         // calculate last position
-        $lastPosition = 0;
-        foreach ($oldVideoWaterfallTagItems as $oldVideoWaterfallTagItem) {
-            if ($lastPosition < $oldVideoWaterfallTagItem->getPosition()) {
-                $lastPosition = $oldVideoWaterfallTagItem->getPosition();
-            }
-        }
+        $waterfallTagItemRepository = $this->om->getRepository(VideoWaterfallTagItem::class);
+        $lastPosition = (int)$waterfallTagItemRepository->getMaxPositionInWaterfallTag($videoWaterfallTag);
 
         // calculate positions,
         // - if position == null or greater than or equal last position => auto last position
         // - if specified position and less than last position => auto shift down
-        if (null == $videoWaterfallTagItem->getPosition()
+        if (null === $videoWaterfallTagItem->getPosition()
             || $lastPosition <= $videoWaterfallTagItem->getPosition()
         ) {
             $videoWaterfallTagItem->setPosition($lastPosition + 1);
