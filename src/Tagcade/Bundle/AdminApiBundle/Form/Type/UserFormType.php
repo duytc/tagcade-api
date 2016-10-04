@@ -198,6 +198,16 @@ class UserFormType extends AbstractRoleSpecificFormType
                         $publisher->setEnabledModules($modules);
                     }
 
+                    if (!$publisher->hasDisplayModule() && (
+                        $publisher->hasRtbModule() ||
+                        $publisher->hasHeaderBiddingModule() ||
+                        $publisher->hasVideoAnalyticsModule() ||
+                        $publisher->hasAnalyticsModule() ||
+                        $publisher->hasSubPubliserModule()
+                    )) {
+                        throw new InvalidArgumentException('module DISPLAY need to be enabled for other modules to be enabled.');
+                    }
+
                     //validate tag domain if there's
                     $tagDomain = $publisher->getTagDomain();
 
