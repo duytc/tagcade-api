@@ -116,7 +116,7 @@ class ReportBuilder implements ReportBuilderInterface
         $reportTypes = array_map(function ($domain) use ($publisher) {
             return $publisher instanceof SubPublisherInterface
                 ? new NetworkReportTypes\NetworkSiteSubPublisher(null, $domain['domain'], $publisher)
-                : new NetworkReportTypes\NetworkSite(null, $domain['domain']);
+                : new NetworkReportTypes\NetworkSite($publisher, null, $domain['domain']);
         }, $domains);
 
         return $this->getReports($reportTypes, $params);
@@ -135,7 +135,7 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getAllDemandPartnersBySiteDiscrepancyReport(PublisherInterface $publisher, Params $params)
     {
-        return $this->reportSelector->getDiscrepancies(new NetworkReportTypes\NetworkSite(null, null), $params);
+        return $this->reportSelector->getDiscrepancies(new NetworkReportTypes\NetworkSite($publisher, null, null), $params);
     }
 
     /**
@@ -150,7 +150,7 @@ class ReportBuilder implements ReportBuilderInterface
 
             return $publisher instanceof SubPublisherInterface
                 ? new NetworkReportTypes\NetworkAdTagSubPublisher(null, $partnerTagId, $publisher)
-                : new NetworkReportTypes\NetworkAdTag(null, $partnerTagId);
+                : new NetworkReportTypes\NetworkAdTag($publisher, null, $partnerTagId);
         }, $adTags);
 
         return $this->getReports($reportTypes, $params);
@@ -204,7 +204,7 @@ class ReportBuilder implements ReportBuilderInterface
         $reportTypes = array_map(function ($domain) use ($adNetwork, $publisher) {
             return $publisher instanceof SubPublisherInterface
                 ? new NetworkReportTypes\NetworkSiteSubPublisher($adNetwork, $domain['domain'], $publisher)
-                : new NetworkReportTypes\NetworkSite($adNetwork, $domain['domain']);
+                : new NetworkReportTypes\NetworkSite($adNetwork->getPublisher(), $adNetwork, $domain['domain']);
         }, $domains);
 
         return $this->getReports($reportTypes, $params);
@@ -218,7 +218,7 @@ class ReportBuilder implements ReportBuilderInterface
         $adTags = $this->networkAdTagRepository->getAllDistinctAdTagsForPartner($adNetwork, $params);
 
         $reportTypes = array_map(function (array $adTag) use ($adNetwork) {
-            return new NetworkReportTypes\NetworkAdTag($adNetwork, $adTag['partnerTagId']);
+            return new NetworkReportTypes\NetworkAdTag($adNetwork->getPublisher(), $adNetwork, $adTag['partnerTagId']);
         }, $adTags);
 
         return $this->getReports($reportTypes, $params);
@@ -269,7 +269,7 @@ class ReportBuilder implements ReportBuilderInterface
      */
     public function getPartnerSiteByDaysReport(AdNetworkInterface $adNetwork, $domain, Params $params)
     {
-        return $this->getReports(new NetworkReportTypes\NetworkSite($adNetwork, $domain), $params);
+        return $this->getReports(new NetworkReportTypes\NetworkSite($adNetwork->getPublisher(), $adNetwork, $domain), $params);
     }
 
     public function getPartnerSiteByDaysForSubPublisherReport(SubPublisherInterface $subPublisher, AdNetworkInterface $adNetwork, $domain, Params $params)

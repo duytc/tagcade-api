@@ -6,19 +6,21 @@ namespace Tagcade\Repository\Report\UnifiedReport\Network;
 
 use DateTime;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 interface NetworkSiteReportRepositoryInterface
 {
     /**
-     * @param AdNetworkInterface $adNetwork
+     * @param PublisherInterface $publisher
+     * @param AdNetworkInterface|null $adNetwork
      * @param $domain
      * @param DateTime $startDate
      * @param DateTime $endDate
      * @param bool $oneOrNull
      * @return mixed
      */
-    public function getReportFor($adNetwork, $domain, DateTime $startDate, DateTime $endDate, $oneOrNull = false);
+    public function getReportFor(PublisherInterface $publisher, $adNetwork, $domain, DateTime $startDate, DateTime $endDate, $oneOrNull = false);
 
     /**
      * @param array $reports

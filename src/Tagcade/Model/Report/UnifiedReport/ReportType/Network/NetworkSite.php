@@ -8,6 +8,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractReportType;
 use Tagcade\Model\Report\UnifiedReport\Network\NetworkSiteReport;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class NetworkSite extends AbstractReportType
 {
@@ -19,16 +20,23 @@ class NetworkSite extends AbstractReportType
     private $adNetwork;
 
     /**
+     * @var PublisherInterface
+     */
+    private $publisher;
+
+    /**
      * Account constructor.
-     * @param AdNetworkInterface $adNetwork
+     * @param AdNetworkInterface|null $adNetwork
+     * @param PublisherInterface $publisher
      * @param $domain
      */
-    public function __construct($adNetwork, $domain)
+    public function __construct(PublisherInterface $publisher, $adNetwork, $domain)
     {
         if ($adNetwork instanceof AdNetworkInterface) {
             $this->adNetwork = $adNetwork;
         }
 
+        $this->publisher = $publisher;
         $this->domain = $domain;
     }
 
@@ -59,5 +67,13 @@ class NetworkSite extends AbstractReportType
     public function getDomain()
     {
         return $this->domain;
+    }
+
+    /**
+     * @return PublisherInterface
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
     }
 }
