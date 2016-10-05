@@ -134,17 +134,22 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      *  }
      * )
      *
+     * @param Request $request
      * @param int $id
      * @return View
      */
-    public function getJstagAction($id)
+    public function getJstagAction(Request $request, $id)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         /** @var DynamicAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        $jsTag = $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
-
-        return $jsTag;
+        return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot, $forceSecure);
     }
 
     /**

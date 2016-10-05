@@ -100,14 +100,21 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      *  }
      * )
      *
+     * @param Request $request
      * @param $id
      * @return array
      */
-    public function getJspassbackAction($id)
+    public function getJspassbackAction(Request $request, $id)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         /** @var PublisherInterface $publisher */
         $publisher = $this->one($id);
-        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher);
+        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher, $forceSecure);
     }
 
     /**
@@ -121,15 +128,22 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      *  }
      * )
      *
+     * @param Request $request
      * @param $id
      * @return array
      */
-    public function getJsheadertagAction($id)
+    public function getJsheadertagAction(Request $request, $id)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         /** @var PublisherInterface $publisher */
         $publisher = $this->one($id);
 
-        return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher);
+        return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher, $forceSecure);
     }
 
     /**
