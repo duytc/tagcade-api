@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Type;
 use Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagReport;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\UnifiedReport\CommonReport;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
@@ -17,7 +18,7 @@ class NetworkAdTagReportRepository extends AbstractReportRepository implements N
     /**
      * @inheritdoc
      */
-    public function getReportFor($adNetwork, $partnerTagId, DateTime $startDate, DateTime $endDate, $oneOrNull = false)
+    public function getReportFor(PublisherInterface $publisher, $adNetwork, $partnerTagId, DateTime $startDate, DateTime $endDate, $oneOrNull = false)
     {
         $qb = $this->getReportsInRange($startDate, $endDate)
             ->andWhere('r.partnerTagId = :partnerTagId')
@@ -27,6 +28,10 @@ class NetworkAdTagReportRepository extends AbstractReportRepository implements N
             $qb
             ->andWhere('r.adNetwork = :ad_network')
             ->setParameter('ad_network', $adNetwork);
+        } else {
+            $qb->join('r.adNetwork', 'n')
+                ->andWhere('n.publisher = :publisher')
+                ->setParameter('publisher', $publisher);
         }
 
         return $oneOrNull ? $qb->getQuery()->getOneOrNullResult() : $qb->getQuery()->getResult();

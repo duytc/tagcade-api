@@ -471,7 +471,7 @@ class ReportComparisonCreator implements ReportComparisonCreatorInterface
     {
         $tcAdTagReport = $this->tcAdTagRepository->getReportFor($adNetwork, $partnerTagId, $date, $date, $oneOrNull = true);
         /** @var NetworkAdTagReportInterface $unifiedAdTagReport */
-        $unifiedAdTagReport = $this->unifiedAdTagRepository->getReportFor($adNetwork, $partnerTagId, $date, $date, $oneOrNull = true);
+        $unifiedAdTagReport = $this->unifiedAdTagRepository->getReportFor($adNetwork->getPublisher(), $adNetwork, $partnerTagId, $date, $date, $oneOrNull = true);
 
         if ($tcAdTagReport !== null || $unifiedAdTagReport !== null) {
             $adTagComparisonReport = new AdNetworkAdTagReport();

@@ -32,7 +32,7 @@ class NetworkAdTag extends AbstractSelector
      */
     protected function doGetReports(NetworkAdTagReportType $reportType, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getReportFor($reportType->getAdNetwork(), $reportType->getPartnerTagId(), $startDate, $endDate);
+        return $this->repository->getReportFor($reportType->getPublisher(), $reportType->getAdNetwork(), $reportType->getPartnerTagId(), $startDate, $endDate);
     }
 
     /**

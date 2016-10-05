@@ -9,12 +9,13 @@ use Doctrine\DBAL\Types\Type;
 use Tagcade\Entity\Report\UnifiedReport\Network\NetworkSiteReport;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\UnifiedReport\CommonReport;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\UnifiedReport\AbstractReportRepository;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 
 class NetworkSiteReportRepository extends AbstractReportRepository implements NetworkSiteReportRepositoryInterface
 {
-    public function getReportFor($adNetwork, $domain, DateTime $startDate, DateTime $endDate, $oneOrNull = false)
+    public function getReportFor(PublisherInterface $publisher, $adNetwork, $domain, DateTime $startDate, DateTime $endDate, $oneOrNull = false)
     {
         $qb = $this
             ->getReportsInRange($startDate, $endDate)
@@ -25,6 +26,10 @@ class NetworkSiteReportRepository extends AbstractReportRepository implements Ne
             $qb
             ->andWhere('r.adNetwork = :ad_network')
             ->setParameter('ad_network', $adNetwork);
+        } else {
+            $qb->join('r.adNetwork', 'n')
+                ->andWhere('n.publisher = :publisher')
+                ->setParameter('publisher', $publisher);
         }
 
         return $oneOrNull === true ? $qb->getQuery()->getOneOrNullResult() : $qb->getQuery()->getResult();
