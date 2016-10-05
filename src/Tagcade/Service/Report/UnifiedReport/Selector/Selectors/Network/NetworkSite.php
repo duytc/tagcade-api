@@ -34,7 +34,7 @@ class NetworkSite extends AbstractSelector
      */
     protected function doGetReports(NetworkSiteReportType $reportType, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getReportFor($reportType->getAdNetwork(), $reportType->getDomain(), $startDate, $endDate);
+        return $this->repository->getReportFor($reportType->getPublisher(), $reportType->getAdNetwork(), $reportType->getDomain(), $startDate, $endDate);
     }
 
     /**

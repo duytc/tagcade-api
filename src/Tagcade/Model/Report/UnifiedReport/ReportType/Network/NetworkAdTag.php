@@ -8,6 +8,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\AbstractReportType;
 use Tagcade\Model\Report\UnifiedReport\Network\NetworkAdTagReport;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class NetworkAdTag extends AbstractReportType
 {
@@ -19,16 +20,22 @@ class NetworkAdTag extends AbstractReportType
     private $adNetwork;
 
     /**
+     * @var PublisherInterface
+     */
+    private $publisher;
+    /**
      * Account constructor.
+     * @param PublisherInterface $publisher
      * @param AdNetworkInterface $adNetwork
      * @param $partnerTagId
      */
-    public function __construct($adNetwork, $partnerTagId)
+    public function __construct(PublisherInterface $publisher, $adNetwork, $partnerTagId)
     {
         if ($adNetwork instanceof AdNetworkInterface) {
             $this->adNetwork = $adNetwork;
         }
 
+        $this->publisher = $publisher;
         $this->partnerTagId = $partnerTagId;
     }
 
@@ -60,5 +67,13 @@ class NetworkAdTag extends AbstractReportType
     public function getPartnerTagId()
     {
         return $this->partnerTagId;
+    }
+
+    /**
+     * @return PublisherInterface
+     */
+    public function getPublisher()
+    {
+        return $this->publisher;
     }
 }
