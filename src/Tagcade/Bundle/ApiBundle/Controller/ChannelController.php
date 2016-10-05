@@ -174,16 +174,22 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * )
      *
      *
+     * @param Request $request
      * @param int $id
      * @return array
      */
-    public function getJstagsAction($id)
+    public function getJstagsAction(Request $request, $id)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
         /** @var ChannelInterface $channel */
         $channel = $this->one($id);
 
         return $this->get('tagcade.service.tag_generator')
-            ->getTagsForChannel($channel);
+            ->getTagsForChannel($channel, $forceSecure);
     }
 
     /**

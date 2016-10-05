@@ -59,22 +59,35 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
     /**
      * @return array
      */
-    public function getJspassbackAction()
+    public function getJspassbackAction(Request $request)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         $publisherId = $this->get('security.context')->getToken()->getUser()->getId();
 
         /** @var PublisherInterface $publisher */
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher);
+        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher, $forceSecure);
     }
 
     /**
      * get header of tag for publisher
+     * @param Request $request
      * @return array
      */
-    public function getJsheadertagAction()
+    public function getJsheadertagAction(Request $request)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         $publisherId = $this->get('security.context')->getToken()->getUser()->getId();
 
         /** @var PublisherInterface $publisher */
@@ -84,7 +97,7 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
             throw new BadRequestHttpException('That publisher is not enabled Analytics module');
         }
 
-        return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher);
+        return $this->get('tagcade.service.tag_generator')->getHeaderForPublisher($publisher, $forceSecure);
     }
 
     /**

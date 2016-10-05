@@ -409,16 +409,23 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * )
      *
      *
+     * @param Request $request
      * @param int $id
      * @return array
      */
-    public function getJstagsAction($id)
+    public function getJstagsAction(Request $request, $id)
     {
+        $params = $request->query->all();
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         return $this->get('tagcade.service.tag_generator')
-            ->getTagsForSite($site);
+            ->getTagsForSite($site, $forceSecure);
     }
 
     /**
@@ -434,11 +441,17 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * )
      *
      *
+     * @param Request $request
      * @param int $id
      * @return array
      */
-    public function getJsheadertagAction($id)
+    public function getJsheadertagAction(Request $request, $id)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
@@ -447,7 +460,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
         }
 
         return $this->get('tagcade.service.tag_generator')
-            ->getHeaderForSite($site);
+            ->getHeaderForSite($site, $forceSecure);
     }
 
     /**

@@ -90,14 +90,21 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * )
      *
      * @param int $id
+     * @param Request $request
      * @return View
      */
-    public function getJstagAction($id)
+    public function getJstagAction(Request $request, $id)
     {
+        $params = $request->query->all();
+        $forceSecure = false;
+        if (array_key_exists('forceSecure', $params)) {
+            $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
+        }
+
         /** @var DisplayAdSlotInterface $adSlot */
         $adSlot = $this->one($id);
 
-        return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot);
+        return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot, $forceSecure);
     }
 
 
