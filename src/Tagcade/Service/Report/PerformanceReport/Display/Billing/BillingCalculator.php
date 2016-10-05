@@ -51,4 +51,23 @@ class BillingCalculator implements BillingCalculatorInterface
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
     }
+
+    public function calculateTodayHbBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
+    {
+        if (!is_int($newWeight) || $newWeight < 0) {
+            throw new InvalidArgumentException('$newWeight must be a number');
+        }
+
+        $date = new DateTime('yesterday');
+        $weight = $this->accountReportRepository->getSumSlotHbRequests(
+            $publisher,
+            $this->dateUtil->getFirstDateInMonth($date),
+            $this->dateUtil->getLastDateInMonth($date)
+        );
+
+        $weight += $newWeight;
+        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
+
+        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
+    }
 }

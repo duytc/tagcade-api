@@ -18,7 +18,7 @@ $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache);
-$cacheEventCounter->setDate(new DateTime('today'));
+$cacheEventCounter->setDate(new DateTime('yesterday'));
 
 foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
     $cache->save(
@@ -27,6 +27,22 @@ foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
             $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
         ),
         $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey(
+            $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,
+            $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+        ),
+        $slotData[$testEventCounter::KEY_HB_BID_REQUEST]
+    );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey(
+            $cacheEventCounter::CACHE_KEY_RTB_IMPRESSION,
+            $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+        ),
+        $slotData[$testEventCounter::KEY_RTB_IMPRESSION]
     );
 
     unset($slotId, $slotData);

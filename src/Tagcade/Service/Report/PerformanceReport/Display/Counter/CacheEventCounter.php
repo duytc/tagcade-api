@@ -26,7 +26,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_CLICK                  = 'clicks';
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
-
+    const CACHE_KEY_HB_BID_REQUEST         = 'hb_bid_request';
     const NAMESPACE_AD_SLOT                = 'adslot_%d';
     const NAMESPACE_AD_TAG                 = 'adtag_%d';
 
@@ -121,6 +121,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         );
     }
 
+    public function getHeaderBidRequestCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->fetchFromCache(
+            $this->getCacheKey(static::CACHE_KEY_HB_BID_REQUEST, $namespace)
+        );
+    }
 
     public function getPassbackCount($tagId)
     {
@@ -360,10 +368,12 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         foreach($adSlotIds as $id) {
             $rtbImpression = $this->getRtbImpressionsCount($id);
+            $hbRequests = $this->getHeaderBidRequestCount($id);
             $convertedResults[$id] = new AdSlotReportCount(
                 array(
                     self::CACHE_KEY_SLOT_OPPORTUNITY => $results[$index],
-                    self::CACHE_KEY_RTB_IMPRESSION => $rtbImpression
+                    self::CACHE_KEY_RTB_IMPRESSION => $rtbImpression,
+                    self::CACHE_KEY_HB_BID_REQUEST => $hbRequests
                 )
             );
             $index ++;

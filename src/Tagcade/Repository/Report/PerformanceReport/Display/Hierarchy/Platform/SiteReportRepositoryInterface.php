@@ -15,6 +15,8 @@ interface SiteReportRepositoryInterface
 
     public function getSumSlotOpportunities(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
+    public function getSumSlotHbRequests(SiteInterface $site, DateTime $startDate, DateTime $endDate);
+
     /**
      * This will return array of pair (site id, billedAmount) sorted by billedAmount desc
      *

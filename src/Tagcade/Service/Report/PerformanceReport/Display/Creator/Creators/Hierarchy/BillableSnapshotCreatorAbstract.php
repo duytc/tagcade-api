@@ -49,5 +49,10 @@ abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+
+        $rateAmount = $this->billingCalculator->calculateTodayHbBilledAmountForPublisher($publisher, AbstractUser::MODULE_HEADER_BIDDING, $report->getHbRequests());
+
+        $report->setHbBilledAmount($rateAmount->getAmount());
+        $report->setHbBilledRate($rateAmount->getRate()->getCpmRate());
     }
 }

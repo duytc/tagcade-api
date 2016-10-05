@@ -42,4 +42,6 @@ interface AccountReportRepositoryInterface
     public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate);
 
     public function overrideReport(AccountReportInterface $report);
+
+    public function getSumSlotHbRequests(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 }

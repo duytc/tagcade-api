@@ -31,6 +31,12 @@ interface EventCounterInterface
     public function getRtbImpressionsCount($slotId);
 
     /**
+     * @param $slotId
+     * @return mixed
+     */
+    public function getHeaderBidRequestCount($slotId);
+
+    /**
      * @param int $ronSlotId
      * @param int|null $segment
      * @return mixed

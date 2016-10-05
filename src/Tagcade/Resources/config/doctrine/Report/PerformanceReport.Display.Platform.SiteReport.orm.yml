@@ -26,11 +26,15 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
         rtbImpressions:
             type: integer
             nullable: true
+        hbRequests:
+            type: integer
+            nullable: true
         passbacks:
             type: integer
         fillRate:
             type: decimal
             scale: 4
+            nullable: true
         estRevenue:
             type: decimal
             scale: 4
@@ -44,6 +48,14 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
             scale: 4
             nullable: true
         billedAmount:
+            type: decimal
+            scale: 4
+            nullable: true
+        hbBilledRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        hbBilledAmount:
             type: decimal
             scale: 4
             nullable: true

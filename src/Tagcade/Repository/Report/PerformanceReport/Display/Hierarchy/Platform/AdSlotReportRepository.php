@@ -47,9 +47,9 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_ad_slot`
                  (ad_slot_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 slot_opportunities, rtb_impressions, billed_rate, custom_rate, billed_amount
+                 slot_opportunities, hb_requests, billed_rate, hb_billed_rate, billed_amount, hb_billed_amount,  rtb_impressions
                  ) VALUES (:adSlotId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :slotOpportunities, :rtbImpressions, :billedRate, :customRate, :billedAmount
+                  :slotOpportunities, :hbRequests, :billedRate, :hbBilledRate, :billedAmount, :hbBilledAmount, :rtbImpressions
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -58,10 +58,12 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
                  fill_rate = :impressions / :totalOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
-                 rtb_impressions = :rtbImpressions,
+                 hb_requests = :hbRequests,
                  billed_rate = :billedRate,
-                 custom_rate = :customRate,
-                 billed_amount = :billedAmount
+                 hb_billed_rate = :hbBilledRate,
+                 billed_amount = :billedAmount,
+                 hb_billed_amount = :hbBilledAmount,
+                 rtb_impressions = :rtbImpressions
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -78,10 +80,12 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
         $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
-        $qb->bindValue('rtbImpressions', $report->getRtbImpressions() !== null ? $report->getRtbImpressions() : 0);
+        $qb->bindValue('hbRequests', $report->getHbRequests() !== null ? $report->getHbRequests() : 0);
         $qb->bindValue('billedRate', $report->getBilledRate() !== null ? $report->getBilledRate() : 0);
-        $qb->bindValue('customRate', $report->getCustomRate() !== null ? $report->getCustomRate() : 0);
+        $qb->bindValue('hbBilledRate', $report->getHbBilledRate() !== null ? $report->getHbBilledRate() : 0);
         $qb->bindValue('billedAmount', $report->getBilledAmount() !== null ? $report->getBilledAmount() : 0);
+        $qb->bindValue('hbBilledAmount', $report->getHbBilledAmount() !== null ? $report->getHbBilledAmount() : 0);
+        $qb->bindValue('rtbImpressions', $report->getRtbImpressions() !== null ? $report->getRtbImpressions() : 0);
 
         $connection->beginTransaction();
         try {

@@ -9,6 +9,9 @@ trait SlotOpportunitiesTrait
 {
     use CalculateRatiosTrait;
 
+    /**
+     * @var int
+     */
     protected $slotOpportunities;
 
     /**
@@ -21,7 +24,25 @@ trait SlotOpportunitiesTrait
      */
     protected $billedRate;
 
+    /**
+     * @var int
+     */
     protected $rtbImpressions;
+
+    /**
+     * @var int
+     */
+    protected $hbRequests;
+
+    /**
+     * @var float
+     */
+    protected $hbBilledRate;
+
+    /**
+     * @var float
+     */
+    protected $hbBilledAmount;
 
     /**
      * @inheritdoc
@@ -58,6 +79,60 @@ trait SlotOpportunitiesTrait
     public function getRtbImpressions()
     {
         return (int)$this->rtbImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHbRequests()
+    {
+        return (int)$this->hbRequests;
+    }
+
+    /**
+     * @param mixed $hbRequests
+     * @return self
+     */
+    public function setHbRequests($hbRequests)
+    {
+        $this->hbRequests = $hbRequests;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHbBilledRate()
+    {
+        return $this->hbBilledRate;
+    }
+
+    /**
+     * @param mixed $hbBilledRate
+     * @return self
+     */
+    public function setHbBilledRate($hbBilledRate)
+    {
+        $this->hbBilledRate = $hbBilledRate;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHbBilledAmount()
+    {
+        return $this->hbBilledAmount;
+    }
+
+    /**
+     * @param mixed $hbBilledAmount
+     * @return self
+     */
+    public function setHbBilledAmount($hbBilledAmount)
+    {
+        $this->hbBilledAmount = $hbBilledAmount;
+        return $this;
     }
 
     /**

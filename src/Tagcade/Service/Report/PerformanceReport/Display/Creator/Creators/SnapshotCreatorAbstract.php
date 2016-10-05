@@ -15,6 +15,7 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
         $result = array(
             self::CACHE_KEY_SLOT_OPPORTUNITY => 0,
             self::CACHE_KEY_RTB_IMPRESSION => 0,
+            self::CACHE_KEY_HEADER_BID_REQUEST => 0,
             self::CACHE_KEY_OPPORTUNITY => 0,
             self::CACHE_KEY_FIRST_OPPORTUNITY => 0,
             self::CACHE_KEY_IMPRESSION => 0,
@@ -67,5 +68,6 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
 
         $result[self::CACHE_KEY_SLOT_OPPORTUNITY] += $adSlotReportCount->getSlotOpportunities();
         $result[self::CACHE_KEY_RTB_IMPRESSION] += $adSlotReportCount->getRtbImpression();
+        $result[self::CACHE_KEY_HEADER_BID_REQUEST] += $adSlotReportCount->getHbRequests();
     }
 } 
