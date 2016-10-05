@@ -22,6 +22,7 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_SLOT_OPPORTUNITY       = 'opportunities';
     const KEY_IMPRESSION             = 'impressions';
     const KEY_RTB_IMPRESSION         = 'rtb_impressions';
+    const KEY_HB_BID_REQUEST         = 'hb_bid_request';
     const KEY_PASSBACK               = 'passbacks';
     const KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
     const KEY_VERIFIED_IMPRESSION    = 'verified_impressions';
@@ -60,12 +61,14 @@ class TestEventCounter extends AbstractEventCounter
 
             $slotOpportunities = mt_rand($minSlotOpportunities, $maxSlotOpportunities);
             $rtbImpressions = mt_rand(0, $slotOpportunities * 0.01);
+            $hbRequests = mt_rand(0, $rtbImpressions);
             $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
 
 
             $this->adSlotData[$adSlot->getId()] = [
                 static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
-                static::KEY_RTB_IMPRESSION => $rtbImpressions
+                static::KEY_RTB_IMPRESSION => $rtbImpressions,
+                static::KEY_HB_BID_REQUEST => $hbRequests,
             ];
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
@@ -294,6 +297,14 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adSlotData[$slotId][static::KEY_RTB_IMPRESSION];
     }
 
+    public function getHeaderBidRequestCount($slotId)
+    {
+        if (!isset($this->adSlotData[$slotId][static::KEY_HB_BID_REQUEST])) {
+            return false;
+        }
+
+        return $this->adSlotData[$slotId][static::KEY_HB_BID_REQUEST];
+    }
 
     /**
      * @inheritdoc

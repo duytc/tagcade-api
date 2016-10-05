@@ -19,6 +19,7 @@ interface SnapshotCreatorInterface extends CreatorInterface
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
     const CACHE_KEY_RTB_IMPRESSION         = 'impression';
+    const CACHE_KEY_HEADER_BID_REQUEST     = 'hb_bid_request';
     /**
      * Parse report data and set to model class
      *

@@ -11,11 +11,16 @@ class BilledReportGrouper extends AbstractGrouper
 {
     private $slotOpportunities;
     private $billedAmount;
+    private $hbRequests;
+    private $hbBilledAmount;
     private $rtbImpressions;
 
     private $averageSlotOpportunities;
     private $averageRtbImpressions;
     private $averageBilledAmount;
+
+    private $averageHbRequests;
+    private $averageHbBilledAmount;
 
     public function getGroupedReport()
     {
@@ -27,10 +32,12 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getReportName(),
             $this->getTotalOpportunities(),
             $this->getSlotOpportunities(), // added field
+            $this->getHbRequests(),
             $this->getImpressions(),
             $this->getPassbacks(),
             $this->getFillRate(),
             $this->getBilledAmount(),
+            $this->getHbBilledAmount(),
             $this->getEstCpm(),
             $this->getEstRevenue(),
 
@@ -41,7 +48,9 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageEstRevenue(),
             $this->getAverageFillRate(),
             $this->getAverageSlotOpportunities(),
+            $this->getAverageHbRequests(),
             $this->getAverageBilledAmount(),
+            $this->getAverageHbBilledAmount(),
             $this->getRtbImpressions(),
             $this->getAverageRtbImpressions()
         );
@@ -56,6 +65,8 @@ class BilledReportGrouper extends AbstractGrouper
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
         $this->averageRtbImpressions = $this->getRatio($this->getRtbImpressions(), $reportCount);
+        $this->averageHbRequests = $this->getRatio($this->getHbRequests(), $reportCount);
+        $this->averageHbBilledAmount = $this->getRatio($this->getHbBilledAmount(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -67,7 +78,9 @@ class BilledReportGrouper extends AbstractGrouper
         parent::doGroupReport($report);
 
         $this->addSlotOpportunities($report->getSlotOpportunities());
+        $this->addHbRequests($report->getHbRequests());
         $this->addBilledAmount($report->getBilledAmount());
+        $this->addHbBilledAmount($report->getHbBilledAmount());
         $this->addRtbImpressions($report->getRtbImpressions());
     }
 
@@ -84,6 +97,16 @@ class BilledReportGrouper extends AbstractGrouper
     protected function addBilledAmount($billedAmount)
     {
         $this->billedAmount += (float) $billedAmount;
+    }
+
+    protected function addHbBilledAmount($hbBilledAmount)
+    {
+        $this->hbBilledAmount += (float) $hbBilledAmount;
+    }
+
+    protected function addHbRequests($hbRequests)
+    {
+        $this->hbRequests += (int) $hbRequests;
     }
 
     protected function calculateFillRate()
@@ -110,6 +133,38 @@ class BilledReportGrouper extends AbstractGrouper
     public function getBilledAmount()
     {
         return $this->billedAmount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHbRequests()
+    {
+        return $this->hbRequests;
+    }
+
+    /**
+     * @return float
+     */
+    public function getHbBilledAmount()
+    {
+        return $this->hbBilledAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageHbRequests()
+    {
+        return $this->averageHbRequests;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageHbBilledAmount()
+    {
+        return $this->averageHbBilledAmount;
     }
 
     /**

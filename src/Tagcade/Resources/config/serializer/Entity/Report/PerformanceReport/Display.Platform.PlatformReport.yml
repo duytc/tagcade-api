@@ -41,3 +41,12 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
         rtbImpressions:
             expose: true
             groups: [platform_platform_report.detail, platform_platform_report.summary]
+        hbRequests:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        hbBilledRate:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        hbBilledAmount:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]

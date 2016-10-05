@@ -73,3 +73,18 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledRep
         averageRtbImpressions:
             expose: true
             groups: [billed_report_group.detail, billed_report_group.summary]
+        hbRequests:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        hbBilledRate:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageHbRequests:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        hbBilledAmount:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageHbBilledAmount:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]

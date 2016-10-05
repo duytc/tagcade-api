@@ -30,6 +30,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
         fillRate:
             type: decimal
             scale: 4
+            nullable: true
         relativeFillRate:
             type: decimal
             scale: 4
