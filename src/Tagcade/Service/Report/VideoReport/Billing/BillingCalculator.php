@@ -5,12 +5,12 @@ namespace Tagcade\Service\Report\VideoReport\Billing;
 
 
 use DateTime;
+use Tagcade\Domain\DTO\Report\RateAmount;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoAccountReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\Behaviors\CalculateBilledAmountTrait;
-use Tagcade\Service\Report\PerformanceReport\Display\Billing\RateAmount;
 
 class BillingCalculator implements BillingCalculatorInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
+namespace Tagcade\Domain\DTO\Report;
 
 
 use Tagcade\Exception\InvalidArgumentException;
