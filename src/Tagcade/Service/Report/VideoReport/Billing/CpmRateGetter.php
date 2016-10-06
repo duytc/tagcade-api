@@ -1,6 +1,6 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
+namespace Tagcade\Service\Report\VideoReport\Billing;
 
 use DateTime;
 use Tagcade\Bundle\UserBundle\Entity\User;
