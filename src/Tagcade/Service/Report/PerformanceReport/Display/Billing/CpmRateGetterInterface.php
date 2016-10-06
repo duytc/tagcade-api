@@ -29,4 +29,12 @@ interface CpmRateGetterInterface
      * @return CpmRate
      */
     public function getCpmRateForPublisher(PublisherInterface $publisher, $module, $weight);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $module
+     * @param DateTime $date
+     * @return mixed
+     */
+    public function getBillingWeightForPublisherInMonthBeforeDate(PublisherInterface $publisher, $module, DateTime $date);
 }

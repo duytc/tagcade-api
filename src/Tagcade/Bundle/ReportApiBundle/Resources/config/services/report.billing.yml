@@ -54,6 +54,13 @@ services:
             - @tagcade.repository.report.video_report.hierarchy.platform.account
             - @tagcade.service.date_util
 
+    tagcade.service.report.source_report.billing.billing_calculator:
+        class: Tagcade\Service\Report\SourceReport\Billing\BillingCalculator
+        arguments:
+            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
+            - @tagcade.repository.source_report.report
+            - @tagcade.service.date_util
+
     tagcade.service.report.performance_report.display.billing.billed_amount_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor
         arguments:

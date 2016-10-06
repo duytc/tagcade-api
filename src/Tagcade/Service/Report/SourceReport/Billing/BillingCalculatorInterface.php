@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tagcade\Service\Report\VideoReport\Billing;
+namespace Tagcade\Service\Report\SourceReport\Billing;
 
 
 use DateTime;
@@ -17,5 +17,5 @@ interface BillingCalculatorInterface
      * @param $newWeight
      * @return RateAmount
      */
-    public function calculateVideoBilledAmountForPublisherForSingleDay(DateTime $date, PublisherInterface $publisher, $module, $newWeight);
+    public function calculateBilledAmountForPublisherForSingleDate(DateTime $date, PublisherInterface $publisher, $module, $newWeight);
 }

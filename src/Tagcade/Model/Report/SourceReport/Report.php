@@ -122,6 +122,16 @@ class Report
      */
     protected $qtosPercentage;
 
+    /**
+     * @var float
+     */
+    protected $billedRate;
+
+    /**
+     * @var float
+     */
+    protected $billedAmount;
+
     public function __construct()
     {
         $this->records = new ArrayCollection();
@@ -351,6 +361,42 @@ class Report
     public function getQtosPercentage()
     {
         return $this->qtosPercentage;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBilledRate()
+    {
+        return $this->billedRate;
+    }
+
+    /**
+     * @param float $billedRate
+     * @return self
+     */
+    public function setBilledRate($billedRate)
+    {
+        $this->billedRate = $billedRate;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBilledAmount()
+    {
+        return $this->billedAmount;
+    }
+
+    /**
+     * @param float $billedAmount
+     * @return self
+     */
+    public function setBilledAmount($billedAmount)
+    {
+        $this->billedAmount = $billedAmount;
+        return $this;
     }
 
     public function setCalculatedFields()

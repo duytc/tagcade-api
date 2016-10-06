@@ -175,4 +175,33 @@ class CpmRateGetter implements CpmRateGetterInterface
                 throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));
         }
     }
+
+    public function getBillingWeightForPublisherInMonthBeforeDate(PublisherInterface $publisher, $module, DateTime $date)
+    {
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
+
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(self::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+
+        $billingFactor = $billingConfiguration->getBillingFactor();
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
+        $date = $date->modify('-1 day');
+
+        switch ($billingFactor) {
+            case self::BILLING_FACTOR_SLOT_OPPORTUNITY:
+                return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $date);
+            case self::BILLING_FACTOR_VIDEO_IMPRESSION:
+                if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
+                    return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $date);
+                }
+
+                return $this->reportRepository->getTotalVideoImpressionForPublisher($publisher, $firstDateInMonth, $date);
+            case self::BILLING_FACTOR_VIDEO_VISIT:
+                return $this->reportRepository->getTotalVideoVisitForPublisher($publisher, $firstDateInMonth, $date);
+            default:
+                throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));
+        }
+    }
 }
