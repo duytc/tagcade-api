@@ -1,5 +1,6 @@
 parameters:
     tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class: Tagcade\Service\Report\PerformanceReport\Display\Billing\CpmRateGetter
+    tagcade.service.report.video_report.billing.cpm_rate_getter.class: Tagcade\Service\Report\VideoReport\Billing\CpmRateGetter
 services:
 
     ### service billing rate
@@ -9,13 +10,30 @@ services:
         factory_class: %tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%
         factory_method: createConfig
         arguments:
-            - %tc.billing.thresholds%
+            - %tc.display.billing.thresholds%
 
     tagcade.service.report.performance_report.display.billing.cpm_rate_getter:
         class: %tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%
         arguments:
-            - %tc.billing.default_cpm_rate%
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter_config
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+            - @tagcade.service.date_util
+            - @tagcade.repository.billing_configuration
+            - @tagcade.repository.source_report.report
+            - @tagcade.repository.report.video_report.hierarchy.platform.account
+
+    tagcade.service.report.video_report.billing.cpm_rate_getter_config:
+        public: false
+        class: '%tagcade.service.report.video_report.billing.cpm_rate_getter.class%'
+        factory_class: '%tagcade.service.report.video_report.billing.cpm_rate_getter.class%'
+        factory_method: createConfig
+        arguments:
+            - %tc.video.billing.thresholds%
+
+    tagcade.service.report.video_report.billing.cpm_rate_getter:
+        class: '%tagcade.service.report.video_report.billing.cpm_rate_getter.class%'
+        arguments:
+            - @tagcade.service.report.video_report.billing.cpm_rate_getter_config
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
             - @tagcade.service.date_util
             - @tagcade.repository.billing_configuration
@@ -32,7 +50,7 @@ services:
     tagcade.service.report.video_report.billing.billing_calculator:
         class: Tagcade\Service\Report\VideoReport\Billing\BillingCalculator
         arguments:
-            - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
+            - @tagcade.service.report.video_report.billing.cpm_rate_getter
             - @tagcade.repository.report.video_report.hierarchy.platform.account
             - @tagcade.service.date_util
 

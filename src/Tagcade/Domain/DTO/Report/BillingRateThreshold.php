@@ -1,6 +1,8 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
+
+namespace Tagcade\Domain\DTO\Report;
+
 
 class BillingRateThreshold
 {
