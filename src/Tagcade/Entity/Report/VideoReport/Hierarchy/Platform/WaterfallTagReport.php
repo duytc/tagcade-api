@@ -7,7 +7,7 @@ class WaterfallTagReport extends WaterfallTagReportModel {
 
     protected $id;
     protected $date;
-    protected $request;
+    protected $requests;
     protected $bids;
     protected $bidRate;
     protected $errors;

@@ -43,16 +43,20 @@ parameters:
 
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
     tc.max_cache_version: 20 # maximum cache version of a specific key is kept in Redis cache
-    tc.billing.default_cpm_rate: 0.025
-    tc.billing.thresholds:
-        - {threshold: 100000000, cpmRate: 0.022}
-        - {threshold: 250000000, cpmRate: 0.020}
-        - {threshold: 500000000, cpmRate: 0.018}
-        - {threshold: 750000000, cpmRate: 0.016}
-        - {threshold: 1000000000, cpmRate: 0.014}
-        - {threshold: 1500000000, cpmRate: 0.012}
-        - {threshold: 2000000000, cpmRate: 0.010}
+    tc.display.billing.thresholds:
+        - {threshold: 0, cpmRate: 0.030}
+        - {threshold: 100000000, cpmRate: 0.025}
+        - {threshold: 1000000000, cpmRate: 0.020}
+        - {threshold: 2000000000, cpmRate: 0.015}
+        - {threshold: 5000000000, cpmRate: 0.010}
 
+    tc.video.billing.thresholds:
+        - {threshold: 0, cpmRate: 0.15}
+        - {threshold: 200000000, cpmRate: 0.14}
+        - {threshold: 400000000, cpmRate: 0.13}
+        - {threshold: 600000000, cpmRate: 0.12}
+        - {threshold: 800000000, cpmRate: 0.11}
+        - {threshold: 1000000000, cpmRate: 0.10}
     tc.cdn_config:
         host: '192.168.55.100'
         secured: false

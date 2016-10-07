@@ -1,10 +1,10 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
+namespace Tagcade\Service\Report\VideoReport\Billing;
 
 use DateTime;
-use Tagcade\Domain\DTO\Report\BillingRateThreshold;
 use Tagcade\Bundle\UserBundle\Entity\User;
+use Tagcade\Domain\DTO\Report\BillingRateThreshold;
 use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BillingConfigurationInterface;
@@ -13,7 +13,6 @@ use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoAccountReportRepositoryInterface;
-use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoWaterfallTagReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
