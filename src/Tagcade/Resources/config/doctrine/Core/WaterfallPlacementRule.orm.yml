@@ -1,0 +1,22 @@
+Tagcade\Entity\Core\WaterfallPlacementRule:
+    type: entity
+    table: core_waterfall_placement_rule
+    repositoryClass: Tagcade\Repository\Core\WaterfallPlacementRuleRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        profitType:
+            type: integer
+            nullable: false
+        profitValue:
+            type: integer
+            nullable: false
+        publishers:
+            type: json_array
+    manyToOne:
+        libraryVideoDemandAdTag:
+            targetEntity: Tagcade\Entity\Core\LibraryVideoDemandAdTag
+            inversedBy: waterfallPlacementRules

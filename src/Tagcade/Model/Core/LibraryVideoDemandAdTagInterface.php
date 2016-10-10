@@ -79,6 +79,11 @@ interface LibraryVideoDemandAdTagInterface extends ModelInterface
     public function getVideoDemandAdTags();
 
     /**
+     * @return mixed
+     */
+    public function getWaterfallPlacementRules();
+
+    /**
      * @return int
      */
     public function getLinkedCount();

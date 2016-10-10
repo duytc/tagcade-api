@@ -17,4 +17,5 @@ class LibraryVideoDemandAdTag extends LibraryVideoDemandAdTagModel
     protected $deletedAt;
     protected $videoDemandPartner;
     protected $videoDemandAdTags;
+    protected $waterfallPlacementRules;
 }
