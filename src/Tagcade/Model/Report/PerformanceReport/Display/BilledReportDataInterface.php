@@ -14,9 +14,5 @@ interface BilledReportDataInterface extends ReportDataInterface
      */
     public function getBilledAmount();
 
-    public function getHbRequests();
-
-    public function getHbBilledAmount();
-
     public function getRtbImpressions();
 }

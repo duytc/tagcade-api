@@ -10,6 +10,12 @@ report_api_performance_report:
     name_prefix: performance_report_api_1_
     prefix: /performancereports
 
+report_api_header_bidding_report:
+    type: rest
+    resource: Tagcade\Bundle\ReportApiBundle\Controller\HeaderBiddingReportController
+    name_prefix: header_bidding_report_api_1_
+    prefix: /headerbiddingreports
+
 report_api_unified_report:
     type: rest
     resource: Tagcade\Bundle\ReportApiBundle\Controller\UnifiedReportController

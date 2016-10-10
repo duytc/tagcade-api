@@ -81,6 +81,14 @@ TRUNCATE table video_report_platform_ad_source_report;
 TRUNCATE table video_report_demand_partner_ad_source_report;
 TRUNCATE table video_report_demand_partner_demand_partner_report;
 
+-- truncate all header bidding report tables
+set foreign_key_checks = 0;
+
+truncate table report_header_bidding_display_hierarchy_platform;
+truncate table report_header_bidding_hierarchy_platform_account;
+truncate table report_header_bidding_hierarchy_platform_ad_slot;
+truncate table report_header_bidding_hierarchy_platform_site;
+
 set foreign_key_checks = 0;
 
 TRUNCATE table core_site;

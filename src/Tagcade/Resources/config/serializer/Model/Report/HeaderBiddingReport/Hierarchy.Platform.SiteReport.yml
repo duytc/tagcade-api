@@ -1,0 +1,12 @@
+Tagcade\Model\Report\HeaderBiddingReport\Hierarchy\Platform\SiteReport:
+        exclusion_policy: NONE
+        virtual_properties:
+            getSiteId:
+                type: integer
+            getSiteName:
+                type: string
+        properties:
+            site:
+                exclude: true
+            superReport:
+                exclude: true

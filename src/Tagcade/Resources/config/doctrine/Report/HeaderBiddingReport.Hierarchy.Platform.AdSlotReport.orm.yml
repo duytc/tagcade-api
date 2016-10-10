@@ -1,0 +1,34 @@
+Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\AdSlotReport:
+    repositoryClass: Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\AdSlotReportRepository
+    type: entity
+    table: report_header_bidding_hierarchy_platform_ad_slot
+    uniqueConstraints:
+        unique_platform_adslot_report_idx:
+            columns: [date, ad_slot_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+        billedRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        requests:
+            type: integer
+        billedAmount:
+            type: decimal
+            scale: 4
+            nullable: true
+    manyToOne:
+        adSlot:
+            targetEntity: Tagcade\Entity\Core\AdSlotAbstract
+            cascade: ["detach"]
+        superReport:
+            targetEntity: SiteReport
+            inversedBy: subReports

@@ -19,19 +19,5 @@ class PlatformReport extends PlatformReportModel
     protected $billedAmount;
     protected $billedRate;
     protected $subReports;
-
-    /**
-     * @var int
-     */
-    protected $hbRequests;
-    /**
-     * @var float
-     */
-    protected $hbBilledRate;
-
-    /**
-     * @var float
-     */
-    protected $hbBilledAmount;
     protected $rtbImpressions;
 }

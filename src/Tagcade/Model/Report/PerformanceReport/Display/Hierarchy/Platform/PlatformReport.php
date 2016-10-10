@@ -34,20 +34,12 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setRtbImpressions($data['rtbImpressions']);
         }
 
-        if (array_key_exists('hbRequests', $data)) {
-            $this->setHbRequests($data['hbRequests']);
-        }
-
         if (array_key_exists('passbacks', $data)) {
             $this->setPassbacks($data['passbacks']);
         }
 
         if (array_key_exists('billedAmount', $data)) {
             $this->setBilledAmount($data['billedAmount']);
-        }
-
-        if (array_key_exists('hbBilledAmount', $data)) {
-            $this->setHbBilledAmount($data['hbBilledAmount']);
         }
 
         return $this;
