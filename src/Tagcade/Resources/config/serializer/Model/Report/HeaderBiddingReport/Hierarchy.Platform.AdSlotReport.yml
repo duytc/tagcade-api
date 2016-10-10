@@ -1,0 +1,10 @@
+Tagcade\Model\Report\HeaderBiddingReport\Hierarchy\Platform\AdSlotReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getAdSlotId:
+            type: integer
+    properties:
+        adSlot:
+            exclude: true
+        superReport:
+            exclude: true

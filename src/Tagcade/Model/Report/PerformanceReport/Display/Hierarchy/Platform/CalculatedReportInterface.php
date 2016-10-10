@@ -40,38 +40,5 @@ interface CalculatedReportInterface extends ReportInterface, BilledReportDataInt
      */
     public function getRtbImpressions();
 
-    /**
-     * @return int
-     */
-    public function getHbRequests();
-
-    /**
-     * @param int $hbRequests
-     * @return self
-     */
-    public function setHbRequests($hbRequests);
-
-    /**
-     * @return float
-     */
-    public function getHbBilledRate();
-
-    /**
-     * @param float $hbBilledRate
-     * @return self
-     */
-    public function setHbBilledRate($hbBilledRate);
-
-    /**
-     * @return float
-     */
-    public function getHbBilledAmount();
-
-    /**
-     * @param float $hbBilledAmount
-     * @return self
-     */
-    public function setHbBilledAmount($hbBilledAmount);
-
     public function setThresholdBilledAmount($chainToSubReports = true);
 }

@@ -12,3 +12,5 @@ imports:
     - { resource: services/unified_report_importer_services.yml }
     - { resource: services/report.unified_report.exporter.yml }
     - { resource: services/report.video_report.selectors.yml }
+    - { resource: services/report.header_bidding.creators.yml }
+    - { resource: services/report.header_bidding.selectors.yml }

@@ -1,0 +1,84 @@
+
+services:
+
+    ### Performance report repositories
+    tagcade.repository.report.header_bidding.hierarchy.platform.platform:
+        class: Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\PlatformReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\PlatformReport
+
+    tagcade.repository.report.header_bidding.hierarchy.platform.account:
+        class: Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReport
+
+    tagcade.repository.report.header_bidding.hierarchy.platform.site:
+        class: Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\SiteReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\SiteReport
+
+    tagcade.repository.report.header_bidding.hierarchy.platform.ad_slot:
+        class: Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\AdSlotReportRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - \Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\AdSlotReport
+
+    ### Performance report selectors
+    tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.platform:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\Selectors\Hierarchy\Platform\Platform
+        arguments:
+            - @tagcade.repository.report.header_bidding.hierarchy.platform.platform
+
+    tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.account:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\Selectors\Hierarchy\Platform\Account
+        arguments:
+            - @tagcade.repository.report.header_bidding.hierarchy.platform.account
+
+    tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.site:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\Selectors\Hierarchy\Platform\Site
+        arguments:
+            - @tagcade.repository.report.header_bidding.hierarchy.platform.site
+
+    tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.ad_slot:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\Selectors\Hierarchy\Platform\AdSlot
+        arguments:
+            - @tagcade.repository.report.header_bidding.hierarchy.platform.ad_slot
+    ###
+
+    ### Report grouper service
+
+    tagcade.service.report.header_bidding.select.grouper.report_grouper:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\Grouper\ReportGrouper
+
+    ### Report selector service
+
+    tagcade.service.report.header_bidding.selector.report_selector:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\ReportSelector
+        arguments:
+            -
+                # platform selectors
+                - @tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.platform
+                - @tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.account
+                - @tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.site
+                - @tagcade.service.report.header_bidding.selector.selectors.hierarchy.platform.ad_slot
+            - @tagcade.service.date_util
+            - @tagcade.service.report.header_bidding.select.grouper.report_grouper
+            - @tagcade.service.report.header_bidding_report.creator.report_creator
+
+    ###
+
+    tagcade.service.report.header_bidding.selector.report_builder:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Selector\ReportBuilder
+        arguments:
+            - @tagcade.service.report.header_bidding.selector.report_selector
+            - @tagcade.service.date_util
+            - @tagcade_user.domain_manager.publisher
+            - @tagcade.domain_manager.site
+

@@ -35,9 +35,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             SUM(r.impressions) as impressions,
             SUM(r.rtbImpressions) as rtbImpressions,
             SUM(r.passbacks) as passbacks,
-            SUM(r.billedAmount) as billedAmount,
-            SUM(r.hbBilledAmount) as hbBilledAmount,
-            SUM(r.hbRequests) as hbRequests
+            SUM(r.billedAmount) as billedAmount
             '
         );
 
@@ -173,9 +171,9 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_account`
                  (publisher_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 slot_opportunities, hb_requests, billed_rate, hb_billed_rate, billed_amount, hb_billed_amount,  rtb_impressions
+                 slot_opportunities, billed_rate, billed_amount, rtb_impressions
                  ) VALUES (:publisherId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :slotOpportunities, :hbRequests, :billedRate, :hbBilledRate, :billedAmount, :hbBilledAmount, :rtbImpressions
+                  :slotOpportunities, :billedRate, :billedAmount, :rtbImpressions
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -184,11 +182,8 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
                  fill_rate = :impressions / :totalOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
-                 hb_requests = :hbRequests,
                  billed_rate = :billedRate,
-                 hb_billed_rate = :hbBilledRate,
                  billed_amount = :billedAmount,
-                 hb_billed_amount = :hbBilledAmount,
                  rtb_impressions = :rtbImpressions
                  ';
 
@@ -206,11 +201,8 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
-        $qb->bindValue('hbRequests', $report->getHbRequests() !== null ? $report->getHbRequests() : 0);
         $qb->bindValue('billedRate', $report->getBilledRate() !== null ? $report->getBilledRate() : 0);
-        $qb->bindValue('hbBilledRate', $report->getHbBilledRate() !== null ? $report->getHbBilledRate() : 0);
         $qb->bindValue('billedAmount', $report->getBilledAmount() !== null ? $report->getBilledAmount() : 0);
-        $qb->bindValue('hbBilledAmount', $report->getHbBilledAmount() !== null ? $report->getHbBilledAmount() : 0);
         $qb->bindValue('rtbImpressions', $report->getRtbImpressions() !== null ? $report->getRtbImpressions() : 0);
 
         $connection->beginTransaction();
