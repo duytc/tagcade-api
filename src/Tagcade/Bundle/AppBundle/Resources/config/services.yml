@@ -242,7 +242,7 @@ services:
             - %tc.bulk_upload.ad_tag.index%
             - @tagcade.domain_manager.library_ad_tag
             - @tagcade.domain_manager.ad_tag
-            
+
     tagcade_app.service.core.video_waterfall_tag_item.video_waterfall_tag_item_position_editor:
         class: Tagcade\Service\Core\VideoWaterfallTagItem\VideoWaterfallTagItemPositionEditor
         arguments:
