@@ -210,6 +210,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
 
         $qb = $this->createQueryBuilder('r')
             ->where('r.buyPrice <= :price')
+            ->andWhere('r.buyPrice IS NOT NULL')
             ->setParameter('price', $price);
 
         if (!empty($videoPublisher)) {

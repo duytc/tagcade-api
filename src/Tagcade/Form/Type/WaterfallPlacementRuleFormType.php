@@ -15,14 +15,14 @@ class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('profitType', ChoiceType::class, array(
                 'choices' => array(
-                    WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_FIX_MARGIN,
-                    WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN,
-                    WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL,
+                    WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_FIX_MARGIN => WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_FIX_MARGIN,
+                    WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN => WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN,
+                    WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL => WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL,
                 ),
             ))
             ->add('profitValue')
             ->add('publishers')
-            ->add('libraryVideoDemandAdTag');
+            ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
