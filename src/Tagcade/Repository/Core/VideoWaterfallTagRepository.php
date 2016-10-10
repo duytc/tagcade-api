@@ -201,4 +201,22 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
 
         return $qb;
     }
+
+    public function getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(array $videoPublisher, $price)
+    {
+        if ($price === null) {
+            return [];
+        }
+
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.buyPrice <= :price')
+            ->setParameter('price', $price);
+
+        if (!empty($videoPublisher)) {
+            $qb->join('r.videoPublisher', 'p')
+            ->andWhere($qb->expr()->in('p.id', $videoPublisher));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

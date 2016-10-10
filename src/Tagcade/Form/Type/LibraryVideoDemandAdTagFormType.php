@@ -12,6 +12,7 @@ use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
+use Tagcade\Model\Core\WaterfallPlacementRule;
 use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 
 class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
@@ -49,6 +50,15 @@ class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
                 /** @var WaterfallPlacementRuleInterface $waterfallPlacementRule */
                 foreach ($waterfallPlacementRules as $waterfallPlacementRule) {
                     $waterfallPlacementRule->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
+
+                    if ($libraryVideoDemandAdTag->getSellPrice() === null &&
+                        (
+                            $waterfallPlacementRule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_FIX_MARGIN ||
+                            $waterfallPlacementRule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN
+                        )
+                    ) {
+                        throw new InvalidArgumentException('set the "Sell Price" explicitly to apply placement rules');
+                    }
                 }
 
                 // validate targeting if has

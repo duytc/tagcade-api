@@ -6,6 +6,11 @@ namespace Tagcade\Model\Core;
 
 class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
 {
+    const PLACEMENT_PROFIT_TYPE_FIX_MARGIN = 1;
+    const PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN = 2;
+    const PLACEMENT_PROFIT_TYPE_MANUAL = 2;
+
+
     /**
      * @var int
      */

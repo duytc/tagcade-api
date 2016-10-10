@@ -11,4 +11,5 @@ use Tagcade\Model\User\Role\SubPublisherInterface;
 
 interface WaterfallPlacementRuleManagerInterface extends ManagerInterface
 {
+
 }
