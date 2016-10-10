@@ -12,6 +12,7 @@ use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 
 class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
 {
@@ -30,6 +31,12 @@ class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
                 'query_builder' => function (EntityRepository $repository) {
                     return $repository->createQueryBuilder('vdp')->select('vdp');
                 }
+            ))
+            ->add('waterfallPlacementRules', 'collection', array(
+                'mapped' => true,
+                'type' => new WaterfallPlacementRuleFormType(),
+                'allow_add' => true,
+                'allow_delete' => true,
             ));
 
         $builder->addEventListener(
@@ -37,6 +44,12 @@ class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
             function (FormEvent $event) {
                 /** @var LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag */
                 $libraryVideoDemandAdTag = $event->getData();
+                $waterfallPlacementRules = $libraryVideoDemandAdTag->getWaterfallPlacementRules();
+
+                /** @var WaterfallPlacementRuleInterface $waterfallPlacementRule */
+                foreach ($waterfallPlacementRules as $waterfallPlacementRule) {
+                    $waterfallPlacementRule->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
+                }
 
                 // validate targeting if has
                 $targeting = $libraryVideoDemandAdTag->getTargeting();

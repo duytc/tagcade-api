@@ -166,6 +166,15 @@ class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, Video
     /**
      * @inheritdoc
      */
+    public function setWaterfallPlacementRules($waterfallPlacementRules)
+    {
+        $this->waterfallPlacementRules = $waterfallPlacementRules;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getLinkedCount()
     {
         return count($this->videoDemandAdTags);

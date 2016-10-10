@@ -84,6 +84,12 @@ interface LibraryVideoDemandAdTagInterface extends ModelInterface
     public function getWaterfallPlacementRules();
 
     /**
+     * @param array $waterfallPlacementRules
+     * @return self
+     */
+    public function setWaterfallPlacementRules($waterfallPlacementRules);
+
+    /**
      * @return int
      */
     public function getLinkedCount();

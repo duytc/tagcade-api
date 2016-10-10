@@ -120,4 +120,9 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
         $this->libraryVideoDemandAdTag = $libraryVideoDemandAdTag;
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->id . '-' . $this->getProfitValue();
+    }
 }
