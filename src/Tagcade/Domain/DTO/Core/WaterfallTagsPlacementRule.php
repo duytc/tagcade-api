@@ -43,6 +43,8 @@ class WaterfallTagsPlacementRule
      */
     public function getWaterfallTags()
     {
-        return $this->waterfallTags;
+        return array_map(function(VideoWaterfallTagInterface $waterfallTag){
+            return $waterfallTag->getId();
+        }, $this->waterfallTags);
     }
 }

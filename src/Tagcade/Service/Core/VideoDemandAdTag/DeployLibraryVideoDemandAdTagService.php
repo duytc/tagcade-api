@@ -53,28 +53,37 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
     /**
      * @inheritdoc
      */
-    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, WaterfallPlacementRuleInterface $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = null, $position = null, $shiftDown = false)
+    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = null, $position = null, $shiftDown = false)
     {
         $availableWaterfalls = $this->waterfallTagRepository->getWaterfallTagsNotLinkToLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
         $availableWaterfalls = array_map(function(VideoWaterfallTagInterface $waterfall) {
             return $waterfall->getId();
         }, $availableWaterfalls);
-        $videoWaterfallTagIds = array_map(function(VideoWaterfallTagInterface $waterfall) {
-            return $waterfall->getId();
-        }, $videoWaterfallTags);
 
-        foreach ($videoWaterfallTagIds as $videoWaterfallTagId) {
+        foreach ($videoWaterfallTags as $videoWaterfallTagId) {
+            $waterfallTag = $this->waterfallTagRepository->find($videoWaterfallTagId);
+
+            if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
+                throw new InvalidArgumentException(sprintf('video waterfall tag %d does not exist', $videoWaterfallTagId));
+            }
+
             if (!in_array($videoWaterfallTagId, $availableWaterfalls)) {
                 throw new InvalidArgumentException(sprintf('The library %d has already been deployed on the waterfall %d', $libraryVideoDemandAdTag->getId(), $videoWaterfallTagId));
             }
+        }
+
+        if (!$rule instanceof WaterfallPlacementRuleInterface) {
+            $rule = new WaterfallPlacementRule();
+            $rule->setProfitType(WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL);
         }
 
         $this->em->beginTransaction();
         try {
             foreach ($videoWaterfallTags as $videoWaterfallTag) {
                 $demandAdTag = new VideoDemandAdTag();
-                $demandAdTag->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
-                        ->setTargetingOverride($targetingOverride)
+                $demandAdTag
+                    ->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
+                    ->setTargetingOverride($targetingOverride)
                     ->setWaterfallPlacementRule($rule)
                 ;
 

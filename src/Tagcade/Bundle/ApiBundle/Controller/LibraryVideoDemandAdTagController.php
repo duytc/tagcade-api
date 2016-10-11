@@ -192,7 +192,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
         // do linking library demand ad tag to many video waterfall tags
         /** @var DeployLibraryVideoDemandAdTagServiceInterface $deployService */
         $deployService = $this->get('tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag');
-        $deployService->deployLibraryVideoDemandAdTagToWaterfalls($libraryDemandAdTag, $waterfallIds, $targeting, $targetingOverride, $priority, $rotationWeight, $active, $position, $shiftDown);
+        $deployService->deployLibraryVideoDemandAdTagToWaterfalls($libraryDemandAdTag, $rule = null, $waterfallIds, $targeting, $targetingOverride, $priority, $rotationWeight, $active, $position, $shiftDown);
 
         return $this->view( null, Codes::HTTP_CREATED );
     }
