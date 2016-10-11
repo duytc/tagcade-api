@@ -58,6 +58,11 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     protected $libraryVideoDemandAdTag;
 
     /**
+     * @var WaterfallPlacementRuleInterface
+     */
+    protected $waterfallPlacementRule;
+
+    /**
      * @var VideoWaterfallTagItemInterface
      */
     protected $videoWaterfallTagItem;
@@ -251,6 +256,24 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     public function setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
     {
         $this->libraryVideoDemandAdTag = $libraryVideoDemandAdTag;
+        return $this;
+    }
+
+    /**
+     * @return WaterfallPlacementRuleInterface
+     */
+    public function getWaterfallPlacementRule()
+    {
+        return $this->waterfallPlacementRule;
+    }
+
+    /**
+     * @param WaterfallPlacementRuleInterface $waterfallPlacementRule
+     * @return self
+     */
+    public function setWaterfallPlacementRule($waterfallPlacementRule)
+    {
+        $this->waterfallPlacementRule = $waterfallPlacementRule;
         return $this;
     }
 

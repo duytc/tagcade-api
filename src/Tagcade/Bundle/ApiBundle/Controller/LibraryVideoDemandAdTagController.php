@@ -151,11 +151,6 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      */
     public function postAction(Request $request)
     {
-        // get VideoWaterfallTags from request and override to request
-        // we do that for supporting create & deploy library video demand ad tag to multi video waterfall tags
-        // get VideoWaterfallTags from request and override to request
-        $request->request->set('waterfalls', $this->getVideoWaterfallTags($request->request->get('waterfalls', [])));
-
         return $this->post($request);
     }
 
