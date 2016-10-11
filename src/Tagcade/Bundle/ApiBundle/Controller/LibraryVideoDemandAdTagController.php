@@ -27,7 +27,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      * Get all library video demand ad tags
      *
      * @Rest\View(
-     *     serializerGroups={"libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"}
+     *     serializerGroups={"libraryVideoDemandAdTag.detail", "videoDemandPartner.summary", "user.summary"}
      * )
      *
      * @ApiDoc(
@@ -49,7 +49,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      * Get single library video demand ad tag
      *
      * @Rest\View(
-     *     serializerGroups={"libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"}
+     *     serializerGroups={"libraryVideoDemandAdTag.summary", "WaterfallPlacementRule.summary", "videoDemandPartner.summary", "user.summary"}
      * )
      *
      * @ApiDoc(
