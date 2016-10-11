@@ -29,6 +29,9 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
         videoDemandPartner:
             expose: true
             groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+        waterfallPlacementRules:
+            expose: true
+            groups: [libraryVideoDemandAdTag.summary]
 #        videoDemandAdTags:
 #            expose: true
 #            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
