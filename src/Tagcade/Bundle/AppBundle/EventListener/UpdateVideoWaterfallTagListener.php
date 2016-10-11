@@ -3,14 +3,20 @@
 
 namespace Tagcade\Bundle\AppBundle\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
+use Tagcade\Entity\Core\VideoDemandAdTag;
+use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 
 class UpdateVideoWaterfallTagListener
 {
+    use ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
+
     /** @var VideoWaterfallTagCacheRefresherInterface */
     private $cacheRefresher;
     /** @var array */
@@ -55,10 +61,14 @@ class UpdateVideoWaterfallTagListener
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
-        if ($entity instanceof VideoWaterfallTagInterface
-            && ($args->hasChangedField('platform')
-                || $args->hasChangedField('adDuration')
-                || $args->hasChangedField('targeting'))
+        if (!$entity instanceof VideoWaterfallTagInterface) {
+            return;
+        }
+
+        if (
+            $args->hasChangedField('platform') ||
+            $args->hasChangedField('adDuration') ||
+            $args->hasChangedField('targeting')
         ) {
             $id = $entity->getId();
             if (!in_array($id, $this->changedVideoWaterfallTagIds)) {
@@ -66,6 +76,26 @@ class UpdateVideoWaterfallTagListener
                 $this->changedVideoWaterfallTags[] = $entity;
             }
         }
+
+        if ($args->hasChangedField('buyPrice')) {
+            $em = $args->getEntityManager();
+            $this->autoPauseVideoDemandAdTags($em, $entity);
+        }
+    }
+
+    protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, VideoWaterfallTagInterface $waterfallTag)
+    {
+        $videoDemandAdTagRepository = $em->getRepository(VideoDemandAdTag::class);
+        $videoDemandAdTags = $videoDemandAdTagRepository->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
+        /** @var VideoDemandAdTagInterface $videoDemandAdTag */
+        foreach($videoDemandAdTags as $videoDemandAdTag) {
+            if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
+                $videoDemandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
+                $em->merge($videoDemandAdTag);
+            }
+        }
+
+        $em->flush();
     }
 
     /**
