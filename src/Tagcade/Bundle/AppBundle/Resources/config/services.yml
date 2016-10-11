@@ -198,6 +198,11 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
 
+    tagcade_app.service.core.video_demand_ad_tag.auto_pause_service:
+        class: Tagcade\Service\Core\VideoDemandAdTag\AutoPauseService
+        arguments:
+            - @doctrine.orm.entity_manager
+
     tagcade_app.service.core.excel_file_processing:
         class: Tagcade\Service\ExcelFileProcessing
         arguments:

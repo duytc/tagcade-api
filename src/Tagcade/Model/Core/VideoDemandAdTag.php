@@ -8,6 +8,10 @@ use DateTime;
 
 class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInterface
 {
+    const ACTIVE = 1;
+    const PAUSED = 0;
+    const AUTO_PAUSED = -1;
+
     const ACTIVE_DEFAULT = true;
 
     const PLATFORM_JAVASCRIPT = 'js';
