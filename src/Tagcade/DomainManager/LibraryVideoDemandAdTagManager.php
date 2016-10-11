@@ -5,9 +5,11 @@ namespace Tagcade\DomainManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
 use ReflectionClass;
+use Tagcade\Domain\DTO\Core\WaterfallTagsPlacementRule;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryVideoDemandAdTagRepositoryInterface;
@@ -47,6 +49,17 @@ class LibraryVideoDemandAdTagManager implements LibraryVideoDemandAdTagManagerIn
         $this->om->persist($videoDemandAdTag);
         $this->om->flush();
     }
+
+    public function deployLibraryVideoDemandAdTag(LibraryVideoDemandAdTagInterface $videoDemandAdTag)
+    {
+        $validWaterfallTags = $this->deployLibraryVideoDemandAdTagService->getValidVideoWaterfallTagsForLibraryVideoDemandAdTag($videoDemandAdTag);
+
+        /** @var WaterfallTagsPlacementRule $validWaterfallTag */
+        foreach($validWaterfallTags as $validWaterfallTag) {
+            $this->deployLibraryVideoDemandAdTagService->deployLibraryVideoDemandAdTagToWaterfalls($videoDemandAdTag, $validWaterfallTag->getPlacementRule(), $validWaterfallTag->getWaterfallTags());
+        }
+    }
+
 
     /**
      * @inheritdoc
