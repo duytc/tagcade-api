@@ -81,4 +81,21 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         }
         return $result;
     }
+
+    public function getSourceReportsForPublisher(PublisherInterface $publisher)
+    {
+        if($publisher) {
+            return $this->createQueryBuilder('r')
+                ->leftJoin('r.site', 'st')
+                ->where('st.publisher = :publisher')
+                ->setParameter('publisher', $publisher)
+                ->getQuery()
+                ->getResult();
+        }else{
+            return $this->createQueryBuilder('r')
+                ->leftJoin('r.site', 'st')
+                ->getQuery()
+                ->getResult();
+        }
+    }
 }

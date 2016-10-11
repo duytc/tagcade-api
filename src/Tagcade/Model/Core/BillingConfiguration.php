@@ -7,8 +7,8 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class BillingConfiguration implements BillingConfigurationInterface
 {
-    const VIDEO_IMPRESSION_BILLING_FACTOR = 1;
-    const VISIT_BILLING_FACTOR = 2;
+    const VIDEO_IMPRESSION_BILLING_FACTOR = 'VIDEO_IMPRESSION';
+    const VISIT_BILLING_FACTOR = 'VISIT';
     const THRESHOLD_KEY = 'threshold';
     const CPM_KEY = 'cpmRate';
 

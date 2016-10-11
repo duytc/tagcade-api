@@ -34,4 +34,10 @@ interface ReportRepositoryInterface
      * @return mixed
      */
     public function getTotalVideoVisitForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getSourceReportsForPublisher(PublisherInterface $publisher);
 }

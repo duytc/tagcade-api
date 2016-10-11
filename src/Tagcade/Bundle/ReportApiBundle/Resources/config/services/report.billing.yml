@@ -61,6 +61,15 @@ services:
             - @tagcade.repository.source_report.report
             - @tagcade.service.date_util
 
+    tagcade.service.report.source_report.billing.billing_rate_and_amount_editor:
+        class: Tagcade\Service\Report\SourceReport\Billing\BilledRateAndAmountEditor
+        arguments:
+            - @tagcade_user.domain_manager.publisher
+            - @doctrine.orm.entity_manager
+            - @tagcade.service.report.source_report.billing.billing_calculator
+            - @tagcade.repository.source_report.report
+            - @tagcade.repository.billing_configuration
+
     tagcade.service.report.performance_report.display.billing.billed_amount_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor
         arguments:
