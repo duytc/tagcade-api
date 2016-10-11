@@ -91,11 +91,8 @@ class UpdateVideoWaterfallTagListener
         foreach($videoDemandAdTags as $videoDemandAdTag) {
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
                 $videoDemandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
-                $em->merge($videoDemandAdTag);
             }
         }
-
-        $em->flush();
     }
 
     /**

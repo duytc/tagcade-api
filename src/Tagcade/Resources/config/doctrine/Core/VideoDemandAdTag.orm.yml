@@ -19,9 +19,9 @@ Tagcade\Entity\Core\VideoDemandAdTag:
             type: integer
             nullable: true
         active:
-            type: boolean
+            type: smallint
             options:
-                default: true
+                default: 1
         deletedAt:
             type: date
             nullable: true
