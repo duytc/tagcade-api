@@ -13,7 +13,7 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
             nullable: false
         profitValue:
             type: integer
-            nullable: false
+            nullable: true
         publishers:
             type: json_array
     manyToOne:

@@ -42,3 +42,4 @@ Tagcade\Entity\Core\VideoDemandAdTag:
             inversedBy: videoDemandAdTags
         waterfallPlacementRule:
             targetEntity: Tagcade\Entity\Core\WaterfallPlacementRule
+            cascade: ['persist']

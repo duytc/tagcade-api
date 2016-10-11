@@ -74,7 +74,9 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
 
         if (!$rule instanceof WaterfallPlacementRuleInterface) {
             $rule = new WaterfallPlacementRule();
-            $rule->setProfitType(WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL);
+            $rule->setProfitType(WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL)
+                ->setPublishers([]);
+            ;
         }
 
         $this->em->beginTransaction();
