@@ -3,7 +3,7 @@
 namespace Tagcade\Exception;
 
 
-class NotSupportedException extends \UnsupportedOperationException
+class NotSupportedException extends \RuntimeException
 {
 
 } 
