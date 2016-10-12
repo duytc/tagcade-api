@@ -1,5 +1,8 @@
 Tagcade\Entity\Core\VideoDemandAdTag:
     exclusion_policy: ALL
+    virtual_properties:
+        getProfit:
+            groups: [videoDemandAdTag.summary]
     properties:
         id:
             expose: true
