@@ -36,7 +36,8 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.update_ad_tag_position_for_ad_network_and_sites_worker'),
     $container->get('tagcade.worker.workers.update_cache_for_video_waterfall_tag_worker'),
     $container->get('tagcade.worker.workers.remove_cache_for_video_waterfall_tag_worker'),
-    $container->get('tagcade.worker.workers.update_video_demand_ad_tag_status_worker')
+    $container->get('tagcade.worker.workers.update_video_demand_ad_tag_status_worker'),
+    $container->get('tagcade.worker.workers.auto_pause_video_demand_ad_tag_worker'),
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

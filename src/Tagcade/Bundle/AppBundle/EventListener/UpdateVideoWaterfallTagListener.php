@@ -12,6 +12,7 @@ use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Worker\Manager;
 
 class UpdateVideoWaterfallTagListener
 {
@@ -25,8 +26,13 @@ class UpdateVideoWaterfallTagListener
     /** @var array */
     protected $newDemandAdTags;
 
-    function __construct(VideoWaterfallTagCacheRefresherInterface $cacheRefresher)
+    /**
+     * @var Manager
+     */
+    protected $manager;
+    function __construct(Manager $manager, VideoWaterfallTagCacheRefresherInterface $cacheRefresher)
     {
+        $this->manager = $manager;
         $this->cacheRefresher = $cacheRefresher;
         $this->changedVideoWaterfallTags = [];
         $this->changedVideoWaterfallTagIds = [];
@@ -85,14 +91,17 @@ class UpdateVideoWaterfallTagListener
 
     protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, VideoWaterfallTagInterface $waterfallTag)
     {
+        $tags = [];
         $videoDemandAdTagRepository = $em->getRepository(VideoDemandAdTag::class);
         $videoDemandAdTags = $videoDemandAdTagRepository->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
         /** @var VideoDemandAdTagInterface $videoDemandAdTag */
         foreach($videoDemandAdTags as $videoDemandAdTag) {
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
-                $videoDemandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
+                $tags[] = $videoDemandAdTag->getId();
             }
         }
+
+        $this->manager->autoPauseVideoDemandAdTags($tags);
     }
 
     /**

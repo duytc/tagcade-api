@@ -279,6 +279,12 @@ services:
         arguments:
             - @tagcade.cache.video.video_cache_manager
 
+    tagcade.worker.workers.auto_pause_video_demand_ad_tag_worker:
+        class: Tagcade\Worker\Workers\AutoPauseVideoDemandAdTagWorker
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
+
     tagcade.worker.workers.update_video_demand_ad_tag_status_worker:
         class: Tagcade\Worker\Workers\UpdateVideoDemandAdTagStatusForDemandPartnerWorker
         arguments:

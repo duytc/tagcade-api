@@ -17,6 +17,7 @@ use Tagcade\Model\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\WhiteListInterface;
+use Tagcade\Worker\Manager;
 
 
 class LibraryVideoDemandAdTagChangeListener
@@ -33,12 +34,18 @@ class LibraryVideoDemandAdTagChangeListener
     private $builtinBlacklists;
 
     /**
+     * @var Manager
+     */
+    private $manager;
+    /**
      * VideoDemandAdTagChangeListener constructor.
+     * @param Manager $manager
      * @param DomainListManagerInterface $domainListManager
      * @param array $builtinBlacklists
      */
-    public function __construct(DomainListManagerInterface $domainListManager, array $builtinBlacklists)
+    public function __construct(Manager $manager, DomainListManagerInterface $domainListManager, array $builtinBlacklists)
     {
+        $this->manager = $manager;
         $this->domainListManager = $domainListManager;
         $this->builtinBlacklists = $builtinBlacklists;
     }
@@ -77,19 +84,22 @@ class LibraryVideoDemandAdTagChangeListener
         }
 
         if ($args->hasChangedField('sellPrice')) {
-            $this->autoPauseVideoDemandAdTags($em, $entity);
+            $this->autoPauseVideoDemandAdTags($entity);
         }
     }
 
-    protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, LibraryVideoDemandAdTagInterface $libraryDemandAdTag)
+    protected function autoPauseVideoDemandAdTags(LibraryVideoDemandAdTagInterface $libraryDemandAdTag)
     {
+        $tags = [];
         $videoDemandAdTags = $libraryDemandAdTag->getVideoDemandAdTags();
         /** @var VideoDemandAdTagInterface $videoDemandAdTag */
         foreach($videoDemandAdTags as $videoDemandAdTag) {
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
-                $videoDemandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
+                $tags[] = $videoDemandAdTag->getId();
             }
         }
+
+        $this->manager->autoPauseVideoDemandAdTags($tags);
     }
 
     /**

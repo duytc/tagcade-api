@@ -95,7 +95,8 @@ services:
     tagcade_app.event_listener.update_video_waterfall_tag_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\UpdateVideoWaterfallTagListener
         arguments:
-            - @tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher
+            - '@tagcade.worker.manager'
+            - '@tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher'
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: preSoftDelete }

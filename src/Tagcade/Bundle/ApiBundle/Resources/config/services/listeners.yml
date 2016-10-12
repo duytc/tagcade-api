@@ -134,6 +134,7 @@ services:
     tagcade_api.event_listener.library_video_demand_ad_tag_change_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\LibraryVideoDemandAdTagChangeListener
         arguments:
+            - '@tagcade.worker.manager'
             - '@tagcade.cache.video.domain_list_manager'
             - '%tc.builtin.black_list%'
         tags:

@@ -11,4 +11,10 @@ interface AutoPauseServiceInterface
      * @return mixed
      */
     public function autoPauseDemandAdTags(array $demandAdTags);
+
+    /**
+     * @param array $libraryDemandAdTags
+     * @return mixed
+     */
+    public function autoPauseLibraryDemandAdTags(array $libraryDemandAdTags);
 }
