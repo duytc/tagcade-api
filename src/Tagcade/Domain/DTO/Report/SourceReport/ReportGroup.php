@@ -97,6 +97,16 @@ class ReportGroup
     /**
      * @var float
      */
+    protected $billedRate;
+
+    /**
+     * @var float
+     */
+    protected $billedAmount;
+
+    /**
+     * @var float
+     */
     protected $qtosPercentage;
 
     /**
@@ -114,7 +124,7 @@ class ReportGroup
     public function __construct(
         $displayOpportunities, $displayImpressions, $displayFillRate, $displayClicks, $displayCTR, $displayIPV, $videoPlayerReady,
         $videoAdPlays, $videoAdImpressions, $videoAdCompletions, $videoAdCompletionRate, $videoIPV, $videoAdClicks, $videoStarts,
-        $videoEnds, $visits, $pageViews, $qtos, $qtosPercentage, $averageVisits, $averagePageViews, $viewsPerVisit) {
+        $videoEnds, $visits, $pageViews, $qtos, $billedRate, $billedAmount, $qtosPercentage, $averageVisits, $averagePageViews, $viewsPerVisit) {
 
         $this->displayOpportunities = $displayOpportunities;
         $this->displayImpressions = $displayImpressions;
@@ -134,6 +144,8 @@ class ReportGroup
         $this->visits = $visits;
         $this->pageViews = $pageViews;
         $this->qtos = $qtos;
+        $this->billedRate = $billedRate;
+        $this->billedAmount = $billedAmount;
         $this->qtosPercentage = $qtosPercentage;
         $this->averageVisits = $averageVisits;
         $this->averagePageViews = $averagePageViews;
@@ -316,5 +328,19 @@ class ReportGroup
         return $this->viewsPerVisit;
     }
 
+    /**
+     * @return float
+     */
+    public function getBilledRate()
+    {
+        return $this->billedRate;
+    }
 
+    /**
+     * @return float
+     */
+    public function getBilledAmount()
+    {
+        return $this->billedAmount;
+    }
 }

@@ -4,12 +4,14 @@ namespace Tagcade\Service\Report\SourceReport;
 
 use Tagcade\Domain\DTO\Report\SourceReport\ReportGroup;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\SourceReport\Report as ReportModel;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
 class ReportGrouper
 {
     use CalculateRatiosTrait;
+    use CalculateWeightedValueTrait;
 
     /**
      * @var int
@@ -116,6 +118,16 @@ class ReportGrouper
      */
     protected $qtosPercentage;
 
+    /**
+     * @var float
+     */
+    protected $billedRate;
+
+    /**
+     * @var float
+     */
+    protected $billedAmount;
+
     public function __construct(array $reports) {
         foreach($reports as $report) {
             if (!$report instanceof ReportModel) {
@@ -147,6 +159,8 @@ class ReportGrouper
             $this->visits,
             $this->pageViews,
             $this->qtos,
+            $this->billedRate,
+            $this->billedAmount,
             $this->qtosPercentage,
             $this->averageVisits,
             $this->averagePageViews,
@@ -342,6 +356,7 @@ class ReportGrouper
                 ->addVisits($report->getVisits())
                 ->addPageViews($report->getPageViews())
                 ->addQtos($report->getQtos())
+                ->addBilledAmount($report->getBilledAmount())
             ;
         }
 
@@ -352,6 +367,7 @@ class ReportGrouper
             ->setVideoIPV()
             ->setVideoAdCompletionRate()
             ->setQtosPercentage()
+            ->setBilledRate($reports)
         ;
 
         $reportCount = count($reports);
@@ -477,6 +493,16 @@ class ReportGrouper
         return $this;
     }
 
+    protected function addBilledAmount($billedAmount)
+    {
+        if (is_numeric($billedAmount)) {
+            $this->billedAmount += (float) $billedAmount;
+        }
+
+        return $this;
+    }
+
+
     protected function setDisplayFillRate()
     {
         $this->displayFillRate = $this->getPercentage($this->displayImpressions, $this->displayOpportunities);
@@ -517,5 +543,10 @@ class ReportGrouper
         $this->qtosPercentage = $this->getPercentage($this->qtos, $this->pageViews);
 
         return $this;
+    }
+
+    protected function setBilledRate(array $reports)
+    {
+        $this->billedRate = $this->calculateWeightedValue($reports, 'billedRate', 'billedAmount');
     }
 }
