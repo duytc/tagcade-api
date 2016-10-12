@@ -3,14 +3,11 @@
 
 namespace Tagcade\Bundle\AppBundle\EventListener;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
-use Tagcade\Entity\Core\VideoDemandAdTag;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 
 class UpdateVideoWaterfallTagListener
@@ -74,23 +71,6 @@ class UpdateVideoWaterfallTagListener
             if (!in_array($id, $this->changedVideoWaterfallTagIds)) {
                 $this->changedVideoWaterfallTagIds[] = $id;
                 $this->changedVideoWaterfallTags[] = $entity;
-            }
-        }
-
-        if ($args->hasChangedField('buyPrice')) {
-            $em = $args->getEntityManager();
-            $this->autoPauseVideoDemandAdTags($em, $entity);
-        }
-    }
-
-    protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, VideoWaterfallTagInterface $waterfallTag)
-    {
-        $videoDemandAdTagRepository = $em->getRepository(VideoDemandAdTag::class);
-        $videoDemandAdTags = $videoDemandAdTagRepository->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
-        /** @var VideoDemandAdTagInterface $videoDemandAdTag */
-        foreach($videoDemandAdTags as $videoDemandAdTag) {
-            if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
-                $videoDemandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
             }
         }
     }
