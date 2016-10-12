@@ -9,13 +9,11 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Cache\Video\DomainListManagerInterface;
 use Tagcade\Entity\Core\Blacklist;
-use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Entity\Core\WhiteList;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BlacklistInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\WhiteListInterface;
 
 
@@ -74,21 +72,6 @@ class LibraryVideoDemandAdTagChangeListener
 
         if ($args->hasChangedField('targeting')) {
             $this->validateTargeting($em, $entity);
-        }
-
-        if ($args->hasChangedField('sellPrice')) {
-            $this->autoPauseVideoDemandAdTags($em, $entity);
-        }
-    }
-
-    protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, LibraryVideoDemandAdTagInterface $libraryDemandAdTag)
-    {
-        $videoDemandAdTags = $libraryDemandAdTag->getVideoDemandAdTags();
-        /** @var VideoDemandAdTagInterface $videoDemandAdTag */
-        foreach($videoDemandAdTags as $videoDemandAdTag) {
-            if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
-                $videoDemandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
-            }
         }
     }
 
