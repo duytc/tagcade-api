@@ -34,25 +34,34 @@ class UpdateBillingSourceReportForPublisherCommand extends ContainerAwareCommand
         } else {
             $date = DateTime::createFromFormat('Y-m-d', $date);
         }
+
         /** @var \Psr\Log\LoggerInterface $logger */
         $logger = $container->get('logger');
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $billingEditor = $container->get('tagcade.service.report.source_report.billing.billing_rate_and_amount_editor');
 
         $logger->info('start update billed source reports');
+
+        $publishers = [];
         if ($id) {
             $publisher = $publisherManager->findPublisher($id);
-            /** @var PublisherInterface */
             if (!$publisher instanceof PublisherInterface) {
                 throw new \Exception(sprintf('Not found that publisher %s', $id));
             }
-            $billingEditor->updateBilledRateAndBilledAmountSourceReportForPublisher($publisher, $date);
+
+            $publishers[] = $publisher;
         } else {
+            $logger->info('update billed source reports for all publishers');
             $publishers = $publisherManager->all();
-            foreach ($publishers as $publisher) {
-                $billingEditor->updateBilledRateAndBilledAmountSourceReportForPublisher($publisher, $date);
-            }
         }
+
+        /** @var PublisherInterface $publisher */
+        foreach ($publishers as $publisher) {
+            $logger->info(sprintf('start updating billing source report for publisher "%s"', $publisher->getUser()->getUsername()));
+            $billingEditor->updateBilledRateAndBilledAmountSourceReportForPublisher($publisher, $date);
+            $logger->info(sprintf('finish updating billing source report for publisher "%s"', $publisher->getUser()->getUsername()));
+        }
+
         $logger->info('Finish update billed source reports');
     }
 }

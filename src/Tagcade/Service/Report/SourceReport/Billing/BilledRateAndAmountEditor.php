@@ -6,6 +6,7 @@ use DateTime;
 use Doctrine\ORM\EntityManager;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManager;
 use Tagcade\Bundle\UserBundle\Entity\User;
+use Tagcade\Entity\Report\SourceReport\Report;
 use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
@@ -49,23 +50,24 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
     public function updateBilledRateAndBilledAmountSourceReportForPublisher(PublisherInterface $publisher, DateTime $date)
     {
         $sourceReports = $this->sourceReportRepository->getSourceReportsForPublisher($publisher);
-        if (current($sourceReports) instanceof ReportRepositoryInterface) {
-            throw new \Exception('Not found any source reports needed to update');
-        }
 
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_VIDEO_ANALYTICS);
         if (!$billingConfiguration instanceof BillingConfiguration) {
             return;
         }
-        $billingFactor = $billingConfiguration->getBillingFactor();
+
+        $method = '';
+        if ($billingConfiguration->getBillingFactor() === BillingConfiguration::VIDEO_IMPRESSION_BILLING_FACTOR) {
+            $method = 'getVideoAdImpressions';
+        } else if ($billingConfiguration->getBillingFactor() === BillingConfiguration::VISIT_BILLING_FACTOR) {
+            $method = 'getVisits';
+        }
 
         foreach ($sourceReports as $sourceReport) {
-            $newWeight = 0;
-            if ($billingFactor === BillingConfiguration::VIDEO_IMPRESSION_BILLING_FACTOR) {
-                $newWeight = $sourceReport->getVideoAdImpressions();
-            } else if ($billingFactor === BillingConfiguration::VISIT_BILLING_FACTOR) {
-                $newWeight = $sourceReport->getVisits();
+            if (!$sourceReport instanceof Report) {
+                continue;
             }
+            $newWeight = $sourceReport->$method();
 
             $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisherForSingleDate($date, $publisher, User::MODULE_VIDEO_ANALYTICS, $newWeight);
             $billedRate = $rateAmount->getRate()->getCpmRate();
@@ -75,6 +77,7 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
 
             $this->entityManager->persist($sourceReport);
         }
+
         $this->entityManager->flush();
     }
 }
