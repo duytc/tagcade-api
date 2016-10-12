@@ -209,6 +209,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         }
 
         $qb = $this->createQueryBuilder('r')
+            ->select('r.id')
             ->where('r.buyPrice <= :price')
             ->andWhere('r.buyPrice IS NOT NULL')
             ->setParameter('price', $price);
@@ -218,6 +219,16 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
             ->andWhere($qb->expr()->in('p.id', $videoPublisher));
         }
 
-        return $qb->getQuery()->getResult();
+        $result = $qb->getQuery()->getArrayResult();
+        $waterfallTags = [];
+        foreach($result as $item) {
+            if (is_array($item)) {
+                $waterfallTags[] = reset($item);
+            } else {
+                $waterfallTags[] = $item;
+            }
+        }
+
+        return $waterfallTags;
     }
 }

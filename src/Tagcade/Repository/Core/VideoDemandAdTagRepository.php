@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
@@ -173,6 +174,23 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
         $qb = $this->createQueryBuilder('vdt')
             ->where('vdt.libraryVideoDemandAdTag = :libraryVideoDemandAdTag')
             ->setParameter('libraryVideoDemandAdTag', $libraryVideoDemandAdTag);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getVideoDemandAdTagsForWaterfallPlacementRule(WaterfallPlacementRuleInterface $rule, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('vdt')
+            ->where('vdt.waterfallPlacementRule = :rule')
+            ->setParameter('rule', $rule);
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);

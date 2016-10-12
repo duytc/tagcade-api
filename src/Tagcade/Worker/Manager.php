@@ -204,6 +204,14 @@ class Manager
         $this->queueTask('autoPauseVideoDemandAdTag', $param);
     }
 
+    public function deployVideoDemandAdTagForNewPlacementRule($ruleId)
+    {
+        $param = new StdClass();
+        $param->ruleId = $ruleId;
+
+        $this->queueTask('deployVideoDemandAdTagForNewPlacementRule', $param);
+    }
+
     /**
      * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network

@@ -30,6 +30,9 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
      */
     protected $publishers;
 
+
+    protected $deletedAt;
+
     /**
      * @var LibraryVideoDemandAdTagInterface
      */
@@ -106,6 +109,15 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
         $this->publishers = $publishers;
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
 
     /**
      * @return LibraryVideoDemandAdTagInterface

@@ -60,7 +60,7 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
             return $waterfall->getId();
         }, $availableWaterfalls);
 
-        foreach ($videoWaterfallTags as $videoWaterfallTagId) {
+        foreach ($videoWaterfallTags as $index => $videoWaterfallTagId) {
             $waterfallTag = $this->waterfallTagRepository->find($videoWaterfallTagId);
 
             if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
@@ -68,7 +68,7 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
             }
 
             if (!in_array($videoWaterfallTagId, $availableWaterfalls)) {
-                throw new InvalidArgumentException(sprintf('The library %d has already been deployed on the waterfall %d', $libraryVideoDemandAdTag->getId(), $videoWaterfallTagId));
+                unset($videoWaterfallTags[$index]);
             }
         }
 
@@ -136,6 +136,13 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
         return $waterfallTags;
     }
 
+    public function getValidVideoWaterfallTagsForPlacementRule(WaterfallPlacementRuleInterface $placementRule)
+    {
+        return $this->waterfallTagRepository->getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(
+            $placementRule->getPublishers(),
+            $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
+        );
+    }
 
     /**
      * @param VideoDemandAdTagInterface $demandAdTag

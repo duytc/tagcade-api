@@ -6,6 +6,7 @@ namespace Tagcade\Service\Core\VideoDemandAdTag;
 
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 
 interface DeployLibraryVideoDemandAdTagServiceInterface
 {
@@ -29,4 +30,10 @@ interface DeployLibraryVideoDemandAdTagServiceInterface
      * @return VideoWaterfallTagInterface[]
      */
     public function getValidVideoWaterfallTagsForLibraryVideoDemandAdTag(LibraryVideoDemandAdTagInterface $demandAdTag);
+
+    /**
+     * @param WaterfallPlacementRuleInterface $placementRule
+     * @return mixed
+     */
+    public function getValidVideoWaterfallTagsForPlacementRule(WaterfallPlacementRuleInterface $placementRule);
 }

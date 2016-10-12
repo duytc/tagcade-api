@@ -10,5 +10,6 @@ class WaterfallPlacementRule extends WaterfallPlacementRuleModel
     protected $profitType;
     protected $profitValue;
     protected $publishers;
+    protected $deletedAt;
     protected $libraryVideoDemandAdTag;
 }

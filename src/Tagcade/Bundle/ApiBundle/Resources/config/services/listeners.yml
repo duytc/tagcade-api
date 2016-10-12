@@ -140,3 +140,10 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.waterfall_placement_rule_change_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\WaterfallPlacementRuleChangeListener
+        arguments:
+            - '@tagcade.worker.manager'
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }

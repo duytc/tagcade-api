@@ -12,7 +12,7 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     const PAUSED = 0;
     const AUTO_PAUSED = -1;
 
-    const ACTIVE_DEFAULT = true;
+    const ACTIVE_DEFAULT = 1;
 
     const PLATFORM_JAVASCRIPT = 'js';
     const PLATFORM_FLASH = 'flash';
@@ -33,7 +33,7 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     protected $rotationWeight;
 
     /**
-     * @var bool
+     * @var int
      */
     protected $active;
 
