@@ -56,7 +56,7 @@ class AutoPauseVideoDemandAdTagCommand extends ContainerAwareCommand
             $output->writeln('<error>You must either use one of the following options : --all, --publisher, --partner</error>');
             return;
         }
-        $count = $autoPauseService->autoPauseDemandAdTags($demandAdTags);
+        $count = $autoPauseService->autoPauseLibraryDemandAdTags($demandAdTags);
         $logger->info(sprintf('There are %d ad tags get paused', $count));
     }
 }
