@@ -37,9 +37,11 @@ class AutoPauseService implements AutoPauseServiceInterface
                 throw new InvalidArgumentException('expect VideoDemandAdTagInterface object');
             }
 
-            $demandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
-            $this->em->merge($demandAdTag);
-            $count++;
+            if ($demandAdTag->getActive() === VideoDemandAdTag::ACTIVE) {
+                $demandAdTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
+                $this->em->merge($demandAdTag);
+                $count++;
+            }
         }
 
         $this->em->flush();
