@@ -147,3 +147,4 @@ services:
             - '@tagcade.worker.manager'
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }

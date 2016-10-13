@@ -30,6 +30,7 @@ class VideoWaterfallTagService implements VideoWaterfallTagServiceInterface
 
     public function getValidVideoWaterfallTagsForLibraryVideoDemandAdTag(LibraryVideoDemandAdTagInterface $libraryDemandAdTag)
     {
+
         $waterfallTags = [];
         $placementRules = $libraryDemandAdTag->getWaterfallPlacementRules();
         /**
@@ -37,6 +38,7 @@ class VideoWaterfallTagService implements VideoWaterfallTagServiceInterface
          */
         foreach($placementRules as $placementRule) {
             $tags = $this->videoWaterfallTagRepository->getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(
+                $libraryDemandAdTag->getVideoDemandPartner()->getPublisher(),
                 $placementRule->getPublishers(),
                 $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
             );

@@ -202,7 +202,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         return $qb;
     }
 
-    public function getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(array $videoPublisher, $price)
+    public function getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(PublisherInterface $publisher, array $videoPublisher, $price)
     {
         if ($price === null) {
             return [];
@@ -217,6 +217,11 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         if (!empty($videoPublisher)) {
             $qb->join('r.videoPublisher', 'p')
             ->andWhere($qb->expr()->in('p.id', $videoPublisher));
+        } else {
+            $qb->join('r.videoPublisher', 'p')
+                ->andWhere('p.publisher = :publisher')
+                ->setParameter('publisher', $publisher)
+            ;
         }
 
         $result = $qb->getQuery()->getArrayResult();

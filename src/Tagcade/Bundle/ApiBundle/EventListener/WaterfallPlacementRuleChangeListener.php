@@ -6,6 +6,7 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Entity\Core\VideoDemandAdTag;
@@ -21,6 +22,7 @@ class WaterfallPlacementRuleChangeListener
      */
     private $manager;
 
+    private $changedRules = [];
     /**
      * WaterfallPlacementRuleChangeListener constructor.
      * @param Manager $manager
@@ -40,10 +42,9 @@ class WaterfallPlacementRuleChangeListener
             return;
         }
 
-        $this->manager->deployVideoDemandAdTagForNewPlacementRule($entity->getId());
-
         if ($args->hasChangedField('profitType') || $args->hasChangedField('profitValue')) {
             $this->autoPauseVideoDemandAdTags($em, $entity);
+            $this->changedRules[] = $entity->getId();
         }
     }
 
@@ -75,5 +76,19 @@ class WaterfallPlacementRuleChangeListener
 
         $this->manager->autoPauseVideoDemandAdTags($autoPauseTags);
         $this->manager->autoActiveVideoDemandAdTags($autoActiveTags);
+    }
+
+    public function postFlush(PostFlushEventArgs $args)
+    {
+        if (count($this->changedRules) < 1)
+        {
+            return;
+        }
+
+        foreach($this->changedRules as $rule) {
+            $this->manager->deployVideoDemandAdTagForNewPlacementRule($rule);
+        }
+
+        $this->changedRules = [];
     }
 }

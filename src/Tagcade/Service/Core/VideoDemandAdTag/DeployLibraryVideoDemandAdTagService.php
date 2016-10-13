@@ -127,6 +127,7 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
         /** @var WaterfallPlacementRuleInterface $placementRule */
         foreach($placementRules as $placementRule) {
             $tags = $this->waterfallTagRepository->getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(
+                $demandAdTag->getVideoDemandPartner()->getPublisher(),
                 $placementRule->getPublishers(),
                 $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
             );
@@ -139,6 +140,7 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
     public function getValidVideoWaterfallTagsForPlacementRule(WaterfallPlacementRuleInterface $placementRule)
     {
         return $this->waterfallTagRepository->getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(
+            $placementRule->getLibraryVideoDemandAdTag()->getVideoDemandPartner()->getPublisher(),
             $placementRule->getPublishers(),
             $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
         );

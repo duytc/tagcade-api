@@ -66,9 +66,10 @@ interface VideoWaterfallTagRepositoryInterface extends ObjectRepository
     public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param);
 
     /**
+     * @param PublisherInterface $publisher
      * @param array $videoPublisher
      * @param $price
      * @return mixed
      */
-    public function getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(array $videoPublisher, $price);
+    public function getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(PublisherInterface $publisher, array $videoPublisher, $price);
 }
