@@ -37,7 +37,8 @@ interface ReportRepositoryInterface
 
     /**
      * @param PublisherInterface $publisher
+     * @param DateTime $dateTime
      * @return mixed
      */
-    public function getSourceReportsForPublisher(PublisherInterface $publisher);
+    public function getSourceReportsForPublisher(PublisherInterface $publisher, DateTime $dateTime);
 }

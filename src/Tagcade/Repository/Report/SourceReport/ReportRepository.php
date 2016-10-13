@@ -20,7 +20,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
 
         $qb
             ->select('r')
-            ->Where('r.site = :site')
+            ->where('r.site = :site')
             ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('site', $site)
             ->setParameter('start_date', $startDate, Type::DATE)
@@ -82,20 +82,17 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         return $result;
     }
 
-    public function getSourceReportsForPublisher(PublisherInterface $publisher)
+    public function getSourceReportsForPublisher(PublisherInterface $publisher, DateTime $dateTime)
     {
-        if($publisher) {
-            return $this->createQueryBuilder('r')
-                ->leftJoin('r.site', 'st')
-                ->where('st.publisher = :publisher')
-                ->setParameter('publisher', $publisher)
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.site', 'st');
+
+        return $qb
+                ->where($qb->expr()->eq('r.date',':date_time'))
+                ->andWhere('st.publisher = :publisher')
+                ->setParameter('date_time', $dateTime->format('Y-m-d'))
+                ->setParameter('publisher', $publisher->getUser())
                 ->getQuery()
                 ->getResult();
-        }else{
-            return $this->createQueryBuilder('r')
-                ->leftJoin('r.site', 'st')
-                ->getQuery()
-                ->getResult();
-        }
     }
 }

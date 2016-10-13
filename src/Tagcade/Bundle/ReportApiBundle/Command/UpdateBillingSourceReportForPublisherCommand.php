@@ -58,7 +58,8 @@ class UpdateBillingSourceReportForPublisherCommand extends ContainerAwareCommand
         /** @var PublisherInterface $publisher */
         foreach ($publishers as $publisher) {
             $logger->info(sprintf('start updating billing source report for publisher "%s"', $publisher->getUser()->getUsername()));
-            $billingEditor->updateBilledRateAndBilledAmountSourceReportForPublisher($publisher, $date);
+            $dateTime = clone $date;
+            $billingEditor->updateBilledRateAndBilledAmountSourceReportForPublisher($publisher, $dateTime);
             $logger->info(sprintf('finish updating billing source report for publisher "%s"', $publisher->getUser()->getUsername()));
         }
 

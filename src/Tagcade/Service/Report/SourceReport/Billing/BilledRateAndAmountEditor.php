@@ -49,7 +49,7 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
      */
     public function updateBilledRateAndBilledAmountSourceReportForPublisher(PublisherInterface $publisher, DateTime $date)
     {
-        $sourceReports = $this->sourceReportRepository->getSourceReportsForPublisher($publisher);
+        $sourceReports = $this->sourceReportRepository->getSourceReportsForPublisher($publisher, $date);
 
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_VIDEO_ANALYTICS);
         if (!$billingConfiguration instanceof BillingConfiguration) {
