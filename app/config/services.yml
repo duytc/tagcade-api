@@ -288,8 +288,8 @@ services:
     tagcade.worker.workers.deploy_video_demand_ad_tag_for_new_placement_rule_worker:
         class: Tagcade\Worker\Workers\DeployVideoDemandAdTagForNewPlacementRuleWorker
         arguments:
-            - @tagcade.repository.video_waterfall_tag
             - @tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag
+            - @tagcade.repository.waterfall_placement_rule
 
     tagcade.worker.workers.update_video_demand_ad_tag_status_worker:
         class: Tagcade\Worker\Workers\UpdateVideoDemandAdTagStatusForDemandPartnerWorker
