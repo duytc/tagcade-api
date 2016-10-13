@@ -93,6 +93,11 @@ interface UserEntityInterface extends ModelInterface
     public function hasSubPubliserModule();
 
     /**
+     * @return bool
+     */
+    public function hasInBannerModule();
+
+    /**
      * @return array
      */
     public function getUserRoles();

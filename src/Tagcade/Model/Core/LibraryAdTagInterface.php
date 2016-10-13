@@ -118,4 +118,57 @@ interface LibraryAdTagInterface extends ModelInterface
      * @return int
      */
     public function getAssociatedTagCount();
+
+    /**
+     * @return string
+     */
+    public function getPlatform();
+
+    /**
+     * @param string $platform
+     * @return self
+     */
+    public function setPlatform($platform);
+
+    /**
+     * @return int
+     */
+    public function getTimeout();
+    /**
+     * @param int $timeout
+     * @return self
+     */
+    public function setTimeout($timeout);
+    /**
+     * @return array
+     */
+    public function getVastTags();
+
+    /**
+     * @param array $vastTags
+     * @return self
+     */
+    public function setVastTags($vastTags);
+
+    /**
+     * @return int
+     */
+    public function getPlayerWidth();
+
+    /**
+     * @param int $playerWidth
+     * @return self
+     */
+    public function setPlayerWidth($playerWidth);
+
+    /**
+     * @return int
+     */
+    public function getPlayerHeight();
+
+    /**
+     * @param int $playerHeight
+     * @return self
+     */
+    public function setPlayerHeight($playerHeight);
 }
