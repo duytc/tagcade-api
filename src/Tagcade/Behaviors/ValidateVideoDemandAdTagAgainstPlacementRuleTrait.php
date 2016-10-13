@@ -18,6 +18,13 @@ trait ValidateVideoDemandAdTagAgainstPlacementRuleTrait
         $waterfallTag = $demandAdTag->getVideoWaterfallTagItem()->getVideoWaterfallTag();
         $rule = $demandAdTag->getWaterfallPlacementRule();
 
+        $publishers = $rule->getPublishers();
+        if (!empty($publishers)) {
+            if (!in_array($waterfallTag->getPublisher()->getId(), $publishers)) {
+                return false;
+            }
+        }
+        
         if ($libraryVideoDemandAdTag->getSellPrice() === null) {
             return true;
         }
