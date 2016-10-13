@@ -109,6 +109,12 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
 
                 $tag = $this->waterfallTagRepository->find($videoWaterfallTag);
                 if ($tag instanceof VideoWaterfallTagInterface) {
+                    $tagTargeting = $demandAdTag->getTargeting();
+                    $tagPlatform = array_key_exists(VideoDemandAdTag::TARGETING_KEY_PLATFORM, $tagTargeting) ? $tagTargeting[VideoDemandAdTag::TARGETING_KEY_PLATFORM] : [];
+                    $waterfallPlatform = $tag->getPlatform();
+                    if (count(array_diff($tagPlatform, $waterfallPlatform)) > 0) {
+                        continue;
+                    }
                     $this->deployToSingleWaterfall($demandAdTag, $tag, $position, $shiftDown);
                 }
             }
