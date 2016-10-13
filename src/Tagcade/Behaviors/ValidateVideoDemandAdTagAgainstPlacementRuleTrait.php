@@ -20,11 +20,11 @@ trait ValidateVideoDemandAdTagAgainstPlacementRuleTrait
 
         $publishers = $rule->getPublishers();
         if (!empty($publishers)) {
-            if (!in_array($waterfallTag->getPublisher()->getId(), $publishers)) {
+            if (!in_array($waterfallTag->getVideoPublisher()->getId(), $publishers)) {
                 return false;
             }
         }
-        
+
         if ($libraryVideoDemandAdTag->getSellPrice() === null) {
             return true;
         }
