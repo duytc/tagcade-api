@@ -11,9 +11,24 @@ use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Entity\Core\VideoWaterfallTagItem;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
+use Tagcade\Repository\Core\VideoPublisherRepositoryInterface;
 
 class VideoDemandAdTagFormType extends AbstractRoleSpecificFormType
 {
+    /**
+     * @var VideoPublisherRepositoryInterface
+     */
+    private $videoPublisherRepository;
+
+    /**
+     * VideoDemandAdTagFormType constructor.
+     *  @param VideoPublisherRepositoryInterface $videoPublisherRepository
+     */
+    public function __construct(VideoPublisherRepositoryInterface $videoPublisherRepository)
+    {
+        $this->videoPublisherRepository = $videoPublisherRepository;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -61,7 +76,7 @@ class VideoDemandAdTagFormType extends AbstractRoleSpecificFormType
                 // use LibraryVideoDemandAdTagFormType instead of Entity if input is array (not one field 'id')
                 if (array_key_exists('libraryVideoDemandAdTag', $adTag) && is_array($adTag['libraryVideoDemandAdTag'])) {
                     $form->remove('libraryVideoDemandAdTag');
-                    $form->add('libraryVideoDemandAdTag', new LibraryVideoDemandAdTagFormType());
+                    $form->add('libraryVideoDemandAdTag', new LibraryVideoDemandAdTagFormType($this->videoPublisherRepository));
                 }
             }
         );

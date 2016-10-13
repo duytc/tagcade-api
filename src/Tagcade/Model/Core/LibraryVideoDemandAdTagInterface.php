@@ -79,6 +79,17 @@ interface LibraryVideoDemandAdTagInterface extends ModelInterface
     public function getVideoDemandAdTags();
 
     /**
+     * @return mixed
+     */
+    public function getWaterfallPlacementRules();
+
+    /**
+     * @param array $waterfallPlacementRules
+     * @return self
+     */
+    public function setWaterfallPlacementRules($waterfallPlacementRules);
+
+    /**
      * @return int
      */
     public function getLinkedCount();

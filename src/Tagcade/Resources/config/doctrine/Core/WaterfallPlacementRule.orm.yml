@@ -1,0 +1,30 @@
+Tagcade\Entity\Core\WaterfallPlacementRule:
+    type: entity
+    table: core_waterfall_placement_rule
+    repositoryClass: Tagcade\Repository\Core\WaterfallPlacementRuleRepository
+    gedmo:
+        soft_deleteable:
+            field_name: deletedAt
+            time_aware: false
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        profitType:
+            type: integer
+            nullable: false
+        profitValue:
+            type: decimal
+            scale: 4
+            nullable: true
+        publishers:
+            type: json_array
+        deletedAt:
+            type: date
+            nullable: true
+    manyToOne:
+        libraryVideoDemandAdTag:
+            targetEntity: Tagcade\Entity\Core\LibraryVideoDemandAdTag
+            inversedBy: waterfallPlacementRules
