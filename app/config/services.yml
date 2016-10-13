@@ -285,6 +285,12 @@ services:
             - @doctrine.orm.entity_manager
             - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
 
+    tagcade.worker.workers.auto_active_video_demand_ad_tag_worker:
+        class: Tagcade\Worker\Workers\AutoActiveVideoDemandAdTagWorker
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
+
     tagcade.worker.workers.deploy_video_demand_ad_tag_for_new_placement_rule_worker:
         class: Tagcade\Worker\Workers\DeployVideoDemandAdTagForNewPlacementRuleWorker
         arguments:

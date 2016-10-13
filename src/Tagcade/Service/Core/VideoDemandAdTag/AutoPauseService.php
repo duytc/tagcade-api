@@ -48,6 +48,26 @@ class AutoPauseService implements AutoPauseServiceInterface
         return $count;
     }
 
+    public function autoActiveDemandAdTags(array $demandAdTags)
+    {
+        $count = 0;
+        foreach ($demandAdTags as $demandAdTag) {
+            if (!$demandAdTag instanceof VideoDemandAdTagInterface) {
+                throw new InvalidArgumentException('expect VideoDemandAdTagInterface object');
+            }
+
+            if ($demandAdTag->getActive() === VideoDemandAdTag::AUTO_PAUSED) {
+                $demandAdTag->setActive(VideoDemandAdTag::ACTIVE);
+                $this->em->merge($demandAdTag);
+                $count++;
+            }
+        }
+
+        $this->em->flush();
+        return $count;
+    }
+
+
     public function autoPauseLibraryDemandAdTags(array $libraryDemandAdTags)
     {
         $count = 0;

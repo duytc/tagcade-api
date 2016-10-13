@@ -90,16 +90,20 @@ class LibraryVideoDemandAdTagChangeListener
 
     protected function autoPauseVideoDemandAdTags(LibraryVideoDemandAdTagInterface $libraryDemandAdTag)
     {
-        $tags = [];
+        $autoPausedTags = [];
+        $autoActiveTags = [];
         $videoDemandAdTags = $libraryDemandAdTag->getVideoDemandAdTags();
         /** @var VideoDemandAdTagInterface $videoDemandAdTag */
         foreach($videoDemandAdTags as $videoDemandAdTag) {
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
-                $tags[] = $videoDemandAdTag->getId();
+                $autoPausedTags[] = $videoDemandAdTag->getId();
+            } else {
+                $autoActiveTags[] = $videoDemandAdTag->getId();
             }
         }
 
-        $this->manager->autoPauseVideoDemandAdTags($tags);
+        $this->manager->autoPauseVideoDemandAdTags($autoPausedTags);
+        $this->manager->autoActiveVideoDemandAdTags($autoActiveTags);
     }
 
     /**

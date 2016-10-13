@@ -38,6 +38,7 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.remove_cache_for_video_waterfall_tag_worker'),
     $container->get('tagcade.worker.workers.update_video_demand_ad_tag_status_worker'),
     $container->get('tagcade.worker.workers.auto_pause_video_demand_ad_tag_worker'),
+    $container->get('tagcade.worker.workers.auto_active_video_demand_ad_tag_worker'),
     $container->get('tagcade.worker.workers.deploy_video_demand_ad_tag_for_new_placement_rule_worker'),
 ];
 

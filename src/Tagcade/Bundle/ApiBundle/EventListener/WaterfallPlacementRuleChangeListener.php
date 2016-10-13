@@ -58,17 +58,20 @@ class WaterfallPlacementRuleChangeListener
 
     protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, WaterfallPlacementRuleInterface $rule)
     {
-        $tags = [];
-
+        $autoPauseTags = [];
+        $autoActiveTags = [];
         $videoDemandAdTagRepository = $em->getRepository(VideoDemandAdTag::class);
         $videoDemandAdTags = $videoDemandAdTagRepository->getVideoDemandAdTagsForWaterfallPlacementRule($rule);
         /** @var VideoDemandAdTagInterface $videoDemandAdTag */
         foreach($videoDemandAdTags as $videoDemandAdTag) {
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
-                $tags[] = $videoDemandAdTag->getId();
+                $autoPauseTags[] = $videoDemandAdTag->getId();
+            } else {
+                $autoActiveTags[] = $videoDemandAdTag->getId();
             }
         }
 
-        $this->manager->autoPauseVideoDemandAdTags($tags);
+        $this->manager->autoPauseVideoDemandAdTags($autoPauseTags);
+        $this->manager->autoActiveVideoDemandAdTags($autoActiveTags);
     }
 }

@@ -204,6 +204,14 @@ class Manager
         $this->queueTask('autoPauseVideoDemandAdTag', $param);
     }
 
+    public function autoActiveVideoDemandAdTags(array $videoDemandAdTags)
+    {
+        $param = new StdClass();
+        $param->videoDemandAdTags = $videoDemandAdTags;
+
+        $this->queueTask('autoActiveVideoDemandAdTag', $param);
+    }
+
     public function deployVideoDemandAdTagForNewPlacementRule($ruleId)
     {
         $param = new StdClass();
