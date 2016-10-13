@@ -61,17 +61,22 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 $form = $event->getForm();
                 $tiers = $billingConfig->getTiers();
 
-                if((null === $tiers) && ($billingConfig->getDefaultConfig() === false )) {
+                if ((null === $tiers || !is_array($tiers) || empty($tiers)) && ($billingConfig->getDefaultConfig() === false )) {
                     $form->get('tiers')->addError(new FormError('Default config must set true in case tiers is null'));
                     return;
                 }
 
-                if(is_array($tiers) && ($billingConfig->getDefaultConfig() === false)){
-                    foreach($tiers as $tier){
-                        foreach($tier as $key=>$value)
-                            if(!is_numeric($value) || $value <0){
+                if (is_array($tiers) && ($billingConfig->getDefaultConfig() === false)){
+                    foreach($tiers as $tier) {
+                        foreach($tier as $key=>$value) {
+                            if (!is_numeric($value) || $value <0){
                                 $form->get('tiers')->addError(new FormError('Either threshold or cpmRate is invalid'));
                             }
+
+                            if (!in_array($key, ['cpmRate', 'threshold'])) {
+                                $form->get('tiers')->addError(new FormError(sprintf('key "%s" is not supported', $key)));
+                            }
+                        }
                     }
 
                 }
