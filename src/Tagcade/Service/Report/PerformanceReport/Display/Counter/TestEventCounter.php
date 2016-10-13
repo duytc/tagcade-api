@@ -76,9 +76,7 @@ class TestEventCounter extends AbstractEventCounter
                 ];
             }
 
-            $this->adSlotData[$adSlot->getId()] = [
-                static::KEY_HB_BID_REQUEST => $hbRequests
-            ];
+            $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
 
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();

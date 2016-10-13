@@ -46,7 +46,7 @@ class HeaderBiddingDailyRotateCommand extends ContainerAwareCommand
 
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $dailyVideoReportCreator = $this->getContainer()->get('tagcade.service.report.header_bidding_report.creator.daily_report_creator');
-        $allPublishers = $publisherManager->allActivePublishers();
+        $allPublishers = $publisherManager->allPublisherWithHeaderBiddingModule();
         /* create header bidding reports */
         $dailyVideoReportCreator
             ->setReportDate($date)

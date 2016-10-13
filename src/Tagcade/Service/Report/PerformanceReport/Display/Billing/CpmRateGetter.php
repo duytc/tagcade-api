@@ -102,10 +102,19 @@ class CpmRateGetter implements CpmRateGetterInterface
 
     public function getDefaultCpmRate($weight)
     {
-        // get default cmpRate
-        $cpmRate = reset($this->defaultBillingThresholds)->getCpmRate();
-        array_shift($this->defaultBillingThresholds);
-        foreach ($this->defaultBillingThresholds as $threshold) {
+        $billingThresholds = $this->defaultBillingThresholds;
+        reset($billingThresholds);
+
+        if (empty($billingThresholds)) {
+            return 0;
+        }
+
+        // get default CPM Rate
+        $cpmRate = $billingThresholds[0]->getCpmRate();
+
+        array_shift($billingThresholds);
+
+        foreach ($billingThresholds as $threshold) {
             if ($weight < $threshold->getThreshold()) {
                 break;
             }

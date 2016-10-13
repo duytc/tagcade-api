@@ -91,6 +91,44 @@ class PublisherManager implements PublisherManagerInterface
         return array_values($publishers);
     }
 
+    public function allPublisherWithDisplayModule()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER) && $user->hasDisplayModule() && $user->isEnabled();
+        });
+
+        return array_values($publishers);
+    }
+
+    public function allPublisherWithVideoModule()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER) && $user->hasVideoModule() && $user->isEnabled();
+        });
+
+        return array_values($publishers);
+    }
+
+    public function allPublisherWithHeaderBiddingModule()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER) && $user->hasHeaderBiddingModule() && $user->isEnabled();
+        });
+
+        return array_values($publishers);
+    }
+
+    public function allPublisherWithSourceReportModule()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER) && $user->isEnabled() &&
+            ($user->hasAnalyticsModule() || $user->hasVideoAnalyticsModule());
+        });
+
+        return array_values($publishers);
+    }
+
+
     /**
      * @return array
      */

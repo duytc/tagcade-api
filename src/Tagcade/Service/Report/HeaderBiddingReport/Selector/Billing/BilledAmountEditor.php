@@ -337,7 +337,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
             $adSlot = $reportRow->getAdSlot();
             if (!$adSlot instanceof BaseAdSlotInterface) {
-                $this->logger->warning(sprintf('Ad slot not found in AdSlot report %', $reportRow->getId()));
+                $this->logger->warning(sprintf('Ad slot not found in AdSlot report %d', $reportRow->getId()));
                 continue;
             }
 
@@ -393,7 +393,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
             $waterfallTag = $reportRow->getVideoWaterfallTag();
             if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
-                $this->logger->warning(sprintf('Waterfall Tag not found in WaterfallTag report %', $reportRow->getId()));
+                $this->logger->warning(sprintf('Waterfall Tag not found in WaterfallTag report %d', $reportRow->getId()));
                 continue;
             }
 
