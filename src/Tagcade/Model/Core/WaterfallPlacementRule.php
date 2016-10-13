@@ -21,7 +21,7 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
     protected $profitType;
 
     /**
-     * @var int
+     * @var float
      */
     protected $profitValue;
 
@@ -75,7 +75,7 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
     }
 
     /**
-     * @return int
+     * @return float
      */
     public function getProfitValue()
     {
@@ -83,7 +83,7 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
     }
 
     /**
-     * @param int $profitValue
+     * @param float $profitValue
      * @return self
      */
     public function setProfitValue($profitValue)

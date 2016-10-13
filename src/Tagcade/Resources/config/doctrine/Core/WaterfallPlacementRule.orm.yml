@@ -16,7 +16,8 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
             type: integer
             nullable: false
         profitValue:
-            type: integer
+            type: decimal
+            scale: 4
             nullable: true
         publishers:
             type: json_array

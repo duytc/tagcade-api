@@ -40,6 +40,8 @@ class WaterfallPlacementRuleChangeListener
             return;
         }
 
+        $this->manager->deployVideoDemandAdTagForNewPlacementRule($entity->getId());
+
         if ($args->hasChangedField('profitType') || $args->hasChangedField('profitValue')) {
             $this->autoPauseVideoDemandAdTags($em, $entity);
         }
