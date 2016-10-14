@@ -30,11 +30,12 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
      * @param ReportDataInterface[] $reports
      * @param $name
      * @param int $requests
+     * @param float $billedRate
      * @param float $billedAmount
      * @param int $averageRequests
      * @param float $averageBilledAmount
      */
-    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name, $requests, $billedAmount, $averageRequests, $averageBilledAmount)
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name, $requests, $billedRate, $billedAmount, $averageRequests, $averageBilledAmount)
     {
         $this->reportType = $reportType;
         $this->startDate = $startDate;
@@ -45,6 +46,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         $this->averageRequests = $averageRequests;
 
         $this->billedAmount = round($billedAmount, 4);
+        $this->billedRate = round($billedRate, 4);
         $this->averageBilledAmount = round($averageBilledAmount, 4);
     }
 
