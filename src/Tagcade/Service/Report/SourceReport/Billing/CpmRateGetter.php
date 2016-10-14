@@ -1,13 +1,15 @@
 <?php
 
-namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
+namespace Tagcade\Service\Report\SourceReport\Billing;
+
 
 use DateTime;
-use Tagcade\Bundle\UserBundle\Entity\User;
+use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 use Tagcade\Domain\DTO\Report\BillingRateThreshold;
-use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Core\BillingConfigurationInterface;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
@@ -44,7 +46,8 @@ class CpmRateGetter implements CpmRateGetterInterface
     private $billingConfigurationRepository;
 
     /**
-     * @param BillingRateThreshold[] $defaultBilledThresholds
+     * CpmRateGetter constructor.
+     * @param array $defaultBilledThresholds
      * @param AccountReportRepositoryInterface $accountReportRepository
      * @param DateUtilInterface $dateUtil
      * @param BillingConfigurationRepositoryInterface $billingConfigurationRepository
@@ -68,12 +71,12 @@ class CpmRateGetter implements CpmRateGetterInterface
 
         // sort thresholds, descending order
         usort($defaultBilledThresholds, function (BillingRateThreshold $a, BillingRateThreshold $b) {
-                if ($a->getThreshold() === $b->getThreshold()) {
-                    return 0;
-                }
-
-                return ($a->getThreshold() < $b->getThreshold()) ? -1 : 1;
+            if ($a->getThreshold() === $b->getThreshold()) {
+                return 0;
             }
+
+            return ($a->getThreshold() < $b->getThreshold()) ? -1 : 1;
+        }
         );
 
         $this->defaultBillingThresholds = $defaultBilledThresholds;
@@ -98,12 +101,12 @@ class CpmRateGetter implements CpmRateGetterInterface
 
         return $config;
     }
-
+    
+    
     public function getDefaultCpmRate($weight)
     {
         // get default cmpRate
         $cpmRate = reset($this->defaultBillingThresholds)->getCpmRate();
-        array_shift($this->defaultBillingThresholds);
         foreach ($this->defaultBillingThresholds as $threshold) {
             if ($weight < $threshold->getThreshold()) {
                 break;
@@ -115,69 +118,9 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $cpmRate;
     }
 
-    public function getCpmRateForPublisher(PublisherInterface $publisher, $module, $weight)
+    public function getBillingWeightForSiteInMonthBeforeDate(SiteInterface $site, $module, DateTime $date)
     {
-        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
-
-        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
-            return new CpmRate(0, true); // Not found any billing configuration => not bill this module then cpm = 0
-        }
-
-        if ($billingConfiguration->isDefaultConfiguration()) {
-            return new CpmRate($this->getDefaultCpmRate($weight));
-        }
-
-        return new CpmRate($billingConfiguration->getCpmRate($weight));
-    }
-
-    public function getCpmRateForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $month)
-    {
-        $weight = $this->getBillingWeightForPublisherByMonth($publisher, $module, $month);
-
-        return $this->getCpmRateForPublisher($publisher, $module, $weight);
-    }
-
-    /**
-     * get weight count for a specific publisher with given module in a month
-     *
-     * @param PublisherInterface $publisher
-     * @param $module
-     * @param DateTime $month
-     * @throws \Exception
-     * @return null when no billing configuration found
-     *         int when at least one configuration found
-     */
-    protected function getBillingWeightForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $month)
-    {
-        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
-
-        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
-            $billingConfiguration = new BillingConfiguration();
-            $billingConfiguration->setBillingFactor(self::BILLING_FACTOR_SLOT_OPPORTUNITY);
-        }
-
-        $billingFactor = $billingConfiguration->getBillingFactor();
-        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($month);
-        $lastDateInMonth = $this->dateUtil->getLastDateInMonth($month, true);
-
-        switch ($billingFactor) {
-            case self::BILLING_FACTOR_SLOT_OPPORTUNITY:
-                return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $lastDateInMonth);
-            case self::BILLING_FACTOR_VIDEO_IMPRESSION:
-                if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
-                    return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
-                }
-
-                return $this->reportRepository->getTotalVideoImpressionForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
-            case self::BILLING_FACTOR_VIDEO_VISIT:
-                return $this->reportRepository->getTotalVideoVisitForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
-            default:
-                throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));
-        }
-    }
-
-    public function getBillingWeightForPublisherInMonthBeforeDate(PublisherInterface $publisher, $module, DateTime $date)
-    {
+        $publisher = $site->getPublisher();
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
 
         if (!$billingConfiguration instanceof BillingConfigurationInterface) {
@@ -197,11 +140,26 @@ class CpmRateGetter implements CpmRateGetterInterface
                     return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $date);
                 }
 
-                return $this->reportRepository->getTotalVideoImpressionForPublisher($publisher, $firstDateInMonth, $date);
+                return $this->reportRepository->getTotalVideoImpressionForSite($site, $firstDateInMonth, $date);
             case self::BILLING_FACTOR_VIDEO_VISIT:
-                return $this->reportRepository->getTotalVideoVisitForPublisher($publisher, $firstDateInMonth, $date);
+                return $this->reportRepository->getTotalVideoVisitForSite($site, $firstDateInMonth, $date);
             default:
                 throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));
         }
+    }
+
+    public function getCpmRateForPublisher(PublisherInterface $publisher, $module, $weight)
+    {
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
+
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            return new CpmRate(0, true); // Not found any billing configuration => not bill this module then cpm = 0
+        }
+
+        if ($billingConfiguration->isDefaultConfiguration()) {
+            return new CpmRate($this->getDefaultCpmRate($weight));
+        }
+
+        return new CpmRate($billingConfiguration->getCpmRate($weight));
     }
 }

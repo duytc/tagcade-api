@@ -1,21 +1,19 @@
 <?php
 
-
 namespace Tagcade\Service\Report\SourceReport\Billing;
 
 
 use DateTime;
-use Tagcade\Domain\DTO\Report\RateAmount;
-use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\Core\SiteInterface;
 
 interface BillingCalculatorInterface
 {
     /**
      * @param DateTime $date
-     * @param PublisherInterface $publisher
+     * @param SiteInterface $site
      * @param $module
      * @param $newWeight
-     * @return RateAmount
+     * @return mixed
      */
-    public function calculateBilledAmountForPublisherForSingleDate(DateTime $date, PublisherInterface $publisher, $module, $newWeight);
+    public function calculateBilledAmountForSiteForSingleDate(DateTime $date, SiteInterface $site, $module, $newWeight);
 }

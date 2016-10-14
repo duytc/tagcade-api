@@ -4,8 +4,8 @@ namespace Tagcade\Service\Report\SourceReport\Billing;
 
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManager;
 use Tagcade\Bundle\UserBundle\Entity\User;
+use Tagcade\DomainManager\SiteManager;
 use Tagcade\Entity\Report\SourceReport\Report;
 use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -14,8 +14,8 @@ use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 
 class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
 {
-    /** @var PublisherManager */
-    protected $publisherManager;
+    /** @var siteManager */
+    protected $siteManager;
 
     /** @var EntityManager */
     protected $entityManager;
@@ -30,23 +30,20 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
     protected $billingConfigurationRepository;
 
     function __construct(
-        PublisherManager $publisherManager,
+        SiteManager $siteManager,
         EntityManager $entityManager,
         BillingCalculatorInterface $billingCalculator,
         ReportRepositoryInterface $sourceReportRepository,
         BillingConfigurationRepositoryInterface $billingConfigurationRepository
     )
     {
-        $this->publisherManager = $publisherManager;
+        $this->siteManager = $siteManager;
         $this->entityManager = $entityManager;
         $this->billingCalculator = $billingCalculator;
         $this->sourceReportRepository = $sourceReportRepository;
         $this->billingConfigurationRepository = $billingConfigurationRepository;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function updateBilledRateAndBilledAmountSourceReportForPublisher(PublisherInterface $publisher, DateTime $date)
     {
         $sourceReports = $this->sourceReportRepository->getSourceReportsForPublisher($publisher, $date);
@@ -68,8 +65,7 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
                 continue;
             }
             $newWeight = $sourceReport->$method();
-
-            $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisherForSingleDate($date, $publisher, User::MODULE_VIDEO_ANALYTICS, $newWeight);
+            $rateAmount = $this->billingCalculator->calculateBilledAmountForSiteForSingleDate($date, $sourceReport->getSite(), User::MODULE_VIDEO_ANALYTICS, $newWeight);
             $billedRate = $rateAmount->getRate()->getCpmRate();
             $billedAmount = $rateAmount->getAmount();
             $sourceReport->setBilledRate($billedRate);
