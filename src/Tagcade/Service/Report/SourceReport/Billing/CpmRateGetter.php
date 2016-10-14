@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\SourceReport\Billing;
 
 
+use DateInterval;
 use DateTime;
 use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 use Tagcade\Domain\DTO\Report\BillingRateThreshold;
@@ -130,19 +131,19 @@ class CpmRateGetter implements CpmRateGetterInterface
 
         $billingFactor = $billingConfiguration->getBillingFactor();
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
-        $date = $date->modify('-1 day');
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
 
         switch ($billingFactor) {
             case self::BILLING_FACTOR_SLOT_OPPORTUNITY:
-                return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $date);
+                return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
             case self::BILLING_FACTOR_VIDEO_IMPRESSION:
                 if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
-                    return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $date);
+                    return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $yesterday);
                 }
 
-                return $this->reportRepository->getTotalVideoImpressionForSite($site, $firstDateInMonth, $date);
+                return $this->reportRepository->getTotalVideoImpressionForSite($site, $firstDateInMonth, $yesterday);
             case self::BILLING_FACTOR_VIDEO_VISIT:
-                return $this->reportRepository->getTotalVideoVisitForSite($site, $firstDateInMonth, $date);
+                return $this->reportRepository->getTotalVideoVisitForSite($site, $firstDateInMonth, $yesterday);
             default:
                 throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));
         }
