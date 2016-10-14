@@ -29,7 +29,6 @@ $videoAdTagManager = $container->get('tagcade.domain_manager.video_waterfall_tag
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
 
 const NUM_PUBLISHER = 2;
-const NUM_VIDEO_DEMAND_PARTNER = 3;
 const NUM_VIDEO_PUBLISHER = 5;
 const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 20;
 const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 20;

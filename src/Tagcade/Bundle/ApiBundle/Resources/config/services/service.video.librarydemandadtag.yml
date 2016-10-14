@@ -33,6 +33,8 @@ services:
 
     tagcade.form.type.library_video_demand_ad_tag:
         class: %tagcade.form.type.library_video_demand_ad_tag.class%
+        arguments:
+            - @tagcade.repository.video_publisher
         tags:
             - { name: form.type, alias: tagcade_form_library_video_demand_ad_tag }
 

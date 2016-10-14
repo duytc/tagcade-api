@@ -3,14 +3,21 @@
 
 namespace Tagcade\Bundle\AppBundle\EventListener;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
+use Tagcade\Entity\Core\VideoDemandAdTag;
+use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Worker\Manager;
 
 class UpdateVideoWaterfallTagListener
 {
+    use ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
+
     /** @var VideoWaterfallTagCacheRefresherInterface */
     private $cacheRefresher;
     /** @var array */
@@ -19,8 +26,13 @@ class UpdateVideoWaterfallTagListener
     /** @var array */
     protected $newDemandAdTags;
 
-    function __construct(VideoWaterfallTagCacheRefresherInterface $cacheRefresher)
+    /**
+     * @var Manager
+     */
+    protected $manager;
+    function __construct(Manager $manager, VideoWaterfallTagCacheRefresherInterface $cacheRefresher)
     {
+        $this->manager = $manager;
         $this->cacheRefresher = $cacheRefresher;
         $this->changedVideoWaterfallTags = [];
         $this->changedVideoWaterfallTagIds = [];
@@ -55,10 +67,14 @@ class UpdateVideoWaterfallTagListener
     public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
-        if ($entity instanceof VideoWaterfallTagInterface
-            && ($args->hasChangedField('platform')
-                || $args->hasChangedField('adDuration')
-                || $args->hasChangedField('targeting'))
+        if (!$entity instanceof VideoWaterfallTagInterface) {
+            return;
+        }
+
+        if (
+            $args->hasChangedField('platform') ||
+            $args->hasChangedField('adDuration') ||
+            $args->hasChangedField('targeting')
         ) {
             $id = $entity->getId();
             if (!in_array($id, $this->changedVideoWaterfallTagIds)) {
@@ -66,6 +82,30 @@ class UpdateVideoWaterfallTagListener
                 $this->changedVideoWaterfallTags[] = $entity;
             }
         }
+
+        if ($args->hasChangedField('buyPrice')) {
+            $em = $args->getEntityManager();
+            $this->autoPauseVideoDemandAdTags($em, $entity);
+        }
+    }
+
+    protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, VideoWaterfallTagInterface $waterfallTag)
+    {
+        $autoPauseTags = [];
+        $autoActiveTags = [];
+        $videoDemandAdTagRepository = $em->getRepository(VideoDemandAdTag::class);
+        $videoDemandAdTags = $videoDemandAdTagRepository->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
+        /** @var VideoDemandAdTagInterface $videoDemandAdTag */
+        foreach($videoDemandAdTags as $videoDemandAdTag) {
+            if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
+                $autoPauseTags[] = $videoDemandAdTag->getId();
+            } else {
+                $autoActiveTags[] = $videoDemandAdTag->getId();
+            }
+        }
+
+        $this->manager->autoPauseVideoDemandAdTags($autoPauseTags);
+        $this->manager->autoActiveVideoDemandAdTags($autoActiveTags);
     }
 
     /**

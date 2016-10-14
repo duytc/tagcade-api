@@ -8,7 +8,11 @@ use DateTime;
 
 class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInterface
 {
-    const ACTIVE_DEFAULT = true;
+    const ACTIVE = 1;
+    const PAUSED = 0;
+    const AUTO_PAUSED = -1;
+
+    const ACTIVE_DEFAULT = 1;
 
     const PLATFORM_JAVASCRIPT = 'js';
     const PLATFORM_FLASH = 'flash';
@@ -29,7 +33,7 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     protected $rotationWeight;
 
     /**
-     * @var bool
+     * @var int
      */
     protected $active;
 
@@ -52,6 +56,11 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
      * @var LibraryVideoDemandAdTagInterface
      */
     protected $libraryVideoDemandAdTag;
+
+    /**
+     * @var WaterfallPlacementRuleInterface
+     */
+    protected $waterfallPlacementRule;
 
     /**
      * @var VideoWaterfallTagItemInterface
@@ -236,6 +245,20 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     /**
      * @inheritdoc
      */
+    public function getProfit()
+    {
+        if($this->getLibraryVideoDemandAdTag()->getSellPrice() == null || $this->getVideoWaterfallTagItem()->getVideoWaterfallTag()->getBuyPrice() == null) {
+            return null;
+        }
+
+        $profit = $this->getLibraryVideoDemandAdTag()->getSellPrice() - $this->getVideoWaterfallTagItem()->getVideoWaterfallTag()->getBuyPrice();
+
+        return $profit;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getLibraryVideoDemandAdTag()
     {
         return $this->libraryVideoDemandAdTag;
@@ -247,6 +270,24 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     public function setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
     {
         $this->libraryVideoDemandAdTag = $libraryVideoDemandAdTag;
+        return $this;
+    }
+
+    /**
+     * @return WaterfallPlacementRuleInterface
+     */
+    public function getWaterfallPlacementRule()
+    {
+        return $this->waterfallPlacementRule;
+    }
+
+    /**
+     * @param WaterfallPlacementRuleInterface $waterfallPlacementRule
+     * @return self
+     */
+    public function setWaterfallPlacementRule($waterfallPlacementRule)
+    {
+        $this->waterfallPlacementRule = $waterfallPlacementRule;
         return $this;
     }
 
