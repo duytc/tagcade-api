@@ -18,10 +18,6 @@ use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
 class CpmRateGetter implements CpmRateGetterInterface
 {
-    const BILLING_FACTOR_SLOT_OPPORTUNITY = 'SLOT_OPPORTUNITY';
-    const BILLING_FACTOR_VIDEO_IMPRESSION = 'VIDEO_IMPRESSION';
-    const BILLING_FACTOR_VIDEO_VISIT = 'VISIT';
-
     protected $defaultCpmRate;
 
     /** @var BillingRateThreshold[] */
@@ -162,7 +158,7 @@ class CpmRateGetter implements CpmRateGetterInterface
 
         if (!$billingConfiguration instanceof BillingConfigurationInterface) {
             $billingConfiguration = new BillingConfiguration();
-            $billingConfiguration->setBillingFactor(self::BILLING_FACTOR_SLOT_OPPORTUNITY);
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
         }
 
         $billingFactor = $billingConfiguration->getBillingFactor();
@@ -170,15 +166,15 @@ class CpmRateGetter implements CpmRateGetterInterface
         $lastDateInMonth = $this->dateUtil->getLastDateInMonth($month, true);
 
         switch ($billingFactor) {
-            case self::BILLING_FACTOR_SLOT_OPPORTUNITY:
+            case BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY:
                 return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $lastDateInMonth);
-            case self::BILLING_FACTOR_VIDEO_IMPRESSION:
+            case BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION:
                 if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
                     return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
                 }
 
                 return $this->reportRepository->getTotalVideoImpressionForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
-            case self::BILLING_FACTOR_VIDEO_VISIT:
+            case BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT:
                 return $this->reportRepository->getTotalVideoVisitForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
             default:
                 throw new \Exception(sprintf('Do not support this billing factor yet %s', $billingFactor));

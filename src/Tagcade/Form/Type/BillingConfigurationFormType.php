@@ -22,10 +22,10 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('billingFactor', ChoiceType::class, array(
                 'choices'=>[
-                    'SLOT_OPPORTUNITY'  =>'Slot opportunity',
-                    'VIDEO_IMPRESSION'  =>'Video impression',
-                    'VISIT'             =>'Visit',
-                    'BID_REQUEST'       => 'Bid Request'
+                    BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY  =>'Slot opportunity',
+                    BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION  =>'Video impression',
+                    BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT       =>'Visit',
+                    BillingConfiguration::BILLING_HEADER_BID_REQUEST       => 'Bid Request'
                 ]
             ))
             ->add('tiers')
@@ -33,15 +33,15 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
             ->add('module', ChoiceType::class, array(
                 'empty_data' => null,
                 'choices' => [
-                    'MODULE_DISPLAY'         => 'Display',
-                    'MODULE_VIDEO_ANALYTICS' => 'Video',
-                    'MODULE_VIDEO'         => 'VideoAds',
-                    'MODULE_ANALYTICS'       => 'Analytics',
-                    'MODULE_FRAUD_DETECTION' => 'Fraud Detection',
-                    'MODULE_UNIFIED_REPORT'  => 'Unified Report',
-                    'MODULE_SUB_PUBLISHER'  => 'Sub Publisher',
-                    'MODULE_HEADER_BIDDING'  => 'Header Bidding',
-                    'MODULE_RTB'  => 'RealTime Bidding'
+                    User::MODULE_DISPLAY         => 'Display',
+                    User::MODULE_VIDEO_ANALYTICS => 'Video',
+                    User::MODULE_VIDEO           => 'VideoAds',
+                    User::MODULE_ANALYTICS       => 'Analytics',
+                    User::MODULE_FRAUD_DETECTION => 'Fraud Detection',
+                    User::MODULE_UNIFIED_REPORT  => 'Unified Report',
+                    User::MODULE_SUB_PUBLISHER   => 'Sub Publisher',
+                    User::MODULE_HEADER_BIDDING  => 'Header Bidding',
+                    User::MODULE_RTB             => 'RealTime Bidding'
                 ],
             ))
         ;

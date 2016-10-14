@@ -76,9 +76,10 @@ set foreign_key_checks = 0;
 
 TRUNCATE table video_report_platform_platform_report;
 TRUNCATE table video_report_platform_account_report;
-TRUNCATE table video_report_platform_ad_tag_report;
-TRUNCATE table video_report_platform_ad_source_report;
-TRUNCATE table video_report_demand_partner_ad_source_report;
+TRUNCATE table video_report_platform_publisher_report;
+TRUNCATE table video_report_platform_demand_ad_tag_report;
+TRUNCATE table video_report_platform_waterfall_tag_report;
+TRUNCATE table video_report_demand_partner_demand_ad_tag_report;
 TRUNCATE table video_report_demand_partner_demand_partner_report;
 
 -- truncate all header bidding report tables
@@ -89,20 +90,4 @@ truncate table report_header_bidding_hierarchy_platform_account;
 truncate table report_header_bidding_hierarchy_platform_ad_slot;
 truncate table report_header_bidding_hierarchy_platform_site;
 
-set foreign_key_checks = 0;
-
-TRUNCATE table core_site;
-TRUNCATE table library_display_ad_slot;
-TRUNCATE table library_ad_slot;
-TRUNCATE table core_ad_slot;
-TRUNCATE table core_display_ad_slot;
-TRUNCATE table library_ad_tag;
-TRUNCATE table core_ad_tag;
-TRUNCATE table core_ad_slot;
-TRUNCATE table core_dynamic_ad_slot;
-TRUNCATE table core_expression;
-TRUNCATE table library_ad_slot;
-TRUNCATE table library_dynamic_ad_slot;
-TRUNCATE table library_expression;
-TRUNCATE table library_ad_slot_ad_tag;
 
