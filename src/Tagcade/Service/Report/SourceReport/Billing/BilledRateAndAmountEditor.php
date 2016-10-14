@@ -61,11 +61,12 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
         }
 
         foreach ($sourceReports as $sourceReport) {
+            $dateTime = clone $date;
             if (!$sourceReport instanceof Report) {
                 continue;
             }
             $newWeight = $sourceReport->$method();
-            $rateAmount = $this->billingCalculator->calculateBilledAmountForSiteForSingleDate($date, $sourceReport->getSite(), User::MODULE_VIDEO_ANALYTICS, $newWeight);
+            $rateAmount = $this->billingCalculator->calculateBilledAmountForSiteForSingleDate($dateTime, $sourceReport->getSite(), User::MODULE_VIDEO_ANALYTICS, $newWeight);
             $billedRate = $rateAmount->getRate()->getCpmRate();
             $billedAmount = $rateAmount->getAmount();
             $sourceReport->setBilledRate($billedRate);
