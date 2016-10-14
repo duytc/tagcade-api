@@ -8,10 +8,12 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\UserEntityInterface;
 
 class BillingConfigurationFormType extends AbstractRoleSpecificFormType
 {
@@ -60,6 +62,38 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 $billingConfig = $event->getData();
                 $form = $event->getForm();
                 $tiers = $billingConfig->getTiers();
+
+                switch ($billingConfig->getModule()) {
+                    case User::MODULE_DISPLAY:
+                        if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY) {
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_DISPLAY, BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY)));
+                            return;
+                        }
+
+                        break;
+                    case User::MODULE_VIDEO:
+                        if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION) {
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_VIDEO, BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION)));
+                            return;
+                        }
+
+                        break;
+                    case User::MODULE_HEADER_BIDDING:
+                        if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_HEADER_BID_REQUEST) {
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_HEADER_BIDDING, BillingConfiguration::BILLING_HEADER_BID_REQUEST)));
+                            return;
+                        }
+
+                        break;
+                    case User::MODULE_VIDEO_ANALYTICS:
+                        $factors = [BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION, BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT];
+                        if (!in_array($billingConfig->getBillingFactor(), $factors)) {
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_VIDEO_ANALYTICS, implode(',', $factors))));
+                            return;
+                        }
+
+                        break;
+                }
 
                 if ((null === $tiers || !is_array($tiers) || empty($tiers)) && ($billingConfig->getDefaultConfig() === false )) {
                     $form->get('tiers')->addError(new FormError('Default config must set true in case tiers is null'));
