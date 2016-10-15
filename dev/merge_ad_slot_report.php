@@ -142,7 +142,7 @@ function mergeAdSlotPlatformReport(AdSlotPlatformReport $keep, AdSlotPlatformRep
     $adSlot = $keep->getAdSlot();
 
     $keep->setSlotOpportunities($keep->getSlotOpportunities() + $merge->getSlotOpportunities());
-    $rateAmount = $billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $keep->getSlotOpportunities());
+    $rateAmount = $billingCalculator->calculateBilledAmountForPublisherForSingleDay($keep->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $keep->getSlotOpportunities());
     if ($rateAmount->getRate()->isCustom()) {
         $keep->setCustomRate($rateAmount->getRate()->getCpmRate());
     }

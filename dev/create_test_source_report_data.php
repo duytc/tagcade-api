@@ -12,32 +12,44 @@ $em = $container->get('doctrine.orm.entity_manager');
 $siteManager = $container->get('tagcade.domain_manager.site');
 
 $sites = $siteManager->all();
+$START_DATE = new DateTime('2015-01-02');
+$END_DATE = new DateTime('2015-01-05');
 
-$date = new DateTime('2015-01-07');
+$today = new DateTime('today');
+if ($END_DATE >= $today) {
+    $END_DATE = new DateTime('yesterday');
+}
+$END_DATE = $END_DATE->modify('+1 day');
+$interval = new DateInterval('P1D');
+$dateRange = new DatePeriod($START_DATE, $interval, $END_DATE);
 
-foreach($sites as $site) {
-    $report = new Tagcade\Entity\Report\SourceReport\Report;
-    $report->setDate($date);
-    $report->setSite($site);
+foreach ($dateRange as $date) {
+    foreach($sites as $site) {
+        $report = new Tagcade\Entity\Report\SourceReport\Report;
+        $report->setDate($date);
+        $report->setSite($site);
 
-    $report->addRecord(
-        createRecord([
-            'utm_term' => 'test1',
-            'utm_campaign' => 'test'
-        ])
-    );
+        $report->addRecord(
+            createRecord([
+                'utm_term' => 'test1',
+                'utm_campaign' => 'test'
+            ])
+        );
 
-    $report->addRecord(
-        createRecord([
-            'utm_term' => 'test2',
-            'utm_campaign' => 'test'
-        ])
-    );
+        $report->addRecord(
+            createRecord([
+                'utm_term' => 'test2',
+                'utm_campaign' => 'test'
+            ])
+        );
 
-    $em->persist($report);
+        $em->persist($report);
+    }
+
+    $em->flush();
 }
 
-$em->flush();
+
 
 function createRecord(array $trackingKeys) {
     $record = new \Tagcade\Entity\Report\SourceReport\Record();
