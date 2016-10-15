@@ -20,6 +20,22 @@ interface ReportRepositoryInterface
     public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
     /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getTotalVideoImpressionForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getTotalVideoVisitForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
      * @param SiteInterface $site
      * @param DateTime $startDate
      * @param DateTime $endDate
