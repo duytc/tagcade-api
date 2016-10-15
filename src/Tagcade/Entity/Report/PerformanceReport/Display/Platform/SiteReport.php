@@ -23,19 +23,4 @@ class SiteReport extends SiteReportModel
     protected $billedAmount;
     protected $billedRate;
     protected $rtbImpressions;
-
-    /**
-     * @var int
-     */
-    protected $hbRequests;
-
-    /**
-     * @var float
-     */
-    protected $hbBilledAmount;
-
-    /**
-     * @var float
-     */
-    protected $hbBilledRate;
 }

@@ -46,14 +46,9 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
 
         if ($adSlot instanceof DisplayAdSlotInterface) {
             $report->setRtbImpressions($this->eventCounter->getRtbImpressionsCount($adSlot->getId()));
-            $report->setHbRequests($this->eventCounter->getHeaderBidRequestCount($adSlot->getId()));
-
-            $rateAmount = $this->billingCalculator->calculateHbBilledAmountForPublisherForSingleDay($this->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_HEADER_BIDDING, $report->getHbRequests());
-            $report->setHbBilledAmount($rateAmount->getAmount());
-            $report->setHbBilledRate($rateAmount->getRate()->getCpmRate());
         }
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisherForSingleDay($this->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());

@@ -1,0 +1,44 @@
+services:
+
+    ### Header Bidding Report Creators
+    tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.ad_slot:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Creator\Creators\Hierarchy\Platform\AdSlot
+        arguments:
+            - '@tagcade.service.report.performance_report.display.billing.billing_calculator'
+
+    tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.site:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Creator\Creators\Hierarchy\Platform\Site
+        arguments:
+            - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.ad_slot'
+            - '@tagcade.repository.ad_slot'
+
+    tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.account:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Creator\Creators\Hierarchy\Platform\Account
+        arguments:
+            - '@tagcade.domain_manager.site'
+            - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.site'
+
+    tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.platform:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Creator\Creators\Hierarchy\Platform\Platform
+        arguments:
+            - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.account'
+
+
+    ### Report creator service
+    tagcade.service.report.header_bidding_report.creator.report_creator:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Creator\ReportCreator
+        arguments:
+            -
+                - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.platform'
+                - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.account'
+                - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.site'
+                - '@tagcade.service.report.header_bidding_report.creator.creators.hierarchy.platform.ad_slot'
+            - '@tagcade.service.report.performance_report.display.counter.cache_event_counter'
+
+    tagcade.service.report.header_bidding_report.creator.daily_report_creator:
+        class: Tagcade\Service\Report\HeaderBiddingReport\Creator\DailyReportCreator
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade.service.report.header_bidding_report.creator.report_creator'
+        calls:
+            - [setLogger, [@logger]]

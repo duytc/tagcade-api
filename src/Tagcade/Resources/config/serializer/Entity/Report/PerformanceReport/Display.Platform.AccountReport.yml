@@ -44,12 +44,3 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
         rtbImpressions:
             expose: true
             groups: [platform_account_report.detail, platform_account_report.summary]
-        hbRequests:
-            expose: true
-            groups: [platform_account_report.detail, platform_account_report.summary]
-        hbBilledRate:
-            expose: true
-            groups: [platform_account_report.detail, platform_account_report.summary]
-        hbBilledAmount:
-            expose: true
-            groups: [platform_account_report.detail, platform_account_report.summary]

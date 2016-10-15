@@ -1,0 +1,39 @@
+Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReport:
+    repositoryClass: Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReportRepository
+    type: entity
+    table: report_header_bidding_hierarchy_platform_account
+    uniqueConstraints:
+        unique_platform_account_report_idx:
+            columns: [date, publisher_id]
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: IDENTITY
+    fields:
+        date:
+            type: date
+        name:
+            type: string
+        requests:
+            type: integer
+        billedRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        billedAmount:
+            type: decimal
+            scale: 4
+            nullable: true
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+        superReport:
+            targetEntity: PlatformReport
+            inversedBy: subReports
+    oneToMany:
+        subReports:
+            targetEntity: SiteReport
+            orderBy: { 'requests': 'DESC' }
+            mappedBy: superReport
+            cascade: ["persist", "remove", "detach"]

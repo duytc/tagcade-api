@@ -16,7 +16,6 @@ trait ConstructCalculatedReportTrait {
 
         $report->setTotalOpportunities($data[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY])
             ->setSlotOpportunities($data[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setHbRequests($data[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST])
             ->setImpressions($data[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION])
             ->setRtbImpressions($data[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION])
             ->setPassbacks($data[SnapshotCreatorInterface::CACHE_KEY_PASSBACK])

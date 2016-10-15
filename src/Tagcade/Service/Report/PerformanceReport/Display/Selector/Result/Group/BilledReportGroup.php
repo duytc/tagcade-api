@@ -36,15 +36,10 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     // new properties
     protected $slotOpportunities;
     protected $billedAmount;
-    protected $hbRequests;
-    protected $hbBilledAmount;
-    protected $hbBilledRate;
     protected $rtbImpressions;
     protected $averageSlotOpportunities;
-    protected $averageHbRequests;
     protected $averageRtbImpressions;
     protected $averageBilledAmount;
-    protected $averageHbBilledAmount;
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
@@ -54,12 +49,10 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param string $name
      * @param int $totalOpportunities
      * @param int $slotOpportunities
-     * @param int $hbRequests
      * @param int $impressions
      * @param int $passbacks
      * @param float $fillRate
      * @param float $billedAmount
-     * @param float $hbBilledAmount
      * @param float $estCpm
      * @param float $estRevenue
      * @param float $averageTotalOpportunities
@@ -69,16 +62,14 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param float $averageEstRevenue
      * @param float $averageFillRate
      * @param float $averageSlotOpportunities
-     * @param float $averageHbRequests
      * @param $averageBilledAmount
-     * @param $averageHbBilledAmount
      * @param $rtbImpressions
      * @param $averageRtbImpressions
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-        $totalOpportunities, $slotOpportunities, $hbRequests, $impressions, $passbacks, $fillRate, $billedAmount, $hbBilledAmount, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageHbRequests, $averageBilledAmount,
-        $averageHbBilledAmount, $rtbImpressions, $averageRtbImpressions
+        $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
+        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
+        $rtbImpressions, $averageRtbImpressions
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
@@ -87,17 +78,11 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         );
 
         $this->slotOpportunities = $slotOpportunities;
-        $this->hbRequests = $hbRequests;
         $this->rtbImpressions = $rtbImpressions;
         $this->billedAmount = round($billedAmount, 4);
-        $this->hbBilledAmount = round($hbBilledAmount, 4);
         $this->averageSlotOpportunities = round($averageSlotOpportunities);
-        $this->averageHbRequests = round($averageHbRequests);
         $this->averageRtbImpressions = round($averageRtbImpressions);
         $this->averageBilledAmount = round($averageBilledAmount, 4);
-        $this->averageHbBilledAmount = round($averageHbBilledAmount, 4);
-
-        $this->hbBilledRate = $this->calculateWeightedValue($this->reports, 'hbBilledRate', 'hbBilledAmount');
     }
 
     /**
@@ -140,45 +125,5 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function getAverageBilledAmount()
     {
         return $this->averageBilledAmount;
-    }
-
-    /**
-     * @return float
-     */
-    public function getAverageHbBilledAmount()
-    {
-        return $this->averageHbBilledAmount;
-    }
-
-    /**
-     * @return float
-     */
-    public function getAverageHbRequests()
-    {
-        return $this->averageHbRequests;
-    }
-
-    /**
-     * @return int
-     */
-    public function getHbRequests()
-    {
-        return $this->hbRequests;
-    }
-
-    /**
-     * @return float
-     */
-    public function getHbBilledAmount()
-    {
-        return $this->hbBilledAmount;
-    }
-
-    /**
-     * @return float|null
-     */
-    public function getHbBilledRate()
-    {
-        return $this->hbBilledRate;
     }
 }

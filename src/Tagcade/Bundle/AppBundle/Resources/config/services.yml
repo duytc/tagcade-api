@@ -95,7 +95,8 @@ services:
     tagcade_app.event_listener.update_video_waterfall_tag_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\UpdateVideoWaterfallTagListener
         arguments:
-            - @tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher
+            - '@tagcade.worker.manager'
+            - '@tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher'
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: preSoftDelete }
@@ -198,6 +199,11 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
 
+    tagcade_app.service.core.video_demand_ad_tag.auto_pause_service:
+        class: Tagcade\Service\Core\VideoDemandAdTag\AutoPauseService
+        arguments:
+            - @doctrine.orm.entity_manager
+
     tagcade_app.service.core.excel_file_processing:
         class: Tagcade\Service\ExcelFileProcessing
         arguments:
@@ -242,8 +248,14 @@ services:
             - %tc.bulk_upload.ad_tag.index%
             - @tagcade.domain_manager.library_ad_tag
             - @tagcade.domain_manager.ad_tag
+
     tagcade_app.service.core.video_waterfall_tag_item.video_waterfall_tag_item_position_editor:
         class: Tagcade\Service\Core\VideoWaterfallTagItem\VideoWaterfallTagItemPositionEditor
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
+
+    tagcade_app.service.core.video_waterfall_tag.video_waterfall_tag_service:
+        class: Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagService
+        arguments:
+            - @tagcade.repository.video_waterfall_tag

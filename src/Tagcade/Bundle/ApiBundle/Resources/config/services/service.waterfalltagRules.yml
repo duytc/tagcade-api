@@ -1,0 +1,8 @@
+
+services:
+    tagcade.repository.waterfall_placement_rule:
+        class: Tagcade\Repository\Core\WaterfallPlacementRuleRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\WaterfallPlacementRule

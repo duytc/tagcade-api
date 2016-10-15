@@ -90,7 +90,7 @@ class GenerateDummyPerformanceReportCommand extends ContainerAwareCommand
             $container->get('tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag')
         ];
 
-        $eventCounter = new TestEventCounter($adSlotManager->getReportableAdSlotsForPublisher($publisher));
+        $eventCounter = new TestEventCounter($adSlotManager->getAdSlotsForPublisher($publisher));
         $reportCreator = new ReportCreator($reportTypes, $eventCounter);
         $dailyReportCreator = new DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 

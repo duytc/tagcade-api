@@ -5,13 +5,18 @@ namespace Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers;
 
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\VideoReport\AdTagReportDataInterface;
 use Tagcade\Model\Report\VideoReport\ReportDataInterface;
+use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\DemandPartner\DemandAdTag as PartnerDemandAdTagReportType;
+use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\DemandAdTag as PlatformDemandAdTagReportType;
 use Tagcade\Service\Report\VideoReport\Selector\Result\CalculatedReportGroupInterface;
 use Tagcade\Service\Report\VideoReport\Selector\Result\Group\WaterfallTagReportGroup;
 
 class WaterfallTagGrouper extends AbstractGrouper
 {
+    use CalculateWeightedValueTrait;
+
     private $adTagRequests;
     private $adTagErrors;
     private $adTagBids;
@@ -84,7 +89,9 @@ class WaterfallTagGrouper extends AbstractGrouper
     {
         parent::groupReports($reports);
 
-        $this->billedRate = $this->getRatio($this->getBilledAmount(), $this->getImpressions());
+        if (!$this->getReportType() instanceof PartnerDemandAdTagReportType && !$this->getReportType() instanceof PlatformDemandAdTagReportType) {
+            $this->billedRate = $this->calculateWeightedValue($reports, 'billedRate', 'billedAmount');
+        }
 
         $reportCount = count($this->getReports());
 

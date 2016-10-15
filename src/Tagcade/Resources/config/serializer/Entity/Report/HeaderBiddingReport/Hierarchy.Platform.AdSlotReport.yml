@@ -1,0 +1,16 @@
+Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\AdSlotReport:
+    exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+            groups: [header_bidding_ad_slot_report.detail, header_bidding_ad_slot_report.summary]
+            type: DateTime<'Y-m-d'>
+        billedAmount:
+            expose: true
+            groups: [header_bidding_ad_slot_report.detail, header_bidding_ad_slot_report.summary]
+        billedRate:
+            expose: true
+            groups: [header_bidding_ad_slot_report.detail, header_bidding_ad_slot_report.summary]
+        resquests:
+            expose: true
+            groups: [header_bidding_ad_slot_report.detail, header_bidding_ad_slot_report.summary]

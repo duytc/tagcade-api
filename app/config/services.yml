@@ -279,6 +279,24 @@ services:
         arguments:
             - @tagcade.cache.video.video_cache_manager
 
+    tagcade.worker.workers.auto_pause_video_demand_ad_tag_worker:
+        class: Tagcade\Worker\Workers\AutoPauseVideoDemandAdTagWorker
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
+
+    tagcade.worker.workers.auto_active_video_demand_ad_tag_worker:
+        class: Tagcade\Worker\Workers\AutoActiveVideoDemandAdTagWorker
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
+
+    tagcade.worker.workers.deploy_video_demand_ad_tag_for_new_placement_rule_worker:
+        class: Tagcade\Worker\Workers\DeployVideoDemandAdTagForNewPlacementRuleWorker
+        arguments:
+            - @tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag
+            - @tagcade.repository.waterfall_placement_rule
+
     tagcade.worker.workers.update_video_demand_ad_tag_status_worker:
         class: Tagcade\Worker\Workers\UpdateVideoDemandAdTagStatusForDemandPartnerWorker
         arguments:

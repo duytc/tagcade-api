@@ -6,18 +6,23 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Cache\Video\DomainListManagerInterface;
 use Tagcade\Entity\Core\Blacklist;
+use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Entity\Core\WhiteList;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BlacklistInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
+use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\WhiteListInterface;
+use Tagcade\Worker\Manager;
 
 
 class LibraryVideoDemandAdTagChangeListener
 {
+    use ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
     /**
      * @var DomainListManagerInterface
      */
@@ -29,12 +34,18 @@ class LibraryVideoDemandAdTagChangeListener
     private $builtinBlacklists;
 
     /**
+     * @var Manager
+     */
+    private $manager;
+    /**
      * VideoDemandAdTagChangeListener constructor.
+     * @param Manager $manager
      * @param DomainListManagerInterface $domainListManager
      * @param array $builtinBlacklists
      */
-    public function __construct(DomainListManagerInterface $domainListManager, array $builtinBlacklists)
+    public function __construct(Manager $manager, DomainListManagerInterface $domainListManager, array $builtinBlacklists)
     {
+        $this->manager = $manager;
         $this->domainListManager = $domainListManager;
         $this->builtinBlacklists = $builtinBlacklists;
     }
@@ -64,11 +75,35 @@ class LibraryVideoDemandAdTagChangeListener
         $em = $args->getEntityManager();
         $entity = $args->getObject();
 
-        if (!$entity instanceof LibraryVideoDemandAdTagInterface || !$args->hasChangedField('targeting')) {
+        if (!$entity instanceof LibraryVideoDemandAdTagInterface) {
             return;
         }
 
-        $this->validateTargeting($em, $entity);
+        if ($args->hasChangedField('targeting')) {
+            $this->validateTargeting($em, $entity);
+        }
+
+        if ($args->hasChangedField('sellPrice')) {
+            $this->autoPauseVideoDemandAdTags($entity);
+        }
+    }
+
+    protected function autoPauseVideoDemandAdTags(LibraryVideoDemandAdTagInterface $libraryDemandAdTag)
+    {
+        $autoPausedTags = [];
+        $autoActiveTags = [];
+        $videoDemandAdTags = $libraryDemandAdTag->getVideoDemandAdTags();
+        /** @var VideoDemandAdTagInterface $videoDemandAdTag */
+        foreach($videoDemandAdTags as $videoDemandAdTag) {
+            if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
+                $autoPausedTags[] = $videoDemandAdTag->getId();
+            } else {
+                $autoActiveTags[] = $videoDemandAdTag->getId();
+            }
+        }
+
+        $this->manager->autoPauseVideoDemandAdTags($autoPausedTags);
+        $this->manager->autoActiveVideoDemandAdTags($autoActiveTags);
     }
 
     /**

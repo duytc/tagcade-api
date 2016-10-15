@@ -54,9 +54,9 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
         }
 
         $method = '';
-        if ($billingConfiguration->getBillingFactor() === BillingConfiguration::VIDEO_IMPRESSION_BILLING_FACTOR) {
+        if ($billingConfiguration->getBillingFactor() === BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION) {
             $method = 'getVideoAdImpressions';
-        } else if ($billingConfiguration->getBillingFactor() === BillingConfiguration::VISIT_BILLING_FACTOR) {
+        } else if ($billingConfiguration->getBillingFactor() === BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT) {
             $method = 'getVisits';
         }
 

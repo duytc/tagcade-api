@@ -16,6 +16,7 @@ class VideoDemandAdTag extends VideoDemandAdTagModel
     protected $libraryVideoDemandAdTag;
     protected $videoWaterfallTagItem;
     protected $targetingOverride;
+    protected $waterfallPlacementRule;
 
     /**
      * this constructor will be called by FormType, must be used to call parent to set default values

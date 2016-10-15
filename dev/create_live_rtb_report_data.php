@@ -19,7 +19,8 @@ $ronAdSlotManager = $container->get('tagcade.domain_manager.ron_ad_slot');
 $reportableAdSlots = $adSlotManager->allReportableAdSlots();
 $ronAdSlots = $ronAdSlotManager->all();
 $rtbTestEventCounter = new RtbTestEventCounter($reportableAdSlots, $ronAdSlots);
-$rtbTestEventCounter->setDate(new DateTime('today'));
+$date = new DateTime('yesterday');
+$rtbTestEventCounter->setDate($date);
 
 writeln('### Start creating test live data for all rtb ad slots ###');
 
@@ -38,6 +39,7 @@ writeln('   --> Finished preparing redis cache ###');
 writeln('   --> Start saving data to redis ###');
 writeln('       ...');
 $rtbCacheEventCounter = new RtbCacheEventCounter($cache);
+$rtbCacheEventCounter->setDate($date);
 
 // generate for rtb ad slot
 foreach ($rtbTestEventCounter->getAdSlotData() as $slotId => $slotData) {
