@@ -46,6 +46,9 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
 
         if ($adSlot instanceof DisplayAdSlotInterface) {
             $report->setRtbImpressions($this->eventCounter->getRtbImpressionsCount($adSlot->getId()));
+            $report->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));
+            $report->setInBannerImpressions($this->eventCounter->getInBannerImpressionCount($adSlot->getId()));
+            $report->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
         }
 
         $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
@@ -56,6 +59,11 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
         if ($rateAmount->getRate()->isCustom()) {
             $report->setCustomRate($rateAmount->getRate()->getCpmRate());
         }
+
+        $inBannerRateAmount = $this->billingCalculator->calculateTodayInBannerBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_IN_BANNER, $report->getInBannerImpressions());
+
+        $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
+        $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
 
         foreach ($adSlot->getAdTags() as $adTag) {
             $report->addSubReport(

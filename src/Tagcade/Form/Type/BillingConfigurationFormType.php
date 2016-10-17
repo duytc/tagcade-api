@@ -25,7 +25,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                     BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY  =>'Slot opportunity',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION  =>'Video impression',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT       =>'Visit',
-                    BillingConfiguration::BILLING_HEADER_BID_REQUEST       => 'Bid Request'
+                    BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST       => 'Bid Request'
                 ]
             ))
             ->add('tiers')
