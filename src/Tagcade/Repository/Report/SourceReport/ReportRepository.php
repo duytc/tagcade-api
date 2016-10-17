@@ -38,7 +38,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->andWhere('st.publisher = :publisher')
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
-            ->setParameter('$publisher', $publisher->getUser())
+            ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -60,7 +60,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->andWhere('st.publisher = :publisher')
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
-            ->setParameter('$publisher', $publisher->getUser())
+            ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
             ->getSingleScalarResult();
 
