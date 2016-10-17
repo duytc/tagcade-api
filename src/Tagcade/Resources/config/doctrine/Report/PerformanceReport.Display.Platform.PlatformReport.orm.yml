@@ -47,10 +47,13 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
 
         inBannerRequests:
             type: integer
+            nullable: true
         inBannerImpressions:
             type: integer
+            nullable: true
         inBannerTimeouts:
             type: integer
+            nullable: true
         inBannerBilledRate:
             type: decimal
             scale: 4

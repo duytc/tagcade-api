@@ -3,12 +3,15 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledReportGroup;
 
 class BilledReportGrouper extends AbstractGrouper
 {
+    use CalculateWeightedValueTrait;
+
     private $slotOpportunities;
     private $billedAmount;
     private $rtbImpressions;
@@ -16,6 +19,18 @@ class BilledReportGrouper extends AbstractGrouper
     private $averageSlotOpportunities;
     private $averageRtbImpressions;
     private $averageBilledAmount;
+
+    private $inBannerRequests;
+    private $inBannerImpressions;
+    private $inBannerTimeouts;
+    private $inBannerBilledRate;
+    private $inBannerBilledAmount;
+
+    private $averageInBannerRequests;
+    private $averageInBannerImpressions;
+    private $averageInBannerTimeouts;
+    private $averageInBannerBilledRate;
+    private $averageInBannerBilledAmount;
 
     public function getGroupedReport()
     {
@@ -43,7 +58,17 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageSlotOpportunities(),
             $this->getAverageBilledAmount(),
             $this->getRtbImpressions(),
-            $this->getAverageRtbImpressions()
+            $this->getAverageRtbImpressions(),
+
+            $this->getInBannerRequests(),
+            $this->getInBannerImpressions(),
+            $this->getInBannerBilledAmount(),
+            $this->getInBannerTimeouts(),
+
+            $this->getAverageInBannerRequests(),
+            $this->getAverageInBannerImpressions(),
+            $this->getAverageInBannerBilledAmount(),
+            $this->getAverageInBannerTimeouts()
         );
     }
 
@@ -56,6 +81,12 @@ class BilledReportGrouper extends AbstractGrouper
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
         $this->averageRtbImpressions = $this->getRatio($this->getRtbImpressions(), $reportCount);
+
+        $this->averageInBannerTimeouts = $this->getRatio($this->getAverageInBannerTimeouts(), $reportCount);
+        $this->averageInBannerRequests = $this->getRatio($this->getAverageInBannerRequests(), $reportCount);
+        $this->averageInBannerImpressions = $this->getRatio($this->getAverageInBannerImpressions(), $reportCount);
+        $this->averageInBannerBilledAmount = $this->getRatio($this->getAverageInBannerBilledAmount(), $reportCount);
+        $this->averageInBannerBilledRate = $this->calculateWeightedValue($reports, 'inBannerBilledRate', 'inBannerBilledAmount');
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -69,6 +100,12 @@ class BilledReportGrouper extends AbstractGrouper
         $this->addSlotOpportunities($report->getSlotOpportunities());
         $this->addBilledAmount($report->getBilledAmount());
         $this->addRtbImpressions($report->getRtbImpressions());
+
+        $this->addInBannerTimeouts($report->getInBannerTimeouts());
+        $this->addInBannerRequests($report->getInBannerRequests());
+        $this->addInBannerImpressions($report->getInBannerImpressions());
+        $this->addInBannerBilledRate($report->getInBannerBilledRate());
+        $this->addInBannerBilledAmount($report->getInBannerBilledAmount());
     }
 
     protected function addSlotOpportunities($slotOpportunities)
@@ -84,6 +121,31 @@ class BilledReportGrouper extends AbstractGrouper
     protected function addBilledAmount($billedAmount)
     {
         $this->billedAmount += (float) $billedAmount;
+    }
+
+    protected function addInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests += (int) $inBannerRequests;
+    }
+
+    protected function addInBannerBilledAmount($inBannerBilledAmount)
+    {
+        $this->inBannerBilledAmount += (float) $inBannerBilledAmount;
+    }
+
+    protected function addInBannerBilledRate($inBannerBilledRate)
+    {
+        $this->inBannerBilledRate += (float) $inBannerBilledRate;
+    }
+
+    protected function addInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions += (int) $inBannerImpressions;
+    }
+
+    protected function addInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts += (int) $inBannerTimeouts;
     }
 
     protected function calculateFillRate()
@@ -131,5 +193,85 @@ class BilledReportGrouper extends AbstractGrouper
     public function getAverageBilledAmount()
     {
         return $this->averageBilledAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerBilledRate()
+    {
+        return $this->inBannerBilledRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerBilledAmount()
+    {
+        return $this->inBannerBilledAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerRequests()
+    {
+        return $this->averageInBannerRequests;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerImpressions()
+    {
+        return $this->averageInBannerImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerTimeouts()
+    {
+        return $this->averageInBannerTimeouts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerBilledRate()
+    {
+        return $this->averageInBannerBilledRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerBilledAmount()
+    {
+        return $this->averageInBannerBilledAmount;
     }
 }

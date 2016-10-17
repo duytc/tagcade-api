@@ -137,17 +137,23 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     public function getInBannerRequestCount($slotId)
     {
-        // TODO: Implement getInBannerRequestCount() method.
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
     }
 
     public function getInBannerImpressionCount($slotId)
     {
-        // TODO: Implement getInBannerImpressionCount() method.
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
     }
 
     public function getInBannerTimeoutCount($slotId)
     {
-        // TODO: Implement getInBannerTimeoutCount() method.
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
     }
 
 

@@ -41,35 +41,56 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     protected $averageRtbImpressions;
     protected $averageBilledAmount;
 
+    protected $inBannerRequests;
+    protected $inBannerImpressions;
+    protected $inBannerTimeouts;
+    protected $inBannerBilledRate;
+    protected $inBannerBilledAmount;
+
+    protected $averageInBannerRequests;
+    protected $averageInBannerImpressions;
+    protected $averageInBannerTimeouts;
+    protected $averageInBannerBilledRate;
+    protected $averageInBannerBilledAmount;
+
     /**
-     * @param ReportTypeInterface|ReportTypeInterface[] $reportType
+     * BilledReportGroup constructor.
+     * @param ReportTypeInterface|\Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface[] $reportType
      * @param DateTime $startDate
      * @param DateTime $endDate
-     * @param ReportDataInterface[] $reports
+     * @param array $reports
      * @param string $name
      * @param int $totalOpportunities
      * @param int $slotOpportunities
      * @param int $impressions
-     * @param int $passbacks
+     * @param float $passbacks
      * @param float $fillRate
-     * @param float $billedAmount
-     * @param float $estCpm
-     * @param float $estRevenue
-     * @param float $averageTotalOpportunities
-     * @param float $averageImpressions
-     * @param float $averagePassbacks
-     * @param float $averageEstCpm
-     * @param float $averageEstRevenue
-     * @param float $averageFillRate
-     * @param float $averageSlotOpportunities
+     * @param $billedAmount
+     * @param $estCpm
+     * @param $estRevenue
+     * @param $averageTotalOpportunities
+     * @param $averageImpressions
+     * @param $averagePassbacks
+     * @param $averageEstCpm
+     * @param $averageEstRevenue
+     * @param $averageFillRate
+     * @param $averageSlotOpportunities
      * @param $averageBilledAmount
      * @param $rtbImpressions
      * @param $averageRtbImpressions
+     * @param $inBannerRequests
+     * @param $inBannerTimeouts
+     * @param $inBannerBilledAmount
+     * @param $inBannerImpressions
+     * @param $averageInBannerRequests
+     * @param $averageInBannerImpressions
+     * @param $averageInBannerBilledAmount
+     * @param $averageInBannerTimeouts
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
         $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
-        $rtbImpressions, $averageRtbImpressions
+        $rtbImpressions, $averageRtbImpressions, $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerImpressions, $averageInBannerBilledAmount, $averageInBannerTimeouts
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
@@ -83,6 +104,16 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         $this->averageSlotOpportunities = round($averageSlotOpportunities);
         $this->averageRtbImpressions = round($averageRtbImpressions);
         $this->averageBilledAmount = round($averageBilledAmount, 4);
+
+        $this->inBannerRequests = $inBannerRequests;
+        $this->inBannerTimeouts = $inBannerTimeouts;
+        $this->inBannerBilledAmount = $inBannerBilledAmount;
+        $this->inBannerImpressions = $inBannerImpressions;
+
+        $this->averageInBannerRequests = $averageInBannerRequests;
+        $this->averageInBannerTimeouts = $averageInBannerTimeouts;
+        $this->averageInBannerBilledAmount = round($averageInBannerBilledAmount, 4);
+        $this->averageInBannerImpressions = $averageInBannerImpressions;
     }
 
     /**
@@ -125,5 +156,85 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function getAverageBilledAmount()
     {
         return $this->averageBilledAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerBilledRate()
+    {
+        return $this->inBannerBilledRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInBannerBilledAmount()
+    {
+        return $this->inBannerBilledAmount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerRequests()
+    {
+        return $this->averageInBannerRequests;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerImpressions()
+    {
+        return $this->averageInBannerImpressions;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerTimeouts()
+    {
+        return $this->averageInBannerTimeouts;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerBilledRate()
+    {
+        return $this->averageInBannerBilledRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageInBannerBilledAmount()
+    {
+        return $this->averageInBannerBilledAmount;
     }
 }

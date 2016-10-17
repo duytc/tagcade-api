@@ -15,4 +15,29 @@ interface BilledReportDataInterface extends ReportDataInterface
     public function getBilledAmount();
 
     public function getRtbImpressions();
+
+    /**
+     * @return int
+     */
+    public function getInBannerImpressions();
+
+    /**
+     * @return int
+     */
+    public function getInBannerTimeouts();
+
+    /**
+     * @return float
+     */
+    public function getInBannerBilledRate();
+
+    /**
+     * @return float
+     */
+    public function getInBannerBilledAmount();
+
+    /**
+     * @return int
+     */
+    public function getInBannerRequests();
 }
