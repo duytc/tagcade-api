@@ -32,3 +32,19 @@ Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkDomainReport:
         domain:
             expose: true
             groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+
+        inBannerRequests:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        inBannerImpressions:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        inBannerTimeouts:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        inBannerBilledRate:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        inBannerBilledAmount:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
