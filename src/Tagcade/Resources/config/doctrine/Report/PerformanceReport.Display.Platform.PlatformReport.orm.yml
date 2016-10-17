@@ -44,6 +44,21 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             type: decimal
             scale: 4
             nullable: true
+
+        inBannerRequests:
+            type: integer
+        inBannerImpressions:
+            type: integer
+        inBannerTimeouts:
+            type: integer
+        inBannerBilledRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        inBannerBilledAmount:
+            type: decimal
+            scale: 4
+            nullable: true
     oneToMany:
         subReports:
             targetEntity: AccountReport
