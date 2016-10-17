@@ -41,3 +41,19 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
         rtbImpressions:
             expose: true
             groups: [platform_platform_report.detail, platform_platform_report.summary]
+
+        inBannerRequests:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        inBannerImpressions:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        inBannerTimeouts:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        inBannerBilledRate:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        inBannerBilledAmount:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
