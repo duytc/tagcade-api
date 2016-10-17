@@ -9,6 +9,7 @@ use FOS\RestBundle\Request\ParamFetcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("SourceReport")
@@ -16,7 +17,7 @@ use Tagcade\Model\Core\SiteInterface;
 class SourceReportController extends FOSRestController
 {
     /**
-     * @Rest\Get("/{siteId}", requirements={"siteId" = "\d+"})
+     * @Rest\Get("/sites/{siteId}", requirements={"siteId" = "\d+"})
      *
      * Get source reports for a site with optional date range.
      *
@@ -34,14 +35,13 @@ class SourceReportController extends FOSRestController
      * @Rest\QueryParam(name="rowLimit", requirements="\d+", nullable=true, description="Limit the amount of rows returned in the report")
      *
      * @param int $siteId ID of the site you want the report for
-     * @param ParamFetcherInterface $paramFetcher
      *
      * @return array
      */
-    public function cgetAction($siteId, ParamFetcherInterface $paramFetcher)
+    public function getSiteReportAction($siteId)
     {
         $dateUtil = $this->get('tagcade.service.date_util');
-
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         /** @var SiteInterface $site */
         $site = $this->container->get('tagcade.domain_manager.site')->find($siteId);
 
@@ -56,15 +56,36 @@ class SourceReportController extends FOSRestController
             throw new AccessDeniedException('You do not have permission to view this site');
         }
 
-        $rowOffset = $paramFetcher->get('rowOffset', true);
-        $rowLimit = $paramFetcher->get('rowLimit', true);
-
-        $reports = $this->get('tagcade.service.report.source_report.report_selector')->getReports($site, $startDate, $endDate, $rowOffset, $rowLimit);
+        $reports = $this->get('tagcade.service.report.source_report.report_builder')->getSiteReport($site, $startDate, $endDate);
 
         if (!$reports) {
             throw new NotFoundHttpException('No Reports found for that query');
         }
 
         return $reports;
+    }
+
+    public function getPublisherReport($publisherId)
+    {
+        $dateUtil = $this->get('tagcade.service.date_util');
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        /** @var PublisherInterface $publisher */
+        $publisher = $this->container->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+
+        $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true), $returnTodayIfEmpty = true);
+        $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));
+
+        if (!$publisher) {
+            throw new NotFoundHttpException('This publisher does not exist or you do not have access');
+        }
+
+        $reports = $this->get('tagcade.service.report.source_report.report_builder')->getPublisherReport($publisher, $startDate, $endDate);
+
+        if (!$reports) {
+            throw new NotFoundHttpException('No Reports found for that query');
+        }
+
+        return $reports;
+
     }
 }

@@ -7,7 +7,7 @@ use \DateTime;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
-class Report
+class Report implements ReportInterface
 {
     use CalculateRatiosTrait;
 
