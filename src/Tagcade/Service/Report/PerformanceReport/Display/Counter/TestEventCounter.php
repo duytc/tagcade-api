@@ -82,14 +82,15 @@ class TestEventCounter extends AbstractEventCounter
                 ];
             }
 
-            if ($adSlot instanceof DisplayAdSlotInterface) {
+            if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->getSite()->getPublisher()->hasInBannerModule()) {
                 $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
                 $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
                 $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT] = $inBannerRequests - $inBannerImpressions;
             }
 
-            $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
-
+            if($adSlot->getSite()->getPublisher()->hasHeaderBiddingModule()) {
+                $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
+            }
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
             if ($ronAdSlot instanceof RonAdSlotInterface) {

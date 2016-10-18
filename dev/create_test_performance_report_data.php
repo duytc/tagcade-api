@@ -39,7 +39,7 @@ $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Crea
 $dailyReportCreator->setLogger($container->get('logger'));
 
 $begin = new DateTime('2016-10-01');
-$end = new DateTime('2016-10-15');
+$end = new DateTime('2016-10-14');
 
 $today = new DateTime('today');
 if ($end >= $today) {
