@@ -59,6 +59,13 @@ interface PublisherManagerInterface
      */
     public function allActivePublishers();
 
+    public function allPublisherWithDisplayModule();
+
+    public function allPublisherWithVideoModule();
+
+    public function allPublisherWithHeaderBiddingModule();
+
+    public function allPublisherWithSourceReportModule();
     /**
      * @param int $id
      * @return PublisherInterface|bool

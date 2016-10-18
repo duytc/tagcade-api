@@ -78,6 +78,14 @@ Tagcade\Entity\Report\SourceReport\Report:
             type: decimal
             scale: 4
             nullable: true
+        billedRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        billedAmount:
+            type: decimal
+            scale: 4
+            nullable: true
     oneToMany:
         records:
             targetEntity: Tagcade\Entity\Report\SourceReport\Record

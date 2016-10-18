@@ -61,7 +61,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             groups: [user.detail]
         tagDomain:
             expose: true
-            groups: [user.detail]
+            groups: [user.detail, user.summary]
         exchanges:
             expose: true
             groups: [user.summary, user.uuid, user.detail]

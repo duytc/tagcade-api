@@ -19,9 +19,9 @@ Tagcade\Entity\Core\VideoDemandAdTag:
             type: integer
             nullable: true
         active:
-            type: boolean
+            type: smallint
             options:
-                default: true
+                default: 1
         deletedAt:
             type: date
             nullable: true
@@ -40,4 +40,6 @@ Tagcade\Entity\Core\VideoDemandAdTag:
         videoWaterfallTagItem:
             targetEntity: Tagcade\Entity\Core\VideoWaterfallTagItem
             inversedBy: videoDemandAdTags
-#            cascade: ['persist']
+        waterfallPlacementRule:
+            targetEntity: Tagcade\Entity\Core\WaterfallPlacementRule
+            cascade: ['persist']

@@ -38,7 +38,12 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     /* for rtb event count redis cache */
     const CACHE_KEY_RTB_IMPRESSION         = 'impression';
+    const CACHE_KEY_IN_BANNER_REQUEST      = 'request';
+    const CACHE_KEY_IN_BANNER_IMPRESSION   = 'impression';
+    const CACHE_KEY_IN_BANNER_TIMEOUT      = 'timeout';
+
     const REDIS_HASH_RTB_EVENT_COUNT       = 'rtb_event_processor:event_count';
+    const REDIS_HASH_IN_BANNER_EVENT_COUNT = 'in_banner_event_processor:event_count';
 
     private static $adTagReportKeys = [
         0 => self::CACHE_KEY_OPPORTUNITY,
@@ -129,6 +134,28 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $this->getCacheKey(static::CACHE_KEY_HB_BID_REQUEST, $namespace)
         );
     }
+
+    public function getInBannerRequestCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+    }
+
+    public function getInBannerImpressionCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+    }
+
+    public function getInBannerTimeoutCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+    }
+
 
     public function getPassbackCount($tagId)
     {

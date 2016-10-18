@@ -196,6 +196,30 @@ class Manager
         $this->queueTask('updateVideoDemandAdTagStatusForDemandPartner', $param);
     }
 
+    public function autoPauseVideoDemandAdTags(array $videoDemandAdTags)
+    {
+        $param = new StdClass();
+        $param->videoDemandAdTags = $videoDemandAdTags;
+
+        $this->queueTask('autoPauseVideoDemandAdTag', $param);
+    }
+
+    public function autoActiveVideoDemandAdTags(array $videoDemandAdTags)
+    {
+        $param = new StdClass();
+        $param->videoDemandAdTags = $videoDemandAdTags;
+
+        $this->queueTask('autoActiveVideoDemandAdTag', $param);
+    }
+
+    public function deployVideoDemandAdTagForNewPlacementRule($ruleId)
+    {
+        $param = new StdClass();
+        $param->ruleId = $ruleId;
+
+        $this->queueTask('deployVideoDemandAdTagForNewPlacementRule', $param);
+    }
+
     /**
      * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network

@@ -120,7 +120,7 @@ class ReportBuilder implements ReportBuilderInterface
         }
 
         $subPublishers = $publisher->getSubPublishers();
-        $reportTypes = array_map(function(SUbPublisherInterface $subPublisher) use ($adNetwork) {
+        $reportTypes = array_map(function(SubPublisherInterface $subPublisher) use ($adNetwork) {
             return new AdNetworkReportTypes\AdNetworkSubPublisher($subPublisher, $adNetwork);
         }, $subPublishers);
 

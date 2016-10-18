@@ -204,8 +204,7 @@ class UserFormType extends AbstractRoleSpecificFormType
                         $publisher->hasHeaderBiddingModule() ||
                         $publisher->hasVideoAnalyticsModule() ||
                         $publisher->hasAnalyticsModule() ||
-                        $publisher->hasSubPubliserModule() ||
-                        $publisher->hasInBannerModule()
+                        $publisher->hasSubPubliserModule()
                     )) {
                         throw new InvalidArgumentException('module DISPLAY need to be enabled for other modules to be enabled.');
                     }

@@ -40,7 +40,40 @@ foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
             $slotData[$testEventCounter::KEY_RTB_IMPRESSION]
         );
     }
-    
+
+    if (array_key_exists($testEventCounter::KEY_IN_BANNER_REQUESTS, $slotData)) {
+        $cache->hSave(
+            $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_IN_BANNER_REQUESTS]
+        );
+    }
+
+    if (array_key_exists($testEventCounter::KEY_IN_BANNER_IMPRESSIONS, $slotData)) {
+        $cache->hSave(
+            $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_IN_BANNER_IMPRESSIONS]
+        );
+    }
+
+    if (array_key_exists($testEventCounter::KEY_IN_BANNER_TIMEOUT, $slotData)) {
+        $cache->hSave(
+            $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_IN_BANNER_TIMEOUT]
+        );
+    }
+
     $cache->save(
         $cacheEventCounter->getCacheKey(
             $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,

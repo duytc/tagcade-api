@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\HeaderBiddingReport\Selector\Grouper\Groupers;
 
 use Tagcade\Model\Report\HeaderBiddingReport\ReportDataInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Service\Report\HeaderBiddingReport\Selector\Result\ReportResultInterface;
 use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\CalculateRatiosTrait;
@@ -24,6 +25,7 @@ abstract class AbstractGrouper implements GrouperInterface
 {
     use CalculateRatiosTrait;
     use CalculateRevenueTrait;
+    use CalculateWeightedValueTrait;
 
     private $reportType;
     private $reports;
@@ -68,6 +70,7 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->getReports(),
             $this->getName(),
             $this->getRequests(),
+            $this->getBilledRate(),
             $this->getBilledAmount(),
             $this->getAverageRequests(),
             $this->getAverageBilledAmount()
@@ -86,6 +89,7 @@ abstract class AbstractGrouper implements GrouperInterface
         // Calculate average for billedAmount, requests
         $reportCount = count($this->getReports());
 
+        $this->billedRate = $this->calculateWeightedValue($this->getReports(), 'billedRate', 'billedAmount');
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
         $this->averageRequests = $this->getRatio($this->getRequests(), $reportCount);
     }

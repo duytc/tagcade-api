@@ -101,6 +101,11 @@ abstract class User extends BaseUser implements UserEntityInterface
         return in_array(static::MODULE_HEADER_BIDDING, $this->getEnabledModules());
     }
 
+    public function hasInBannerModule()
+    {
+        return in_array(static::MODULE_IN_BANNER, $this->getEnabledModules());
+    }
+
     /**
      * @inheritdoc
      */

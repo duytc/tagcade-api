@@ -27,7 +27,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      * Get all library video demand ad tags
      *
      * @Rest\View(
-     *     serializerGroups={"libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"}
+     *     serializerGroups={"libraryVideoDemandAdTag.detail", "videoDemandPartner.summary", "user.summary"}
      * )
      *
      * @ApiDoc(
@@ -49,7 +49,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      * Get single library video demand ad tag
      *
      * @Rest\View(
-     *     serializerGroups={"libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"}
+     *     serializerGroups={"libraryVideoDemandAdTag.summary", "WaterfallPlacementRule.summary", "videoDemandPartner.summary", "user.summary"}
      * )
      *
      * @ApiDoc(
@@ -103,6 +103,37 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
     }
 
     /**
+     *
+     * Get all video demand ad tags linked to this library video demand partner
+     *
+     * @Rest\Get("/libraryvideodemandadtags/{id}/validwaterfalltags", requirements={"id" = "\d+"})
+     *
+     * @Rest\View(
+     *      serializerGroups={"videoWaterfallTag.summary", "user.summary"}
+     * )
+     *
+     * @ApiDoc(
+     *  section="Library video demand ad tags",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return \Tagcade\Model\Core\VideoDemandAdTagInterface[]
+     */
+    public function getValidWaterfallTagsAction($id)
+    {
+        /** @var LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag */
+        $libraryVideoDemandAdTag = $this->one($id);
+
+        return $this->get('tagcade_app.service.core.video_waterfall_tag.video_waterfall_tag_service')
+            ->getValidVideoWaterfallTagsForLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
+    }
+
+    /**
      * Create a library video demand ad tag from the submitted data
      *
      * @ApiDoc(
@@ -120,11 +151,6 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      */
     public function postAction(Request $request)
     {
-        // get VideoWaterfallTags from request and override to request
-        // we do that for supporting create & deploy library video demand ad tag to multi video waterfall tags
-        // get VideoWaterfallTags from request and override to request
-        $request->request->set('waterfalls', $this->getVideoWaterfallTags($request->request->get('waterfalls', [])));
-
         return $this->post($request);
     }
 
@@ -166,7 +192,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
         // do linking library demand ad tag to many video waterfall tags
         /** @var DeployLibraryVideoDemandAdTagServiceInterface $deployService */
         $deployService = $this->get('tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag');
-        $deployService->deployLibraryVideoDemandAdTagToWaterfalls($libraryDemandAdTag, $waterfallIds, $targeting, $targetingOverride, $priority, $rotationWeight, $active, $position, $shiftDown);
+        $deployService->deployLibraryVideoDemandAdTagToWaterfalls($libraryDemandAdTag, $rule = null, $waterfallIds, $targeting, $targetingOverride, $priority, $rotationWeight, $active, $position, $shiftDown);
 
         return $this->view( null, Codes::HTTP_CREATED );
     }

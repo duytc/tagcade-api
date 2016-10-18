@@ -30,6 +30,31 @@ trait SlotOpportunitiesTrait
     protected $rtbImpressions;
 
     /**
+     * @var int
+     */
+    protected $inBannerRequests;
+
+    /**
+     * @var int
+     */
+    protected $inBannerImpressions;
+
+    /**
+     * @var int
+     */
+    protected $inBannerTimeouts;
+
+    /**
+     * @var float
+     */
+    protected $inBannerBilledRate;
+
+    /**
+     * @var float
+     */
+    protected $inBannerBilledAmount;
+
+    /**
      * @inheritdoc
      */
     public function getSlotOpportunities()
@@ -99,6 +124,96 @@ trait SlotOpportunitiesTrait
     public function setBilledRate($billedRate)
     {
         $this->billedRate = $billedRate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    /**
+     * @param int $inBannerRequests
+     * @return self
+     */
+    public function setInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests = $inBannerRequests;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    /**
+     * @param int $inBannerImpressions
+     * @return self
+     */
+    public function setInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions = $inBannerImpressions;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
+    }
+
+    /**
+     * @param int $inBannerTimeouts
+     * @return self
+     */
+    public function setInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts = $inBannerTimeouts;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInBannerBilledRate()
+    {
+        return $this->inBannerBilledRate;
+    }
+
+    /**
+     * @param float $inBannerBilledRate
+     * @return self
+     */
+    public function setInBannerBilledRate($inBannerBilledRate)
+    {
+        $this->inBannerBilledRate = $inBannerBilledRate;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInBannerBilledAmount()
+    {
+        return $this->inBannerBilledAmount;
+    }
+
+    /**
+     * @param float $inBannerBilledAmount
+     * @return self
+     */
+    public function setInBannerBilledAmount($inBannerBilledAmount)
+    {
+        $this->inBannerBilledAmount = $inBannerBilledAmount;
+        return $this;
     }
 
     /**

@@ -111,6 +111,17 @@ interface VideoDemandAdTagInterface extends ModelInterface
     public function setLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
 
     /**
+     * @return WaterfallPlacementRuleInterface
+     */
+    public function getWaterfallPlacementRule();
+
+    /**
+     * @param WaterfallPlacementRuleInterface $waterfallPlacementRule
+     * @return self
+     */
+    public function setWaterfallPlacementRule($waterfallPlacementRule);
+
+    /**
      * @return VideoWaterfallTagItemInterface
      */
     public function getVideoWaterfallTagItem();

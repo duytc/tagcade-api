@@ -5,20 +5,25 @@ namespace Tagcade\Service\Core\VideoDemandAdTag;
 
 
 use Doctrine\ORM\EntityManagerInterface;
+use Tagcade\Domain\DTO\Core\WaterfallTagsPlacementRule;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Entity\Core\VideoWaterfallTag;
 use Tagcade\Entity\Core\VideoWaterfallTagItem;
+use Tagcade\Entity\Core\WaterfallPlacementRule;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagItemInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
+use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Repository\Core\VideoWaterfallTagItemRepositoryInterface;
 use Tagcade\Repository\Core\VideoWaterfallTagRepositoryInterface;
 
 class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAdTagServiceInterface
 {
+    use CalculateRatiosTrait;
     /**
      * @var VideoWaterfallTagItemRepositoryInterface
      */
@@ -48,31 +53,41 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
     /**
      * @inheritdoc
      */
-    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = null, $position = null, $shiftDown = false)
+    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = null, $position = null, $shiftDown = false)
     {
         $availableWaterfalls = $this->waterfallTagRepository->getWaterfallTagsNotLinkToLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
         $availableWaterfalls = array_map(function(VideoWaterfallTagInterface $waterfall) {
             return $waterfall->getId();
         }, $availableWaterfalls);
-        $videoWaterfallTags = array_unique($videoWaterfallTags);
 
-        foreach ($videoWaterfallTags as $videoWaterfallTag) {
-            $waterfallTag = $this->waterfallTagRepository->find($videoWaterfallTag);
+        foreach ($videoWaterfallTags as $index => $videoWaterfallTagId) {
+            $waterfallTag = $this->waterfallTagRepository->find($videoWaterfallTagId);
+
             if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
-                throw new InvalidArgumentException(sprintf('Video Waterfall Ad Tag %d does not exist', $videoWaterfallTag));
+                throw new InvalidArgumentException(sprintf('video waterfall tag %d does not exist', $videoWaterfallTagId));
             }
 
-            if (!in_array($videoWaterfallTag, $availableWaterfalls)) {
-                throw new InvalidArgumentException(sprintf('The library %d has already been deployed on the waterfall %d', $libraryVideoDemandAdTag->getId(), $videoWaterfallTag));
+            if (!in_array($videoWaterfallTagId, $availableWaterfalls)) {
+                unset($videoWaterfallTags[$index]);
             }
+        }
+
+        if (!$rule instanceof WaterfallPlacementRuleInterface) {
+            $rule = new WaterfallPlacementRule();
+            $rule->setProfitType(WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL)
+                ->setPublishers([]);
+            ;
         }
 
         $this->em->beginTransaction();
         try {
             foreach ($videoWaterfallTags as $videoWaterfallTag) {
                 $demandAdTag = new VideoDemandAdTag();
-                $demandAdTag->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
-                        ->setTargetingOverride($targetingOverride);
+                $demandAdTag
+                    ->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
+                    ->setTargetingOverride($targetingOverride)
+                    ->setWaterfallPlacementRule($rule)
+                ;
 
                 if ($targetingOverride === true) {
                     $demandAdTag->setTargeting($targeting);
@@ -94,6 +109,12 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
 
                 $tag = $this->waterfallTagRepository->find($videoWaterfallTag);
                 if ($tag instanceof VideoWaterfallTagInterface) {
+                    $tagTargeting = $demandAdTag->getTargeting();
+                    $tagPlatform = array_key_exists(VideoDemandAdTag::TARGETING_KEY_PLATFORM, $tagTargeting) ? $tagTargeting[VideoDemandAdTag::TARGETING_KEY_PLATFORM] : [];
+                    $waterfallPlatform = $tag->getPlatform();
+                    if (count(array_diff($tagPlatform, $waterfallPlatform)) > 0) {
+                        continue;
+                    }
                     $this->deployToSingleWaterfall($demandAdTag, $tag, $position, $shiftDown);
                 }
             }
@@ -102,6 +123,33 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
             $this->em->rollback();
             throw $ex;
         }
+    }
+
+    public function getValidVideoWaterfallTagsForLibraryVideoDemandAdTag(LibraryVideoDemandAdTagInterface $demandAdTag)
+    {
+        $waterfallTags = [];
+        $placementRules = $demandAdTag->getWaterfallPlacementRules();
+
+        /** @var WaterfallPlacementRuleInterface $placementRule */
+        foreach($placementRules as $placementRule) {
+            $tags = $this->waterfallTagRepository->getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(
+                $demandAdTag->getVideoDemandPartner()->getPublisher(),
+                $placementRule->getPublishers(),
+                $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
+            );
+            $waterfallTags[] = new WaterfallTagsPlacementRule($placementRule, $tags);
+        }
+
+        return $waterfallTags;
+    }
+
+    public function getValidVideoWaterfallTagsForPlacementRule(WaterfallPlacementRuleInterface $placementRule)
+    {
+        return $this->waterfallTagRepository->getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(
+            $placementRule->getLibraryVideoDemandAdTag()->getVideoDemandPartner()->getPublisher(),
+            $placementRule->getPublishers(),
+            $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
+        );
     }
 
     /**
@@ -196,5 +244,25 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
 
         $this->em->persist($newWaterfallTagItem);
         $this->em->flush();
+    }
+
+    /**
+     * @param WaterfallPlacementRuleInterface $placementRule
+     * @return null|float
+     */
+    protected function calculateMinimumBuyPriceForPlacementRule(WaterfallPlacementRuleInterface $placementRule)
+    {
+        if ($placementRule->getLibraryVideoDemandAdTag()->getSellPrice() === null) {
+            return null;
+        }
+
+        switch ($placementRule->getProfitType()) {
+            case WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_FIX_MARGIN:
+                return $placementRule->getLibraryVideoDemandAdTag()->getSellPrice() - $placementRule->getProfitValue();
+            case WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN:
+                return $this->getRatio($placementRule->getLibraryVideoDemandAdTag()->getSellPrice() * (100 - $placementRule->getProfitValue()), 100);
+            default:
+                return null;
+        }
     }
 }

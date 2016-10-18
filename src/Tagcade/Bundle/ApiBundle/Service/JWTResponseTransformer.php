@@ -18,6 +18,7 @@ class JWTResponseTransformer
         if ($user instanceof PublisherInterface && !$user instanceof SubPublisherInterface) {
             $data['settings'] = $user->getSettings();
             $data['exchanges'] = $user->getExchanges();
+            $data['tagDomain'] = $user->getTagDomain();
         }
 
         if ($user instanceof SubPublisherInterface) {

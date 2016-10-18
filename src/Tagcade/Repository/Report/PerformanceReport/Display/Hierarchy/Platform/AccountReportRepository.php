@@ -64,12 +64,12 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return $result;
     }
 
-    public function getSumSlotHbRequests(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    public function getSumSlotInBannerImpressions(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
 
         $result = $qb
-            ->select('SUM(r.hbRequests) as total')
+            ->select('SUM(r.inBannerImpressions) as total')
             ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->andWhere('r.publisher = :publisher')
             ->setParameter('start_date', $startDate, Type::DATE)

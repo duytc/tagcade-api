@@ -26,6 +26,7 @@ class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, Video
     /** @var VideoDemandPartnerInterface */
     protected $videoDemandPartner;
     protected $videoDemandAdTags;
+    protected $waterfallPlacementRules;
 
     /**
      * @inheritdoc
@@ -152,6 +153,23 @@ class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, Video
     public function getVideoDemandAdTags()
     {
         return $this->videoDemandAdTags;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWaterfallPlacementRules()
+    {
+        return $this->waterfallPlacementRules;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setWaterfallPlacementRules($waterfallPlacementRules)
+    {
+        $this->waterfallPlacementRules = $waterfallPlacementRules;
+        return $this;
     }
 
     /**
