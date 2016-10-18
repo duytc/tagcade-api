@@ -18,7 +18,7 @@ $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache);
-$cacheEventCounter->setDate(new DateTime('yesterday'));
+$cacheEventCounter->setDate(new DateTime('2016-10-07'));
 
 foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
     if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY, $slotData)) {

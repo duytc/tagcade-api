@@ -35,7 +35,12 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             SUM(r.impressions) as impressions,
             SUM(r.rtbImpressions) as rtbImpressions,
             SUM(r.passbacks) as passbacks,
-            SUM(r.billedAmount) as billedAmount
+            SUM(r.billedAmount) as billedAmount,
+            SUM(r.inBannerRequests) as inBannerRequests,
+            SUM(r.inBannerBilledAmount) as inBannerBilledAmount,
+            SUM(r.inBannerBilledRate) as inBannerBilledRate,
+            SUM(r.inBannerTimeouts) as inBannerTimeouts,
+            SUM(r.inBannerImpressions) as inBannerImpressions
             '
         );
 
