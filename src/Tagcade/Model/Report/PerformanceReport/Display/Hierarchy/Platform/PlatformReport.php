@@ -58,8 +58,8 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setInBannerRequests($data['inBannerRequests']);
         }
 
-        if (array_key_exists('inBannerRequests', $data)) {
-            $this->setInBannerTimeouts($data['inBannerRequests']);
+        if (array_key_exists('inBannerTimeouts', $data)) {
+            $this->setInBannerTimeouts($data['inBannerTimeouts']);
         }
 
         return $this;
