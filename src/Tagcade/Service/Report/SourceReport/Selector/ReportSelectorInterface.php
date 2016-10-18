@@ -23,7 +23,15 @@ interface ReportSelectorInterface {
      * @param array $sites
      * @param DateTime $startDate
      * @param DateTime $endDate
-     * @return mixed
+     * @return array
      */
-    public function getMultipleReports(array $sites, DateTime $startDate, DateTime $endDate);
+    public function getMultipleSiteReports(array $sites, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param array $publishers
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return array
+     */
+    public function getMultiplePublisherReport(array $publishers, DateTime $startDate, DateTime $endDate);
 } 

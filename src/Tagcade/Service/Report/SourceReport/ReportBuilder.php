@@ -42,7 +42,8 @@ class ReportBuilder implements ReportBuilderInterface
     public function getPublisherReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $sites = $this->siteManager->getSitesForPublisher($publisher);
-        return $this->reportSelector->getMultipleReports($sites, $startDate, $endDate);
+        return $this->reportSelector->getMultipleSiteReports($sites, $startDate, $endDate);
     }
+
 
 }

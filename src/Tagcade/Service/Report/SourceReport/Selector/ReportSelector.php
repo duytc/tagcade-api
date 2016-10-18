@@ -7,6 +7,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\SourceReport\ReportInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Service\DateUtil;
@@ -109,6 +110,53 @@ class ReportSelector implements ReportSelectorInterface
             }
 
             $reports[] = $this->getReports($site, $startDate, $endDate);
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        $reportCollection = new ReportCollection($startDate, $endDate, $reports);
+
+        return $this->reportGrouper->groupReports($reportCollection);
+    }
+
+    public function getMultipleSiteReports(array $sites, DateTime $startDate, DateTime $endDate)
+    {
+        $reports = [];
+        $reportName = null;
+        foreach($sites as $site) {
+            if (!$site instanceof SiteInterface) {
+                throw new InvalidArgumentException('expect "SiteInterface" object');
+            }
+
+            if (null === $reportName) {
+                $reportName = $site->getPublisher()->getUser()->getUsername();
+            }
+
+            $reports[] = $this->getReports($site, $startDate, $endDate);
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        $reportCollection = new ReportCollection($startDate, $endDate, $reports, $reportName);
+
+        return $this->reportGrouper->groupReports($reportCollection);
+    }
+
+    public function getMultiplePublisherReport(array $publishers, DateTime $startDate, DateTime $endDate)
+    {
+        $reports = [];
+
+        foreach($publishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                throw new InvalidArgumentException('expect "PublisherInterface" object');
+            }
+
+            $sites = $this->siteRepository->getSitesForPublisher($publisher);
+            $reports[] = $this->getMultipleSiteReports($sites, $startDate, $endDate);
         }
 
         if (empty($reports)) {
