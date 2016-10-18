@@ -30,6 +30,35 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
      */
     protected $publishers;
 
+    /**
+     * @var integer
+     */
+    protected $position;
+
+    /**
+     * @var integer
+     */
+    protected $rotationWeight;
+
+    /**
+     * @var integer
+     */
+    protected $priority;
+
+    /**
+     * @var array
+     */
+    protected $waterfalls;
+
+    /**
+     * @var boolean
+     */
+    protected $active;
+
+    /**
+     * @var boolean
+     */
+    protected $shiftDown;
 
     protected $deletedAt;
 
@@ -109,6 +138,115 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
         $this->publishers = $publishers;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     * @return self
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRotationWeight()
+    {
+        return $this->rotationWeight;
+    }
+
+    /**
+     * @param int $rotationWeight
+     * @return self
+     */
+    public function setRotationWeight($rotationWeight)
+    {
+        $this->rotationWeight = $rotationWeight;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     * @return self
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWaterfalls()
+    {
+        return $this->waterfalls;
+    }
+
+    /**
+     * @param array $waterfalls
+     * @return self
+     */
+    public function setWaterfalls($waterfalls)
+    {
+        $this->waterfalls = $waterfalls;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param boolean $active
+     * @return self
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShiftDown()
+    {
+        return $this->shiftDown;
+    }
+
+    /**
+     * @param boolean $shiftDown
+     * @return self
+     */
+    public function setShiftDown($shiftDown)
+    {
+        $this->shiftDown = $shiftDown;
+        return $this;
+    }
+
 
     /**
      * @return mixed
