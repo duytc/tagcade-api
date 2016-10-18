@@ -10,7 +10,7 @@ class BillingConfiguration implements BillingConfigurationInterface
     const BILLING_FACTOR_SLOT_OPPORTUNITY = 'SLOT_OPPORTUNITY';
     const BILLING_FACTOR_VIDEO_IMPRESSION = 'VIDEO_IMPRESSION';
     const BILLING_FACTOR_VIDEO_VISIT = 'VISIT';
-    const BILLING_HEADER_BID_REQUEST = 'BID_REQUEST';
+    const BILLING_FACTOR_HEADER_BID_REQUEST = 'BID_REQUEST';
 
     const THRESHOLD_KEY = 'threshold';
     const CPM_KEY = 'cpmRate';
