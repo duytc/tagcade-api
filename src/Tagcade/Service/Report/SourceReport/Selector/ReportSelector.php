@@ -100,6 +100,11 @@ class ReportSelector implements ReportSelectorInterface
         return $this->reportGrouper->groupReports($reportCollection);
     }
 
+    public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    {
+        return $this->repository->getBillingReportForPublisherByDay($publisher, $startDate, $endDate);
+    }
+
     public function getMultipleReports(array $sites, DateTime $startDate, DateTime $endDate)
     {
         $reports = [];

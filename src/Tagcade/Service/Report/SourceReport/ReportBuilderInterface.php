@@ -25,4 +25,20 @@ interface ReportBuilderInterface
      * @return mixed
      */
     public function getPublisherReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param array $publishers
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getPublisherReports(array $publishers, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 }

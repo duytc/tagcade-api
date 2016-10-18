@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\SourceReport\Selector;
 
 use DateTime;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface ReportSelectorInterface {
 
@@ -34,4 +35,12 @@ interface ReportSelectorInterface {
      * @return array
      */
     public function getMultiplePublisherReport(array $publishers, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 } 

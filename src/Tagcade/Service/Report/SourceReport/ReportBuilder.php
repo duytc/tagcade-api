@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\SourceReport;
 
 
 use DateTime;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -23,14 +24,21 @@ class ReportBuilder implements ReportBuilderInterface
     protected $siteManager;
 
     /**
+     * @var PublisherManagerInterface
+     */
+    protected $publisherManager;
+
+    /**
      * ReportBuilder constructor.
      * @param ReportSelectorInterface $reportSelector
      * @param SiteManagerInterface $siteManager
+     * @param PublisherManagerInterface $publisherManager
      */
-    public function __construct(ReportSelectorInterface $reportSelector, SiteManagerInterface $siteManager)
+    public function __construct(ReportSelectorInterface $reportSelector, SiteManagerInterface $siteManager, PublisherManagerInterface $publisherManager)
     {
         $this->reportSelector = $reportSelector;
         $this->siteManager = $siteManager;
+        $this->publisherManager = $publisherManager;
     }
 
 
@@ -39,11 +47,19 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->reportSelector->getReports($site, $startDate, $endDate);
     }
 
+    public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    {
+        return $this->reportSelector->getPublisherByDayReport($publisher, $startDate, $endDate);
+    }
+
     public function getPublisherReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $sites = $this->siteManager->getSitesForPublisher($publisher);
         return $this->reportSelector->getMultipleSiteReports($sites, $startDate, $endDate);
     }
 
-
+    public function getPublisherReports(array $publishers, DateTime $startDate, DateTime $endDate)
+    {
+        // TODO: Implement getPublisherReports() method.
+    }
 }

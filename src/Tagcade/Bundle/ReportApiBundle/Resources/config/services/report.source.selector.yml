@@ -26,3 +26,4 @@ services:
         arguments:
             - @tagcade.service.report.source_report.selector.report_selector
             - @tagcade.domain_manager.site
+            - @tagcade_user.domain_manager.publisher

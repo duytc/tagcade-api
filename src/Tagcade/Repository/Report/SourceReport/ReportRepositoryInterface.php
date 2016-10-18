@@ -57,4 +57,12 @@ interface ReportRepositoryInterface
      * @return mixed
      */
     public function getSourceReportsForPublisher(PublisherInterface $publisher, DateTime $dateTime);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getBillingReportForPublisherByDay(PublisherInterface $publisher, DateTime $startDate , DateTime $endDate);
 }

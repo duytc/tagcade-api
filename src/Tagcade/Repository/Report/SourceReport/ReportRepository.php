@@ -128,4 +128,21 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
                 ->getQuery()
                 ->getResult();
     }
+
+    public function getBillingReportForPublisherByDay(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.site', 'st')
+            ->select('SUM(r.visits) as visits')
+            ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
+            ->addSelect('SUM(r.billedAmount) as billedAmount')
+            ->addSelect('r.date as date')
+            ->addSelect('AVG(r.visits) as averageVisits')
+            ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
+            ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
+            ->addGroupBy('r.date')
+            ->where('st.publisher = :publisher')
+            ->setParameter('publisher', $publisher)
+            ->getQuery()->getScalarResult();
+    }
 }

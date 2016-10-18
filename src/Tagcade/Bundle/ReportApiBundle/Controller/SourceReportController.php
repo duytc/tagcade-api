@@ -101,7 +101,7 @@ class SourceReportController extends FOSRestController
             throw new NotFoundHttpException('This publisher does not exist or you do not have access');
         }
 
-        $reports = $this->get('tagcade.service.report.source_report.report_builder')->getPublisherReport($publisher, $startDate, $endDate);
+        $reports = $this->get('tagcade.service.report.source_report.report_builder')->getPublisherByDayReport($publisher, $startDate, $endDate);
 
         if (!$reports) {
             throw new NotFoundHttpException('No Reports found for that query');
