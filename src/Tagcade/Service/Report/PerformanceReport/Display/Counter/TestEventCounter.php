@@ -83,11 +83,9 @@ class TestEventCounter extends AbstractEventCounter
             }
 
             if ($adSlot instanceof DisplayAdSlotInterface) {
-                $this->adSlotData[$adSlot->getId()] = [
-                    static::KEY_IN_BANNER_REQUESTS => $inBannerRequests,
-                    static::KEY_IN_BANNER_IMPRESSIONS => $inBannerImpressions,
-                    static::KEY_IN_BANNER_TIMEOUT => $inBannerRequests - $inBannerImpressions
-                ];
+                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
+                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
+                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT] = $inBannerRequests - $inBannerImpressions;
             }
 
             $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
