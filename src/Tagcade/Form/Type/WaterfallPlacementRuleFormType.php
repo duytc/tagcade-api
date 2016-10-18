@@ -25,6 +25,8 @@ class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
             ->add('waterfalls')
             ->add('position')
             ->add('priority')
+            ->add('active')
+            ->add('shiftDown')
             ->add('rotationWeight')
             ;
     }
