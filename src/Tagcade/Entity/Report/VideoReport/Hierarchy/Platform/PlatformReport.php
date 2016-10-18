@@ -8,7 +8,7 @@ class PlatformReport  extends VideoPlatformReportModel
 {
     protected $id;
     protected $date;
-    protected $request;
+    protected $requests;
     protected $bids;
     protected $bidRate;
     protected $errors;

@@ -1,6 +1,7 @@
 parameters:
     tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class: Tagcade\Service\Report\PerformanceReport\Display\Billing\CpmRateGetter
     tagcade.service.report.video_report.billing.cpm_rate_getter.class: Tagcade\Service\Report\VideoReport\Billing\CpmRateGetter
+    tagcade.service.report.source_report.billing.cpm_rate_getter.class: Tagcade\Service\Report\SourceReport\Billing\CpmRateGetter
 services:
 
     ### service billing rate
@@ -45,6 +46,7 @@ services:
         arguments:
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+            - @tagcade.repository.report.header_bidding.hierarchy.platform.account
             - @tagcade.service.date_util
 
     tagcade.service.report.video_report.billing.billing_calculator:
@@ -53,6 +55,40 @@ services:
             - @tagcade.service.report.video_report.billing.cpm_rate_getter
             - @tagcade.repository.report.video_report.hierarchy.platform.account
             - @tagcade.service.date_util
+
+    tagcade.service.report.source_report.billing.billing_calculator:
+        class: Tagcade\Service\Report\SourceReport\Billing\BillingCalculator
+        arguments:
+            - @tagcade.service.report.source_report.billing.cpm_rate_getter
+            - @tagcade.repository.source_report.report
+            - @tagcade.service.date_util
+
+    tagcade.service.report.source_report.billing.cpm_rate_getter_config:
+        public: false
+        class: %tagcade.service.report.source_report.billing.cpm_rate_getter.class%
+        factory_class: %tagcade.service.report.source_report.billing.cpm_rate_getter.class%
+        factory_method: createConfig
+        arguments:
+            - %tc.display.billing.thresholds%
+
+    tagcade.service.report.source_report.billing.cpm_rate_getter:
+        class: '%tagcade.service.report.source_report.billing.cpm_rate_getter.class%'
+        arguments:
+            - @tagcade.service.report.source_report.billing.cpm_rate_getter_config
+            - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
+            - @tagcade.service.date_util
+            - @tagcade.repository.billing_configuration
+            - @tagcade.repository.source_report.report
+            - @tagcade.repository.report.video_report.hierarchy.platform.account
+
+    tagcade.service.report.source_report.billing.billing_rate_and_amount_editor:
+        class: Tagcade\Service\Report\SourceReport\Billing\BilledRateAndAmountEditor
+        arguments:
+            - @tagcade.domain_manager.site
+            - @doctrine.orm.entity_manager
+            - @tagcade.service.report.source_report.billing.billing_calculator
+            - @tagcade.repository.source_report.report
+            - @tagcade.repository.billing_configuration
 
     tagcade.service.report.performance_report.display.billing.billed_amount_editor:
         class: Tagcade\Service\Report\PerformanceReport\Display\Billing\BilledAmountEditor

@@ -22,17 +22,4 @@ class AccountReport extends AccountReportModel
     protected $estRevenue;
     protected $estCpm;
     protected $rtbImpressions;
-    /**
-     * @var int
-     */
-    protected $hbRequests;
-    /**
-     * @var float
-     */
-    protected $hbBilledAmount;
-
-    /**
-     * @var float
-     */
-    protected $hbBilledRate;
 }

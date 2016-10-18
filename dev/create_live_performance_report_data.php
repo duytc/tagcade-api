@@ -10,7 +10,7 @@ $container = $kernel->getContainer();
 
 $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
 
-$testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->allReportableAdSlots());
+$testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($adSlotManager->all());
 $testEventCounter->refreshTestData();
 
 $redis = new RedisArray(['localhost']);
@@ -21,28 +21,32 @@ $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Count
 $cacheEventCounter->setDate(new DateTime('yesterday'));
 
 foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
-    $cache->save(
-        $cacheEventCounter->getCacheKey(
-            $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY,
-            $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-        ),
-        $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
-    );
+    if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
+        );
+    }
 
+    if (array_key_exists($testEventCounter::KEY_RTB_IMPRESSION, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_RTB_IMPRESSION,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_RTB_IMPRESSION]
+        );
+    }
+    
     $cache->save(
         $cacheEventCounter->getCacheKey(
             $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,
             $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
         ),
         $slotData[$testEventCounter::KEY_HB_BID_REQUEST]
-    );
-
-    $cache->save(
-        $cacheEventCounter->getCacheKey(
-            $cacheEventCounter::CACHE_KEY_RTB_IMPRESSION,
-            $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-        ),
-        $slotData[$testEventCounter::KEY_RTB_IMPRESSION]
     );
 
     unset($slotId, $slotData);

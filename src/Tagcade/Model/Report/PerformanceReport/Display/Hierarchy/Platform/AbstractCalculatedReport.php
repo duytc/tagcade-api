@@ -24,8 +24,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->slotOpportunities = 0;
         $this->billedAmount = 0;
         $this->rtbImpressions = 0;
-        $this->hbRequests = 0;
-        $this->hbBilledAmount = 0;
 
         parent::doCalculateFields();
     }
@@ -33,14 +31,12 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     public function setThresholdBilledAmount($chainToSubReports = true)
     {
         $this->billedAmount = 0;
-        $this->hbBilledAmount = 0;
         foreach ($this->subReports as $subReport) {
             if ($chainToSubReports === true && $subReport instanceof AbstractCalculatedReport) {
                 $subReport->setThresholdBilledAmount(); // chain the calls to setCalculatedFields
             }
 
             $this->addBilledAmount($subReport->getBilledAmount());
-            $this->addHbBilledAmount($subReport->getHbBilledAmount());
 
             unset($subReport);
         }
@@ -57,9 +53,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     {
         $weightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'billedRate', 'billedAmount');
         $this->setBilledRate($weightedCpmRate);
-
-        $hbWeightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'hbBilledRate', 'hbBilledAmount');
-        $this->setHbBilledRate($hbWeightedCpmRate);
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)
@@ -70,9 +63,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
         $this->addSlotOpportunities($subReport->getSlotOpportunities());
         $this->addRtbImpressions($subReport->getRtbImpressions());
-        $this->addHbRequests($subReport->getHbRequests());
         $this->addBilledAmount($subReport->getBilledAmount());
-        $this->addHbBilledAmount($subReport->getHbBilledAmount());
 
         parent::aggregateSubReport($subReport);
 
@@ -88,18 +79,8 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->rtbImpressions += $rtbImpressions;
     }
 
-    protected function addHbRequests($hbRequests)
-    {
-        $this->hbRequests += $hbRequests;
-    }
-
     protected function addBilledAmount($billedAmount)
     {
         $this->billedAmount += (float)$billedAmount;
-    }
-
-    protected function addHbBilledAmount($hbBilledAmount)
-    {
-        $this->hbBilledAmount += (float)$hbBilledAmount;
     }
 }

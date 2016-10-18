@@ -7,6 +7,8 @@ use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
@@ -56,6 +58,9 @@ class TestEventCounter extends AbstractEventCounter
         $this->ronAdTagData = [];
         $this->ronAdTagSegmentData = [];
 
+        /**
+         * @var BaseAdSlotInterface $adSlot
+         */
         foreach($this->adSlots as $adSlot) {
             $this->seedRandomGenerator();
 
@@ -64,12 +69,15 @@ class TestEventCounter extends AbstractEventCounter
             $hbRequests = mt_rand(0, $rtbImpressions);
             $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
 
+            if (!$adSlot instanceof DynamicAdSlotInterface) {
+                $this->adSlotData[$adSlot->getId()] = [
+                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
+                    static::KEY_RTB_IMPRESSION => $rtbImpressions
+                ];
+            }
 
-            $this->adSlotData[$adSlot->getId()] = [
-                static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
-                static::KEY_RTB_IMPRESSION => $rtbImpressions,
-                static::KEY_HB_BID_REQUEST => $hbRequests,
-            ];
+            $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
+
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
             if ($ronAdSlot instanceof RonAdSlotInterface) {

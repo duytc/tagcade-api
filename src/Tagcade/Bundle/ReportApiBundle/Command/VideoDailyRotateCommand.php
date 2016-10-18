@@ -53,7 +53,7 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $videoDemandPartnerManager = $container->get('tagcade.domain_manager.video_demand_partner');
         $dailyVideoReportCreator = $this->getContainer()->get('tagcade.service.report.video_report.creator.daily_report_creator');
-        $allPublishers = $publisherManager->allActivePublishers();
+        $allPublishers = $publisherManager->allPublisherWithVideoModule();
         /* create video reports */
         $dailyVideoReportCreator
             ->setReportDate($date)

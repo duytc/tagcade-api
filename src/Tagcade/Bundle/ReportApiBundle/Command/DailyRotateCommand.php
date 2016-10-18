@@ -69,6 +69,12 @@ class DailyRotateCommand extends ContainerAwareCommand
         $allPublishers = $publisherManager->allActivePublishers();
         $this->rotateAccountReports($date, $allPublishers, $timeout, $logger, $override);
 
+        // Creating header bidding reports
+        $this->rotateHeaderBiddingReports($date, $timeout, $logger, $override);
+
+        // creating video reports
+        $this->rotateVideoReports($date, $timeout, $logger, $override);
+
         // Creating platform reports
         $dailyReportCreator->setReportDate($date);
         $dailyReportCreator->createPlatformReport($date, $override);
@@ -144,6 +150,27 @@ class DailyRotateCommand extends ContainerAwareCommand
             $logger->info(sprintf('finished daily rotate for ad network %d', $id));
         }
     }
+
+    protected function rotateHeaderBiddingReports(DateTime $date, $timeout, LoggerInterface $logger, $override = false)
+    {
+        $logger->info(sprintf('start rotating header bidding report'));
+
+        $cmd = sprintf('%s tc:header-bidding-report:daily-rotate --date %s %s', $this->getAppConsoleCommand(), $date->format('Y-m-d'), $override === true ? '--force' : '');
+        $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
+
+        $logger->info(sprintf('finish rotating header bidding report'));
+    }
+
+    protected function rotateVideoReports(DateTime $date, $timeout, LoggerInterface $logger, $override = false)
+    {
+        $logger->info(sprintf('start rotating video report'));
+
+        $cmd = sprintf('%s tc:video-report:daily-rotate --date %s %s', $this->getAppConsoleCommand(), $date->format('Y-m-d'), $override === true ? '--force' : '');
+        $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
+
+        $logger->info(sprintf('finish rotating video report'));
+    }
+
 
     protected function rotateAccountReports(DateTime $date, array $publishers, $timeout, LoggerInterface $logger, $override = false)
     {

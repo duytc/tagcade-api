@@ -1,0 +1,12 @@
+Tagcade\Model\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReport:
+    exclusion_policy: NONE
+    virtual_properties:
+        getPublisherId:
+            type: integer
+        getPublisherName:
+            type: string
+    properties:
+        publisher:
+            exclude: true
+        superReport:
+            exclude: true

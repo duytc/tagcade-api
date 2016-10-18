@@ -256,7 +256,7 @@ class ReportSelector implements ReportSelectorInterface
             }
         }
 
-        throw new \Exception(sprintf('Not found selector for that report type %', $reportType->getReportType()));
+        throw new \Exception(sprintf('Not found selector for that report type %s', $reportType->getReportType()));
     }
 
     /**

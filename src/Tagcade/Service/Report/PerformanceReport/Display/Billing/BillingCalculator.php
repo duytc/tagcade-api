@@ -7,6 +7,7 @@ use Tagcade\Domain\DTO\Report\RateAmount;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
+use Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReportRepositoryInterface as AccountHeaderBiddingReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\Behaviors\CalculateBilledAmountTrait;
 
@@ -22,16 +23,23 @@ class BillingCalculator implements BillingCalculatorInterface
      * @var AccountReportRepositoryInterface
      */
     private $accountReportRepository;
+
+    /**
+     * @var AccountHeaderBiddingReportRepositoryInterface
+     */
+    private $accountHeaderBiddingReportRepository;
     /**
      * @var DateUtilInterface
      */
     private $dateUtil;
 
-    function __construct(CpmRateGetterInterface $defaultRateGetter, AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil)
+    function __construct(CpmRateGetterInterface $defaultRateGetter, AccountReportRepositoryInterface $accountReportRepository,
+                         AccountHeaderBiddingReportRepositoryInterface $accountHeaderBiddingReportRepository, DateUtilInterface $dateUtil)
     {
         $this->cpmRateGetter = $defaultRateGetter;
         $this->accountReportRepository = $accountReportRepository;
         $this->dateUtil = $dateUtil;
+        $this->accountHeaderBiddingReportRepository = $accountHeaderBiddingReportRepository;
     }
 
     public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
@@ -60,7 +68,7 @@ class BillingCalculator implements BillingCalculatorInterface
         }
 
         $date = new DateTime('yesterday');
-        $weight = $this->accountReportRepository->getSumSlotHbRequests(
+        $weight = $this->accountHeaderBiddingReportRepository->getSumSlotHbRequests(
             $publisher,
             $this->dateUtil->getFirstDateInMonth($date),
             $this->dateUtil->getLastDateInMonth($date)

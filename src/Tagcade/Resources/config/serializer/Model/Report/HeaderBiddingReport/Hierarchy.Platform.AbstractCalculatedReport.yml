@@ -1,0 +1,7 @@
+Tagcade\Model\Report\HeaderBiddingReport\Hierarchy\Platform\AbstractCalculatedReport:
+    exclusion_policy: NONE
+    properties:
+        billedAmount:
+            type: double
+        billedRate:
+            type: double

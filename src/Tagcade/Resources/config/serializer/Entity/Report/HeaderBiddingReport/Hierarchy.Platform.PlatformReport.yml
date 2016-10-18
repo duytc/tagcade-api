@@ -1,0 +1,16 @@
+Tagcade\Entity\Report\HeaderBiddingReport\Hierarchy\Platform\PlatformReport:
+    exclusion_policy: ALL
+    properties:
+        date:
+            expose: true
+            groups: [header_bidding_platform_report.detail, header_bidding_platform_report.summary]
+            type: DateTime<'Y-m-d'>
+        billedAmount:
+            expose: true
+            groups: [header_bidding_platform_report.detail, header_bidding_platform_report.summary]
+        billedRate:
+            expose: true
+            groups: [header_bidding_platform_report.detail, header_bidding_platform_report.summary]
+        requests:
+            expose: true
+            groups: [header_bidding_platform_report.detail, header_bidding_platform_report.summary]
