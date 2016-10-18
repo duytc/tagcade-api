@@ -4,13 +4,15 @@
 namespace Tagcade\Service\Report\SourceReport\Result\Group;
 
 
+use DateTime;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\SourceReport\ReportInterface;
 use Tagcade\Service\Report\SourceReport\Result\ReportResultInterface;
 
-class ReportGroup implements ReportResultInterface
+class ReportGroup implements ReportResultInterface, ReportInterface
 {
     protected $reports;
     protected $name;
-    protected $date;
     protected $startDate;
     protected $endDate;
 
@@ -44,7 +46,6 @@ class ReportGroup implements ReportResultInterface
      * ReportGroup constructor.
      * @param $reports
      * @param $name
-     * @param $date
      * @param $startDate
      * @param $endDate
      * @param $displayOpportunities
@@ -72,13 +73,12 @@ class ReportGroup implements ReportResultInterface
      * @param $averagePageViews
      * @param $averageBilledAmount
      */
-    public function __construct($reports, $name, $date, $startDate, $endDate, $displayOpportunities, $displayImpressions, $displayFillRate,
+    public function __construct($reports, $name, $startDate, $endDate, $displayOpportunities, $displayImpressions, $displayFillRate,
         $displayClicks, $displayCTR, $displayIPV, $videoPlayerReady, $videoAdPlays, $videoAdImpressions, $videoAdCompletions, $videoAdCompletionRate,
         $videoIPV, $videoAdClicks, $videoStarts, $videoEnds, $visits, $pageViews, $qtos, $qtosPercentage, $billedRate, $billedAmount, $averageVisits, $averagePageViews, $averageBilledAmount)
     {
         $this->reports = $reports;
         $this->name = $name;
-        $this->date = $date;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
 
@@ -122,14 +122,6 @@ class ReportGroup implements ReportResultInterface
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDate()
-    {
-        return $this->date;
     }
 
     /**
@@ -338,5 +330,20 @@ class ReportGroup implements ReportResultInterface
     public function getAverageBilledAmount()
     {
         return $this->averageBilledAmount;
+    }
+
+    public function getDate()
+    {
+        // TODO: Implement getDate() method.
+    }
+
+    public function getSite()
+    {
+        // TODO: Implement getSite() method.
+    }
+
+    public function getRecords()
+    {
+        // TODO: Implement getRecords() method.
     }
 }

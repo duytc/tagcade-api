@@ -65,7 +65,29 @@ class SourceReportController extends FOSRestController
         return $reports;
     }
 
-    public function getPublisherReport($publisherId)
+    /**
+     * @Rest\Get("/accounts/{publisherId}", requirements={"publisherId" = "\d+"})
+     *
+     * Get source reports for a site with optional date range.
+     *
+     * @ApiDoc(
+     *  section = "Source Reports",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
+     * @Rest\QueryParam(name="rowOffset", requirements="\d+", nullable=true, description="Order number of rows to skip before rowLimit kicks in")
+     * @Rest\QueryParam(name="rowLimit", requirements="\d+", nullable=true, description="Limit the amount of rows returned in the report")
+     *
+     * @param int $publisherId ID of the publisher you want the report for
+     *
+     * @return array
+     */
+    public function getPublisherReportAction($publisherId)
     {
         $dateUtil = $this->get('tagcade.service.date_util');
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
