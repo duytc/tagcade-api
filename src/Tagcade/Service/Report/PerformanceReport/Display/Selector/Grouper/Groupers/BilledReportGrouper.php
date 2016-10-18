@@ -82,10 +82,10 @@ class BilledReportGrouper extends AbstractGrouper
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
         $this->averageRtbImpressions = $this->getRatio($this->getRtbImpressions(), $reportCount);
 
-        $this->averageInBannerTimeouts = $this->getRatio($this->getAverageInBannerTimeouts(), $reportCount);
-        $this->averageInBannerRequests = $this->getRatio($this->getAverageInBannerRequests(), $reportCount);
-        $this->averageInBannerImpressions = $this->getRatio($this->getAverageInBannerImpressions(), $reportCount);
-        $this->averageInBannerBilledAmount = $this->getRatio($this->getAverageInBannerBilledAmount(), $reportCount);
+        $this->averageInBannerTimeouts = $this->getRatio($this->getInBannerTimeouts(), $reportCount);
+        $this->averageInBannerRequests = $this->getRatio($this->getInBannerRequests(), $reportCount);
+        $this->averageInBannerImpressions = $this->getRatio($this->getInBannerImpressions(), $reportCount);
+        $this->averageInBannerBilledAmount = $this->getRatio($this->getInBannerBilledAmount(), $reportCount);
         $this->averageInBannerBilledRate = $this->calculateWeightedValue($reports, 'inBannerBilledRate', 'inBannerBilledAmount');
     }
 
