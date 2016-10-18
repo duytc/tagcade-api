@@ -105,7 +105,7 @@ trait SlotOpportunitiesTrait
      */
     public function setBilledAmount($billedAmount)
     {
-        $this->billedAmount = $billedAmount;
+        $this->billedAmount = (float) $billedAmount;
 
         return $this;
     }
@@ -123,7 +123,7 @@ trait SlotOpportunitiesTrait
      */
     public function setBilledRate($billedRate)
     {
-        $this->billedRate = $billedRate;
+        $this->billedRate = (float) $billedRate;
     }
 
     /**
@@ -140,7 +140,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerRequests($inBannerRequests)
     {
-        $this->inBannerRequests = $inBannerRequests;
+        $this->inBannerRequests = (int) $inBannerRequests;
         return $this;
     }
 
@@ -158,7 +158,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerImpressions($inBannerImpressions)
     {
-        $this->inBannerImpressions = $inBannerImpressions;
+        $this->inBannerImpressions = (int) $inBannerImpressions;
         return $this;
     }
 
@@ -176,7 +176,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerTimeouts($inBannerTimeouts)
     {
-        $this->inBannerTimeouts = $inBannerTimeouts;
+        $this->inBannerTimeouts = (int) $inBannerTimeouts;
         return $this;
     }
 
@@ -194,7 +194,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerBilledRate($inBannerBilledRate)
     {
-        $this->inBannerBilledRate = $inBannerBilledRate;
+        $this->inBannerBilledRate = (float) $inBannerBilledRate;
         return $this;
     }
 
@@ -212,7 +212,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerBilledAmount($inBannerBilledAmount)
     {
-        $this->inBannerBilledAmount = $inBannerBilledAmount;
+        $this->inBannerBilledAmount = (float) $inBannerBilledAmount;
         return $this;
     }
 
