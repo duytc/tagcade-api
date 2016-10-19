@@ -33,9 +33,9 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const KEY_VOID_IMPRESSION        = 'void_impressions';
     const KEY_CLICK                  = 'clicks';
-    const KEY_IN_BANNER_REQUESTS     = 'in_banner_requests';
-    const KEY_IN_BANNER_IMPRESSIONS  = 'in_banner_impressions';
-    const KEY_IN_BANNER_TIMEOUT      = 'in_banner_timeout';
+    const KEY_IN_BANNER_REQUESTS     = 'requests';
+    const KEY_IN_BANNER_IMPRESSIONS  = 'impressions';
+    const KEY_IN_BANNER_TIMEOUT      = 'timeouts';
 
     protected $adSlots;
     protected $adSlotData = [];
