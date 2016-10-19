@@ -12,6 +12,7 @@ class ReportCollection implements ReportResultInterface
 {
     protected $startDate;
     protected $endDate;
+    protected $date;
     protected $reports;
     protected $name;
 
@@ -27,6 +28,10 @@ class ReportCollection implements ReportResultInterface
         $this->endDate = $endDate;
         $this->name = $name;
         $this->reports = $reports;
+
+        if ($startDate == $endDate) {
+            $this->date = $startDate;
+        }
     }
 
     /**
@@ -64,5 +69,10 @@ class ReportCollection implements ReportResultInterface
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
     }
 }

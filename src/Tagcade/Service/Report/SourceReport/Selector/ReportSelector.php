@@ -2,7 +2,10 @@
 
 namespace Tagcade\Service\Report\SourceReport\Selector;
 
+use DateInterval;
+use DatePeriod;
 use DateTime;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\SiteInterface;
@@ -28,6 +31,11 @@ class ReportSelector implements ReportSelectorInterface
     protected $siteRepository;
 
     /**
+     * @var PublisherManagerInterface
+     */
+    protected $publisherManager;
+
+    /**
      * @var DateUtil
      */
     protected $dateUtil;
@@ -42,13 +50,16 @@ class ReportSelector implements ReportSelectorInterface
      * @param DateUtil $dateUtil
      * @param SiteRepositoryInterface $siteRepository
      * @param ReportGrouperInterface $reportGrouper
+     * @param PublisherManagerInterface $publisherManager
      */
-    public function __construct(ReportRepositoryInterface $repository, DateUtil $dateUtil, SiteRepositoryInterface $siteRepository, ReportGrouperInterface $reportGrouper)
+    public function __construct(ReportRepositoryInterface $repository, DateUtil $dateUtil, SiteRepositoryInterface $siteRepository,
+                                ReportGrouperInterface $reportGrouper, PublisherManagerInterface $publisherManager)
     {
         $this->repository = $repository;
         $this->dateUtil = $dateUtil;
         $this->siteRepository = $siteRepository;
         $this->reportGrouper = $reportGrouper;
+        $this->publisherManager = $publisherManager;
     }
 
     /**
@@ -102,89 +113,124 @@ class ReportSelector implements ReportSelectorInterface
 
     public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPublisherByDay($publisher, $startDate, $endDate);
+        $end = $endDate->modify('+1 day');
+        $interval = new DateInterval('P1D');
+        $dateRange = new DatePeriod($startDate, $interval ,$end);
+        $sites = $this->siteRepository->getSitesForPublisher($publisher);
+        $reports = [];
+        foreach($dateRange as $date) {
+            $report = $this->getMultipleSiteReports($sites, $date, $date);
+            if ($report instanceof ReportInterface) {
+                $reports[] = $report;
+            }
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        $reportCollection = new ReportCollection($startDate, $endDate, $reports);
+
+        return $this->reportGrouper->groupReports($reportCollection);
     }
 
     public function getPublisherBySiteReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPublisherBySite($publisher, $startDate, $endDate);
+        $sites = $this->siteRepository->getSitesForPublisher($publisher);
+        return $this->getMultipleSiteReports($sites, $startDate, $endDate);
     }
 
     public function getPlatformByDayReport(DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPlatformByDay($startDate, $endDate);
+        $end = $endDate->modify('+1 day');
+        $interval = new DateInterval('P1D');
+        $dateRange = new DatePeriod($startDate, $interval ,$end);
+        $publishers = $this->publisherManager->allPublisherWithSourceReportModule();
+        $reports = [];
+
+        foreach($dateRange as $date) {
+            $report = $this->getMultiplePublisherReport($publishers, $date, $date);
+            if ($report instanceof ReportInterface) {
+                $reports[] = $report;
+            }
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        $reportCollection = new ReportCollection($startDate, $endDate, $reports);
+
+        return $this->reportGrouper->groupReports($reportCollection);
     }
 
     public function getPlatformByPublisherReport(DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPlatformByPublisher($startDate, $endDate);
+        $publishers = $this->publisherManager->allPublisherWithSourceReportModule();
+        return $this->getMultiplePublisherReport($publishers, $startDate, $endDate);
+    }
+    /**
+     * @param array $sites
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return bool|ReportInterface
+     */
+    protected function getMultipleSiteReports(array $sites, DateTime $startDate, DateTime $endDate)
+    {
+        $reports = [];
+        $reportName = null;
+        foreach($sites as $site) {
+            if (!$site instanceof SiteInterface) {
+                throw new InvalidArgumentException('expect "SiteInterface" object');
+            }
+
+            if (null === $reportName) {
+                $reportName = $site->getPublisher()->getUser()->getUsername();
+            }
+
+            $report = $this->getReports($site, $startDate, $endDate);
+            if ($report instanceof ReportInterface) {
+                $reports[] = $report;
+            }
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        $reportCollection = new ReportCollection($startDate, $endDate, $reports, $reportName);
+
+        return $this->reportGrouper->groupReports($reportCollection);
     }
 
-//    public function getMultipleReports(array $sites, DateTime $startDate, DateTime $endDate)
-//    {
-//        $reports = [];
-//
-//        foreach($sites as $site) {
-//            if (!$site instanceof SiteInterface) {
-//                throw new InvalidArgumentException('expect "SiteInterface" object');
-//            }
-//
-//            $reports[] = $this->getReports($site, $startDate, $endDate);
-//        }
-//
-//        if (empty($reports)) {
-//            return false;
-//        }
-//
-//        $reportCollection = new ReportCollection($startDate, $endDate, $reports);
-//
-//        return $this->reportGrouper->groupReports($reportCollection);
-//    }
-//
-//    public function getMultipleSiteReports(array $sites, DateTime $startDate, DateTime $endDate)
-//    {
-//        $reports = [];
-//        $reportName = null;
-//        foreach($sites as $site) {
-//            if (!$site instanceof SiteInterface) {
-//                throw new InvalidArgumentException('expect "SiteInterface" object');
-//            }
-//
-//            if (null === $reportName) {
-//                $reportName = $site->getPublisher()->getUser()->getUsername();
-//            }
-//
-//            $reports[] = $this->getReports($site, $startDate, $endDate);
-//        }
-//
-//        if (empty($reports)) {
-//            return false;
-//        }
-//
-//        $reportCollection = new ReportCollection($startDate, $endDate, $reports, $reportName);
-//
-//        return $this->reportGrouper->groupReports($reportCollection);
-//    }
-//
-//    public function getMultiplePublisherReport(array $publishers, DateTime $startDate, DateTime $endDate)
-//    {
-//        $reports = [];
-//
-//        foreach($publishers as $publisher) {
-//            if (!$publisher instanceof PublisherInterface) {
-//                throw new InvalidArgumentException('expect "PublisherInterface" object');
-//            }
-//
-//            $sites = $this->siteRepository->getSitesForPublisher($publisher);
-//            $reports[] = $this->getMultipleSiteReports($sites, $startDate, $endDate);
-//        }
-//
-//        if (empty($reports)) {
-//            return false;
-//        }
-//
-//        $reportCollection = new ReportCollection($startDate, $endDate, $reports);
-//
-//        return $this->reportGrouper->groupReports($reportCollection);
-//    }
+    /**
+     * @param array $publishers
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return bool|ReportInterface
+     */
+    protected function getMultiplePublisherReport(array $publishers, DateTime $startDate, DateTime $endDate)
+    {
+        $reports = [];
+
+        foreach($publishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                throw new InvalidArgumentException('expect "PublisherInterface" object');
+            }
+
+            $sites = $this->siteRepository->getSitesForPublisher($publisher);
+            $report = $this->getMultipleSiteReports($sites, $startDate, $endDate);
+            if ($report instanceof ReportInterface) {
+                $reports[] = $report;
+            }
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        $reportCollection = new ReportCollection($startDate, $endDate, $reports);
+
+        return $this->reportGrouper->groupReports($reportCollection);
+    }
 }
