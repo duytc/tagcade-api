@@ -19,9 +19,9 @@ trait ConstructCalculatedReportTrait {
             ->setImpressions($data[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION])
             ->setRtbImpressions($data[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION])
             ->setPassbacks($data[SnapshotCreatorInterface::CACHE_KEY_PASSBACK])
-            ->setInBannerRequests($data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST])
-            ->setInBannerTimeouts($data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT])
-            ->setInBannerImpressions($data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION])
+            ->setInBannerRequests(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] : 0)
+            ->setInBannerTimeouts(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] : 0)
+            ->setInBannerImpressions(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] : 0)
             ->setFillRate()
         ;
 
