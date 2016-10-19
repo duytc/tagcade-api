@@ -80,7 +80,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                         break;
                     case User::MODULE_HEADER_BIDDING:
                         if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST) {
-                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_HEADER_BIDDING, BillingConfiguration::BILLING_HEADER_BID_REQUEST)));
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_HEADER_BIDDING, BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST)));
                             return;
                         }
 
