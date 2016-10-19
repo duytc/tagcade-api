@@ -92,28 +92,6 @@ interface WaterfallPlacementRuleInterface extends ModelInterface
     public function setWaterfalls($waterfalls);
 
     /**
-     * @return boolean
-     */
-    public function isActive();
-
-    /**
-     * @param boolean $active
-     * @return self
-     */
-    public function setActive($active);
-
-    /**
-     * @return boolean
-     */
-    public function isShiftDown();
-
-    /**
-     * @param boolean $shiftDown
-     * @return self
-     */
-    public function setShiftDown($shiftDown);
-
-    /**
      * @return LibraryVideoDemandAdTagInterface
      */
     public function getLibraryVideoDemandAdTag();

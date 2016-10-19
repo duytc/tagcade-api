@@ -32,12 +32,6 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
             nullable: true
         waterfalls:
             type: json_array
-        active:
-            type: boolean
-            nullable: true
-        shiftDown:
-            type: boolean
-            nullable: true
         deletedAt:
             type: date
             nullable: true

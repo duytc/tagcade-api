@@ -14,8 +14,6 @@ class WaterfallPlacementRule extends WaterfallPlacementRuleModel
     protected $priority;
     protected $rotationWeight;
     protected $waterfalls;
-    protected $active;
-    protected $shiftDown;
     protected $deletedAt;
     protected $libraryVideoDemandAdTag;
 }

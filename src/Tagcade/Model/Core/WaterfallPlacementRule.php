@@ -50,16 +50,6 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
      */
     protected $waterfalls;
 
-    /**
-     * @var boolean
-     */
-    protected $active;
-
-    /**
-     * @var boolean
-     */
-    protected $shiftDown;
-
     protected $deletedAt;
 
     /**
@@ -210,43 +200,6 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
         $this->waterfalls = $waterfalls;
         return $this;
     }
-
-    /**
-     * @return boolean
-     */
-    public function isActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * @param boolean $active
-     * @return self
-     */
-    public function setActive($active)
-    {
-        $this->active = $active;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isShiftDown()
-    {
-        return $this->shiftDown;
-    }
-
-    /**
-     * @param boolean $shiftDown
-     * @return self
-     */
-    public function setShiftDown($shiftDown)
-    {
-        $this->shiftDown = $shiftDown;
-        return $this;
-    }
-
 
     /**
      * @return mixed
