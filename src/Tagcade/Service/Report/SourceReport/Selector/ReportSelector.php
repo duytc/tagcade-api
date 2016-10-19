@@ -3,6 +3,8 @@
 namespace Tagcade\Service\Report\SourceReport\Selector;
 
 use DateTime;
+use Tagcade\Domain\DTO\Report\SourceReport\ReportTransform;
+use Tagcade\Domain\DTO\Report\SourceReport\ReportTransformCollection;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\SiteInterface;
@@ -102,22 +104,22 @@ class ReportSelector implements ReportSelectorInterface
 
     public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPublisherByDay($publisher, $startDate, $endDate);
+        return ReportTransform::convert($this->repository->getBillingReportForPublisherByDay($publisher, $startDate, $endDate));
     }
 
     public function getPublisherBySiteReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPublisherBySite($publisher, $startDate, $endDate);
+        return ReportTransform::convert($this->repository->getBillingReportForPublisherBySite($publisher, $startDate, $endDate));
     }
 
     public function getPlatformByDayReport(DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPlatformByDay($startDate, $endDate);
+        return ReportTransform::convert($this->repository->getBillingReportForPlatformByDay($startDate, $endDate));
     }
 
     public function getPlatformByPublisherReport(DateTime $startDate, DateTime $endDate)
     {
-        return $this->repository->getBillingReportForPlatformByPublisher($startDate, $endDate);
+        return ReportTransform::convert($this->repository->getBillingReportForPlatformByPublisher($startDate, $endDate));
     }
 
 //    public function getMultipleReports(array $sites, DateTime $startDate, DateTime $endDate)
