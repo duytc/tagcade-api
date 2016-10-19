@@ -17,24 +17,12 @@ interface ReportSelectorInterface {
     public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
     /**
-     * Get reports for multiple report types over a date range
-     *
-     * i.e a report for multiple or all ad networks over a date range
-     *
-     * @param array $sites
+     * @param PublisherInterface $publisher
      * @param DateTime $startDate
      * @param DateTime $endDate
-     * @return array
+     * @return mixed
      */
-    public function getMultipleSiteReports(array $sites, DateTime $startDate, DateTime $endDate);
-
-    /**
-     * @param array $publishers
-     * @param DateTime $startDate
-     * @param DateTime $endDate
-     * @return array
-     */
-    public function getMultiplePublisherReport(array $publishers, DateTime $startDate, DateTime $endDate);
+    public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 
     /**
      * @param PublisherInterface $publisher
@@ -42,5 +30,19 @@ interface ReportSelectorInterface {
      * @param DateTime $endDate
      * @return mixed
      */
-    public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
-} 
+    public function getPublisherBySiteReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getPlatformByDayReport(DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getPlatformByPublisherReport(DateTime $startDate, DateTime $endDate);
+}

@@ -65,4 +65,26 @@ interface ReportRepositoryInterface
      * @return mixed
      */
     public function getBillingReportForPublisherByDay(PublisherInterface $publisher, DateTime $startDate , DateTime $endDate);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getBillingReportForPublisherBySite(PublisherInterface $publisher, DateTime $startDate , DateTime $endDate);
+
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getBillingReportForPlatformByPublisher(DateTime $startDate , DateTime $endDate);
+
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getBillingReportForPlatformByDay(DateTime $startDate , DateTime $endDate);
 }

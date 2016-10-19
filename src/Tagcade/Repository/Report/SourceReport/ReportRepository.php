@@ -136,6 +136,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
             ->addSelect('SUM(r.billedAmount) as billedAmount')
+            ->addSelect('(SUM(r.billedRate * r.billedAmount) / SUM(r.billedAmount)) as billedRate')
             ->addSelect('r.date as date')
             ->addSelect('AVG(r.visits) as averageVisits')
             ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
@@ -143,6 +144,56 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addGroupBy('r.date')
             ->where('st.publisher = :publisher')
             ->setParameter('publisher', $publisher)
+            ->getQuery()->getScalarResult();
+    }
+
+    public function getBillingReportForPublisherBySite(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.site', 'st')
+            ->select('SUM(r.visits) as visits')
+            ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
+            ->addSelect('SUM(r.billedAmount) as billedAmount')
+            ->addSelect('(SUM(r.billedRate * r.billedAmount) / SUM(r.billedAmount)) as billedRate')
+            ->addSelect('AVG(r.visits) as averageVisits')
+            ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
+            ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
+            ->addSelect('st.name as site')
+            ->addGroupBy('r.site')
+            ->where('st.publisher = :publisher')
+            ->setParameter('publisher', $publisher)
+            ->getQuery()->getScalarResult();
+    }
+
+    public function getBillingReportForPlatformByPublisher(DateTime $startDate, DateTime $endDate)
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.site', 'st')
+            ->leftJoin('st.publisher', 'p')
+            ->select('SUM(r.visits) as visits')
+            ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
+            ->addSelect('SUM(r.billedAmount) as billedAmount')
+            ->addSelect('(SUM(r.billedRate * r.billedAmount) / SUM(r.billedAmount)) as billedRate')
+            ->addSelect('AVG(r.visits) as averageVisits')
+            ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
+            ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
+            ->addSelect('p.username as publisher')
+            ->addGroupBy('st.publisher')
+            ->getQuery()->getScalarResult();
+    }
+
+    public function getBillingReportForPlatformByDay(DateTime $startDate, DateTime $endDate)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('SUM(r.visits) as visits')
+            ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
+            ->addSelect('SUM(r.billedAmount) as billedAmount')
+            ->addSelect('(SUM(r.billedRate * r.billedAmount) / SUM(r.billedAmount)) as billedRate')
+            ->addSelect('AVG(r.visits) as averageVisits')
+            ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
+            ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
+            ->addSelect('r.date as date')
+            ->addGroupBy('r.date')
             ->getQuery()->getScalarResult();
     }
 }

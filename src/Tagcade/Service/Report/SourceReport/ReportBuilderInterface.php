@@ -41,4 +41,10 @@ interface ReportBuilderInterface
      * @return mixed
      */
     public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    public function getPublisherBySiteReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    public function getPlatformByDayReport(DateTime $startDate, DateTime $endDate);
+
+    public function getPlatformByPublisherReport(DateTime $startDate, DateTime $endDate);
 }

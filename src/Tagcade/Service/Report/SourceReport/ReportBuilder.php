@@ -52,6 +52,21 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->reportSelector->getPublisherByDayReport($publisher, $startDate, $endDate);
     }
 
+    public function getPublisherBySiteReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    {
+        return $this->reportSelector->getPublisherBySiteReport($publisher, $startDate, $endDate);
+    }
+
+    public function getPlatformByDayReport(DateTime $startDate, DateTime $endDate)
+    {
+        return $this->reportSelector->getPlatformByDayReport($startDate, $endDate);
+    }
+
+    public function getPlatformByPublisherReport(DateTime $startDate, DateTime $endDate)
+    {
+        return $this->reportSelector->getPlatformByPublisherReport($startDate, $endDate);
+    }
+
     public function getPublisherReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $sites = $this->siteManager->getSitesForPublisher($publisher);
