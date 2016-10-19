@@ -49,9 +49,9 @@ class BillingCalculator implements BillingCalculatorInterface
         }
 
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
-        $date = $date->modify('-1 day');
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
 
-        $weight = $this->accountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $date);
+        $weight = $this->accountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $yesterday);
         $weight += $newWeight;
 
         $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
