@@ -49,5 +49,10 @@ abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+
+        $inBannerRateAmount = $this->billingCalculator->calculateTodayInBannerBilledAmountForPublisher($publisher, AbstractUser::MODULE_IN_BANNER, $report->getInBannerImpressions());
+
+        $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
+        $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
     }
 }
