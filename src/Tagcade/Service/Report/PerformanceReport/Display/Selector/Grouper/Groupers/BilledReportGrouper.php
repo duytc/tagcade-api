@@ -61,14 +61,14 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageRtbImpressions(),
 
             $this->getInBannerRequests(),
-            $this->getInBannerImpressions(),
-            $this->getInBannerBilledAmount(),
             $this->getInBannerTimeouts(),
+            $this->getInBannerBilledAmount(),
+            $this->getInBannerImpressions(),
 
             $this->getAverageInBannerRequests(),
-            $this->getAverageInBannerImpressions(),
+            $this->getAverageInBannerTimeouts(),
             $this->getAverageInBannerBilledAmount(),
-            $this->getAverageInBannerTimeouts()
+            $this->getAverageInBannerImpressions()
         );
     }
 

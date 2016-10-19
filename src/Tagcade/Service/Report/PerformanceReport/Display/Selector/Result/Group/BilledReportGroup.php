@@ -90,7 +90,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
         $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
         $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
-        $rtbImpressions, $averageRtbImpressions, $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerImpressions, $averageInBannerBilledAmount, $averageInBannerTimeouts
+        $rtbImpressions, $averageRtbImpressions, $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
