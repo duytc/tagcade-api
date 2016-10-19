@@ -133,7 +133,6 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
     {
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.site', 'st');
-
         return $qb
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
@@ -145,8 +144,8 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
             ->addGroupBy('r.date')
             ->where('st.publisher = :publisher')
-            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('publisher', $publisher)
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()->getScalarResult();
@@ -156,7 +155,6 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
     {
         $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.site', 'st');
-
         return $qb
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
@@ -168,8 +166,8 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addSelect('st.name as site')
             ->addGroupBy('r.site')
             ->where('st.publisher = :publisher')
-            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('publisher', $publisher)
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()->getScalarResult();
@@ -178,10 +176,9 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
     public function getBillingReportForPlatformByPublisher(DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r')
-            ->leftJoin('r.site', 'st');
-
+            ->leftJoin('r.site', 'st')
+            ->leftJoin('st.publisher', 'p');
         return $qb
-            ->leftJoin('st.publisher', 'p')
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
             ->addSelect('SUM(r.billedAmount) as billedAmount')
@@ -190,10 +187,10 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
             ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
             ->addSelect('p.username as publisher')
-            ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->addGroupBy('st.publisher')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
-            ->addGroupBy('st.publisher')
             ->getQuery()->getScalarResult();
     }
 
@@ -210,10 +207,10 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addSelect('AVG(r.videoAdImpressions) as averageVideoAdImpressions')
             ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
             ->addSelect('r.date as date')
-            ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->addGroupBy('r.date')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
-            ->addGroupBy('r.date')
             ->getQuery()->getScalarResult();
     }
 }

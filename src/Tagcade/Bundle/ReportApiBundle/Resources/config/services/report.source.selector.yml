@@ -20,6 +20,7 @@ services:
             - @tagcade.service.date_util
             - @tagcade.repository.site
             - @tagcade.service.report.source_report.selector.grouper.report_grouper
+            - @tagcade_user.domain_manager.publisher
 
     tagcade.service.report.source_report.report_builder:
         class: Tagcade\Service\Report\SourceReport\ReportBuilder

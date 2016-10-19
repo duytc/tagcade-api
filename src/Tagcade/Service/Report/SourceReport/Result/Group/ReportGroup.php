@@ -15,6 +15,7 @@ class ReportGroup implements ReportResultInterface, ReportInterface
     protected $name;
     protected $startDate;
     protected $endDate;
+    protected $date;
 
     protected $displayOpportunities;
     protected $displayImpressions;
@@ -81,6 +82,9 @@ class ReportGroup implements ReportResultInterface, ReportInterface
         $this->name = $name;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        if ($startDate == $endDate) {
+            $this->date = $startDate;
+        }
 
         $this->displayOpportunities = $displayOpportunities;
         $this->displayImpressions = $displayImpressions;
@@ -139,6 +143,8 @@ class ReportGroup implements ReportResultInterface, ReportInterface
     {
         return $this->endDate;
     }
+
+
 
     /**
      * @return mixed
@@ -334,7 +340,7 @@ class ReportGroup implements ReportResultInterface, ReportInterface
 
     public function getDate()
     {
-        // TODO: Implement getDate() method.
+        return $this->date;
     }
 
     public function getSite()

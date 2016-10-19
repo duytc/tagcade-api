@@ -4,17 +4,18 @@
 namespace Tagcade\Service\Report\SourceReport\Result;
 
 
+use DateTime;
 use Tagcade\Model\Report\SourceReport\ReportInterface;
 
 interface ReportResultInterface
 {
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getStartDate();
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getEndDate();
 
@@ -27,4 +28,9 @@ interface ReportResultInterface
      * @return string|null
      */
     public function getName();
+
+    /**
+     * @return DateTime
+     */
+    public function getDate();
 }
