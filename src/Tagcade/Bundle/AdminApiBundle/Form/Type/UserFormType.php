@@ -126,7 +126,8 @@ class UserFormType extends AbstractRoleSpecificFormType
                         'MODULE_UNIFIED_REPORT' => 'Unified Report',
                         'MODULE_SUB_PUBLISHER' => 'Sub Publisher',
                         'MODULE_HEADER_BIDDING' => 'Header Bidding',
-                        'MODULE_RTB' => 'RealTime Bidding'
+                        'MODULE_RTB' => 'RealTime Bidding',
+                        'MODULE_IN_BANNER' => 'In-Banner Video'
                     ],
                 ])
                 ->add('billingRate')
@@ -203,7 +204,8 @@ class UserFormType extends AbstractRoleSpecificFormType
                         $publisher->hasHeaderBiddingModule() ||
                         $publisher->hasVideoAnalyticsModule() ||
                         $publisher->hasAnalyticsModule() ||
-                        $publisher->hasSubPubliserModule()
+                        $publisher->hasSubPubliserModule() ||
+                        $publisher->hasInBannerModule()
                     )) {
                         throw new InvalidArgumentException('module DISPLAY need to be enabled for other modules to be enabled.');
                     }

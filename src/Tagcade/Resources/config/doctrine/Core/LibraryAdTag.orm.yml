@@ -37,6 +37,33 @@ Tagcade\Entity\Core\LibraryAdTag:
             type: json_array
             nullable: true
 
+        platform:
+            type: string
+            length: 50
+            nullable: true
+
+        timeout:
+            type: integer
+            nullable: true
+            options:
+                default: 0
+
+        vastTags:
+            type: json_array
+            nullable: true
+
+        playerWidth:
+            type: integer
+            nullable: true
+            options:
+                default: 300
+
+        playerHeight:
+            type: integer
+            nullable: true
+            options:
+                default: 250
+
         createdAt:
             type: datetime
             gedmo:

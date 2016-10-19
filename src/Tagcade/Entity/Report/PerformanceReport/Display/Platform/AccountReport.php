@@ -22,4 +22,10 @@ class AccountReport extends AccountReportModel
     protected $estRevenue;
     protected $estCpm;
     protected $rtbImpressions;
+
+    protected $inBannerRequests;
+    protected $inBannerImpressions;
+    protected $inBannerTimeouts;
+    protected $inBannerBilledRate;
+    protected $inBannerBilledAmount;
 }

@@ -24,6 +24,14 @@ interface BillingCalculatorInterface
     public function calculateTodayHbBilledAmountForPublisher(PublisherInterface $publisher, $module, $weight);
 
     /**
+     * @param PublisherInterface $publisher
+     * @param $module
+     * @param $weight
+     * @return RateAmount
+     */
+    public function calculateTodayInBannerBilledAmountForPublisher(PublisherInterface $publisher, $module, $weight);
+
+    /**
      * @param float $cpmRate
      * @param int $slotOpportunities
      * @return float

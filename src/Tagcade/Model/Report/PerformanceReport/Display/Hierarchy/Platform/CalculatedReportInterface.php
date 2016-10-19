@@ -30,6 +30,46 @@ interface CalculatedReportInterface extends ReportInterface, BilledReportDataInt
     public function setBilledRate($billedRate);
 
     /**
+     * @return float
+     */
+    public function getInBannerBilledRate();
+
+    /**
+     * @param float $inBannerBilledRate
+     * @return self
+     */
+    public function setInBannerBilledRate($inBannerBilledRate);
+
+    /**
+     * @return float
+     */
+    public function getInBannerBilledAmount();
+
+    /**
+     * @param float $inBannerBilledAmount
+     * @return self
+     */
+    public function setInBannerBilledAmount($inBannerBilledAmount);
+
+    /**
+     * @param int $inBannerImpressions
+     * @return self
+     */
+    public function setInBannerImpressions($inBannerImpressions);
+
+    /**
+     * @param int $inBannerTimeouts
+     * @return self
+     */
+    public function setInBannerTimeouts($inBannerTimeouts);
+
+    /**
+     * @param int $inBannerRequests
+     * @return self
+     */
+    public function setInBannerRequests($inBannerRequests);
+
+    /**
      * @param int $rtbImpressions
      * @return $this
      */
