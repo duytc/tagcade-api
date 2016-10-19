@@ -131,8 +131,9 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
 
     public function getBillingReportForPublisherByDay(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
-        return $this->createQueryBuilder('r')
-            ->leftJoin('r.site', 'st')
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.site', 'st');
+        return $qb
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
             ->addSelect('SUM(r.billedAmount) as billedAmount')
@@ -144,13 +145,17 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addGroupBy('r.date')
             ->where('st.publisher = :publisher')
             ->setParameter('publisher', $publisher)
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()->getScalarResult();
     }
 
     public function getBillingReportForPublisherBySite(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
-        return $this->createQueryBuilder('r')
-            ->leftJoin('r.site', 'st')
+        $qb = $this->createQueryBuilder('r')
+            ->leftJoin('r.site', 'st');
+        return $qb
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
             ->addSelect('SUM(r.billedAmount) as billedAmount')
@@ -162,14 +167,18 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addGroupBy('r.site')
             ->where('st.publisher = :publisher')
             ->setParameter('publisher', $publisher)
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()->getScalarResult();
     }
 
     public function getBillingReportForPlatformByPublisher(DateTime $startDate, DateTime $endDate)
     {
-        return $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r')
             ->leftJoin('r.site', 'st')
-            ->leftJoin('st.publisher', 'p')
+            ->leftJoin('st.publisher', 'p');
+        return $qb
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
             ->addSelect('SUM(r.billedAmount) as billedAmount')
@@ -179,12 +188,17 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
             ->addSelect('p.username as publisher')
             ->addGroupBy('st.publisher')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()->getScalarResult();
     }
 
     public function getBillingReportForPlatformByDay(DateTime $startDate, DateTime $endDate)
     {
-        return $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r');
+
+        return $qb
             ->select('SUM(r.visits) as visits')
             ->addSelect('SUM(r.videoAdImpressions) as videoAdImpressions')
             ->addSelect('SUM(r.billedAmount) as billedAmount')
@@ -194,6 +208,9 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
             ->addSelect('AVG(r.billedAmount) as averageBilledAmount')
             ->addSelect('r.date as date')
             ->addGroupBy('r.date')
+            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()->getScalarResult();
     }
 }
