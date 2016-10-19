@@ -34,6 +34,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 'empty_data' => null,
                 'choices' => [
                     User::MODULE_DISPLAY         => 'Display',
+                    User::MODULE_IN_BANNER         => 'In-Banner',
                     User::MODULE_VIDEO_ANALYTICS => 'Video',
                     User::MODULE_VIDEO           => 'VideoAds',
                     User::MODULE_ANALYTICS       => 'Analytics',
