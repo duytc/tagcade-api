@@ -6,11 +6,14 @@ namespace Tagcade\Service\Report\SourceReport\Result\Group;
 
 use DateTime;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\SourceReport\ReportInterface;
 use Tagcade\Service\Report\SourceReport\Result\ReportResultInterface;
 
 class ReportGroup implements ReportResultInterface, ReportInterface
 {
+    use CalculateRatiosTrait;
+
     protected $reports;
     protected $name;
     protected $startDate;
@@ -34,6 +37,7 @@ class ReportGroup implements ReportResultInterface, ReportInterface
     protected $videoEnds;
     protected $visits;
     protected $pageViews;
+    protected $viewsPerVisit;
     protected $qtos;
     protected $qtosPercentage;
     protected $billedRate;
@@ -103,6 +107,7 @@ class ReportGroup implements ReportResultInterface, ReportInterface
         $this->videoEnds = $videoEnds;
         $this->visits = $visits;
         $this->pageViews = $pageViews;
+        $this->viewsPerVisit = $this->getRatio($this->pageViews, $this->visits);
         $this->qtos = $qtos;
         $this->qtosPercentage = $qtosPercentage;
         $this->billedRate = round($billedRate, 4);
@@ -280,6 +285,14 @@ class ReportGroup implements ReportResultInterface, ReportInterface
     public function getPageViews()
     {
         return $this->pageViews;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getViewsPerVisit()
+    {
+        return $this->viewsPerVisit;
     }
 
     /**
