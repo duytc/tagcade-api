@@ -93,8 +93,8 @@ abstract class AbstractTransformer implements TransformerInterface
         $parentReport->setBidRate($bidRate);
         $errorRate = ($parentReport->getImpressions() >0) ? $parentReport->getErrors()/$parentReport->getImpressions(): 0;
         $parentReport->setErrorRate($errorRate);
-        $fillRate = ($parentReport->getRequests() >0) ? $parentReport->getImpressions()/$parentReport->getRequests() : 0;
-        $parentReport->setFillRate($fillRate);
+        $requestFillRate = ($parentReport->getRequests() >0) ? $parentReport->getImpressions()/$parentReport->getRequests() : 0;
+        $parentReport->setRequestFillRate($requestFillRate);
         $clickThoughRate = ($parentReport->getImpressions() >0) ? $parentReport->getClicks()/$parentReport->getImpressions():0;
         $parentReport->setClickThroughRate($clickThoughRate);
 

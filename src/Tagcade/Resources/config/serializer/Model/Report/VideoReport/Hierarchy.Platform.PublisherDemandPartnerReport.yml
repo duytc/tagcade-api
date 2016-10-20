@@ -23,7 +23,7 @@ Tagcade\Model\Report\VideoReport\Hierarchy\Platform\PublisherDemandPartnerReport
         impressions:
             expose: true
             groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [video_report_video_publisher_demand_partner.detail, video_report_video_publisher_demand_partner.summary]
         clicks:

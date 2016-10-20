@@ -26,7 +26,7 @@ Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers\WaterfallTagGrouper
         impressions:
             expose: true
             groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
         clicks:
@@ -68,7 +68,7 @@ Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers\WaterfallTagGrouper
         totalErrorRate:
             expose: true
             groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
-        totalFillRate:
+        averageRequestFillRate:
             expose: true
             groups: [waterfall_tag_grouper.detail, waterfall_tag_grouper.summary]
         totalClickThroughRate:

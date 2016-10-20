@@ -49,4 +49,20 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
             groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]     
         clicks:
             expose: true
-            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]     
+            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]
+
+        inBannerRequests:
+            expose: true
+            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]
+        inBannerImpressions:
+            expose: true
+            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]
+        inBannerTimeouts:
+            expose: true
+            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]
+        inBannerBilledRate:
+            expose: true
+            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]
+        inBannerBilledAmount:
+            expose: true
+            groups: [ad_network_ad_network_report.detail, ad_network_ad_network_report.summary]

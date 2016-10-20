@@ -17,7 +17,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
     protected $errors;
     protected $errorRate;
     protected $impressions;
-    protected $fillRate;
+    protected $requestFillRate;
     protected $clicks;
     protected $clickThroughRate;
 
@@ -27,7 +27,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
     protected $averageErrors;
     protected $averageErrorRate;
     protected $averageImpressions;
-    protected $averageFillRate;
+    protected $averageRequestFillRate;
     protected $averageClicks;
     protected $averageClickThroughRate;
     protected $startDate;
@@ -45,7 +45,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
      * @param $errors
      * @param $errorRate
      * @param $impressions
-     * @param $fillRate
+     * @param $requestFillRate
      * @param $clicks
      * @param $clickThroughRate
      * @param $averageRequests
@@ -54,7 +54,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
      * @param $averageErrors
      * @param $averageErrorRate
      * @param $averageImpressions
-     * @param $averageFillRate
+     * @param $averageRequestFillRate
      * @param $averageClicks
      * @param $averageClickThroughRate
      * @param $startDate
@@ -69,7 +69,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
                                 $errors,
                                 $errorRate,
                                 $impressions,
-                                $fillRate,
+                                $requestFillRate,
                                 $clicks,
                                 $clickThroughRate,
                                 $averageRequests,
@@ -78,7 +78,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
                                 $averageErrors,
                                 $averageErrorRate,
                                 $averageImpressions,
-                                $averageFillRate,
+                                $averageRequestFillRate,
                                 $averageClicks,
                                 $averageClickThroughRate,
                                 $startDate,
@@ -95,7 +95,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
         $this->errors = $errors;
         $this->errorRate = round($errorRate, 4);
         $this->impressions = $impressions;
-        $this->fillRate = round($fillRate, 4);
+        $this->requestFillRate = round($requestFillRate, 4);
         $this->clicks = $clicks;
         $this->clickThroughRate = round($clickThroughRate, 4);
 
@@ -105,7 +105,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
         $this->averageErrors = round($averageErrors, 4);
         $this->averageErrorRate = round($averageErrorRate, 4);
         $this->averageImpressions = round($averageImpressions);
-        $this->averageFillRate = round($averageFillRate, 4);
+        $this->averageRequestFillRate = round($averageRequestFillRate, 4);
         $this->averageClicks = round($averageClicks, 4);
         $this->averageClickThroughRate = round($averageClickThroughRate, 4);
         $this->startDate = $startDate;
@@ -186,9 +186,9 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
     /**
      * @return float
      */
-    public function getFillRate()
+    public function getRequestFillRate()
     {
-        return $this->fillRate;
+        return $this->requestFillRate;
     }
 
     /**
@@ -258,9 +258,9 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
     /**
      * @return float
      */
-    public function getAverageFillRate()
+    public function getAverageRequestFillRate()
     {
-        return $this->averageFillRate;
+        return $this->averageRequestFillRate;
     }
 
     /**

@@ -37,6 +37,24 @@ interface EventCounterInterface
     public function getHeaderBidRequestCount($slotId);
 
     /**
+     * @param $slotId
+     * @return mixed
+     */
+    public function getInBannerRequestCount($slotId);
+
+    /**
+     * @param $slotId
+     * @return mixed
+     */
+    public function getInBannerImpressionCount($slotId);
+
+    /**
+     * @param $slotId
+     * @return mixed
+     */
+    public function getInBannerTimeoutCount($slotId);
+
+    /**
      * @param int $ronSlotId
      * @param int|null $segment
      * @return mixed

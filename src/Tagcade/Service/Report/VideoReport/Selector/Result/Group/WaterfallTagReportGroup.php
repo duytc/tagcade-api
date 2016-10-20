@@ -29,7 +29,7 @@ class WaterfallTagReportGroup extends ReportGroup implements CalculatedReportGro
      * @param $errors
      * @param $errorRate
      * @param $impressions
-     * @param $fillRate
+     * @param $requestFillRate
      * @param $clicks
      * @param $clickThroughRate
      * @param $averageRequests
@@ -38,7 +38,7 @@ class WaterfallTagReportGroup extends ReportGroup implements CalculatedReportGro
      * @param $averageErrors
      * @param $averageErrorRate
      * @param $averageImpressions
-     * @param $averageFillRate
+     * @param $averageRequestFillRate
      * @param $averageClicks
      * @param $averageClickThroughRate
      * @param $startDate
@@ -55,14 +55,14 @@ class WaterfallTagReportGroup extends ReportGroup implements CalculatedReportGro
      * @param $averageBilledAmount
      * @param $billedRate
      */
-    public function __construct($reportType, array $reports, $requests, $bids, $bidRate, $errors, $errorRate, $impressions, $fillRate, $clicks,
-                                $clickThroughRate, $averageRequests, $averageBids, $averageBidRate, $averageErrors, $averageErrorRate, $averageImpressions, $averageFillRate,
+    public function __construct($reportType, array $reports, $requests, $bids, $bidRate, $errors, $errorRate, $impressions, $requestFillRate, $clicks,
+                                $clickThroughRate, $averageRequests, $averageBids, $averageBidRate, $averageErrors, $averageErrorRate, $averageImpressions, $averageRequestFillRate,
                                 $averageClicks, $averageClickThroughRate, $startDate, $endDate, $blocks, $averageBlocks, $adTagRequests, $adTagBids, $adTagErrors, $averageAdTagRequest, $averageAdTagBid,
                                 $averageAdTagError, $billedAmount, $averageBilledAmount, $billedRate)
     {
-        parent::__construct($reportType, $reports, $requests, $bids, $bidRate, $errors, $errorRate, $impressions, $fillRate,
+        parent::__construct($reportType, $reports, $requests, $bids, $bidRate, $errors, $errorRate, $impressions, $requestFillRate,
             $clicks, $clickThroughRate, $averageRequests, $averageBids, $averageBidRate, $averageErrors, $averageErrorRate,
-            $averageImpressions, $averageFillRate, $averageClicks, $averageClickThroughRate,$startDate, $endDate, $blocks, $averageBlocks);
+            $averageImpressions, $averageRequestFillRate, $averageClicks, $averageClickThroughRate,$startDate, $endDate, $blocks, $averageBlocks);
 
         $this->adTagRequests = isset($adTagRequests)? round($adTagRequests, 4) : null;
         $this->adTagBids = isset($adTagBids)? round($adTagBids, 4) : null;

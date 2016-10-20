@@ -38,7 +38,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     /* for rtb event count redis cache */
     const CACHE_KEY_RTB_IMPRESSION         = 'impression';
+
+    const CACHE_KEY_IN_BANNER_REQUEST      = 'requests';
+    const CACHE_KEY_IN_BANNER_IMPRESSION   = 'impressions';
+    const CACHE_KEY_IN_BANNER_TIMEOUT      = 'timeouts';
+
     const REDIS_HASH_RTB_EVENT_COUNT       = 'rtb_event_processor:event_count';
+    const REDIS_HASH_IN_BANNER_EVENT_COUNT = 'inbanner_event_processor:event_count';
 
     private static $adTagReportKeys = [
         0 => self::CACHE_KEY_OPPORTUNITY,
@@ -129,6 +135,28 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $this->getCacheKey(static::CACHE_KEY_HB_BID_REQUEST, $namespace)
         );
     }
+
+    public function getInBannerRequestCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+    }
+
+    public function getInBannerImpressionCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+    }
+
+    public function getInBannerTimeoutCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+    }
+
 
     public function getPassbackCount($tagId)
     {
@@ -369,11 +397,17 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         foreach($adSlotIds as $id) {
             $rtbImpression = $this->getRtbImpressionsCount($id);
             $hbRequests = $this->getHeaderBidRequestCount($id);
+            $inBannerRequests = $this->getInBannerRequestCount($id);
+            $inBannerImpressions = $this->getInBannerImpressionCount($id);
+            $inBannerTimeouts = $this->getInBannerTimeoutCount($id);
             $convertedResults[$id] = new AdSlotReportCount(
                 array(
                     self::CACHE_KEY_SLOT_OPPORTUNITY => $results[$index],
                     self::CACHE_KEY_RTB_IMPRESSION => $rtbImpression,
-                    self::CACHE_KEY_HB_BID_REQUEST => $hbRequests
+                    self::CACHE_KEY_HB_BID_REQUEST => $hbRequests,
+                    self::CACHE_KEY_IN_BANNER_REQUEST => $inBannerRequests,
+                    self::CACHE_KEY_IN_BANNER_IMPRESSION => $inBannerImpressions,
+                    self::CACHE_KEY_IN_BANNER_TIMEOUT => $inBannerTimeouts
                 )
             );
             $index ++;

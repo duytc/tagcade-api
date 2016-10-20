@@ -25,4 +25,10 @@ class AdNetworkReport extends AdNetworkReportModel
     protected $blankImpressions;
     protected $voidImpressions;
     protected $clicks;
+
+    protected $inBannerRequests;
+    protected $inBannerImpressions;
+    protected $inBannerTimeouts;
+    protected $inBannerBilledRate;
+    protected $inBannerBilledAmount;
 }

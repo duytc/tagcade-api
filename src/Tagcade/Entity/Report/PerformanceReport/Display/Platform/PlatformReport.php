@@ -20,4 +20,10 @@ class PlatformReport extends PlatformReportModel
     protected $billedRate;
     protected $subReports;
     protected $rtbImpressions;
+
+    protected $inBannerRequests;
+    protected $inBannerImpressions;
+    protected $inBannerTimeouts;
+    protected $inBannerBilledRate;
+    protected $inBannerBilledAmount;
 }

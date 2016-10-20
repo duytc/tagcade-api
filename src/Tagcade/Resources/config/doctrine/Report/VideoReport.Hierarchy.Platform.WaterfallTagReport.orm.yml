@@ -35,7 +35,7 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\WaterfallTagReport:
             nullable: true
         impressions:
             type: decimal
-        fillRate:
+        requestFillRate:
             type: decimal
             scale: 4
             nullable: true

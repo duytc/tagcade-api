@@ -20,6 +20,11 @@ interface SnapshotCreatorInterface extends CreatorInterface
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
     const CACHE_KEY_RTB_IMPRESSION         = 'impression';
     const CACHE_KEY_HEADER_BID_REQUEST     = 'hb_bid_request';
+
+    const CACHE_KEY_IN_BANNER_REQUEST      = 'inbanner_request';
+    const CACHE_KEY_IN_BANNER_IMPRESSION   = 'inbanner_impression';
+    const CACHE_KEY_IN_BANNER_TIMEOUT      = 'inbanner_timeout';
+
     /**
      * Parse report data and set to model class
      *
