@@ -152,10 +152,23 @@ class VideoVastTagGenerator
             ? preg_replace("/^http:/i", "https:", $vastTagUrlTemplate)
             : preg_replace("/^https:/i", "http:", $vastTagUrlTemplate);
 
-        // add query string
+        $vastTagUrl = str_replace('UUID', $videoWaterfallTag->getUuid(), $vastTagUrlTemplate);
+
         $queryString = $this->createQueryStringForRequiredMacros($videoWaterfallTag);
 
-        return str_replace('UUID', $videoWaterfallTag->getUuid(), $vastTagUrlTemplate) . $queryString;
+        if (empty($queryString)) {
+            return $vastTagUrl;
+        }
+
+        if (strpos($vastTagUrl, '?') === false) {
+            $vastTagUrl .= '?';
+        } else {
+            $vastTagUrl .= '&';
+        }
+
+        $vastTagUrl .= $queryString;
+
+        return $vastTagUrl;
     }
 
     /**
@@ -190,9 +203,17 @@ class VideoVastTagGenerator
 
         // create query string
         $queryString = '';
+
+        if (empty($allRequiredMacros)) {
+            return $queryString;
+        }
+
         foreach ($allRequiredMacros as $macro) {
             $queryString .= sprintf('&%s=[REPLACE_ME]', $macro);
         }
+
+        // remove first &
+        $queryString = substr($queryString, 1);
 
         return $queryString;
     }
