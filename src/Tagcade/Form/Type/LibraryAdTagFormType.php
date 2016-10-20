@@ -23,10 +23,6 @@ use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 {
 
-    const AD_TYPE_HTML = 0;
-    const AD_TYPE_IMAGE = 1;
-    const AD_TYPE_THIRD_PARTY = 2;
-
     const PLATFORM_FLASH = 'flash';
     const PLATFORM_AUTO = 'auto';
 
@@ -96,10 +92,10 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 
                 try {
                     switch ($libraryAdTag->getAdType()) {
-                        case self::AD_TYPE_IMAGE:
+                        case LibraryAdTag::AD_TYPE_IMAGE:
                             $this->validateImageAd($libraryAdTag);
                             break;
-                        case self::AD_TYPE_THIRD_PARTY:
+                        case LibraryAdTag::AD_TYPE_THIRD_PARTY:
                             $this->validateThirdParty($libraryAdTag);
                             break;
                         default:
