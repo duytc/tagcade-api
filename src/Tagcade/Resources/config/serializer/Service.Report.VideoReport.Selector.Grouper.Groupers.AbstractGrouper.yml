@@ -25,7 +25,7 @@ Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers\AbstractGrouper:
         impressions:
             expose: true
             groups: [abstract_grouper.detail, abstract_grouper.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [abstract_grouper.detail, abstract_grouper.summary]
         clicks:
@@ -67,7 +67,7 @@ Tagcade\Service\Report\VideoReport\Selector\Grouper\Groupers\AbstractGrouper:
         totalErrorRate:
             expose: true
             groups: [abstract_grouper.detail, abstract_grouper.summary]
-        totalFillRate:
+        averageRequestFillRate:
             expose: true
             groups: [abstract_grouper.detail, abstract_grouper.summary]
         totalClickThroughRate:

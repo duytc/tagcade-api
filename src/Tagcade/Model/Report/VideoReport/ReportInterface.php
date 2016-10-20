@@ -66,7 +66,7 @@ interface ReportInterface extends ReportDataInterface
     /**
      * @return mixed
      */
-    public function setFillRate();
+    public function setRequestFillRate();
     /**
      * @return mixed
      */

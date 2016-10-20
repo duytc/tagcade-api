@@ -24,7 +24,7 @@ class PublisherDemandPartnerReport extends AbstractCalculatedReport implements P
     protected $errors;
     protected $errorRate;
     protected $impressions;
-    protected $fillRate;
+    protected $requestFillRate;
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;

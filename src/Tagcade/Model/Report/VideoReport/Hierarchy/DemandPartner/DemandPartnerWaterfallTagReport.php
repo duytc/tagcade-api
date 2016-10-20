@@ -25,7 +25,7 @@ class DemandPartnerWaterfallTagReport extends AbstractCalculatedReport implement
     protected $errors;
     protected $errorRate;
     protected $impressions;
-    protected $fillRate;
+    protected $requestFillRate;
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;

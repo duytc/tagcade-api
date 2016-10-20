@@ -23,7 +23,7 @@ Tagcade\Model\Report\VideoReport\Hierarchy\DemandPartner\DemandPartnerWaterfallT
         impressions:
             expose: true
             groups: [demand_partner_demand_partner_waterfall_tag.detail, demand_partner_demand_partner_waterfall_tag.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [demand_partner_demand_partner_waterfall_tag.detail, demand_partner_demand_partner_waterfall_tag.summary]
         clicks:

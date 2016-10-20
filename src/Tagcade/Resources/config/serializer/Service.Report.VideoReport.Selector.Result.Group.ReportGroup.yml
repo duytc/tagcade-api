@@ -25,7 +25,7 @@ Tagcade\Service\Report\VideoReport\Selector\Result\Group\ReportGroup:
         impressions:
             expose: true
             groups: [report_group.detail, report_group.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [report_group.detail, report_group.summary]
         clicks:
@@ -55,7 +55,7 @@ Tagcade\Service\Report\VideoReport\Selector\Result\Group\ReportGroup:
         averageImpressions:
             expose: true
             groups: [report_group.detail, report_group.summary]
-        averageFillRate:
+        averageRequestFillRate:
             expose: true
             groups: [report_group.detail, report_group.summary]
         averageClicks:
