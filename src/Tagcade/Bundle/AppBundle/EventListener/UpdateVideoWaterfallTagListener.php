@@ -12,6 +12,7 @@ use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 use Tagcade\Worker\Manager;
 
 class UpdateVideoWaterfallTagListener
@@ -97,6 +98,10 @@ class UpdateVideoWaterfallTagListener
         $videoDemandAdTags = $videoDemandAdTagRepository->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
         /** @var VideoDemandAdTagInterface $videoDemandAdTag */
         foreach($videoDemandAdTags as $videoDemandAdTag) {
+            if (!$videoDemandAdTag->getWaterfallPlacementRule() instanceof WaterfallPlacementRuleInterface) {
+                continue;
+            }
+            
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
                 $autoPauseTags[] = $videoDemandAdTag->getId();
             } else {
