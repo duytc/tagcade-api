@@ -29,6 +29,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 
     const PLATFORM_FLASH = 'flash';
     const PLATFORM_AUTO = 'auto';
+    const PLATFORM_HTML5 = 'html5';
 
     /** @var UserRoleInterface $userRole */
     protected $userRole;
@@ -79,7 +80,9 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('platform',  ChoiceType::class, array(
                 'choices' => [
                     self::PLATFORM_FLASH => 'flash',
-                    self::PLATFORM_AUTO => 'auto'
+                    self::PLATFORM_AUTO => 'auto',
+                    self::PLATFORM_HTML5 => 'html5'
+
                 ]
             ))
             ->add('timeout')
