@@ -90,7 +90,7 @@ class UpdateAdTagHtmlListener
             return $item['tag'];
         }, $libraryAdTag->getVastTags());
 
-        $vastTagStr = json_encode(array_values($vastTags));
+        $vastTagStr = json_encode($vastTags, JSON_UNESCAPED_SLASHES);
 
         $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr, $libraryAdTag->getPlatform(), "%s");
         if (is_numeric($libraryAdTag->getTimeout())) {
