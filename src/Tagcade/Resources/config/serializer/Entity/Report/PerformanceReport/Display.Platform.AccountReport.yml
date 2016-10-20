@@ -44,3 +44,19 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
         rtbImpressions:
             expose: true
             groups: [platform_account_report.detail, platform_account_report.summary]
+
+        inBannerRequests:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        inBannerImpressions:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        inBannerTimeouts:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        inBannerBilledRate:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        inBannerBilledAmount:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]

@@ -14,7 +14,7 @@ class DemandPartnerReport extends DemandPartnerReportModel
     protected $errors;
     protected $errorRate;
     protected $impressions;
-    protected $fillRate;
+    protected $requestFillRate;
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;

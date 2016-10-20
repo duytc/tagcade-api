@@ -39,7 +39,7 @@ interface GroupedDataInterface extends ReportResultInterface
     /**
      * @return float
      */
-    public function getAverageFillRate();
+    public function getAverageRequestFillRate();
 
     /**
      * @return float

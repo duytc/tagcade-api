@@ -149,6 +149,10 @@ interface PublisherInterface extends UserRoleInterface
      */
     public function hasHeaderBiddingModule();
 
+    /**
+     * @return bool
+     */
+    public function hasInBannerModule();
 
     /**
      * @return bool

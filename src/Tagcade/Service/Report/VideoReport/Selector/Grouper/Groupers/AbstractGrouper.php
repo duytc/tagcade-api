@@ -25,7 +25,7 @@ abstract class AbstractGrouper
     private $errors;
     private $errorRate;
     private $impressions;
-    private $fillRate;
+    private $requestFillRate;
     private $clicks;
     private $clickThroughRate;
     private $blocks;
@@ -36,12 +36,12 @@ abstract class AbstractGrouper
     private $averageErrors;
     private $averageErrorRate;
     private $averageImpressions;
-    private $averageFillRate;
+    private $averageRequestFillRate;
     private $averageClicks;
     private $averageClickThroughRate;
     private $averageBlocks;
 
-    private $totalFillRate;
+    private $totalRequestFillRate;
     private $totalErrorRate;
     private $totalBidRate;
     private $totalClickThroughRate;
@@ -77,7 +77,7 @@ abstract class AbstractGrouper
             $this->getErrors(),
             $this->getErrorRate(),
             $this->getImpressions(),
-            $this->getFillRate(),
+            $this->getRequestFillRate(),
             $this->getClicks(),
             $this->getClickThroughRate(),
             $this->getAverageRequests(),
@@ -86,7 +86,7 @@ abstract class AbstractGrouper
             $this->getAverageErrors(),
             $this->getAverageErrorRate(),
             $this->getAverageImpressions(),
-            $this->getAverageFillRate(),
+            $this->getAverageRequestFillRate(),
             $this->getAverageClicks(),
             $this->getAverageClickThroughRate(),
             $this->getStartDate(),
@@ -105,7 +105,7 @@ abstract class AbstractGrouper
             $this->doGroupReport($report);
         }
 
-        $this->setFillRate()
+        $this->setRequestFillRate()
             ->setBidRate()
             ->setClickThroughRate()
             ->setErrorRate()
@@ -119,7 +119,7 @@ abstract class AbstractGrouper
         $this->averageErrors = $this->getRatio($this->getErrors(), $reportCount);
         $this->averageBlocks = $this->getRatio($this->getBlocks(), $reportCount);
 
-        $this->averageFillRate = $this->getRatio($this->getTotalFillRate(), $reportCount);
+        $this->averageRequestFillRate = $this->getRatio($this->getTotalRequestFillRate(), $reportCount);
         $this->averageErrorRate = $this->getRatio($this->getTotalErrorRate(), $reportCount);
         $this->averageBidRate = $this->getRatio($this->getTotalBidRate(), $reportCount);
         $this->averageClickThroughRate = $this->getRatio($this->getTotalClickThroughRate(), $reportCount);
@@ -140,7 +140,7 @@ abstract class AbstractGrouper
         $this->addErrorRate($report->getErrorRate());
         $this->addClicks($report->getClicks());
         $this->addClickThroughRate($report->getClickThroughRate());
-        $this->addFillRate($report->getFillRate());
+        $this->addRequestFillRate($report->getRequestFillRate());
         $this->addImpressions($report->getImpressions());
         $this->addBlocks($report->getBlocks());
     }
@@ -155,9 +155,9 @@ abstract class AbstractGrouper
         $this->impressions += (int) $impressions;
     }
 
-    protected function addFillRate($fillRate)
+    protected function addRequestFillRate($requestFillRate)
     {
-        $this->totalFillRate += (float) $fillRate;
+        $this->totalRequestFillRate += (float) $requestFillRate;
     }
 
     protected function addBids($bids)
@@ -272,17 +272,17 @@ abstract class AbstractGrouper
     /**
      * @return mixed
      */
-    public function getFillRate()
+    public function getRequestFillRate()
     {
-        return $this->fillRate;
+        return $this->requestFillRate;
     }
 
     /**
      * @return mixed
      */
-    protected function getTotalFillRate()
+    protected function getTotalRequestFillRate()
     {
-        return $this->totalFillRate;
+        return $this->totalRequestFillRate;
     }
 
     /**
@@ -360,9 +360,9 @@ abstract class AbstractGrouper
     /**
      * @return mixed
      */
-    public function getAverageFillRate()
+    public function getAverageRequestFillRate()
     {
-        return $this->averageFillRate;
+        return $this->averageRequestFillRate;
     }
 
     /**
@@ -384,9 +384,9 @@ abstract class AbstractGrouper
     /**
      * @return $this
      */
-    protected function setFillRate()
+    protected function setRequestFillRate()
     {
-        $this->fillRate = $this->getRatio($this->getImpressions(), $this->getRequests());
+        $this->requestFillRate = $this->getRatio($this->getImpressions(), $this->getRequests());
         return $this;
     }
 

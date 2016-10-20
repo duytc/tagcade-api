@@ -35,3 +35,19 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
         rtbImpressions:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+
+        inBannerRequests:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        inBannerImpressions:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        inBannerTimeouts:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        inBannerBilledRate:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        inBannerBilledAmount:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]

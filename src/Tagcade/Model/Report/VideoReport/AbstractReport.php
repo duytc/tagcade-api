@@ -19,7 +19,7 @@ abstract class AbstractReport implements ReportInterface
     protected $errors;
     protected $errorRate;
     protected $impressions;
-    protected $fillRate;
+    protected $requestFillRate;
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;
@@ -111,9 +111,9 @@ abstract class AbstractReport implements ReportInterface
     /**
      * @return float
      */
-    public function getFillRate()
+    public function getRequestFillRate()
     {
-        return $this->fillRate;
+        return $this->requestFillRate;
     }
 
     /**
@@ -167,7 +167,7 @@ abstract class AbstractReport implements ReportInterface
 
     public function setCalculatedFields()
     {
-        $this->setFillRate();
+        $this->setRequestFillRate();
         $this->setBidRate();
         $this->setErrorRate();
         $this->setClickThroughRate();
@@ -191,9 +191,9 @@ abstract class AbstractReport implements ReportInterface
         return $this;
     }
 
-    public function setFillRate()
+    public function setRequestFillRate()
     {
-        $this->fillRate = $this->calculateFillRate();
+        $this->requestFillRate = $this->calculateFillRate();
         return $this;
     }
 

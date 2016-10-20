@@ -20,6 +20,9 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
 
     const BILLED_AMOUNT = 'billed_amount';
     const BILLED_RATE = 'billed_rate';
+    const IN_BANNER_BILLED_AMOUNT = 'inbanner_billed_amount';
+    const IN_BANNER_BILLED_RATE = 'inbanner_billed_rate';
+
     /**
      * @var AccountSnapshot
      */
@@ -49,6 +52,10 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
             self::CACHE_KEY_IMPRESSION => 0,
             self::CACHE_KEY_PASSBACK => 0,
             self::BILLED_AMOUNT => 0,
+            self::IN_BANNER_BILLED_AMOUNT => 0,
+            self::CACHE_KEY_IN_BANNER_REQUEST => 0,
+            self::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
+            self::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
         );
 
         $this->accountSnapshotCreator->setEventCounter($this->eventCounter);
@@ -57,6 +64,7 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
         $allPublishers = $this->publisherManager->allActivePublishers();
 
         $total = 0;
+        $inBannerTotal = 0;
         foreach ($allPublishers as $publisher) {
             if (!$publisher instanceof PublisherInterface) {
                 continue;
@@ -75,15 +83,22 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
             $result[self::CACHE_KEY_IMPRESSION] += $accountReport->getImpressions();
             $result[self::CACHE_KEY_PASSBACK] += $accountReport->getPassbacks();
             $result[self::BILLED_AMOUNT] += $accountReport->getBilledAmount();
+            $result[self::IN_BANNER_BILLED_AMOUNT] += $accountReport->getInBannerBilledAmount();
+            $result[self::CACHE_KEY_IN_BANNER_REQUEST] += $accountReport->getInBannerRequests();
+            $result[self::CACHE_KEY_IN_BANNER_IMPRESSION] += $accountReport->getInBannerImpressions();
+            $result[self::CACHE_KEY_IN_BANNER_TIMEOUT] += $accountReport->getInBannerTimeouts();
 
             $total += $accountReport->getBilledRate() * $accountReport->getBilledAmount(); // for weighted value calculation latter
+            $inBannerTotal += $accountReport->getInBannerBilledRate() * $accountReport->getInBannerBilledAmount(); // for in banner weighted value calculation latter
 
         }
 
         $this->logger->info('Finished getting all active publisher report');
 
         $billedRate = $this->getRatio($total, $result[self::BILLED_AMOUNT]); // weighted billed rate
+        $inBannerBilledRate = $this->getRatio($inBannerTotal, $result[self::IN_BANNER_BILLED_AMOUNT]); // weighted billed rate
         $result[self::BILLED_RATE] = $billedRate == null ? 0 : $billedRate;
+        $result[self::IN_BANNER_BILLED_RATE] = $inBannerBilledRate == null ? 0 : $inBannerBilledRate;
 
         $this->constructReportModel($report, $result);
 

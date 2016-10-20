@@ -8,6 +8,7 @@ use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
@@ -32,6 +33,9 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const KEY_VOID_IMPRESSION        = 'void_impressions';
     const KEY_CLICK                  = 'clicks';
+    const KEY_IN_BANNER_REQUESTS     = 'requests';
+    const KEY_IN_BANNER_IMPRESSIONS  = 'impressions';
+    const KEY_IN_BANNER_TIMEOUT      = 'timeouts';
 
     protected $adSlots;
     protected $adSlotData = [];
@@ -66,6 +70,8 @@ class TestEventCounter extends AbstractEventCounter
 
             $slotOpportunities = mt_rand($minSlotOpportunities, $maxSlotOpportunities);
             $rtbImpressions = mt_rand(0, $slotOpportunities * 0.01);
+            $inBannerRequests = mt_rand(0, $slotOpportunities * 0.02);
+            $inBannerImpressions = mt_rand(0, $inBannerRequests);
             $hbRequests = mt_rand(0, $rtbImpressions);
             $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
 
@@ -76,8 +82,15 @@ class TestEventCounter extends AbstractEventCounter
                 ];
             }
 
-            $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
+            if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->getSite()->getPublisher()->hasInBannerModule()) {
+                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
+                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
+                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT] = $inBannerRequests - $inBannerImpressions;
+            }
 
+            if($adSlot->getSite()->getPublisher()->hasHeaderBiddingModule()) {
+                $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
+            }
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
             if ($ronAdSlot instanceof RonAdSlotInterface) {
@@ -312,6 +325,33 @@ class TestEventCounter extends AbstractEventCounter
         }
 
         return $this->adSlotData[$slotId][static::KEY_HB_BID_REQUEST];
+    }
+
+    public function getInBannerRequestCount($slotId)
+    {
+        if (!isset($this->adSlotData[$slotId][static::KEY_IN_BANNER_REQUESTS])) {
+            return false;
+        }
+
+        return $this->adSlotData[$slotId][static::KEY_IN_BANNER_REQUESTS];
+    }
+
+    public function getInBannerImpressionCount($slotId)
+    {
+        if (!isset($this->adSlotData[$slotId][static::KEY_IN_BANNER_IMPRESSIONS])) {
+            return false;
+        }
+
+        return $this->adSlotData[$slotId][static::KEY_IN_BANNER_IMPRESSIONS];
+    }
+
+    public function getInBannerTimeoutCount($slotId)
+    {
+        if (!isset($this->adSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT])) {
+            return false;
+        }
+
+        return $this->adSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT];
     }
 
     /**

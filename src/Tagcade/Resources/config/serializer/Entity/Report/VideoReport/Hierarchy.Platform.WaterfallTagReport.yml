@@ -23,7 +23,7 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\WaterfallTagReport:
         impressions:
             expose: true
             groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
         clicks:

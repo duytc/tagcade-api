@@ -130,7 +130,7 @@ class DailyReportCreator
 //        }
 //
 //        $report->parseData($platformCounts)
-//            ->setFillRate()
+//            ->setRequestFillRate()
 //            ->setThresholdBilledAmount($chainToSubReports = false) // we don't need to calculate for sub reports
 //        ;
 //

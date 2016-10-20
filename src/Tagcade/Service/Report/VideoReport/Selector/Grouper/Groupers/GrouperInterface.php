@@ -56,7 +56,7 @@ interface GrouperInterface
     /**
      * @return mixed
      */
-    public function getFillRate();
+    public function getRequestFillRate();
 
     /**
      * @return mixed
@@ -101,7 +101,7 @@ interface GrouperInterface
     /**
      * @return mixed
      */
-    public function getAverageFillRate();
+    public function getAverageRequestFillRate();
 
     /**
      * @return mixed

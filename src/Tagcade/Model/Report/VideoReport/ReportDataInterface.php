@@ -19,7 +19,7 @@ interface ReportDataInterface
     /**
      * @return float
      */
-    public function getFillRate();
+    public function getRequestFillRate();
 
     /**
      * @return int

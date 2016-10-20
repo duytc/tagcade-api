@@ -23,7 +23,7 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport:
         impressions:
             expose: true
             groups: [platform_account.detail, platform_account.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [platform_account.detail, platform_account.summary]
         clicks:

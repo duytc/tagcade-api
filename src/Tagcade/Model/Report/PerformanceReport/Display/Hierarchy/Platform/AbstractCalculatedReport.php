@@ -25,6 +25,11 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->billedAmount = 0;
         $this->rtbImpressions = 0;
 
+        $this->inBannerTimeouts = 0;
+        $this->inBannerImpressions = 0;
+        $this->inBannerBilledAmount = 0;
+        $this->inBannerRequests = 0;
+
         parent::doCalculateFields();
     }
 
@@ -65,6 +70,11 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->addRtbImpressions($subReport->getRtbImpressions());
         $this->addBilledAmount($subReport->getBilledAmount());
 
+        $this->addInBannerBilledAmount($subReport->getInBannerBilledAmount());
+        $this->addInBannerTimeouts($subReport->getInBannerTimeouts());
+        $this->addInBannerRequests($subReport->getInBannerRequests());
+        $this->addInBannerImpressions($subReport->getInBannerImpressions());
+
         parent::aggregateSubReport($subReport);
 
     }
@@ -82,5 +92,25 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     protected function addBilledAmount($billedAmount)
     {
         $this->billedAmount += (float)$billedAmount;
+    }
+
+    protected function addInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests += (int)$inBannerRequests;
+    }
+
+    protected function addInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions += (int)$inBannerImpressions;
+    }
+
+    protected function addInBannerBilledAmount($inBannerBilledAmount)
+    {
+        $this->inBannerBilledAmount += (int)$inBannerBilledAmount;
+    }
+
+    protected function addInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts += (int)$inBannerTimeouts;
     }
 }

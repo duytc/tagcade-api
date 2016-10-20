@@ -29,7 +29,7 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\DemandPartner\DemandAdTagReport:
             nullable: true
         impressions:
             type: decimal
-        fillRate:
+        requestFillRate:
             type: decimal
             scale: 4
             nullable: true

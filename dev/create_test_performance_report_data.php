@@ -38,8 +38,8 @@ $reportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\R
 $dailyReportCreator = new \Tagcade\Service\Report\PerformanceReport\Display\Creator\DailyReportCreator($em, $reportCreator, $segmentRepository, $ronAdSlotManager);
 $dailyReportCreator->setLogger($container->get('logger'));
 
-$begin = new DateTime('2016-04-01');
-$end = new DateTime('2016-04-05');
+$begin = new DateTime('2016-10-01');
+$end = new DateTime('2016-10-14');
 
 $today = new DateTime('today');
 if ($end >= $today) {
@@ -65,11 +65,14 @@ foreach($dateRange as $date){
     echo sprintf("%s processing... @ %s\n", $date->format('Y-m-d'), date('c'));
 
     $eventCounter->refreshTestData($minSlotOpportunities, $maxSlotOpportunities);
+    $publishers =  $publishers = array_filter($userManager->allActivePublishers(), function(\Tagcade\Model\User\UserEntityInterface $user) {
+        return $user->hasRole(Tagcade\Bundle\UserBundle\DomainManager\PublisherManager::ROLE_PUBLISHER) && $user->isEnabled() && $user->hasDisplayModule();
+    });
 
     $dailyReportCreator
         ->setReportDate($date)
         ->createAndSave(
-        $userManager->allActivePublishers(),
+        array_values($publishers),
         $adNetworkManager->all()
     );
 

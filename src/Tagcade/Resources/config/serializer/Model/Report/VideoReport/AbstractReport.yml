@@ -7,7 +7,7 @@ Tagcade\Model\Report\VideoReport\AbstractReport:
             type: double
         errorRate:
             type: double
-        fillRate:
+        requestFillRate:
             type: double
         clickThroughRate:
             type: double

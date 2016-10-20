@@ -36,7 +36,7 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\DemandAdTagReport:
         impressions:
             expose: true
             groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
         clicks:
