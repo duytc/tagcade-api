@@ -602,4 +602,9 @@ class Report implements ReportInterface
 
         return $this;
     }
+
+    public function getViewsPerVisit()
+    {
+        return $this->getRatio($this->getPageViews(), $this->getVisits());
+    }
 }

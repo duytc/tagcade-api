@@ -1,6 +1,8 @@
 Tagcade\Model\Report\SourceReport\Report:
     exclusion_policy: NONE
     virtual_properties:
+        getViewsPerVisit:
+            type: double
         getSiteId:
             type: integer
     properties:

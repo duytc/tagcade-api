@@ -122,6 +122,7 @@ abstract class AbstractGrouper implements GrouperInterface
     {
         $this->addDisplayOpportunities($report->getDisplayOpportunities())
             ->addDisplayImpression($report->getDisplayImpressions())
+            ->addDisplayClicks($report->getDisplayClicks())
             ->addVideoPlayerReady($report->getVideoPlayerReady())
             ->addVideoAdPlays($report->getVideoAdPlays())
             ->addVideoAdImpressions($report->getVideoAdImpressions())
