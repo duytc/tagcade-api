@@ -83,26 +83,26 @@ class UpdateAdTagHtmlListener
 
     protected function createInBannerHtml(LibraryAdTagInterface $libraryAdTag)
     {
-
         $template = '<script src="%s" data-pv-tag-url=\'%s\' data-pv-platform="%s"%s</script>';
+        $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
 
         $vastTags = array_map(function(array $item) {
             return $item['tag'];
-        }, $libraryAdTag->getVastTags());
+        }, $inBannerDescriptor['vastTags']);
 
         $vastTagStr = json_encode($vastTags, JSON_UNESCAPED_SLASHES);
 
-        $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr, $libraryAdTag->getPlatform(), "%s");
-        if (is_numeric($libraryAdTag->getTimeout())) {
-            $html = sprintf($html, sprintf(" data-pv-timeout=\"%d\"", $libraryAdTag->getTimeout()). "%s");
+        $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr, $inBannerDescriptor['platform'], "%s");
+        if (is_numeric($inBannerDescriptor['timeout'])) {
+            $html = sprintf($html, sprintf(" data-pv-timeout=\"%d\"", $inBannerDescriptor['timeout']). "%s");
         }
 
-        if (is_numeric($libraryAdTag->getPlayerWidth())) {
-            $html = sprintf($html, sprintf(" data-pv-width=\"%d\"", $libraryAdTag->getPlayerWidth()). "%s");
+        if (is_numeric($inBannerDescriptor['playerWidth'])) {
+            $html = sprintf($html, sprintf(" data-pv-width=\"%d\"", $inBannerDescriptor['playerWidth']). "%s");
         }
 
-        if (is_numeric($libraryAdTag->getPlayerHeight())) {
-            $html = sprintf($html, sprintf(" data-pv-height=\"%d\"", $libraryAdTag->getPlayerHeight()));
+        if (is_numeric($inBannerDescriptor['playerHeight'])) {
+            $html = sprintf($html, sprintf(" data-pv-height=\"%d\"", $inBannerDescriptor['playerHeight']));
         }
 
         return str_replace('%s', '', $html);

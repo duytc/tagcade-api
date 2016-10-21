@@ -25,6 +25,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 
     const PLATFORM_FLASH = 'flash';
     const PLATFORM_AUTO = 'auto';
+    const PLATFORM_HTML5 = 'html5';
 
     /** @var UserRoleInterface $userRole */
     protected $userRole;
@@ -68,20 +69,10 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('visible')
             ->add('adType')
             ->add('descriptor')
+            ->add('inBannerDescriptor')
             ->add('name')
             ->add('id')
             ->add('partnerTagId')
-
-            ->add('platform',  ChoiceType::class, array(
-                'choices' => [
-                    self::PLATFORM_FLASH => 'flash',
-                    self::PLATFORM_AUTO => 'auto'
-                ]
-            ))
-            ->add('timeout')
-            ->add('playerHeight')
-            ->add('playerWidth')
-            ->add('vastTags')
         ;
 
         $builder->addEventListener(
@@ -137,15 +128,21 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             throw new InvalidArgumentException('module In-Banner need to be enabled for other modules to be enabled.');
         }
 
-        if($libraryAdTag->getPlatform() == null) {
+        $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
+
+        if($inBannerDescriptor['platform'] == null &&
+            ($inBannerDescriptor['platform'] != self::PLATFORM_FLASH ||
+            $inBannerDescriptor['platform'] != self::PLATFORM_AUTO ||
+            $inBannerDescriptor['platform'] != self::PLATFORM_HTML5)
+        ) {
             throw new InvalidFormException('Platform value should not be blank');
         }
 
-        if(count($libraryAdTag->getVastTags()) == 0) {
+        if(count($inBannerDescriptor['vastTags']) == 0) {
             throw new InvalidFormException('VastTag value should not be blank');
         }
 
-        foreach($libraryAdTag->getVastTags() as $vastTag) {
+        foreach($inBannerDescriptor['vastTags'] as $vastTag) {
             if (!is_array($vastTag)) {
                 throw new InvalidFormException('invalid vastTag value');
             }
