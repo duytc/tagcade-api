@@ -22,6 +22,10 @@ class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
             ))
             ->add('profitValue')
             ->add('publishers')
+            ->add('waterfalls')
+            ->add('position')
+            ->add('priority')
+            ->add('rotationWeight')
             ;
     }
 

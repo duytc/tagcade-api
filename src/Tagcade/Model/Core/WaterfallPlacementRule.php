@@ -30,6 +30,25 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
      */
     protected $publishers;
 
+    /**
+     * @var integer
+     */
+    protected $position;
+
+    /**
+     * @var integer
+     */
+    protected $rotationWeight;
+
+    /**
+     * @var integer
+     */
+    protected $priority;
+
+    /**
+     * @var array
+     */
+    protected $waterfalls;
 
     protected $deletedAt;
 
@@ -107,6 +126,78 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
     public function setPublishers($publishers)
     {
         $this->publishers = $publishers;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * @param int $position
+     * @return self
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRotationWeight()
+    {
+        return $this->rotationWeight;
+    }
+
+    /**
+     * @param int $rotationWeight
+     * @return self
+     */
+    public function setRotationWeight($rotationWeight)
+    {
+        $this->rotationWeight = $rotationWeight;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     * @return self
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getWaterfalls()
+    {
+        return $this->waterfalls;
+    }
+
+    /**
+     * @param array $waterfalls
+     * @return self
+     */
+    public function setWaterfalls($waterfalls)
+    {
+        $this->waterfalls = $waterfalls;
         return $this;
     }
 

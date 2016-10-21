@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
 use ReflectionClass;
 use Tagcade\Domain\DTO\Core\WaterfallTagsPlacementRule;
+use Tagcade\Entity\Core\WaterfallPlacementRule;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
@@ -61,6 +62,35 @@ class LibraryVideoDemandAdTagManager implements LibraryVideoDemandAdTagManagerIn
         }
     }
 
+    public function deployLibraryVideoDemandAdTagBasedOnManualPlacementRule(LibraryVideoDemandAdTagInterface $videoDemandAdTag)
+    {
+        $placementRules = $videoDemandAdTag->getWaterfallPlacementRules()->toArray();
+        $placementRules = array_filter($placementRules, function(WaterfallPlacementRuleInterface $rule) {
+            return $rule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL;
+        });
+
+        /**
+         * @var WaterfallPlacementRuleInterface $placementRule
+         */
+        foreach($placementRules as $placementRule) {
+            if (empty($placementRule->getWaterfalls())) {
+                continue;
+            }
+
+            $this->deployLibraryVideoDemandAdTagService->deployLibraryVideoDemandAdTagToWaterfalls(
+                $videoDemandAdTag,
+                $placementRule,
+                $placementRule->getWaterfalls(),
+                null,
+                false,
+                $placementRule->getPriority(),
+                $placementRule->getRotationWeight(),
+                true,
+                $placementRule->getPosition(),
+                false
+            );
+        }
+    }
 
     /**
      * @inheritdoc
