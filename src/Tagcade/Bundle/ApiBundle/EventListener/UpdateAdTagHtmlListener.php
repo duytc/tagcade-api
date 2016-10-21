@@ -110,7 +110,7 @@ class UpdateAdTagHtmlListener
             . ' $$DATA-PV-HEIGHT$$' // null for auto use slot height
             . ' $$DATA-PV-SLOT$$' // auto on cache
             . ' $$DATA-PV-TAG$$' // auto on cache
-            . '</script>';
+            . '></script>';
 
         $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
 
