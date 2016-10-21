@@ -164,7 +164,24 @@ class AdTag implements AdTagInterface
     {
         if ($this->libraryAdTag == null) return null;
 
-        return $this->libraryAdTag->getHtml();
+        $type = $this->libraryAdTag->getAdType();
+        $html = $this->libraryAdTag->getHtml();
+        switch ($type) {
+            case LibraryAdTag::AD_TYPE_THIRD_PARTY:
+            case LibraryAdTag::AD_TYPE_IMAGE:
+                break;
+
+            case LibraryAdTag::AD_TYPE_IN_BANNER:
+                // update required fields due to adSlot and this adTag
+                if ($this->adSlot instanceof DisplayAdSlotInterface) {
+                    $html = str_replace('$$DATA-PV-WIDTH$$', sprintf('data-pv-width="%d"', $this->adSlot->getWidth()), $html);
+                    $html = str_replace('$$DATA-PV-HEIGHT$$', sprintf('data-pv-height="%d"', $this->adSlot->getHeight()), $html);
+                    $html = str_replace('$$DATA-PV-SLOT$$', sprintf('data-pv-slot="%d"', $this->adSlot->getId()), $html);
+                    $html = str_replace('$$DATA-PV-TAG$$', sprintf('data-pv-tag="%d"', $this->getId()), $html);
+                }
+        }
+
+        return $html;
     }
 
     /**

@@ -83,26 +83,55 @@ class UpdateAdTagHtmlListener
 
     protected function createInBannerHtml(LibraryAdTagInterface $libraryAdTag)
     {
-        $template = '<script src="%s" data-pv-tag-url=\'%s\' data-pv-platform="%s"%s</script>';
+        /*
+         * <script
+         *   src="/inbannervideo.js"
+         *   data-pv-tag-url='[
+         *       "http://vast-tag-server.tagcade.dev:9998/tag.php?id=73c441f2-87a4-4d41-9352-e53127d3bd20"
+         *   ]'
+         *   data-pv-platform="flash"
+         *   data-pv-timeout="10"
+         *   data-pv-width="300"
+         *   data-pv-height="250"
+         *   data-pv-slot="1"
+         *   data-pv-tag="2"></script>
+         * where:
+         * - required: src, data-pv-tag-url, data-pv-width, data-pv-height
+         * - optional: data-pv-platform
+         * - auto: data-pv-slot, data-pv-tag
+         */
+        $template = ''
+            . '<script'
+            . ' src="%s"'
+            . ' data-pv-tag-url=\'%s\''
+            . ' data-pv-platform="%s"'
+            . ' $$DATA-PV-WIDTH$$'  // null for auto use slot width
+            . ' $$DATA-PV-HEIGHT$$' // null for auto use slot height
+            . ' $$DATA-PV-SLOT$$' // auto on cache
+            . ' $$DATA-PV-TAG$$' // auto on cache
+            . ' %s>'
+            . '</script>';
+
         $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
 
-        $vastTags = array_map(function(array $item) {
+        $vastTags = array_map(function (array $item) {
             return $item['tag'];
         }, $inBannerDescriptor['vastTags']);
 
         $vastTagStr = json_encode($vastTags, JSON_UNESCAPED_SLASHES);
 
         $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr, $inBannerDescriptor['platform'], "%s");
+
         if (is_numeric($inBannerDescriptor['timeout'])) {
-            $html = sprintf($html, sprintf(" data-pv-timeout=\"%d\"", $inBannerDescriptor['timeout']). "%s");
+            $html = sprintf($html, sprintf(" data-pv-timeout=\"%d\"", $inBannerDescriptor['timeout']) . "%s");
         }
 
         if (is_numeric($inBannerDescriptor['playerWidth'])) {
-            $html = sprintf($html, sprintf(" data-pv-width=\"%d\"", $inBannerDescriptor['playerWidth']). "%s");
+            $html = str_replace('$$DATA-PV-WIDTH$$', sprintf('data-pv-width="%d"', $inBannerDescriptor['playerWidth']), $html);
         }
 
         if (is_numeric($inBannerDescriptor['playerHeight'])) {
-            $html = sprintf($html, sprintf(" data-pv-height=\"%d\"", $inBannerDescriptor['playerHeight']));
+            $html = str_replace('$$DATA-PV-HEIGHT$$', sprintf('data-pv-height="%d"', $inBannerDescriptor['playerHeight']), $html);
         }
 
         return str_replace('%s', '', $html);
