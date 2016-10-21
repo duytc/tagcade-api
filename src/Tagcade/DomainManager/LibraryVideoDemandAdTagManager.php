@@ -10,7 +10,6 @@ use Tagcade\Entity\Core\WaterfallPlacementRule;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
-use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;

@@ -101,7 +101,7 @@ class UpdateVideoWaterfallTagListener
             if (!$videoDemandAdTag->getWaterfallPlacementRule() instanceof WaterfallPlacementRuleInterface) {
                 continue;
             }
-            
+
             if ($this->validateDemandAdTagAgainstPlacementRule($videoDemandAdTag) === false) {
                 $autoPauseTags[] = $videoDemandAdTag->getId();
             } else {
