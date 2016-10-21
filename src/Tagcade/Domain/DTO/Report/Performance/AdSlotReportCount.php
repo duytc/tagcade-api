@@ -29,15 +29,15 @@ class AdSlotReportCount implements BaseAdSlotReportCountInterface
         }
 
         if (array_key_exists(CacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST, $reportCounts)) {
-            $this->hbRequests = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST];
+            $this->inBannerRequests = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST];
         }
 
         if (array_key_exists(CacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION, $reportCounts)) {
-            $this->hbRequests = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION];
+            $this->inBannerImpressions = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION];
         }
 
         if (array_key_exists(CacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT, $reportCounts)) {
-            $this->hbRequests = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT];
+            $this->inBannerTimeouts = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT];
         }
     }
 
