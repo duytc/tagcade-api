@@ -96,10 +96,10 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
                             $this->validateImageAd($libraryAdTag);
                             break;
                         case LibraryAdTag::AD_TYPE_THIRD_PARTY:
-                            $this->validateThirdParty($libraryAdTag);
-                            break;
-                        default:
                             $this->validateCustomAd($libraryAdTag);
+                            break;
+                        case LibraryAdTag::AD_TYPE_IN_BANNER:
+                            $this->validateInBanner($libraryAdTag);
                     }
                 } catch (InvalidFormException $ex) {
                     $form = $event->getForm();
@@ -131,7 +131,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
         }
     }
 
-    protected function validateThirdParty(LibraryAdTagInterface $libraryAdTag)
+    protected function validateInBanner(LibraryAdTagInterface $libraryAdTag)
     {
         if(!$libraryAdTag->getAdNetwork()->getPublisher()->hasInBannerModule()) {
             throw new InvalidArgumentException('module In-Banner need to be enabled for other modules to be enabled.');
@@ -143,6 +143,16 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 
         if(count($libraryAdTag->getVastTags()) == 0) {
             throw new InvalidFormException('VastTag value should not be blank');
+        }
+
+        foreach($libraryAdTag->getVastTags() as $vastTag) {
+            if (!is_array($vastTag)) {
+                throw new InvalidFormException('invalid vastTag value');
+            }
+
+            if (!array_key_exists('tag', $vastTag)) {
+                throw new InvalidFormException('invalid vastTag value');
+            }
         }
     }
 
