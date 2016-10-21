@@ -21,10 +21,10 @@ Tagcade\Entity\Core\LibraryAdTag:
         descriptor:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        name:
+        inBannerDescriptor:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        partnerTagId:
+        name:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
         libraryAdSlot:

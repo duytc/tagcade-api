@@ -5,12 +5,18 @@ namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 
-class UpdateAdTagHtmlListener {
+class UpdateAdTagHtmlListener
+{
+    private $inBannerVideoJsUrl;
 
-    const AD_TAG_TYPE_IMAGE = 1;
-    const AD_TAG_TYPE_CUSTOM = 0;
+    public function __construct($inBannerVideoJsUrl)
+    {
+        $this->inBannerVideoJsUrl = $inBannerVideoJsUrl;
+    }
+
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
@@ -51,11 +57,12 @@ class UpdateAdTagHtmlListener {
     protected function createHtmlFromDescriptor(LibraryAdTagInterface $libraryAdTag)
     {
         switch ($libraryAdTag->getAdType()) {
-            case self::AD_TAG_TYPE_IMAGE:
+            case LibraryAdTag::AD_TYPE_IMAGE:
                 return $this->createImageAdTag($libraryAdTag->getDescriptor());
+            case LibraryAdTag::AD_TYPE_IN_BANNER:
+                return $this->createInBannerHtml($libraryAdTag);
             default:
                 break;
-
         }
 
         return $libraryAdTag->getHtml();
@@ -72,5 +79,32 @@ class UpdateAdTagHtmlListener {
         $targetUrl = $descriptor['targetUrl'];
 
         return '<a href="' . $targetUrl . '" target="_blank"><img src="' . $imageUrl . '" /></a>';
+    }
+
+    protected function createInBannerHtml(LibraryAdTagInterface $libraryAdTag)
+    {
+        $template = '<script src="%s" data-pv-tag-url=\'%s\' data-pv-platform="%s"%s</script>';
+        $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
+
+        $vastTags = array_map(function(array $item) {
+            return $item['tag'];
+        }, $inBannerDescriptor['vastTags']);
+
+        $vastTagStr = json_encode($vastTags, JSON_UNESCAPED_SLASHES);
+
+        $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr, $inBannerDescriptor['platform'], "%s");
+        if (is_numeric($inBannerDescriptor['timeout'])) {
+            $html = sprintf($html, sprintf(" data-pv-timeout=\"%d\"", $inBannerDescriptor['timeout']). "%s");
+        }
+
+        if (is_numeric($inBannerDescriptor['playerWidth'])) {
+            $html = sprintf($html, sprintf(" data-pv-width=\"%d\"", $inBannerDescriptor['playerWidth']). "%s");
+        }
+
+        if (is_numeric($inBannerDescriptor['playerHeight'])) {
+            $html = sprintf($html, sprintf(" data-pv-height=\"%d\"", $inBannerDescriptor['playerHeight']));
+        }
+
+        return str_replace('%s', '', $html);
     }
 }

@@ -25,7 +25,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                     BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY  =>'Slot opportunity',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION  =>'Video impression',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT       =>'Visit',
-                    BillingConfiguration::BILLING_HEADER_BID_REQUEST       => 'Bid Request'
+                    BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST       => 'Bid Request'
                 ]
             ))
             ->add('tiers')
@@ -34,6 +34,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 'empty_data' => null,
                 'choices' => [
                     User::MODULE_DISPLAY         => 'Display',
+                    User::MODULE_IN_BANNER         => 'In-Banner',
                     User::MODULE_VIDEO_ANALYTICS => 'Video',
                     User::MODULE_VIDEO           => 'VideoAds',
                     User::MODULE_ANALYTICS       => 'Analytics',
@@ -79,8 +80,8 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
 
                         break;
                     case User::MODULE_HEADER_BIDDING:
-                        if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_HEADER_BID_REQUEST) {
-                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_HEADER_BIDDING, BillingConfiguration::BILLING_HEADER_BID_REQUEST)));
+                        if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST) {
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_HEADER_BIDDING, BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST)));
                             return;
                         }
 

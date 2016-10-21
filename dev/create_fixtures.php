@@ -88,7 +88,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setPublisher($publisher)
         ->setModule($publisher::MODULE_HEADER_BIDDING)
         ->setDefaultConfig(true)
-        ->setBillingFactor($billingConfiguration::BILLING_HEADER_BID_REQUEST);
+        ->setBillingFactor($billingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST);
     $publisher->addBillingConfig($billingConfiguration);
 
     $publisherManager->save($publisher);

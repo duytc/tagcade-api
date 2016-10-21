@@ -87,10 +87,23 @@ interface LibraryAdTagInterface extends ModelInterface
 
     /**
      * set Descriptor formatted as json_array
-     * @param array $descriptor
+     * @param array $inBannerDescriptor
      * @return self
      */
-    public function setDescriptor($descriptor);
+    public function setDescriptor($inBannerDescriptor);
+
+    /**
+     * get Descriptor as json_array
+     * @return array
+     */
+    public function getInBannerDescriptor();
+
+    /**
+     * set Descriptor formatted as json_array
+     * @param array $inBannerDescriptor
+     * @return self
+     */
+    public function setInBannerDescriptor($inBannerDescriptor);
 
     /**
      * @return LibrarySlotTagInterface[]

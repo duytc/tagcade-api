@@ -12,7 +12,7 @@ class MetricParameter implements MetricParameterInterface
     const ERROR_KEY = 'errors';
     const ERROR_RATE_KEY = 'errorRate';
     const IMPRESSION_KEY = 'impressions';
-    const FILL_RATE_KEY = 'fillRate';
+    const REQUEST_FILL_RATE_KEY = 'requestFillRate';
     const CLICK_KEY = 'clicks';
     const CLICK_THROUGH_RATE_KEY = 'clickThroughRate';
     const AD_TAG_ERRORS_KEY = 'adTagErrors';
@@ -26,7 +26,7 @@ class MetricParameter implements MetricParameterInterface
         self::ERROR_KEY,
         self::ERROR_RATE_KEY,
         self::IMPRESSION_KEY,
-        self::FILL_RATE_KEY,
+        self::REQUEST_FILL_RATE_KEY,
         self::CLICK_KEY,
         self::CLICK_THROUGH_RATE_KEY,
         self::AD_TAG_ERRORS_KEY,
@@ -125,9 +125,9 @@ class MetricParameter implements MetricParameterInterface
     /**
      * @return bool
      */
-    public function hasFillRate()
+    public function hasRequestFillRate()
     {
-        return in_array(self::FILL_RATE_KEY, $this->usedMetrics);
+        return in_array(self::REQUEST_FILL_RATE_KEY, $this->usedMetrics);
     }
 
     /**

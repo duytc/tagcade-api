@@ -15,6 +15,8 @@ class LibraryAdTag extends LibraryAdTagModel {
     protected $adType;
     protected $partnerTagId;
     protected $descriptor;
+    protected $inBannerDescriptor;
+
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;

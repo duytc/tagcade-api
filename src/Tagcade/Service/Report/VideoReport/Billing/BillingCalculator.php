@@ -42,20 +42,18 @@ class BillingCalculator implements BillingCalculatorInterface
         $this->dateUtil = $dateUtil;
     }
 
-    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
+    public function calculateVideoBilledAmountForPublisherForSingleDay(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
         if ($newWeight < 0 || !is_numeric($newWeight)) {
             throw new InvalidArgumentException('$newWeight must be a number');
         }
 
-        $date = new DateTime('yesterday');
-        $weight = $this->accountReportRepository->getSumVideoImpressionsForPublisher(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date)
-        );
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
 
+        $weight = $this->accountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $yesterday);
         $weight += $newWeight;
+
         $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));

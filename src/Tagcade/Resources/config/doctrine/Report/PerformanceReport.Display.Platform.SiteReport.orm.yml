@@ -48,6 +48,24 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
             type: decimal
             scale: 4
             nullable: true
+
+        inBannerRequests:
+            type: integer
+            nullable: true
+        inBannerImpressions:
+            type: integer
+            nullable: true
+        inBannerTimeouts:
+            type: integer
+            nullable: true
+        inBannerBilledRate:
+            type: decimal
+            scale: 4
+            nullable: true
+        inBannerBilledAmount:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         site:
             targetEntity: Tagcade\Entity\Core\Site

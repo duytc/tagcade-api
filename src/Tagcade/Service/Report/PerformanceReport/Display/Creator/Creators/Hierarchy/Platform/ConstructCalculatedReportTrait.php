@@ -19,6 +19,9 @@ trait ConstructCalculatedReportTrait {
             ->setImpressions($data[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION])
             ->setRtbImpressions($data[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION])
             ->setPassbacks($data[SnapshotCreatorInterface::CACHE_KEY_PASSBACK])
+            ->setInBannerRequests(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] : 0)
+            ->setInBannerTimeouts(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] : 0)
+            ->setInBannerImpressions(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] : 0)
             ->setFillRate()
         ;
 
@@ -26,8 +29,16 @@ trait ConstructCalculatedReportTrait {
             $report->setBilledAmount($data[PlatformSnapshot::BILLED_AMOUNT]);
         }
 
+        if (isset($data[PlatformSnapshot::IN_BANNER_BILLED_AMOUNT])) {
+            $report->setInBannerBilledAmount($data[PlatformSnapshot::IN_BANNER_BILLED_AMOUNT]);
+        }
+
         if (isset($data[PlatformSnapshot::BILLED_RATE])) {
             $report->setBilledRate($data[PlatformSnapshot::BILLED_RATE]);
+        }
+
+        if (isset($data[PlatformSnapshot::IN_BANNER_BILLED_RATE])) {
+            $report->setInBannerBilledRate($data[PlatformSnapshot::IN_BANNER_BILLED_RATE]);
         }
 
         // TODO latter

@@ -34,4 +34,27 @@ interface ReportRepositoryInterface
      * @return mixed
      */
     public function getTotalVideoVisitForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getTotalVideoImpressionForSite(SiteInterface $site, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getTotalVideoVisitForSite(SiteInterface $site, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $dateTime
+     * @return mixed
+     */
+    public function getSourceReportsForPublisher(PublisherInterface $publisher, DateTime $dateTime);
 }

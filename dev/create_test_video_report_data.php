@@ -30,8 +30,8 @@ $reportCreator = new \Tagcade\Service\Report\VideoReport\Creator\ReportCreator($
 $dailyReportCreator = new \Tagcade\Service\Report\VideoReport\Creator\DailyReportCreator($em, $reportCreator);
 $dailyReportCreator->setLogger($container->get('logger'));
 
-$begin = new DateTime('2016-08-01');
-$end = new DateTime('2016-08-22');
+$begin = new DateTime('2016-10-01');
+$end = new DateTime('2016-10-15');
 
 
 $today = new DateTime('today');

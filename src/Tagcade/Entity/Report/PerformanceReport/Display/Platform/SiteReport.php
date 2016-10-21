@@ -23,4 +23,10 @@ class SiteReport extends SiteReportModel
     protected $billedAmount;
     protected $billedRate;
     protected $rtbImpressions;
+
+    protected $inBannerRequests;
+    protected $inBannerImpressions;
+    protected $inBannerTimeouts;
+    protected $inBannerBilledRate;
+    protected $inBannerBilledAmount;
 }

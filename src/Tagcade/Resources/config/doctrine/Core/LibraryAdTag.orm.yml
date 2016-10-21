@@ -37,6 +37,10 @@ Tagcade\Entity\Core\LibraryAdTag:
             type: json_array
             nullable: true
 
+        inBannerDescriptor:
+            type: json_array
+            nullable: true
+
         createdAt:
             type: datetime
             gedmo:

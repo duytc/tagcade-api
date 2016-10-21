@@ -43,5 +43,5 @@ interface AccountReportRepositoryInterface
 
     public function overrideReport(AccountReportInterface $report);
 
-    public function getSumSlotHbRequests(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+    public function getSumSlotInBannerImpressions(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 }

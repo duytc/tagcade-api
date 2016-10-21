@@ -7,7 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 
-class LibraryAdTag implements LibraryAdTagInterface{
+class LibraryAdTag implements LibraryAdTagInterface
+{
+    const AD_TYPE_THIRD_PARTY = 0;
+    const AD_TYPE_IMAGE = 1;
+    const AD_TYPE_IN_BANNER = 2;
 
     protected $id;
 
@@ -20,6 +24,9 @@ class LibraryAdTag implements LibraryAdTagInterface{
 
     /** array - json_array, descriptor of WaterfallTag*/
     protected $descriptor;
+
+    /** array - json_array*/
+    protected $inBannerDescriptor;
 
     /** @var AdNetworkInterface */
     protected $adNetwork;
@@ -182,6 +189,25 @@ class LibraryAdTag implements LibraryAdTagInterface{
     public function setDescriptor($descriptor)
     {
         $this->descriptor = $descriptor;
+
+        return $this;
+    }
+
+    /**
+     * get inBannerDescriptor as json_array
+     * @return array
+     */
+    public function getInBannerDescriptor()
+    {
+        return $this->inBannerDescriptor;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setInBannerDescriptor($inBannerDescriptor)
+    {
+        $this->inBannerDescriptor = $inBannerDescriptor;
 
         return $this;
     }

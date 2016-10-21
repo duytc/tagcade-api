@@ -151,7 +151,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
             $videoDemandAdTags = $videoWaterfallTagItem->getVideoDemandAdTags();
             /** @var VideoDemandAdTagInterface $videoDemandAdTag */
             foreach ($videoDemandAdTags as $videoDemandAdTag) {
-                if ($videoDemandAdTag->getActive() === false || $videoDemandAdTag->getDeletedAt() !== null) {
+                if ($videoDemandAdTag->getActive() !== VideoDemandAdTag::ACTIVE || $videoDemandAdTag->getDeletedAt() !== null) {
                     continue;
                 }
 

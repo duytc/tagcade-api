@@ -42,6 +42,26 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setBilledAmount($data['billedAmount']);
         }
 
+        if (array_key_exists('inBannerBilledAmount', $data)) {
+            $this->setInBannerBilledAmount($data['inBannerBilledAmount']);
+        }
+
+        if (array_key_exists('inBannerBilledRate', $data)) {
+            $this->setInBannerBilledRate($data['inBannerBilledRate']);
+        }
+
+        if (array_key_exists('inBannerImpressions', $data)) {
+            $this->setInBannerImpressions($data['inBannerImpressions']);
+        }
+
+        if (array_key_exists('inBannerRequests', $data)) {
+            $this->setInBannerRequests($data['inBannerRequests']);
+        }
+
+        if (array_key_exists('inBannerTimeouts', $data)) {
+            $this->setInBannerTimeouts($data['inBannerTimeouts']);
+        }
+
         return $this;
     }
 }

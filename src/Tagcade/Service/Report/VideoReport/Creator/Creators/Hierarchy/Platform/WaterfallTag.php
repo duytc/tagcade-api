@@ -66,7 +66,7 @@ class WaterfallTag extends CreatorAbstract implements WaterfallTagInterface
             }
         }
 
-        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($videoWaterfallTag->getPublisher(), AbstractUser::MODULE_VIDEO, $impressions);
+        $rateAmount = $this->billingCalculator->calculateVideoBilledAmountForPublisherForSingleDay($this->getDate(), $videoWaterfallTag->getPublisher(), AbstractUser::MODULE_VIDEO, $impressions);
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());
 

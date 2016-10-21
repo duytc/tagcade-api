@@ -23,7 +23,7 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PublisherReport:
         impressions:
             expose: true
             groups: [platform_publisher.detail, platform_publisher.summary]
-        fillRate:
+        requestFillRate:
             expose: true
             groups: [platform_publisher.detail, platform_publisher.summary]
         clicks:
