@@ -21,22 +21,10 @@ Tagcade\Entity\Core\LibraryAdTag:
         descriptor:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        inBannerDescriptor:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
         name:
-            expose: true
-            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        platform:
-            expose: true
-            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        timeout:
-            expose: true
-            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        playerHeight:
-            expose: true
-            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        playerWidth:
-            expose: true
-            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
-        vastTags:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
         libraryAdSlot:

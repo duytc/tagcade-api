@@ -25,6 +25,9 @@ class LibraryAdTag implements LibraryAdTagInterface
     /** array - json_array, descriptor of WaterfallTag*/
     protected $descriptor;
 
+    /** array - json_array*/
+    protected $inBannerDescriptor;
+
     /** @var AdNetworkInterface */
     protected $adNetwork;
 
@@ -37,12 +40,6 @@ class LibraryAdTag implements LibraryAdTagInterface
     protected $name;
 
     protected $partnerTagId;
-
-    protected $platform;
-    protected $timeout;
-    protected $vastTags;
-    protected $playerWidth;
-    protected $playerHeight;
 
     /**
      * @inheritdoc
@@ -197,6 +194,25 @@ class LibraryAdTag implements LibraryAdTagInterface
     }
 
     /**
+     * get inBannerDescriptor as json_array
+     * @return array
+     */
+    public function getInBannerDescriptor()
+    {
+        return $this->inBannerDescriptor;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setInBannerDescriptor($inBannerDescriptor)
+    {
+        $this->inBannerDescriptor = $inBannerDescriptor;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -252,90 +268,5 @@ class LibraryAdTag implements LibraryAdTagInterface
     function __toString()
     {
         return $this->id . $this->getName();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPlatform()
-    {
-        return $this->platform;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setPlatform($platform)
-    {
-        $this->platform = $platform;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getVastTags()
-    {
-        return $this->vastTags;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setVastTags($vastTags)
-    {
-        $this->vastTags = $vastTags;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPlayerWidth()
-    {
-        return $this->playerWidth;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setPlayerWidth($playerWidth)
-    {
-        $this->playerWidth = $playerWidth;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPlayerHeight()
-    {
-        return $this->playerHeight;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setPlayerHeight($playerHeight)
-    {
-        $this->playerHeight = $playerHeight;
-        return $this;
     }
 }

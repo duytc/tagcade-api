@@ -87,10 +87,23 @@ interface LibraryAdTagInterface extends ModelInterface
 
     /**
      * set Descriptor formatted as json_array
-     * @param array $descriptor
+     * @param array $inBannerDescriptor
      * @return self
      */
-    public function setDescriptor($descriptor);
+    public function setDescriptor($inBannerDescriptor);
+
+    /**
+     * get Descriptor as json_array
+     * @return array
+     */
+    public function getInBannerDescriptor();
+
+    /**
+     * set Descriptor formatted as json_array
+     * @param array $inBannerDescriptor
+     * @return self
+     */
+    public function setInBannerDescriptor($inBannerDescriptor);
 
     /**
      * @return LibrarySlotTagInterface[]
@@ -118,57 +131,4 @@ interface LibraryAdTagInterface extends ModelInterface
      * @return int
      */
     public function getAssociatedTagCount();
-
-    /**
-     * @return string
-     */
-    public function getPlatform();
-
-    /**
-     * @param string $platform
-     * @return self
-     */
-    public function setPlatform($platform);
-
-    /**
-     * @return int
-     */
-    public function getTimeout();
-    /**
-     * @param int $timeout
-     * @return self
-     */
-    public function setTimeout($timeout);
-    /**
-     * @return array
-     */
-    public function getVastTags();
-
-    /**
-     * @param array $vastTags
-     * @return self
-     */
-    public function setVastTags($vastTags);
-
-    /**
-     * @return int
-     */
-    public function getPlayerWidth();
-
-    /**
-     * @param int $playerWidth
-     * @return self
-     */
-    public function setPlayerWidth($playerWidth);
-
-    /**
-     * @return int
-     */
-    public function getPlayerHeight();
-
-    /**
-     * @param int $playerHeight
-     * @return self
-     */
-    public function setPlayerHeight($playerHeight);
 }
