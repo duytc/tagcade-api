@@ -39,4 +39,10 @@ interface LibraryVideoDemandAdTagManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function deployLibraryVideoDemandAdTag(LibraryVideoDemandAdTagInterface $videoDemandAdTag);
+
+    /**
+     * @param LibraryVideoDemandAdTagInterface $videoDemandAdTag
+     * @return mixed
+     */
+    public function deployLibraryVideoDemandAdTagBasedOnManualPlacementRule(LibraryVideoDemandAdTagInterface $videoDemandAdTag);
 }
