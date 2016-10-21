@@ -7,7 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 
-class LibraryAdTag implements LibraryAdTagInterface{
+class LibraryAdTag implements LibraryAdTagInterface
+{
+    const AD_TYPE_THIRD_PARTY = 0;
+    const AD_TYPE_IMAGE = 1;
+    const AD_TYPE_IN_BANNER = 2;
 
     protected $id;
 

@@ -2,6 +2,8 @@ services:
     ## Update ad tag html before ad tag persisted
     tagcade_api.event_listener.update_ad_tag_html_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdTagHtmlListener
+        arguments:
+            - %tc.in_banner_video_js_url%
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
