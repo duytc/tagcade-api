@@ -53,7 +53,7 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
     /**
      * @inheritdoc
      */
-    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = null, $position = null, $shiftDown = false)
+    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = true, $position = null, $shiftDown = false)
     {
         $availableWaterfalls = $this->waterfallTagRepository->getWaterfallTagsNotLinkToLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
         $availableWaterfalls = array_map(function(VideoWaterfallTagInterface $waterfall) {
@@ -87,6 +87,7 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
                     ->setLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
                     ->setTargetingOverride($targetingOverride)
                     ->setWaterfallPlacementRule($rule)
+                    ->setActive($active)
                 ;
 
                 if ($targetingOverride === true) {
@@ -101,10 +102,6 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
 
                 if (is_int($rotationWeight)) {
                     $demandAdTag->setRotationWeight($rotationWeight);
-                }
-
-                if (is_bool($active)) {
-                    $demandAdTag->setActive($active);
                 }
 
                 $tag = $this->waterfallTagRepository->find($videoWaterfallTag);

@@ -23,7 +23,7 @@ interface DeployLibraryVideoDemandAdTagServiceInterface
      * @param bool $shiftDown default false, if true => auto increase position for videoWaterfallTagItem related to created videoDemandAdTag
      * @return mixed
      */
-    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = null, $position = null, $shiftDown = false);
+    public function deployLibraryVideoDemandAdTagToWaterfalls(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $rule, array $videoWaterfallTags, $targeting = null, $targetingOverride = false, $priority = null, $rotationWeight = null, $active = true, $position = null, $shiftDown = false);
 
     /**
      * @param LibraryVideoDemandAdTagInterface $demandAdTag
