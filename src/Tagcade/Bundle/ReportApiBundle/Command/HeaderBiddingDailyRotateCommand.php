@@ -24,6 +24,16 @@ class HeaderBiddingDailyRotateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $container->get('logger');
+        $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+        $allPublishers = $publisherManager->allPublisherWithHeaderBiddingModule();
+
+        if (empty($allPublishers)) {
+            $logger->info('There\'re no publisher having header bidding module');
+            return;
+        }
+
         $timeout = $input->getOption('timeout');
         if ($timeout == -1) {
             $timeout = null;
@@ -40,13 +50,10 @@ class HeaderBiddingDailyRotateCommand extends ContainerAwareCommand
 
         $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
 
-        /** @var \Psr\Log\LoggerInterface $logger */
-        $logger = $container->get('logger');
         $logger->info('start daily rotation for header bidding');
 
-        $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $dailyVideoReportCreator = $this->getContainer()->get('tagcade.service.report.header_bidding_report.creator.daily_report_creator');
-        $allPublishers = $publisherManager->allPublisherWithHeaderBiddingModule();
+
         /* create header bidding reports */
         $dailyVideoReportCreator
             ->setReportDate($date)
