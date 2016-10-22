@@ -337,7 +337,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
             $adSlot = $reportRow->getAdSlot();
             if (!$adSlot instanceof BaseAdSlotInterface) {
-                $this->logger->warning(sprintf('Ad slot not found in AdSlot report %d', $reportRow->getId()));
+                $this->logger->debug(sprintf('Ad slot not found in AdSlot report %d', $reportRow->getId()));
                 continue;
             }
 
