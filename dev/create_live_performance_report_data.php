@@ -79,13 +79,16 @@ foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
         }
 
     }
-    $cache->save(
-        $cacheEventCounter->getCacheKey(
-            $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,
-            $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-        ),
-        $slotData[$testEventCounter::KEY_HB_BID_REQUEST]
-    );
+
+    if (array_key_exists($testEventCounter::KEY_HB_BID_REQUEST, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_HB_BID_REQUEST]
+        );
+    }
 
     unset($slotId, $slotData);
 }

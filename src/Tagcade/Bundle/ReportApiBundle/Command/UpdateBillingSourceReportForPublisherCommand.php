@@ -52,7 +52,7 @@ class UpdateBillingSourceReportForPublisherCommand extends ContainerAwareCommand
             $publishers[] = $publisher;
         } else {
             $logger->info('update billed source reports for all publishers');
-            $publishers = $publisherManager->all();
+            $publishers = $publisherManager->allPublisherWithSourceReportModule();
         }
 
         /** @var PublisherInterface $publisher */
