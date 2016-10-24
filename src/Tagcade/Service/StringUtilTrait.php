@@ -21,6 +21,7 @@ trait StringUtilTrait
 
     /**
      * @param $domain
+     * @param $throwException
      * @return mixed|string
      */
     protected function extractDomain($domain, $throwException = true)
@@ -40,10 +41,10 @@ trait StringUtilTrait
         }
 
         if (!$this->validateDomain($domain)) {
-            if ($throwException) {
+            if ($throwException === true) {
                 throw new InvalidArgumentException(sprintf('The value "%s" is not a valid domain.', $domain));
             } else {
-                $domain = null;
+                $domain = false;
             }
         }
 

@@ -20,22 +20,23 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         $this
             ->setName('tc:list:upload-white-and-black')
             ->addOption('type', 't', InputOption::VALUE_REQUIRED, 'Type 0 is black list and type 1 is white list')
-            ->addOption('filePath', 'f', InputOption::VALUE_REQUIRED, 'Path of imported file')
+            ->addOption('filePath', 'f', InputOption::VALUE_REQUIRED, 'file to import')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'Publisher id')
-            ->addOption('name' , 'd', InputOption::VALUE_REQUIRED, 'Blacklist/whitelist name')
-            ->setDescription('Upload black list and white list for publisher.');
+            ->addOption('name' , 'd', InputOption::VALUE_REQUIRED, 'name of the list')
+            ->setDescription('import list of domains to blacklist or white list');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $publisherId = $input->getOption('id');
-        $type = $input->getOption('type');
+        $publisherId = filter_var($input->getOption('id'), FILTER_VALIDATE_INT);
+        $type = filter_var($input->getOption('type'), FILTER_VALIDATE_INT);
         $name = $input->getOption('name');
         $filePath = $input->getOption('filePath');
+
         $container = $this->getContainer();
         $logger = $container->get('logger');
 
-        if (!preg_match('/^[0-1]$/', $type)) {
+        if ($type !== self::BLACK_LIST_OPTION && $type !== self::WHITE_LIST_OPTION) {
             throw new \Exception(sprintf("Type %s is not valid", $type));
         }
 
@@ -49,16 +50,23 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
             throw new \Exception(sprintf("Not found that publisher %s", $publisherId));
         }
 
-        if($type == self::BLACK_LIST_OPTION) {
-            $logger->info('Start import black list');
-            $blackListImport = $container->get('tagcade.service.csv.black_list_importer');
-            $blackListImport->importCsv($filePath, $publisher, $name);
-            $logger->info('Finish import black list');
-        } else if ($type == self::WHITE_LIST_OPTION) {
-            $logger->info('Start import white list');
-            $whiteListImport = $container->get('tagcade.service.csv.white_list_importer');
-            $whiteListImport->importCsv($filePath, $publisher, $name);
-            $logger->info('Finish import white list');
+        switch ($type) {
+            case self::BLACK_LIST_OPTION:
+                $logger->info('Start import black list');
+                $blackListImport = $container->get('tagcade.service.csv.black_list_importer');
+                $count = $blackListImport->importCsv($filePath, $publisher, $name);
+                $logger->info(sprintf('%d domains imported', $count));
+                $logger->info('Finish import black list');
+
+                break;
+            case self::WHITE_LIST_OPTION:
+                $logger->info('Start import white list');
+                $whiteListImport = $container->get('tagcade.service.csv.white_list_importer');
+                $count = $whiteListImport->importCsv($filePath, $publisher, $name);
+                $logger->info(sprintf('%d domains imported', $count));
+                $logger->info('Finish import white list');
+
+                break;
         }
     }
 }

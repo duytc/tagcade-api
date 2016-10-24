@@ -31,27 +31,25 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
 
         $handle = fopen($filename, "r");
         if ($handle === FALSE) {
-            return;
+            return 0;
         }
 
-        $row = 0;
+        $count = 0;
         $whiteListDomains = [];
         while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
-            $this->logger->info(sprintf('Start read row %d', $row), $data);
             $whiteListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]), false);
-            if ($whiteListDomain) {
-                $this->logger->info(sprintf('Domain "%s" is valid', $data[0]));
-                $whiteListDomains[] = $whiteListDomain;
-            } else {
-                $this->logger->info(sprintf('Domain "%s" is not valid', $data[0]));
+
+            if ($whiteListDomain === false) {
+                $this->logger->info(sprintf('"%s" is not a valid domain', $data[0]));
+                continue;
             }
-            $this->logger->info(sprintf('Finish read row %d', $row), $data);
-            $row++;
+
+            $whiteListDomains[] = $whiteListDomain;
+            $count++;
         }
 
         if (empty($whiteListDomains)) {
-            $this->logger->info(sprintf('There is no valid domain'));
-            return;
+            return 0;
         }
 
         $whiteList = new WhiteList();
@@ -63,5 +61,7 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
         $whiteList->setSuffixKey($whiteList->getId());
         $this->whiteListManager->save($whiteList);
         $this->domainListManager->saveWhiteList($whiteList);
+
+        return $count;
     }
 }
