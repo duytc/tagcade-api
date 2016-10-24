@@ -4,8 +4,12 @@ namespace Tagcade\Form\Type;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\WaterfallPlacementRule;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 
 class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
 {
@@ -29,6 +33,22 @@ class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
             ->add('priority')
             ->add('rotationWeight')
             ;
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                /** @var WaterfallPlacementRuleInterface $placementRule */
+                $placementRule = $event->getData();
+
+                if (!is_array($placementRule->getWaterfalls())) {
+                    throw new InvalidArgumentException('expect "waterfalls" to be an array');
+                }
+
+                if (!is_array($placementRule->getPublishers())) {
+                    throw new InvalidArgumentException('expect "publishers" to be an array');
+                }
+            }
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

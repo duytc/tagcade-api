@@ -91,11 +91,15 @@ class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
                             break;
                     }
 
-                    $publisherIds = $waterfallPlacementRule->getPublishers();
-                    foreach($publisherIds as $id) {
-                        $publisher = $this->videoPublisherRepository->find($id);
-                        if (!$publisher instanceof VideoPublisherInterface) {
-                            throw new InvalidArgumentException(sprintf('video publisher %d does not exist', $id));
+                    if ($waterfallPlacementRule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_FIX_MARGIN ||
+                        $waterfallPlacementRule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_PERCENTAGE_MARGIN
+                    ) {
+                        $publisherIds = $waterfallPlacementRule->getPublishers();
+                        foreach($publisherIds as $id) {
+                            $publisher = $this->videoPublisherRepository->find($id);
+                            if (!$publisher instanceof VideoPublisherInterface) {
+                                throw new InvalidArgumentException(sprintf('video publisher %d does not exist', $id));
+                            }
                         }
                     }
                 }
