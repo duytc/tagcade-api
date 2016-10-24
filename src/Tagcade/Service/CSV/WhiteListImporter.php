@@ -4,6 +4,7 @@ namespace Tagcade\Service\CSV;
 
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Tagcade\Cache\Video\DomainListManager;
 use Tagcade\DomainManager\WhiteListManagerInterface;
 use Tagcade\Entity\Core\WhiteList;
@@ -24,7 +25,9 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
 
     public function importCsv($filename, PublisherInterface $publisher, $name, $csvSeparator = self::CSV_SEPARATOR)
     {
-        $this->validateParameters($filename);
+        if (!file_exists($filename) || !is_file($filename)) {
+            throw new FileNotFoundException(sprintf('That file does not exists. Please recheck again this path %s', $filename));
+        }
 
         $handle = fopen($filename, "r");
         if ($handle === FALSE) {
@@ -46,16 +49,16 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
             $row++;
         }
 
-        if ($whiteListDomains) {
-            $whiteList = new WhiteList();
-            $whiteList->setPublisher($publisher);
-            $whiteList->setName($name);
-            $whiteList->setDomains($whiteListDomains);
-            $this->whiteListManager->save($whiteList);
-        } else {
+        if (empty($whiteListDomains)) {
             $this->logger->info(sprintf('There is no valid domain'));
             return;
         }
+
+        $whiteList = new WhiteList();
+        $whiteList->setPublisher($publisher);
+        $whiteList->setName($name);
+        $whiteList->setDomains($whiteListDomains);
+        $this->whiteListManager->save($whiteList);
 
         $whiteList->setSuffixKey($whiteList->getId());
         $this->whiteListManager->save($whiteList);
