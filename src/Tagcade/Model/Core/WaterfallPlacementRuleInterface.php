@@ -59,6 +59,28 @@ interface WaterfallPlacementRuleInterface extends ModelInterface
     public function setPosition($position);
 
     /**
+     * @return boolean
+     */
+    public function isShiftDown();
+
+    /**
+     * @param boolean $shiftDown
+     * @return self
+     */
+    public function setShiftDown($shiftDown);
+
+    /**
+     * @return boolean
+     */
+    public function isActive();
+
+    /**
+     * @param boolean $active
+     * @return self
+     */
+    public function setActive($active);
+
+    /**
      * @return int
      */
     public function getRotationWeight();

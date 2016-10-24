@@ -24,6 +24,16 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
         position:
             type: integer
             nullable: true
+        shiftDown:
+            type: boolean
+            nullable: true
+            options:
+                default: false
+        active:
+            type: boolean
+            nullable: true
+            options:
+                default: true
         rotationWeight:
             type: integer
             nullable: true

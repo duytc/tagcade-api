@@ -45,3 +45,4 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
             targetEntity: Tagcade\Entity\Core\WaterfallPlacementRule
             cascade: ['persist', 'remove', 'detach']
             mappedBy: libraryVideoDemandAdTag
+            orphanRemoval: true

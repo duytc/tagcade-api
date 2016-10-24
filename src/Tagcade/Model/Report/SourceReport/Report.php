@@ -7,7 +7,7 @@ use \DateTime;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
-class Report
+class Report implements ReportInterface
 {
     use CalculateRatiosTrait;
 
@@ -206,6 +206,12 @@ class Report
         $item->setSourceReport($this);
         $this->records[] = $item;
 
+        return $this;
+    }
+
+    public function setRecords(array $records)
+    {
+        $this->records = $records;
         return $this;
     }
 
@@ -601,5 +607,10 @@ class Report
         $this->qtosPercentage = $this->getPercentage($this->qtos, $this->pageViews);
 
         return $this;
+    }
+
+    public function getViewsPerVisit()
+    {
+        return $this->getRatio($this->getPageViews(), $this->getVisits());
     }
 }

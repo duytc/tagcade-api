@@ -13,6 +13,12 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
         position:
             expose: true
             groups: [WaterfallPlacementRule.summary]
+        shiftDown:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
+        active:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
         priority:
             expose: true
             groups: [WaterfallPlacementRule.summary]

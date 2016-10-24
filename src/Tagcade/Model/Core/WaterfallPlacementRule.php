@@ -36,6 +36,15 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
     protected $position;
 
     /**
+     * @var boolean
+     */
+    protected $shiftDown;
+
+    /**
+     * @var boolean
+     */
+    protected $active;
+    /**
      * @var integer
      */
     protected $rotationWeight;
@@ -146,6 +155,43 @@ class WaterfallPlacementRule implements WaterfallPlacementRuleInterface
         $this->position = $position;
         return $this;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isShiftDown()
+    {
+        return $this->shiftDown;
+    }
+
+    /**
+     * @param boolean $shiftDown
+     * @return self
+     */
+    public function setShiftDown($shiftDown)
+    {
+        $this->shiftDown = $shiftDown;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param boolean $active
+     * @return self
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+        return $this;
+    }
+
 
     /**
      * @return int

@@ -84,9 +84,9 @@ class LibraryVideoDemandAdTagManager implements LibraryVideoDemandAdTagManagerIn
                 false,
                 $placementRule->getPriority(),
                 $placementRule->getRotationWeight(),
-                true,
+                $placementRule->isActive(),
                 $placementRule->getPosition(),
-                false
+                $placementRule->isShiftDown()
             );
         }
     }
