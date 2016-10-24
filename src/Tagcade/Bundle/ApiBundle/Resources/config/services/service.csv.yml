@@ -7,3 +7,15 @@ services:
             - @tagcade.domain_manager.display_ad_slot
             - @tagcade.service.tag_generator
             - @logger
+    tagcade.service.csv.black_list_importer:
+        class: Tagcade\Service\CSV\BlackListImporter
+        arguments:
+            - @tagcade.cache.video.domain_list_manager
+            - @tagcade.domain_manager.blacklist
+            - @logger
+    tagcade.service.csv.white_list_importer:
+        class: Tagcade\Service\CSV\WhiteListImporter
+        arguments:
+            - @tagcade.cache.video.domain_list_manager
+            - @tagcade.domain_manager.whitelist
+            - @logger
