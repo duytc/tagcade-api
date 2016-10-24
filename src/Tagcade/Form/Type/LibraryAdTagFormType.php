@@ -23,12 +23,9 @@ use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 {
 
-    const AD_TYPE_HTML = 0;
-    const AD_TYPE_IMAGE = 1;
-    const AD_TYPE_THIRD_PARTY = 2;
-
     const PLATFORM_FLASH = 'flash';
     const PLATFORM_AUTO = 'auto';
+    const PLATFORM_HTML5 = 'html5';
 
     /** @var UserRoleInterface $userRole */
     protected $userRole;
@@ -72,20 +69,10 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('visible')
             ->add('adType')
             ->add('descriptor')
+            ->add('inBannerDescriptor')
             ->add('name')
             ->add('id')
             ->add('partnerTagId')
-
-            ->add('platform',  ChoiceType::class, array(
-                'choices' => [
-                    self::PLATFORM_FLASH => 'flash',
-                    self::PLATFORM_AUTO => 'auto'
-                ]
-            ))
-            ->add('timeout')
-            ->add('playerHeight')
-            ->add('playerWidth')
-            ->add('vastTags')
         ;
 
         $builder->addEventListener(
@@ -96,14 +83,14 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 
                 try {
                     switch ($libraryAdTag->getAdType()) {
-                        case self::AD_TYPE_IMAGE:
+                        case LibraryAdTag::AD_TYPE_IMAGE:
                             $this->validateImageAd($libraryAdTag);
                             break;
-                        case self::AD_TYPE_THIRD_PARTY:
-                            $this->validateThirdParty($libraryAdTag);
-                            break;
-                        default:
+                        case LibraryAdTag::AD_TYPE_THIRD_PARTY:
                             $this->validateCustomAd($libraryAdTag);
+                            break;
+                        case LibraryAdTag::AD_TYPE_IN_BANNER:
+                            $this->validateInBanner($libraryAdTag);
                     }
                 } catch (InvalidFormException $ex) {
                     $form = $event->getForm();
@@ -135,18 +122,34 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
         }
     }
 
-    protected function validateThirdParty(LibraryAdTagInterface $libraryAdTag)
+    protected function validateInBanner(LibraryAdTagInterface $libraryAdTag)
     {
         if(!$libraryAdTag->getAdNetwork()->getPublisher()->hasInBannerModule()) {
             throw new InvalidArgumentException('module In-Banner need to be enabled for other modules to be enabled.');
         }
 
-        if($libraryAdTag->getPlatform() == null) {
+        $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
+
+        if($inBannerDescriptor['platform'] == null &&
+            ($inBannerDescriptor['platform'] != self::PLATFORM_FLASH ||
+            $inBannerDescriptor['platform'] != self::PLATFORM_AUTO ||
+            $inBannerDescriptor['platform'] != self::PLATFORM_HTML5)
+        ) {
             throw new InvalidFormException('Platform value should not be blank');
         }
 
-        if(count($libraryAdTag->getVastTags()) == 0) {
+        if(count($inBannerDescriptor['vastTags']) == 0) {
             throw new InvalidFormException('VastTag value should not be blank');
+        }
+
+        foreach($inBannerDescriptor['vastTags'] as $vastTag) {
+            if (!is_array($vastTag)) {
+                throw new InvalidFormException('invalid vastTag value');
+            }
+
+            if (!array_key_exists('tag', $vastTag)) {
+                throw new InvalidFormException('invalid vastTag value');
+            }
         }
     }
 

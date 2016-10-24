@@ -21,6 +21,28 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
             nullable: true
         publishers:
             type: json_array
+        position:
+            type: integer
+            nullable: true
+        shiftDown:
+            type: boolean
+            nullable: true
+            options:
+                default: false
+        active:
+            type: boolean
+            nullable: true
+            options:
+                default: true
+        rotationWeight:
+            type: integer
+            nullable: true
+        priority:
+            type: integer
+            nullable: true
+        waterfalls:
+            type: json_array
+            nullable: true
         deletedAt:
             type: date
             nullable: true

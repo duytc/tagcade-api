@@ -33,6 +33,7 @@ abstract class LibraryVideoDemandAdTagHandlerAbstract extends RoleHandlerAbstrac
 
          // 2. create links to sites from this library ad slot
         $this->getDomainManager()->deployLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
+        $this->getDomainManager()->deployLibraryVideoDemandAdTagBasedOnManualPlacementRule($libraryVideoDemandAdTag);
 
         return $libraryVideoDemandAdTag;
     }

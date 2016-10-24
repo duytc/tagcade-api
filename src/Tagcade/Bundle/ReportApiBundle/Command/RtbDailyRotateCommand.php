@@ -23,6 +23,12 @@ class RtbDailyRotateCommand extends ContainerAwareCommand
         /** @var \Psr\Log\LoggerInterface $logger */
         $logger = $container->get('logger');
         $userManager = $container->get('tagcade_user.domain_manager.publisher');
+        $allPublishers = $userManager->allPublisherWithRtbModule();
+
+        if (empty($allPublishers)) {
+            $logger->info('There\'s no publisher having RTB module');
+            return;
+        }
 
         /* create rtb reports */
         $logger->info('start daily rotation for rtb');
@@ -31,7 +37,7 @@ class RtbDailyRotateCommand extends ContainerAwareCommand
         $reportDate = new DateTime('yesterday');
         $dailyRtbReportCreator->setReportDate($reportDate);
 
-        $dailyRtbReportCreator->createAndSave($userManager->allActivePublishers());
+        $dailyRtbReportCreator->createAndSave($allPublishers);
         $logger->info('finished daily rotation for rtb');
     }
 }

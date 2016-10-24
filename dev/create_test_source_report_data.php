@@ -10,10 +10,12 @@ $container = $kernel->getContainer();
 
 $em = $container->get('doctrine.orm.entity_manager');
 $siteManager = $container->get('tagcade.domain_manager.site');
+$publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+$publishersWithSourceReportModule = $publisherManager->allPublisherWithSourceReportModule();
 
-$sites = $siteManager->all();
-$START_DATE = new DateTime('2015-01-02');
-$END_DATE = new DateTime('2015-01-05');
+$sites = $siteManager->getSitesForPublishers($publishersWithSourceReportModule);
+$START_DATE = new DateTime('2016-10-01');
+$END_DATE = new DateTime('2016-10-05');
 
 $today = new DateTime('today');
 if ($END_DATE >= $today) {

@@ -29,6 +29,17 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $container->get('logger');
+
+        $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+        $allPublishers = $publisherManager->allPublisherWithVideoModule();
+
+        if (empty($allPublishers)) {
+            $logger->info('There\'s no publisher having video module');
+            return;
+        }
+
         $timeout = $input->getOption('timeout');
         if ($timeout == -1) {
             $timeout = null;
@@ -46,14 +57,10 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
         $skipUpdateBillingThreshold = filter_var($input->getOption('skip-update-billing'), FILTER_VALIDATE_BOOLEAN) ;
         $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
 
-        /** @var \Psr\Log\LoggerInterface $logger */
-        $logger = $container->get('logger');
         $logger->info('start daily rotation for video');
 
-        $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $videoDemandPartnerManager = $container->get('tagcade.domain_manager.video_demand_partner');
         $dailyVideoReportCreator = $this->getContainer()->get('tagcade.service.report.video_report.creator.daily_report_creator');
-        $allPublishers = $publisherManager->allPublisherWithVideoModule();
         /* create video reports */
         $dailyVideoReportCreator
             ->setReportDate($date)

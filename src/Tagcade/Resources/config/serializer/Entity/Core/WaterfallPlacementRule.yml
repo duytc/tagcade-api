@@ -10,3 +10,21 @@ Tagcade\Entity\Core\WaterfallPlacementRule:
         publishers:
             expose: true
             groups: [WaterfallPlacementRule.summary]
+        position:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
+        shiftDown:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
+        active:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
+        priority:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
+        rotationWeight:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]
+        waterfalls:
+            expose: true
+            groups: [WaterfallPlacementRule.summary]

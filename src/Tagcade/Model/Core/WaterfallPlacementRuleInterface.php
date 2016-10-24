@@ -48,6 +48,72 @@ interface WaterfallPlacementRuleInterface extends ModelInterface
     public function setPublishers($publishers);
 
     /**
+     * @return int
+     */
+    public function getPosition();
+
+    /**
+     * @param int $position
+     * @return self
+     */
+    public function setPosition($position);
+
+    /**
+     * @return boolean
+     */
+    public function isShiftDown();
+
+    /**
+     * @param boolean $shiftDown
+     * @return self
+     */
+    public function setShiftDown($shiftDown);
+
+    /**
+     * @return boolean
+     */
+    public function isActive();
+
+    /**
+     * @param boolean $active
+     * @return self
+     */
+    public function setActive($active);
+
+    /**
+     * @return int
+     */
+    public function getRotationWeight();
+
+    /**
+     * @param int $rotationWeight
+     * @return self
+     */
+    public function setRotationWeight($rotationWeight);
+
+    /**
+     * @return int
+     */
+    public function getPriority();
+
+    /**
+     * @param int $priority
+     * @return self
+     */
+    public function setPriority($priority);
+
+    /**
+     * @return array
+     */
+    public function getWaterfalls();
+
+    /**
+     * @param array $waterfalls
+     * @return self
+     */
+    public function setWaterfalls($waterfalls);
+
+    /**
      * @return LibraryVideoDemandAdTagInterface
      */
     public function getLibraryVideoDemandAdTag();

@@ -88,6 +88,23 @@ class SiteManager implements SiteManagerInterface
         return $this->repository->getSitesForPublisher($publisher, $limit, $offset);
     }
 
+    public function getSitesForPublishers(array $publishers, $limit = null, $offset = null)
+    {
+        if (empty($publishers)) {
+            return [];
+        }
+
+        $publishers = array_filter($publishers, function($publisher) {
+            return $publisher instanceof PublisherInterface;
+        });
+
+        $publishers = array_map(function(PublisherInterface $publisher) {
+            return $publisher->getId();
+        }, $publishers);
+
+        return $this->repository->getSitesForPublishers($publishers, $limit, $offset);
+    }
+
     public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         return $this->repository->getRTBEnabledSitesForPublisher($publisher, $limit, $offset);

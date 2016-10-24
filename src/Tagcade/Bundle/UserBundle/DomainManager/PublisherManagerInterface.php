@@ -66,6 +66,9 @@ interface PublisherManagerInterface
     public function allPublisherWithHeaderBiddingModule();
 
     public function allPublisherWithSourceReportModule();
+
+    public function allPublisherWithRtbModule();
+
     /**
      * @param int $id
      * @return PublisherInterface|bool
