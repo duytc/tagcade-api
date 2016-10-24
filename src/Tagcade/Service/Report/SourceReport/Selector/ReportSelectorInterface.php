@@ -12,9 +12,11 @@ interface ReportSelectorInterface {
      * @param SiteInterface $site
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param $rowOffset
+     * @param $rowLimit
      * @return array
      */
-    public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate);
+    public function getReports(SiteInterface $site, DateTime $startDate, DateTime $endDate, $rowOffset, $rowLimit);
 
     /**
      * @param PublisherInterface $publisher

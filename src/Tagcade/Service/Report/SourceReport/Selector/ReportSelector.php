@@ -8,6 +8,8 @@ use DateTime;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Domain\DTO\Report\SourceReport\Report as ReportDTO;
+use Tagcade\Domain\DTO\Report\SourceReport\ReportCollection as ReportCollectionDTO;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\SourceReport\ReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -15,6 +17,7 @@ use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Service\DateUtil;
 use Tagcade\Exception\Report\InvalidDateException;
+use Tagcade\Service\Report\SourceReport\ReportGrouper;
 use Tagcade\Service\Report\SourceReport\Result\ReportCollection;
 use Tagcade\Service\Report\SourceReport\Selector\Grouper\ReportGrouperInterface;
 
@@ -70,45 +73,24 @@ class ReportSelector implements ReportSelectorInterface
         if (!$endDate) {
             $endDate = $startDate;
         }
-
         if ($startDate > $endDate) {
             throw new InvalidDateException('start date must be before the end date');
         }
-
+        $rowOffset = intval($rowOffset);
+        if ($rowLimit !== null) {
+            $rowLimit = intval($rowLimit);
+        }
+        $reportSubset = [];
         $reports = $this->repository->getReports($site, $startDate, $endDate);
-
         if (!$reports) {
             return false;
         }
-
-        $reportName = null;
         foreach($reports as $report) {
-            if (!$report instanceof ReportInterface) {
-                throw new LogicException('You tried to add reports to a collection that did not match the supplied report type');
-            }
-
-            if (null === $reportName) {
-                $reportName = $report->getSite()->getName();
-            }
-
-            unset($report);
+            $reportSubset[] = new ReportDTO($report, $report->getRecords()->slice($rowOffset, $rowLimit));
         }
-
-        $dates = array_map(function(ReportInterface $report) {
-            return $report->getDate();
-        }, $reports);
-
-        // instead of using user-supplied dates for the collection date range
-        // determine what the actual date range is
-
-        $actualStartDate = min($dates);
-        $actualEndDate = max($dates);
-
-        $reportCollection = new ReportCollection($actualStartDate, $actualEndDate, $reports, $reportName);
-
-        unset($dates, $actualStartDate, $actualEndDate);
-
-        return $this->reportGrouper->groupReports($reportCollection);
+        $reportGrouper = new ReportGrouper($reports);
+        $reportCollection = new ReportCollectionDTO($startDate, $endDate, $site->getId(), $reportSubset, $reportGrouper->getGroupedReport());
+        return $reportCollection;
     }
 
     public function getPublisherByDayReport(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
