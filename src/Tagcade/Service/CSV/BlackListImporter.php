@@ -24,7 +24,7 @@ class BlackListImporter extends ListImporterAbstract implements BlackListImporte
 
     public function importCsv($filename, PublisherInterface $publisher, $name, $csvSeparator = self::CSV_SEPARATOR)
     {
-        $this->validateParameters($filename, $csvSeparator);
+        $this->validateParameters($filename);
 
         $handle = fopen($filename, "r");
         if ($handle === FALSE) {
@@ -34,7 +34,7 @@ class BlackListImporter extends ListImporterAbstract implements BlackListImporte
         $row = 0;
         $blackListDomains = [];
         while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
-            $this->logger->info(sprintf('start read row %d', $row), $data);
+            $this->logger->info(sprintf('Start read row %d', $row), $data);
             $blackListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]), false);
             if ($blackListDomain) {
                 $this->logger->info(sprintf('Domain "%s" is valid', $data[0]));
@@ -42,15 +42,20 @@ class BlackListImporter extends ListImporterAbstract implements BlackListImporte
             } else {
                 $this->logger->info(sprintf('Domain "%s" is not valid', $data[0]));
             }
-            $this->logger->info(sprintf('finish read row %d', $row), $data);
+            $this->logger->info(sprintf('Finish read row %d', $row), $data);
             $row++;
         }
 
-        $blackList = new Blacklist();
-        $blackList->setPublisher($publisher);
-        $blackList->setName($name);
-        $blackList->setDomains($blackListDomains);
-        $this->blackListManager->save($blackList);
+        if ($blackListDomains) {
+            $blackList = new Blacklist();
+            $blackList->setPublisher($publisher);
+            $blackList->setName($name);
+            $blackList->setDomains($blackListDomains);
+            $this->blackListManager->save($blackList);
+        } else {
+            $this->logger->info(sprintf('There is no valid domain'));
+            return;
+        }
 
         $blackList->setSuffixKey($blackList->getId());
         $this->blackListManager->save($blackList);

@@ -36,43 +36,11 @@ abstract class ListImporterAbstract implements ListImporterInterface
         $this->logger = $logger;
     }
 
-    protected function validateParameters($filename, &$csvSeparator)
+    protected function validateParameters($filename)
     {
         if (!file_exists($filename) || !is_file($filename)) {
             throw new FileNotFoundException(sprintf('That file does not exists. Please recheck again this path %s', $filename));
         }
-
-        $valid = $this->isEmptyFile($filename, $csvSeparator);
-
-        if (!$valid) {
-            throw new InvalidArgumentException('The file have no domain');
-        }
-    }
-
-    protected function isEmptyFile($filename, $csvSeparator = ',')
-    {
-        $handle = fopen($filename, "r");
-
-        if ($handle === FALSE) {
-            return FALSE;
-        }
-
-        $row = 0;
-
-        while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
-            if (!empty($data[0])) {
-                $row ++;
-            }
-        }
-
-        $matched = false;
-        if ($row > 0) {
-            $matched = true;
-        }
-
-        fclose($handle);
-
-        return $matched;
     }
 
     protected function adjustDomainPart($value)

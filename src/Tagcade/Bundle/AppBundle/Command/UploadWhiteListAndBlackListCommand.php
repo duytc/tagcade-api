@@ -43,10 +43,6 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
             throw new \Exception(sprintf("Name %s is too long", $name));
         }
 
-        if($filePath && !file_exists($filePath)  && is_file($filePath)) {
-            throw new \Exception(sprintf("File %s does not exist", $filePath));
-        }
-
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $publisher = $publisherManager->findPublisher($publisherId);
         if (!$publisher instanceof PublisherInterface) {
@@ -54,12 +50,12 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         }
 
         if($type == self::BLACK_LIST_OPTION) {
-            $logger->info('start import black list');
+            $logger->info('Start import black list');
             $blackListImport = $container->get('tagcade.service.csv.black_list_importer');
             $blackListImport->importCsv($filePath, $publisher, $name);
             $logger->info('Finish import black list');
         } else if ($type == self::WHITE_LIST_OPTION) {
-            $logger->info('start import white list');
+            $logger->info('Start import white list');
             $whiteListImport = $container->get('tagcade.service.csv.white_list_importer');
             $whiteListImport->importCsv($filePath, $publisher, $name);
             $logger->info('Finish import white list');
