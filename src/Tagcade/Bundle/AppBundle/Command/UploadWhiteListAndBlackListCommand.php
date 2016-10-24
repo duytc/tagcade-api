@@ -20,9 +20,9 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         $this
             ->setName('tc:list:upload-white-and-black')
             ->addOption('type', 't', InputOption::VALUE_REQUIRED, 'Type 0 is black list and type 1 is white list')
-            ->addOption('file_path', 'f', InputOption::VALUE_OPTIONAL, 'Path of imported file')
+            ->addOption('filePath', 'f', InputOption::VALUE_OPTIONAL, 'Path of imported file')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'Publisher id')
-            ->addOption('name' , 'd', InputOption::VALUE_REQUIRED, 'Blacklist or whitelist name')
+            ->addOption('name' , 'd', InputOption::VALUE_REQUIRED, 'Blacklist/whitelist name')
             ->setDescription('Upload black list and white list for publisher.');
     }
 
@@ -31,7 +31,7 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         $publisherId = $input->getOption('id');
         $type = $input->getOption('type');
         $name = $input->getOption('name');
-        $file_path = $input->getOption('file_path');
+        $filePath = $input->getOption('filePath');
         $container = $this->getContainer();
         $logger = $container->get('logger');
 
@@ -47,8 +47,8 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
             throw new \Exception(sprintf("Name %s is not valid", $name));
         }
 
-        if($file_path && !file_exists($file_path)  && is_file($file_path)) {
-            throw new \Exception(sprintf("File %s is not exits", $file_path));
+        if($filePath && !file_exists($filePath)  && is_file($filePath)) {
+            throw new \Exception(sprintf("File %s is not exits", $filePath));
         }
 
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
@@ -60,12 +60,12 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         if($type == self::BLACK_LIST_OPTION) {
             $logger->info('start import black list');
             $blackListImport = $container->get('tagcade.service.csv.black_list_importer');
-            $blackListImport->importCsv($file_path, $publisher, $name);
+            $blackListImport->importCsv($filePath, $publisher, $name);
             $logger->info('Finish import black list');
         } else if ($type == self::WHITE_LIST_OPTION) {
             $logger->info('start import white list');
             $whiteListImport = $container->get('tagcade.service.csv.white_list_importer');
-            $whiteListImport->importCsv($file_path, $publisher, $name);
+            $whiteListImport->importCsv($filePath, $publisher, $name);
             $logger->info('Finish import white list');
         }
     }

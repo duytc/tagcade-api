@@ -72,15 +72,18 @@ abstract class ListImporterAbstract implements ListImporterInterface
 
         $row = 0;
         $matched = false;
-        while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
-            // check header is matched
+
+        // check header is matched
+        if (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
             if (!$checkHeader) {
                 $matched = true;
             } else if ($row === $headerRow) {
                 $matched = $this->matchRow($data, $headers);
-                break;
             }
+            $row ++;
+        }
 
+        while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
             $row ++;
         }
 
