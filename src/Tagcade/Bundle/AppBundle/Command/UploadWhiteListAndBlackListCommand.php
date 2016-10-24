@@ -18,12 +18,12 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('tc:list:upload-white-and-black')
+            ->setName('tc:domains:import')
             ->addOption('type', 't', InputOption::VALUE_REQUIRED, 'Type 0 is black list and type 1 is white list')
             ->addOption('filePath', 'f', InputOption::VALUE_REQUIRED, 'file to import')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'Publisher id')
             ->addOption('name' , 'd', InputOption::VALUE_REQUIRED, 'name of the list')
-            ->setDescription('import list of domains to blacklist or white list');
+            ->setDescription('import list of domains from file to blacklist or white list');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
