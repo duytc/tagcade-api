@@ -10,8 +10,21 @@ services:
         arguments:
             - Tagcade\Entity\Report\SourceReport\Report
 
-    tagcade.service.report.source_report.report_selector:
-        class: Tagcade\Service\Report\SourceReport\ReportSelector
+    tagcade.service.report.source_report.selector.grouper.report_grouper:
+        class: Tagcade\Service\Report\SourceReport\Selector\Grouper\ReportGrouper
+
+    tagcade.service.report.source_report.selector.report_selector:
+        class: Tagcade\Service\Report\SourceReport\Selector\ReportSelector
         arguments:
             - @tagcade.repository.source_report.report
             - @tagcade.service.date_util
+            - @tagcade.repository.site
+            - @tagcade.service.report.source_report.selector.grouper.report_grouper
+            - @tagcade_user.domain_manager.publisher
+
+    tagcade.service.report.source_report.report_builder:
+        class: Tagcade\Service\Report\SourceReport\ReportBuilder
+        arguments:
+            - @tagcade.service.report.source_report.selector.report_selector
+            - @tagcade.domain_manager.site
+            - @tagcade_user.domain_manager.publisher

@@ -29,6 +29,7 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
 
     public function getTotalVideoImpressionForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
+
         $qb = $this->createQueryBuilder('r');
         $qb->leftJoin('r.site', 'st');
 
@@ -67,7 +68,6 @@ class ReportRepository extends EntityRepository implements ReportRepositoryInter
         if (null === $result) {
             return 0;
         }
-
         return $result;
     }
 
