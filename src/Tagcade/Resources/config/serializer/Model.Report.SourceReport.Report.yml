@@ -10,5 +10,3 @@ Tagcade\Model\Report\SourceReport\Report:
             exclude: true
         site:
             exclude: true
-        records:
-            exclude: true

@@ -22,6 +22,8 @@ interface ReportInterface
 
     public function getRecords();
 
+    public function setRecords(array $records);
+
     /**
      * @return int
      */

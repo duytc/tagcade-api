@@ -209,6 +209,12 @@ class Report implements ReportInterface
         return $this;
     }
 
+    public function setRecords(array $records)
+    {
+        $this->records = $records;
+        return $this;
+    }
+
     /**
      * @return int
      */

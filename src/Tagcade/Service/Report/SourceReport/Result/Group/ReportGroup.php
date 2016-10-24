@@ -365,4 +365,9 @@ class ReportGroup implements ReportResultInterface, ReportInterface
     {
         // TODO: Implement getRecords() method.
     }
+
+    public function setRecords(array $records)
+    {
+        // TODO: Implement setRecords() method.
+    }
 }
