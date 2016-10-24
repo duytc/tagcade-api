@@ -23,6 +23,14 @@ interface SiteRepositoryInterface extends ObjectRepository
     public function getSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     /**
+     * @param array $publishers
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getSitesForPublishers(array $publishers, $limit = null, $offset = null);
+
+    /**
      * @param PublisherInterface $publisher
      * @param null $limit
      * @param null $offset

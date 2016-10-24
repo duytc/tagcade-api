@@ -30,6 +30,25 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $qb->getQuery()->getResult();
     }
 
+    public function getSitesForPublishers(array $publishers, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('st')
+            ->join('st.publisher', 'p');
+
+        $qb->where($qb->expr()->in('p.id', $publishers))
+            ->addOrderBy('st.name', 'asc');
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->getSitesForPublisherQuery($publisher, $limit, $offset);
@@ -89,7 +108,7 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
     public function getSitesForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilderForPublisher($publisher)
-            ->addOrderBy('st.name', 'asc');;
+            ->addOrderBy('st.name', 'asc');
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
