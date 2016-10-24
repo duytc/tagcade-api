@@ -12,16 +12,6 @@ use Tagcade\Service\StringUtilTrait;
 
 class WhiteListImporter extends ListImporterAbstract implements WhiteListImporterInterface
 {
-    use StringUtilTrait;
-
-    const CSV_SEPARATOR = ',';
-    const HEADER_POSITION = 0;
-
-    const FILE_NAME = 'input.csv';
-    const DOMAIN = 0;
-
-    protected $HEADERS = ['domain'];
-
     /**
      * @var WhiteListManagerInterface
      */

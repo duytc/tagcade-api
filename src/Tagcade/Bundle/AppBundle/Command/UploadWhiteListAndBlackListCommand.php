@@ -35,20 +35,16 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $logger = $container->get('logger');
 
-        if (!preg_match('/^[1-9]\d*$/', $publisherId)) {
-            throw new \Exception(sprintf("Publisher id %s is not valid", $publisherId));
-        }
-
         if (!preg_match('/^[0-1]$/', $type)) {
             throw new \Exception(sprintf("Type %s is not valid", $type));
         }
 
         if (strlen($name) > self::MAX_SIZE_NAME) {
-            throw new \Exception(sprintf("Name %s is not valid", $name));
+            throw new \Exception(sprintf("Name %s is too long", $name));
         }
 
         if($filePath && !file_exists($filePath)  && is_file($filePath)) {
-            throw new \Exception(sprintf("File %s is not exits", $filePath));
+            throw new \Exception(sprintf("File %s does not exist", $filePath));
         }
 
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');

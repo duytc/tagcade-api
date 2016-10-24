@@ -8,20 +8,9 @@ use Tagcade\Cache\Video\DomainListManager;
 use Tagcade\DomainManager\BlacklistManagerInterface;
 use Tagcade\Entity\Core\Blacklist;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\StringUtilTrait;
 
 class BlackListImporter extends ListImporterAbstract implements BlackListImporterInterface
 {
-    use StringUtilTrait;
-
-    const CSV_SEPARATOR = ',';
-    const HEADER_POSITION = 0;
-
-    const FILE_NAME = 'input.csv';
-    const DOMAIN = 0;
-
-    protected $HEADERS = ['domain'];
-
     /**
      * @var BlacklistManagerInterface
      */
