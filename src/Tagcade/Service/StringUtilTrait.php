@@ -23,7 +23,7 @@ trait StringUtilTrait
      * @param $domain
      * @return mixed|string
      */
-    protected function extractDomain($domain)
+    protected function extractDomain($domain, $throwException = true)
     {
         if (false !== stripos($domain, 'http')) {
             $domain = parse_url($domain, PHP_URL_HOST); // remove http part, get only domain
@@ -40,7 +40,11 @@ trait StringUtilTrait
         }
 
         if (!$this->validateDomain($domain)) {
-            throw new InvalidArgumentException(sprintf('The value "%s" is not a valid domain.', $domain));
+            if ($throwException) {
+                throw new InvalidArgumentException(sprintf('The value "%s" is not a valid domain.', $domain));
+            } else {
+                $domain = null;
+            }
         }
 
         return $domain;

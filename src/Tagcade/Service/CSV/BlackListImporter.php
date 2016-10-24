@@ -22,9 +22,9 @@ class BlackListImporter extends ListImporterAbstract implements BlackListImporte
         $this->blackListManager = $blackListManager;
     }
 
-    public function importCsv($filename, PublisherInterface $publisher, $name, $headerPosition = null, $csvSeparator = null)
+    public function importCsv($filename, PublisherInterface $publisher, $name, $csvSeparator = self::CSV_SEPARATOR)
     {
-        $this->validateParameters($filename, $headerPosition, $csvSeparator);
+        $this->validateParameters($filename, $csvSeparator);
 
         $handle = fopen($filename, "r");
         if ($handle === FALSE) {
@@ -35,13 +35,13 @@ class BlackListImporter extends ListImporterAbstract implements BlackListImporte
         $blackListDomains = [];
         while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
             $this->logger->info(sprintf('start read row %d', $row), $data);
-            if ($row <= $headerPosition) {
-                $row++;
-                continue;
+            $blackListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]), false);
+            if ($blackListDomain) {
+                $this->logger->info(sprintf('Domain "%s" is valid', $data[0]));
+                $blackListDomains[] = $blackListDomain;
+            } else {
+                $this->logger->info(sprintf('Domain "%s" is not valid', $data[0]));
             }
-
-            $blackListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]));
-            $blackListDomains[] = $blackListDomain;
             $this->logger->info(sprintf('finish read row %d', $row), $data);
             $row++;
         }

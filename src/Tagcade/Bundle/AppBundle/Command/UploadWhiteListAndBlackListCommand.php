@@ -20,7 +20,7 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         $this
             ->setName('tc:list:upload-white-and-black')
             ->addOption('type', 't', InputOption::VALUE_REQUIRED, 'Type 0 is black list and type 1 is white list')
-            ->addOption('filePath', 'f', InputOption::VALUE_OPTIONAL, 'Path of imported file')
+            ->addOption('filePath', 'f', InputOption::VALUE_REQUIRED, 'Path of imported file')
             ->addOption('id', 'i', InputOption::VALUE_REQUIRED, 'Publisher id')
             ->addOption('name' , 'd', InputOption::VALUE_REQUIRED, 'Blacklist/whitelist name')
             ->setDescription('Upload black list and white list for publisher.');

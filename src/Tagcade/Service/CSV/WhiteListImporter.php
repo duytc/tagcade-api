@@ -8,7 +8,6 @@ use Tagcade\Cache\Video\DomainListManager;
 use Tagcade\DomainManager\WhiteListManagerInterface;
 use Tagcade\Entity\Core\WhiteList;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Service\StringUtilTrait;
 
 class WhiteListImporter extends ListImporterAbstract implements WhiteListImporterInterface
 {
@@ -23,9 +22,9 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
         $this->whiteListManager = $whiteListManager;
     }
 
-    public function importCsv($filename, PublisherInterface $publisher, $name, $headerPosition = null, $csvSeparator = null)
+    public function importCsv($filename, PublisherInterface $publisher, $name, $csvSeparator = self::CSV_SEPARATOR)
     {
-        $this->validateParameters($filename, $headerPosition, $csvSeparator);
+        $this->validateParameters($filename, $csvSeparator);
 
         $handle = fopen($filename, "r");
         if ($handle === FALSE) {
@@ -36,13 +35,13 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
         $whiteListDomains = [];
         while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
             $this->logger->info(sprintf('start read row %d', $row), $data);
-            if ($row <= $headerPosition) {
-                $row++;
-                continue;
+            $whiteListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]), false);
+            if ($whiteListDomain) {
+                $this->logger->info(sprintf('Domain "%s" is valid', $data[0]));
+                $whiteListDomains[] = $whiteListDomain;
+            } else {
+                $this->logger->info(sprintf('Domain "%s" is not valid', $data[0]));
             }
-
-            $whiteListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]));
-            $whiteListDomains[] = $whiteListDomain;
             $this->logger->info(sprintf('finish read row %d', $row), $data);
             $row++;
         }

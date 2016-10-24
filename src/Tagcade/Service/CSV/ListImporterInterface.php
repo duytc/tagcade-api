@@ -7,5 +7,5 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 interface ListImporterInterface
 {
-    public function importCsv($filename, PublisherInterface $publisher, $name, $headerPosition = null, $csvSeparator = null);
+    public function importCsv($filename, PublisherInterface $publisher, $name, $csvSeparator = null);
 }
