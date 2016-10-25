@@ -48,10 +48,16 @@ class WhiteListImporter extends ListImporterAbstract implements WhiteListImporte
             $count++;
         }
 
+        $whiteList = $this->whiteListManager->getWhiteListsByNameForPublisher($publisher, $name);
+        if ($whiteList) {
+            throw new \Exception(sprintf("%s is exist in white list name", $name));
+        }
+
         if (empty($whiteListDomains)) {
             return 0;
         }
 
+        $whiteListDomains = array_values(array_unique($whiteListDomains));
         $whiteList = new WhiteList();
         $whiteList->setPublisher($publisher);
         $whiteList->setName($name);

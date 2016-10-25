@@ -14,4 +14,14 @@ interface WhiteListManagerInterface extends ManagerInterface
      * @return SiteInterface[]
      */
     public function getWhiteListsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $name
+     * @param $orderBy
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getWhiteListsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null);
 }

@@ -48,10 +48,16 @@ class BlackListImporter extends ListImporterAbstract implements BlackListImporte
             $count++;
         }
 
+        $blackList = $this->blackListManager->getBlacklistsByNameForPublisher($publisher, $name);
+        if ($blackList) {
+            throw new \Exception(sprintf("%s is exist in black list name", $name));
+        }
+
         if (empty($blackListDomains)) {
             return 0;
         }
 
+        $blackListDomains = array_values(array_unique($blackListDomains));
         $blackList = new Blacklist();
         $blackList->setPublisher($publisher);
         $blackList->setName($name);

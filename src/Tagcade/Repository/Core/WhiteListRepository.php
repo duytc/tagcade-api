@@ -35,4 +35,23 @@ class WhiteListRepository extends EntityRepository implements WhiteListRepositor
             ->setParameter('suffix_key', $suffixKey)
             ->getQuery()->getOneOrNullResult();
     }
+
+    public function getWhiteListsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('r')
+            ->where('r.publisher = :publisher')
+            ->andWhere('r.name = :name')
+            ->setParameter('publisher', $publisher)
+            ->setParameter('name', $name);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
