@@ -81,7 +81,7 @@ class VideoWaterfallTagItemController extends RestControllerAbstract implements 
     /**
      * Get a all video ad tag item for one ad tag
      *
-     * @Rest\View(serializerGroups={"videoWaterfallTagItem.summary", "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"})
+     * @Rest\View(serializerGroups={"videoWaterfallTagItem.summary", "videoDemandAdTag.editInWaterfall", "libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"})
      *
      * @Rest\Get("videowaterfalltagitems/adtag/{id}", requirements={"id" = "\d+"})
      *

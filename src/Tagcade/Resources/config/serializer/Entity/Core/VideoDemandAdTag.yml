@@ -6,34 +6,34 @@ Tagcade\Entity\Core\VideoDemandAdTag:
     properties:
         id:
             expose: true
-            groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         tagURL:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.editInWaterfall]
         name:
             expose: true
             groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail]
         priority:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         timeout:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         rotationWeight:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         targeting:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         targetingOverride:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         active:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         videoWaterfallTagItem:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport, videoDemandAdTag.editInWaterfall]
         libraryVideoDemandAdTag:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport, videoDemandAdTag.editInWaterfall]
