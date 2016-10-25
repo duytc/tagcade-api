@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 
@@ -70,6 +71,31 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     public function getAction($id)
     {
         return $this->one($id);
+    }
+
+    /**
+     * @Rest\View(serializerGroups={"libraryadtag.summary", "adnetwork.summary", "user.summary", "adtag.summary"})
+     * Get a single library adSlot for the given id
+     *
+     * @ApiDoc(
+     *   section = "Library Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     *
+     * @return LibraryAdTagInterface[]
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getLibraryadtagAction($id)
+    {
+        $libraryAdSlot = $this->one($id);
+
+        return $this->get('tagcade.repository.library_ad_tag')->getLibraryAdTagsForLibraryAdSlot($libraryAdSlot);
     }
 
     /**
