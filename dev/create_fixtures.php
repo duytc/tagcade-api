@@ -36,9 +36,9 @@ const NUM_AD_SLOTS_PER_SITE = 10;
 const NUM_EXCHANGE_PER_PUBLISHER = 10;
 
 // video module
-const NUM_VIDEO_PUBLISHER = 5;
-const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 20;
-const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 20;
+const NUM_VIDEO_PUBLISHER = 2;
+const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 5;
+const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 5;
 
 function xrange($max = 1000) {
     for ($i = 1; $i <= $max; $i++) {
@@ -138,11 +138,12 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             $tempObjs[] = $adSlot;
             $tempObjs[] = $libraryAdSlot;
             // create ad tag
-            $libraryAdTag = (new LibraryAdTag())->setName('WaterfallTag 1')
+            $libraryAdTag = (new LibraryAdTag())->setName('ad tag 1')
                 ->setVisible(false)
                 ->setHtml('ad tag 1 html')
                 ->setAdType(0)
-                ->setAdNetwork($adNetwork);
+                ->setAdNetwork($adNetwork)
+                ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
             $tempObjs[] = $libraryAdTag;
 
             $adTag = (new AdTag())
@@ -157,11 +158,12 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             unset($libraryAdTag);
             unset($adTag);
 
-            $libraryAdTag = (new LibraryAdTag())->setName('WaterfallTag 2')
+            $libraryAdTag = (new LibraryAdTag())->setName('ad tag 2')
                 ->setVisible(false)
                 ->setHtml('ad tag 2 html')
                 ->setAdType(0)
-                ->setAdNetwork($adNetwork);
+                ->setAdNetwork($adNetwork)
+                ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
             $tempObjs[] = $libraryAdTag;
             $adTag = (new AdTag())
                 ->setLibraryAdTag($libraryAdTag)

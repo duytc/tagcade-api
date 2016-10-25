@@ -24,6 +24,10 @@ class CpmRateGetter implements CpmRateGetterInterface
     /** @var BillingRateThreshold[] */
     protected $defaultBillingThresholds;
 
+    protected $displayBillingThresholds;
+    protected $headerBidBillingThresholds;
+    protected $inbannerBillingThresholds;
+
     /** @var AccountReportRepositoryInterface */
     private $accountReportRepository;
 
@@ -41,20 +45,53 @@ class CpmRateGetter implements CpmRateGetterInterface
     private $billingConfigurationRepository;
 
     /**
-     * @param BillingRateThreshold[] $defaultBilledThresholds
+     * @param $displayBillingThresholds
+     * @param $headerBidBillingThresholds
+     * @param $inbannerBillingThresholds
      * @param AccountReportRepositoryInterface $accountReportRepository
      * @param DateUtilInterface $dateUtil
      * @param BillingConfigurationRepositoryInterface $billingConfigurationRepository
      * @param ReportRepositoryInterface $reportRepository
      * @param VideoAccountReportRepositoryInterface $videoAccountReportRepository
      */
-    public function __construct(array $defaultBilledThresholds = [],
-                                AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil,
-                                BillingConfigurationRepositoryInterface $billingConfigurationRepository,
-                                ReportRepositoryInterface $reportRepository,
-                                VideoAccountReportRepositoryInterface $videoAccountReportRepository
+    public function __construct(array $displayBillingThresholds, array $headerBidBillingThresholds, array $inbannerBillingThresholds,
+        AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil,
+        BillingConfigurationRepositoryInterface $billingConfigurationRepository, ReportRepositoryInterface $reportRepository,
+        VideoAccountReportRepositoryInterface $videoAccountReportRepository
     )
     {
+
+        $this->defaultBillingThresholds = [];
+
+        $this->displayBillingThresholds = $displayBillingThresholds;
+        $this->headerBidBillingThresholds = $headerBidBillingThresholds;
+        $this->inbannerBillingThresholds = $inbannerBillingThresholds;
+
+        $this->accountReportRepository = $accountReportRepository;
+        $this->dateUtil = $dateUtil;
+        $this->billingConfigurationRepository = $billingConfigurationRepository;
+        $this->reportRepository = $reportRepository;
+        $this->videoAccountReportRepository = $videoAccountReportRepository;
+    }
+
+    protected function loadDefaultConfig($module)
+    {
+        $thresholds = [];
+        switch ($module) {
+            case User::MODULE_DISPLAY:
+                $thresholds = $this->displayBillingThresholds;
+                break;
+            case User::MODULE_HEADER_BIDDING:
+                $thresholds = $this->headerBidBillingThresholds;
+                break;
+            case User::MODULE_IN_BANNER:
+                $thresholds = $this->inbannerBillingThresholds;
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('This CpmRateGetter does not support module "%s', $module));
+        }
+
+        $defaultBilledThresholds = $this->createConfig($thresholds);
         foreach ($defaultBilledThresholds as $threshold) {
             if (!$threshold instanceof BillingRateThreshold) {
                 throw new InvalidArgumentException('Invalid array of thresholds');
@@ -65,20 +102,14 @@ class CpmRateGetter implements CpmRateGetterInterface
 
         // sort thresholds, descending order
         usort($defaultBilledThresholds, function (BillingRateThreshold $a, BillingRateThreshold $b) {
-                if ($a->getThreshold() === $b->getThreshold()) {
-                    return 0;
-                }
-
-                return ($a->getThreshold() < $b->getThreshold()) ? -1 : 1;
+            if ($a->getThreshold() === $b->getThreshold()) {
+                return 0;
             }
-        );
+
+            return ($a->getThreshold() < $b->getThreshold()) ? -1 : 1;
+        });
 
         $this->defaultBillingThresholds = $defaultBilledThresholds;
-        $this->accountReportRepository = $accountReportRepository;
-        $this->dateUtil = $dateUtil;
-        $this->billingConfigurationRepository = $billingConfigurationRepository;
-        $this->reportRepository = $reportRepository;
-        $this->videoAccountReportRepository = $videoAccountReportRepository;
     }
 
     public static function createConfig(array $thresholds)
@@ -96,8 +127,10 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $config;
     }
 
-    public function getDefaultCpmRate($weight)
+    public function getDefaultCpmRate($weight, $module)
     {
+        $this->loadDefaultConfig($module);
+
         $billingThresholds = $this->defaultBillingThresholds;
         reset($billingThresholds);
 
@@ -130,7 +163,7 @@ class CpmRateGetter implements CpmRateGetterInterface
         }
 
         if ($billingConfiguration->isDefaultConfiguration()) {
-            return new CpmRate($this->getDefaultCpmRate($weight));
+            return new CpmRate($this->getDefaultCpmRate($weight, $module));
         }
 
         return new CpmRate($billingConfiguration->getCpmRate($weight));

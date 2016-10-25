@@ -10,9 +10,10 @@ interface CpmRateGetterInterface
 {
     /**
      * @param int $slotOpportunities
+     * @param $module
      * @return float
      */
-    public function getDefaultCpmRate($slotOpportunities);
+    public function getDefaultCpmRate($slotOpportunities, $module);
 
     /**
      * @param PublisherInterface $publisher

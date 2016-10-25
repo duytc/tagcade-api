@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRepositoryInterface{
@@ -43,6 +44,17 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
 
         return $qb;
     }
+
+    public function getLibraryAdTagsForLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.libSlotTags', 'slt')
+            ->where('slt.libraryAdSlot = :librarySlot')
+            ->setParameter('librarySlot', $libraryAdSlot)
+            ->getQuery()
+            ->getResult();
+    }
+
 
     /**
      * @param $htmlValue

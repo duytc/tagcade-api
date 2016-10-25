@@ -50,6 +50,13 @@ parameters:
         - {threshold: 2000000000, cpmRate: 0.015}
         - {threshold: 5000000000, cpmRate: 0.010}
 
+    tc.source.billing.thresholds:
+        - {threshold: 0, cpmRate: 0.030}
+        - {threshold: 100000000, cpmRate: 0.025}
+        - {threshold: 1000000000, cpmRate: 0.020}
+        - {threshold: 2000000000, cpmRate: 0.015}
+        - {threshold: 5000000000, cpmRate: 0.010}
+
     tc.video.billing.thresholds:
         - {threshold: 0, cpmRate: 0.15}
         - {threshold: 200000000, cpmRate: 0.14}
@@ -57,6 +64,17 @@ parameters:
         - {threshold: 600000000, cpmRate: 0.12}
         - {threshold: 800000000, cpmRate: 0.11}
         - {threshold: 1000000000, cpmRate: 0.10}
+
+    tc.inbanner.billing.thresholds:
+        - {threshold: 0, cpmRate: 0.05}
+
+    tc.header_bid.billing.thresholds:
+        - {threshold: 0, cpmRate: 0.030}
+        - {threshold: 100000000, cpmRate: 0.025}
+        - {threshold: 1000000000, cpmRate: 0.020}
+        - {threshold: 2000000000, cpmRate: 0.015}
+        - {threshold: 5000000000, cpmRate: 0.010}
+
     tc.cdn_config:
         host: '192.168.55.100'
         secured: false

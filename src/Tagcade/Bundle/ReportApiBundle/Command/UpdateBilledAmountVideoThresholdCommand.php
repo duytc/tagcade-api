@@ -53,7 +53,7 @@ class UpdateBilledAmountVideoThresholdCommand extends ContainerAwareCommand
         }
 
         $userManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
-        $billingEditor = $this->getContainer()->get('tagcade.service.report.performance_report.display.billing.billed_amount_editor');
+        $billingEditor = $this->getContainer()->get('tagcade.service.report.video_report.billing.billed_amount_editor');
         $billingEditor->setLogger($logger);
 
         if (null === $publisherId) {
