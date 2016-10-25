@@ -58,6 +58,9 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     {
         $weightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'billedRate', 'billedAmount');
         $this->setBilledRate($weightedCpmRate);
+
+        $inBannerWeightedCpmRate = $this->calculateWeightedValue($this->getSubReports(), 'inBannerBilledRate', 'inBannerBilledAmount');
+        $this->setInBannerBilledRate($inBannerWeightedCpmRate);
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)
@@ -106,7 +109,7 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
     protected function addInBannerBilledAmount($inBannerBilledAmount)
     {
-        $this->inBannerBilledAmount += (int)$inBannerBilledAmount;
+        $this->inBannerBilledAmount += (float)$inBannerBilledAmount;
     }
 
     protected function addInBannerTimeouts($inBannerTimeouts)

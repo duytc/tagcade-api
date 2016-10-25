@@ -24,6 +24,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 'choices'=>[
                     BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY  =>'Slot opportunity',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION  =>'Video impression',
+                    BillingConfiguration::BILLING_FACTOR_IN_BANNER_IMPRESSION  =>'Video ad impression',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT       =>'Visit',
                     BillingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST       => 'Bid Request'
                 ]
@@ -34,7 +35,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                 'empty_data' => null,
                 'choices' => [
                     User::MODULE_DISPLAY         => 'Display',
-                    User::MODULE_IN_BANNER         => 'In-Banner',
+                    User::MODULE_IN_BANNER       => 'In-Banner',
                     User::MODULE_VIDEO_ANALYTICS => 'Video',
                     User::MODULE_VIDEO           => 'VideoAds',
                     User::MODULE_ANALYTICS       => 'Analytics',
