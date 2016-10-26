@@ -82,7 +82,11 @@ class BillingCalculator implements BillingCalculatorInterface
 
     public function calculateTodayInBannerBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
     {
-        if (!is_int($newWeight) || $newWeight < 0) {
+        if (!is_numeric($newWeight)) {
+            $newWeight = 0;
+        }
+
+        if ($newWeight < 0) {
             throw new InvalidArgumentException('$newWeight must be a number');
         }
 
