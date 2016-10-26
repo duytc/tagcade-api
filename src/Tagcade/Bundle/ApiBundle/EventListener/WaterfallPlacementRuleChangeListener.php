@@ -42,7 +42,7 @@ class WaterfallPlacementRuleChangeListener
             return;
         }
 
-        if ($args->hasChangedField('profitType') || $args->hasChangedField('profitValue') || $args->hasChangedField('publishers')) {
+        if ($args->hasChangedField('profitType') || $args->hasChangedField('profitValue') || $args->hasChangedField('publishers') || $args->hasChangedField('waterfalls')) {
             $this->autoPauseVideoDemandAdTags($em, $entity);
             $this->changedRules[] = $entity->getId();
         }
