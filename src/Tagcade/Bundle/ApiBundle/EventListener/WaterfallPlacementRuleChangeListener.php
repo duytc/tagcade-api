@@ -48,7 +48,7 @@ class WaterfallPlacementRuleChangeListener
         }
     }
 
-    public function prePersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
 
