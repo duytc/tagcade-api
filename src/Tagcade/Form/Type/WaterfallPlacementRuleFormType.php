@@ -35,6 +35,19 @@ class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
             ;
 
         $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) {
+                $placementRule = $event->getData();
+
+                //create new Library
+                if(!array_key_exists('active', $placementRule)){
+                    $placementRule['active'] = true;
+                    $event->setData($placementRule);
+                }
+            }
+        );
+
+        $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
                 /** @var WaterfallPlacementRuleInterface $placementRule */

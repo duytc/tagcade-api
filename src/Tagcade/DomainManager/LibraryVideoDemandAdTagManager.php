@@ -57,7 +57,19 @@ class LibraryVideoDemandAdTagManager implements LibraryVideoDemandAdTagManagerIn
 
         /** @var WaterfallTagsPlacementRule $validWaterfallTag */
         foreach($validWaterfallTags as $validWaterfallTag) {
-            $this->deployLibraryVideoDemandAdTagService->deployLibraryVideoDemandAdTagToWaterfalls($videoDemandAdTag, $validWaterfallTag->getPlacementRule(), $validWaterfallTag->getWaterfallTags());
+            $placementRule = $validWaterfallTag->getPlacementRule();
+            $this->deployLibraryVideoDemandAdTagService->deployLibraryVideoDemandAdTagToWaterfalls(
+                $videoDemandAdTag,
+                $placementRule,
+                $validWaterfallTag->getWaterfallTags(),
+                null,
+                false,
+                $placementRule->getPriority(),
+                $placementRule->getRotationWeight(),
+                $placementRule->isActive(),
+                $placementRule->getPosition(),
+                $placementRule->isShiftDown()
+            );
         }
     }
 
