@@ -51,7 +51,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             $report->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
         }
 
-        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());

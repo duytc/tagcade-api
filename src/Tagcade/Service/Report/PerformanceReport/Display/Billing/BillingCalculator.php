@@ -42,18 +42,15 @@ class BillingCalculator implements BillingCalculatorInterface
         $this->accountHeaderBiddingReportRepository = $accountHeaderBiddingReportRepository;
     }
 
-    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
+    public function calculateTodayBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
         if (!is_int($newWeight) || $newWeight < 0) {
             throw new InvalidArgumentException('$newWeight must be a number');
         }
 
-        $date = new DateTime('yesterday');
-        $weight = $this->accountReportRepository->getSumSlotOpportunities(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date)
-        );
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
+        $weight = $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
 
         $weight += $newWeight;
         $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
