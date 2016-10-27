@@ -44,27 +44,15 @@ class DeployVideoDemandAdTagForNewPlacementRuleWorker
         }
 
         if ($placementRule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL) {
-            if (empty($placementRule->getWaterfalls())) {
-                return;
-            }
+            $tags = $placementRule->getWaterfalls();
+        } else {
+            $tags = $this->deployService->getValidVideoWaterfallTagsForPlacementRule($placementRule);
+        }
 
-            $this->deployService->deployLibraryVideoDemandAdTagToWaterfalls(
-                $placementRule->getLibraryVideoDemandAdTag(),
-                $placementRule,
-                $placementRule->getWaterfalls(),
-                null,
-                false,
-                $placementRule->getPriority(),
-                $placementRule->getRotationWeight(),
-                $placementRule->isActive(),
-                $placementRule->getPosition(),
-                $placementRule->isShiftDown()
-            );
-
+        if (empty($tags)) {
             return;
         }
 
-        $tags = $this->deployService->getValidVideoWaterfallTagsForPlacementRule($placementRule);
         $this->deployService->deployLibraryVideoDemandAdTagToWaterfalls(
             $placementRule->getLibraryVideoDemandAdTag(),
             $placementRule,
