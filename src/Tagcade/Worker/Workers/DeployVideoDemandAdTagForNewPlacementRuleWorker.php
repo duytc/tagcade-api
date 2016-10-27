@@ -65,6 +65,17 @@ class DeployVideoDemandAdTagForNewPlacementRuleWorker
         }
 
         $tags = $this->deployService->getValidVideoWaterfallTagsForPlacementRule($placementRule);
-        $this->deployService->deployLibraryVideoDemandAdTagToWaterfalls($placementRule->getLibraryVideoDemandAdTag(), $placementRule, $tags);
+        $this->deployService->deployLibraryVideoDemandAdTagToWaterfalls(
+            $placementRule->getLibraryVideoDemandAdTag(),
+            $placementRule,
+            $tags,
+            null,
+            false,
+            $placementRule->getPriority(),
+            $placementRule->getRotationWeight(),
+            $placementRule->isActive(),
+            $placementRule->getPosition(),
+            $placementRule->isShiftDown()
+        );
     }
 }
