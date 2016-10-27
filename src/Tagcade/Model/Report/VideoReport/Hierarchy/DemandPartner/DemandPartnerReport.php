@@ -38,7 +38,7 @@ class DemandPartnerReport extends AbstractCalculatedReport implements DemandPart
             throw new RuntimeException('bids must be defined to calculate error rates');
         }
 
-        return $this->getRatio($this->getErrors(), $this->getBids());
+        return $this->getPercentage($this->getErrors(), $this->getBids());
     }
 
     public function getVideoDemandPartner()
