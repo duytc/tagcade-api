@@ -75,6 +75,17 @@ class DemandAdTagReport extends AbstractReport implements DemandAdTagReportInter
             throw new RuntimeException('bids must be defined to calculate error rates');
         }
 
-        return $this->getRatio($this->getErrors(), $this->getBids());
+        return $this->getPercentage($this->getErrors(), $this->getBids());
+    }
+
+    protected function calculateEstDemandRevenue()
+    {
+        $sellPrice = $this->getVideoDemandAdTag()->getSellPrice();
+
+        if ($sellPrice === null) {
+            return 0;
+        }
+
+        return $this->getRatio($sellPrice * $this->getImpressions(), 1000);
     }
 }

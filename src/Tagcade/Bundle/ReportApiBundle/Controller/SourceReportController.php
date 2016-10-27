@@ -14,7 +14,7 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * @Rest\RouteResource("SourceReport")
- * @Security("has_role('ROLE_ADMIN') or (has_role('ROLE_PUBLISHER') and has_role('MODULE_DISPLAY'))")
+ * @Security("has_role('ROLE_ADMIN') or (has_role('ROLE_PUBLISHER') and has_role('MODULE_ANALYTICS'))")
  */
 class SourceReportController extends FOSRestController
 {

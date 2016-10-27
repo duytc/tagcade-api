@@ -19,6 +19,7 @@ class DemandAdTagReport extends DemandAdTagReportModel
     protected $clickThroughRate;
     protected $blocks;
     protected $videoDemandAdTag;
+    protected $estDemandRevenue;
 
     // Only for display on UI
     protected $adTagRequests;

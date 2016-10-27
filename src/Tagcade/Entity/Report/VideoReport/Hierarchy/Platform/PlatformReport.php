@@ -23,4 +23,7 @@ class PlatformReport  extends VideoPlatformReportModel
     protected $adTagRequests;
     protected $adTagBids;
     protected $adTagErrors;
+    protected $estDemandRevenue;
+    protected $estSupplyCost;
+    protected $netRevenue;
 }

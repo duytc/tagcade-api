@@ -53,6 +53,15 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\WaterfallTagReport:
         videoAdTag:
             expose: true
             groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        estDemandRevenue:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        estSupplyCost:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
+        netRevenue:
+            expose: true
+            groups: [platform_waterfall_tag.detail, platform_waterfall_tag.summary]
         videoWaterfallTag:
             expose: true
             groups: [platform_waterfall_tag.detail]

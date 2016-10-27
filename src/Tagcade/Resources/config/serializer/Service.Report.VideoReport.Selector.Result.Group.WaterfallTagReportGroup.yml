@@ -96,3 +96,21 @@ Tagcade\Service\Report\VideoReport\Selector\Result\Group\WaterfallTagReportGroup
         billedRate:
             expose: true
             groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]
+        estDemandRevenue:
+            expose: true
+            groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]
+        averageEstDemandRevenue:
+            expose: true
+            groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]
+        estSupplyCost:
+            expose: true
+            groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]
+        averageEstSupplyCost:
+            expose: true
+            groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]
+        netRevenue:
+            expose: true
+            groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]
+        averageNetRevenue:
+            expose: true
+            groups: [waterfall_tag_report_group.detail, waterfall_tag_report_group.summary]

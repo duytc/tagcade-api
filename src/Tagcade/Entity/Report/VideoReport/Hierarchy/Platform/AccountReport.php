@@ -24,4 +24,7 @@ class AccountReport extends VideoAccountReportModel
     protected $adTagBids;
     protected $adTagErrors;
     protected $publisher;
+    protected $estDemandRevenue;
+    protected $estSupplyCost;
+    protected $netRevenue;
 } 

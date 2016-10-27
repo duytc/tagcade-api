@@ -29,6 +29,7 @@ abstract class AbstractGrouper
     private $clicks;
     private $clickThroughRate;
     private $blocks;
+    private $estDemandRevenue;
 
     private $averageRequests;
     private $averageBids;
@@ -40,6 +41,7 @@ abstract class AbstractGrouper
     private $averageClicks;
     private $averageClickThroughRate;
     private $averageBlocks;
+    private $averageEstDemandRevenue;
 
     private $totalRequestFillRate;
     private $totalErrorRate;
@@ -92,7 +94,9 @@ abstract class AbstractGrouper
             $this->getStartDate(),
             $this->getEndDate(),
             $this->getBlocks(),
-            $this->getAverageBlocks()
+            $this->getAverageBlocks(),
+            $this->getEstDemandRevenue(),
+            $this->getAverageEstDemandRevenue()
         );
     }
 
@@ -118,6 +122,7 @@ abstract class AbstractGrouper
         $this->averageBids = $this->getRatio($this->getBids(), $reportCount);
         $this->averageErrors = $this->getRatio($this->getErrors(), $reportCount);
         $this->averageBlocks = $this->getRatio($this->getBlocks(), $reportCount);
+        $this->averageEstDemandRevenue = $this->getRatio($this->getEstDemandRevenue(), $reportCount);
 
         $this->averageRequestFillRate = $this->getRatio($this->getTotalRequestFillRate(), $reportCount);
         $this->averageErrorRate = $this->getRatio($this->getTotalErrorRate(), $reportCount);
@@ -143,6 +148,7 @@ abstract class AbstractGrouper
         $this->addRequestFillRate($report->getRequestFillRate());
         $this->addImpressions($report->getImpressions());
         $this->addBlocks($report->getBlocks());
+        $this->addEstDemandRevenue($report->getEstDemandRevenue());
     }
 
     protected function addRequests($requests)
@@ -193,6 +199,11 @@ abstract class AbstractGrouper
     protected function addBlocks($blocks)
     {
         $this->blocks += (int) $blocks;
+    }
+
+    protected function addEstDemandRevenue($estDemandRevenue)
+    {
+        $this->estDemandRevenue += (float) $estDemandRevenue;
     }
 
     public function getReportType()
@@ -379,6 +390,22 @@ abstract class AbstractGrouper
     public function getAverageClickThroughRate()
     {
         return $this->averageClickThroughRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEstDemandRevenue()
+    {
+        return $this->estDemandRevenue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageEstDemandRevenue()
+    {
+        return $this->averageEstDemandRevenue;
     }
 
     /**

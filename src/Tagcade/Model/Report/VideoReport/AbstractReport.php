@@ -23,6 +23,7 @@ abstract class AbstractReport implements ReportInterface
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;
+    protected $estDemandRevenue;
 
     /**
      * @param int $bids
@@ -171,6 +172,7 @@ abstract class AbstractReport implements ReportInterface
         $this->setBidRate();
         $this->setErrorRate();
         $this->setClickThroughRate();
+        $this->setEstDemandRevenue();
     }
 
     public function setClickThroughRate()
@@ -216,9 +218,28 @@ abstract class AbstractReport implements ReportInterface
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getEstDemandRevenue()
+    {
+        return $this->estDemandRevenue;
+    }
+
+    /**
+     * @return self
+     */
+    public function setEstDemandRevenue()
+    {
+        $this->estDemandRevenue = $this->calculateEstDemandRevenue();
+        return $this;
+    }
+
     abstract protected function calculateFillRate();
 
     abstract protected function calculateErrorRate();
 
     abstract protected function calculateBidRate();
+
+    abstract protected function calculateEstDemandRevenue();
 }

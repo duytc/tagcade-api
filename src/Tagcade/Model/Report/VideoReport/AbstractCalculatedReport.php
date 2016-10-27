@@ -12,6 +12,16 @@ abstract class AbstractCalculatedReport extends AbstractReport
 {
     use SubReportsTrait;
 
+    /**
+     * @var float
+     */
+    protected $estSupplyCost;
+
+    /**
+     * @var float
+     */
+    protected $netRevenue;
+
     public function __construct()
     {
         $this->subReports = new ArrayCollection();
@@ -31,7 +41,8 @@ abstract class AbstractCalculatedReport extends AbstractReport
      */
     protected function postCalculateFields()
     {
-        // Empty for now since some reports in hierarchy Platform and AdNetwork don't require
+        $this->setEstSupplyCost();
+        $this->setNetRevenue();
     }
 
     protected function resetCounts()
@@ -41,7 +52,9 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->bids = 0;
         $this->errors = 0;
         $this->bids = 0;
-        $this->blocks =0;
+        $this->blocks = 0;
+        $this->estSupplyCost = 0;
+        $this->estDemandRevenue = 0;
     }
 
     protected function doCalculateFields()
@@ -66,6 +79,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->addClicks($subReport->getClicks());
         $this->addErrors($subReport->getErrors());
         $this->addBlocks($subReport->getBlocks());
+        $this->addEstDemandRevenue($subReport->getEstDemandRevenue());
     }
 
     protected function addRequests($requests)
@@ -96,5 +110,43 @@ abstract class AbstractCalculatedReport extends AbstractReport
     protected function addBlocks($blocks)
     {
         $this->blocks += (int)$blocks;
+    }
+
+    protected function addEstDemandRevenue($estDemandRevenue)
+    {
+        $this->estDemandRevenue += (float) $estDemandRevenue;
+    }
+
+    protected function calculateEstDemandRevenue()
+    {
+        return $this->estDemandRevenue;
+    }
+
+    public function setEstSupplyCost()
+    {
+        $this->estSupplyCost = $this->calculateEstSupplyCost();
+    }
+
+    public function setNetRevenue()
+    {
+        $this->netRevenue = $this->estDemandRevenue - $this->estSupplyCost;
+    }
+
+    abstract protected function calculateEstSupplyCost();
+
+    /**
+     * @return float
+     */
+    public function getEstSupplyCost()
+    {
+        return $this->estSupplyCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getNetRevenue()
+    {
+        return $this->netRevenue;
     }
 }

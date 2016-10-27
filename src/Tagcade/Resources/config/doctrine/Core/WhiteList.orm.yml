@@ -6,6 +6,10 @@ Tagcade\Entity\Core\WhiteList:
         white_list_unique_constrains:
             columns:
                 - suffix_key
+        name_publisher_key:
+            columns:
+                - publisher_id
+                - name
     id:
         id:
             type: integer

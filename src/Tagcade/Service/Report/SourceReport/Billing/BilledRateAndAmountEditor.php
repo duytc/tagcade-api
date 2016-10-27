@@ -48,7 +48,7 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
     {
         $sourceReports = $this->sourceReportRepository->getSourceReportsForPublisher($publisher, $date);
 
-        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_VIDEO_ANALYTICS);
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_ANALYTICS);
         if (!$billingConfiguration instanceof BillingConfiguration) {
             return;
         }
@@ -65,7 +65,7 @@ class BilledRateAndAmountEditor implements BilledRateAndAmountEditorInterface
                 continue;
             }
             $newWeight = $sourceReport->$method();
-            $rateAmount = $this->billingCalculator->calculateBilledAmountForSiteForSingleDate($date, $sourceReport->getSite(), User::MODULE_VIDEO_ANALYTICS, $newWeight);
+            $rateAmount = $this->billingCalculator->calculateBilledAmountForSiteForSingleDate($date, $sourceReport->getSite(), User::MODULE_ANALYTICS, $newWeight);
             $billedRate = $rateAmount->getRate()->getCpmRate();
             $billedAmount = $rateAmount->getAmount();
             $sourceReport->setBilledRate($billedRate);

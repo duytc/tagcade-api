@@ -53,3 +53,12 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PublisherReport:
         videoPublisher:
             expose: true
             groups: [platform_publisher.detail]
+        estDemandRevenue:
+            expose: true
+            groups: [platform_publisher.detail, platform_publisher.summary]
+        estSupplyCost:
+            expose: true
+            groups: [platform_publisher.detail, platform_publisher.summary]
+        netRevenue:
+            expose: true
+            groups: [platform_publisher.detail, platform_publisher.summary]

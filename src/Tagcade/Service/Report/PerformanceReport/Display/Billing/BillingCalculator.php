@@ -42,47 +42,9 @@ class BillingCalculator implements BillingCalculatorInterface
         $this->accountHeaderBiddingReportRepository = $accountHeaderBiddingReportRepository;
     }
 
-    public function calculateTodayBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
+    public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
-        if (!is_int($newWeight) || $newWeight < 0) {
-            throw new InvalidArgumentException('$newWeight must be a number');
-        }
-
-        $date = new DateTime('yesterday');
-        $weight = $this->accountReportRepository->getSumSlotOpportunities(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date)
-        );
-
-        $weight += $newWeight;
-        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
-
-        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
-    }
-
-    public function calculateTodayHbBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
-    {
-        if (!is_int($newWeight) || $newWeight < 0) {
-            throw new InvalidArgumentException('$newWeight must be a number');
-        }
-
-        $date = new DateTime('yesterday');
-        $weight = $this->accountHeaderBiddingReportRepository->getSumSlotHbRequests(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date)
-        );
-
-        $weight += $newWeight;
-        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
-
-        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
-    }
-
-    public function calculateTodayInBannerBilledAmountForPublisher(PublisherInterface $publisher, $module, $newWeight)
-    {
-        if (!is_numeric($newWeight)) {
+        if (is_numeric($newWeight)) {
             $newWeight = 0;
         }
 
@@ -90,12 +52,49 @@ class BillingCalculator implements BillingCalculatorInterface
             throw new InvalidArgumentException('$newWeight must be a number');
         }
 
-        $date = new DateTime('yesterday');
-        $weight = $this->accountReportRepository->getSumSlotInBannerImpressions(
-            $publisher,
-            $this->dateUtil->getFirstDateInMonth($date),
-            $this->dateUtil->getLastDateInMonth($date)
-        );
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
+        $weight = $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
+
+        $weight += $newWeight;
+        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
+
+        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
+    }
+
+    public function calculateHbBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
+    {
+        if (is_numeric($newWeight)) {
+            $newWeight = 0;
+        }
+
+        if ($newWeight < 0) {
+            throw new InvalidArgumentException('$newWeight must be a number');
+        }
+
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
+        $weight = $this->accountHeaderBiddingReportRepository->getSumSlotHbRequests($publisher, $firstDateInMonth, $yesterday );
+
+        $weight += $newWeight;
+        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
+
+        return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
+    }
+
+    public function calculateInBannerBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
+    {
+        if (is_numeric($newWeight)) {
+            $newWeight = 0;
+        }
+
+        if ($newWeight < 0) {
+            throw new InvalidArgumentException('$newWeight must be a number');
+        }
+
+        $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
+        $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
+        $weight = $this->accountReportRepository->getSumSlotInBannerImpressions($publisher, $firstDateInMonth, $yesterday);
 
         $weight += $newWeight;
         $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);

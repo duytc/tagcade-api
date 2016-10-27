@@ -145,6 +145,15 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
         return $this;
     }
 
+    public function getSellPrice()
+    {
+        if ($this->libraryVideoDemandAdTag instanceof LibraryVideoDemandAdTagInterface) {
+            return $this->libraryVideoDemandAdTag->getSellPrice();
+        }
+
+        return null;
+    }
+
     /**
      * @inheritdoc
      */
