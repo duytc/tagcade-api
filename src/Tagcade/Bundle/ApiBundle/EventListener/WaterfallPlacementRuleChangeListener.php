@@ -56,7 +56,7 @@ class WaterfallPlacementRuleChangeListener
             return;
         }
 
-        $this->manager->deployVideoDemandAdTagForNewPlacementRule($entity->getId());
+        $this->changedRules[] = $entity->getId();
     }
 
     protected function autoPauseVideoDemandAdTags(EntityManagerInterface $em, WaterfallPlacementRuleInterface $rule)
@@ -80,8 +80,7 @@ class WaterfallPlacementRuleChangeListener
 
     public function postFlush(PostFlushEventArgs $args)
     {
-        if (count($this->changedRules) < 1)
-        {
+        if (count($this->changedRules) < 1) {
             return;
         }
 
