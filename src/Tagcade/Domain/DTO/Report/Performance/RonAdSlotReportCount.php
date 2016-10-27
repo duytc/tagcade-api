@@ -68,6 +68,8 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
         $this->rtbImpression = $rtbImpression;
     }
 
-
-
+    public function getHbRequests()
+    {
+        // TODO: Implement getHbRequests() method.
+    }
 }
