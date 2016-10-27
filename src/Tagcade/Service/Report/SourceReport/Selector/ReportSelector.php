@@ -5,7 +5,6 @@ namespace Tagcade\Service\Report\SourceReport\Selector;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\SiteInterface;

@@ -81,4 +81,9 @@ class WhiteListManager implements WhiteListManagerInterface
     {
         return $this->repository->getWhiteListsForPublisher($publisher, $limit, $offset);
     }
+
+    public function getWhiteListsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null)
+    {
+        return $this->repository->getWhiteListsByNameForPublisher($publisher, $name, $orderBy, $limit, $offset);
+    }
 }
