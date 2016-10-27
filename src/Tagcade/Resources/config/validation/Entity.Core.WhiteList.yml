@@ -1,0 +1,6 @@
+Tagcade\Entity\Core\WhiteList:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: ["publisher", "name"]
+            errorPath: name
+            message: "A white list with that name exists"

@@ -1,0 +1,6 @@
+Tagcade\Entity\Core\BlackList:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: ["publisher", "name"]
+            errorPath: name
+            message: "A black list with that name exists"
