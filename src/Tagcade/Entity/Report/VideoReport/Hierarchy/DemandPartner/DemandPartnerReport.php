@@ -20,6 +20,8 @@ class DemandPartnerReport extends DemandPartnerReportModel
     protected $blocks;
     protected $videoDemandPartner;
     protected $subReports;
+    protected $estDemandRevenue;
+    protected $netRevenue;
 
     // Only for display on UI
     protected $adTagRequests;

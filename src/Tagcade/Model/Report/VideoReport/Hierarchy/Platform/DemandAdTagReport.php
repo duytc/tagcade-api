@@ -67,4 +67,15 @@ class DemandAdTagReport extends AbstractReport implements DemandAdTagReportInter
 
         return $this->getPercentage($this->getErrors(), $this->getBids());
     }
+
+    protected function calculateEstDemandRevenue()
+    {
+        $sellPrice = $this->getVideoDemandAdTag()->getSellPrice();
+
+        if ($sellPrice === null) {
+            return 0;
+        }
+
+        return $this->getRatio($sellPrice * $this->getImpressions(), 1000);
+    }
 }

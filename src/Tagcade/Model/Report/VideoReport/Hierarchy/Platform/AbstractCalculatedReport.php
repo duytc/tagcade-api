@@ -28,11 +28,13 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->adTagBids = 0;
         $this->adTagErrors = 0;
         $this->billedAmount = 0;
+        $this->estSupplyCost = 0;
         parent::doCalculateFields();
     }
 
     protected function postCalculateFields()
     {
+        parent::postCalculateFields();
         $this->setWeightedBilledRate();
     }
 
@@ -68,9 +70,9 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->addAdTagBids($subReport->getAdTagBids());
         $this->addAdTagErrors($subReport->getAdTagErrors());
         $this->addBilledAmount($subReport->getBilledAmount());
+        $this->addEstSupplyCost($subReport->getEstSupplyCost());
 
         parent::aggregateSubReport($subReport);
-
     }
 
     protected function addAdTagRequests($adTagRequests)
@@ -91,6 +93,11 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     protected function addBilledAmount($billedAmount)
     {
         $this->billedAmount += (float)$billedAmount;
+    }
+
+    protected function addEstSupplyCost($estSupplyCost)
+    {
+        $this->estSupplyCost += (float) $estSupplyCost;
     }
 
     protected function calculateFillRate()
@@ -118,5 +125,10 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         }
 
         return $this->getPercentage($this->getErrors(), $this->getBids());
+    }
+
+    protected function calculateEstSupplyCost()
+    {
+        return $this->estSupplyCost;
     }
 }

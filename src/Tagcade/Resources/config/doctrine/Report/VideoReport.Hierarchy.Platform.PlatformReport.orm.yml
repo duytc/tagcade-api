@@ -57,6 +57,18 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PlatformReport:
         blocks:
             type: integer
             nullable: true
+        estDemandRevenue:
+            type: decimal
+            scale: 2
+            nullable: true
+        estSupplyCost:
+            type: decimal
+            scale: 2
+            nullable: true
+        netRevenue:
+            type: decimal
+            scale: 2
+            nullable: true
     oneToMany:
         subReports:
             targetEntity: AccountReport

@@ -43,6 +43,10 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\DemandAdTagReport:
         blocks:
             type: integer
             nullable: true
+        estDemandRevenue:
+            type: decimal
+            scale: 2
+            nullable: true
     manyToOne:
         videoDemandAdTag:
             targetEntity: Tagcade\Entity\Core\VideoDemandAdTag

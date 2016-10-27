@@ -76,4 +76,14 @@ interface ReportInterface extends ReportDataInterface
      * @param mixed $blocks
      */
     public function setBlocks($blocks);
+
+    /**
+     * @return mixed
+     */
+    public function getEstDemandRevenue();
+
+    /**
+     * @return self
+     */
+    public function setEstDemandRevenue();
 }

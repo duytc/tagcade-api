@@ -50,3 +50,12 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PlatformReport:
         blocks:
             expose: true
             groups: [platform_platform.detail, platform_platform.summary]
+        estDemandRevenue:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        estSupplyCost:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]
+        netRevenue:
+            expose: true
+            groups: [platform_platform.detail, platform_platform.summary]

@@ -102,4 +102,15 @@ class WaterfallTagReport extends BaseAbstractCalculatedReport implements Waterfa
     {
         // TODO: Implement setThresholdBilledAmount() method.
     }
+
+    protected function calculateEstSupplyCost()
+    {
+        $buyPrice = $this->getVideoWaterfallTag()->getBuyPrice();
+
+        if (!is_numeric($buyPrice)) {
+            return 0;
+        }
+
+        return $this->getRatio($buyPrice * $this->getImpressions(), 1000);
+    }
 }

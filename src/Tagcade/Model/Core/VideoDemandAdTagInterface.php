@@ -24,6 +24,11 @@ interface VideoDemandAdTagInterface extends ModelInterface
     public function getName();
 
     /**
+     * @return float
+     */
+    public function getSellPrice();
+
+    /**
      * @param mixed $name
      * @return self
      */

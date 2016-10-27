@@ -48,6 +48,9 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\DemandAdTagReport:
         blocks:
             expose: true
             groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
+        estDemandRevenue:
+            expose: true
+            groups: [platform_demand_ad_tag.detail, platform_demand_ad_tag.summary]
         videoDemandAdTag:
             expose: true
             groups: [platform_demand_ad_tag.detail]

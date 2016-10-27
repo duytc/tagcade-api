@@ -70,4 +70,9 @@ class DemandPartnerReport extends AbstractCalculatedReport implements DemandPart
     {
         return $this->date;
     }
+
+    protected function calculateEstSupplyCost()
+    {
+        // TODO: Implement calculateEstSupplyCost() method.
+    }
 }

@@ -107,4 +107,15 @@ class DemandPartnerWaterfallTagReport extends AbstractCalculatedReport implement
     {
         return $this->date;
     }
+
+    protected function calculateEstSupplyCost()
+    {
+        $buyPrice = $this->getVideoWaterfallTag()->getBuyPrice();
+
+        if (!is_numeric($buyPrice)) {
+            return 0;
+        }
+
+        return $this->getRatio($buyPrice * $this->getImpressions(), 1000);
+    }
 }

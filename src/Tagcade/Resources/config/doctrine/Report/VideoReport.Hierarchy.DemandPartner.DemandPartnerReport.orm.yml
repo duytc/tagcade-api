@@ -43,6 +43,14 @@ Tagcade\Entity\Report\VideoReport\Hierarchy\DemandPartner\DemandPartnerReport:
         blocks:
             type: integer
             nullable: true
+        estDemandRevenue:
+            type: decimal
+            scale: 2
+            nullable: true
+        netRevenue:
+            type: decimal
+            scale: 2
+            nullable: true
     manyToOne:
         videoDemandPartner:
             targetEntity: Tagcade\Entity\Core\VideoDemandPartner

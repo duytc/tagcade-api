@@ -9,6 +9,7 @@ use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\VideoReport\AdTagReportDataInterface;
 use Tagcade\Model\Report\VideoReport\ReportDataInterface;
 use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\DemandPartner\DemandAdTag as PartnerDemandAdTagReportType;
+use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\DemandPartner\DemandPartner as PartnerDemandPartnerReportType;
 use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\DemandAdTag as PlatformDemandAdTagReportType;
 use Tagcade\Service\Report\VideoReport\Selector\Result\CalculatedReportGroupInterface;
 use Tagcade\Service\Report\VideoReport\Selector\Result\Group\WaterfallTagReportGroup;
@@ -21,12 +22,15 @@ class WaterfallTagGrouper extends AbstractGrouper
     private $adTagErrors;
     private $adTagBids;
     private $billedAmount;
+    private $estSupplyCost;
+    private $netRevenue;
 
     private $averageAdTagRequest;
     private $averageAdTagError;
     private $averageAdTagBid;
     private $averageBilledAmount;
-
+    private $averageEstSupplyCost;
+    private $averageNetRevenue;
     private $billedRate;
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -38,6 +42,7 @@ class WaterfallTagGrouper extends AbstractGrouper
             $this->addAdTagErrors($report->getAdTagErrors());
             $this->addAdTagRequests($report->getAdTagRequests());
             $this->addAdBilledAmount($report->getBilledAmount());
+            $this->addEstSupplyCost($report->getEstSupplyCost());
         } else {
             $this->setAdTagBids(null) ;
             $this->setAdTagErrors(null);
@@ -81,7 +86,13 @@ class WaterfallTagGrouper extends AbstractGrouper
             $this->getAverageAdTagError(),
             $this->getBilledAmount(),
             $this->getAverageBilledAmount(),
-            $this->getBilledRate()
+            $this->getBilledRate(),
+            $this->getEstDemandRevenue(),
+            $this->getAverageEstDemandRevenue(),
+            $this->getEstSupplyCost(),
+            $this->getAverageEstSupplyCost(),
+            $this->getNetRevenue(),
+            $this->getAverageNetRevenue()
         );
     }
 
@@ -89,17 +100,23 @@ class WaterfallTagGrouper extends AbstractGrouper
     {
         parent::groupReports($reports);
 
-        if (!$this->getReportType() instanceof PartnerDemandAdTagReportType && !$this->getReportType() instanceof PlatformDemandAdTagReportType) {
+        if (!$this->getReportType() instanceof PartnerDemandAdTagReportType &&
+            !$this->getReportType() instanceof PlatformDemandAdTagReportType &&
+            !$this->getReportType() instanceof PartnerDemandPartnerReportType
+        ) {
             $this->billedRate = $this->calculateWeightedValue($reports, 'billedRate', 'billedAmount');
         }
 
         $reportCount = count($this->getReports());
 
+        $this->setNetRevenue();
+
+        $this->averageEstSupplyCost = $this->getRatio($this->getEstSupplyCost(), $reportCount);
         $this->averageAdTagBid = $this->getRatio($this->getAdTagBids(), $reportCount);
         $this->averageAdTagError = $this->getRatio($this->getAdTagErrors(), $reportCount);
         $this->averageAdTagRequest = $this->getRatio($this->getAdTagRequests(), $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
-
+        $this->averageNetRevenue = $this->getRatio($this->getNetRevenue(), $reportCount);
     }
 
     protected function addAdTagBids($adTagBids)
@@ -126,9 +143,17 @@ class WaterfallTagGrouper extends AbstractGrouper
     protected function addAdBilledAmount($billedAmount)
     {
         if (!is_null($billedAmount)) {
-            $this->billedAmount += (int) $billedAmount;
+            $this->billedAmount += (float) $billedAmount;
         }
     }
+
+    protected function addEstSupplyCost($estSupplyCost)
+    {
+        if (!is_null($estSupplyCost)) {
+            $this->estSupplyCost += (int) $estSupplyCost;
+        }
+    }
+
     /**
      * @return mixed
      */
@@ -231,5 +256,42 @@ class WaterfallTagGrouper extends AbstractGrouper
     public function getBilledRate()
     {
         return $this->billedRate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEstSupplyCost()
+    {
+        return $this->estSupplyCost;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNetRevenue()
+    {
+        return $this->netRevenue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageEstSupplyCost()
+    {
+        return $this->averageEstSupplyCost;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageNetRevenue()
+    {
+        return $this->averageNetRevenue;
+    }
+
+    public function setNetRevenue()
+    {
+        $this->netRevenue = $this->getEstDemandRevenue() - $this->getEstSupplyCost();
     }
 }
