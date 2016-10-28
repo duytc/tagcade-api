@@ -44,7 +44,7 @@ class BillingCalculator implements BillingCalculatorInterface
 
     public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
-        if (is_numeric($newWeight)) {
+        if (!is_numeric($newWeight)) {
             $newWeight = 0;
         }
 
@@ -64,7 +64,7 @@ class BillingCalculator implements BillingCalculatorInterface
 
     public function calculateHbBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
-        if (is_numeric($newWeight)) {
+        if (!is_numeric($newWeight)) {
             $newWeight = 0;
         }
 
@@ -84,7 +84,7 @@ class BillingCalculator implements BillingCalculatorInterface
 
     public function calculateInBannerBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
-        if (is_numeric($newWeight)) {
+        if (!is_numeric($newWeight)) {
             $newWeight = 0;
         }
 
@@ -101,6 +101,4 @@ class BillingCalculator implements BillingCalculatorInterface
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
     }
-
-
 }
