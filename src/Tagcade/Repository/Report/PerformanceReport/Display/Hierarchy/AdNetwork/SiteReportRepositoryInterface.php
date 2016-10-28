@@ -6,6 +6,7 @@ use DateTime;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportInterface;
 
 interface SiteReportRepositoryInterface
 {
@@ -19,5 +20,5 @@ interface SiteReportRepositoryInterface
      */
     public function getSiteReportForAllPartners(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
-    public function overrideReport(SiteReportInterface $report);
+    public function overrideReport(AdNetworkReportInterface $superReport, SiteReportInterface $report);
 }

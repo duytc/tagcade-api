@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\DBAL\Types\Type;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReportInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
 
@@ -40,7 +41,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         return $qb->getQuery()->getResult();
     }
 
-    public function overrideReport(SiteReportInterface $report)
+    public function overrideReport(AdNetworkReportInterface $superReport, SiteReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_ad_network_site`
                  (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
@@ -66,7 +67,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         $qb = $connection->prepare($sql);
 
         $qb->bindValue('siteId', $report->getSiteId(), Type::INTEGER);
-        $qb->bindValue('superReportId', $report->getSuperReportId(), Type::INTEGER);
+        $qb->bindValue('superReportId', $superReport->getId(), Type::INTEGER);
         $qb->bindValue('date', $report->getDate(), Type::DATE);
         $qb->bindValue('name', $report->getName());
         $qb->bindValue('estCpm', $report->getEstCpm() !== null ? $report->getEstCpm() : 0, Type::FLOAT);
