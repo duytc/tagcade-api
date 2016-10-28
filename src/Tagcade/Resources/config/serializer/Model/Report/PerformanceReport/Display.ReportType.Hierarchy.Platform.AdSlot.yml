@@ -9,7 +9,8 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdS
             type: string
         getSiteId:
             groups: [report_type.summary]
-
+        getSiteName:
+            groups: [report_type.summary]
     properties:
         adSlot:
             exclude: true

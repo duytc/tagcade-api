@@ -21,4 +21,14 @@ interface WhiteListRepositoryInterface extends ObjectRepository
      * @return null|WhiteListInterface
      */
     public function findWhiteListBySuffixKey($suffixKey);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $name
+     * @param null $orderBy
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getWhiteListsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null);
 }

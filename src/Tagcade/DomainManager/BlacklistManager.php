@@ -81,4 +81,9 @@ class BlacklistManager implements BlacklistManagerInterface
     {
         return $this->repository->getBlacklistsForPublisher($publisher, $limit, $offset);
     }
+
+    public function getBlacklistsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null)
+    {
+        return $this->repository->findBlacklistsByNameForPublisher($publisher, $name, $orderBy, $limit, $offset);
+    }
 }

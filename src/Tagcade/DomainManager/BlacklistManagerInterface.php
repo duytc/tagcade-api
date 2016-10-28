@@ -14,4 +14,14 @@ interface BlacklistManagerInterface extends ManagerInterface
      * @return SiteInterface[]
      */
     public function getBlacklistsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $name
+     * @param $orderBy
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getBlacklistsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null);
 }

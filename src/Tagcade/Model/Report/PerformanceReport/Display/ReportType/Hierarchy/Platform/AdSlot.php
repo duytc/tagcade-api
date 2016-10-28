@@ -52,7 +52,22 @@ class AdSlot extends AbstractCalculatedReportType implements CalculatedReportTyp
 
     public function getSiteId()
     {
-        return $this->adSlot->getSite()->getId();
+        $site = $this->adSlot->getSite();
+        if ($site instanceof SiteInterface) {
+            return $site->getId();
+        }
+
+        return null;
+    }
+
+    public function getSiteName()
+    {
+        $site = $this->adSlot->getSite();
+        if ($site instanceof SiteInterface) {
+            return $site->getName();
+        }
+
+        return null;
     }
 
     /**
