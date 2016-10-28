@@ -150,7 +150,7 @@ class WaterfallTagGrouper extends AbstractGrouper
     protected function addEstSupplyCost($estSupplyCost)
     {
         if (!is_null($estSupplyCost)) {
-            $this->estSupplyCost += (int) $estSupplyCost;
+            $this->estSupplyCost += (float) $estSupplyCost;
         }
     }
 
