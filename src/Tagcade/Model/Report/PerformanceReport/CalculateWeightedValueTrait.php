@@ -40,15 +40,22 @@ trait CalculateWeightedValueTrait
          */
         $total = 0;
         $totalWeight = 0;
-
+        $count = 0;
+        $totalFrequency = 0;
         foreach ($reports as $report) {
             try {
                 $number = $getterFrequencyMethod->invoke($report);
                 $weight = $getterWeightMethod->invoke($report);
                 $total += $number * $weight;
                 $totalWeight += $weight;
+                $totalFrequency += $number;
+                $count++;
             } catch (\Exception $e) {
             }
+        }
+
+        if ($totalWeight <= 0) {
+            return $this->getRatio($totalFrequency, $count);
         }
 
         return $this->getRatio($total, $totalWeight);
