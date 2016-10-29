@@ -9,6 +9,11 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
 {
     protected $id;
 
+    /**
+     * @var string
+     */
+    protected $name;
+
     /** @var string */
     protected $expressionDescriptor;
 
@@ -44,6 +49,24 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
     {
         $this->id = $id;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 

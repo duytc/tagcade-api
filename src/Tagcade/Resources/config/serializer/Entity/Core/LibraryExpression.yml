@@ -4,6 +4,9 @@ Tagcade\Entity\Core\LibraryExpression:
         id:
             expose: true
             groups: [libraryexpression.detail, libraryexpression.summary]
+        name:
+            expose: true
+            groups: [libraryexpression.detail, libraryexpression.summary]
         expressionDescriptor:
             expose: true
             groups: [libraryexpression.detail, libraryexpression.summary]

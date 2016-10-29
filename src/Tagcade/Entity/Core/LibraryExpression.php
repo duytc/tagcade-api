@@ -7,6 +7,7 @@ use Tagcade\Model\Core\LibraryExpression as LibraryExpressionModel;
 class LibraryExpression extends LibraryExpressionModel {
 
     protected $id;
+    protected $name;
     protected $expressionDescriptor;
     protected $startingPosition = 1;
     protected $expressions;

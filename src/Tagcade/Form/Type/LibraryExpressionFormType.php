@@ -89,6 +89,7 @@ class LibraryExpressionFormType extends AbstractRoleSpecificFormType
         );
 
         $builder
+            ->add('name')
             ->add('expressionDescriptor')
             ->add('expectLibraryAdSlot', 'entity', array(
                 'class' => LibraryAdSlotAbstract::class,
