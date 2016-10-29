@@ -12,12 +12,17 @@ class WaterfallTagReportGroup extends ReportGroup implements CalculatedReportGro
     protected $adTagBids;
     protected $adTagErrors;
     protected $billedAmount;
+    protected $estSupplyCost;
+    protected $netRevenue;
+
 
     protected $averageAdTagRequest;
     protected $averageAdTagBid;
     protected $averageAdTagError;
     protected $averageBilledAmount;
     protected $billedRate;
+    protected $averageEstSupplyCost;
+    protected $averageNetRevenue;
 
     /**
      * WaterfallTagReportGroup constructor.
@@ -54,27 +59,36 @@ class WaterfallTagReportGroup extends ReportGroup implements CalculatedReportGro
      * @param $billedAmount
      * @param $averageBilledAmount
      * @param $billedRate
+     * @param $estDemandRevenue
+     * @param $averageDemandRevenue
+     * @param $estSupplyCost
+     * @param $averageSupplyCost
+     * @param $netRevenue
+     * @param $averageNetRevenue
      */
     public function __construct($reportType, array $reports, $requests, $bids, $bidRate, $errors, $errorRate, $impressions, $requestFillRate, $clicks,
-                                $clickThroughRate, $averageRequests, $averageBids, $averageBidRate, $averageErrors, $averageErrorRate, $averageImpressions, $averageRequestFillRate,
-                                $averageClicks, $averageClickThroughRate, $startDate, $endDate, $blocks, $averageBlocks, $adTagRequests, $adTagBids, $adTagErrors, $averageAdTagRequest, $averageAdTagBid,
-                                $averageAdTagError, $billedAmount, $averageBilledAmount, $billedRate)
+        $clickThroughRate, $averageRequests, $averageBids, $averageBidRate, $averageErrors, $averageErrorRate, $averageImpressions, $averageRequestFillRate,
+        $averageClicks, $averageClickThroughRate, $startDate, $endDate, $blocks, $averageBlocks, $adTagRequests, $adTagBids, $adTagErrors, $averageAdTagRequest, $averageAdTagBid,
+        $averageAdTagError, $billedAmount, $averageBilledAmount, $billedRate, $estDemandRevenue, $averageDemandRevenue, $estSupplyCost, $averageSupplyCost, $netRevenue, $averageNetRevenue)
     {
         parent::__construct($reportType, $reports, $requests, $bids, $bidRate, $errors, $errorRate, $impressions, $requestFillRate,
             $clicks, $clickThroughRate, $averageRequests, $averageBids, $averageBidRate, $averageErrors, $averageErrorRate,
-            $averageImpressions, $averageRequestFillRate, $averageClicks, $averageClickThroughRate,$startDate, $endDate, $blocks, $averageBlocks);
+            $averageImpressions, $averageRequestFillRate, $averageClicks, $averageClickThroughRate,$startDate, $endDate, $blocks, $averageBlocks, $estDemandRevenue, $averageDemandRevenue);
 
-        $this->adTagRequests = isset($adTagRequests)? round($adTagRequests, 4) : null;
-        $this->adTagBids = isset($adTagBids)? round($adTagBids, 4) : null;
-        $this->adTagErrors = isset($adTagErrors)? round($adTagErrors, 4): null;
-        $this->billedAmount = isset($billedAmount)? round($billedAmount,4) : null;
+        $this->adTagRequests = $adTagRequests;
+        $this->adTagBids = $adTagBids;
+        $this->adTagErrors = $adTagErrors;
+        $this->billedAmount = round($billedAmount, 2);
+        $this->estSupplyCost = round($estSupplyCost, 2);
+        $this->netRevenue = round($netRevenue, 2);
 
-        $this->averageAdTagRequest = isset($averageAdTagRequest)? round($averageAdTagRequest, 4): null;
-        $this->averageAdTagBid = isset($averageAdTagBid)? round($averageAdTagBid, 4):null;
-        $this->averageAdTagError = isset($averageAdTagError)?round($averageAdTagError, 4):null;
-        $this->averageBilledAmount = isset($averageBilledAmount) ? round($averageBilledAmount,4): null;
-
-        $this->billedRate = isset($billedRate)? round($billedRate, 4) : null;
+        $this->averageAdTagRequest = round($averageAdTagRequest);
+        $this->averageAdTagBid = round($averageAdTagBid);
+        $this->averageAdTagError = round($averageAdTagError);
+        $this->averageBilledAmount = round($averageBilledAmount, 2);
+        $this->averageEstSupplyCost = round($averageSupplyCost, 2);
+        $this->averageNetRevenue = round($averageNetRevenue, 2);
+        $this->billedRate = round($billedRate, 4);
     }
 
     /**
@@ -163,5 +177,34 @@ class WaterfallTagReportGroup extends ReportGroup implements CalculatedReportGro
     public function getBilledRate()
     {
         return $this->billedRate;
+    }
+
+    public function getEstSupplyCost()
+    {
+        return $this->estSupplyCost;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNetRevenue()
+    {
+        return $this->netRevenue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageNetRevenue()
+    {
+        return $this->averageNetRevenue;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageEstSupplyCost()
+    {
+        return $this->averageEstSupplyCost;
     }
 }

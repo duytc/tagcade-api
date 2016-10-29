@@ -55,7 +55,7 @@ class DemandPartnerWaterfallTagReport extends AbstractCalculatedReport implement
             throw new RuntimeException('bids must be defined to calculate error rates');
         }
 
-        return $this->getRatio($this->getErrors(), $this->getBids());
+        return $this->getPercentage($this->getErrors(), $this->getBids());
     }
 
     public function getVideoDemandPartner()
@@ -106,5 +106,16 @@ class DemandPartnerWaterfallTagReport extends AbstractCalculatedReport implement
     public function getDate()
     {
         return $this->date;
+    }
+
+    protected function calculateEstSupplyCost()
+    {
+        $buyPrice = $this->getVideoWaterfallTag()->getBuyPrice();
+
+        if (!is_numeric($buyPrice)) {
+            return 0;
+        }
+
+        return $this->getRatio($buyPrice * $this->getImpressions(), 1000);
     }
 }

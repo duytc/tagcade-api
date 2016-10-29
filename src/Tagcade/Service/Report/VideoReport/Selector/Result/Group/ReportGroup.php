@@ -20,6 +20,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
     protected $requestFillRate;
     protected $clicks;
     protected $clickThroughRate;
+    protected $estDemandRevenue;
 
     protected $averageRequests;
     protected $averageBids;
@@ -34,6 +35,7 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
     protected $endDate;
     protected $blocks;
     protected $averageBlocks;
+    protected $averageEstDemandRevenue;
 
     /**
      * ReportGroup constructor.
@@ -61,6 +63,8 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
      * @param $endDate
      * @param $blocks
      * @param $averageBlocks
+     * @param $estDemandRevenue
+     * @param $averageEstDemandRevenue
      */
     public function __construct($reportType, array $reports,
                                 $requests,
@@ -84,7 +88,9 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
                                 $startDate,
                                 $endDate,
                                 $blocks,
-                                $averageBlocks
+                                $averageBlocks,
+                                $estDemandRevenue,
+                                $averageEstDemandRevenue
     )
     {
         $this->reportType = $reportType;
@@ -98,20 +104,22 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
         $this->requestFillRate = round($requestFillRate, 4);
         $this->clicks = $clicks;
         $this->clickThroughRate = round($clickThroughRate, 4);
+        $this->estDemandRevenue = round($estDemandRevenue, 2);
 
-        $this->averageRequests = round($averageRequests, 4);
-        $this->averageBids = round($averageBids, 4);
+        $this->averageRequests = round($averageRequests);
+        $this->averageBids = round($averageBids);
         $this->averageBidRate = round($averageBidRate, 4);
-        $this->averageErrors = round($averageErrors, 4);
+        $this->averageErrors = round($averageErrors);
         $this->averageErrorRate = round($averageErrorRate, 4);
         $this->averageImpressions = round($averageImpressions);
         $this->averageRequestFillRate = round($averageRequestFillRate, 4);
-        $this->averageClicks = round($averageClicks, 4);
+        $this->averageClicks = round($averageClicks);
         $this->averageClickThroughRate = round($averageClickThroughRate, 4);
         $this->startDate = $startDate;
         $this->endDate = $endDate;
         $this->blocks = $blocks;
-        $this->averageBlocks = round($averageBlocks, 4);
+        $this->averageBlocks = round($averageBlocks);
+        $this->averageEstDemandRevenue = round($averageEstDemandRevenue, 2);
     }
 
     /**
@@ -320,4 +328,16 @@ class ReportGroup implements ReportDataInterface, GroupedDataInterface
         return $this->averageBlocks;
     }
 
+    public function getEstDemandRevenue()
+    {
+        return $this->estDemandRevenue;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageEstDemandRevenue()
+    {
+        return $this->averageEstDemandRevenue;
+    }
 }

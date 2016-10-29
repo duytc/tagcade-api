@@ -5,6 +5,7 @@ namespace Tagcade\Worker\Workers;
 
 
 use stdClass;
+use Tagcade\Entity\Core\WaterfallPlacementRule;
 use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 use Tagcade\Repository\Core\WaterfallPlacementRuleRepositoryInterface;
 use Tagcade\Service\Core\VideoDemandAdTag\DeployLibraryVideoDemandAdTagServiceInterface;
@@ -42,7 +43,27 @@ class DeployVideoDemandAdTagForNewPlacementRuleWorker
             return;
         }
 
-        $tags = $this->deployService->getValidVideoWaterfallTagsForPlacementRule($placementRule);
-        $this->deployService->deployLibraryVideoDemandAdTagToWaterfalls($placementRule->getLibraryVideoDemandAdTag(), $placementRule, $tags);
+        if ($placementRule->getProfitType() === WaterfallPlacementRule::PLACEMENT_PROFIT_TYPE_MANUAL) {
+            $tags = $placementRule->getWaterfalls();
+        } else {
+            $tags = $this->deployService->getValidVideoWaterfallTagsForPlacementRule($placementRule);
+        }
+
+        if (empty($tags)) {
+            return;
+        }
+
+        $this->deployService->deployLibraryVideoDemandAdTagToWaterfalls(
+            $placementRule->getLibraryVideoDemandAdTag(),
+            $placementRule,
+            $tags,
+            null,
+            false,
+            $placementRule->getPriority(),
+            $placementRule->getRotationWeight(),
+            $placementRule->isActive(),
+            $placementRule->getPosition(),
+            $placementRule->isShiftDown()
+        );
     }
 }

@@ -202,8 +202,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                     if (!$publisher->hasDisplayModule() && (
                         $publisher->hasRtbModule() ||
                         $publisher->hasHeaderBiddingModule() ||
-                        $publisher->hasVideoAnalyticsModule() ||
-                        $publisher->hasAnalyticsModule() ||
                         $publisher->hasSubPubliserModule() ||
                         $publisher->hasInBannerModule()
                     )) {

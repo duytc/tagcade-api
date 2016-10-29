@@ -134,6 +134,11 @@ class DeployLibraryVideoDemandAdTagService implements DeployLibraryVideoDemandAd
                 $placementRule->getPublishers(),
                 $this->calculateMinimumBuyPriceForPlacementRule($placementRule)
             );
+
+            if (empty($tags)) {
+                continue;
+            }
+
             $waterfallTags[] = new WaterfallTagsPlacementRule($placementRule, $tags);
         }
 

@@ -44,7 +44,11 @@ class BillingCalculator implements BillingCalculatorInterface
 
     public function calculateVideoBilledAmountForPublisherForSingleDay(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
     {
-        if ($newWeight < 0 || !is_numeric($newWeight)) {
+        if (!is_numeric($newWeight)) {
+            $newWeight = 0;
+        }
+
+        if ($newWeight < 0) {
             throw new InvalidArgumentException('$newWeight must be a number');
         }
 

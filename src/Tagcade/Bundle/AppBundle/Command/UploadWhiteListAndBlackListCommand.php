@@ -36,11 +36,17 @@ class UploadWhiteListAndBlackListCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $logger = $container->get('logger');
 
+        if (!$publisherId) {
+            throw new \Exception(sprintf("Id %s is not valid", $publisherId));
+        }
+
         if ($type !== self::BLACK_LIST_OPTION && $type !== self::WHITE_LIST_OPTION) {
             throw new \Exception(sprintf("Type %s is not valid", $type));
         }
 
-        if (strlen($name) > self::MAX_SIZE_NAME) {
+        if (!isset($name)) {
+            throw new \Exception(sprintf("Name must be required"));
+        } else if (strlen($name) > self::MAX_SIZE_NAME) {
             throw new \Exception(sprintf("Name %s is too long", $name));
         }
 

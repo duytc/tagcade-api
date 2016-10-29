@@ -77,7 +77,7 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
 
         if ($override === true && $report instanceof ReportInterface) {
             $logger->info(sprintf('Persisting report for ad network %s', $id));
-            $this->overrideReport($adNetworkReport, $entityManager);
+            $this->overrideReport($report, $adNetworkReport, $entityManager);
             $logger->info(sprintf('Flushing report for ad network %s', $id));
             $logger->info('finished daily rotation');
             return;
@@ -90,7 +90,7 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
         $logger->info('finished daily rotation');
     }
 
-    protected function overrideReport(AdNetworkReportInterface $report, EntityManagerInterface $em)
+    protected function overrideReport(ReportInterface $oldReport, AdNetworkReportInterface $report, EntityManagerInterface $em)
     {
         $adTagReportRepository = $em->getRepository(AdTagReport::class);
         $siteReportRepository = $em->getRepository(SiteReport::class);
@@ -102,7 +102,7 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
             foreach($adTagReports as $adTagReport) {
                 $adTagReportRepository->overrideReport($adTagReport);
             }
-            $siteReportRepository->overrideReport($siteReport);
+            $siteReportRepository->overrideReport($oldReport, $siteReport);
         }
         $adNetworkReportRepository->overrideReport($report);
     }

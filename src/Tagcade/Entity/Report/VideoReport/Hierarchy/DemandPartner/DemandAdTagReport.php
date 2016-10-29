@@ -20,6 +20,7 @@ class DemandAdTagReport extends DemandAdTagReportModel
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;
+    protected $estDemandRevenue;
 
     /** @var VideoDemandAdTagInterface */
     protected $videoDemandAdTag;

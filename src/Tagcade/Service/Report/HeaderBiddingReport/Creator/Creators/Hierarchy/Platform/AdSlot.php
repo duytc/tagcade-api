@@ -35,7 +35,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             ->setRequests($this->eventCounter->getHeaderBidRequestCount($adSlot->getId()))
         ;
 
-        $rateAmount = $this->billingCalculator->calculateTodayHbBilledAmountForPublisher($adSlot->getSite()->getPublisher(), AbstractUser::MODULE_HEADER_BIDDING, $report->getRequests());
+        $rateAmount = $this->billingCalculator->calculateHbBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_HEADER_BIDDING, $report->getRequests());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());

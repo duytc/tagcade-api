@@ -55,4 +55,9 @@ interface ReportDataInterface
      * @return int
      */
     public function getBlocks();
+
+    /**
+     * @return float
+     */
+    public function getEstDemandRevenue();
 }

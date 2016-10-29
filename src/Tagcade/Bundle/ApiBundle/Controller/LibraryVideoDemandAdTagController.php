@@ -185,7 +185,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
         $targetingOverride = filter_var($targetingOverride, FILTER_VALIDATE_BOOLEAN);
         $priority = false == filter_var($priority, FILTER_VALIDATE_INT) ? null : filter_var($priority, FILTER_VALIDATE_INT);
         $rotationWeight = false == filter_var($rotationWeight, FILTER_VALIDATE_INT) ? null : filter_var($rotationWeight, FILTER_VALIDATE_INT);
-        $active = false == filter_var($active, FILTER_VALIDATE_BOOLEAN) ? null : filter_var($active, FILTER_VALIDATE_BOOLEAN);
+        $active = filter_var($active, FILTER_VALIDATE_INT);
         $position = false == filter_var($position, FILTER_VALIDATE_INT) ? null : filter_var($position, FILTER_VALIDATE_INT);
         $shiftDown = filter_var($shiftDown, FILTER_VALIDATE_BOOLEAN);
 

@@ -95,11 +95,22 @@ class WaterfallTagReport extends BaseAbstractCalculatedReport implements Waterfa
             throw new RuntimeException('bids must be defined to calculate error rates');
         }
 
-        return $this->getRatio($this->getErrors(), $this->getBids());
+        return $this->getPercentage($this->getErrors(), $this->getBids());
     }
 
     public function setThresholdBilledAmount($chainToSubReports = true)
     {
         // TODO: Implement setThresholdBilledAmount() method.
+    }
+
+    protected function calculateEstSupplyCost()
+    {
+        $buyPrice = $this->getVideoWaterfallTag()->getBuyPrice();
+
+        if (!is_numeric($buyPrice)) {
+            return 0;
+        }
+
+        return $this->getRatio($buyPrice * $this->getImpressions(), 1000);
     }
 }

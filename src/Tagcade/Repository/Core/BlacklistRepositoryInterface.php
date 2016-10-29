@@ -27,4 +27,14 @@ interface BlacklistRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function setBuiltinBlacklist(array $builtinBlacklist);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $name
+     * @param null $orderBy
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findBlacklistsByNameForPublisher(PublisherInterface $publisher, $name, $orderBy = null, $limit = null, $offset = null);
 }

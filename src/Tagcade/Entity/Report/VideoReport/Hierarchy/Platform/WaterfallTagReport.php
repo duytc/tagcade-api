@@ -17,6 +17,7 @@ class WaterfallTagReport extends WaterfallTagReportModel {
     protected $clicks;
     protected $clickThroughRate;
     protected $blocks;
+    protected $estDemandRevenue;
 
     protected $adTagRequests;
     protected $adTagBids;
@@ -24,6 +25,8 @@ class WaterfallTagReport extends WaterfallTagReportModel {
     protected $billedAmount;
     protected $billedRate;
     protected $customRate;
+    protected $estSupplyCost;
+    protected $netRevenue;
 
     protected $videoWaterfallTag;
 } 

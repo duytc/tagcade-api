@@ -67,3 +67,9 @@ Tagcade\Service\Report\VideoReport\Selector\Result\Group\ReportGroup:
         averageBlocks:
             expose: true
             groups: [report_group.detail, report_group.summary]
+        estDemandRevenue:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageEstDemandRevenue:
+            expose: true
+            groups: [report_group.detail, report_group.summary]

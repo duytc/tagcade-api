@@ -45,12 +45,12 @@ abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
             throw new LogicException('Billable Creator should be AdSlot, Site and Account report');
         }
 
-        $rateAmount = $this->billingCalculator->calculateTodayBilledAmountForPublisher($publisher, AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $publisher, AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());
 
-        $inBannerRateAmount = $this->billingCalculator->calculateTodayInBannerBilledAmountForPublisher($publisher, AbstractUser::MODULE_IN_BANNER, $report->getInBannerImpressions());
+        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($report->getDate(), $publisher, AbstractUser::MODULE_IN_BANNER, $report->getInBannerImpressions());
 
         $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
         $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());

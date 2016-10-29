@@ -24,4 +24,7 @@ class PublisherReport extends VideoPublisherReportModel
     protected $adTagBids;
     protected $adTagErrors;
     protected $videoPublisher;
+    protected $estDemandRevenue;
+    protected $estSupplyCost;
+    protected $netRevenue;
 } 
