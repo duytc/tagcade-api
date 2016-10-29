@@ -15,6 +15,17 @@ interface LibraryExpressionInterface extends ModelInterface
     public function setId($id);
 
     /**
+     * @return string
+     */
+    public function getName();
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName($name);
+
+    /**
      * @return array
      */
     public function getExpressionDescriptor();
