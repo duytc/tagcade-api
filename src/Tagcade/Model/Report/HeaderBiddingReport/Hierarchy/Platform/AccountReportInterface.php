@@ -4,9 +4,10 @@ namespace Tagcade\Model\Report\HeaderBiddingReport\Hierarchy\Platform;
 
 use Tagcade\Model\Report\HeaderBiddingReport\SubReportInterface;
 use Tagcade\Model\Report\HeaderBiddingReport\SuperReportInterface;
+use Tagcade\Model\Report\HeaderBiddingReport\ReportInterface;
 use Tagcade\Model\User\UserEntityInterface;
 
-interface AccountReportInterface extends SuperReportInterface, SubReportInterface
+interface AccountReportInterface extends SuperReportInterface, SubReportInterface, ReportInterface
 {
     /**
      * @return UserEntityInterface

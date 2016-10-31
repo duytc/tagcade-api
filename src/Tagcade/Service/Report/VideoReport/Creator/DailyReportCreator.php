@@ -59,6 +59,7 @@ class DailyReportCreator
     public function createAndSave(array $publishers, $videoDemandPartners, $override = false)
     {
         $platformReportRepository = $this->om->getRepository(PlatformReport::class);
+
         $this->logger->info('Getting platform report');
         $platformReport = $this->reportCreator->getReport(new PlatformReportType($publishers));
 
@@ -74,19 +75,19 @@ class DailyReportCreator
 
         $this->logger->info('Persisting platform report');
         $this->om->persist($platformReport);
+
         $this->logger->info('flushing then detaching platform report');
         $this->om->flush();
+        $this->om->detach($platformReport);
         unset($platformReport);
         $this->logger->info('Finished platform report');
         gc_collect_cycles();
 
         $this->createDemandPartnerReports($videoDemandPartners, $override);
-
         $this->om->flush();
+
         unset($adNetworks);
-
         $this->logger->info('Finished all network reports');
-
         gc_collect_cycles();
     }
 
@@ -138,9 +139,9 @@ class DailyReportCreator
 //        $this->om->flush();
 //    }
 
-    protected function createAccountReports(array $publishers)
+    protected function createAccountReports(array $publishers, $override = false)
     {
-        $createdReports = [];
+        $accountReportRepository = $this->om->getRepository(AccountReport::class);
         foreach ($publishers as $publisher) {
             if (!$publisher instanceof PublisherInterface) {
                 continue;
@@ -149,16 +150,27 @@ class DailyReportCreator
             $accountReport = $this->reportCreator->getReport(
                 new AccountReportType($publisher)
             );
+
+            $report = current($accountReportRepository->getReportsFor($publisher, $this->reportCreator->getDate(), $this->reportCreator->getDate()));
+            if ($report instanceof ReportInterface && $override === false) {
+                throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+            }
+
+            if ($report instanceof ReportInterface && $override === true) {
+                $this->om->remove($report);
+                $this->om->flush();
+            }
+
             /**
              * @var AccountReport $accountReport
              */
             $this->om->persist($accountReport);
-            $createdReports[] = $accountReport;
+
+            $this->om->flush();
+            $this->om->detach($accountReport);
+            gc_collect_cycles();
             unset($accountReport);
         }
-
-        $this->flushThenDetach($createdReports);
-        unset($createdReports);
     }
 
     /**

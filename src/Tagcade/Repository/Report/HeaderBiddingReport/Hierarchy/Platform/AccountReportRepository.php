@@ -41,4 +41,20 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
 
         return $result;
     }
+
+    public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this->getReportsByDateRangeQuery($startDate, $endDate);
+        $qb ->join('r.publisher', 'p')
+            ->andWhere($qb->expr()->orX('p.testAccount = 0', 'p.testAccount IS NULL'))
+            ->andWhere('p.enabled = 1')
+        ;
+        $qb->select('
+            SUM(r.requests) as requests,
+            SUM(r.billedAmount) as billedAmount
+            '
+        );
+
+        return current($qb->getQuery()->getArrayResult());
+    }
 }
