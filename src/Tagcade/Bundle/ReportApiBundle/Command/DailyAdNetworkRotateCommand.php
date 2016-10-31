@@ -80,6 +80,9 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
             $this->overrideReport($report, $adNetworkReport, $entityManager);
             $logger->info(sprintf('Flushing report for ad network %s', $id));
             $logger->info('finished daily rotation');
+            $entityManager->clear();
+            gc_collect_cycles();
+            unset($adNetworkReport);
             return;
         }
 
@@ -87,6 +90,9 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
         $entityManager->persist($adNetworkReport);
         $logger->info(sprintf('Flushing report for ad network %s', $id));
         $entityManager->flush();
+        $entityManager->clear();
+        gc_collect_cycles();
+        unset($adNetworkReport);
         $logger->info('finished daily rotation');
     }
 

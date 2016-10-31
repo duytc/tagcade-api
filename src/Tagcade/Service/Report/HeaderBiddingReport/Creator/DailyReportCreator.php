@@ -52,60 +52,95 @@ class DailyReportCreator
     public function createAndSave(array $publishers, $override = false)
     {
         $platformReportRepository = $this->om->getRepository(PlatFormReport::class);
-        $this->logger->info('Getting platform report');
-        $platformReport = $this->reportCreator->getReport(
-            new PlatformReportType($publishers)
-        );
-
+        $accountReportRepository = $this->om->getRepository(AccountReport::class);
         $report = current($platformReportRepository->getReportFor($this->reportCreator->getDate(), $this->reportCreator->getDate()));
         if ($report instanceof ReportInterface && $override === false) {
             throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
         }
 
-        if ($report instanceof ReportInterface && $override === true) {
-            $this->om->remove($report);
-            $this->om->flush();
+        $this->createReportsForPublishers($publishers, $override);
+        $report = new PlatFormReport();
+        $report->setDate($this->reportCreator->getDate());
+
+
+        $accountReports = $accountReportRepository->getReportsByDateRange($report->getDate(), $report->getDate());
+        $requests = 0;
+        $billedAmount = 0;
+        /** @var AccountReport $accountReport */
+        foreach($accountReports as $accountReport) {
+            $accountReport->setSuperReport($report);
+            $report->addSubReport($accountReport);
+            $requests += $accountReport->getRequests();
+            $billedAmount += $accountReport->getBilledAmount();
+        }
+
+        $report->setRequests($requests)
+            ->setBilledAmount($billedAmount)
+            ->setCalculatedFields();
+
+        if ($override === true && $report instanceof ReportInterface) {
+            $platformReportRepository->overrideReport($report);
+            foreach ($accountReports as $accountReport) {
+                $this->om->detach($accountReport);
+            }
+            unset($accountReports);
+            $this->om->detach($report);
+            unset($report);
+            return;
         }
 
         $this->logger->info('Persisting platform report');
-        $this->om->persist($platformReport);
+        $this->om->persist($report);
 
         $this->logger->info('flushing then detaching platform report');
         $this->om->flush();
 
-        unset($platformReport);
+        foreach ($accountReports as $accountReport) {
+            $this->om->detach($accountReport);
+        }
+        unset($accountReports);
+        $this->om->detach($report);
+
+        unset($accountReports);
+        unset($report);
         $this->logger->info('Finished platform report');
         gc_collect_cycles();
     }
 
-    public function createReportsForPublishers(array $publishers)
+    public function createReportsForPublishers(array $publishers, $override = false)
     {
-        $this->createAccountReports($publishers);
+        $accountReportRepository = $this->om->getRepository(AccountReport::class);
 
-        $this->om->flush();
-    }
-
-    protected function createAccountReports(array $publishers)
-    {
-        $createdReports = [];
         foreach ($publishers as $publisher) {
             if (!$publisher instanceof PublisherInterface) {
                 continue;
             }
 
+            $this->logger->info(sprintf('start creating header bidding report for publisher %s', $publisher->getUser()->getUsername()));
             $accountReport = $this->reportCreator->getReport(
                 new AccountReportType($publisher)
             );
-            /**
-             * @var AccountReport $accountReport
-             */
-            $this->om->persist($accountReport);
-            $createdReports[] = $accountReport;
-            unset($accountReport);
-        }
 
-        $this->flushThenDetach($createdReports);
-        unset($createdReports);
+            $report = current($accountReportRepository->getReportFor($publisher, $this->reportCreator->getDate(), $this->reportCreator->getDate()));
+            if ($report instanceof ReportInterface && $override === false) {
+                throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+            }
+
+            if ($report instanceof ReportInterface && $override === true) {
+                $this->om->remove($report);
+                $this->om->flush();
+            }
+
+            /** @var AccountReport $accountReport */
+            $this->om->persist($accountReport);
+
+            $this->om->flush();
+            $this->om->detach($accountReport);
+            gc_collect_cycles();
+
+            unset($accountReport);
+            $this->logger->info(sprintf('finish creating header bidding report for publisher %s', $publisher->getUser()->getUsername()));
+        }
     }
 
     protected function flushThenDetach($entities)

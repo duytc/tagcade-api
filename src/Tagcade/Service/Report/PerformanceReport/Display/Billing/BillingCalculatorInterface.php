@@ -11,29 +11,26 @@ interface BillingCalculatorInterface
     /**
      * @param DateTime $date
      * @param PublisherInterface $publisher
-     * @param $module
      * @param $weight
      * @return RateAmount
      */
-    public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $weight);
+    public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $weight);
 
     /**
      * @param DateTime $date
      * @param PublisherInterface $publisher
-     * @param $module
      * @param $weight
      * @return mixed
      */
-    public function calculateHbBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $weight);
+    public function calculateHbBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $weight);
 
     /**
      * @param DateTime $date
      * @param PublisherInterface $publisher
-     * @param $module
      * @param $weight
      * @return RateAmount
      */
-    public function calculateInBannerBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $weight);
+    public function calculateInBannerBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $weight);
 
     /**
      * @param float $cpmRate
