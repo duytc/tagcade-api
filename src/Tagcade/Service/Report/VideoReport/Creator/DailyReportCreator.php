@@ -63,38 +63,6 @@ class DailyReportCreator
      */
     public function createAndSave(array $publishers, $videoDemandPartners, $override = false)
     {
-//        $platformReportRepository = $this->om->getRepository(PlatformReport::class);
-//
-//        $this->logger->info('Getting platform report');
-//        $platformReport = $this->reportCreator->getReport(new PlatformReportType($publishers));
-//
-//        $report = current($platformReportRepository->getReportsFor($this->reportCreator->getDate(), $this->reportCreator->getDate()));
-//        if ($override === false && $report instanceof ReportInterface) {
-//            throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
-//        }
-//
-//        if ($override === true && $report instanceof ReportInterface) {
-//            $this->om->remove($report);
-//            $this->om->flush();
-//        }
-//
-//        $this->logger->info('Persisting platform report');
-//        $this->om->persist($platformReport);
-//
-//        $this->logger->info('flushing then detaching platform report');
-//        $this->om->flush();
-//        $this->om->detach($platformReport);
-//        unset($platformReport);
-//        $this->logger->info('Finished platform report');
-//        gc_collect_cycles();
-//
-//        $this->createDemandPartnerReports($videoDemandPartners, $override);
-//        $this->om->flush();
-//
-//        unset($adNetworks);
-//        $this->logger->info('Finished all network reports');
-//        gc_collect_cycles();
-
         $platformReportRepository = $this->om->getRepository(PlatFormReport::class);
         $accountReportRepository = $this->om->getRepository(AccountReport::class);
         $report = current($platformReportRepository->getReportsFor($this->reportCreator->getDate(), $this->reportCreator->getDate()));
@@ -165,18 +133,14 @@ class DailyReportCreator
         gc_collect_cycles();
     }
 
-    public function createReportsForPublishers(array $publishers, array $adNetworks)
+    public function createPlatformReport(DateTime $reportDate, $override = false)
     {
-        $this->createAccountReports($publishers);
+        $platformReportRepository = $this->om->getRepository(PlatformReport::class);
+        $platformReport = current($platformReportRepository->getReportsFor($reportDate, $reportDate));
+        if ($platformReport instanceof ReportInterface && $override === false) {
+            throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+        }
 
-//        $this->createAdNetworkReports($adNetworks);
-
-        $this->om->flush();
-
-    }
-
-    public function createPlatformReport(DateTime $reportDate)
-    {
         $report = new PlatformReport();
         $report->setDate($reportDate);
 
@@ -207,6 +171,17 @@ class DailyReportCreator
             ->setThresholdBilledAmount($chainToSubReports = false); // we don't need to calculate for sub reports
 
         $report->setCalculatedFields($chainToSubReports = false);
+
+        if ($override === true && $platformReport instanceof ReportInterface) {
+            $platformReportRepository->overrideReport($report);
+            foreach ($accountReports as $accountReport) {
+                $this->om->detach($accountReport);
+            }
+            unset($accountReports);
+            $this->om->detach($report);
+            unset($report);
+            return;
+        }
 
         $this->om->persist($report);
         $this->om->flush();

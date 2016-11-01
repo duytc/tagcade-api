@@ -71,7 +71,7 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
         unset($videoDemandPartners);
 
         $dailyReportCreator->setReportDate($date);
-        $dailyReportCreator->createPlatformReport($date);
+        $dailyReportCreator->createPlatformReport($date, $override);
 
         if ($skipUpdateBillingThreshold === false) {
             $this->updateBilledAmountThreshold($allPublishers, $timeout, $logger);
