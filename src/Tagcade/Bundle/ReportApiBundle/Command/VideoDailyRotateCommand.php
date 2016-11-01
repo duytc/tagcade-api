@@ -92,7 +92,7 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
             $id = $publisher->getId();
             $logger->info(sprintf('Start updating threshold billed amount for publisher %d', $id));
 
-            $cmd = sprintf('%s tc:billing:update-video-threshold --id %d', $this->getAppConsoleCommand(), $id);
+            $cmd = sprintf('%s tc:billing:update-video-threshold --id %d -vvv', $this->getAppConsoleCommand(), $id);
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('Finished updating video threshold billed amount for publisher %d', $id));
@@ -147,7 +147,7 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
             $id = $publisher->getId();
             $logger->info(sprintf('start video daily rotate for publisher %d', $id));
 
-            $cmd = sprintf('%s tc:video-report:daily-rotate:account --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
+            $cmd = sprintf('%s tc:video-report:daily-rotate:account --id %d --date %s %s -vvv', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('finished video daily rotate for publisher %d', $id));
@@ -164,7 +164,7 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
             $id = $videoDemandPartner->getId();
             $logger->info(sprintf('start daily rotate for video demand partner %d', $id));
 
-            $cmd = sprintf('%s tc:video-report:daily-rotate:demand-partner --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
+            $cmd = sprintf('%s tc:video-report:daily-rotate:demand-partner --id %d --date %s %s -vvv', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('finished daily rotate for video demand partner %d', $id));

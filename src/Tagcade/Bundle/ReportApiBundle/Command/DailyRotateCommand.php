@@ -144,7 +144,7 @@ class DailyRotateCommand extends ContainerAwareCommand
             $id = $adNetwork->getId();
             $logger->info(sprintf('start daily rotate for ad network %d', $id));
 
-            $cmd = sprintf('%s tc:report:daily-rotate:ad-network --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
+            $cmd = sprintf('%s tc:report:daily-rotate:ad-network --id %d --date %s %s -vvv', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('finished daily rotate for ad network %d', $id));
@@ -155,7 +155,7 @@ class DailyRotateCommand extends ContainerAwareCommand
     {
         $logger->info(sprintf('start rotating header bidding report'));
 
-        $cmd = sprintf('%s tc:header-bidding-report:daily-rotate --date %s %s', $this->getAppConsoleCommand(), $date->format('Y-m-d'), $override === true ? '--force' : '');
+        $cmd = sprintf('%s tc:header-bidding-report:daily-rotate --date %s %s -vvv', $this->getAppConsoleCommand(), $date->format('Y-m-d'), $override === true ? '--force' : '');
         $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
         $logger->info(sprintf('finish rotating header bidding report'));
@@ -165,7 +165,7 @@ class DailyRotateCommand extends ContainerAwareCommand
     {
         $logger->info(sprintf('start rotating video report'));
 
-        $cmd = sprintf('%s tc:video-report:daily-rotate --date %s %s', $this->getAppConsoleCommand(), $date->format('Y-m-d'), $override === true ? '--force' : '');
+        $cmd = sprintf('%s tc:video-report:daily-rotate --date %s %s -vvv', $this->getAppConsoleCommand(), $date->format('Y-m-d'), $override === true ? '--force' : '');
         $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
         $logger->info(sprintf('finish rotating video report'));
@@ -182,7 +182,7 @@ class DailyRotateCommand extends ContainerAwareCommand
             $id = $publisher->getId();
             $logger->info(sprintf('start daily rotate for publisher %d', $id));
 
-            $cmd = sprintf('%s tc:report:daily-rotate:account --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
+            $cmd = sprintf('%s tc:report:daily-rotate:account --id %d --date %s %s -vvv', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
             $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
 
             $logger->info(sprintf('finished daily rotate for publisher %d', $id));
