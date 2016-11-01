@@ -111,7 +111,7 @@ abstract class AbstractReport implements ReportInterface
         return $this;
     }
 
-    public function setCalculatedFields()
+    public function setCalculatedFields($chainToSubReports = true)
     {
         if ($this->getName() === null) {
             $this->setDefaultName();

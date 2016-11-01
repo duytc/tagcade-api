@@ -46,7 +46,7 @@ interface ReportInterface extends ReportDataInterface
      * Sets all calculated fields
      * i.e fill rate
      */
-    public function setCalculatedFields();
+    public function setCalculatedFields($chainToSubReports = true);
 
     /**
      * @return mixed
