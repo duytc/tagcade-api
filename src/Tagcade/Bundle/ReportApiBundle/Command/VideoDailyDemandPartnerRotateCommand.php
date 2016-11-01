@@ -62,7 +62,7 @@ class VideoDailyDemandPartnerRotateCommand extends ContainerAwareCommand
 
         $reportCreator->setDate($date);
         /* create performance and billing reports */
-        $logger->info('start daily rotate for video demand partner');
+        $logger->info(sprintf('start daily rotate for video demand partner %d', $demandPartner->getId()));
         /**
          * @var DemandPartnerReport $demandPartnerReport
          */
@@ -83,6 +83,6 @@ class VideoDailyDemandPartnerRotateCommand extends ContainerAwareCommand
         $entityManager->clear();
         gc_collect_cycles();
         unset($demandPartnerReport);
-        $logger->info('finished daily rotate for video demand partner');
+        $logger->info(sprintf('finish daily rotate for video demand partner %d', $demandPartner->getId()));
     }
 }

@@ -3,13 +3,10 @@
 namespace Tagcade\Bundle\ReportApiBundle\Command;
 
 use DateTime;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 use Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
@@ -69,7 +66,7 @@ class VideoDailyAccountRotateCommand extends ContainerAwareCommand
         }
 
         $reportCreator->setDate($date);
-        $logger->info('start daily rotate for account');
+        $logger->info(sprintf('start video daily rotate for publisher %s', $publisher->getUsername()));
         /**
          * @var AccountReport $accountReport
          */
@@ -85,13 +82,11 @@ class VideoDailyAccountRotateCommand extends ContainerAwareCommand
 
         $logger->info(sprintf('Persisting report for publisher %s', $id));
         $entityManager->persist($accountReport);
-        $logger->info(sprintf('Flushing report for publisher %s', $id));
+        $logger->info(sprintf('Flushing video report for publisher %s', $id));
         $entityManager->flush();
         $entityManager->clear();
         gc_collect_cycles();
         unset($accountReport);
-        $logger->info('finished account daily rotation');
+        $logger->info(sprintf('finish video daily rotate for publisher %s', $publisher->getUsername()));
     }
-
-
 }
