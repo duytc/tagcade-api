@@ -49,7 +49,13 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         $month = $input->getOption('month');
 
         $yesterday = new DateTime('yesterday');
-        $month = null === $month ? $yesterday : DateTime::createFromFormat('Y-m-d', sprintf('%s-%s', $month, $yesterday->format('d')));
+
+        if (!$month) {
+            $month = $yesterday;
+        } else {
+            $month = DateTime::createFromFormat('Y-m', $month);
+            $month->setTime(0, 0, 0);
+        }
 
         if (false === $month ) {
             throw new InvalidArgumentException('Invalid month input');
@@ -68,7 +74,7 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
             foreach($publishers as $publisher) {
                 $id = $publisher->getId();
                 $logger->info(sprintf('Start updating threshold billed amount for publisher %d', $id));
-                $cmd = sprintf('%s tc:billing:update-threshold --id %d --month %s -vvv', $this->getAppConsoleCommand(), $id, $month->format('Y-m-d'));
+                $cmd = sprintf('%s tc:billing:update-threshold --id %d --month %s -vvv', $this->getAppConsoleCommand(), $id, $month->format('Y-m'));
                 $this->executeProcess($process = new Process($cmd), [], $logger);
             }
         }
