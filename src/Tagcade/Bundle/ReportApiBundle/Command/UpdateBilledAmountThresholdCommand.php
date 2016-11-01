@@ -75,7 +75,7 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
                 $id = $publisher->getId();
                 $logger->info(sprintf('Start updating threshold billed amount for publisher %d', $id));
                 $cmd = sprintf('%s tc:billing:update-threshold --id %d --month %s -vvv', $this->getAppConsoleCommand(), $id, $month->format('Y-m'));
-                $this->executeProcess($process = new Process($cmd), [], $logger);
+                $this->executeProcess(new Process($cmd), $logger);
             }
         }
         else {
@@ -108,11 +108,14 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         return $command;
     }
 
-    protected function executeProcess(Process $process, array $options, LoggerInterface $logger)
+    /**
+     * @param Process $process
+     * @param LoggerInterface $logger
+     * @param null $timeout null means "no timeout"
+     */
+    protected function executeProcess(Process $process, LoggerInterface $logger, $timeout = null)
     {
-        if (array_key_exists('timeout', $options)) {
-            $process->setTimeout($options['timeout']);
-        }
+        $process->setTimeout($timeout);
 
         try {
             $process->mustRun(function($type, $buffer) use($logger) {
