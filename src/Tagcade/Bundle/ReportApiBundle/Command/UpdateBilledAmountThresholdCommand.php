@@ -68,7 +68,7 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
             foreach($publishers as $publisher) {
                 $id = $publisher->getId();
                 $logger->info(sprintf('Start updating threshold billed amount for publisher %d', $id));
-                $cmd = sprintf('%s tc:billing:update-threshold --id %d', $this->getAppConsoleCommand(), $id);
+                $cmd = sprintf('%s tc:billing:update-threshold --id %d --month %s', $this->getAppConsoleCommand(), $id, $month->format('Y-m-d'));
                 $this->executeProcess($process = new Process($cmd), [], $logger);
             }
         }

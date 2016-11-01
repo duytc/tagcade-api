@@ -53,8 +53,8 @@ class DailyReportCreator
     {
         $platformReportRepository = $this->om->getRepository(PlatFormReport::class);
         $accountReportRepository = $this->om->getRepository(AccountReport::class);
-        $report = current($platformReportRepository->getReportFor($this->reportCreator->getDate(), $this->reportCreator->getDate()));
-        if ($report instanceof ReportInterface && $override === false) {
+        $platformReport = current($platformReportRepository->getReportFor($this->reportCreator->getDate(), $this->reportCreator->getDate()));
+        if ($platformReport instanceof ReportInterface && $override === false) {
             throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
         }
 
@@ -76,9 +76,9 @@ class DailyReportCreator
 
         $report->setRequests($requests)
             ->setBilledAmount($billedAmount)
-            ->setCalculatedFields();
+            ->setCalculatedFields($chainToSubReports = false);
 
-        if ($override === true && $report instanceof ReportInterface) {
+        if ($override === true && $platformReport instanceof ReportInterface) {
             $platformReportRepository->overrideReport($report);
             foreach ($accountReports as $accountReport) {
                 $this->om->detach($accountReport);

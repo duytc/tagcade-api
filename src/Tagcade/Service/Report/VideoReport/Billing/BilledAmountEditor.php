@@ -5,6 +5,8 @@ namespace Tagcade\Service\Report\VideoReport\Billing;
 
 
 
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Psr\Log\LoggerInterface;
@@ -149,13 +151,24 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected function doUpdateVideoBilledAmountForPublisher(PublisherInterface $publisher, Params $param, $billedRate = null)
     {
-        $reportResult = $this->waterfallTagReportRepository->getReportInRangeForPublisher($publisher, $param->getStartDate(), $param->getEndDate());
+        $startDate = $param->getStartDate();
+        $endDate = $param->getEndDate();
 
-        if (false === $reportResult) {
-            return false;
+        $endDate = $endDate->modify('+1 day');
+        $interval = new DateInterval('P1D');
+        $dateRange = new DatePeriod($startDate, $interval, $endDate);
+
+        foreach($dateRange as $date) {
+            $reportResult = $this->waterfallTagReportRepository->getReportInRangeForPublisher($publisher, $date, $date);
+
+            if (false === $reportResult) {
+                continue;
+            }
+
+            $this->handleUpdateBilledAmountForWaterfallTagReports($reportResult, $billedRate);
         }
 
-        return $this->handleUpdateBilledAmountForWaterfallTagReports($reportResult, $billedRate);
+        return true;
     }
 
 

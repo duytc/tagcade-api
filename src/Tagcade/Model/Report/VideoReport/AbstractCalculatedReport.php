@@ -64,7 +64,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
         foreach($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
             if ($chainToSubReports === true) {
-                $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
+                $subReport->setCalculatedFields($chainToSubReports); // chain the calls to setCalculatedFields
             }
 
             $this->aggregateSubReport($subReport);
