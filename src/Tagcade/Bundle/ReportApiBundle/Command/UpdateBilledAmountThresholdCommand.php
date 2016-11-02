@@ -49,6 +49,7 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         $month = $input->getOption('month');
 
         $yesterday = new DateTime('yesterday');
+
         if (!$month) {
             $month = $yesterday;
         } else {
@@ -107,6 +108,11 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         return $command;
     }
 
+    /**
+     * @param Process $process
+     * @param LoggerInterface $logger
+     * @param null $timeout null means "no timeout"
+     */
     protected function executeProcess(Process $process, LoggerInterface $logger, $timeout = null)
     {
         $process->setTimeout($timeout);
