@@ -49,7 +49,12 @@ class UpdateBilledAmountVideoThresholdCommand extends ContainerAwareCommand
         $month = $input->getOption('month');
 
         $yesterday = new DateTime('yesterday');
-        $month = null === $month ? $yesterday : DateTime::createFromFormat('Y-m-d', sprintf('%s-%s', $month, $yesterday->format('d')));
+        if (!$month) {
+            $month = $yesterday;
+        } else {
+            $month = DateTime::createFromFormat('Y-m', $month);
+            $month->setTime(0, 0, 0);
+        }
 
         if (false === $month ) {
             throw new InvalidArgumentException('Invalid month input');
@@ -68,8 +73,8 @@ class UpdateBilledAmountVideoThresholdCommand extends ContainerAwareCommand
             foreach($publishers as $publisher) {
                 $id = $publisher->getId();
                 $logger->info(sprintf('Start updating threshold billed amount for publisher %d', $id));
-                $cmd = sprintf('%s tc:billing:update-video-threshold --id %d --month %s -vvv', $this->getAppConsoleCommand(), $id, $month->format('Y-m-d'));
-                $this->executeProcess($process = new Process($cmd), [], $logger);
+                $cmd = sprintf('%s tc:billing:update-video-threshold --id %d --month %s', $this->getAppConsoleCommand(), $id, $month->format('Y-m'));
+                $this->executeProcess($process = new Process($cmd), $logger);
             }
         }
         else {
@@ -102,11 +107,9 @@ class UpdateBilledAmountVideoThresholdCommand extends ContainerAwareCommand
         return $command;
     }
 
-    protected function executeProcess(Process $process, array $options, LoggerInterface $logger)
+    protected function executeProcess(Process $process, LoggerInterface $logger, $timeout = null)
     {
-        if (array_key_exists('timeout', $options)) {
-            $process->setTimeout($options['timeout']);
-        }
+        $process->setTimeout($timeout);
 
         try {
             $process->mustRun(function($type, $buffer) use($logger) {
