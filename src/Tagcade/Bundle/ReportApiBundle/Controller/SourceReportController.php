@@ -80,7 +80,7 @@ class SourceReportController extends FOSRestController
      *  }
      * )
      *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="Date of the report in format YYYY-MM-DD, defaults to the today")
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=false, description="Date of the report in format YYYY-MM-DD, defaults to the today")
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true, description="If you want a report range, set this to a date in format YYYY-MM-DD - must be older or equal than 'startDate'")
      * @Rest\QueryParam(name="rowOffset", requirements="\d+", nullable=true, description="Order number of rows to skip before rowLimit kicks in")
      * @Rest\QueryParam(name="rowLimit", requirements="\d+", nullable=true, description="Limit the amount of rows returned in the report")
@@ -98,6 +98,9 @@ class SourceReportController extends FOSRestController
 
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true), $returnTodayIfEmpty = true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));
+        if (!$endDate) {
+            $endDate = $startDate;
+        }
 
         if (!$publisher) {
             throw new NotFoundHttpException('This publisher does not exist or you do not have access');
