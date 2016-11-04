@@ -26,6 +26,9 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
             self::CACHE_KEY_CLICK => 0,
             self::CACHE_KEY_PASSBACK => 0,
             self::CACHE_KEY_FORCED_PASSBACK => 0,
+            self::CACHE_KEY_IN_BANNER_REQUEST => 0,
+            self::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
+            self::CACHE_KEY_IN_BANNER_TIMEOUT => 0
         );
 
         foreach ($redisReportData as $id => $reportData) {
@@ -69,5 +72,8 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
         $result[self::CACHE_KEY_SLOT_OPPORTUNITY] += $adSlotReportCount->getSlotOpportunities();
         $result[self::CACHE_KEY_RTB_IMPRESSION] += $adSlotReportCount->getRtbImpression();
         $result[self::CACHE_KEY_HEADER_BID_REQUEST] += $adSlotReportCount->getHbRequests();
+        $result[self::CACHE_KEY_IN_BANNER_REQUEST] += $adSlotReportCount->getInBannerRequests();
+        $result[self::CACHE_KEY_IN_BANNER_IMPRESSION] += $adSlotReportCount->getInBannerImpressions();
+        $result[self::CACHE_KEY_IN_BANNER_TIMEOUT] += $adSlotReportCount->getInBannerTimeouts();
     }
 } 
