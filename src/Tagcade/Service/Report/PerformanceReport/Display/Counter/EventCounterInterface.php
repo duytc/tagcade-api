@@ -44,15 +44,36 @@ interface EventCounterInterface
 
     /**
      * @param $slotId
+     * @param $segment
+     * @return mixed
+     */
+    public function getRonInBannerRequestCount($slotId, $segment = null);
+
+    /**
+     * @param $slotId
      * @return mixed
      */
     public function getInBannerImpressionCount($slotId);
 
     /**
      * @param $slotId
+     * @param $segment = null
+     * @return mixed
+     */
+    public function getRonInBannerImpressionCount($slotId, $segment = null);
+
+    /**
+     * @param $slotId
      * @return mixed
      */
     public function getInBannerTimeoutCount($slotId);
+
+    /**
+     * @param $slotId
+     * @param $segment = null
+     * @return mixed
+     */
+    public function getRonInBannerTimeoutCount($slotId, $segment = null);
 
     /**
      * @param int $ronSlotId
