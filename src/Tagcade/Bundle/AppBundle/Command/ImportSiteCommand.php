@@ -122,6 +122,7 @@ class ImportSiteCommand extends ContainerAwareCommand
             $adTag->setActive($jsonAdTag->active);
             $adTag->setLibraryAdTag($this->addedLibraryAdTag[$jsonAdTag->libraryAdTag->id]);
             $adTag->setAdSlot($adSlot);
+            $adTag->setCheckSum();
 
             $this->em->persist($adTag);
         }
@@ -157,6 +158,7 @@ class ImportSiteCommand extends ContainerAwareCommand
                     $this->addedAdSlots[$adSlot->id]->setRtbStatus($adSlot->rtbStatus);
                     $this->addedAdSlots[$adSlot->id]->setSlotType($adSlot->slot_type);
                     $this->addedAdSlots[$adSlot->id]->setSite($site);
+                    $this->addedAdSlots[$adSlot->id]->setCheckSum();
 
                     $this->em->persist($this->addedAdSlots[$adSlot->id]);
                 }
@@ -178,6 +180,7 @@ class ImportSiteCommand extends ContainerAwareCommand
                     $this->addedAdSlots[$adSlot->id]->setLibraryAdSlot($this->addedLibraryAdSlot[$adSlot->libraryAdSlot->id]);
                     $this->addedAdSlots[$adSlot->id]->setSlotType($adSlot->slot_type);
                     $this->addedAdSlots[$adSlot->id]->setSite($site);
+                    $this->addedAdSlots[$adSlot->id]->setCheckSum();
 
                     $this->em->persist($this->addedAdSlots[$adSlot->id]);
                 }

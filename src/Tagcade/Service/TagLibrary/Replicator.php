@@ -122,10 +122,12 @@ class Replicator implements ReplicatorInterface
                     ->setRotation($librarySlotTag->getRotation())
                     ->setActive($librarySlotTag->isActive())
                     ->setImpressionCap($librarySlotTag->getImpressionCap())
-                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
+                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap())
+                    ->setCheckSum()
+                ;
                 $adSlot->getAdTags()->add($newAdTag);
             }
-
+            $adSlot->setCheckSum();
             $this->em->persist($adSlot);
 
             // replicate for library expression in dynamic ad slot
@@ -200,9 +202,10 @@ class Replicator implements ReplicatorInterface
                 $newAdTag->setActive($librarySlotTag->isActive());
                 $newAdTag->setImpressionCap($librarySlotTag->getImpressionCap());
                 $newAdTag->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
+                $newAdTag->setCheckSum();
 
                 $adSlot->getAdTags()->add($newAdTag);
-
+                $adSlot->setCheckSum();
                 $this->em->persist($adSlot);
 
                 $createdAdTags[] = $newAdTag;
@@ -269,7 +272,7 @@ class Replicator implements ReplicatorInterface
                 $t->setActive($librarySlotTag->isActive());
                 $t->setImpressionCap($librarySlotTag->getImpressionCap());
                 $t->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
-
+                $t->setCheckSum();
                 $this->em->persist($t);
             }
         );

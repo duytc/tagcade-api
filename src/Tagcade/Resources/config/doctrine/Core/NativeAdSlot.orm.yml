@@ -2,3 +2,6 @@ Tagcade\Entity\Core\NativeAdSlot:
     type: entity
     table: core_native_ad_slot
     repositoryClass: Tagcade\Repository\Core\NativeAdSlotRepository
+    fields:
+        checkSum:
+            type: string

@@ -15,6 +15,7 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     protected $site;
     protected $rtbStatus;
     protected $floorPrice;
+    protected $checkSum;
     protected $hbBidPrice;
 
     /**
@@ -170,13 +171,31 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getCheckSum()
+    {
+        return $this->checkSum;
+    }
+
+    /**
+     * @return self
+     */
+    public function setCheckSum()
+    {
+        $this->checkSum = $this->checkSum();
+        return $this;
+    }
+
+
 
     /**
      * Calculate CheckSum string of an given AdSlot
      * by concatenating major properties together with null value ignored, then returning the MD5 hash
      * @return string
      */
-    public function checkSum()
+    private function checkSum()
     {
         $array = array(
             $this->getType(),
@@ -191,7 +210,7 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
 
         /** @var AdTagInterface $t */
         foreach($adTags as $t){
-            $array[] =  $t->checkSum();
+            $array[] =  $t->getCheckSum();
         }
 
         return md5(serialize($array));

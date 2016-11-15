@@ -6,6 +6,7 @@ namespace Tagcade\Service\TagLibrary;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Repository\Core\AdSlotRepositoryInterface;
 
 class ChecksumValidator implements ChecksumValidatorInterface
@@ -25,12 +26,20 @@ class ChecksumValidator implements ChecksumValidatorInterface
      */
     public function validateAdSlotSynchronization(BaseAdSlotInterface $originalAdSlot, $copies = null)
     {
+        if ($originalAdSlot instanceof DynamicAdSlotInterface) {
+            return;
+        }
+
         if ($copies === null) {
             $this->validateSingleAdSlot($originalAdSlot);
         } else {
             /** @var BaseAdSlotInterface $copy */
             foreach ($copies as $copy) {
-                if ($originalAdSlot->checkSum() !== $copy->checkSum()) {
+                if ($copy instanceof DynamicAdSlotInterface) {
+                    continue;
+                }
+
+                if ($originalAdSlot->getCheckSum() !== $copy->getCheckSum()) {
                     throw new RuntimeException(sprintf('%s is created from %s but it seems that their data are not synced', $copy->getName(), $originalAdSlot->getName()));
                 }
             }

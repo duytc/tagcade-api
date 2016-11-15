@@ -228,7 +228,7 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
             if (array_key_exists('adTags', $data)) {
                 $this->createAdTagsForAdSlot($slot, $data['adTags']);
             }
-
+            $slot->setCheckSum();
             $em->persist($slot);
 
             $site->getAllAdSlots()->add($slot);
@@ -291,7 +291,7 @@ class GenerateDummyDataCommand extends ContainerAwareCommand
                 throw new \Exception(sprintf('Expect "html" property for ad tag %s', $name));
             }
             $adTag->setHtml($data['html']);
-
+            $adTag->setCheckSum();
             $em->persist($adTag);
 
             $adSlot->getAdTags()->add($adTag);

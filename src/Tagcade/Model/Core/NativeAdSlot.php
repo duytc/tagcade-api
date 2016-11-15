@@ -10,6 +10,8 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 {
     protected $id;
 
+    protected $checkSum;
+
     function __construct()
     {
         parent::__construct();
@@ -59,9 +61,27 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
     }
 
     /**
+     * @return mixed
+     */
+    public function getCheckSum()
+    {
+        return $this->checkSum;
+    }
+
+    /**
+     * @return self
+     */
+    public function setCheckSum()
+    {
+        $this->checkSum = $this->checkSum();
+        return $this;
+    }
+
+
+    /**
      * @return string
      */
-    public function checkSum()
+    private function checkSum()
     {
         $array = array(
             $this->getType(),
@@ -77,7 +97,7 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
 
         /** @var AdTagInterface $t */
         foreach ($adTags as $t) {
-            $array[] = $t->checkSum();
+            $array[] = $t->getCheckSum();
         }
 
         return md5(serialize($array));

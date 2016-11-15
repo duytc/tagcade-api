@@ -17,3 +17,5 @@ Tagcade\Entity\Core\DisplayAdSlot:
             type: float
             scale: 4
             nullable: true
+        checkSum:
+            type: string

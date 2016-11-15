@@ -151,3 +151,10 @@ services:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postFlush }
+
+    tagcade_api.event_listener.update_check_sum_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateCheckSumListener
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: prePersist }

@@ -453,6 +453,7 @@ class AdSlotImporter implements AdSlotImporterInterface
             $adSlot->setLibraryAdSlot($libraryAdSlot1);
             $adSlot->setSite($site);
             $adSlot->setAutoCreate(false);
+            $adSlot->setCheckSum();
 
             $adSlotCount++;
             $this->adSlotManager->save($adSlot);

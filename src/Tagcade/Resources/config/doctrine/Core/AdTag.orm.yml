@@ -53,7 +53,8 @@ Tagcade\Entity\Core\AdTag:
 
         refId:
             type: string
-
+        checkSum:
+            type: string
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
