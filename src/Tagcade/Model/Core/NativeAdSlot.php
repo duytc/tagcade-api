@@ -58,6 +58,7 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
         return $this->id . $this->getName();
     }
 
+
     /**
      * @return string
      */

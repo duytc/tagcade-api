@@ -206,7 +206,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
 
         }
         catch(\Exception $e) {
-
+            throw $e;
         }
 
         return View::create(array('ronAdSlot'=>$id, 'domain'=>$domain), Codes::HTTP_BAD_REQUEST);

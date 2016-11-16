@@ -220,6 +220,9 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
     /**
      * Get those AdTags which belong to the given AdSlot Library, also have been moved to WaterfallTag Library
      *
+     * @Rest\View(
+     *      serializerGroups={"libraryslottag.summary", "libraryadtag.summary", "librarynativeadslot.summary", "slotlib.extra", "user.summary", "nativeadslot.summary", "site.summary"}
+     * )
      * @ApiDoc(
      *  section = "Library Ad Slots",
      *  resource = true,

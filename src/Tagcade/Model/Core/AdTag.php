@@ -358,7 +358,6 @@ class AdTag implements AdTagInterface
         return $this->deletedAt;
     }
 
-
     /**
      * Calculate CheckSum string of an given WaterfallTag
      * by concatenating major properties together with null value ignored, then returning the MD5 hash

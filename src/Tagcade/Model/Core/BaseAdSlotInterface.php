@@ -51,11 +51,6 @@ interface BaseAdSlotInterface extends ModelInterface, RTBEnabledInterface
     public function getCoReferencedAdSlots();
 
     /**
-     * @return string
-     */
-    public function checkSum();
-
-    /**
      * @return BaseLibraryAdSlotInterface
      */
     public function getLibraryAdSlot();

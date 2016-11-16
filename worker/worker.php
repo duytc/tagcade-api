@@ -25,6 +25,7 @@ $container = $kernel->getContainer();
 $entityManager = $container->get('doctrine.orm.entity_manager');
 $queue = $container->get("leezy.pheanstalk");
 // only tasks listed here are able to run
+$worker = $container->get('tagcade.worker.workers.replicate_existing_lib_slot_tag_worker');
 $availableWorkers = [
     $container->get('tagcade.worker.workers.update_revenue_worker'),
     $container->get('tagcade.worker.workers.update_cdn_worker'),
@@ -40,6 +41,9 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.auto_pause_video_demand_ad_tag_worker'),
     $container->get('tagcade.worker.workers.auto_active_video_demand_ad_tag_worker'),
     $container->get('tagcade.worker.workers.deploy_video_demand_ad_tag_for_new_placement_rule_worker'),
+    $container->get('tagcade.worker.workers.replicate_new_lib_slot_tag_worker'),
+    $container->get('tagcade.worker.workers.replicate_existing_lib_slot_tag_worker'),
+    $container->get('tagcade.worker.update_ad_tag_position_for_lib_slot_worker'),
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

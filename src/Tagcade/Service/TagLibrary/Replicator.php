@@ -42,14 +42,18 @@ class Replicator implements ReplicatorInterface
     /** @var AdSlotManagerInterface */
     private $adSlotManager;
 
+    private $batchSize;
+
     /**
      * @param EntityManagerInterface $em
      * @param ChecksumValidatorInterface $checksumValidator
+     * @param $batchSize
      */
-    function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator)
+    function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator, $batchSize)
     {
         $this->em = $em;
         $this->checksumValidator = $checksumValidator;
+        $this->batchSize = $batchSize;
     }
 
     /**
@@ -122,10 +126,10 @@ class Replicator implements ReplicatorInterface
                     ->setRotation($librarySlotTag->getRotation())
                     ->setActive($librarySlotTag->isActive())
                     ->setImpressionCap($librarySlotTag->getImpressionCap())
-                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
+                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap())
+                ;
                 $adSlot->getAdTags()->add($newAdTag);
             }
-
             $this->em->persist($adSlot);
 
             // replicate for library expression in dynamic ad slot
@@ -189,7 +193,7 @@ class Replicator implements ReplicatorInterface
 
         try {
             /** @var BaseAdSlotInterface $adSlot */
-            foreach ($adSlots as $adSlot) {
+            foreach ($adSlots as $index=>$adSlot) {
                 $newAdTag = new AdTag();
                 $newAdTag->setAdSlot($adSlot);
                 $newAdTag->setRefId($librarySlotTag->getRefId());
@@ -202,8 +206,10 @@ class Replicator implements ReplicatorInterface
                 $newAdTag->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
 
                 $adSlot->getAdTags()->add($newAdTag);
-
                 $this->em->persist($adSlot);
+                if ($index % $this->batchSize === 0 && $index !== 0) {
+                    $this->em->flush();
+                }
 
                 $createdAdTags[] = $newAdTag;
             }
@@ -269,7 +275,6 @@ class Replicator implements ReplicatorInterface
                 $t->setActive($librarySlotTag->isActive());
                 $t->setImpressionCap($librarySlotTag->getImpressionCap());
                 $t->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
-
                 $this->em->persist($t);
             }
         );
