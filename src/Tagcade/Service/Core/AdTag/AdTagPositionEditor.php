@@ -15,6 +15,7 @@ use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Service\TagLibrary\ChecksumValidatorInterface;
+use Tagcade\Worker\Manager;
 
 class AdTagPositionEditor implements AdTagPositionEditorInterface
 {
@@ -35,13 +36,20 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     private $validator;
 
     /**
+     * @var Manager
+     */
+    private $manager;
+
+    /**
      * @param ContainerInterface $container
      * @param EntityManagerInterface $em
+     * @param Manager $manager
      */
-    function __construct(ContainerInterface $container, EntityManagerInterface $em)
+    function __construct(ContainerInterface $container, EntityManagerInterface $em, Manager $manager)
     {
         $this->container = $container;
         $this->em = $em;
+        $this->manager = $manager;
     }
 
     /**
@@ -178,10 +186,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                             }
                         }
                         //update all referenced AdTags if they are shared ad slot library
-                        $referencedTags = $this->getAdTagManager()->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
-                        if(!empty($referencedTags)) {
-                            array_walk($referencedTags, function(AdTagInterface $t) use($pos) { $t->setPosition($pos); });
-                        }
+                        $this->manager->updateAdTagPositionForLibSlot($libAdSlot->getId(), $adTag->getid(), $pos);
                     }
 
                     $processedAdTags[] = $adTag->getId();

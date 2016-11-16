@@ -12,16 +12,18 @@ use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
+use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Repository\Core\VideoDemandAdTagRepositoryInterface;
 use Tagcade\Service\Core\VideoDemandAdTag\AutoPauseServiceInterface;
 use Tagcade\Service\TagLibrary\ChecksumValidatorInterface;
 
-class ReplicateNewLibSlotTagWorker
+class ReplicateExistingLibSlotTagWorker
 {
     const DEFAULT_BATCH_SIZE = 100;
     /**
@@ -50,57 +52,62 @@ class ReplicateNewLibSlotTagWorker
     /**
      * @param stdClass $param
      */
-    public function replicateNewLibSlotTag(StdClass $param)
+    public function replicateExistingLibSlotTag(StdClass $param)
     {
         $libSlotTagId = $param->id;
+        $remove = filter_var($param->remove, FILTER_VALIDATE_BOOLEAN);
         $libSlotTag = $this->libSlotTagRepository->find($libSlotTagId);
 
         if (!$libSlotTag instanceof LibrarySlotTagInterface) {
             throw new \Tagcade\Exception\InvalidArgumentException(sprintf('not found any lib slot tag with id %s', $libSlotTagId));
         }
 
-        //check if the Library Slot has been referred by any Slot
-        $adSlots = $libSlotTag->getLibraryAdSlot()->getAdSlots();
-        if (null === $adSlots) return null; // no slot refers to this library
-
-        if ($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
-
-        $createdAdTags = [];
-
         $this->em->getConnection()->beginTransaction();
 
         try {
-            /** @var BaseAdSlotInterface $adSlot */
-            foreach ($adSlots as $index=>$adSlot) {
-                $newAdTag = new AdTag();
-                $newAdTag->setAdSlot($adSlot);
-                $newAdTag->setRefId($libSlotTag->getRefId());
-                $newAdTag->setLibraryAdTag($libSlotTag->getLibraryAdTag());
-                $newAdTag->setFrequencyCap($libSlotTag->getFrequencyCap());
-                $newAdTag->setPosition($libSlotTag->getPosition());
-                $newAdTag->setRotation($libSlotTag->getRotation());
-                $newAdTag->setActive($libSlotTag->isActive());
-                $newAdTag->setImpressionCap($libSlotTag->getImpressionCap());
-                $newAdTag->setNetworkOpportunityCap($libSlotTag->getNetworkOpportunityCap());
-                $this->em->persist($newAdTag);
 
-                $adSlot->getAdTags()->add($newAdTag);
-                $this->em->merge($adSlot);
-                if ($index % self::DEFAULT_BATCH_SIZE === 0 && $index !== 0) {
-                    $this->em->flush();
+            /** @var AdTagRepositoryInterface $adTagRepository */
+            $adTagRepository = $this->em->getRepository(AdTag::class);
+            $adTags = $adTagRepository->getAdTagsByLibraryAdSlotAndRefId($libSlotTag->getLibraryAdSlot(), $libSlotTag->getRefId());
+
+            array_walk(
+                $adTags,
+                function (AdTagInterface $t) use ($libSlotTag, $remove) {
+
+                    if (true === $remove) {
+                        $this->em->remove($t);
+                        return;
+                    }
+
+                    $t->setLibraryAdTag($libSlotTag->getLibraryAdTag());
+                    $t->setFrequencyCap($libSlotTag->getFrequencyCap());
+                    $t->setPosition($libSlotTag->getPosition());
+                    $t->setRotation($libSlotTag->getRotation());
+                    $t->setActive($libSlotTag->isActive());
+                    $t->setImpressionCap($libSlotTag->getImpressionCap());
+                    $t->setNetworkOpportunityCap($libSlotTag->getNetworkOpportunityCap());
+                    $this->em->persist($t);
                 }
+            );
 
-                $createdAdTags[] = $newAdTag;
+            // if there no any more WaterfallTag refer to this LibraryAdTag then it should be removed as well
+            $libraryAdTag = $libSlotTag->getLibraryAdTag();
+
+            if (true === $remove &&
+                $libraryAdTag->getAssociatedTagCount() < 1 &&
+                count($libraryAdTag->getLibSlotTags()) < 2
+            ) {
+                $this->em->remove($libraryAdTag);
             }
 
             $this->em->flush();
 
-            $this->checksumValidator->validateAllAdSlotsSynchronized($adSlots);
+            $this->checksumValidator->validateAllAdSlotsSynchronized($libSlotTag->getLibraryAdSlot()->getAdSlots()->toArray());
 
             $this->em->getConnection()->commit();
-
         } catch (\Exception $ex) {
             $this->em->getConnection()->rollback();
+
             throw new RuntimeException($ex);
         }
     }

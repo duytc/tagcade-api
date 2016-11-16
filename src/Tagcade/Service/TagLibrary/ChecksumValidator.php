@@ -33,15 +33,23 @@ class ChecksumValidator implements ChecksumValidatorInterface
         if ($copies === null) {
             $this->validateSingleAdSlot($originalAdSlot);
         } else {
-            /** @var BaseAdSlotInterface $copy */
-            foreach ($copies as $copy) {
-                if ($copy instanceof DynamicAdSlotInterface) {
-                    continue;
-                }
+            if (empty($copies)) {
+                return;
+            }
 
-                if ($originalAdSlot->getCheckSum() !== $copy->getCheckSum()) {
-                    throw new RuntimeException(sprintf('%s is created from %s but it seems that their data are not synced', $copy->getName(), $originalAdSlot->getName()));
-                }
+            //ascending sort
+//            usort($copies, function($a, $b) {
+//               return $a->getId() < $b->getId() ? -1 : 1;
+//            });
+
+            $copy = $copies[0];
+
+            if ($copy instanceof DynamicAdSlotInterface) {
+                return;
+            }
+
+            if ($originalAdSlot->checkSum() !== $copy->checkSum()) {
+                throw new RuntimeException(sprintf('%s is created from %s but it seems that their data are not synced', $copy->getName(), $originalAdSlot->getName()));
             }
         }
     }

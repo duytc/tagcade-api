@@ -34,7 +34,6 @@ class UpdateCheckSumListener
                 $args->hasChangedField('libraryAdTag')
             )
         ) {
-            $entity->setCheckSum();
             $this->changedAdSlots[$entity->getAdSlot()->getId()] = $entity->getAdSlot();
             return;
         }
@@ -46,7 +45,6 @@ class UpdateCheckSumListener
         }
 
         if ($entity instanceof ReportableAdSlotInterface && $args->hasChangedField('libraryAdSlot')) {
-            $entity->setCheckSum();
             return;
         }
     }
@@ -55,8 +53,13 @@ class UpdateCheckSumListener
     {
         $entity = $args->getEntity();
 
-        if ($entity instanceof AdTagInterface || $entity instanceof ReportableAdSlotInterface) {
-            $entity->setCheckSum();
+        if ($entity instanceof AdTagInterface) {
+            $this->changedAdSlots[$entity->getAdSlot()->getId()] = $entity->getAdSlot();
+            return;
+        }
+
+        if ($entity instanceof ReportableAdSlotInterface) {
+            return;
         }
     }
 
@@ -73,7 +76,6 @@ class UpdateCheckSumListener
                 continue;
             }
 
-            $adTag->setCheckSum();
             $em->merge($adTag);
         }
 
@@ -82,7 +84,6 @@ class UpdateCheckSumListener
                 continue;
             }
 
-            $adSlot->setCheckSum();
             $em->merge($adSlot);
         }
 

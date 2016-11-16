@@ -11,7 +11,6 @@ class DisplayAdSlot extends DisplayAdSlotModel
     protected $rtbStatus;
     protected $floorPrice;
     protected $deletedAt;
-    protected $checkSum;
     protected $hbBidPrice;
 
     /**

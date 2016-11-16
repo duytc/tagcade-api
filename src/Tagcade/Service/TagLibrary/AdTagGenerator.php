@@ -41,7 +41,6 @@ class AdTagGenerator implements AdTagGeneratorInterface {
             $adTagObj->setLibraryAdTag($adTagLibrary);
             $adTagObj->setActive(true);
             $adTagObj->setAdSlot($adSlot);
-            $adTagObj->setCheckSum();
             $this->adTagManager->save($adTagObj);
             $adTags[] = $adTagObj;
         }

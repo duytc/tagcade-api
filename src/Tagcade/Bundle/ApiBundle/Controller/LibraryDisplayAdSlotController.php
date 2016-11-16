@@ -125,7 +125,9 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
     /**
      * Update the position of all ad tags in an library displays adslot
-     *
+     * @Rest\View(
+     *      serializerGroups={"libraryslottag.summary", "libraryadtag.summary", "librarydisplayadslot.summary", "slotlib.extra", "user.summary", "displayadslot.summary", "site.summary"}
+     * )
      * @ApiDoc(
      *  section = "Library Ad Slots",
      *  resource = true,

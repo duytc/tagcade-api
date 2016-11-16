@@ -22,14 +22,4 @@ interface NativeAdSlotInterface extends BaseAdSlotInterface
      * @return NativeAdSlotInterface[]
      */
     public function getCoReferencedAdSlots();
-
-    /**
-     * @return mixed
-     */
-    public function getCheckSum();
-
-    /**
-     * @return self
-     */
-    public function setCheckSum();
 }

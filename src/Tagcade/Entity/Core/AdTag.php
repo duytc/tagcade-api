@@ -16,7 +16,6 @@ class AdTag extends AdTagModel
     protected $frequencyCap;
     protected $rotation;
     protected $refId;
-    protected $checkSum;
     protected $libraryAdTag;
 
     protected $impressionCap;

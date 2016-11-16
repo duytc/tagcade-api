@@ -108,14 +108,4 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      * @return self
      */
     public function setHbBidPrice($hbBidPrice);
-
-    /**
-     * @return mixed
-     */
-    public function getCheckSum();
-
-    /**
-     * @return self
-     */
-    public function setCheckSum();
 }

@@ -27,7 +27,6 @@ class AdTag implements AdTagInterface
     protected $partnerTagId;
     /** string for mapping tag size of ad network with vs network partner */
     protected $partnerTagSize;
-    protected $checkSum;
 
     protected $_autoIncreasePosition; // temp var
 
@@ -358,24 +357,6 @@ class AdTag implements AdTagInterface
     {
         return $this->deletedAt;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getCheckSum()
-    {
-        return $this->checkSum;
-    }
-
-    /**
-     * @return self
-     */
-    public function setCheckSum()
-    {
-        $this->checkSum = $this->checkSum();
-        return $this;
-    }
-
 
     /**
      * Calculate CheckSum string of an given WaterfallTag

@@ -62,7 +62,6 @@ class RefreshCheckSumCommand extends ContainerAwareCommand
              * @var AdTagInterface $adTag
              */
             foreach ($adTags as $adTag) {
-                $adTag->setCheckSum();
                 $em->merge($adTag);
             }
         }

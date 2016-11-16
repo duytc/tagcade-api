@@ -8,7 +8,6 @@ class NativeAdSlot extends NativeAdSlotModel
 {
     protected $id;
     protected $site;
-    protected $checkSum;
     protected $deletedAt;
 
     public function __construct()
