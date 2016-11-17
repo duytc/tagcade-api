@@ -49,7 +49,11 @@ class UserFormType extends AbstractRoleSpecificFormType
         'adTagRequests',
         'adTagImpressions',
         'adTagErrors',
-        'adTagBids'
+        'adTagBids',
+        'netRevenue',
+        'estSupplyCost',
+        'estDemandRevenue',
+        'requestFillRate'
     ];
 
     static $REPORT_SETTINGS_VR_FILTERS_KEYS = [
