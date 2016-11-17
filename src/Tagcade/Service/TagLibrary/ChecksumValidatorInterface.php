@@ -8,9 +8,8 @@ use Tagcade\Model\Core\BaseAdSlotInterface;
 interface ChecksumValidatorInterface {
     /**
      * @param BaseAdSlotInterface $originalAdSlot
-     * @param null $copies
      */
-    public function validateAdSlotSynchronization(BaseAdSlotInterface $originalAdSlot, $copies = null);
+    public function validateAdSlotSynchronization(BaseAdSlotInterface $originalAdSlot);
 
     /**
      * @param array $adSlots
