@@ -196,15 +196,8 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                 $pos ++;
             }
 
-            $tag = current($adTags);
-            $adSlots = $tag instanceof AdTagInterface ? $tag->getAdSlot()->getCoReferencedAdSlots() : $tag->getContainer()->getAdSlots();
-            if($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
-
             $this->em->flush();
-            $this->validator->validateAllAdSlotsSynchronized($adSlots);
-
             $this->em->getConnection()->commit();
-
 
         } catch(\Exception $e) {
             $this->em->getConnection()->rollBack();
