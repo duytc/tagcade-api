@@ -11,6 +11,7 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;

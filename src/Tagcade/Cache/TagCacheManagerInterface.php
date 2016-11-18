@@ -20,6 +20,14 @@ interface TagCacheManagerInterface
     public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $version = 'All');
 
     /**
+     * @param $adSlotId
+     * @param string $version
+     * @return mixed
+     */
+    public function removeCacheForAdSlot($adSlotId, $version = 'All');
+
+
+    /**
      * @param AdNetworkInterface $adNetwork
      * @param $version
      * @return $this

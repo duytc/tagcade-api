@@ -44,6 +44,7 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.replicate_new_lib_slot_tag_worker'),
     $container->get('tagcade.worker.workers.replicate_existing_lib_slot_tag_worker'),
     $container->get('tagcade.worker.update_ad_tag_position_for_lib_slot_worker'),
+    $container->get('tagcade.worker.workers.remove_cache_for_ad_slot_worker'),
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

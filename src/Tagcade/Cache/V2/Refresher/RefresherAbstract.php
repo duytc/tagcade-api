@@ -46,6 +46,12 @@ abstract class RefresherAbstract
         return $this;
     }
 
+    public function removeCacheKey($cacheKey, ModelInterface $model)
+    {
+        $this->cache->setNamespace($this->getNamespaceByEntity($model));
+        $this->cache->delete($cacheKey);
+    }
+
     protected function getNamespaceByEntity(ModelInterface $model)
     {
         if ($model instanceof RonAdSlotInterface) {

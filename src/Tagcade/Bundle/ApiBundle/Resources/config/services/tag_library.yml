@@ -10,6 +10,7 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade_api.service.tag_library.checksum_validator
+            - @tagcade.worker.manager
             - %insert_batch_size%
         calls:
             - [setAdSlotGenerator, ["@tagcade_api.service.tag_library.ad_slot_generator_service"]]
