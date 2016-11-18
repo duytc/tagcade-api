@@ -5,6 +5,7 @@ namespace Tagcade\Service\TagLibrary;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
+use Tagcade\Cache\TagCacheManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DynamicAdSlot;
@@ -27,6 +28,7 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
+use Tagcade\Worker\Manager;
 
 class Replicator implements ReplicatorInterface
 {
@@ -42,17 +44,24 @@ class Replicator implements ReplicatorInterface
     /** @var AdSlotManagerInterface */
     private $adSlotManager;
 
+    /**
+     * @var Manager
+     */
+    private $manager;
+
     private $batchSize;
 
     /**
      * @param EntityManagerInterface $em
      * @param ChecksumValidatorInterface $checksumValidator
+     * @param Manager $manager
      * @param $batchSize
      */
-    function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator, $batchSize)
+    function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator, Manager $manager, $batchSize)
     {
         $this->em = $em;
         $this->checksumValidator = $checksumValidator;
+        $this->manager = $manager;
         $this->batchSize = $batchSize;
     }
 
@@ -164,6 +173,7 @@ class Replicator implements ReplicatorInterface
 
             $this->em->getConnection()->commit();
         } catch (\Exception $ex) {
+            $this->manager->removeCacheForAdSlot($adSlot->getId());
             $this->em->getConnection()->rollback();
             throw new RuntimeException($ex);
         }

@@ -3,6 +3,7 @@
 namespace Tagcade\Cache;
 
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -13,6 +14,12 @@ interface TagCacheInterface
      * @return $this
      */
     public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot);
+
+    /**
+     * @param $adSlotId
+     * @return mixed
+     */
+    public function removeCacheForAdSlot($adSlotId);
 
     /**
      * @param AdNetworkInterface $adNetwork

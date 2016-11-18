@@ -323,6 +323,11 @@ services:
             - '@doctrine.orm.entity_manager'
             - '@tagcade_api.service.tag_library.checksum_validator'
 
+    tagcade.worker.workers.remove_cache_for_ad_slot_worker:
+        class: Tagcade\Worker\Workers\RemoveCacheForAdSlotWorker
+        arguments:
+            - @tagcade.cache.tag_cache_manager
+            - @tagcade.domain_manager.ad_slot
 
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil

@@ -16,6 +16,16 @@ interface NamespaceCacheInterface
      */
     public function getNamespace();
 
+    /**
+     * remove Namespace cache key
+     */
+    public function removeNamespaceCacheKey();
+
+    /**
+     * @return mixed
+     */
+    public function getMaxCacheVersion();
+
     public function setNamespaceVersion($version);
 
     /**
