@@ -64,7 +64,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
      */
     public function getVideoWaterfallTagRequestCount($videoWaterfallTagId, $date = null)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
 
         return $this->cache->hFetch(
             self::REDIS_HASH_VIDEO_EVENT_COUNT,
@@ -77,7 +77,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
      */
     public function getVideoWaterfallTagBidCount($videoWaterfallTagId, $date = null)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
 
         return $this->cache->hFetch(
             self::REDIS_HASH_VIDEO_EVENT_COUNT,
@@ -90,7 +90,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
      */
     public function getVideoWaterfallTagErrorCount($videoWaterfallTagId, $date = null)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
 
         return $this->cache->hFetch(
             self::REDIS_HASH_VIDEO_EVENT_COUNT,
@@ -101,7 +101,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
 
     public function getVideoDemandAdTagImpressionsCount($videoDemandAdTagId, $date = null)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
 
         return $this->cache->hFetch(
             self::REDIS_HASH_VIDEO_EVENT_COUNT,
@@ -111,7 +111,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
 
     public function getVideoDemandAdTagRequestsCount($videoDemandAdTagId, $date = null)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
 
         return $this->cache->hFetch(
             self::REDIS_HASH_VIDEO_EVENT_COUNT,
@@ -125,7 +125,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
      */
     protected function createVideoCacheKeyForAdSource($videoDemandAdTagId)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
 
         return array (
             $this->getCacheKey(self::CACHE_KEY_REQUESTS, $namespace),
@@ -143,7 +143,7 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
      */
     protected function createVideoCacheKeyForAdTag($videoWaterfallTagId)
     {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
 
         return array (
             $this->getCacheKey(self::CACHE_KEY_REQUESTS, $namespace),

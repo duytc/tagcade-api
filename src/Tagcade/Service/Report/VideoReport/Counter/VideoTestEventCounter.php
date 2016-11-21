@@ -115,7 +115,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $adTagImpressions = $adTagRequests - $adTagErrors;
 
             /* 2. create all video ad tags data */
-            $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTag->getUuid());
+            $adTagNameSpace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTag->getUuid());
 
             // make sure video ad tag uuid is valid
             $videoWaterfallTagUuid = $videoWaterfallTag->getUuid();
@@ -134,7 +134,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             /* 4. create all video ad sources data */
             /** @var VideoDemandAdTagInterface $demandAdTag */
             foreach ($demandAdTags as $index => $demandAdTag) {
-                $demandAdTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $demandAdTag->getId());
+                $demandAdTagNameSpace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $demandAdTag->getId());
                 $demandAdTagImpressions = $demandAdTagImpressionDatas[$index];
                 $demandAdTagBid = mt_rand($demandAdTagImpressions, $adTagRequests);
                 $demandAdTagRequest = mt_rand($demandAdTagBid, $adTagRequests);
@@ -183,7 +183,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $this->setDate($date);
         }
 
-        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
         $cacheKey = $this->getCacheKey(self::KEY_REQUESTS, $adTagNameSpace);
         if (array_key_exists($videoWaterfallTagId, $this->videoWaterfallTagData) && array_key_exists($cacheKey, $this->videoWaterfallTagData[$videoWaterfallTagId])) {
             return $this->videoWaterfallTagData[$videoWaterfallTagId][$cacheKey];
@@ -201,7 +201,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $this->setDate($date);
         }
 
-        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
         $cacheKey = $this->getCacheKey(self::KEY_BIDS, $adTagNameSpace);
         if (array_key_exists($videoWaterfallTagId, $this->videoWaterfallTagData) && array_key_exists($cacheKey, $this->videoWaterfallTagData[$videoWaterfallTagId])) {
             return $this->videoWaterfallTagData[$videoWaterfallTagId][$cacheKey];
@@ -219,7 +219,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $this->setDate($date);
         }
 
-        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_TAG, $videoWaterfallTagId);
+        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
         $cacheKey = $this->getCacheKey(self::KEY_ERRORS, $adTagNameSpace);
         if (array_key_exists($videoWaterfallTagId, $this->videoWaterfallTagData) && array_key_exists($cacheKey, $this->videoWaterfallTagData[$videoWaterfallTagId])) {
             return $this->videoWaterfallTagData[$videoWaterfallTagId][$cacheKey];
@@ -234,7 +234,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $this->setDate($date);
         }
 
-        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
         $cacheKey = $this->getCacheKey(self::KEY_IMPRESSIONS, $adTagNameSpace);
         if (array_key_exists($videoDemandAdTagId, $this->videoDemandAdTagData) && array_key_exists($cacheKey, $this->videoDemandAdTagData[$videoDemandAdTagId])) {
             return $this->videoDemandAdTagData[$videoDemandAdTagId][$cacheKey];
@@ -249,7 +249,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $this->setDate($date);
         }
 
-        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
         $cacheKey = $this->getCacheKey(self::KEY_REQUESTS, $adTagNameSpace);
         if (array_key_exists($videoDemandAdTagId, $this->videoDemandAdTagData) && array_key_exists($cacheKey, $this->videoDemandAdTagData[$videoDemandAdTagId])) {
             return $this->videoDemandAdTagData[$videoDemandAdTagId][$cacheKey];
