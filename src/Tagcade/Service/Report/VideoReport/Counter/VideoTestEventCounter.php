@@ -243,6 +243,21 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
         return false;
     }
 
+    public function getVideoDemandAdTagRequestsCount($videoDemandAdTagId, $date = null)
+    {
+        if ($date instanceof DateTime) {
+            $this->setDate($date);
+        }
+
+        $adTagNameSpace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+        $cacheKey = $this->getCacheKey(self::KEY_REQUESTS, $adTagNameSpace);
+        if (array_key_exists($videoDemandAdTagId, $this->videoDemandAdTagData) && array_key_exists($cacheKey, $this->videoDemandAdTagData[$videoDemandAdTagId])) {
+            return $this->videoDemandAdTagData[$videoDemandAdTagId][$cacheKey];
+        }
+
+        return false;
+    }
+
 
     /**
      * seed Random Generator

@@ -79,4 +79,10 @@ interface VideoDemandAdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getVideoDemandAdTagsForWaterfallPlacementRule(WaterfallPlacementRuleInterface $rule, $limit = null, $offset = null);
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsHaveRequestCapByStatus($status);
 }

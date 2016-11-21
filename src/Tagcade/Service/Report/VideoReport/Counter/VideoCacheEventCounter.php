@@ -109,6 +109,15 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
         );
     }
 
+    public function getVideoDemandAdTagRequestsCount($videoDemandAdTagId, $date = null)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SOURCE, $videoDemandAdTagId);
+
+        return $this->cache->hFetch(
+            self::REDIS_HASH_VIDEO_EVENT_COUNT,
+            $this->getCacheKey(static::CACHE_KEY_REQUESTS, $namespace)
+        );
+    }
 
     /**
      * @param $videoDemandAdTagId

@@ -36,6 +36,7 @@ class VideoDemandAdTagFormType extends AbstractRoleSpecificFormType
             ->add('rotationWeight')
             ->add('active')
             ->add('targeting')
+            ->add('requestCap')
             ->add('targetingOverride')
             /* NOTE: we support submit 'videoWaterfallTagItemForm' in 2 ways:
              * - id: if videoWaterfallTagItemForm existed

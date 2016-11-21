@@ -48,6 +48,11 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     protected $targetingOverride;
 
     /**
+     * @var int
+     */
+    protected $requestCap;
+
+    /**
      * @var DateTime
      */
     protected $deletedAt;
@@ -144,6 +149,25 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
         $this->priority = $priority;
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getRequestCap()
+    {
+        return $this->requestCap;
+    }
+
+    /**
+     * @param int $requestCap
+     * @return self
+     */
+    public function setRequestCap($requestCap)
+    {
+        $this->requestCap = $requestCap;
+        return $this;
+    }
+
 
     public function getSellPrice()
     {
