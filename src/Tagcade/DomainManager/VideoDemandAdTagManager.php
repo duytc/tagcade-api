@@ -265,5 +265,8 @@ class VideoDemandAdTagManager implements VideoDemandAdTagManagerInterface
         return $this->repository->getVideoDemandAdTagsHaveRequestCapByStatus($status);
     }
 
-
+    public function getVideoDemandAdTagsByStatus($status)
+    {
+        return $this->repository->getVideoDemandAdTagsByStatus($status);
+    }
 }

@@ -66,4 +66,10 @@ interface VideoDemandAdTagManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getVideoDemandAdTagsHaveRequestCapByStatus($status);
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsByStatus($status);
 }

@@ -85,4 +85,10 @@ interface VideoDemandAdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getVideoDemandAdTagsHaveRequestCapByStatus($status);
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsByStatus($status);
 }

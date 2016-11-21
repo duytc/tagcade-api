@@ -213,4 +213,14 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
             ->getResult()
             ;
     }
+
+    public function getVideoDemandAdTagsByStatus($status)
+    {
+        return $this->createQueryBuilder('vdt')
+            ->where('vdt.active = :status')
+            ->setParameter('status', $status)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }
