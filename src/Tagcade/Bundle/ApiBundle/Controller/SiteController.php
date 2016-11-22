@@ -30,7 +30,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Get all sites
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
+     *      serializerGroups={"site.detail", "user.min", "publisherexchange.summary", "exchange.summary"}
      * )
      *
      * @Rest\QueryParam(name="autoCreate", nullable=true)
@@ -107,7 +107,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\Get("/sites/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
+     *      serializerGroups={"site.detail", "user.min", "publisherexchange.summary", "exchange.summary"}
      * )
      * @ApiDoc(
      *  section="Sites",
@@ -275,7 +275,9 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Retrieve a list of ad slots for this site
-     *
+     * @Rest\View(
+     *      serializerGroups={"user.min", "slotlib.summary", "adslot.detail", "displayadslot.summary", "librarydisplayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary"}
+     * )
      * @ApiDoc(
      *  section="Sites",
      *  resource = true,

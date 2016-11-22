@@ -27,7 +27,7 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      * Get all dynamic ad slots
      *
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "dynamicadslot.summary", "librarydynamicadslot.detail" , "site.summary" , "user.summary", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
+     *      serializerGroups={"adslot.detail", "dynamicadslot.summary", "librarydynamicadslot.detail" , "site.summary" , "user.min", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
      * )
      * @ApiDoc(
      *  section = "Ad Slots",

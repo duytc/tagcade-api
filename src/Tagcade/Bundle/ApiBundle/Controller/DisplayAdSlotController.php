@@ -33,7 +33,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     /**
      *
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "displayadslot.summary", "site.summary", "librarydisplayadslot.summary", "user.summary", "slotlib.summary"}
+     *      serializerGroups={"adslot.detail", "displayadslot.summary", "site.summary", "librarydisplayadslot.summary", "user.min", "slotlib.summary"}
      * )
      * Get all display ad slots
      *
@@ -133,7 +133,9 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
 
     /**
      * Update the position of all ad tags in an display ad slot
-     *
+     * @Rest\View(
+     *      serializerGroups={"adtag.detail", "libraryadtag.summary"}
+     * )
      * @ApiDoc(
      *  section = "Ad Slots",
      *  resource = true,
@@ -309,7 +311,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Get Ad tags of an ad slot
      *
      * @Rest\View(
-     *      serializerGroups={"adtag.summary", "site.summary", "user.summary", "libraryadtag.summary", "adnetwork.summary"}
+     *      serializerGroups={"adtag.summary", "site.summary", "user.min", "libraryadtag.summary", "adnetwork.summary"}
      * )
      *
      * @ApiDoc(
