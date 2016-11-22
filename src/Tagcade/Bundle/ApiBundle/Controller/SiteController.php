@@ -30,7 +30,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * Get all sites
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
+     *      serializerGroups={"site.detail", "user.min", "publisherexchange.summary", "exchange.summary"}
      * )
      *
      * @Rest\QueryParam(name="autoCreate", nullable=true)
@@ -61,13 +61,12 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
         /** @var SiteRepositoryInterface $siteRepository */
         $siteRepository = $this->get('tagcade.repository.site');
+        $autoCreate = null;
         if (is_string($request->query->get('autoCreate'))) {
             $autoCreate = filter_var($params['autoCreate'], FILTER_VALIDATE_INT);
-            $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate);
-            return $this->getPagination($qb, $request);
         }
 
-        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams());
+        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate);
         return $this->getPagination($qb, $request);
     }
 
@@ -107,7 +106,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\Get("/sites/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
+     *      serializerGroups={"site.detail", "user.min", "publisherexchange.summary", "exchange.summary"}
      * )
      * @ApiDoc(
      *  section="Sites",
@@ -275,7 +274,9 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
     /**
      * Retrieve a list of ad slots for this site
-     *
+     * @Rest\View(
+     *      serializerGroups={"user.min", "slotlib.summary", "adslot.detail", "displayadslot.summary", "librarydisplayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary"}
+     * )
      * @ApiDoc(
      *  section="Sites",
      *  resource = true,

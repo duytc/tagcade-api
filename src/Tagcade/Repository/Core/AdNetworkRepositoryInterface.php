@@ -5,8 +5,10 @@ namespace Tagcade\Repository\Core;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface AdNetworkRepositoryInterface extends ObjectRepository
 {
@@ -51,4 +53,12 @@ interface AdNetworkRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function validateEmailToken($publisherId, $partnerCName, $emailToken);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @param null $builtIn
+     * @return mixed
+     */
+    public function getAdNetworksForUserWithPagination(UserRoleInterface $user, PagerParam $param, $builtIn = null);
 }
