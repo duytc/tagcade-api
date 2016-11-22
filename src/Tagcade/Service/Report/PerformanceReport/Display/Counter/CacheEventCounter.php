@@ -41,7 +41,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     const CACHE_KEY_IN_BANNER_REQUEST      = 'requests';
     const CACHE_KEY_IN_BANNER_IMPRESSION   = 'impressions';
-    const CACHE_KEY_IN_BANNER_TIMEOUT      = 'httpRequestTimeout';
+    const CACHE_KEY_IN_BANNER_TIMEOUT      = 'timeouts';
 
     const REDIS_HASH_RTB_EVENT_COUNT       = 'rtb_event_processor:event_count';
     const REDIS_HASH_IN_BANNER_EVENT_COUNT = 'inbanner_event_processor:event_count';
