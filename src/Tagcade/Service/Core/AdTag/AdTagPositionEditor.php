@@ -118,7 +118,8 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @param array $newAdTagOrderIds ordered array of array [[adtag1_pos_1, adtag2_pos_1], [adtag3_pos2]]
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
-    public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
+    public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds)
+    {
         $adTags = $adSlot->getAdTags()->toArray();
 
         return $this->updatePositionForTags($adTags, $newAdTagOrderIds);
@@ -129,7 +130,8 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @param array $newAdTagOrderIds ordered array of array [[adtag1_pos_1, adtag2_pos_1], [adtag3_pos2]]
      * @return \Tagcade\Model\Core\LibrarySlotTagInterface[]
      */
-    public function setAdTagPositionForLibraryAdSlot(LibraryDisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
+    public function setAdTagPositionForLibraryAdSlot(LibraryDisplayAdSlotInterface $adSlot, array $newAdTagOrderIds)
+    {
         $adTags = $adSlot->getLibSlotTags()->toArray();
 
         return $this->updatePositionForTags($adTags, $newAdTagOrderIds);
@@ -159,7 +161,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
         $pos = 1;
         $orderedAdTags = [];
         $processedAdTags = [];
-
+        $works = [];
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -186,7 +188,11 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                             }
                         }
                         //update all referenced AdTags if they are shared ad slot library
-                        $this->manager->updateAdTagPositionForLibSlot($libAdSlot->getId(), $adTag->getid(), $pos);
+                        $works[] = array(
+                            'libAdSlot' => $libAdSlot,
+                            'adTag' => $adTag,
+                            'position' => $pos
+                        );
                     }
 
                     $processedAdTags[] = $adTag->getId();
@@ -198,7 +204,11 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-
+            
+            // push to job queue
+            foreach($works as $work) {
+                $this->manager->updateAdTagPositionForLibSlot($work['libAdSlot']->getId(), $work['adTag']->getid(), $work['position']);
+            }
         } catch(\Exception $e) {
             $this->em->getConnection()->rollBack();
             throw new RuntimeException($e);
