@@ -13,6 +13,7 @@ class VideoDemandAdTag extends VideoDemandAdTagModel
     protected $active;
     protected $deletedAt;
     protected $targeting;
+    protected $requestCap;
     protected $libraryVideoDemandAdTag;
     protected $videoWaterfallTagItem;
     protected $targetingOverride;

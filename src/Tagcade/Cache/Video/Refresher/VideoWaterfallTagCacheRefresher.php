@@ -171,7 +171,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 }
 
                 if (null != $videoDemandAdTag->getTimeout()) {
-                    $demandAdTagItem['timeout'] = $videoDemandAdTag->getTimeout();
+                    $demandAdTagItem['httpRequestTimeout'] = $videoDemandAdTag->getTimeout();
                 }
 
                 $demandAdTagItem['targeting'] = [];

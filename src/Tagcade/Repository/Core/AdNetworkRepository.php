@@ -6,11 +6,15 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class AdNetworkRepository extends EntityRepository implements AdNetworkRepositoryInterface
 {
+    protected $SORT_FIELDS = ['id', 'name', 'pausedAdTagsCount', 'activeAdTagsCount', 'networkOpportunityCap'];
+
     /**
      * @inheritdoc
      */
@@ -163,5 +167,35 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             ->getOneOrNullResult();
 
         return $adNetwork instanceof AdNetworkInterface;
+    }
+
+    public function getAdNetworksForUserWithPagination(UserRoleInterface $user, PagerParam $param, $builtIn = null)
+    {
+        $qb = $this->createQueryBuilder('nw');
+
+        if ($user instanceof PublisherInterface && !$user instanceof SubPublisherInterface) {
+            $qb->where('nw.publisher = :publisher')
+                ->setParameter('publisher', $user);
+        }
+
+        if (is_bool($builtIn)) {
+            $qb->andWhere('nw.networkPartner IS NOT NULL');
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->like('nw.name', ':searchKey'))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('nw.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
     }
 }

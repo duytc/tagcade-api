@@ -25,6 +25,7 @@ use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 
 
 /**
@@ -35,10 +36,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all ad networks
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary"})
      *
      * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
-     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering sites")
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -48,48 +55,64 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *  }
      * )
      *
+     * @param $request
      * @return AdNetworkInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $publisher = $paramFetcher->get('publisher');
-        $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
-        $builtIn = $paramFetcher->get('builtIn');
-        $builtIn = filter_var($builtIn, FILTER_VALIDATE_BOOLEAN);
-
-        if ($publisher != null && $this->getUser() instanceof AdminInterface) {
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisher);
-
-            if (!$publisher instanceof PublisherInterface) {
-                throw new NotFoundHttpException('That publisher does not exist');
-            }
-
-            $all = $adNetworkManager->getAdNetworksForPublisher($publisher);
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        if ($request->query->count() < 1) {
+            return $this->all();
         }
 
-        $all = isset($all) ? $all : $this->all();
-
-        $this->checkUserPermission($all);
-
-
-        if ($builtIn == false) {
-            return $all;
+        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
+        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
+        $builtIn = null;
+        if (is_string($request->query->get('autoCreate'))) {
+            $builtIn = filter_var($params['autoCreate'], FILTER_VALIDATE_BOOLEAN);
         }
 
-        $results = [];
-        foreach ($all as $adNetwork) {
-            /**
-             * @var AdNetworkInterface $adNetwork
-             */
-            if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
-                continue;
-            }
+        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams(), $builtIn);
+        return $this->getPagination($qb, $request);
 
-            $results[] = $adNetwork;
-        }
-
-        return $results;
+//        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+//        $publisher = $paramFetcher->get('publisher');
+//        $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
+//        $builtIn = $paramFetcher->get('builtIn');
+//        $builtIn = filter_var($builtIn, FILTER_VALIDATE_BOOLEAN);
+//
+//        if ($publisher != null && $this->getUser() instanceof AdminInterface) {
+//            $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisher);
+//
+//            if (!$publisher instanceof PublisherInterface) {
+//                throw new NotFoundHttpException('That publisher does not exist');
+//            }
+//
+//            $all = $adNetworkManager->getAdNetworksForPublisher($publisher);
+//        }
+//
+//        $all = isset($all) ? $all : $this->all();
+//
+//        $this->checkUserPermission($all);
+//
+//
+//        if ($builtIn == false) {
+//            return $all;
+//        }
+//
+//        $results = [];
+//        foreach ($all as $adNetwork) {
+//            /**
+//             * @var AdNetworkInterface $adNetwork
+//             */
+//            if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
+//                continue;
+//            }
+//
+//            $results[] = $adNetwork;
+//        }
+//
+//        return $results;
     }
 
     /**

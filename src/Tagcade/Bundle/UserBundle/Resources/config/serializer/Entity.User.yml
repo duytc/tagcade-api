@@ -18,10 +18,10 @@ Tagcade\Bundle\UserBundle\Entity\User:
     properties:
         id:
             expose: true
-            groups: [user.summary, user.detail]
+            groups: [user.summary, user.detail, user.min]
         username:
             expose: true
-            groups: [user.summary, user.detail]
+            groups: [user.summary, user.detail, user.min]
         email:
             expose: true
             groups: [user.summary, user.detail]
@@ -30,4 +30,4 @@ Tagcade\Bundle\UserBundle\Entity\User:
             groups: [user.summary, user.detail]
         enabled:
             expose: true
-            groups: [user.summary, user.detail]
+            groups: [user.summary, user.detail, user.min]

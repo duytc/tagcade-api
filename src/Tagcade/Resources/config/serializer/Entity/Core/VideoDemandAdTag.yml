@@ -19,6 +19,9 @@ Tagcade\Entity\Core\VideoDemandAdTag:
         timeout:
             expose: true
             groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
+        requestCap:
+            expose: true
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         rotationWeight:
             expose: true
             groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]

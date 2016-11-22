@@ -8,13 +8,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 
-class AutoPauseVideoDemandAdTagCommand extends ContainerAwareCommand
+class ActiveVideoDemandAdTagCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('tc:video-demand-ad-tag:auto-pause')
-            ->setDescription('Do pause all video demand ad tags that have reached its request cap per day');
+            ->setName('tc:video-demand-ad-tag:active')
+            ->setDescription('active all video demand ad tags that have been auto paused when it had reached its request cap per day before');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -22,21 +22,18 @@ class AutoPauseVideoDemandAdTagCommand extends ContainerAwareCommand
         $container = $this->getContainer();
         $logger = $container->get('logger');
         $videoDemandAdTagManager = $container->get('tagcade.domain_manager.video_demand_ad_tag');
-        $eventCounter = $container->get('tagcade.service.report.video_report.counter.cache_event_counter');
-        $demandAdTags = $videoDemandAdTagManager->getVideoDemandAdTagsHaveRequestCapByStatus(VideoDemandAdTag::ACTIVE);
+        $demandAdTags = $videoDemandAdTagManager->getVideoDemandAdTagsByStatus(VideoDemandAdTag::AUTO_PAUSED);
         $em = $container->get('doctrine.orm.entity_manager');
-        $pausedAdTags = 0;
+        $activatedAdTags = 0;
         /**
          * @var VideoDemandAdTagInterface $adTag
          */
         foreach($demandAdTags as $adTag) {
-            if ($eventCounter->getVideoDemandAdTagRequestsCount($adTag->getId()) >= $adTag->getRequestCap()) {
-                $adTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
-                $pausedAdTags++;
-                $em->merge($adTag);
-            }
+            $adTag->setActive(VideoDemandAdTag::ACTIVE);
+            $activatedAdTags++;
+            $em->merge($adTag);
         }
         $em->flush();
-        $logger->info(sprintf('There are %d ad tags get paused', $pausedAdTags));
+        $logger->info(sprintf('There are %d ad tags get active', $activatedAdTags));
     }
 }

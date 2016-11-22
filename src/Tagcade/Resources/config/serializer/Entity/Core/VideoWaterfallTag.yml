@@ -7,9 +7,9 @@ Tagcade\Entity\Core\VideoWaterfallTag:
         videoPublisher:
             expose: true
             groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
-#        uuid:
-#            expose: true
-#            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+        uuid:
+            expose: true
+            groups: [videoWaterfallTag.summary]
         platform:
             expose: true
             groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]

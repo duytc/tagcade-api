@@ -31,7 +31,7 @@ class NativeAdSlotController extends RestControllerAbstract implements ClassReso
      * Get all native ad slots
      *
      * @Rest\View(
-     *      serializerGroups={"adslot.detail", "nativeadslot.summary","slotlib.summary", "librarynativeadslot.summary" , "site.summary" , "user.summary"}
+     *      serializerGroups={"adslot.detail", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary" , "site.summary" , "user.min"}
      * )
      *
      * @ApiDoc(
