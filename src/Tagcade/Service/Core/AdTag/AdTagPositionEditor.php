@@ -204,7 +204,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-            
+
             // push to job queue
             foreach($works as $work) {
                 $this->manager->updateAdTagPositionForLibSlot($work['libAdSlot']->getId(), $work['adTag']->getid(), $work['position']);

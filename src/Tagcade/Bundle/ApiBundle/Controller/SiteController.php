@@ -61,13 +61,12 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
 
         /** @var SiteRepositoryInterface $siteRepository */
         $siteRepository = $this->get('tagcade.repository.site');
+        $autoCreate = null;
         if (is_string($request->query->get('autoCreate'))) {
             $autoCreate = filter_var($params['autoCreate'], FILTER_VALIDATE_INT);
-            $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate);
-            return $this->getPagination($qb, $request);
         }
 
-        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams());
+        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate);
         return $this->getPagination($qb, $request);
     }
 
