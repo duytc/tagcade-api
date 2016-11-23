@@ -6,6 +6,7 @@ namespace Tagcade\Behaviors;
 
 use Tagcade\Entity\Core\WaterfallPlacementRule;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
+use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 
 trait ValidateVideoDemandAdTagAgainstPlacementRuleTrait
@@ -18,6 +19,10 @@ trait ValidateVideoDemandAdTagAgainstPlacementRuleTrait
         $waterfallTag = $demandAdTag->getVideoWaterfallTagItem()->getVideoWaterfallTag();
         $rule = $demandAdTag->getWaterfallPlacementRule();
 
+        if (!$rule instanceof WaterfallPlacementRuleInterface) {
+            return true;
+        }
+        
         $publishers = $rule->getPublishers();
         if (!empty($publishers)) {
             if (!in_array($waterfallTag->getVideoPublisher()->getId(), $publishers)) {

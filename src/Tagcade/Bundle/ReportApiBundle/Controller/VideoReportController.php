@@ -28,7 +28,7 @@ class VideoReportController extends FOSRestController
      *              "demand_partner_demand_ad_tag.detail", "demand_partner_demand_partner.detail", "platform_account.detail",
      *              "platform_demand_ad_tag.detail", "platform_waterfall_tag.detail", "platform_platform.detail", "abstract_grouper.detail",
      *              "waterfall_tag_grouper.detail", "waterfall_tag_report_group.detail", "report_group.detail", "videoWaterfallTag.report", "videoWaterfallTagItem.detail",
-     *              "videoDemandAdTag.videoReport", "libraryVideoDemandAdTag.report","videoDemandPartner.report", "user.summary", "video_report_type_account.detail", "video_report_type_waterfall_tag.detail",
+     *              "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary","videoDemandPartner.report", "user.summary", "video_report_type_account.detail", "video_report_type_waterfall_tag.detail",
      *              "video_report_type_demand_ad_tag.detail", "video_report_type_platform.detail", "video_report_type_demand_partner.detail",
      *              "video_report_type_demand_partner_demand_ad_tag.detail", "video_report_type_demand_partner_waterfall_tag.detail",
      *              "demand_partner_demand_partner_waterfall_tag.detail", "platform_publisher_report.detail", "video_report_type_video_publisher_demand_partner.detail",

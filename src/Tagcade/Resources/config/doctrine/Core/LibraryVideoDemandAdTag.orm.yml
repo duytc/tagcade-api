@@ -22,6 +22,7 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
             type: integer
             options:
                 default: 3
+            nullable: true
         targeting:
             type: json_array
             nullable: true
