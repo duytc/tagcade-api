@@ -174,7 +174,8 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
      *
      * @param Request $request
      * @param $id
-     * @return FormTypeInterface|View
+     * @return View|FormTypeInterface
+     * @throws \Exception
      */
     public function postAdslotAction(Request $request, $id)
     {
@@ -196,7 +197,7 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
                 '_format' => $request->get('_format')
             );
 
-            return view::create(array(
+            return View::create(array(
                 'id' => $adSlot->getId(),
                 'site' => array(
                     'id' => $adSlot->getSite()->getId(),
@@ -208,8 +209,6 @@ class RonAdSlotController extends RestControllerAbstract implements ClassResourc
         catch(\Exception $e) {
             throw $e;
         }
-
-        return View::create(array('ronAdSlot'=>$id, 'domain'=>$domain), Codes::HTTP_BAD_REQUEST);
     }
 
     /**

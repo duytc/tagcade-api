@@ -8,6 +8,13 @@ use Tagcade\Exception\InvalidArgumentException;
 
 trait StringUtilTrait
 {
+    /*
+     * domain = abc.def.ghi => length = 3+1+3+1+3 = 11, domain labels = [abc, def, ghi]
+     */
+    public static $DOMAIN_MIN_LENGTH = 4; // minimum is 'a.bc'
+    public static $DOMAIN_MAX_LENGTH = 255; // include '.' and all labels. Format: (63 letters).(63 letters).(63 letters).(62 letters)
+    public static $DOMAIN_LABEL_MAX_NUMBER = 4;
+
     /**
      * Check if the given string is a valid domain
      *
@@ -16,7 +23,25 @@ trait StringUtilTrait
      */
     protected function validateDomain($domain)
     {
-        return preg_match('/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/', $domain) > 0;
+        // sure domain is string
+        if (!is_string($domain)) {
+            return false;
+        }
+
+        // validate domain length
+        if (strlen($domain) < self::$DOMAIN_MIN_LENGTH || strlen($domain) > self::$DOMAIN_MAX_LENGTH) {
+            return false;
+        }
+
+        // validate domain labels number
+        $labels = explode('.', $domain);
+        if (count($labels) < 1 || count($labels) > self::$DOMAIN_LABEL_MAX_NUMBER) {
+            return false;
+        }
+
+        // validate overview format
+        // also validate domain labels length with regex {1,63}, {2,62}
+        return preg_match('/^(?:[-A-Za-z0-9]{1,63}+\.)+[A-Za-z]{2,62}$/', $domain) > 0;
     }
 
     /**
