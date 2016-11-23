@@ -20,8 +20,6 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
             length: 240
         timeout:
             type: integer
-            options:
-                default: 3
             nullable: true
         targeting:
             type: json_array
