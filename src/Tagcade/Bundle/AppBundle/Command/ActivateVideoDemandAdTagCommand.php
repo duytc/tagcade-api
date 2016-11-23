@@ -8,13 +8,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 
-class ActiveVideoDemandAdTagCommand extends ContainerAwareCommand
+class ActivateVideoDemandAdTagCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('tc:video-demand-ad-tag:active')
-            ->setDescription('active all video demand ad tags that have been auto paused when it had reached its request cap per day before');
+            ->setName('tc:video-demand-ad-tag:activate')
+            ->setDescription('activate all video demand ad tags that have been paused when it had reached its request cap');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
