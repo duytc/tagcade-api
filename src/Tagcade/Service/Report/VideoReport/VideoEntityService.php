@@ -109,13 +109,13 @@ class VideoEntityService
                     continue;
                 }
 
-                if($publisher->isEnabled()) {
+                if($publisher->isEnabled() && $publisher->hasVideoModule()) {
                     $activePublishersId[] = $publisher->getId();
                 }
             }
         } else {
             /**@var PublisherInterface[] $activePublishers */
-            $activePublishers = $this->getAllActivePublisher();
+            $activePublishers = $this->publisherManager->allPublisherWithVideoModule();
             foreach ($activePublishers as $activePublisher) {
                 $activePublishersId[] = $activePublisher->getId();
             }
