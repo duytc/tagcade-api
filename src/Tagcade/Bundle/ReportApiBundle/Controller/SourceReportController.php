@@ -54,6 +54,16 @@ class SourceReportController extends FOSRestController
             throw new NotFoundHttpException('This site does not exist or you do not have access');
         }
 
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasAnalyticsModule()) {
+            throw new NotFoundHttpException();
+        }
+
         if (false === $this->get('security.context')->isGranted('view', $site)) {
             throw new AccessDeniedException('You do not have permission to view this site');
         }

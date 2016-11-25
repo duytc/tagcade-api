@@ -129,6 +129,9 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams())

@@ -20,7 +20,7 @@ $videoWaterfallTagManager = $container->get('tagcade.domain_manager.video_waterf
 
 /** @var VideoDemandAdTagManagerInterface $videoDemandAdTagManager */
 $videoDemandAdTagManager = $container->get('tagcade.domain_manager.video_demand_ad_tag');
-$dateToRotate = new DateTime('yesterday');
+$dateToRotate = new DateTime('2016-11-22');
 $videoTestEventCounter = new VideoTestEventCounter($videoWaterfallTagManager->all(), $videoDemandAdTagManager);
 $videoTestEventCounter->setDate($dateToRotate);
 
@@ -60,7 +60,7 @@ $videoCacheEventCounter->setDate($dateToRotate);
 // generate for video ad tag
 foreach ($videoTestEventCounter->getAllVideoWaterfallTagsData() as $videoAdTagId => $videoAdTagData) {
     writeln('       ... video ad tag #' . $videoAdTagId);
-    $namespace = $videoCacheEventCounter->getNamespace(VideoCacheEventCounter::NAMESPACE_AD_TAG, $videoAdTagId);
+    $namespace = $videoCacheEventCounter->getNamespace(VideoCacheEventCounter::NAMESPACE_WATERFALL_AD_TAG, $videoAdTagId);
 
     // save requests
     $cache->hSave(
@@ -89,7 +89,7 @@ foreach ($videoTestEventCounter->getAllVideoWaterfallTagsData() as $videoAdTagId
 // generate for video ad source
 foreach ($videoTestEventCounter->getAllVideoDemandAdTagsData() as $videoAdSourceId => $videoAdSourceData) {
     writeln('       ... video ad source #' . $videoAdSourceId);
-    $namespace = $videoCacheEventCounter->getNamespace(VideoCacheEventCounter::NAMESPACE_AD_SOURCE, $videoAdSourceId);
+    $namespace = $videoCacheEventCounter->getNamespace(VideoCacheEventCounter::NAMESPACE_DEMAND_AD_TAG, $videoAdSourceId);
 
     // save requests
     $cache->hSave(

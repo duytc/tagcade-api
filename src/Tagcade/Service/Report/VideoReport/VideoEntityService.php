@@ -59,7 +59,7 @@ class VideoEntityService
      */
     public function getEntitiesByFilterParam($reportTypeName, FilterParameterInterface $filterParameter)
     {
-        $filterParameter = $this->getActivePublisherInFilter($filterParameter);
+//        $filterParameter = $this->getActivePublisherInFilter($filterParameter);
 
         if (PlatformAdSourceReportType::REPORT_TYPE == $reportTypeName
             || DemandPartnerDemandAdTagReportType::REPORT_TYPE == $reportTypeName
@@ -155,18 +155,21 @@ class VideoEntityService
      */
     public function getPublisherByFilterParams(FilterParameterInterface $filterParameter)
     {
-        $publisher = [];
+        $publishers = [];
 
         $publisherIds = $filterParameter->getPublishers();
         if (empty($publisherIds)) {
-            return $this->getAllActivePublisher(); // get all publisher if not set in parameter
+            return $this->publisherManager->allPublisherWithVideoModule(); // get all publisher if not set in parameter
         }
 
         foreach ($publisherIds as $publisherId) {
-            $publisher[] = $this->publisherManager->findPublisher($publisherId);
+            $publisher = $this->publisherManager->findPublisher($publisherId);
+            if ($publisher instanceof PublisherInterface && $publisher->hasVideoModule()) {
+                $publishers[] = $publisher;
+            }
         }
 
-        return $publisher;
+        return $publishers;
     }
 
     /**
