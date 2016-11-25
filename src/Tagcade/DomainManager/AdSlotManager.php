@@ -142,6 +142,27 @@ class AdSlotManager implements AdSlotManagerInterface
         return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher, $limit, $offset);
     }
 
+    /**
+     * @param array $publishers
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getReportableAdSlotIdsForPublishers(array $publishers, $limit = null, $offset = null)
+    {
+        $adSlots = [];
+        foreach($publishers as $publisher) {
+            if (!$publishers instanceof PublisherInterface) {
+                continue;
+            }
+
+            $adSlots = array_merge($adSlots, $this->getReportableAdSlotsForPublisher($publisher));
+        }
+
+        return $adSlots;
+    }
+
+
     public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
         return $this->adSlotRepository->getReportableAdSlotIdsForSite($site, $limit, $offset);

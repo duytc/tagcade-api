@@ -177,7 +177,7 @@ class HeaderBiddingReportController extends FOSRestController
         if (!$publisher->hasRtbModule()) {
             throw new NotFoundHttpException();
         }
-        
+
         return $this->getResult(
             $this->getReportBuilder()->getSiteReport($site, $this->getParams())
         );

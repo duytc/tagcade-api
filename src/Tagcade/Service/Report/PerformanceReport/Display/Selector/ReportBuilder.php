@@ -419,7 +419,8 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAllSitesReport(Params $params)
     {
-        $sites = $this->siteManager->all();
+        $publishers = $this->userManager->allPublisherWithDisplayModule();
+        $sites = $this->siteManager->getSitesForPublishers($publishers);
 
         $reportTypes = array_map(function(SiteInterface $site) {
             return new PlatformReportTypes\Site($site);
@@ -549,7 +550,8 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAllAdSlotsReport(Params $params)
     {
-        $adSlots = $this->adSlotManager->allReportableAdSlots();
+        $publishers = $this->userManager->allPublisherWithDisplayModule();
+        $adSlots = $this->adSlotManager->getReportableAdSlotIdsForPublishers($publishers);
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
         }, $adSlots);

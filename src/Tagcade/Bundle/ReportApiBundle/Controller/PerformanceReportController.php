@@ -10,7 +10,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
+use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -163,6 +165,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getAllSubPublishersReport($publisher, $this->getParams())
         );
@@ -193,6 +199,11 @@ class PerformanceReportController extends FOSRestController
     public function getSubPublishersReportByNetworkAction($publisherId, $adNetworkId)
     {
         $publisher = $this->getPublisher($publisherId);
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $adNetwork = $this->getAdNetworkHasPartnerWithPublisher($adNetworkId, $publisher);
 
         return $this->getResult(
@@ -224,6 +235,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getPublisherAdNetworksReport($publisher, $this->getParams())
         );
@@ -252,6 +267,10 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherAdNetworksByDayAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherAdNetworksByDayReport($publisher, $this->getParams())
@@ -283,6 +302,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getPublisherAdNetworksByAdTagReport($publisher, $this->getParams())
         );
@@ -312,6 +335,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $this->getParams())
         );
@@ -340,6 +367,10 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherAllPartnersByDayAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAllPartnersReportByDayForPublisher($publisher, $this->getParams())
@@ -371,6 +402,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getAllPartnersReportBySiteForPublisher($publisher, $this->getParams())
         );
@@ -401,6 +436,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getAllPartnersReportByAdTagForPublisher($publisher, $this->getParams())
         );
@@ -430,6 +469,10 @@ class PerformanceReportController extends FOSRestController
     public function getPartnerAllSitesByDayAction($publisherId, $partnerId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
 
         return $this->getResult(
@@ -464,6 +507,10 @@ class PerformanceReportController extends FOSRestController
     public function getPartnerAllSiteBySiteAction($publisherId, $partnerId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
 
         return $this->getResult(
@@ -498,6 +545,10 @@ class PerformanceReportController extends FOSRestController
     public function getPartnerAllSitesByAdTagAction($publisherId, $partnerId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
 
         return $this->getResult(
@@ -532,6 +583,10 @@ class PerformanceReportController extends FOSRestController
     public function getPartnerSiteByDayAction($publisherId, $partnerId, $siteId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
         $site = $this->getSite($siteId);
 
@@ -566,6 +621,10 @@ class PerformanceReportController extends FOSRestController
     public function getPartnerSiteByAdTagAction($publisherId, $partnerId, $siteId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
         $site = $this->getSite($siteId);
 
@@ -599,6 +658,15 @@ class PerformanceReportController extends FOSRestController
     public function getAdnetworkAction($adNetworkId)
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
+        $publisher = $adNetwork->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAdNetworkReport($adNetwork, $this->getParams())
@@ -628,6 +696,15 @@ class PerformanceReportController extends FOSRestController
     public function getAdnetworkSitesAction($adNetworkId)
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
+        $publisher = $adNetwork->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAdNetworkSitesReport($adNetwork, $this->getParams())
@@ -659,7 +736,27 @@ class PerformanceReportController extends FOSRestController
     public function getAdNetworkSiteAction($adNetworkId, $siteId)
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
+        $publisher = $adNetwork->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $site = $this->getSite($siteId);
+
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAdNetworkSiteReport($adNetwork, $site, $this->getParams())
@@ -691,6 +788,15 @@ class PerformanceReportController extends FOSRestController
     public function getAdNetworkAdTagsAction($adNetworkId)
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
+        $publisher = $adNetwork->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAdNetworkAdTagsReport($adNetwork, $this->getParams())
@@ -714,7 +820,27 @@ class PerformanceReportController extends FOSRestController
     public function getAdNetworkSiteAdTagsAction($adNetworkId, $siteId)
     {
         $adNetwork = $this->getAdNetwork($adNetworkId);
+        $publisher = $adNetwork->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $site = $this->getSite($siteId);
+
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAdNetworkSiteAdTagsReport($adNetwork, $site, $this->getParams())
@@ -744,6 +870,10 @@ class PerformanceReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getPublisherSitesByDayReport($publisher, $this->getParams())
         );
@@ -771,6 +901,10 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherSitesBySiteAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams())
@@ -801,6 +935,15 @@ class PerformanceReportController extends FOSRestController
     public function getSiteAction($siteId)
     {
         $site = $this->getSite($siteId);
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getSiteReport($site, $this->getParams())
@@ -830,6 +973,15 @@ class PerformanceReportController extends FOSRestController
     public function getSiteAdNetworksAction($siteId)
     {
         $site = $this->getSite($siteId);
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getSiteAdNetworksReport($site, $this->getParams())
@@ -858,6 +1010,15 @@ class PerformanceReportController extends FOSRestController
     public function getSiteAdSlotsAction($siteId)
     {
         $site = $this->getSite($siteId);
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getSiteAdSlotsReport($site, $this->getParams())
@@ -886,6 +1047,15 @@ class PerformanceReportController extends FOSRestController
     public function getSiteAdTagsAction($siteId)
     {
         $site = $this->getSite($siteId);
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
 
         $adTags = $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForSite($site);
         $this->checkUserPermission($adTags);
@@ -922,6 +1092,15 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ad slot does not exist');
         }
 
+        $publisher = $adSlot->getSite()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
       //  $this->checkUserPermission($adSlot);
 
         return $this->getResult(
@@ -955,7 +1134,12 @@ class PerformanceReportController extends FOSRestController
     public function getAllAdSlotsAction()
     {
         $user = $this->getUser();
+
         if ($user instanceof PublisherInterface) {
+            if (!$user->hasDisplayModule()) {
+                throw new NotFoundHttpException();
+            }
+
             return $this->getResult(
                 $this->getReportBuilder()->getPublisherAdSlotsReport($user, $this->getParams())
             );
@@ -994,6 +1178,16 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ron ad slot does not exist');
         }
 
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $this->checkUserPermission($ronAdSlot);
 
         return $this->getResult(
@@ -1024,8 +1218,18 @@ class PerformanceReportController extends FOSRestController
     {
         $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($adSlotId);
 
-        if (!$adSlot) {
+        if (!$adSlot instanceof BaseAdSlotInterface) {
             throw new NotFoundHttpException('That ad tag does not exist');
+        }
+
+        $publisher = $adSlot->getSite()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
         }
 
         $adTags = $this->get('tagcade.domain_manager.ad_tag')->getAdTagsForAdSlot($adSlot);
@@ -1069,6 +1273,16 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ron ad slot does not exist');
         }
 
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $this->checkUserPermission($ronAdSlot);
 
         return $this->getResult(
@@ -1109,6 +1323,16 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ron ad slot does not exist');
         }
 
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $this->checkUserPermission($ronAdSlot);
 
         return $this->getResult(
@@ -1146,6 +1370,16 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ron ad slot does not exist');
         }
 
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $this->checkUserPermission($ronAdSlot);
 
         return $this->getResult(
@@ -1177,8 +1411,18 @@ class PerformanceReportController extends FOSRestController
     {
         $segment = $this->get('tagcade.domain_manager.segment')->find($segmentId);
 
-        if (!$segment) {
+        if (!$segment instanceof SegmentInterface) {
             throw new NotFoundHttpException('That segment does not exist');
+        }
+
+        $publisher = $segment->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
         }
 
         $this->checkUserPermission($segment);
@@ -1214,6 +1458,16 @@ class PerformanceReportController extends FOSRestController
 
         if (!$segment) {
             throw new NotFoundHttpException('That segment does not exist');
+        }
+
+        $publisher = $segment->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
         }
 
         $this->checkUserPermission($segment);
@@ -1252,6 +1506,15 @@ class PerformanceReportController extends FOSRestController
             throw new NotFoundHttpException('That ad tag does not exist');
         }
 
+        $publisher = $adTag->getAdSlot()->getSite()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
         $this->checkUserPermission($adTag);
 
         return $this->getResult(
