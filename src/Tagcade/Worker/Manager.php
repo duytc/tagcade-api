@@ -251,11 +251,19 @@ class Manager
         $this->queueTask('updateAdTagPositionForAdNetworkAndSites', $params);
     }
 
+    public function synchronizeUser($id, array $entity){
+        $params = new StdClass;
+        $params->id = $id;
+        $params->entity = $entity;
+        $this->queueTask('synchronizeUser', $params, 'ur-api-worker');
+    }
+
     /**
      * @param string $task
      * @param StdClass $params
+     * @param string $tube
      */
-    protected function queueTask($task, StdClass $params)
+    protected function queueTask($task, StdClass $params, $tube = Manager::TUBE)
     {
         $payload = new StdClass;
 
@@ -263,7 +271,7 @@ class Manager
         $payload->params = $params;
 
         $this->queue
-            ->useTube(static::TUBE)
+            ->useTube($tube)
             ->put(json_encode($payload),
                 Pheanstalk_PheanstalkInterface::DEFAULT_PRIORITY,
                 Pheanstalk_PheanstalkInterface::DEFAULT_DELAY,
