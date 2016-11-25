@@ -64,6 +64,7 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="inBanner", requirements="(true|false)", nullable=true)
      *
      * @ApiDoc(
      *  section = "admin",
@@ -77,8 +78,14 @@ class PerformanceReportController extends FOSRestController
      */
     public function getPlatformPublishersAction()
     {
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        $inBanner = false;
+        if (array_key_exists('inBanner', $params)) {
+            $inBanner = filter_var($params['inBanner'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         return $this->getResult(
-            $this->getReportBuilder()->getAllPublishersReport($this->getParams())
+            $this->getReportBuilder()->getAllPublishersReport($this->getParams(), $inBanner)
         );
     }
 
@@ -115,6 +122,7 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     * @Rest\QueryParam(name="inBanner", requirements="(true|false)", nullable=true)
      *
      * @ApiDoc(
      *  section = "Performance Report",
@@ -131,7 +139,17 @@ class PerformanceReportController extends FOSRestController
     public function getPublisherAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        $inBanner = false;
+        if (array_key_exists('inBanner', $params)) {
+            $inBanner = filter_var($params['inBanner'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         if (!$publisher->hasDisplayModule()) {
+            throw new NotFoundHttpException();
+        }
+
+        if ($inBanner === true && !$publisher->hasInBannerModule()) {
             throw new NotFoundHttpException();
         }
 

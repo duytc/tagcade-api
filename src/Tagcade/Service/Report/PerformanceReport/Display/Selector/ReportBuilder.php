@@ -88,9 +88,13 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new PlatformReportTypes\Platform($publishers), $params);
     }
 
-    public function getAllPublishersReport(Params $params)
+    public function getAllPublishersReport(Params $params, $inBanner = false)
     {
-        $publishers = $this->userManager->allPublisherWithDisplayModule();
+        if ($inBanner === true) {
+            $publishers = $this->userManager->allPublisherWithInBannerVideoModule();
+        } else {
+            $publishers = $this->userManager->allPublisherWithDisplayModule();
+        }
 
         $reportTypes = array_map(function(PublisherInterface $publisher) {
             return new PlatformReportTypes\Account($publisher);
