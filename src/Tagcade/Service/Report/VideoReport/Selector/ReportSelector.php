@@ -141,7 +141,7 @@ class ReportSelector implements ReportSelectorInterface
         }
 
         $reportsAggregateByParentId = $reports;
-        $reportType = reset($reportTypes);
+        $reportType = reset($reportTypesMap);
 
         // 2. transform report due to breakDownParameter,
         // e.g transform from VideoDemandAdTagReports to VideoWaterfallTagReports because user need breakdown by VideoWaterfallTag
@@ -151,7 +151,7 @@ class ReportSelector implements ReportSelectorInterface
             $reportsResult = $this->videoReportTransformer->transformReport($reportsForTransform, $reportType, $breakDownParameter, $filterParameter);
 
             $reports = $reportsResult['reports'];
-            $reportTypes = $reportsResult['reportType'];
+            $reportTypesMap = $reportsResult['reportType'];
 
             $reportsAggregateByParentId = [];
             foreach ($reports as $key => $parentReport) {
@@ -186,7 +186,7 @@ class ReportSelector implements ReportSelectorInterface
         }
 
         // 3. create reportCollection: check if need using actualStartDate/EndDate, reportName
-        $reportType = reset($reportTypes);
+        $reportType = reset($reportTypesMap);
         $reportCollection = new ReportCollection($reportType, $reports, $filterParameter->getStartDate(), $filterParameter->getEndDate());
 
         // 4. group reports if needed
