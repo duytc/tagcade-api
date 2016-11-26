@@ -126,11 +126,12 @@ class ReportSelector implements ReportSelectorInterface
     public function getMultipleReports(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
     {
         $reports = [];
-
+        $reportTypesMap = [];
         /**@var ReportTypeInterface $reportType */
         foreach ($reportTypes as $reportType) {
             if ($reportResult = $this->getRawReport($reportType, $filterParameter)) {
                 $reports[$reportType->getVideoObjectId()] = $reportResult;
+                $reportTypesMap[$reportType->getVideoObjectId()] = $reportType;
             }
             unset($reportResult);
         }
@@ -166,13 +167,12 @@ class ReportSelector implements ReportSelectorInterface
         //Group by date range if need
         if (!$breakDownParameter->hasDay()) {
             $resultReports = [];
-            $reportType = reset($reportTypes);
-            foreach ($reportsAggregateByParentId as $reportOfOneId) {
+            foreach ($reportsAggregateByParentId as $key=>$reportOfOneId) {
+                $reportType = $reportTypesMap[$key];
                 $reportCollection = new ReportCollection($reportType, $reportOfOneId, $filterParameter->getStartDate(), $filterParameter->getEndDate());
                 $parentReport = $this->videoReportGrouper->groupReports($reportCollection);
                 $parentReport->setReports(null); // To reduce size returned data
                 $resultReports[] = $parentReport;
-                $reportType = next($reportTypes);
             }
 
             $reports = $resultReports;
