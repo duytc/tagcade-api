@@ -8,7 +8,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Worker\Manager;
 
-class SynchronizeUserListener
+class UpdatePublisherListener
 {
     /**
      * @var Manager
@@ -28,8 +28,8 @@ class SynchronizeUserListener
         }
 
         if ($entity->hasUnifiedReportModule()) {
-            $entityArray = $this->entityPrepared($entity);
-            $this->workerManager->synchronizeUser($entity->getId(), $entityArray);
+            $entityArray = $this->generatePublisherData($entity);
+            $this->workerManager->synchronizeUser($entityArray);
         }
     }
 
@@ -42,12 +42,12 @@ class SynchronizeUserListener
         }
 
         if ($args->hasChangedField('enabled') || $args->hasChangedField('roles')) {
-            $entityArray = $this->entityPrepared($entity);
-            $this->workerManager->synchronizeUser($entity->getId(), $entityArray);
+            $entityArray = $this->generatePublisherData($entity);
+            $this->workerManager->synchronizeUser($entityArray);
         }
     }
 
-    private function entityPrepared (PublisherInterface $entity)
+    private function generatePublisherData (PublisherInterface $entity)
     {
         $entityArray = array();
         $entityArray['id'] = $entity->getId();

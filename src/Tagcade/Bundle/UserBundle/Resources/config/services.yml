@@ -44,8 +44,8 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
 
-    tagcade_app.event_listener.synchronize_user_listener:
-        class: Tagcade\Bundle\UserBundle\EventListener\SynchronizeUserListener
+    tagcade_app.event_listener.update_publsiher_listener:
+        class: Tagcade\Bundle\UserBundle\EventListener\UpdatePublisherListener
         arguments:
             - @tagcade.worker.manager
         tags:

@@ -251,9 +251,8 @@ class Manager
         $this->queueTask('updateAdTagPositionForAdNetworkAndSites', $params);
     }
 
-    public function synchronizeUser($id, array $entity){
+    public function synchronizeUser(array $entity){
         $params = new StdClass;
-        $params->id = $id;
         $params->entity = $entity;
         $this->queueTask('synchronizeUser', $params, 'ur-api-worker');
     }
