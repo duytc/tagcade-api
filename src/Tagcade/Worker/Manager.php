@@ -20,6 +20,7 @@ use Tagcade\Model\Core\AdTagInterface;
 class Manager
 {
     const TUBE = 'tagcade-api-worker';
+    const UR_API_WORKER = 'ur-api-worker';
     const EXECUTION_TIME_THRESHOLD = 3600;
 
     protected $dateUtil;
@@ -254,7 +255,7 @@ class Manager
     public function synchronizeUser(array $entity){
         $params = new StdClass;
         $params->entity = $entity;
-        $this->queueTask('synchronizeUser', $params, 'ur-api-worker');
+        $this->queueTask('synchronizeUser', $params, Manager::UR_API_WORKER);
     }
 
     /**
