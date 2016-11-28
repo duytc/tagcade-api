@@ -4,15 +4,14 @@
 namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 
+use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\Parameter;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Tagcade\Service\Report\VideoReport\Selector\Result\ReportCollection;
-use FOS\RestBundle\View\View;
 
 class VideoReportController extends FOSRestController
 {

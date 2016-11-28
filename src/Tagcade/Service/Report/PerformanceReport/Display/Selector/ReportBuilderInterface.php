@@ -22,9 +22,10 @@ interface ReportBuilderInterface
 
     /**
      * @param Params $params
+     * @param $inBanner
      * @return ReportResultInterface|false
      */
-    public function getAllPublishersReport(Params $params);
+    public function getAllPublishersReport(Params $params, $inBanner = false);
 
     /**
      * @param PublisherInterface $publisher

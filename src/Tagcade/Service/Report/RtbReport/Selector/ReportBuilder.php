@@ -79,7 +79,7 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAllPublishersReport(Params $params)
     {
-        $publishers = $this->userManager->allActivePublishers();
+        $publishers = $this->userManager->allPublisherWithRtbModule();
 
         $reportTypes = array_map(function (PublisherInterface $publisher) {
             return new Account($publisher);
@@ -115,7 +115,9 @@ class ReportBuilder implements ReportBuilderInterface
 
     public function getAllSitesReport(Params $params)
     {
-        $sites = $this->siteManager->all();
+        $publishers = $this->userManager->allPublisherWithRtbModule();
+        $sites = $this->siteManager->getSitesForPublishers($publishers);
+//        $sites = $this->siteManager->all();
 
         $sites = array_filter($sites, function (SiteInterface $site) {
             return $site->isRTBEnabled();

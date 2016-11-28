@@ -102,6 +102,10 @@ class HeaderBiddingReportController extends FOSRestController
     {
         $publisher = $this->getPublisher($publisherId);
 
+        if (!$publisher->hasHeaderBiddingModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams())
         );
@@ -129,6 +133,10 @@ class HeaderBiddingReportController extends FOSRestController
     public function getPublisherSitesBySiteAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+
+        if (!$publisher->hasHeaderBiddingModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams())
@@ -159,6 +167,16 @@ class HeaderBiddingReportController extends FOSRestController
     public function getSiteAction($siteId)
     {
         $site = $this->getSite($siteId);
+
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getSiteReport($site, $this->getParams())

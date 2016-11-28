@@ -54,7 +54,13 @@ class UnifiedReportController extends FOSRestController
     public function getAllPartnersByPartnerReportsAction($publisherId)
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
+        /**
+         * @var PublisherInterface $publisher
+         */
         $publisher = $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         //Get all partner for this publisher
         $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
@@ -93,6 +99,10 @@ class UnifiedReportController extends FOSRestController
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
         $publisher = $result[self::PUBLISHER_KEY];
 
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getAllDemandPartnersByDayReport(
                 $publisher,
@@ -125,6 +135,9 @@ class UnifiedReportController extends FOSRestController
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
         $publisher =  $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAllDemandPartnersBySiteReport(
@@ -157,6 +170,10 @@ class UnifiedReportController extends FOSRestController
     public function getAllPartnersByAdTagsReportsAction($publisherId)
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId);
+        $publisher = $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getAllDemandPartnersByAdTagReport(
@@ -191,6 +208,10 @@ class UnifiedReportController extends FOSRestController
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
         $publisher = $result[self::PUBLISHER_KEY];
+
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         if ($publisher instanceof SubPublisherInterface) {
             return $this->getResult(
@@ -235,6 +256,9 @@ class UnifiedReportController extends FOSRestController
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
         $publisher = $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPartnerAllSitesBySitesReport(
@@ -270,6 +294,9 @@ class UnifiedReportController extends FOSRestController
     {
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
         $publisher = $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         //Get all partner for this publisher
         $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
@@ -325,9 +352,14 @@ class UnifiedReportController extends FOSRestController
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
         $publisher = $result[self::PUBLISHER_KEY];
 
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
+
         if (!$publisher instanceof SubPublisherInterface && $site->getPublisherId() !== $publisher->getId()) {
             throw new AccessDeniedException('you do not have enough permission to view this entity');
         }
+
 
         if ($publisher instanceof SubPublisherInterface &&
             (
@@ -389,6 +421,9 @@ class UnifiedReportController extends FOSRestController
 
         $result = $this->verifiedUserPermission($this->getUser(), $publisherId, $adNetworkId);
         $publisher = $result[self::PUBLISHER_KEY];
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
 
         //Get all partner for this publisher
         $adNetworks = $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($publisher);
@@ -454,6 +489,10 @@ class UnifiedReportController extends FOSRestController
             throw new \Tagcade\Exception\InvalidArgumentException(sprintf('the publisher %d does not exist', $publisherId));
         }
 
+        if (!$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getReportBuilder()->getSubPublishersReport($publisher, $this->getParams());
     }
 
@@ -484,6 +523,10 @@ class UnifiedReportController extends FOSRestController
         $publisher = $result[self::PUBLISHER_KEY];
         if ($publisher instanceof SubPublisherInterface) {
             throw new AccessDeniedException('you do not have enough permission to view this report');
+        }
+        
+        if ($publisher instanceof PublisherInterface && !$publisher instanceof SubPublisherInterface && !$publisher->hasUnifiedReportModule()) {
+            throw new NotFoundHttpException();
         }
 
         return $this->getReportBuilder()->getSubPublishersReportByPartner(

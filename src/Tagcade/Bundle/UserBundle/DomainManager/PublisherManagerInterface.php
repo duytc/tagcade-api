@@ -63,6 +63,8 @@ interface PublisherManagerInterface
 
     public function allPublisherWithVideoModule();
 
+    public function allPublisherWithInBannerVideoModule();
+
     public function allPublisherWithHeaderBiddingModule();
 
     public function allPublisherWithSourceReportModule();

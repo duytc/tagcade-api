@@ -54,6 +54,16 @@ class SourceReportController extends FOSRestController
             throw new NotFoundHttpException('This site does not exist or you do not have access');
         }
 
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasAnalyticsModule()) {
+            throw new NotFoundHttpException();
+        }
+
         if (false === $this->get('security.context')->isGranted('view', $site)) {
             throw new AccessDeniedException('You do not have permission to view this site');
         }
@@ -95,6 +105,10 @@ class SourceReportController extends FOSRestController
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         /** @var PublisherInterface $publisher */
         $publisher = $this->container->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+
+        if (!$publisher->hasAnalyticsModule()) {
+            throw new NotFoundHttpException();
+        }
 
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true), $returnTodayIfEmpty = true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));
@@ -143,6 +157,10 @@ class SourceReportController extends FOSRestController
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         /** @var PublisherInterface $publisher */
         $publisher = $this->container->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+
+        if (!$publisher->hasAnalyticsModule()) {
+            throw new NotFoundHttpException();
+        }
 
         $startDate = $dateUtil->getDateTime($paramFetcher->get('startDate', true), $returnTodayIfEmpty = true);
         $endDate = $dateUtil->getDateTime($paramFetcher->get('endDate', true));
