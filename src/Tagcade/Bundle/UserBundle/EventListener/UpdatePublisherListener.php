@@ -27,7 +27,7 @@ class UpdatePublisherListener
             return;
         }
 
-        if ($entity->hasUnifiedReportModule()) {
+        if ($entity->isEnabled() && $entity->hasUnifiedReportModule()) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
         }
@@ -41,7 +41,9 @@ class UpdatePublisherListener
             return;
         }
 
-        if ($args->hasChangedField('enabled') || $args->hasChangedField('roles')) {
+        if (($entity->isEnabled() && $entity->hasUnifiedReportModule())
+            || ($entity->isEnabled() && $args->hasChangedField('roles') && !$entity->hasUnifiedReportModule() && !$args->hasChangedField('enabled'))
+            || ($entity->hasUnifiedReportModule() && $args->hasChangedField('enabled') && !$args->hasChangedField('roles'))) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
         }
