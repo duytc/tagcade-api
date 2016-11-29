@@ -28,6 +28,7 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.library_slot_tag
+            - '@tagcade.worker.manager'
         calls:
             - [setReplicator, ["@tagcade_api.service.tag_library.replicator"]]
 

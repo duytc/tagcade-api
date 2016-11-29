@@ -221,6 +221,42 @@ class Manager
         $this->queueTask('deployVideoDemandAdTagForNewPlacementRule', $param);
     }
 
+    public function replicateNewLibSlotTag($libSlotTagId)
+    {
+        $param = new StdClass();
+        $param->id = $libSlotTagId;
+
+        $this->queueTask('replicateNewLibSlotTag', $param);
+    }
+
+    public function replicateExistingLibSlotTag($libSlotTagId, $remove = false)
+    {
+        $param = new StdClass();
+        $param->id = $libSlotTagId;
+        $param->remove = $remove;
+
+        $this->queueTask('replicateExistingLibSlotTag', $param);
+    }
+
+    public function updateAdTagPositionForLibSlot($libSlotId, $adTagId, $position)
+    {
+        $param = new StdClass();
+        $param->libSlotId = $libSlotId;
+        $param->adTagId = $adTagId;
+        $param->position = $position;
+
+
+        $this->queueTask('updateAdTagPositionForLibSlot', $param);
+    }
+
+    public function removeCacheForAdSlot($adSlotId)
+    {
+        $param = new StdClass();
+        $param->id = $adSlotId;
+
+        $this->queueTask('removeCacheForAdSlot', $param);
+    }
+
     /**
      * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network

@@ -24,4 +24,6 @@ interface VideoAccountReportRepositoryInterface
      * @return mixed
      */
     public function getSumVideoImpressionsForPublisher(PublisherInterface $publisher, \DateTime $startDate, \DateTime $endDate);
+
+    public function getAggregatedReportsByDateRange(array $publisherIds, \DateTime $startDate, \DateTime $endDate);
 }

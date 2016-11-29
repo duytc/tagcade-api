@@ -3,10 +3,13 @@
 namespace Tagcade\Bundle\ReportApiBundle\Command;
 
 use DateTime;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -46,7 +49,13 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         $month = $input->getOption('month');
 
         $yesterday = new DateTime('yesterday');
-        $month = null === $month ? $yesterday : DateTime::createFromFormat('Y-m-d', sprintf('%s-%s', $month, $yesterday->format('d')));
+
+        if (!$month) {
+            $month = $yesterday;
+        } else {
+            $month = DateTime::createFromFormat('Y-m', $month);
+            $month->setTime(0, 0, 0);
+        }
 
         if (false === $month ) {
             throw new InvalidArgumentException('Invalid month input');
@@ -57,11 +66,17 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
         $billingEditor->setLogger($logger);
 
         if (null === $publisherId) {
-            $logger->info('start updating billed amount for all publishers');
+            $publishers = $userManager->allPublisherWithDisplayModule();
 
-            $billingEditor->updateBilledAmountThresholdForAllPublishers($month);
-
-            $logger->info('finish updating billed amount for all publishers');
+            /**
+             * @var PublisherInterface $publisher
+             */
+            foreach($publishers as $publisher) {
+                $id = $publisher->getId();
+                $logger->info(sprintf('Start updating threshold billed amount for publisher %d', $id));
+                $cmd = sprintf('%s tc:billing:update-threshold --id %d --month %s', $this->getAppConsoleCommand(), $id, $month->format('Y-m'));
+                $this->executeProcess($process = new Process($cmd), $logger);
+            }
         }
         else {
             $logger->info('start updating billed amount for publisher');
@@ -75,6 +90,44 @@ class UpdateBilledAmountThresholdCommand extends ContainerAwareCommand
             $billingEditor->updateBilledAmountThresholdForPublisher($publisher, $month);
 
             $logger->info('finish updating billed amount');
+        }
+    }
+
+    protected function getAppConsoleCommand()
+    {
+        $pathToSymfonyConsole = $this->getContainer()->getParameter('kernel.root_dir');
+        $environment = $this->getContainer()->getParameter('kernel.environment');
+        $debug = $this->getContainer()->getParameter('kernel.debug');
+
+        $command = sprintf('php %s/console --env=%s', $pathToSymfonyConsole, $environment);
+
+        if (!$debug) {
+            $command .= ' --no-debug';
+        }
+
+        return $command;
+    }
+
+    /**
+     * @param Process $process
+     * @param LoggerInterface $logger
+     * @param null $timeout null means "no timeout"
+     */
+    protected function executeProcess(Process $process, LoggerInterface $logger, $timeout = null)
+    {
+        $process->setTimeout($timeout);
+
+        try {
+            $process->mustRun(function($type, $buffer) use($logger) {
+                if (Process::ERR === $type) {
+                    $logger->error($buffer);
+                } else {
+                    $logger->info($buffer);
+                }
+            }
+            );
+        } catch (ProcessFailedException $ex) {
+            throw $ex;
         }
     }
 }

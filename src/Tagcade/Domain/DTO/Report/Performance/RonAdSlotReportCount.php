@@ -12,6 +12,9 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
 
     private $slotOpportunities = 0;
+    private $inBannerRequests = 0;
+    private $inBannerTimeouts = 0;
+    private $inBannerImpressions = 0;
     private $rtbImpression = 0;
 
     /**
@@ -66,6 +69,60 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
     public function setRtbImpression($rtbImpression)
     {
         $this->rtbImpression = $rtbImpression;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    /**
+     * @param int $inBannerRequests
+     * @return self
+     */
+    public function setInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests = $inBannerRequests;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
+    }
+
+    /**
+     * @param int $inBannerTimeouts
+     * @return self
+     */
+    public function setInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts = $inBannerTimeouts;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    /**
+     * @param int $inBannerImpressions
+     * @return self
+     */
+    public function setInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions = $inBannerImpressions;
+        return $this;
     }
 
     public function getHbRequests()

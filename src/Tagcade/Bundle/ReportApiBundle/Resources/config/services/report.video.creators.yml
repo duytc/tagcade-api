@@ -71,5 +71,6 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@tagcade.service.report.video_report.creator.report_creator'
+            - '@tagcade_user.domain_manager.publisher'
         calls:
             - [setLogger, [@logger]]

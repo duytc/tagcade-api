@@ -32,6 +32,9 @@ Tagcade\Entity\Core\VideoDemandAdTag:
             type: boolean
             options:
                 default: false
+        requestCap:
+            type: integer
+            nullable: true
     manyToOne:
         libraryVideoDemandAdTag:
             targetEntity: Tagcade\Entity\Core\LibraryVideoDemandAdTag

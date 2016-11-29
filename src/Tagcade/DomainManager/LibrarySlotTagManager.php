@@ -11,6 +11,7 @@ use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\TagLibrary\ReplicatorInterface;
+use Tagcade\Worker\Manager;
 
 class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
 {
@@ -19,11 +20,16 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
 
     /** @var ReplicatorInterface */
     protected $replicator;
+    /**
+     * @var Manager
+     */
+    protected $manager;
 
-    public function __construct(EntityManagerInterface $em, LibrarySlotTagRepositoryInterface $repository)
+    public function __construct(EntityManagerInterface $em, LibrarySlotTagRepositoryInterface $repository, Manager $manager)
     {
         $this->em = $em;
         $this->repository = $repository;
+        $this->manager = $manager;
     }
 
     public function setReplicator(ReplicatorInterface $replicator)
@@ -63,13 +69,18 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
         $adSlotLib = $librarySlotTag->getLibraryAdSlot();
 
         if ($newSlotTag === true) {
-            $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
+            $this->manager->replicateNewLibSlotTag($librarySlotTag->getId());
+//            $this->replicator->replicateNewLibrarySlotTagToAllReferencedAdSlots($librarySlotTag);
         }
 
         if ($librarySlotTag->getAutoIncreasePosition() && $adSlotLib instanceof LibraryDisplayAdSlotInterface) {
-            $this->replicator->replicateExistingLibrarySlotTagsToAllReferencedAdTags($adSlotLib->getLibSlotTags()->toArray());
+            foreach($adSlotLib->getLibSlotTags() as $librarySlotTag) {
+                $this->manager->replicateExistingLibSlotTag($librarySlotTag->getId());
+            }
+//            $this->replicator->replicateExistingLibrarySlotTagsToAllReferencedAdTags($adSlotLib->getLibSlotTags()->toArray());
         } else {
-            $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
+//            $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag);
+            $this->manager->replicateExistingLibSlotTag($librarySlotTag->getId());
         }
     }
 
@@ -80,7 +91,8 @@ class LibrarySlotTagManager implements LibrarySlotTagManagerInterface
     {
         if (!$librarySlotTag instanceof LibrarySlotTagInterface) throw new InvalidArgumentException('expect LibrarySlotTagInterface object');
 
-        $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
+        $this->manager->replicateExistingLibSlotTag($librarySlotTag->getId(), true);
+//        $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
 
         $libraryAdSlot = $librarySlotTag->getLibraryAdSlot();
         $libraryAdSlot->removeLibSlotTag($librarySlotTag);

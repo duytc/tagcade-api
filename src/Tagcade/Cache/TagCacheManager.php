@@ -45,6 +45,15 @@ class TagCacheManager implements TagCacheManagerInterface
         }
     }
 
+    public function removeCacheForAdSlot($adSlotId, $version = 'All')
+    {
+        $refreshTagCaches = $this->getTagCachesForVersion($version);
+
+        foreach ($refreshTagCaches as $tagCache) {
+            $tagCache->removeCacheForAdSlot($adSlotId);
+        }
+    }
+
     /**
      * @param DisplayAdSlotInterface $adSlot
      * @param $version

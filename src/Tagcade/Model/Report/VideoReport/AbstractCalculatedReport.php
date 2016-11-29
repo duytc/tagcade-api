@@ -27,9 +27,9 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->subReports = new ArrayCollection();
     }
 
-    public function setCalculatedFields()
+    public function setCalculatedFields($chainToSubReports = true)
     {
-        $this->doCalculateFields();
+        $this->doCalculateFields($chainToSubReports);
 
         parent::setCalculatedFields();
 
@@ -57,13 +57,15 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->estDemandRevenue = 0;
     }
 
-    protected function doCalculateFields()
+    protected function doCalculateFields($chainToSubReports)
     {
         $this->resetCounts();
 
         foreach($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
-            $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
+            if ($chainToSubReports === true) {
+                $subReport->setCalculatedFields($chainToSubReports); // chain the calls to setCalculatedFields
+            }
 
             $this->aggregateSubReport($subReport);
 

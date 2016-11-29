@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class VideoDailyRotateCommand extends ContainerAwareCommand
@@ -33,6 +34,8 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
         $logger = $container->get('logger');
 
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+        $videoDemandPartnerManager = $container->get('tagcade.domain_manager.video_demand_partner');
+        $dailyReportCreator = $container->get('tagcade.service.report.video_report.creator.daily_report_creator');
         $allPublishers = $publisherManager->allPublisherWithVideoModule();
 
         if (empty($allPublishers)) {
@@ -59,12 +62,16 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
 
         $logger->info('start daily rotation for video');
 
-        $videoDemandPartnerManager = $container->get('tagcade.domain_manager.video_demand_partner');
-        $dailyVideoReportCreator = $this->getContainer()->get('tagcade.service.report.video_report.creator.daily_report_creator');
-        /* create video reports */
-        $dailyVideoReportCreator
-            ->setReportDate($date)
-            ->createAndSave($allPublishers, $videoDemandPartnerManager->all(), $override);
+        // Creating accounts reports
+        $this->rotateAccountReports($date, $allPublishers, $timeout, $logger, $override);
+
+        // create demand partner reports
+        $videoDemandPartners = $videoDemandPartnerManager->all();
+        $this->rotateNetworkReports($date, $videoDemandPartners, $timeout, $logger, $override);
+        unset($videoDemandPartners);
+
+        $dailyReportCreator->setReportDate($date);
+        $dailyReportCreator->createPlatformReport($date, $override);
 
         if ($skipUpdateBillingThreshold === false) {
             $this->updateBilledAmountThreshold($allPublishers, $timeout, $logger);
@@ -127,6 +134,40 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
             );
         } catch (ProcessFailedException $ex) {
             throw $ex;
+        }
+    }
+
+    protected function rotateAccountReports(DateTime $date, array $publishers, $timeout, LoggerInterface $logger, $override = false)
+    {
+        foreach ($publishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                continue;
+            }
+
+            $id = $publisher->getId();
+            $logger->info(sprintf('start video daily rotate for publisher %d', $id));
+
+            $cmd = sprintf('%s tc:video-report:daily-rotate:account --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
+            $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
+
+            $logger->info(sprintf('finished video daily rotate for publisher %d', $id));
+        }
+    }
+
+    protected function rotateNetworkReports(DateTime $date, array $videoDemandPartners, $timeout, LoggerInterface $logger, $override = false)
+    {
+        foreach ($videoDemandPartners as $videoDemandPartner) {
+            if (!$videoDemandPartner instanceof VideoDemandPartnerInterface) {
+                continue;
+            }
+
+            $id = $videoDemandPartner->getId();
+            $logger->info(sprintf('start daily rotate for video demand partner %d', $id));
+
+            $cmd = sprintf('%s tc:video-report:daily-rotate:demand-partner --id %d --date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--force' : '');
+            $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
+
+            $logger->info(sprintf('finished daily rotate for video demand partner %d', $id));
         }
     }
 }

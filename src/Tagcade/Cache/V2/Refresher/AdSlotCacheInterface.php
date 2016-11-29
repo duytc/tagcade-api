@@ -48,6 +48,14 @@ interface AdSlotCacheInterface
     public function refreshForCacheKey($cacheKey, ModelInterface $model);
 
     /**
+     * remove the specify cache key
+     * @param $cacheKey
+     * @param ModelInterface $model
+     * @return mixed
+     */
+    public function removeCacheKey($cacheKey, ModelInterface $model);
+
+    /**
      * @param BaseAdSlotInterface $adSlot
      * @return mixed
      */

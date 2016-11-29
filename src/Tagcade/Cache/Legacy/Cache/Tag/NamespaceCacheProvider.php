@@ -27,6 +27,18 @@ abstract class NamespaceCacheProvider extends CacheProvider implements Namespace
         $this->maxCacheVersion = $maxCacheVersion;
     }
 
+    public function getMaxCacheVersion()
+    {
+        return $this->maxCacheVersion;
+    }
+
+    public function removeNamespaceCacheKey()
+    {
+        $namespaceCacheKey = $this->getNamespaceCacheKey();
+        $this->doDelete($namespaceCacheKey);
+    }
+
+
     /**
      * Set the namespace to prefix all cache ids with.
      *

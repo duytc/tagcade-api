@@ -150,4 +150,15 @@ interface VideoDemandAdTagInterface extends ModelInterface
      * @return bool
      */
     public function hasJavascriptPlatform();
+
+    /**
+     * @return int
+     */
+    public function getRequestCap();
+
+    /**
+     * @param int $requestCap
+     * @return self
+     */
+    public function setRequestCap($requestCap);
 } 

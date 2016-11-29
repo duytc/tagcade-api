@@ -5,6 +5,7 @@ namespace Tagcade\Service\TagLibrary;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
+use Tagcade\Cache\TagCacheManagerInterface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DynamicAdSlot;
@@ -27,6 +28,7 @@ use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Repository\Core\DynamicAdSlotRepositoryInterface;
 use Tagcade\Repository\Core\ExpressionRepositoryInterface;
+use Tagcade\Worker\Manager;
 
 class Replicator implements ReplicatorInterface
 {
@@ -43,13 +45,24 @@ class Replicator implements ReplicatorInterface
     private $adSlotManager;
 
     /**
+     * @var Manager
+     */
+    private $manager;
+
+    private $batchSize;
+
+    /**
      * @param EntityManagerInterface $em
      * @param ChecksumValidatorInterface $checksumValidator
+     * @param Manager $manager
+     * @param $batchSize
      */
-    function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator)
+    function __construct(EntityManagerInterface $em, ChecksumValidatorInterface $checksumValidator, Manager $manager, $batchSize)
     {
         $this->em = $em;
         $this->checksumValidator = $checksumValidator;
+        $this->manager = $manager;
+        $this->batchSize = $batchSize;
     }
 
     /**
@@ -122,10 +135,10 @@ class Replicator implements ReplicatorInterface
                     ->setRotation($librarySlotTag->getRotation())
                     ->setActive($librarySlotTag->isActive())
                     ->setImpressionCap($librarySlotTag->getImpressionCap())
-                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
+                    ->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap())
+                ;
                 $adSlot->getAdTags()->add($newAdTag);
             }
-
             $this->em->persist($adSlot);
 
             // replicate for library expression in dynamic ad slot
@@ -160,6 +173,7 @@ class Replicator implements ReplicatorInterface
 
             $this->em->getConnection()->commit();
         } catch (\Exception $ex) {
+            $this->manager->removeCacheForAdSlot($adSlot->getId());
             $this->em->getConnection()->rollback();
             throw new RuntimeException($ex);
         }
@@ -189,7 +203,7 @@ class Replicator implements ReplicatorInterface
 
         try {
             /** @var BaseAdSlotInterface $adSlot */
-            foreach ($adSlots as $adSlot) {
+            foreach ($adSlots as $index=>$adSlot) {
                 $newAdTag = new AdTag();
                 $newAdTag->setAdSlot($adSlot);
                 $newAdTag->setRefId($librarySlotTag->getRefId());
@@ -202,8 +216,10 @@ class Replicator implements ReplicatorInterface
                 $newAdTag->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
 
                 $adSlot->getAdTags()->add($newAdTag);
-
                 $this->em->persist($adSlot);
+                if ($index % $this->batchSize === 0 && $index !== 0) {
+                    $this->em->flush();
+                }
 
                 $createdAdTags[] = $newAdTag;
             }
@@ -269,7 +285,6 @@ class Replicator implements ReplicatorInterface
                 $t->setActive($librarySlotTag->isActive());
                 $t->setImpressionCap($librarySlotTag->getImpressionCap());
                 $t->setNetworkOpportunityCap($librarySlotTag->getNetworkOpportunityCap());
-
                 $this->em->persist($t);
             }
         );

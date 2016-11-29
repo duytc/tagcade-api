@@ -23,4 +23,11 @@ interface AccountReportRepositoryInterface
      * @return mixed
      */
     public function getSumSlotHbRequests(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
+
+    /**
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate);
 }

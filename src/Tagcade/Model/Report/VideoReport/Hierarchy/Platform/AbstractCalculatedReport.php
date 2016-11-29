@@ -22,14 +22,14 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     use VideoWaterfallTagTrait;
     use CalculateWeightedValueTrait;
 
-    protected function doCalculateFields()
+    protected function doCalculateFields($chainToSubReports = true)
     {
         $this->adTagRequests = 0;
         $this->adTagBids = 0;
         $this->adTagErrors = 0;
         $this->billedAmount = 0;
         $this->estSupplyCost = 0;
-        parent::doCalculateFields();
+        parent::doCalculateFields($chainToSubReports);
     }
 
     protected function postCalculateFields()

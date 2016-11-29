@@ -166,7 +166,7 @@ abstract class AbstractReport implements ReportInterface
     }
 
 
-    public function setCalculatedFields()
+    public function setCalculatedFields($chainToSubReports = true)
     {
         $this->setRequestFillRate();
         $this->setBidRate();

@@ -305,6 +305,30 @@ services:
             - @tagcade.domain_manager.video_waterfall_tag
             - @tagcade.domain_manager.video_demand_partner
 
+    tagcade.worker.workers.replicate_existing_lib_slot_tag_worker:
+        class: Tagcade\Worker\Workers\ReplicateExistingLibSlotTagWorker
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade_api.service.tag_library.checksum_validator'
+
+    tagcade.worker.update_ad_tag_position_for_lib_slot_worker:
+        class: Tagcade\Worker\Workers\UpdateAdTagPositionForLibSlotWorker
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade_app.service.core.ad_tag.ad_tag_position_editor'
+
+    tagcade.worker.workers.replicate_new_lib_slot_tag_worker:
+        class: Tagcade\Worker\Workers\ReplicateNewLibSlotTagWorker
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade_api.service.tag_library.checksum_validator'
+
+    tagcade.worker.workers.remove_cache_for_ad_slot_worker:
+        class: Tagcade\Worker\Workers\RemoveCacheForAdSlotWorker
+        arguments:
+            - @tagcade.cache.tag_cache_manager
+            - @tagcade.domain_manager.ad_slot
+
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil
 

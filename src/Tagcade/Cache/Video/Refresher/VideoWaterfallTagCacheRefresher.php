@@ -99,8 +99,9 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
      *                      "id": 383, // required
      *                      "demandPartner": "liverail", // cname, required
      *                      "tagUrl": "http://vast-dummy.tagcade.dev/dummy_tag.php?name=tag1&example=nike", // required
+     *                      "weight": 50,
      *                      "priority": 10,
-     *                      "timeout": 3,
+     *                      "httpRequestTimeout": 3000, // in milliseconds. Note: old is 'timeout' in seconds
      *                      "targeting": [
      *                          "required_macros": ["page_url"],
      *                          "player_size": ["small"],
@@ -135,6 +136,8 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
         if ($videoWaterfallTagItems instanceof PersistentCollection) {
             $videoWaterfallTagItems = $videoWaterfallTagItems->toArray();
         }
+
+        // sort all videoWaterfallTagItems by position
         usort($videoWaterfallTagItems, function(VideoWaterfallTagItemInterface $a, VideoWaterfallTagItemInterface $b) {
             return $a->getPosition() > $b->getPosition();
         });
@@ -145,6 +148,16 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 continue;
             }
 
+            /*
+             * dataItem = [
+             *      'strategy' => 'parallel'|'linear',
+             *      'demandTags' => [
+             *           ...demandTagItems...
+             *      ]
+             * ]
+             */
+            $dataItem = [];
+
             $dataItem['strategy'] = $videoWaterfallTagItem->getStrategy();
             $dataItem['demandTags'] = [];
 
@@ -154,6 +167,23 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 if ($videoDemandAdTag->getActive() !== VideoDemandAdTag::ACTIVE || $videoDemandAdTag->getDeletedAt() !== null) {
                     continue;
                 }
+
+                /*
+                 * $demandAdTagItem = [
+                 *      "id": 383,
+                 *      "demandPartner": "...",
+                 *      "tagUrl": "http://vast...",
+                 *      "weight": 50,
+                 *      "priority": 10,
+                 *      "httpRequestTimeout": 3000,
+                 *      "targeting": [
+                 *          "required_macros": ["page_url"...],
+                 *          "player_size": ["small"...],
+                 *          "blacklist_domain_sets": ["my_list"...]
+                 *      ];
+                 * ];
+                 */
+                $demandAdTagItem = [];
 
                 /** @var VideoDemandAdTagInterface $videoDemandAdTag */
                 // required fields
@@ -171,7 +201,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 }
 
                 if (null != $videoDemandAdTag->getTimeout()) {
-                    $demandAdTagItem['timeout'] = $videoDemandAdTag->getTimeout();
+                    $demandAdTagItem['httpRequestTimeout'] = $videoDemandAdTag->getTimeout();
                 }
 
                 $demandAdTagItem['targeting'] = [];

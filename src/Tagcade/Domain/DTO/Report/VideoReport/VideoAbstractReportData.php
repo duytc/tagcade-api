@@ -17,8 +17,8 @@ abstract class VideoAbstractReportData implements VideoRedisReportDataInterface
     const CACHE_KEY_BLOCKS = 'blocks';
 
     /* namespace keys */
-    const NAMESPACE_AD_TAG = 'adtag_%s'; // USING UUID AS ID for video ad tag
-    const NAMESPACE_AD_SOURCE = 'adsource_%d'; // using normal id for video ad source
+    const NAMESPACE_AD_TAG = 'waterfall_tag_%s'; // USING UUID AS ID for video ad tag
+    const NAMESPACE_AD_SOURCE = 'demand_tag_%d'; // using normal id for video ad source
 
     /* all values in hash */
     protected $requests = 0;

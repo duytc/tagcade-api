@@ -2,8 +2,11 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as AbstractUser;
@@ -36,8 +39,8 @@ class BilledAmountEditor implements BilledAmountEditorInterface
     /** @var ReportSelectorInterface */
     protected $reportBuilder;
 
-    /** @var ObjectManager */
-    protected $om;
+    /** @var EntityManagerInterface */
+    protected $em;
 
     /** @var BillingCalculatorInterface */
     protected $billingCalculator;
@@ -68,7 +71,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
     function __construct(
         ReportBuilderInterface $reportBuilder,
         BillingCalculatorInterface $billingCalculator,
-        ObjectManager $om,
+        EntityManagerInterface $em,
         CpmRateGetterInterface $rateGetter,
         PublisherManagerInterface $userManager,
         DateUtilInterface $dateUtil,
@@ -79,7 +82,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
     {
         $this->reportBuilder = $reportBuilder;
         $this->billingCalculator = $billingCalculator;
-        $this->om = $om;
+        $this->em = $em;
         $this->rateGetter = $rateGetter;
         $this->userManager = $userManager;
         $this->dateUtil = $dateUtil;
@@ -229,14 +232,26 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected function doUpdateBilledAmountForPublisher(PublisherInterface $publisher, Params $param, $billedRate = null)
     {
-        $reportResult = $this->adSlotReportRepository->getAllReportInRangeForPublisher($publisher, $param->getStartDate(), $param->getEndDate());
+        $startDate = $param->getStartDate();
+        $endDate = $param->getEndDate();
 
-        if (false === $reportResult) {
-            return false;
+        $endDate = $endDate->modify('+1 day');
+        $interval = new DateInterval('P1D');
+        $dateRange = new DatePeriod($startDate, $interval, $endDate);
+
+        foreach ($dateRange as $date) {
+            $reportResult = $this->adSlotReportRepository->getAllReportInRangeForPublisher($publisher, $date, $date);
+
+            if (false === $reportResult) {
+                continue;
+            }
+
+            $this->handleUpdateBilledAmountForAdSlotReports($reportResult, $billedRate);
         }
 
-        return $this->handleUpdateBilledAmountForAdSlotReports($reportResult, $billedRate);
+        return true;
     }
+
 
     /**
      * @param PublisherInterface $publisher
@@ -263,7 +278,9 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected function handleUpdateBilledAmountForAdSlotReports(array $reportResult, $billedRate = null)
     {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $rootReports = $this->getRootReportsFromAdSlotReports($reportResult, $billedRate);
+
         unset($reportResult);
 
         foreach ($rootReports as $key => $rootReport) {
@@ -274,12 +291,11 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             $this->writeln(sprintf("finished detaching entities for report on %s", $rootReport->getDate()->format('Y-m-d')));
 
             $rootReports[$key] = null;
-            $rootReport = null;
+            unset($rootReport);
             gc_collect_cycles();
         }
 
         unset($rootReports);
-
 
         return true;
     }
@@ -320,6 +336,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected function getRootReportsFromAdSlotReports(array $reportResult, $billedRate = null)
     {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         $rootReports = [];
 
         /**
@@ -344,7 +361,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             $publisher = $reportRow->getAdSlot()->getSite()->getPublisher();
 
             /** @var CpmRate $newCpmRate */
-            $newCpmRate = $billedRate !== null ? new CpmRate($newCpmRate, true) : $this->rateGetter->getCpmRateForPublisherByMonth($publisher, AbstractUser::MODULE_DISPLAY, $reportRow->getDate());
+            $newCpmRate = $billedRate !== null ? new CpmRate($billedRate, true) : $this->rateGetter->getCpmRateForPublisherByMonth($publisher, AbstractUser::MODULE_DISPLAY, $reportRow->getDate());
 
             if (round($reportRow->getBilledRate(), 4) === round($newCpmRate->getCpmRate(), 4)) { // not update if new rate is the same as current rate
                 continue;
@@ -427,6 +444,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
 
     protected function updateBilledAmount(CalculatedReportInterface $report)
     {
+        $this->em->getConnection()->getConfiguration()->setSQLLogger(null);
         /**
          * @var CalculatedReportInterface|RootReportInterface| $report
          */
@@ -438,9 +456,12 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $report->setThresholdBilledAmount();
 
         // Step 3. Update database
-        $this->om->flush();
+        $this->em->flush();
+        $this->em->clear();
+        gc_collect_cycles();
 
         $this->writeln(sprintf("finish updating billed amount for report on %s", $report->getDate()->format('Y-m-d')));
+        unset($report);
     }
 
     protected function updateVideoBilledAmount(VideoCalculatedReportInterface $report)
@@ -456,7 +477,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $report->setThresholdBilledAmount();
 
         // Step 3. Update database
-        $this->om->flush();
+        $this->em->flush();
 
         $this->writeln(sprintf("finish updating billed amount for report on %s", $report->getDate()->format('Y-m-d')));
     }
@@ -482,7 +503,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected function flushThenDetach($entities)
     {
-        $this->om->flush();
+        $this->em->flush();
 
         $this->detach($entities);
     }
@@ -495,7 +516,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             $tmp = is_array($entity) ? $entity : [$entity];
 
             foreach ($tmp as $e) {
-                $this->om->detach($e);
+                $this->em->detach($e);
             }
         }
     }

@@ -5,6 +5,7 @@ namespace Tagcade\Cache;
 
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 
 abstract class TagCacheAbstract
@@ -40,6 +41,17 @@ abstract class TagCacheAbstract
         return $this;
     }
 
+    public function removeCacheForAdSlot($adSlotId)
+    {
+        $this->cache->setNamespace($this->getNamespace($adSlotId));
+        $this->cache->removeNamespaceCacheKey();
+        $maxVersion = $this->cache->getMaxCacheVersion();
+        for ($i = 1; $i <= $maxVersion; $i++) {
+            $this->cache->setNamespaceVersion($i);
+            $this->cache->delete(static::CACHE_KEY_AD_SLOT);
+            $this->cache->delete(static::CACHE_KEY_CDN_AD_SLOT);
+        }
+    }
     /**
      * @param AdNetworkInterface $adNetwork
      * @return $this

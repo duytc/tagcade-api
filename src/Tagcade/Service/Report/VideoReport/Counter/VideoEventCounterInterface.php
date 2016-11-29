@@ -69,4 +69,11 @@ interface VideoEventCounterInterface
      * @return mixed
      */
     public function getVideoDemandAdTagImpressionsCount($videoDemandAdTagId, $date = null);
+
+    /**
+     * @param $videoDemandAdTagId
+     * @param null $date
+     * @return mixed
+     */
+    public function getVideoDemandAdTagRequestsCount($videoDemandAdTagId, $date = null);
 }

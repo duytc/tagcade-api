@@ -80,6 +80,9 @@ class DailyAccountRotateCommand extends ContainerAwareCommand
             $this->overrideReport($accountReport, $entityManager);
             $logger->info(sprintf('Flushing report for publisher %s', $id));
             $logger->info('finished account daily rotation');
+            $entityManager->clear();
+            gc_collect_cycles();
+            unset($accountReport);
             return;
         }
 
@@ -87,6 +90,9 @@ class DailyAccountRotateCommand extends ContainerAwareCommand
         $entityManager->persist($accountReport);
         $logger->info(sprintf('Flushing report for publisher %s', $id));
         $entityManager->flush();
+        $entityManager->clear();
+        gc_collect_cycles();
+        unset($accountReport);
         $logger->info('finished account daily rotation');
     }
 

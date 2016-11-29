@@ -53,7 +53,6 @@ Tagcade\Entity\Core\AdTag:
 
         refId:
             type: string
-
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

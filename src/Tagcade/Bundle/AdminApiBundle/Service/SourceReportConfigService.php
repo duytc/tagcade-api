@@ -6,8 +6,10 @@ use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\AdminApiBundle\DomainManager\SourceReportEmailConfigManagerInterface;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportEmailConfigInterface;
 use Tagcade\Bundle\AdminApiBundle\Model\SourceReportSiteConfigInterface;
+use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 class SourceReportConfigService implements SourceReportConfigServiceInterface
 {
@@ -55,12 +57,25 @@ class SourceReportConfigService implements SourceReportConfigServiceInterface
         $reports = [];
 
         foreach ($sites as $site) {
+            /** @var PublisherInterface $publisher */
+            $publisher = $site->getPublisher();
+            $modules = [];
+
+            if ($publisher->hasDisplayModule()) {
+                $modules[] = strtolower(User::MODULE_DISPLAY);
+            }
+
+            if ($publisher->hasAnalyticsModule()) {
+                $modules[] = strtolower(User::MODULE_ANALYTICS);
+            }
+
             $filteredDomain = $this->formatSiteUrl($site->getDomain());
             $itemObject = [
                 'domain' => $filteredDomain,
                 'username' => $site->getPublisher()->getUser()->getUsername(),
                 'pub_id' => $site->getPublisherId(),
-                'site_id' => $site->getId()
+                'site_id' => $site->getId(),
+                'enabled_modules' => $modules
             ];
 
             $reports[$filteredDomain] = $itemObject;

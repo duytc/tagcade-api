@@ -15,6 +15,7 @@ use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\PositionInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Service\TagLibrary\ChecksumValidatorInterface;
+use Tagcade\Worker\Manager;
 
 class AdTagPositionEditor implements AdTagPositionEditorInterface
 {
@@ -35,13 +36,20 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
     private $validator;
 
     /**
+     * @var Manager
+     */
+    private $manager;
+
+    /**
      * @param ContainerInterface $container
      * @param EntityManagerInterface $em
+     * @param Manager $manager
      */
-    function __construct(ContainerInterface $container, EntityManagerInterface $em)
+    function __construct(ContainerInterface $container, EntityManagerInterface $em, Manager $manager)
     {
         $this->container = $container;
         $this->em = $em;
+        $this->manager = $manager;
     }
 
     /**
@@ -110,7 +118,8 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @param array $newAdTagOrderIds ordered array of array [[adtag1_pos_1, adtag2_pos_1], [adtag3_pos2]]
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
-    public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
+    public function setAdTagPositionForAdSlot(DisplayAdSlotInterface $adSlot, array $newAdTagOrderIds)
+    {
         $adTags = $adSlot->getAdTags()->toArray();
 
         return $this->updatePositionForTags($adTags, $newAdTagOrderIds);
@@ -121,7 +130,8 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
      * @param array $newAdTagOrderIds ordered array of array [[adtag1_pos_1, adtag2_pos_1], [adtag3_pos2]]
      * @return \Tagcade\Model\Core\LibrarySlotTagInterface[]
      */
-    public function setAdTagPositionForLibraryAdSlot(LibraryDisplayAdSlotInterface $adSlot, array $newAdTagOrderIds) {
+    public function setAdTagPositionForLibraryAdSlot(LibraryDisplayAdSlotInterface $adSlot, array $newAdTagOrderIds)
+    {
         $adTags = $adSlot->getLibSlotTags()->toArray();
 
         return $this->updatePositionForTags($adTags, $newAdTagOrderIds);
@@ -151,7 +161,7 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
         $pos = 1;
         $orderedAdTags = [];
         $processedAdTags = [];
-
+        $works = [];
         try {
             $this->em->getConnection()->beginTransaction();
 
@@ -178,10 +188,11 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                             }
                         }
                         //update all referenced AdTags if they are shared ad slot library
-                        $referencedTags = $this->getAdTagManager()->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
-                        if(!empty($referencedTags)) {
-                            array_walk($referencedTags, function(AdTagInterface $t) use($pos) { $t->setPosition($pos); });
-                        }
+                        $works[] = array(
+                            'libAdSlot' => $libAdSlot,
+                            'adTag' => $adTag,
+                            'position' => $pos
+                        );
                     }
 
                     $processedAdTags[] = $adTag->getId();
@@ -191,16 +202,13 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                 $pos ++;
             }
 
-            $tag = current($adTags);
-            $adSlots = $tag instanceof AdTagInterface ? $tag->getAdSlot()->getCoReferencedAdSlots() : $tag->getContainer()->getAdSlots();
-            if($adSlots instanceof PersistentCollection) $adSlots = $adSlots->toArray();
-
             $this->em->flush();
-            $this->validator->validateAllAdSlotsSynchronized($adSlots);
-
             $this->em->getConnection()->commit();
 
-
+            // push to job queue
+            foreach($works as $work) {
+                $this->manager->updateAdTagPositionForLibSlot($work['libAdSlot']->getId(), $work['adTag']->getid(), $work['position']);
+            }
         } catch(\Exception $e) {
             $this->em->getConnection()->rollBack();
             throw new RuntimeException($e);

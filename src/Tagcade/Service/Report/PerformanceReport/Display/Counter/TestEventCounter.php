@@ -354,6 +354,46 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT];
     }
 
+    public function getRonInBannerRequestCount($slotId, $segment = null)
+    {
+        if (!isset($this->ronAdSlotData[$slotId][static::KEY_IN_BANNER_REQUESTS])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdSlotSegmentData[$slotId][$segment][static::KEY_IN_BANNER_REQUESTS] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdSlotSegmentData[$slotId][$segment][static::KEY_IN_BANNER_REQUESTS] : $this->ronAdSlotData[$slotId][static::KEY_IN_BANNER_REQUESTS];
+    }
+
+    public function getRonInBannerImpressionCount($slotId, $segment = null)
+    {
+        if (!isset($this->ronAdSlotData[$slotId][static::KEY_IN_BANNER_IMPRESSIONS])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdSlotSegmentData[$slotId][$segment][static::KEY_IN_BANNER_IMPRESSIONS] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdSlotSegmentData[$slotId][$segment][static::KEY_IN_BANNER_IMPRESSIONS] : $this->ronAdSlotData[$slotId][static::KEY_IN_BANNER_IMPRESSIONS];
+    }
+
+    public function getRonInBannerTimeoutCount($slotId, $segment = null)
+    {
+        if (!isset($this->ronAdSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdSlotSegmentData[$slotId][$segment][static::KEY_IN_BANNER_TIMEOUT] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdSlotSegmentData[$slotId][$segment][static::KEY_IN_BANNER_TIMEOUT] : $this->ronAdSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT];
+    }
+
+
     /**
      * @inheritdoc
      */

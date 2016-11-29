@@ -22,7 +22,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
     properties:
         id:
             expose: true
-            groups: [user.summary, user.uuid, user.detail]
+            groups: [user.summary, user.uuid, user.detail, user.min]
         billingRate:
             expose: true
             groups: [user.detail]
@@ -34,7 +34,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             groups: [user.detail]
         company:
             expose: true
-            groups: [user.summary, user.uuid, user.detail]
+            groups: [user.summary, user.uuid, user.detail, user.min]
         phone:
             expose: true
             groups: [user.detail]

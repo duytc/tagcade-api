@@ -157,6 +157,7 @@ services:
         arguments:
             - @service_container
             - @doctrine.orm.default_entity_manager
+            - @tagcade.worker.manager
         calls:
             - [setValidator, ["@tagcade_api.service.tag_library.checksum_validator"]]
 

@@ -55,7 +55,21 @@ interface AdSlotManagerInterface extends ManagerInterface
 
     public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    /**
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
     public function getReportableAdSlotIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param array $publishers
+     * @param null $limit
+     * @param null $offset
+     * @return array
+     */
+    public function getReportableAdSlotIdsForPublishers(array $publishers, $limit = null, $offset = null);
 
     public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork);
 

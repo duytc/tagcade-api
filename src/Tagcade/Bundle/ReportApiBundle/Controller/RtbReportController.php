@@ -120,6 +120,9 @@ class RtbReportController extends FOSRestController
     public function getPublisherAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherReport($publisher, $this->getParams())
@@ -147,6 +150,9 @@ class RtbReportController extends FOSRestController
     public function getPublisherSitesAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherSitesReport($publisher, $this->getParams())
@@ -175,6 +181,15 @@ class RtbReportController extends FOSRestController
     public function getSiteAction($siteId)
     {
         $site = $this->getSite($siteId);
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getSiteReport($site, $this->getParams())
@@ -203,6 +218,16 @@ class RtbReportController extends FOSRestController
     public function getSiteAdSlotsAction($siteId)
     {
         $site = $this->getSite($siteId);
+
+        $publisher = $site->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getSiteAdSlotsReport($site, $this->getParams())
@@ -235,6 +260,16 @@ class RtbReportController extends FOSRestController
 
         if (!$adSlot) {
             throw new NotFoundHttpException('That ad slot does not exist');
+        }
+
+        $publisher = $adSlot->getSite()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
         }
 
         $this->checkUserPermission($adSlot);
@@ -271,6 +306,16 @@ class RtbReportController extends FOSRestController
             throw new NotFoundHttpException('That ad slot does not exist');
         }
 
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
+
         $this->checkUserPermission($ronAdSlot);
 
         return $this->getResult(
@@ -303,6 +348,16 @@ class RtbReportController extends FOSRestController
 
         if (!$ronAdSlot instanceof RonAdSlotInterface) {
             throw new NotFoundHttpException('That ad slot does not exist');
+        }
+
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
         }
 
         $this->checkUserPermission($ronAdSlot);
@@ -341,6 +396,16 @@ class RtbReportController extends FOSRestController
 
         $this->checkUserPermission($ronAdSlot);
 
+        $publisher = $ronAdSlot->getLibraryAdSlot()->getPublisher();
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->getResult(
             $this->getReportBuilder()->getRonAdSlotSegmentReport($ronAdSlot, $this->getParams())
         );
@@ -367,6 +432,14 @@ class RtbReportController extends FOSRestController
     public function getPublisherRonAdSlotAction($publisherId)
     {
         $publisher = $this->getPublisher($publisherId);
+
+        if (!$publisher instanceof PublisherInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$publisher->hasRtbModule()) {
+            throw new NotFoundHttpException();
+        }
 
         return $this->getResult(
             $this->getReportBuilder()->getPublisherRonAdSlotReport($publisher, $this->getParams())

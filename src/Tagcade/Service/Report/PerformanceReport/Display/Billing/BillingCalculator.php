@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
+use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 use Tagcade\Domain\DTO\Report\RateAmount;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -42,7 +43,7 @@ class BillingCalculator implements BillingCalculatorInterface
         $this->accountHeaderBiddingReportRepository = $accountHeaderBiddingReportRepository;
     }
 
-    public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
+    public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $newWeight)
     {
         if (!is_numeric($newWeight)) {
             $newWeight = 0;
@@ -57,12 +58,12 @@ class BillingCalculator implements BillingCalculatorInterface
         $weight = $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
 
         $weight += $newWeight;
-        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
+        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, User::MODULE_DISPLAY, $weight);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
     }
 
-    public function calculateHbBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
+    public function calculateHbBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $newWeight)
     {
         if (!is_numeric($newWeight)) {
             $newWeight = 0;
@@ -77,12 +78,12 @@ class BillingCalculator implements BillingCalculatorInterface
         $weight = $this->accountHeaderBiddingReportRepository->getSumSlotHbRequests($publisher, $firstDateInMonth, $yesterday );
 
         $weight += $newWeight;
-        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
+        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, User::MODULE_HEADER_BIDDING, $weight);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
     }
 
-    public function calculateInBannerBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $module, $newWeight)
+    public function calculateInBannerBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $newWeight)
     {
         if (!is_numeric($newWeight)) {
             $newWeight = 0;
@@ -97,7 +98,7 @@ class BillingCalculator implements BillingCalculatorInterface
         $weight = $this->accountReportRepository->getSumSlotInBannerImpressions($publisher, $firstDateInMonth, $yesterday);
 
         $weight += $newWeight;
-        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, $module, $weight);
+        $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, User::MODULE_IN_BANNER, $weight);
 
         return new RateAmount($cpmRate, $this->calculateBilledAmount($cpmRate->getCpmRate(), $newWeight));
     }

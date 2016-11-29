@@ -51,7 +51,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             $report->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
         }
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_DISPLAY, $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $report->getSlotOpportunities());
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());
@@ -60,7 +60,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             $report->setCustomRate($rateAmount->getRate()->getCpmRate());
         }
 
-        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), AbstractUser::MODULE_IN_BANNER, $report->getInBannerImpressions());
+        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $report->getInBannerImpressions());
 
         $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
         $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
