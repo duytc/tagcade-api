@@ -18,6 +18,7 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
 
     /* namespace keys */
     const NAMESPACE_AD_SLOT = 'adslot_%d';
+    const NAMESPACE_ACCOUNT = 'account_%d';
     const NAMESPACE_RON_AD_SLOT = 'ron_adslot_%d';
     const NAMESPACE_SEGMENT = 'segment_%d';
 

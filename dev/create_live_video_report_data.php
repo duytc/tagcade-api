@@ -20,7 +20,7 @@ $videoWaterfallTagManager = $container->get('tagcade.domain_manager.video_waterf
 
 /** @var VideoDemandAdTagManagerInterface $videoDemandAdTagManager */
 $videoDemandAdTagManager = $container->get('tagcade.domain_manager.video_demand_ad_tag');
-$dateToRotate = new DateTime('2016-11-22');
+$dateToRotate = new DateTime('2016-12-06');
 $videoTestEventCounter = new VideoTestEventCounter($videoWaterfallTagManager->all(), $videoDemandAdTagManager);
 $videoTestEventCounter->setDate($dateToRotate);
 

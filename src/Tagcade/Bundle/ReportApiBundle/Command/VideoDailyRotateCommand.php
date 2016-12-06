@@ -57,6 +57,10 @@ class VideoDailyRotateCommand extends ContainerAwareCommand
             $date = DateTime::createFromFormat('Y-m-d', $date);
         }
 
+        if ($date->setTime(0,0,0) == new DateTime('today')) {
+            throw new InvalidArgumentException('Can not rotate report for Today');
+        }
+
         $skipUpdateBillingThreshold = filter_var($input->getOption('skip-update-billing'), FILTER_VALIDATE_BOOLEAN) ;
         $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
 

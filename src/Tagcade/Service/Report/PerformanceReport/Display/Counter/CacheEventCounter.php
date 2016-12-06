@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
 use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Domain\DTO\Report\Performance\AccountReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 use Tagcade\Domain\DTO\Report\Performance\RonAdSlotReportCount;
@@ -15,6 +16,8 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy
 
+    const CACHE_KEY_ACC_SLOT_OPPORTUNITY   = 'slot_opportunities';
+    const CACHE_KEY_ACC_OPPORTUNITY       = 'opportunities';
     const CACHE_KEY_SLOT_OPPORTUNITY       = 'opportunities'; // same "opportunities" key, used with different namespace
     const CACHE_KEY_OPPORTUNITY            = 'opportunities';
     const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
@@ -34,6 +37,8 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const NAMESPACE_RON_AD_TAG             = 'ron_tag_%d';
     const NAMESPACE_APPEND_SEGMENT         = 'segment_%d';
 
+    const NAMESPACE_ACCOUNT                = 'account_%d';
+
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
 
     /* for rtb event count redis cache */
@@ -47,16 +52,24 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const REDIS_HASH_IN_BANNER_EVENT_COUNT = 'inbanner_event_processor:event_count';
 
     private static $adTagReportKeys = [
-        0 => self::CACHE_KEY_OPPORTUNITY,
-        1 => self::CACHE_KEY_IMPRESSION,
-        2 => self::CACHE_KEY_FIRST_OPPORTUNITY,
-        3 => self::CACHE_KEY_VERIFIED_IMPRESSION,
-        4 => self::CACHE_KEY_PASSBACK,
-        5 => self::CACHE_KEY_UNVERIFIED_IMPRESSION,
-        6 => self::CACHE_KEY_BLANK_IMPRESSION,
-        7 => self::CACHE_KEY_VOID_IMPRESSION,
-        8 => self::CACHE_KEY_CLICK,
-        9 => self::CACHE_KEY_FALLBACK,
+        self::CACHE_KEY_OPPORTUNITY,
+        self::CACHE_KEY_IMPRESSION,
+        self::CACHE_KEY_FIRST_OPPORTUNITY,
+        self::CACHE_KEY_VERIFIED_IMPRESSION,
+        self::CACHE_KEY_PASSBACK,
+        self::CACHE_KEY_UNVERIFIED_IMPRESSION,
+        self::CACHE_KEY_BLANK_IMPRESSION,
+        self::CACHE_KEY_VOID_IMPRESSION,
+        self::CACHE_KEY_CLICK,
+        self::CACHE_KEY_FALLBACK,
+    ];
+
+    private static $accountReportKeys = [
+        self::CACHE_KEY_ACC_OPPORTUNITY,
+        self::CACHE_KEY_ACC_SLOT_OPPORTUNITY,
+        self::CACHE_KEY_IMPRESSION,
+        self::CACHE_KEY_PASSBACK,
+        self::CACHE_KEY_FALLBACK, // legacy key of CACHE_KEY_PASSBACK
     ];
 
     /**
@@ -109,6 +122,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
     }
 
+    public function getAccountRtbImpressionsCount($publisherId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
+    }
+
     public function getOpportunityCount($tagId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
@@ -143,6 +163,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
     }
 
+    public function getAccountInBannerRequestCount($publisherId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+    }
+
     public function getRonInBannerRequestCount($slotId, $segment = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $slotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
@@ -158,6 +185,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
     }
 
+    public function getAccountInBannerImpressionCount($publisherId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+    }
+
     public function getRonInBannerTimeoutCount($slotId, $segment = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $slotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
@@ -169,6 +203,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     public function getInBannerTimeoutCount($slotId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+    }
+
+    public function getAccountInBannerTimeoutCount($publisherId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
 
         return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
     }
@@ -481,7 +522,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $convertedResults;
     }
 
-
     /**
      * @inheritdoc
      */
@@ -545,6 +585,66 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     }
 
 
+    /**
+     * @inheritdoc
+     */
+    public function getAccountReport($publisherId)
+    {
+        $accountKey = $this->createCacheKeysForAccount($publisherId);
+        $results = $this->cache->mGet($accountKey);
+        $convertedResults = array();
+        foreach ($results as $index => $value) {
+            $convertedResults[static::$accountReportKeys[$index]] = $value;
+        }
+
+        $convertedResults[static::CACHE_KEY_RTB_IMPRESSION] = $this->getAccountRtbImpressionsCount($publisherId);
+        return new AccountReportCount($convertedResults);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAccountReports(array $publisherIds)
+    {
+        $convertedResults =[];
+        $accountKeys = [];
+        $accountKeyCount = 0;
+
+        foreach ($publisherIds as $id) {
+            $cacheKeysForThisAccount = $this->createCacheKeysForAccount($id);
+            if ($accountKeyCount === 0) {
+                $accountKeyCount = count($cacheKeysForThisAccount);
+            }
+
+            foreach ($cacheKeysForThisAccount as $k) {
+                $accountKeys[] = $k;
+            }
+        }
+
+        $results = $this->cache->mGet($accountKeys);
+        $totalResultCount = count($results);
+        $index = 0;
+
+        foreach($publisherIds as $publisherId) {
+            if ($index + $accountKeyCount > $totalResultCount) {
+                throw new \RuntimeException('something went wrong with redis fetching multiple keys');
+            }
+
+            $singleConvertedResults = [];
+
+            $accountReportKey = 0;
+            for($i = $index; $i < $index + $accountKeyCount ; $i ++) {
+                $singleConvertedResults[static::$accountReportKeys[$accountReportKey]] = $results[$i];
+                $accountReportKey ++;
+            }
+
+            $convertedResults[$publisherId] = new AccountReportCount($singleConvertedResults);
+            $index += $accountKeyCount;
+        }
+
+        return $convertedResults;
+    }
+
     protected function createCacheKeysForAdTag($tagId, $hasNativeSlotContainer = false)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
@@ -586,6 +686,27 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         }
 
         return $adTagKeys;
+    }
+
+    /**
+     * create CacheKey For Account
+     *
+     * @param $publisherId
+     * @return array
+     */
+    protected function createCacheKeysForAccount($publisherId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+
+        $accountKeys = array (
+            $this->getCacheKey(self::CACHE_KEY_ACC_OPPORTUNITY, $namespace),
+            $this->getCacheKey(self::CACHE_KEY_ACC_SLOT_OPPORTUNITY, $namespace),
+            $this->getCacheKey(self::CACHE_KEY_IMPRESSION, $namespace),
+            $this->getCacheKey(self::CACHE_KEY_PASSBACK, $namespace),
+            $this->getCacheKey(self::CACHE_KEY_FALLBACK, $namespace),
+        );
+
+        return $accountKeys;
     }
 
     /**
@@ -647,11 +768,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         return $this->appendNamespace($namespace, $appendingFormat, $appendingId);
     }
-
-//    public function getNamespace($namespace, $id)
-//    {
-//        return sprintf($namespace, $id);
-//    }
 
     public function getCacheKey($key, $namespace)
     {

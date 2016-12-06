@@ -19,7 +19,7 @@ $ronAdSlotManager = $container->get('tagcade.domain_manager.ron_ad_slot');
 $reportableAdSlots = $adSlotManager->allReportableAdSlots();
 $ronAdSlots = $ronAdSlotManager->all();
 $rtbTestEventCounter = new RtbTestEventCounter($reportableAdSlots, $ronAdSlots);
-$date = new DateTime('yesterday');
+$date = new DateTime('today');
 $rtbTestEventCounter->setDate($date);
 
 writeln('### Start creating test live data for all rtb ad slots ###');
@@ -40,6 +40,24 @@ writeln('   --> Start saving data to redis ###');
 writeln('       ...');
 $rtbCacheEventCounter = new RtbCacheEventCounter($cache);
 $rtbCacheEventCounter->setDate($date);
+
+foreach ($rtbTestEventCounter->getAccountData() as $id => $accountData) {
+    $namespace = $rtbCacheEventCounter->getNamespace(RtbCacheEventCounter::NAMESPACE_ACCOUNT, $id);
+
+    // save opportunities
+    $cache->hSave(
+        $hash = RtbCacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
+        $field = $rtbCacheEventCounter->getCacheKey(RtbCacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY, $namespace),
+        $data = $accountData[$field]
+    );
+
+    // save impressions
+    $cache->hSave(
+        $hash = RtbCacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
+        $field = $rtbCacheEventCounter->getCacheKey(RtbCacheEventCounter::CACHE_KEY_IMPRESSION, $namespace),
+        $data = $accountData[$field]
+    );
+}
 
 // generate for rtb ad slot
 foreach ($rtbTestEventCounter->getAdSlotData() as $slotId => $slotData) {
@@ -135,4 +153,19 @@ writeln('### Finished creating test live data for all rtb ad slots ###');
 function writeln($str)
 {
     echo $str . PHP_EOL;
+}
+
+/**
+ * @param \Tagcade\Model\Core\BaseAdSlotInterface[] $allAdSLot
+ * @param $slotId
+ * @return \Tagcade\Model\Core\BaseAdSlotInterface || false
+ */
+function findAdSlot($allAdSLot, $slotId) {
+    foreach ($allAdSLot as $element ) {
+        if ($slotId == $element->getId() ) {
+            return $element;
+        }
+    }
+
+    return false;
 }

@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 
+use Tagcade\Domain\DTO\Report\Performance\AccountReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
 use Tagcade\Exception\InvalidArgumentException;
@@ -21,10 +22,13 @@ use Tagcade\Model\Core\SegmentInterface;
 
 class TestEventCounter extends AbstractEventCounter
 {
+    const CACHE_KEY_ACC_SLOT_OPPORTUNITY   = 'slot_opportunities';
+    const CACHE_KEY_ACC_OPPORTUNITY       = 'opportunities';
+
     const KEY_OPPORTUNITY            = 'opportunities';
     const KEY_SLOT_OPPORTUNITY       = 'opportunities';
     const KEY_IMPRESSION             = 'impressions';
-    const KEY_RTB_IMPRESSION         = 'rtb_impressions';
+    const KEY_RTB_IMPRESSION         = 'impression';
     const KEY_HB_BID_REQUEST         = 'hb_bid_request';
     const KEY_PASSBACK               = 'passbacks';
     const KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
@@ -33,6 +37,7 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const KEY_VOID_IMPRESSION        = 'void_impressions';
     const KEY_CLICK                  = 'clicks';
+
     const KEY_IN_BANNER_REQUESTS     = 'requests';
     const KEY_IN_BANNER_IMPRESSIONS  = 'impressions';
     const KEY_IN_BANNER_TIMEOUT      = 'timeouts';
@@ -44,6 +49,8 @@ class TestEventCounter extends AbstractEventCounter
     protected $ronAdSlotSegmentData = [];
     protected $ronAdTagData = [];
     protected $ronAdTagSegmentData = [];
+
+    protected $accountData = [];
 
     /**
      * @param ReportableAdSlotInterface[] $adSlots
@@ -62,6 +69,8 @@ class TestEventCounter extends AbstractEventCounter
         $this->ronAdTagData = [];
         $this->ronAdTagSegmentData = [];
 
+        $this->accountData = [];
+
         /**
          * @var BaseAdSlotInterface $adSlot
          */
@@ -75,21 +84,43 @@ class TestEventCounter extends AbstractEventCounter
             $hbRequests = mt_rand(0, $rtbImpressions);
             $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
 
+            $publisherId = $adSlot->getSite()->getPublisherId();
+            if (!isset($this->accountData[$publisherId])) {
+                $this->accountData[$publisherId] = array(
+                    static::CACHE_KEY_ACC_SLOT_OPPORTUNITY => 0,
+                    static::CACHE_KEY_ACC_OPPORTUNITY => 0,
+                    static::KEY_RTB_IMPRESSION => 0,
+                    static::KEY_IN_BANNER_REQUESTS => 0,
+                    static::KEY_IN_BANNER_TIMEOUT => 0,
+                    static::KEY_IN_BANNER_IMPRESSIONS => 0,
+                    static::KEY_HB_BID_REQUEST => 0,
+                    static::KEY_PASSBACK => 0,
+                );
+            }
+
             if (!$adSlot instanceof DynamicAdSlotInterface) {
                 $this->adSlotData[$adSlot->getId()] = [
                     static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
                     static::KEY_RTB_IMPRESSION => $rtbImpressions
                 ];
+
+                $this->accountData[$publisherId][static::CACHE_KEY_ACC_SLOT_OPPORTUNITY] += $slotOpportunities;
+                $this->accountData[$publisherId][static::KEY_RTB_IMPRESSION] += $rtbImpressions;
             }
 
             if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->getSite()->getPublisher()->hasInBannerModule()) {
                 $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
                 $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
                 $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT] = $inBannerRequests - $inBannerImpressions;
+
+                $this->accountData[$publisherId][static::KEY_IN_BANNER_REQUESTS] += $inBannerRequests;
+                $this->accountData[$publisherId][static::KEY_IN_BANNER_IMPRESSIONS] += $inBannerImpressions;
+                $this->accountData[$publisherId][static::KEY_IN_BANNER_TIMEOUT] += $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT];
             }
 
             if($adSlot->getSite()->getPublisher()->hasHeaderBiddingModule()) {
                 $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
+                $this->accountData[$publisherId][static::KEY_HB_BID_REQUEST] += $hbRequests;
             }
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
@@ -147,6 +178,10 @@ class TestEventCounter extends AbstractEventCounter
                     static::KEY_VOID_IMPRESSION => $voidImpressions,
                     static::KEY_CLICK => $clicks,
                 ];
+
+                $this->accountData[$publisherId][static::CACHE_KEY_ACC_OPPORTUNITY] += $opportunities;
+                $this->accountData[$publisherId][static::KEY_IMPRESSION] += $impressions;
+                $this->accountData[$publisherId][static::KEY_PASSBACK] += $passbacks;
 
                 $opportunitiesRemaining = $passbacks;
 
@@ -260,6 +295,11 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adSlotData;
     }
 
+    public function getAccountData()
+    {
+        return $this->accountData;
+    }
+
     public function getAdTagData()
     {
         return $this->adTagData;
@@ -318,6 +358,16 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adSlotData[$slotId][static::KEY_RTB_IMPRESSION];
     }
 
+    public function getAccountRtbImpressionsCount($publisherId)
+    {
+        if (!isset($this->accountData[$publisherId][static::KEY_RTB_IMPRESSION])) {
+            return false;
+        }
+
+        return $this->accountData[$publisherId][static::KEY_RTB_IMPRESSION];
+    }
+
+
     public function getHeaderBidRequestCount($slotId)
     {
         if (!isset($this->adSlotData[$slotId][static::KEY_HB_BID_REQUEST])) {
@@ -336,6 +386,16 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adSlotData[$slotId][static::KEY_IN_BANNER_REQUESTS];
     }
 
+    public function getAccountInBannerRequestCount($publisherId)
+    {
+        if (!isset($this->accountData[$publisherId][static::KEY_IN_BANNER_REQUESTS])) {
+            return false;
+        }
+
+        return $this->accountData[$publisherId][static::KEY_IN_BANNER_REQUESTS];
+    }
+
+
     public function getInBannerImpressionCount($slotId)
     {
         if (!isset($this->adSlotData[$slotId][static::KEY_IN_BANNER_IMPRESSIONS])) {
@@ -345,6 +405,16 @@ class TestEventCounter extends AbstractEventCounter
         return $this->adSlotData[$slotId][static::KEY_IN_BANNER_IMPRESSIONS];
     }
 
+    public function getAccountInBannerImpressionCount($publisherId)
+    {
+        if (!isset($this->accountData[$publisherId][static::KEY_IN_BANNER_IMPRESSIONS])) {
+            return false;
+        }
+
+        return $this->accountData[$publisherId][static::KEY_IN_BANNER_IMPRESSIONS];
+    }
+
+
     public function getInBannerTimeoutCount($slotId)
     {
         if (!isset($this->adSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT])) {
@@ -353,6 +423,16 @@ class TestEventCounter extends AbstractEventCounter
 
         return $this->adSlotData[$slotId][static::KEY_IN_BANNER_TIMEOUT];
     }
+
+    public function getAccountInBannerTimeoutCount($publisherId)
+    {
+        if (!isset($this->accountData[$publisherId][static::KEY_IN_BANNER_TIMEOUT])) {
+            return false;
+        }
+
+        return $this->accountData[$publisherId][static::KEY_IN_BANNER_TIMEOUT];
+    }
+
 
     public function getRonInBannerRequestCount($slotId, $segment = null)
     {
@@ -765,5 +845,35 @@ class TestEventCounter extends AbstractEventCounter
         // TODO: Implement getRonAdSlotReport() method.
     }
 
+    /**
+     * get account reports
+     *
+     * @param $publisherId
+     * @return AdTagReportCount
+     */
+    public function getAccountReport($publisherId)
+    {
+        if (!is_int($publisherId)) {
+            throw new RuntimeException(sprintf('expect int value, %s given', get_class($publisherId)));
+        }
 
+        return new AccountReportCount($this->accountData[$publisherId]);
+    }
+
+    /**
+     * Get reports for a list of ad tags
+     *
+     * @param array $publisherIds
+     *
+     * @return array('publisherId' => AccountReportCount)
+     */
+    public function getAccountReports(array $publisherIds)
+    {
+        $convertedResults = [];
+        foreach($publisherIds as $publisherId) {
+            $convertedResults[] = $this->getAccountReport($publisherId);
+        }
+
+        return $convertedResults;
+    }
 }

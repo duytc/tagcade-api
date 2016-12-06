@@ -30,14 +30,14 @@ $kernel->boot();
 $container = $kernel->getContainer();
 
 // display module
-const NUM_PUBLISHER = 2;
-const NUM_SITES = 3;
+const NUM_PUBLISHER = 3;
+const NUM_SITES = 10;
 const NUM_AD_SLOTS_PER_SITE = 10;
 const NUM_EXCHANGE_PER_PUBLISHER = 10;
 
 // video module
-const NUM_VIDEO_PUBLISHER = 2;
-const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 5;
+const NUM_VIDEO_PUBLISHER = 10;
+const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 10;
 const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 5;
 
 function xrange($max = 1000) {

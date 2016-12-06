@@ -42,6 +42,8 @@ interface EventCounterInterface
      */
     public function getInBannerRequestCount($slotId);
 
+    public function getAccountInBannerRequestCount($publisherId);
+
     /**
      * @param $slotId
      * @param $segment
@@ -49,11 +51,15 @@ interface EventCounterInterface
      */
     public function getRonInBannerRequestCount($slotId, $segment = null);
 
+    public function getAccountRtbImpressionsCount($publisherId);
+
     /**
      * @param $slotId
      * @return mixed
      */
     public function getInBannerImpressionCount($slotId);
+
+    public function getAccountInBannerImpressionCount($publisherId);
 
     /**
      * @param $slotId
@@ -67,6 +73,8 @@ interface EventCounterInterface
      * @return mixed
      */
     public function getInBannerTimeoutCount($slotId);
+
+    public function getAccountInBannerTimeoutCount($publisherId);
 
     /**
      * @param $slotId
@@ -233,5 +241,21 @@ interface EventCounterInterface
 
     public function getRonAdSlotReport($ronAdSlotId, $segmentId = null);
 
+    /**
+     * get account report
+     *
+     * @param $publisherId
+     *
+     * @return AdTagReportCount
+     */
+    public function getAccountReport($publisherId);
 
+    /**
+     * get account reports
+     *
+     * @param array $publisherIds
+     *
+     * @return AdTagReportCount
+     */
+    public function getAccountReports(array $publisherIds);
 }
