@@ -4,8 +4,8 @@ services:
         class: Tagcade\Cache\Legacy\Cache\Tag\RedisNamespacedCache
         arguments:
             - %tc.max_cache_version%
-            - %tc.legacy.tag_cache.redis_host%
-            - %tc.legacy.tag_cache.redis_port%
+            - %tc.tag_cache.redis_host%
+            - %tc.tag_cache.redis_port%
 
     tagcade.cache.legacy.tag_cache:
         class: Tagcade\Cache\Legacy\TagCache
@@ -57,25 +57,25 @@ services:
     tagcade.cache.cache_namespace.redis_array_namespace_cache:
         class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
         arguments:
-            #- %tc.legacy.live_performance_report.redis_hosts% # NOT USE RedisArray from 20161209. Leave this code to backup
-            - %tc.legacy.tag_cache.redis_host%
-            - %tc.legacy.tag_cache.redis_port%
+            #- %tc.live_performance_report.redis_hosts% # NOT USE RedisArray from 20161209. Leave this code to backup
+            - %tc.tag_cache.redis_host%
+            - %tc.tag_cache.redis_port%
             - %tc.max_cache_version%
 
     tagcade.cache.cache_namespace.video.redis_array_namespace_cache:
         class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
         arguments:
             #- %tc.cache.video.redis_hosts% # NOT USE RedisArray from 20161209. Leave this code to backup
-            - %tc.legacy.tag_cache.redis_host%
-            - %tc.legacy.tag_cache.redis_port%
+            - %tc.tag_cache.redis_host%
+            - %tc.tag_cache.redis_port%
             - %tc.max_cache_version%
 
     tagcade.cache.video.domain_list_manager:
         class: Tagcade\Cache\Video\DomainListManager
         arguments:
             #- %tc.cache.video.redis_hosts% # NOT USE RedisArray from 20161209. Leave this code to backup
-            - %tc.legacy.tag_cache.redis_host%
-            - %tc.legacy.tag_cache.redis_port%
+            - %tc.tag_cache.redis_host%
+            - %tc.tag_cache.redis_port%
 
     tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher:
         class: Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresher

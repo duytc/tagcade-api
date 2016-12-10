@@ -43,8 +43,8 @@ writeln('');
 writeln('   --> Start preparing redis cache');
 writeln('       ...');
 
-$host = $container->getParameter('tc.legacy.tag_cache.redis_host'); // or manually set value as tagcade.dev or localhost
-$port = $container->getParameter('tc.legacy.tag_cache.redis_port'); // or manually set value as 6379
+$host = $container->getParameter('tc.tag_cache.redis_host'); // or manually set value as tagcade.dev or localhost
+$port = $container->getParameter('tc.tag_cache.redis_port'); // or manually set value as 6379
 $redis = new Redis();
 $redis->connect($host, $port);
 $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
