@@ -40,6 +40,8 @@ parameters:
         - '127.0.0.1:6379'
     tc.legacy.tag_cache.redis_host: 127.0.0.1
     tc.legacy.tag_cache.redis_port: 6379
+    tc.cache.video.redis_host: tagcade.dev
+    tc.cache.video.redis_port: 6379
 
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
     tc.max_cache_version: 20 # maximum cache version of a specific key is kept in Redis cache

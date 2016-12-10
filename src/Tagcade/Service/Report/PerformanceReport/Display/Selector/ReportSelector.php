@@ -93,7 +93,7 @@ class ReportSelector implements ReportSelectorInterface
 
             $historicalEndDate = $params->getEndDate();
 
-            if ($todayIncludedInDateRange || $yesterdayIncludedInDateRange) {
+            if ($yesterdayIncludedInDateRange) {
                 // since today is in the date range and we are building that report with the report creator
                 // set the end date to yesterday to make sure we do not query for the current day
                 $historicalEndDate = new DateTime('yesterday');
@@ -104,14 +104,21 @@ class ReportSelector implements ReportSelectorInterface
                 } else {
                     $reports = array_merge($reports, $yesterdayReport);
                 }
-
-                $historicalEndDate->modify('-1 day');
             }
 
-            $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $historicalEndDate, $params->getQueryParams());
+            $historicalReports = [];
+            if ($yesterdayIncludedInDateRange) {
+                $dayBeforeYesterday = date_create($historicalEndDate->format('Y-m-d'))->modify('-1 day');
 
-            if ($historicalReports === null) {
-                $historicalReports = [];
+                if ($dayBeforeYesterday >= $params->getStartDate()) {
+                    $params->setDateRange($params->getStartDate(), $dayBeforeYesterday);
+
+                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $params->getEndDate(), $params->getQueryParams());
+                }
+            } else {
+                if ($params->getEndDate() >= $params->getStartDate()) {
+                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $params->getEndDate(), $params->getQueryParams());
+                }
             }
 
             $reports = array_merge($reports, $historicalReports);

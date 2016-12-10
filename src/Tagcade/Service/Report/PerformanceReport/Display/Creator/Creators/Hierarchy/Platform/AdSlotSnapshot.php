@@ -4,6 +4,8 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -36,14 +38,32 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
             ->setName($adSlot->getName())
             ->setDate($this->getDate());
 
-        $adSlotReportCounts = $this->eventCounter->getAdSlotReports(array($adSlot->getId()));
+        $result = $this->eventCounter->getAdSlotReport($adSlot);
 
-        $adTagIdsForAdSlot = $this->adTagManager->getAdTagIdsForAdSlot($adSlot);
-        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIdsForAdSlot);
-
-        $this->parseRawReportData($report, array_merge($adTagReportCounts, $adSlotReportCounts));
+        $this->parseRawReportData($report, $result);
 
         return $report;
+    }
+
+    public function parseRawReportData(ReportInterface $report, array $redisReportData)
+    {
+        if (!$report instanceof AdSlotReport) {
+            throw new InvalidArgumentException('Expect instance WaterfallTagReport');
+        }
+
+        $this->constructReportModel($report, $redisReportData);
+
+        $slot = $report->getAdSlot();
+
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $slot->getSite()->getPublisher(), $report->getSlotOpportunities());
+
+        $report->setBilledAmount($rateAmount->getAmount());
+        $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+
+        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($report->getDate(), $slot->getSite()->getPublisher(), $report->getInBannerImpressions());
+
+        $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
+        $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
     }
 
     /**

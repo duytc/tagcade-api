@@ -3,7 +3,7 @@
 namespace Tagcade\Domain\DTO\Report\Performance;
 
 
-use Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter;
+use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;
 
 class AccountReportCount implements BaseAdSlotReportCountInterface
 {
@@ -13,50 +13,47 @@ class AccountReportCount implements BaseAdSlotReportCountInterface
     private $rtbImpression = 0;
     private $hbRequests = 0;
     private $passbacks = 0;
+    private $fallbacks = 0;
     private $inBannerRequests;
     private $inBannerTimeouts;
     private $inBannerImpressions;
 
     function __construct(array $reportCounts)
     {
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_ACC_SLOT_OPPORTUNITY, $reportCounts)) {
-            $this->slotOpportunities = (int)$reportCounts[CacheEventCounter::CACHE_KEY_ACC_SLOT_OPPORTUNITY];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY, $reportCounts)) {
+            $this->slotOpportunities = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_ACC_OPPORTUNITY, $reportCounts)) {
-            $this->opportunities = (int)$reportCounts[CacheEventCounter::CACHE_KEY_ACC_OPPORTUNITY];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY, $reportCounts)) {
+            $this->opportunities = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_RTB_IMPRESSION, $reportCounts)) {
-            $this->rtbImpression = (int)$reportCounts[CacheEventCounter::CACHE_KEY_RTB_IMPRESSION];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION, $reportCounts)) {
+            $this->rtbImpression = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_HB_BID_REQUEST, $reportCounts)) {
-            $this->hbRequests = (int)$reportCounts[CacheEventCounter::CACHE_KEY_HB_BID_REQUEST];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST, $reportCounts)) {
+            $this->hbRequests = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_IMPRESSION, $reportCounts)) {
-            $this->impression = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IMPRESSION];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IMPRESSION, $reportCounts)) {
+            $this->impression = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_PASSBACK, $reportCounts)) {
-            $this->passbacks += (int)$reportCounts[CacheEventCounter::CACHE_KEY_PASSBACK];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_PASSBACK, $reportCounts)) {
+            $this->passbacks += (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_PASSBACK];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_FALLBACK, $reportCounts)) {
-            $this->passbacks += (int)$reportCounts[CacheEventCounter::CACHE_KEY_FALLBACK];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION, $reportCounts)) {
+            $this->inBannerImpressions = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION, $reportCounts)) {
-            $this->inBannerImpressions = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT, $reportCounts)) {
+            $this->inBannerTimeouts = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT];
         }
 
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT, $reportCounts)) {
-            $this->inBannerTimeouts = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT];
-        }
-
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST, $reportCounts)) {
-            $this->inBannerRequests = (int)$reportCounts[CacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST];
+        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST, $reportCounts)) {
+            $this->inBannerRequests = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST];
         }
     }
 
@@ -90,6 +87,14 @@ class AccountReportCount implements BaseAdSlotReportCountInterface
     public function getPassbacks()
     {
         return $this->passbacks;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFallbacks()
+    {
+        return $this->fallbacks;
     }
 
     /**

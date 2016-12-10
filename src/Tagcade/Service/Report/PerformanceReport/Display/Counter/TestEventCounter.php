@@ -15,6 +15,8 @@ use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * This counter is only used for testing
@@ -848,28 +850,47 @@ class TestEventCounter extends AbstractEventCounter
     /**
      * get account reports
      *
-     * @param $publisherId
+     * @param PublisherInterface $publisher
      * @return AdTagReportCount
      */
-    public function getAccountReport($publisherId)
+    public function getAccountReport(PublisherInterface $publisher)
     {
-        if (!is_int($publisherId)) {
-            throw new RuntimeException(sprintf('expect int value, %s given', get_class($publisherId)));
-        }
+        return new AccountReportCount($this->accountData[$publisher->getId()]);
+    }
 
-        return new AccountReportCount($this->accountData[$publisherId]);
+    public function getAdSlotReport(ReportableAdSlotInterface $slot)
+    {
+        // TODO: Implement getAdSlotReport() method.
+    }
+
+    public function getNetworkReport(array $tagIds, $nativeSlot = false)
+    {
+        // TODO: Implement getNetworkReport() method.
+    }
+
+    public function getSiteReportData(SiteInterface $site)
+    {
+        // TODO: Implement getSiteReportData() method.
     }
 
     /**
      * Get reports for a list of ad tags
      *
-     * @param array $publisherIds
+     * @param array|PublisherInterface[] $publishers
      *
      * @return array('publisherId' => AccountReportCount)
      */
-    public function getAccountReports(array $publisherIds)
+    public function getAccountReports(array $publishers)
     {
+        $publisherIds = [];
         $convertedResults = [];
+
+        foreach ($publishers as $publisher) {
+            if ($publisher instanceof PublisherInterface) {
+                $publisherIds[] = $publisher->getId();
+            }
+        }
+
         foreach($publisherIds as $publisherId) {
             $convertedResults[] = $this->getAccountReport($publisherId);
         }

@@ -38,28 +38,6 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
      */
     public function doCreateReport(AccountReportType $reportType)
     {
-        /* OLD METHOD: get accountReport snapshot via getting all ad slots, ad tags data
-        $report = new AccountReport();
-        $publisher = $reportType->getPublisher();
-        $publisherName = $publisher->getCompany();
-        $report
-            ->setPublisher($publisher)
-            ->setName($publisherName === null ? $publisher->getUser()->getUsername() : $publisherName)
-            ->setDate($this->getDate());
-
-        $reportableAdSlotIds = $this->adSlotManager->getReportableAdSlotIdsForPublisher($publisher);
-        $adSlotReportCounts = $this->eventCounter->getAdSlotReports($reportableAdSlotIds);
-        unset($reportableAdSlotIds);
-
-        $adTagIdsForPublisher = $this->adTagManager->getActiveAdTagsIdsForPublisher($publisher);
-        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIdsForPublisher);
-        unset($adTagIdsForPublisher);
-
-        $this->parseRawReportData($report, array_merge($adSlotReportCounts, $adTagReportCounts));
-
-        return $report; /**/
-
-        /* NEW METHOD: get accountReport snapshot directly via redis */
         $report = new AccountReport();
         $publisher = $reportType->getPublisher();
         $publisherName = $publisher->getCompany();
@@ -69,19 +47,7 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
             ->setName($publisherName === null ? $publisher->getUser()->getUsername() : $publisherName)
             ->setDate($this->getDate());
 
-        $accountReportCount = $this->eventCounter->getAccountReport($publisher->getId());
-
-        $result = array(
-            self::CACHE_KEY_SLOT_OPPORTUNITY => $accountReportCount->getSlotOpportunities(),
-            self::CACHE_KEY_OPPORTUNITY => $accountReportCount->getOpportunities(),
-            self::CACHE_KEY_RTB_IMPRESSION => $accountReportCount->getRtbImpression(),
-            self::CACHE_KEY_IMPRESSION => $accountReportCount->getImpression(),
-            self::CACHE_KEY_PASSBACK => $accountReportCount->getPassbacks(),
-            self::CACHE_KEY_HEADER_BID_REQUEST => $accountReportCount->getHbRequests(),
-            self::CACHE_KEY_IN_BANNER_REQUEST => $accountReportCount->getInBannerRequests(),
-            self::CACHE_KEY_IN_BANNER_TIMEOUT => $accountReportCount->getInBannerTimeouts(),
-            self::CACHE_KEY_IN_BANNER_IMPRESSION => $accountReportCount->getInBannerImpressions(),
-        );
+        $result = $this->eventCounter->getAccountReport($publisher);
 
         $this->parseRawReportData($report, $result);
 
@@ -98,33 +64,11 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
 
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
-        $this->constructReportModel($report, $redisReportData);
-    }
-
-
-    protected function constructReportModel(ReportInterface $report, array $data)
-    {
         if (!$report instanceof AccountReport) {
             throw new InvalidArgumentException('Expect instance WaterfallTagReport');
         }
 
-        // TODO set RTB, HB, ... for account report
-
-        $report
-            ->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-            ->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-            ->setRtbImpressions($data[self::CACHE_KEY_RTB_IMPRESSION])
-            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-            ->setInBannerImpressions($data[self::CACHE_KEY_IN_BANNER_IMPRESSION])
-            ->setInBannerTimeouts($data[self::CACHE_KEY_IN_BANNER_TIMEOUT])
-            ->setInBannerRequests($data[self::CACHE_KEY_IN_BANNER_REQUEST])
-            ->setFillRate()
-        ;
-
-        // TODO latter
-        $report->setEstCpm((float)0);
-        $report->setEstRevenue((float)0);
+        $this->constructReportModel($report, $redisReportData);
 
         $publisher = $report->getPublisher();
 
@@ -138,6 +82,4 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
         $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
         $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
     }
-
-
 }

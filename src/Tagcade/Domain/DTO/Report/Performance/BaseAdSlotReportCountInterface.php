@@ -10,4 +10,10 @@ interface BaseAdSlotReportCountInterface extends RedisReportDataInterface
     public function getRtbImpression();
 
     public function getHbRequests();
+
+    public function getInBannerRequests();
+
+    public function getInBannerTimeouts();
+
+    public function getInBannerImpressions();
 }

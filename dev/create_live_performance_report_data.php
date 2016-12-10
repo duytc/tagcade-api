@@ -9,6 +9,7 @@ $kernel->boot();
 $container = $kernel->getContainer();
 
 $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
+$adTagManager = $container->get('tagcade.domain_manager.ad_tag');
 $allAdSLot = $adSlotManager->all();
 
 $allAdSLotMap = [];
@@ -22,11 +23,14 @@ writeln('### Start creating test live data for performance reports ###');
 $testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($allAdSLot);
 $testEventCounter->refreshTestData();
 
-$redis = new RedisArray(['localhost']);
+$host = $container->getParameter('tc.legacy.tag_cache.redis_host'); // or manually set value as tagcade.dev or localhost
+$port = $container->getParameter('tc.legacy.tag_cache.redis_port'); // or manually set value as 6379
+$redis = new Redis();
+$redis->connect($host, $port);
 $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
-$cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache);
+$cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache, $adTagManager, $adSlotManager);
 $cacheEventCounter->setDate(new DateTime('today'));
 
 writeln('### creating test live data for account ###');

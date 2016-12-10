@@ -4,6 +4,9 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface EventCounterInterface
 {
@@ -217,6 +220,12 @@ interface EventCounterInterface
     public function getAdSlotReports(array $adSlotIds);
 
     /**
+     * @param ReportableAdSlotInterface $slot
+     * @return array
+     */
+    public function getAdSlotReport(ReportableAdSlotInterface $slot);
+
+    /**
      * @param $tagId
      * @param bool $nativeSlot whether ad slot containing this tag is native or not
      *
@@ -234,6 +243,7 @@ interface EventCounterInterface
      */
     public function getAdTagReports(array $tagIds, $nativeSlot = false);
 
+    public function getNetworkReport(array $tagIds, $nativeSlot = false);
 
     public function getRonAdTagReport($ronTagId, $segmentId = null, $hasNativeSlotContainer = false);
 
@@ -244,18 +254,24 @@ interface EventCounterInterface
     /**
      * get account report
      *
-     * @param $publisherId
+     * @param PublisherInterface $publisher
      *
-     * @return AdTagReportCount
+     * @return array
      */
-    public function getAccountReport($publisherId);
+    public function getAccountReport(PublisherInterface $publisher);
+
+    /**
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function getSiteReportData(SiteInterface $site);
 
     /**
      * get account reports
      *
-     * @param array $publisherIds
+     * @param array|PublisherInterface[] $publishers
      *
      * @return AdTagReportCount
      */
-    public function getAccountReports(array $publisherIds);
+    public function getAccountReports(array $publishers);
 }

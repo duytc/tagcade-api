@@ -337,11 +337,12 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
             return array($value);
         }
 
-        $maxEachItem = floor(100 / $arraySize);
+        $maxEachItem = 100 / $arraySize;
 
         $result = [];
         for ($i = 0; $i < $arraySize - 1; $i++) {
-            $tmpVal = mt_rand(0, $maxEachItem);
+//            $tmpVal = mt_rand(0, $maxEachItem);
+            $tmpVal = mt_rand() / mt_getrandmax() * $maxEachItem;
             $result[] = round($tmpVal * $value / 100);
         }
 
