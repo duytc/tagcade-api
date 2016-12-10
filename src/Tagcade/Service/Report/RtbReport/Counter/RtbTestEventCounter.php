@@ -223,7 +223,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     {
         // NOTICE: implement this to create RtbAdSlotReport by random value instead of get from cache!!!
         /* build report from $this->adSlotData */
-        return new RtbAdSlotReportCount($adSlotId, $this->getAdSlotData()[$adSlotId], $this->getDate());
+        return new RtbAdSlotReportCount($adSlotId, $this->getAdSlotData()[$adSlotId], $supportMGet, $this->getDate());
     }
 
     /**
@@ -235,7 +235,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
         /* build reports from $this->adSlotData */
         $reports = [];
         foreach ($adSlotIds as $id) {
-            $reports[] = new RtbAdSlotReportCount($id, $this->getAdSlotData()[$id]);
+            $reports[] = new RtbAdSlotReportCount($id, $this->getAdSlotData()[$id], $supportMGet);
         }
 
         return $reports;
