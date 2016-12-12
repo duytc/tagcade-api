@@ -131,6 +131,7 @@ class TestEventCounter extends AbstractEventCounter
 
                 $this->ronAdSlotData[$ronAdSlot->getId()] = $this->arraySum([
                     static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
+                    static::KEY_RTB_IMPRESSION => $rtbImpressions,
                 ], $currentData);
 
                 $totalRonSlotOpportunities = $this->ronAdSlotData[$ronAdSlot->getId()][static::KEY_SLOT_OPPORTUNITY];
