@@ -71,7 +71,7 @@ class AdTagReportCount implements BaseAdTagReportCountInterface
         }
 
         if (array_key_exists(self::CACHE_KEY_FORCED_PASSBACK, $reportCounts)) {
-            $this->passbacks = $reportCounts[self::CACHE_KEY_FORCED_PASSBACK];
+            $this->forcedPassbacks = $reportCounts[self::CACHE_KEY_FORCED_PASSBACK];
         }
     }
 
