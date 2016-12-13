@@ -693,6 +693,21 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $rtbCacheKeys =[];
 
         $adSlotIds = $this->adSlotManager->getReportableAdSlotIdsForPublisher($publisher);
+        if (count($adSlotIds) < 1) {
+            return array (
+                SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
+                SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
+                SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
+                SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
+                SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
+//            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
+            );
+        }
+
         foreach ($adSlotIds as $id) {
             $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $id);
             $cacheKeys[] = array (
@@ -754,6 +769,21 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $rtbCacheKeys =[];
 
         $adSlotIds = $this->adSlotManager->getAdSlotIdsForSite($site);
+        if (count($adSlotIds) < 1) {
+            return array (
+                SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
+                SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
+                SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
+                SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
+                SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
+                SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
+//            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
+            );
+        }
+        
         foreach ($adSlotIds as $id) {
             $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $id);
             $cacheKeys[] = array (

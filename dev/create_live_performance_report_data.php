@@ -31,7 +31,7 @@ $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache, $adTagManager, $adSlotManager);
-$cacheEventCounter->setDate(new DateTime('2016-12-10'));
+$cacheEventCounter->setDate(new DateTime('yesterday'));
 
 writeln('### creating test live data for account ###');
 foreach($testEventCounter->getAccountData() as $publisherId => $accountData) {
@@ -217,7 +217,7 @@ foreach($testEventCounter->getRonAdSlotData() as $ronSlotId => $ronSlotData) {
     }
 
     if (array_key_exists($testEventCounter::KEY_RTB_IMPRESSION, $ronSlotData)) {
-        $cache->hSave($cacheEventCounter::REDIS_HASH_EVENT_COUNT,
+        $cache->hSave($cacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
             $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_RTB_IMPRESSION, $namespace ),
             $ronSlotData[$testEventCounter::KEY_RTB_IMPRESSION]
         );
