@@ -107,17 +107,17 @@ class ReportSelector implements ReportSelectorInterface
             }
 
             $historicalReports = [];
+            $enDate = $params->getEndDate();
             if ($yesterdayIncludedInDateRange) {
                 $dayBeforeYesterday = date_create($historicalEndDate->format('Y-m-d'))->modify('-1 day');
 
                 if ($dayBeforeYesterday >= $params->getStartDate()) {
-                    $params->setDateRange($params->getStartDate(), $dayBeforeYesterday);
-
-                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $params->getEndDate(), $params->getQueryParams());
+                    $enDate = $dayBeforeYesterday;
+                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $enDate, $params->getQueryParams());
                 }
             } else {
                 if ($params->getEndDate() >= $params->getStartDate()) {
-                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $params->getEndDate(), $params->getQueryParams());
+                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $enDate, $params->getQueryParams());
                 }
             }
 

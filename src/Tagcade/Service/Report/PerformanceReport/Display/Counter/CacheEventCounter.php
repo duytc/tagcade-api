@@ -783,7 +783,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 //            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
             );
         }
-        
+
         foreach ($adSlotIds as $id) {
             $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $id);
             $cacheKeys[] = array (
