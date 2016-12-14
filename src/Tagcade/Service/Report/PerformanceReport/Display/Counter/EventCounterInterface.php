@@ -56,6 +56,7 @@ interface EventCounterInterface
 
     public function getAccountRtbImpressionsCount($publisherId);
 
+    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null);
     /**
      * @param $slotId
      * @return mixed

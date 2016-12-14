@@ -43,7 +43,10 @@ class RonAdSlot extends CreatorAbstract implements RonAdSlotInterface
             ->setRonAdSlot($ronAdSlot)
             ->setSegment($segment)
             ->setDate($this->getDate())
-            ->setSlotOpportunities($this->eventCounter->getRonSlotOpportunityCount($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId(): null));
+            ->setSlotOpportunities($this->eventCounter->getRonSlotOpportunityCount($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId(): null))
+            ->setRtbImpressions($this->eventCounter->getRonSlotRtbImpressionsCount($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId(): null))
+        ;
+
 
             $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $ronAdSlot->getLibraryAdSlot()->getPublisher(), $report->getSlotOpportunities());
             $report->setBilledAmount($rateAmount->getAmount());
