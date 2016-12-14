@@ -609,6 +609,20 @@ class TestEventCounter extends AbstractEventCounter
         return null !== $segment ? $this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_SLOT_OPPORTUNITY] : $this->ronAdSlotData[$ronSlotId][static::KEY_SLOT_OPPORTUNITY];
     }
 
+    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null)
+    {
+        if (!isset($this->ronAdSlotData[$ronSlotId][static::KEY_RTB_IMPRESSION])) {
+            return false;
+        }
+
+        if (null !== $segment && !isset($this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_RTB_IMPRESSION] )) {
+            return false;
+        }
+
+        return null !== $segment ? $this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_RTB_IMPRESSION] : $this->ronAdSlotData[$ronSlotId][static::KEY_RTB_IMPRESSION];
+    }
+
+
     /**
      * @param int $ronTagId
      * @param int|null $segment
