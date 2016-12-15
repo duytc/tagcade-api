@@ -6,6 +6,7 @@ namespace Tagcade\Bundle\UserBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Worker\Manager;
 
 class UpdatePublisherListener
@@ -27,6 +28,10 @@ class UpdatePublisherListener
             return;
         }
 
+        if ($entity instanceof SubPublisherInterface) {
+            return;
+        }
+
         if ($entity->isEnabled() && $entity->hasUnifiedReportModule()) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
@@ -38,6 +43,10 @@ class UpdatePublisherListener
         $entity = $args->getEntity();
 
         if (!$entity instanceof PublisherInterface) {
+            return;
+        }
+
+        if ($entity instanceof SubPublisherInterface) {
             return;
         }
 
