@@ -50,9 +50,7 @@ class UpdatePublisherListener
             return;
         }
 
-        if (($entity->isEnabled() && $entity->hasUnifiedReportModule())
-            || ($entity->isEnabled() && $args->hasChangedField('roles') && !$entity->hasUnifiedReportModule() && !$args->hasChangedField('enabled'))
-            || ($entity->hasUnifiedReportModule() && $args->hasChangedField('enabled') && !$args->hasChangedField('roles'))) {
+        if ($args->hasChangedField('enabled') || $args->hasChangedField('roles')) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
         }
@@ -62,8 +60,6 @@ class UpdatePublisherListener
     {
         $entityArray = array();
         $entityArray['id'] = $entity->getId();
-        $entityArray['billingRate'] = $entity->getBillingRate();
-        $entityArray['billingConfigs'] = $entity->getBillingConfigs();
         $entityArray['firstName'] = $entity->getFirstName();
         $entityArray['lastName'] = $entity->getLastName();
         $entityArray['company'] = $entity->getCompany();
@@ -73,10 +69,6 @@ class UpdatePublisherListener
         $entityArray['address'] = $entity->getAddress();
         $entityArray['postalCode'] = $entity->getPostalCode();
         $entityArray['country'] = $entity->getCountry();
-        $entityArray['settings'] = $entity->getSettings();
-        $entityArray['tagDomain'] = $entity->getTagDomain();
-        $entityArray['exchanges'] = $entity->getExchanges();
-        $entityArray['bidders'] = $entity->getBidders();
         $entityArray['enabledModules'] = $entity->getEnabledModules();
         $entityArray['username'] = $entity->getUsername();
         $entityArray['password'] = $entity->getPassword();
