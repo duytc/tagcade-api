@@ -74,19 +74,15 @@ services:
 
     redis_array.performance_report_data:
         class: Redis
-#        arguments:
-#            - %tc.live_performance_report.redis_hosts%
-#            - %tc.tag_cache.redis_host%
-#            - %tc.legacy.tag_cache.redis_port%
         calls:
-            - [connect, ["%tc.tag_cache.redis_host%","%tc.tag_cache.redis_port%"]]
+            - [connect, ["%tc.redis.performance_report.host%","%tc.redis.performance_report.port%"]]
 
     tagcade.legacy.cache.performance_report_data:
         class: Tagcade\Cache\Legacy\Cache\RedisArrayCache
         calls:
             - [setRedis, [@redis_array.performance_report_data]]
-            - [setHost, ["%tc.tag_cache.redis_host%"]]
-            - [setPort, ["%tc.tag_cache.redis_port%"]]
+            - [setHost, ['%tc.redis.performance_report.host%']]
+            - [setPort, ['%tc.redis.performance_report.port%']]
 
     tagcade.service.report.performance_report.display.counter.cache_event_counter:
         class: Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter
