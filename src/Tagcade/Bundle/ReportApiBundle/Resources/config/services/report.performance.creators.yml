@@ -73,19 +73,23 @@ services:
     # legacy access to live performance report data
 
     redis_array.performance_report_data:
-        class: RedisArray
-        arguments:
-            - %tc.legacy.live_performance_report.redis_hosts%
+        class: Redis
+        calls:
+            - [connect, ["%tc.redis.performance_report.host%","%tc.redis.performance_report.port%"]]
 
     tagcade.legacy.cache.performance_report_data:
         class: Tagcade\Cache\Legacy\Cache\RedisArrayCache
         calls:
             - [setRedis, [@redis_array.performance_report_data]]
+            - [setHost, ['%tc.redis.performance_report.host%']]
+            - [setPort, ['%tc.redis.performance_report.port%']]
 
     tagcade.service.report.performance_report.display.counter.cache_event_counter:
         class: Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter
         arguments:
             - @tagcade.legacy.cache.performance_report_data
+            - @tagcade.domain_manager.ad_tag
+            - @tagcade.domain_manager.ad_slot
 
     ### Report creator service
 

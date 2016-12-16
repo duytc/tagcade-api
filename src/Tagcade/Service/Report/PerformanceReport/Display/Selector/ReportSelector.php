@@ -69,6 +69,7 @@ class ReportSelector implements ReportSelectorInterface
         $selector = $this->getSelectorFor($reportType);
 
         $todayIncludedInDateRange = $this->dateUtil->isTodayInRange($params->getStartDate(), $params->getEndDate());
+        $yesterdayIncludedInDateRange = $this->dateUtil->isYesterdayInRange($params->getStartDate(), $params->getEndDate());
 
         $reports = [];
 
@@ -92,16 +93,32 @@ class ReportSelector implements ReportSelectorInterface
 
             $historicalEndDate = $params->getEndDate();
 
-            if ($todayIncludedInDateRange) {
+            if ($yesterdayIncludedInDateRange) {
                 // since today is in the date range and we are building that report with the report creator
                 // set the end date to yesterday to make sure we do not query for the current day
                 $historicalEndDate = new DateTime('yesterday');
+                $yesterdayReport = $selector->getReports($reportType, $historicalEndDate, $historicalEndDate, $params->getQueryParams());
+                if ($yesterdayReport === false || empty($yesterdayReport)) {
+                    $this->reportCreator->setDate($historicalEndDate);
+                    $reports[] = $this->reportCreator->getReport($reportType);
+                } else {
+                    $reports = array_merge($reports, $yesterdayReport);
+                }
             }
 
-            $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $historicalEndDate, $params->getQueryParams());
+            $historicalReports = [];
+            $enDate = $params->getEndDate();
+            if ($yesterdayIncludedInDateRange) {
+                $dayBeforeYesterday = date_create($historicalEndDate->format('Y-m-d'))->modify('-1 day');
 
-            if ($historicalReports === null) {
-                $historicalReports = [];
+                if ($dayBeforeYesterday >= $params->getStartDate()) {
+                    $enDate = $dayBeforeYesterday;
+                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $enDate, $params->getQueryParams());
+                }
+            } else {
+                if ($params->getEndDate() >= $params->getStartDate()) {
+                    $historicalReports = $selector->getReports($reportType, $params->getStartDate(), $enDate, $params->getQueryParams());
+                }
             }
 
             $reports = array_merge($reports, $historicalReports);

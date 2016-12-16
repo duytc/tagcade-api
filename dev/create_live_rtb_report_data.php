@@ -31,7 +31,11 @@ writeln('   --> Finished refreshing random test data');
 
 writeln('   --> Start preparing redis cache ###');
 writeln('       ...');
-$redis = new RedisArray(['localhost']);
+
+$host = $container->getParameter('tc.redis.performance_report.host'); // or manually set value as tagcade.dev or localhost
+$port = $container->getParameter('tc.redis.performance_report.port'); // or manually set value as 6379
+$redis = new Redis();
+$redis->connect($host, $port);
 $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 writeln('   --> Finished preparing redis cache ###');
@@ -40,6 +44,24 @@ writeln('   --> Start saving data to redis ###');
 writeln('       ...');
 $rtbCacheEventCounter = new RtbCacheEventCounter($cache);
 $rtbCacheEventCounter->setDate($date);
+
+foreach ($rtbTestEventCounter->getAccountData() as $id => $accountData) {
+    $namespace = $rtbCacheEventCounter->getNamespace(RtbCacheEventCounter::NAMESPACE_ACCOUNT, $id);
+
+    // save opportunities
+    $cache->hSave(
+        $hash = RtbCacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
+        $field = $rtbCacheEventCounter->getCacheKey(RtbCacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY, $namespace),
+        $data = $accountData[$field]
+    );
+
+    // save impressions
+    $cache->hSave(
+        $hash = RtbCacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
+        $field = $rtbCacheEventCounter->getCacheKey(RtbCacheEventCounter::CACHE_KEY_IMPRESSION, $namespace),
+        $data = $accountData[$field]
+    );
+}
 
 // generate for rtb ad slot
 foreach ($rtbTestEventCounter->getAdSlotData() as $slotId => $slotData) {
@@ -135,4 +157,19 @@ writeln('### Finished creating test live data for all rtb ad slots ###');
 function writeln($str)
 {
     echo $str . PHP_EOL;
+}
+
+/**
+ * @param \Tagcade\Model\Core\BaseAdSlotInterface[] $allAdSLot
+ * @param $slotId
+ * @return \Tagcade\Model\Core\BaseAdSlotInterface || false
+ */
+function findAdSlot($allAdSLot, $slotId) {
+    foreach ($allAdSLot as $element ) {
+        if ($slotId == $element->getId() ) {
+            return $element;
+        }
+    }
+
+    return false;
 }

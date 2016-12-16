@@ -154,7 +154,7 @@ class SnapshotCreatorTest extends \Codeception\TestCase\Test
         $this->testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($this->adSlots);
         $this->testEventCounter->refreshTestData();
 
-        $redis = new RedisArray(['localhost']);
+        $redis = new Redis(['localhost']);
         $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
         $cache->setRedis($redis);
 

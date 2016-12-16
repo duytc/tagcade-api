@@ -43,13 +43,18 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
             ->setDate($this->getDate());
 
         $adTagIdsForAdNetwork = $this->adTagManager->getAdTagIdsForAdNetwork($adNetwork);
-        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIdsForAdNetwork);
-        unset($adTagIdsForPublisher);
+        $networkCount = $this->eventCounter->getNetworkReport($adTagIdsForAdNetwork);
 
-        $this->parseRawReportData($report, $adTagReportCounts);
+        $this->parseRawReportData($report, $networkCount);
 
         return $report;
     }
+
+    public function parseRawReportData(ReportInterface $report, array $redisReportData)
+    {
+        $this->constructReportModel($report, $redisReportData);
+    }
+
 
     /**
      * @inheritdoc

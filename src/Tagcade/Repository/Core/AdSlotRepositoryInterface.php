@@ -23,6 +23,8 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
+
     public function getDisplayAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 
     public function getNativeAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);

@@ -30,15 +30,15 @@ $kernel->boot();
 $container = $kernel->getContainer();
 
 // display module
-const NUM_PUBLISHER = 2;
-const NUM_SITES = 3;
-const NUM_AD_SLOTS_PER_SITE = 10;
-const NUM_EXCHANGE_PER_PUBLISHER = 10;
+const NUM_PUBLISHER = 10;
+const NUM_SITES = 20;
+const NUM_AD_SLOTS_PER_SITE = 50;
+const NUM_EXCHANGE_PER_PUBLISHER = 1;
 
 // video module
-const NUM_VIDEO_PUBLISHER = 2;
-const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 5;
-const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 5;
+const NUM_VIDEO_PUBLISHER = 1;
+const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 1;
+const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 1;
 
 function xrange($max = 1000) {
     for ($i = 1; $i <= $max; $i++) {
@@ -63,7 +63,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setEnabled(true)
     ;
 
-    $publisher->setCompany('tctest'); // doesn't return $this so cannot chain
+    $publisher->setCompany('tctest'.$userId); // doesn't return $this so cannot chain
     $enabledModules = [$publisher::MODULE_DISPLAY, $publisher::MODULE_RTB, $publisher::MODULE_VIDEO, $publisher::MODULE_HEADER_BIDDING, $publisher::MODULE_VIDEO_ANALYTICS, $publisher::MODULE_UNIFIED_REPORT];
     $publisher->setEnabledModules($enabledModules);
 

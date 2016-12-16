@@ -25,6 +25,8 @@ interface AdSlotManagerInterface extends ManagerInterface
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
+
     /**
      * @param PublisherInterface $publisher
      * @param int|null $limit

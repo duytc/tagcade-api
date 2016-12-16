@@ -64,7 +64,7 @@ abstract class ReportCreatorAbstract
             $creator->setEventCounter($this->eventCounter);
             $report = $creator->createReport($reportType);
         } catch (\Exception $e) {
-            throw new RunTimeException('Could not get the report', $e->getCode(), $e);
+            throw new RuntimeException('Could not get the report', $e->getCode(), $e);
         }
 
         return $report;

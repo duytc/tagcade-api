@@ -41,6 +41,14 @@ class DateUtil implements DateUtilInterface
         return $today >= $startDate && $today <= $endDate;
     }
 
+    public function isYesterdayInRange(DateTime $startDate, DateTime $endDate)
+    {
+        $today = new DateTime('yesterday');
+
+        return $today >= $startDate && $today <= $endDate;
+    }
+
+
     public function isDateBeforeToday(DateTime $date)
     {
         return $date < (new DateTime('today'));

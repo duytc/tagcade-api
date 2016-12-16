@@ -126,6 +126,17 @@ class AdSlotManager implements AdSlotManagerInterface
         return $this->adSlotRepository->getAdSlotsForSite($site, $limit, $offset);
     }
 
+    public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $slots =  $this->adSlotRepository->getAdSlotIdsForSite($site, $limit, $offset);
+
+        return array_map(
+            function($adSlotData){
+                return $adSlotData['id'];
+            }, $slots
+        );
+    }
+
     /**
      * @inheritdoc
      */
