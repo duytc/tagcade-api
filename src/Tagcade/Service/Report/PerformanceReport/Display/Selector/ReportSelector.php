@@ -100,7 +100,18 @@ class ReportSelector implements ReportSelectorInterface
                 $yesterdayReport = $selector->getReports($reportType, $historicalEndDate, $historicalEndDate, $params->getQueryParams());
                 if ($yesterdayReport === false || empty($yesterdayReport)) {
                     $this->reportCreator->setDate($historicalEndDate);
-                    $reports[] = $this->reportCreator->getReport($reportType);
+                    if (
+                        !$reportType instanceof PartnerReportType\Account &&
+                        !$reportType instanceof PartnerReportType\AdNetworkAdTag &&
+                        !$reportType instanceof PartnerReportType\AdNetworkDomain &&
+                        !$reportType instanceof PartnerReportType\AdNetworkDomainAdTagSubPublisher &&
+                        !$reportType instanceof SubPublisherReportType\SubPublisher &&
+                        !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
+                    ) {
+                        // the report types above do not have creator, they're derived from other reports
+                        // Create today's report and add it to the first position in the array
+                        $reports[] = $this->reportCreator->getReport($reportType);
+                    }
                 } else {
                     $reports = array_merge($reports, $yesterdayReport);
                 }
