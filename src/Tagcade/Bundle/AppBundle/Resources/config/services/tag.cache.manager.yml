@@ -57,8 +57,8 @@ services:
     tagcade.cache.cache_namespace.redis_array_namespace_cache:
         class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
         arguments:
-            - '%tc.redis.performance_report.host%'
-            - '%tc.redis.performance_report.port%'
+            - '%tc.redis.app_cache.host%'
+            - '%tc.redis.app_cache.port%'
             - '%tc.max_cache_version%'
 
     tagcade.cache.cache_namespace.video.redis_array_namespace_cache:
