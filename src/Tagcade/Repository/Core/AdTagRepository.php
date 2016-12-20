@@ -318,7 +318,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('sl.name', ':searchKey'), $qb->expr()->orX($qb->expr()->like('pls.company', ':searchKey'))))
+            $qb->andWhere($qb->expr()->like('tLib.name', ':searchKey'))
                 ->setParameter('searchKey', $searchLike);
         }
 
@@ -353,6 +353,53 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
         return $qb;
     }
+
+    public function getAdTagsForSiteWithPagination(SiteInterface $site, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.adSlot', 'sl')
+            ->leftJoin('t.libraryAdTag', 'tLib')
+            ->where('sl.site = :site_id')
+            ->setParameter('site_id', $site->getId(), Type::INTEGER);
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->like('tLib.name', ':searchKey'))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()) {
+                case $this->SORT_FIELDS['id']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['name']:
+                    $qb->addOrderBy('tLib.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['rotation']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['frequencyCap']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['impressionsCap']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['networkOpportunityCap']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $qb;
+    }
+
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null)
     {

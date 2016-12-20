@@ -44,6 +44,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    public function getAdTagsForSiteWithPagination(SiteInterface $site, PagerParam $param);
+
     public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
     /**
