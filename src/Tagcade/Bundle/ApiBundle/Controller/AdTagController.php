@@ -14,11 +14,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
+use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\InvalidFormException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\AdTagRepositoryInterface;
 use Tagcade\Service\TagLibrary\UnlinkServiceInterface;
 
 /**
@@ -32,6 +35,14 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      * @Rest\View(
      *      serializerGroups={"adtag.detail", "adslot.primary", "displayadslot.primary", "nativeadslot.primary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "user.summary", "adnetwork.summary", "libraryadtag.detail"}
      * )
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="Ad Tags",
      *  resource = true,
@@ -40,11 +51,31 @@ class AdTagController extends RestControllerAbstract implements ClassResourceInt
      *  }
      * )
      *
+     * @param Request $request
      * @return AdTagInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $role = $this->getUser();
+        /**
+         * @var AdTagRepositoryInterface $adTagRepository
+         */
+        $adTagRepository = $this->get('tagcade.repository.ad_tag');
+
+        /**
+         * @var AdTagManagerInterface $adTagManager
+         */
+        $adTagManager = $this->get('tagcade.domain_manager.ad_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $adTagRepository->getAdTagsForPublisherWithPagination($role, $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($role instanceof PublisherInterface)
+            ? $adTagRepository->getAdTagsForPublisher($role)
+            : $adTagManager->all();
     }
 
     /**

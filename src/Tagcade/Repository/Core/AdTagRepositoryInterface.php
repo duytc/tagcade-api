@@ -101,6 +101,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
 
     public function getAdTagsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param);
 
+    public function getAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
+
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
     /**
