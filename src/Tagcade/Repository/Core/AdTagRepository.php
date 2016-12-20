@@ -23,7 +23,7 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 class AdTagRepository extends EntityRepository implements AdTagRepositoryInterface
 {
     protected $SORT_FIELDS = ['id' => 'id', 'rotation' => 'rotation', 'name' => 'name', 'frequencyCap' => 'frequencyCap', 'impressionsCap' => 'impressionsCap',
-        'networkOpportunityCap' => 'networkOpportunityCap'];
+        'networkOpportunityCap' => 'networkOpportunityCap', 'adSlot' => 'adSlot', 'domain' => 'domain'];
 
     /**
      * @inheritdoc
@@ -316,9 +316,18 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
     {
         $qb = $this->getAdTagsForAdNetworkQuery($adNetwork);
 
+        $qb->leftJoin('t.adSlot', 'sl')
+            ->leftJoin('sl.libraryAdSlot', 'lsl')
+            ->leftJoin('sl.site', 'st');
+
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->like('tLib.name', ':searchKey'))
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('tLib.name', ':searchKey'),
+                $qb->expr()->like('t.id', ':searchKey'),
+                $qb->expr()->like('lsl.name', ':searchKey'),
+                $qb->expr()->like('st.name', ':searchKey')
+            ))
                 ->setParameter('searchKey', $searchLike);
         }
 
@@ -329,22 +338,20 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         ) {
             switch ($param->getSortField()) {
                 case $this->SORT_FIELDS['id']:
+                case $this->SORT_FIELDS['rotation']:
+                case $this->SORT_FIELDS['frequencyCap']:
+                case $this->SORT_FIELDS['impressionsCap']:
+                case $this->SORT_FIELDS['networkOpportunityCap']:
                     $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['name']:
                     $qb->addOrderBy('tLib.' . $param->getSortField(), $param->getSortDirection());
                     break;
-                case $this->SORT_FIELDS['rotation']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                case $this->SORT_FIELDS['adSlot']:
+                    $qb->addOrderBy('lsl.name', $param->getSortDirection());
                     break;
-                case $this->SORT_FIELDS['frequencyCap']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['impressionsCap']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['networkOpportunityCap']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                case $this->SORT_FIELDS['domain']:
+                    $qb->addOrderBy('st.name', $param->getSortDirection());
                     break;
                 default:
                     break;
@@ -358,13 +365,18 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
     {
         $qb = $this->createQueryBuilder('t')
             ->leftJoin('t.adSlot', 'sl')
+            ->leftJoin('sl.libraryAdSlot', 'lsl')
             ->leftJoin('t.libraryAdTag', 'tLib')
             ->where('sl.site = :site_id')
             ->setParameter('site_id', $site->getId(), Type::INTEGER);
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->like('tLib.name', ':searchKey'))
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('tLib.name', ':searchKey'),
+                $qb->expr()->like('t.id', ':searchKey'),
+                $qb->expr()->like('lsl.name', ':searchKey')
+            ))
                 ->setParameter('searchKey', $searchLike);
         }
 
@@ -375,22 +387,17 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         ) {
             switch ($param->getSortField()) {
                 case $this->SORT_FIELDS['id']:
+                case $this->SORT_FIELDS['rotation']:
+                case $this->SORT_FIELDS['frequencyCap']:
+                case $this->SORT_FIELDS['impressionsCap']:
+                case $this->SORT_FIELDS['networkOpportunityCap']:
                     $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['name']:
                     $qb->addOrderBy('tLib.' . $param->getSortField(), $param->getSortDirection());
                     break;
-                case $this->SORT_FIELDS['rotation']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['frequencyCap']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['impressionsCap']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['networkOpportunityCap']:
-                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                case $this->SORT_FIELDS['adSlot']:
+                    $qb->addOrderBy('lsl.name', $param->getSortDirection());
                     break;
                 default:
                     break;

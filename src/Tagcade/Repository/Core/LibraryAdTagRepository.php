@@ -37,7 +37,10 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->like('lat.name', ':searchKey'))
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('lat.name', ':searchKey'),
+                $qb->expr()->like('lat.id', ':searchKey')
+            ))
                 ->setParameter('searchKey', $searchLike);
         }
 
