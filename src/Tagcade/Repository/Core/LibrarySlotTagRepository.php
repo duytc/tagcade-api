@@ -46,28 +46,7 @@ class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTa
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            switch ($param->getSortField()) {
-                case $this->SORT_FIELDS['id']:
-                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['name']:
-                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['rotation']:
-                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['frequencyCap']:
-                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['impressionsCap']:
-                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['networkOpportunityCap']:
-                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                default:
-                    break;
-            }
+            $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
         }
 
         return $qb;

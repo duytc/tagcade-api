@@ -6,9 +6,13 @@ namespace Tagcade\Repository\Core;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
-class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRepositoryInterface{
+class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRepositoryInterface
+{
+    protected $SORT_FIELDS = ['id' => 'id', 'name' => 'name'];
 
     /**
      * @inheritdoc
@@ -19,6 +23,35 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getLibraryAdTagsWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('lat')
+            ->andWhere('lat.visible = :visible')
+            ->setParameter('visible', true, Type::BOOLEAN);
+
+        if ($user instanceof PublisherInterface) {
+            // get all library ad slots that used for SHARING, without order
+            $qb = $this->getLibraryAdTagsForPublisherQuery($user);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->like('lat.name', ':searchKey'))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
+    }
+
 
     /**
      * @inheritdoc
