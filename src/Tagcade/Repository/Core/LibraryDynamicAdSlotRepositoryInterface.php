@@ -4,7 +4,9 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface LibraryDynamicAdSlotRepositoryInterface extends ObjectRepository
 {
@@ -19,4 +21,6 @@ interface LibraryDynamicAdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getByDefaultLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null);
+
+    public function getLibraryAdSlotsWithPagination(UserRoleInterface $user, PagerParam $param);
 }

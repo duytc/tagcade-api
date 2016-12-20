@@ -32,7 +32,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      * @Rest\QueryParam(name="forRon", requirements="(true|false)", nullable=true)
      *
      * @Rest\View(
-     *      serializerGroups={"slotlib.extra", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.detail", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.detail"}
+     *      serializerGroups={"slotlib.extra", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.detail", "user.min", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.detail"}
      * )
      *
      *      *
@@ -58,11 +58,11 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
         $role = $this->getUser();
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $forRon = $paramFetcher->get('forRon');
-        $libraryAdSlot = $this->get('tagcade.repository.library_ad_slot');
+        $libraryAdSlotRepository = $this->get('tagcade.repository.library_ad_slot');
 
         if ($forRon === null) {
             if ($request->query->get('page') > 0) {
-                $qb = $libraryAdSlot->getLibraryAdSlotsWithPagination($this->getUser(), $this->getParams());
+                $qb = $libraryAdSlotRepository->getLibraryAdSlotsWithPagination($this->getUser(), $this->getParams());
 
                 return $this->getPagination($qb, $request);
             }
