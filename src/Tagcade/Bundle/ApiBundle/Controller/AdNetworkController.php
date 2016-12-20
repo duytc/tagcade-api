@@ -369,6 +369,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *
      * @param Request $request
      * @param $id
+     *
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
     public function getAdtagsAction(Request $request, $id)
@@ -376,14 +377,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->one($id);
         $adTagRepository = $this->get('tagcade.repository.ad_tag');
-
         if ($request->query->get('page') > 0) {
             $qb = $adTagRepository->getAdTagsForAdNetworkWithPagination($adNetwork, $this->getParams());
+
             return $this->getPagination($qb, $request);
         }
 
-        return $this->get('tagcade.domain_manager.ad_tag')
-            ->getAdTagsForAdNetwork($adNetwork);
+        return $adTagRepository->getAdTagsForAdNetwork($adNetwork);
     }
 
     /**

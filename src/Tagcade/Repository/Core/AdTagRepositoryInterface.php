@@ -3,7 +3,6 @@
 namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Doctrine\ORM\QueryBuilder;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
@@ -27,12 +26,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
 
-    /**
-     * @param ReportableAdSlotInterface $adSlot
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagIdsForAdSlot(ReportableAdSlotInterface $adSlot, $limit = null, $offset = null);
 
     /**
@@ -51,12 +44,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null);
 
-    /**
-     * @param SiteInterface $site
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
     /**
@@ -67,32 +54,12 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
-    /**
-     * @param PublisherInterface $publisher
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getActiveAdTagsIdsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param SiteInterface $site
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getActiveAdTagIdsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
-    /**
-     * @return mixed
-     */
     public function getAllActiveAdTagIds();
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @return mixed
-     */
     public function getAdTagsForAdNetworkQuery(AdNetworkInterface $adNetwork);
 
     /**
@@ -103,20 +70,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param PagerParam $param
-     * @return QueryBuilder
-     */
-    public function getAdTagsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param = null);
-
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param bool $partnerTagIdNullAllowed
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagsThatHavePartnerConfigForAdNetwork(AdNetworkInterface $adNetwork, $partnerTagIdNullAllowed = false, $limit = null, $offset = null);
 
     /**
@@ -140,29 +93,12 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param SiteInterface $site
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
+    public function getAdTagsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param);
+
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
     /**
@@ -177,40 +113,12 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForAdNetworkAndSiteWithSubPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param array $sites
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagsForAdNetworkAndSites(AdNetworkInterface $adNetwork, array $sites, $limit = null, $offset = null);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param SiteInterface $site
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
-    /**
-     * @param BaseAdSlotInterface $adSlot
-     * @param $refId
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagsByAdSlotAndRefId(BaseAdSlotInterface $adSlot, $refId, $limit = null, $offset = null);
 
-    /**
-     * @param BaseLibraryAdSlotInterface $libraryAdSlot
-     * @param $refId
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
     public function getAdTagsByLibraryAdSlotAndRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
 
     /**
@@ -259,7 +167,7 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @param $status
      * @return mixed
      */
-    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus($status);
+    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status);
 
     /**
      * @param LibraryAdTag $libraryAdTag
