@@ -20,6 +20,7 @@ use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryNativeAdSlotRepositoryInterface;
+use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 
 /**
  * @Rest\RouteResource("LibraryNativeAdSlot")
@@ -257,8 +258,15 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      * Get those AdTags which belong to the given AdSlot Library, also have been moved to WaterfallTag Library
      *
      * @Rest\View(
-     *      serializerGroups={"libraryslottag.summary", "libraryadtag.summary", "librarynativeadslot.summary", "slotlib.extra", "user.summary", "nativeadslot.summary", "site.summary"}
+     *      serializerGroups={"libraryslottag.summary", "libraryadtag.summary", "librarynativeadslot.summary", "slotlib.extra", "user.min", "nativeadslot.summary", "site.summary"}
      * )
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section = "Library Ad Slots",
      *  resource = true,
@@ -268,16 +276,28 @@ class LibraryNativeAdSlotController extends RestControllerAbstract implements Cl
      *  }
      * )
      *
+     * @param Request $request
      * @param int $id the resource id
      *
      * @return AdTagInterface[]
      * @throws NotFoundHttpException when the resource does not exist
      */
-    public function getAdtagsAction($id)
+    public function getAdtagsAction(Request $request, $id)
     {
         /** @var LibraryNativeAdSlotInterface $entity */
         $entity = $this->one($id);
-        return $this->get('tagcade.repository.library_slot_tag')->getByLibraryAdSlot($entity);
+        /**
+         * @var LibrarySlotTagRepositoryInterface $librarySlotTagRepository
+         */
+        $librarySlotTagRepository = $this->get('tagcade.repository.library_slot_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $librarySlotTagRepository->getByLibraryAdSlotWithPagination($entity, $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        }
+
+        return $librarySlotTagRepository->getByLibraryAdSlot($entity);
     }
 
     /**

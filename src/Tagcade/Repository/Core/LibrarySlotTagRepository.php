@@ -8,9 +8,13 @@ use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\PagerParam;
 
 class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTagRepositoryInterface
 {
+    protected $SORT_FIELDS = ['id' => 'id', 'rotation' => 'rotation', 'name' => 'name', 'frequencyCap' => 'frequencyCap', 'impressionsCap' => 'impressionsCap',
+        'networkOpportunityCap' => 'networkOpportunityCap'];
+
     /**
      * @param BaseLibraryAdSlotInterface $libraryAdSlot
      * @param int|null $limit
@@ -24,6 +28,51 @@ class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTa
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getByLibraryAdSlotWithPagination(BaseLibraryAdSlotInterface $libraryAdSlot, PagerParam $param)
+    {
+        $qb = $this->getByLibraryAdSlotQuery($libraryAdSlot);
+        $qb
+            ->leftJoin('lst.libraryAdTag', 'lat');
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->like('lat.name', ':searchKey'))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()) {
+                case $this->SORT_FIELDS['id']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['name']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['rotation']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['frequencyCap']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['impressionsCap']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['networkOpportunityCap']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $qb;
+    }
+
 
     public function getLibrarySlotTagIdsByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null)
     {
