@@ -106,7 +106,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\Get("/sites/{id}", requirements={"id" = "\d+"})
      *
      * @Rest\View(
-     *      serializerGroups={"site.detail", "user.min", "publisherexchange.summary", "exchange.summary"}
+     *      serializerGroups={"site.detail", "user.summary", "publisherexchange.summary", "exchange.summary"}
      * )
      * @ApiDoc(
      *  section="Sites",
