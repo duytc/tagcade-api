@@ -60,13 +60,18 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function cgetAction(Request $request)
     {
+        $role = $this->getUser();
         $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
+        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
         if ($request->query->count() < 1) {
+            if ($role instanceof PublisherInterface) {
+                return $adNetworkRepository->getAdNetworksForPublisher($role);
+            }
+
             return $this->all();
         }
 
-        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
-        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
         $builtIn = null;
         if (is_string($request->query->get('autoCreate'))) {
             $builtIn = filter_var($params['autoCreate'], FILTER_VALIDATE_BOOLEAN);

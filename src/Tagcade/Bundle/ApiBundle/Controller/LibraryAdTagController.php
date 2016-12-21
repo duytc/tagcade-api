@@ -14,6 +14,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryAdTagRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
@@ -61,7 +62,11 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
             return $this->getPagination($qb, $request);
         }
 
-        return $libraryAdTagRepository->getLibraryAdTagsForPublisher($role);
+        if ($role instanceof PublisherInterface) {
+            return $libraryAdTagRepository->getLibraryAdTagsForPublisher($role);
+        }
+
+        return $libraryAdTagRepository->findBy(array('visible' => true));
     }
 
     /**

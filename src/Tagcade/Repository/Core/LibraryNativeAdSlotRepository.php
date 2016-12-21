@@ -77,12 +77,15 @@ class LibraryNativeAdSlotRepository extends EntityRepository implements LibraryN
         }
 
         $qb->leftJoin('sl.publisher', 'pls');
-        $qb->leftJoin('sl.ronAdSlot', 'rsl');
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('sl.name', ':searchKey'), $qb->expr()->orX($qb->expr()->like('pls.company', ':searchKey'))))
-                ->setParameter('searchKey', $searchLike);
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('sl.name', ':searchKey'),
+                $qb->expr()->like('sl.id', ':searchKey'),
+                $qb->expr()->like('pls.company', ':searchKey'))
+            )
+            ->setParameter('searchKey', $searchLike);
         }
 
         if (is_string($param->getSortField()) &&
@@ -99,15 +102,6 @@ class LibraryNativeAdSlotRepository extends EntityRepository implements LibraryN
                     break;
                 case $this->SORT_FIELDS['publisher']:
                     $qb->addOrderBy('pls.' . 'company', $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['type']:
-                    break;
-                case $this->SORT_FIELDS['deployment']:
-                    break;
-                case $this->SORT_FIELDS['ronAdSlot']:
-                    $qb->addOrderBy('rsl.' . 'visible', $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['size']:
                     break;
                 default:
                     break;
