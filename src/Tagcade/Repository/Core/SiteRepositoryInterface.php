@@ -166,9 +166,10 @@ interface SiteRepositoryInterface extends ObjectRepository
      * @param UserRoleInterface $user
      * @param PagerParam $param
      * @param $autoCreate = null
+     * @param $enableSourceReport = null
      * @return QueryBuilder
      */
-    public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null);
+    public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null, $enableSourceReport = null);
 
     /**
      * @param AdNetworkInterface $adNetwork
