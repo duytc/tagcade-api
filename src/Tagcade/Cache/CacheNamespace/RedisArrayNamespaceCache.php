@@ -3,24 +3,32 @@
 namespace Tagcade\Cache\CacheNamespace;
 
 use Redis;
-use RedisArray;
 use Tagcade\Cache\Legacy\Cache\Tag\CacheInterface;
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheProvider;
 
 class RedisArrayNamespaceCache extends NamespaceCacheProvider
 {
-
     /**
-     * @var RedisArray|\Redis
+     * @var Redis
      */
     private $redis;
 
-    function __construct($redisArray, $maxCacheVersion)
+    /*function __construct($redisArray, $maxCacheVersion)
     {
         parent::__construct($maxCacheVersion);
 
-        $ra = new RedisArray($redisArray);
+        $ra = new Redis($redisArray);
         $this->redis = $ra;
+        $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+    }/* NOT USE RedisArray from 20161209. Leave this code to backup */
+
+    function __construct($host, $port, $maxCacheVersion)
+    {
+        parent::__construct($maxCacheVersion);
+
+        $redis = new Redis();
+        $redis->connect($host, $port);
+        $this->redis = $redis;
         $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
     }
 
@@ -37,7 +45,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
         $namespaceCacheKey = sprintf(NamespaceCacheProvider::NAMESPACE_CACHEKEY, $this->getNamespace());
         $version = $this->doFetch($namespaceCacheKey);
 
-        $version = ($version == false)? 0 : $version;
+        $version = ($version == false) ? 0 : $version;
 
         return $version;
     }
@@ -47,14 +55,14 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      * @param $data
      * @param int $lifetime
      */
-    public function saveDataAndIncreaseVersion($id, $data, $lifetime =0)
+    public function saveDataAndIncreaseVersion($id, $data, $lifetime = 0)
     {
         $namespaceVersionKey = $this->getNamespaceVersionKey($this->getNamespace());
         $oldVersion = $this->getNamespaceVersion(true);
         $newVersion = $oldVersion + 1;
         $this->setNamespaceVersion(($newVersion));
 
-        $this->save($id,$data,$lifetime);
+        $this->save($id, $data, $lifetime);
         $this->doSave($namespaceVersionKey, $this->getNamespaceVersion());
     }
 
@@ -79,13 +87,13 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     public function saveVersion($version)
     {
-         $this->setNamespaceVersion($version);
+        $this->setNamespaceVersion($version);
     }
 
     /**
      * Gets the redis instance used by the cache.
      *
-     * @return RedisArray Redis
+     * @return Redis Redis
      */
     public function getRedis()
     {
@@ -113,7 +121,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doIncrement($id)
     {
-        return (bool) $this->redis->incr($id);
+        return (bool)$this->redis->incr($id);
     }
 
     /**
@@ -151,11 +159,11 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
     {
         $info = $this->redis->info();
         return array(
-            CacheInterface::STATS_HITS   => false,
+            CacheInterface::STATS_HITS => false,
             CacheInterface::STATS_MISSES => false,
             CacheInterface::STATS_UPTIME => $info['uptime_in_seconds'],
-            CacheInterface::STATS_MEMORY_USAGE       => $info['used_memory'],
-            CacheInterface::STATS_MEMORY_AVAILIABLE  => false
+            CacheInterface::STATS_MEMORY_USAGE => $info['used_memory'],
+            CacheInterface::STATS_MEMORY_AVAILIABLE => false
         );
     }
 } 

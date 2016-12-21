@@ -49,6 +49,15 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
+    public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
+    {
+        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset);
+        $qb->select('sl.id');
+
+        return $qb->getQuery()->getScalarResult();
+    }
+
+
     public function getDisplayAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
         $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset);

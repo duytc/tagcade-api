@@ -43,3 +43,11 @@ services:
             - @annotation_reader
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+
+    tagcade_app.event_listener.update_publsiher_listener:
+        class: Tagcade\Bundle\UserBundle\EventListener\UpdatePublisherListener
+        arguments:
+            - @tagcade.worker.manager
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }

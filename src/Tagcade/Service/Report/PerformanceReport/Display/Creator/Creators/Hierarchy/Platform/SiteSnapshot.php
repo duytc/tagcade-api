@@ -5,6 +5,8 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
@@ -44,17 +46,32 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
             ->setName($site->getName())
             ->setDate($this->getDate());
 
-        $reportableAdSlotIds = $this->adSlotManager->getReportableAdSlotIdsForSite($site);
-        $adSlotReportCounts = $this->eventCounter->getAdSlotReports($reportableAdSlotIds);
-        unset($reportableAdSlotIds);
+        $result = $this->eventCounter->getSiteReportData($site);
 
-        $adTagIdsForSite = $this->adTagManager->getAdTagIdsForSite($site);
-        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIdsForSite);
-        unset($adTagIdsForSite);
-
-        $this->parseRawReportData($report, array_merge($adSlotReportCounts, $adTagReportCounts));
+        $this->parseRawReportData($report, $result);
 
         return $report;
+    }
+
+    public function parseRawReportData(ReportInterface $report, array $redisReportData)
+    {
+        if (!$report instanceof SiteReport) {
+            throw new InvalidArgumentException('Expect instance WaterfallTagReport');
+        }
+
+        $this->constructReportModel($report, $redisReportData);
+
+        $site = $report->getSite();
+
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $site->getPublisher(), $report->getSlotOpportunities());
+
+        $report->setBilledAmount($rateAmount->getAmount());
+        $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+
+        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($report->getDate(), $site->getPublisher(), $report->getInBannerImpressions());
+
+        $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
+        $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
     }
 
     /**

@@ -18,7 +18,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
 {
     /** @var BillingCalculatorInterface */
-    private $billingCalculator;
+    protected $billingCalculator;
 
     function __construct(BillingCalculatorInterface $billingCalculator)
     {

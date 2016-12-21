@@ -24,6 +24,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
 
     /* namespace keys */
     const NAMESPACE_AD_SLOT = 'adslot_%d';
+    const NAMESPACE_ACCOUNT = 'account_%d';
     const NAMESPACE_RON_AD_SLOT = 'ron_adslot_%d';
     const NAMESPACE_SEGMENT = 'segment_%d';
 
@@ -47,7 +48,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
         ]
     */
     protected $adSlotData = [];
-
+    protected $accountData = [];
     /* ron ad slots data as
         [
             ronAdSlotId => [
@@ -94,6 +95,14 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     }
 
     /**
+     * @return array
+     */
+    public function getAccountData()
+    {
+        return $this->accountData;
+    }
+
+    /**
      * get ronAdSlotData
      * @return array
      */
@@ -121,11 +130,22 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
         $slotOpportunities = mt_rand(1000, 100000);
         $impression = mt_rand(1000, $slotOpportunities);
         $price = round((floatval(mt_rand(1, 100)) / 33), 4);
-
+        $adSlotOpp = $this->distributeValueToArray($slotOpportunities, count($this->adSlots));
+        $adSlotImp = $this->distributeValueToArray($impression, count($this->adSlots));
         // create test data for all ad slots(adSlotData[])
         $this->adSlotData = [];
 
-        foreach ($this->adSlots as $adSlot) {
+        foreach ($this->adSlots as $index=>$adSlot) {
+            $publisherId = $adSlot->getSite()->getPublisher()->getId();
+            $accountCacheNamespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+            if (!array_key_exists($publisherId, $this->accountData)) {
+                $this->accountData[$publisherId] = array (
+                    $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, $accountCacheNamespace, $this->getDate()) => 0,
+                    $this->getCacheKey(self::CACHE_KEY_IMPRESSION, $accountCacheNamespace, $this->getDate()) => 0,
+                    $this->getCacheKey(self::CACHE_KEY_PRICE, $accountCacheNamespace, $this->getDate()) => 0
+                );
+            }
+
             // create adSlotData
             $adSlotCacheNamespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $adSlot->getId());
             $cacheKeySlotOpportunity = $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, $adSlotCacheNamespace, $this->getDate());
@@ -133,17 +153,22 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
             $cacheKeyPrice = $this->getCacheKey(self::CACHE_KEY_PRICE, $adSlotCacheNamespace, $this->getDate());
 
             $this->adSlotData[$adSlot->getId()] = [
-                $cacheKeySlotOpportunity => $slotOpportunities,
-                $cacheKeyImpression => $impression,
+                $cacheKeySlotOpportunity => $adSlotOpp[$index],
+                $cacheKeyImpression => $adSlotImp[$index],
                 $cacheKeyPrice => $price,
             ];
+
+            $this->accountData[$publisherId][$this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, $accountCacheNamespace, $this->getDate())] += $adSlotOpp[$index];
+            $this->accountData[$publisherId][$this->getCacheKey(self::CACHE_KEY_IMPRESSION, $accountCacheNamespace, $this->getDate())] += $adSlotImp[$index];
         }
 
         // create test data for all ron AdSlots(ronAdSlotData[]) , ron Ad Slot Segment Data(ronAdSlotSegmentData[]) for each ronAdSlot
         $this->ronAdSlotData = [];
         $this->ronAdSlotSegmentData = [];
 
-        foreach ($this->ronAdSlots as $ronAdSlot) {
+        $ronSlotOpp = $this->distributeValueToArray($slotOpportunities, count($this->ronAdSlots));
+        $ronSlotImp = $this->distributeValueToArray($impression, count($this->ronAdSlots));
+        foreach ($this->ronAdSlots as $index=>$ronAdSlot) {
             if (!$ronAdSlot instanceof RonAdSlotInterface) {
                 continue;
             }
@@ -155,8 +180,8 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
             $cacheKeyRonPrice = $this->getCacheKey(self::CACHE_KEY_PRICE, $ronAdSlotCacheNamespace, $this->getDate());
 
             $this->ronAdSlotData[$ronAdSlot->getId()] = [
-                $cacheKeyRonSlotOpportunity => $slotOpportunities,
-                $cacheKeyRonImpression => $impression,
+                $cacheKeyRonSlotOpportunity => $ronSlotOpp[$index],
+                $cacheKeyRonImpression => $ronSlotImp[$index],
                 $cacheKeyRonPrice => $price,
             ];
 
@@ -198,7 +223,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
     {
         // NOTICE: implement this to create RtbAdSlotReport by random value instead of get from cache!!!
         /* build report from $this->adSlotData */
-        return new RtbAdSlotReportCount($adSlotId, $this->getAdSlotData()[$adSlotId], $this->getDate());
+        return new RtbAdSlotReportCount($adSlotId, $this->getAdSlotData()[$adSlotId], $supportMGet, $this->getDate());
     }
 
     /**
@@ -210,7 +235,7 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
         /* build reports from $this->adSlotData */
         $reports = [];
         foreach ($adSlotIds as $id) {
-            $reports[] = new RtbAdSlotReportCount($id, $this->getAdSlotData()[$id]);
+            $reports[] = new RtbAdSlotReportCount($id, $this->getAdSlotData()[$id], $supportMGet);
         }
 
         return $reports;
@@ -312,11 +337,12 @@ class RtbTestEventCounter extends RtbAbstractEventCounter
             return array($value);
         }
 
-        $maxEachItem = floor(100 / $arraySize);
+        $maxEachItem = 100 / $arraySize;
 
         $result = [];
         for ($i = 0; $i < $arraySize - 1; $i++) {
-            $tmpVal = mt_rand(0, $maxEachItem);
+//            $tmpVal = mt_rand(0, $maxEachItem);
+            $tmpVal = mt_rand() / mt_getrandmax() * $maxEachItem;
             $result[] = round($tmpVal * $value / 100);
         }
 

@@ -20,6 +20,7 @@ use Tagcade\Model\Core\AdTagInterface;
 class Manager
 {
     const TUBE = 'tagcade-api-worker';
+    const UR_API_WORKER = 'ur-api-worker';
     const EXECUTION_TIME_THRESHOLD = 3600;
 
     protected $dateUtil;
@@ -287,11 +288,18 @@ class Manager
         $this->queueTask('updateAdTagPositionForAdNetworkAndSites', $params);
     }
 
+    public function synchronizeUser(array $entity){
+        $params = new StdClass;
+        $params->entity = $entity;
+        $this->queueTask('synchronizeUser', $params, Manager::UR_API_WORKER);
+    }
+
     /**
      * @param string $task
      * @param StdClass $params
+     * @param string $tube
      */
-    protected function queueTask($task, StdClass $params)
+    protected function queueTask($task, StdClass $params, $tube = Manager::TUBE)
     {
         $payload = new StdClass;
 
@@ -299,7 +307,7 @@ class Manager
         $payload->params = $params;
 
         $this->queue
-            ->useTube(static::TUBE)
+            ->useTube($tube)
             ->put(json_encode($payload),
                 Pheanstalk_PheanstalkInterface::DEFAULT_PRIORITY,
                 Pheanstalk_PheanstalkInterface::DEFAULT_DELAY,

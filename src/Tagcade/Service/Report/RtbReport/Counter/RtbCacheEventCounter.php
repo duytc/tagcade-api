@@ -18,6 +18,7 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
 
     /* namespace keys */
     const NAMESPACE_AD_SLOT = 'adslot_%d';
+    const NAMESPACE_ACCOUNT = 'account_%d';
     const NAMESPACE_RON_AD_SLOT = 'ron_adslot_%d';
     const NAMESPACE_SEGMENT = 'segment_%d';
 
@@ -67,7 +68,7 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
 
         $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys) : $this->getSequentiallyMultipleFields(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
-        return new RtbAdSlotReportCount($adSlotId, $results, $this->getDate());
+        return new RtbAdSlotReportCount($adSlotId, $results, $supportMGet, $this->getDate());
     }
 
     /**
@@ -109,7 +110,7 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
         /* build reports from data */
         $reports = [];
         foreach ($adSlotIds as $id) {
-            $reports[] = new RtbAdSlotReportCount($id, $results, $this->getDate());
+            $reports[] = new RtbAdSlotReportCount($id, $results, $supportMGet, $this->getDate());
         }
 
         return $reports;

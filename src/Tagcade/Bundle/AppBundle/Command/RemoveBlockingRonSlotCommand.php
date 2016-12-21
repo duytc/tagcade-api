@@ -74,7 +74,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         $output->writeln('All ron slots are unblocked on that domain');
     }
 
-    protected function removeBlockingRonSlot(\RedisArray $redis, $id)
+    protected function removeBlockingRonSlot(\Redis $redis, $id)
     {
         if (null === $id) {
             throw new InvalidArgumentException('Expect a valid id for ron slot');
@@ -91,7 +91,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         return true;
     }
 
-    protected function removeBlockingDomain(\RedisArray $redis, $domain)
+    protected function removeBlockingDomain(\Redis $redis, $domain)
     {
         if (null === $domain) {
             throw new InvalidArgumentException('expect a valid domain');
@@ -109,7 +109,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         return true;
     }
 
-    protected function removeBlockingRonSlotOnDomain(\RedisArray $redis, $id, $domain)
+    protected function removeBlockingRonSlotOnDomain(\Redis $redis, $id, $domain)
     {
         if (null === $id || null === $domain) {
             throw new InvalidArgumentException(sprintf('Expect valid id and domain. Input was id=%d and domain=%s', $id, $domain));
@@ -125,7 +125,7 @@ class RemoveBlockingRonSlotCommand extends ContainerAwareCommand
         return true;
     }
 
-    protected function removeAllBlockingRonSlots(\RedisArray $redis)
+    protected function removeAllBlockingRonSlots(\Redis $redis)
     {
         $redis->delete(self::REDIS_SET_BLOCKING_DOMAIN_RON);
     }

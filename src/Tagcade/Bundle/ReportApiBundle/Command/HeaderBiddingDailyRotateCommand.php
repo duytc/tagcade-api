@@ -48,6 +48,10 @@ class HeaderBiddingDailyRotateCommand extends ContainerAwareCommand
             $date = DateTime::createFromFormat('Y-m-d', $date);
         }
 
+        if ($date->setTime(0,0,0) == new DateTime('today')) {
+            throw new InvalidArgumentException('Can not rotate report for Today');
+        }
+
         $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
 
         $logger->info('start daily rotation for header bidding');

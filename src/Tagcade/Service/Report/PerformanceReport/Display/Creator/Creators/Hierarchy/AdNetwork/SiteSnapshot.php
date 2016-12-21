@@ -43,10 +43,9 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setDate($this->getDate());
 
         $adTagIds = $this->adTagManager->getAdTagIdsForAdNetworkAndSite($adNetwork, $site);
-        $adTagReportCounts = $this->eventCounter->getAdTagReports($adTagIds);
-        unset($adTagIds);
+        $networkCount = $this->eventCounter->getNetworkReport($adTagIds);
 
-        $this->parseRawReportData($report, $adTagReportCounts);
+        $this->parseRawReportData($report, $networkCount);
 
         return $report;
     }
@@ -57,6 +56,11 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
     public function supportsReportType(ReportTypeInterface $reportType)
     {
         return $reportType instanceof AdNetworkSiteReportType;
+    }
+
+    public function parseRawReportData(ReportInterface $report, array $redisReportData)
+    {
+        $this->constructReportModel($report, $redisReportData);
     }
 
     protected function constructReportModel(ReportInterface $report, array $data)

@@ -47,6 +47,10 @@ class DailyAdNetworkRotateCommand extends ContainerAwareCommand
             $date = DateTime::createFromFormat('Y-m-d', $date);
         }
 
+        if ($date->setTime(0,0,0) == new DateTime('today')) {
+            throw new InvalidArgumentException('Can not rotate report for Today');
+        }
+
         /** @var \Psr\Log\LoggerInterface $logger */
         $logger = $container->get('logger');
 

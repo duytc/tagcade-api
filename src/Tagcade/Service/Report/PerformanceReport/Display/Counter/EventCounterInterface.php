@@ -4,6 +4,9 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 interface EventCounterInterface
 {
@@ -42,6 +45,8 @@ interface EventCounterInterface
      */
     public function getInBannerRequestCount($slotId);
 
+    public function getAccountInBannerRequestCount($publisherId);
+
     /**
      * @param $slotId
      * @param $segment
@@ -49,11 +54,16 @@ interface EventCounterInterface
      */
     public function getRonInBannerRequestCount($slotId, $segment = null);
 
+    public function getAccountRtbImpressionsCount($publisherId);
+
+    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null);
     /**
      * @param $slotId
      * @return mixed
      */
     public function getInBannerImpressionCount($slotId);
+
+    public function getAccountInBannerImpressionCount($publisherId);
 
     /**
      * @param $slotId
@@ -67,6 +77,8 @@ interface EventCounterInterface
      * @return mixed
      */
     public function getInBannerTimeoutCount($slotId);
+
+    public function getAccountInBannerTimeoutCount($publisherId);
 
     /**
      * @param $slotId
@@ -209,6 +221,12 @@ interface EventCounterInterface
     public function getAdSlotReports(array $adSlotIds);
 
     /**
+     * @param ReportableAdSlotInterface $slot
+     * @return array
+     */
+    public function getAdSlotReport(ReportableAdSlotInterface $slot);
+
+    /**
      * @param $tagId
      * @param bool $nativeSlot whether ad slot containing this tag is native or not
      *
@@ -226,6 +244,7 @@ interface EventCounterInterface
      */
     public function getAdTagReports(array $tagIds, $nativeSlot = false);
 
+    public function getNetworkReport(array $tagIds, $nativeSlot = false);
 
     public function getRonAdTagReport($ronTagId, $segmentId = null, $hasNativeSlotContainer = false);
 
@@ -233,5 +252,27 @@ interface EventCounterInterface
 
     public function getRonAdSlotReport($ronAdSlotId, $segmentId = null);
 
+    /**
+     * get account report
+     *
+     * @param PublisherInterface $publisher
+     *
+     * @return array
+     */
+    public function getAccountReport(PublisherInterface $publisher);
 
+    /**
+     * @param SiteInterface $site
+     * @return mixed
+     */
+    public function getSiteReportData(SiteInterface $site);
+
+    /**
+     * get account reports
+     *
+     * @param array|PublisherInterface[] $publishers
+     *
+     * @return AdTagReportCount
+     */
+    public function getAccountReports(array $publishers);
 }

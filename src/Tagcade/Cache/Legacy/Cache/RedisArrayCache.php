@@ -4,25 +4,44 @@ namespace Tagcade\Cache\Legacy\Cache;
 
 // Used for live report data only
 
-use RedisArray;
+use Redis;
 
 class RedisArrayCache implements RedisArrayCacheInterface
 {
     /**
-     * @var RedisArray|\Redis
+     * @var Redis
      */
     private $redis;
+
+    private $host;
+    private $port;
 
     /**
      * Sets the redis array instance to use.
      *
-     * @param RedisArray $redis
+     * @param Redis $redis
      *
      * @return void
      */
-    public function setRedis(RedisArray $redis)
+    public function setRedis(Redis $redis)
     {
         $this->redis = $redis;
+    }
+
+    /**
+     * @param mixed $host
+     */
+    public function setHost($host)
+    {
+        $this->host = $host;
+    }
+
+    /**
+     * @param mixed $port
+     */
+    public function setPort($port)
+    {
+        $this->port = $port;
     }
 
     public function multi($host)
@@ -42,7 +61,8 @@ class RedisArrayCache implements RedisArrayCacheInterface
 
     public function target($key)
     {
-        return $this->redis->_target($key);
+        //return $this->redis->_target($key);
+        return sprintf('%s:%s', $this->host, $this->port);
     }
 
     /**

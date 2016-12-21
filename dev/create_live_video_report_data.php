@@ -20,7 +20,7 @@ $videoWaterfallTagManager = $container->get('tagcade.domain_manager.video_waterf
 
 /** @var VideoDemandAdTagManagerInterface $videoDemandAdTagManager */
 $videoDemandAdTagManager = $container->get('tagcade.domain_manager.video_demand_ad_tag');
-$dateToRotate = new DateTime('2016-11-22');
+$dateToRotate = new DateTime('yesterday');
 $videoTestEventCounter = new VideoTestEventCounter($videoWaterfallTagManager->all(), $videoDemandAdTagManager);
 $videoTestEventCounter->setDate($dateToRotate);
 
@@ -43,7 +43,10 @@ writeln('');
 writeln('   --> Start preparing redis cache');
 writeln('       ...');
 
-$redis = new RedisArray(['tagcade.dev']); //tagcade.dev or localhost
+$host = $container->getParameter('tc.redis.video_tag_cache.host'); // or manually set value as tagcade.dev or localhost
+$port = $container->getParameter('tc.redis.video_tag_cache.port'); // or manually set value as 6379
+$redis = new Redis();
+$redis->connect($host, $port);
 $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 

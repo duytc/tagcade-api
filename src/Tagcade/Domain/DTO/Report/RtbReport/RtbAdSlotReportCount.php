@@ -22,24 +22,30 @@ class RtbAdSlotReportCount implements RtbAdSlotReportCountInterface
 
     private $adSlotId;
 
-    function __construct($adSlotId, array $redisReportData, $day = null)
+    function __construct($adSlotId, array $redisReportData, $supportMget = true, $day = null)
     {
         $reportDay = $day instanceof \DateTime ? $day : new \DateTime('yesterday');
 
-        $cacheKeySlotOpportunity = $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, sprintf(self::NAMESPACE_AD_SLOT, $adSlotId), $reportDay);
-        $cacheKeyImpression = $this->getCacheKey(self::CACHE_KEY_IMPRESSION, sprintf(self::NAMESPACE_AD_SLOT, $adSlotId), $reportDay);
-        $cacheKeyPrice = $this->getCacheKey(self::CACHE_KEY_PRICE, sprintf(self::NAMESPACE_AD_SLOT, $adSlotId), $reportDay);
+        if ($supportMget === true) {
+            $cacheKeySlotOpportunity = $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, sprintf(self::NAMESPACE_AD_SLOT, $adSlotId), $reportDay);
+            $cacheKeyImpression = $this->getCacheKey(self::CACHE_KEY_IMPRESSION, sprintf(self::NAMESPACE_AD_SLOT, $adSlotId), $reportDay);
+            $cacheKeyPrice = $this->getCacheKey(self::CACHE_KEY_PRICE, sprintf(self::NAMESPACE_AD_SLOT, $adSlotId), $reportDay);
 
-        if (array_key_exists($cacheKeySlotOpportunity, $redisReportData)) {
-            $this->slotOpportunities = (int)$redisReportData[$cacheKeySlotOpportunity];
-        }
+            if (array_key_exists($cacheKeySlotOpportunity, $redisReportData)) {
+                $this->slotOpportunities = (int)$redisReportData[$cacheKeySlotOpportunity];
+            }
 
-        if (array_key_exists($cacheKeyImpression, $redisReportData)) {
-            $this->impressions = (int)$redisReportData[$cacheKeyImpression];
-        }
+            if (array_key_exists($cacheKeyImpression, $redisReportData)) {
+                $this->impressions = (int)$redisReportData[$cacheKeyImpression];
+            }
 
-        if (array_key_exists($cacheKeyPrice, $redisReportData)) {
-            $this->price = (float)$redisReportData[$cacheKeyPrice];
+            if (array_key_exists($cacheKeyPrice, $redisReportData)) {
+                $this->price = (float)$redisReportData[$cacheKeyPrice];
+            }
+        } else {
+            $this->slotOpportunities = (int)$redisReportData[0];
+            $this->impressions = (int)$redisReportData[1];
+            $this->price = (float)$redisReportData[2];
         }
 
         // set adSlotId
