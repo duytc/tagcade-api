@@ -21,7 +21,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 {
     const KEY_DATE_FORMAT                  = 'ymd';
 
-    const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy
     const CACHE_KEY_ACC_SLOT_OPPORTUNITY   = 'slot_opportunities';
     const CACHE_KEY_ACC_OPPORTUNITY        = 'opportunities';
     const CACHE_KEY_SLOT_OPPORTUNITY       = 'opportunities'; // same "opportunities" key, used with different namespace
@@ -33,6 +32,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
+    const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
     const CACHE_KEY_HB_BID_REQUEST         = 'hb_bid_request';
@@ -395,7 +395,13 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     {
         $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_TAG, $ronTagId, self::NAMESPACE_APPEND_SEGMENT, $segment);
 
-        return $this->hFetchFromCache(self::REDIS_HASH_EVENT_COUNT, $this->getCacheKey(static::CACHE_KEY_PASSBACK, $namespace));
+        $keys = array (
+            $this->getCacheKey(static::CACHE_KEY_PASSBACK, $namespace),
+            $this->getCacheKey(static::CACHE_KEY_FALLBACK, $namespace)
+        );
+        $result = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $keys);
+
+        return (int) $result[0] + (int) $result[1];
     }
 
     /**
@@ -506,7 +512,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => $rtbResults,
             SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($adTagResults, 0)),
             SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($adTagResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)),
+            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3)),
 //            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
         );
     }
@@ -610,7 +616,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         if (false === $nativeSlot) {
             $networkCount[SnapshotCreatorInterface::CACHE_KEY_FIRST_OPPORTUNITY] = array_sum(array_column($result, 2));
             $networkCount[SnapshotCreatorInterface::CACHE_KEY_VERIFIED_IMPRESSION] = array_sum(array_column($result, 3));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] = array_sum(array_column($result, 4));
+            $networkCount[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] = array_sum(array_column($result, 4)) + array_sum(array_column($result, 9));
             $networkCount[SnapshotCreatorInterface::CACHE_KEY_UNVERIFIED_IMPRESSION] = array_sum(array_column($result, 5));
             $networkCount[SnapshotCreatorInterface::CACHE_KEY_BLANK_IMPRESSION] = array_sum(array_column($result, 6));
             $networkCount[SnapshotCreatorInterface::CACHE_KEY_VOID_IMPRESSION] = array_sum(array_column($result, 7));
@@ -757,7 +763,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => array_sum($rtbResults),
             SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($adTagResults, 0)),
             SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($adTagResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)),
+            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3)),
 //            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
         );
     }
@@ -833,7 +839,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => array_sum($rtbResults),
             SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($adTagResults, 0)),
             SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($adTagResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)),
+            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3)),
 //            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
         );
     }
