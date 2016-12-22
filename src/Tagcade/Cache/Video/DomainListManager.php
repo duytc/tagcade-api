@@ -9,6 +9,8 @@ use Tagcade\Model\Core\WhiteListInterface;
 
 class DomainListManager implements DomainListManagerInterface
 {
+    const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
+
     const BLACK_LIST_PREFIX = 'video:domain_blacklist';
     const WHITE_LIST_PREFIX = 'video:domain_white_list';
 
@@ -29,10 +31,19 @@ class DomainListManager implements DomainListManagerInterface
 
     function __construct($host, $port)
     {
+        // todo refactor, redis should be passed into the DomainListManager, passing in a host and port is not a clean design
+
         $redis = new Redis();
-        $redis->connect($host, $port);
+
+        try {
+            $redis->connect($host, $port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
+            $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+        } catch (\RedisException $e) {
+            // do not let redis connection errors crash the entire program
+            // todo refactor to check if redis is connected or not
+        }
+
         $this->redis = $redis;
-        $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
     }
 
     public function saveBlacklist(BlacklistInterface $blacklist)
