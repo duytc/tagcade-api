@@ -21,7 +21,7 @@ use Tagcade\Service\Core\VideoDemandAdTag\DeployLibraryVideoDemandAdTagServiceIn
  */
 class LibraryVideoDemandAdTagController extends RestControllerAbstract implements ClassResourceInterface
 {
-    //use GetEntityFromIdTrait;
+    use GetEntityFromIdTrait;
 
     /**
      * Get all library video demand ad tags
