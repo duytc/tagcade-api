@@ -24,8 +24,12 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      *
      * @Rest\View(serializerGroups={"videoPublisher.summary", "user.summary", "videoWaterfallTag.summary", "videoWaterfallTagItem.summary", "videoDemandAdTag.summary"})
      *
-     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @ApiDoc(
      *  section = "Video Publishers",
      *  resource = true,
@@ -34,24 +38,19 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      *  }
      * )
      *
+     * @param Request $request
      * @return VideoPublisherInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $publisherId = $paramFetcher->get('publisher');
-
-        if (!$this->getUser() instanceof AdminInterface || ($this->getUser() instanceof AdminInterface && $publisherId == null)) {
-            $all = $this->all();
-        } else {
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
-
-            $all = $this->get('tagcade.domain_manager.video_publisher')->getVideoPublishersForPublisher($publisher);
+        if ($request->query->get('page') <= 0) {
+            return $this->all();
         }
 
-        $this->checkUserPermission($all);
-
-        return $all;
+        /** @var VideoPublisherRepository $videoPublisherRepository */
+        $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
+        $qb = $videoPublisherRepository->getVideoPublishersForPublisherWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
     }
 
     /**
@@ -135,7 +134,6 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
     {
         /** @var VideoPublisherInterface $videoPublisher */
         $videoPublisher = $this->one($id);
-
         return $this->get('tagcade.domain_manager.video_waterfall_tag')->getVideoWaterfallTagsForVideoPublisher($videoPublisher);
     }
 

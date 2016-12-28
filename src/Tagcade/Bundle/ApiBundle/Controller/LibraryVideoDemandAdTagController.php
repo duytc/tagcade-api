@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
+use Tagcade\Repository\Core\LibraryVideoDemandAdTagRepository;
 use Tagcade\Service\Core\VideoDemandAdTag\DeployLibraryVideoDemandAdTagServiceInterface;
 
 
@@ -26,6 +27,12 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
     /**
      * Get all library video demand ad tags
      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @Rest\View(
      *     serializerGroups={"libraryVideoDemandAdTag.detail", "videoDemandPartner.summary", "user.summary"}
      * )
@@ -40,9 +47,16 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      *
      * @return LibraryVideoDemandAdTagInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        if ($request->query->get('page') <= 0) {
+            return $this->all();
+        }
+
+        /** @var LibraryVideoDemandAdTagRepository $librayVideoDemandAdTagRepository */
+        $librayVideoDemandAdTagRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
+        $qb = $librayVideoDemandAdTagRepository->getLibraryVideoDemandAdTagsForPublisherWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
     }
 
     /**

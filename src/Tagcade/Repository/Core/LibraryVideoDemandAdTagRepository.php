@@ -6,10 +6,19 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class LibraryVideoDemandAdTagRepository extends EntityRepository implements LibraryVideoDemandAdTagRepositoryInterface
 {
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'name' => 'name',
+        'videoDemandPartner.publisher.company' => 'videoDemandPartner.publisher.company',
+        'timeout' => 'timeout',
+        'sellPrice' => 'sellPrice',
+    ];
     /**
      * @inheritdoc
      */
@@ -49,5 +58,84 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return array
+     */
+    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('lvdt');
+        if ($user instanceof PublisherInterface) {
+            $qb
+                ->where('lvdt.videoDemandPartner = :videoDemandPartner')
+                ->setParameter('videoDemandPartner', $user);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('lvdt.id', ':searchKey'),
+                    $qb->expr()->like('lvdt.name', ':searchKey'),
+                    $qb->expr()->like('lvdt.company', ':searchKey')
+                ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])&&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            if ($param->getSortField() == 'videoDemandPartner.publisher.company'){
+                $qb->addOrderBy($param->getSortField(), $param->getSortDirection());
+            } else
+                $qb->addOrderBy('lvdt.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return array
+     */
+    public function getLibraryVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        // TODO: Implement getLibraryVideoDemandAdTagsForDemandPartnerWithPagination() method.
+        $qb = $this->createQueryBuilder('r')
+            ->join('r.videoDemandPartner', 'vdp');
+
+        if ($user instanceof PublisherInterface) {
+            $qb
+                ->where('vdp.publisher = :publisher')
+                ->setParameter('publisher', $user);
+        }
+        //TODO add search key
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('r.id', ':searchKey'),
+                    $qb->expr()->like('r.name', ':searchKey'),
+                    $qb->expr()->like('r.company', ':searchKey')
+                ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        //TODO add sort fields
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('vdp.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
     }
 }

@@ -8,11 +8,56 @@ use Doctrine\ORM\EntityRepository;
 use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 
 class VideoDemandPartnerRepository extends EntityRepository implements VideoDemandPartnerRepositoryInterface
 {
+    protected $SORT_FIELDS = [
+        'id' => 'publisher_id',
+        'name' => 'name',
+        'publisher.company' => 'company',
+        'activeAdTagsCount' => 'active_ad_tags_count',
+        'pausedAdTagsCount' => 'paused_ad_tags_count',
+    ];
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return array
+     */
+    public function getVideoDemandPartnersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('vdm');
+        if ($user instanceof PublisherInterface) {
+            $qb
+                ->where('vdm.publisher = :publisher_id')
+                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('vdm.id', ':searchKey'),
+                    $qb->expr()->like('vdm.name', ':searchKey'),
+                    $qb->expr()->like('vdm.company', ':searchKey')
+                ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('vdm.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
+    }
     /**
      * @inheritdoc
      */

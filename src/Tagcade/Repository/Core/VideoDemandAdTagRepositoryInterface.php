@@ -9,6 +9,7 @@ use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
@@ -31,6 +32,13 @@ interface VideoDemandAdTagRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getVideoDemandAdTagsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return array
+     */
+    public function getVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
 
     /**
      * @param VideoWaterfallTagInterface $videoWaterfallTag

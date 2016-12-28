@@ -50,7 +50,7 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->count() < 1) {
+        if ($request->query->get('page') <= 0) {
             return $this->all();
         }
 
