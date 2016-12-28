@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\VideoPublisherInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 
 /**
@@ -43,14 +44,19 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->get('page') <= 0) {
-            return $this->all();
+        $role = $this->getUser();
+
+        $videoPublisherManager = $this->get('tagcade.manager.video_publisher');
+        $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoPublisherRepository->getVideoPublishersForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        /** @var VideoPublisherRepository $videoPublisherRepository */
-        $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
-        $qb = $videoPublisherRepository->getVideoPublishersForPublisherWithPagination($this->getUser(), $this->getParams());
-        return $this->getPagination($qb, $request);
+        return ($role instanceof PublisherInterface)
+            ? $videoPublisherManager->getVideoPublishersForPublisher($role)
+            : $this->all();
     }
 
     /**

@@ -16,7 +16,7 @@ use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 class VideoDemandPartnerRepository extends EntityRepository implements VideoDemandPartnerRepositoryInterface
 {
     protected $SORT_FIELDS = [
-        'id' => 'publisher_id',
+        'id' => 'id',
         'name' => 'name',
         'publisher.company' => 'company',
         'activeAdTagsCount' => 'active_ad_tags_count',

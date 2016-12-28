@@ -19,7 +19,6 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
 {
     protected $SORT_FIELDS = [
         'id' => 'id',
-        'videoDemandPartner.publisher.company' => 'videoDemandPartner.publisher.company',
         'timeout' => 'timeout',
         'sellPrice' => 'sellPrice',
     ];
@@ -68,20 +67,25 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('vdm.id', ':searchKey'),
-                    $qb->expr()->like('vdm.name', ':searchKey'),
-                    $qb->expr()->like('vdm.company', ':searchKey')
+                    $qb->expr()->like('vdm.name', ':searchKey')
                 ))
                 ->setParameter('searchKey', $searchLike);
         }
 
         if (is_string($param->getSortField()) &&
             is_string($param->getSortDirection()) &&
-            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])
-//            && in_array($param->getSortField(), $this->SORT_FIELDS)
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             switch ($param->getSortField()){
-                case 'videoDemandPartner.publisher.company':
-                    $qb->addOrderBy($param->getSortField(), $param->getSortDirection());
+                case 'name':
+                    $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'timeout':
+                    $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'sellPrice':
+                    $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
                     break;
                 case 'priority':
                     $qb->addOrderBy('vdm.' . $param->getSortField(), $param->getSortDirection());

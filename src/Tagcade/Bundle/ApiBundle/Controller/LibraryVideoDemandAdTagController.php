@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\LibraryVideoDemandAdTagRepository;
 use Tagcade\Service\Core\VideoDemandAdTag\DeployLibraryVideoDemandAdTagServiceInterface;
 
@@ -45,18 +46,26 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      *  }
      * )
      *
+     * @param Request $request
      * @return LibraryVideoDemandAdTagInterface[]
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->get('page') <= 0) {
-            return $this->all();
+        $role = $this->getUser();
+
+        $libraryVideoDemandAdTagManager = $this->get('tagcade.manager.library_video_demand_ad_tag');
+        $libraryVideoDemandAdTagRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
+
+
+        if ($request->query->get('page') > 0) {
+            $qb = $libraryVideoDemandAdTagRepository->getLibraryVideoDemandAdTagsForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        /** @var LibraryVideoDemandAdTagRepository $librayVideoDemandAdTagRepository */
-        $librayVideoDemandAdTagRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
-        $qb = $librayVideoDemandAdTagRepository->getLibraryVideoDemandAdTagsForPublisherWithPagination($this->getUser(), $this->getParams());
-        return $this->getPagination($qb, $request);
+        return ($role instanceof PublisherInterface)
+            ? $libraryVideoDemandAdTagManager->getLibraryVideoDemandAdTagsForPublisher($role)
+            : $this->all();
+
     }
 
     /**

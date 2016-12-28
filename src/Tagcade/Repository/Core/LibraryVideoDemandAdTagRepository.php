@@ -115,7 +115,6 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
                 ->where('vdp.publisher = :publisher')
                 ->setParameter('publisher', $user);
         }
-        //TODO add search key
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
             $qb
@@ -127,7 +126,6 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
                 ->setParameter('searchKey', $searchLike);
         }
 
-        //TODO add sort fields
         if (is_string($param->getSortField()) &&
             is_string($param->getSortDirection()) &&
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&

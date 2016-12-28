@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\VideoDemandPartnerRepositoryInterface;
 use Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\WaterfallTagInterface;
 use Tagcade\Service\StringUtilTrait;
@@ -46,19 +47,24 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      *  }
      * )
      *
+     * @param Request $request
      * @return VideoDemandPartnerInterface[]
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->get('page') <= 0) {
-            return $this->all();
+        $role = $this->getUser();
+
+        $videoDemandPartnerManager = $this->get('tagcade.manager.video_demand_partner');
+        $videoDemandPartnerRepository = $this->get('tagcade.repository.video_demand_partner');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoDemandPartnerRepository->getVideoDemandPartnersForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        /** @var VideoDemandPartnerRepository $videoDemandPartnerRepository */
-        $videoDemandPartnerRepository = $this->get('tagcade.repository.video_demand_partner');
-        $temp = $this->getParams();
-        $qb = $videoDemandPartnerRepository->getVideoDemandPartnersForPublisherWithPagination($this->getUser(), $this->getParams());
-        return $this->getPagination($qb, $request);
+        return ($role instanceof PublisherInterface)
+            ? $videoDemandPartnerManager->getVideoDemandPartnersForPublisher($role)
+            : $this->all();
     }
 
     /**

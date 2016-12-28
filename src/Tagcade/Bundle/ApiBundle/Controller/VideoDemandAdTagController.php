@@ -15,6 +15,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 
 /**
@@ -41,18 +42,24 @@ class VideoDemandAdTagController extends RestControllerAbstract implements Class
      *  }
      * )
      *
+     * @param Request $request
      * @return VideoDemandAdTagInterface[]
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->get('page') <= 0) {
-            return $this->all();
+        $role = $this->getUser();
+
+        $videoDemandAdTagManager = $this->get('tagcade.m.video_demand_ad_tag');
+        $videoDemandAdTagRepository = $this->get('tagcade.repository.video_demand_ad_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoDemandAdTagRepository->getVideoDemandAdTagsForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        /** @var VideoDemandAdTagRepository $videoDemandAdTagRepository */
-        $videoDemandAdTagRepository = $this->get('tagcade.repository.video_demand_ad_tag');
-        $qb = $videoDemandAdTagRepository->getVideoDemandAdTagsForPublisherWithPagination($this->getUser(), $this->getParams());
-        return $this->getPagination($qb, $request);
+        return ($role instanceof PublisherInterface)
+            ? $videoDemandAdTagManager->getVideoDemandAdTagsForPublisher($role)
+            : $this->all();
     }
 
     /**

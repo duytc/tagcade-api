@@ -50,14 +50,23 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->get('page') <= 0) {
-            return $this->all();
+        $role = $this->getUser();
+
+        $waterfallTagManager = $this->get('tagcade.manager.video_waterfall_tag');
+        $waterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
+        return ($role instanceof PublisherInterface)
+            ? $waterfallTagManager->getVideoWaterfallTagsForPublisher($role)
+            : $this->all();
+
         /** @var VideoWaterfallTagRepository $waterfallTagRepository */
-        $waterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
-        $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams());
-        return $this->getPagination($qb, $request);
+
+
     }
 
     /**
