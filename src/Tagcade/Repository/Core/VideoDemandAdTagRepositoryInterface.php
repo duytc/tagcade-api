@@ -36,7 +36,7 @@ interface VideoDemandAdTagRepositoryInterface extends ObjectRepository
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
-     * @return array
+     * @return mixed
      */
     public function getVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
 

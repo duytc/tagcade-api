@@ -26,7 +26,7 @@ interface VideoDemandPartnerRepositoryInterface extends ObjectRepository
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
-     * @return array
+     * @return mixed
      */
     public function getVideoDemandPartnersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
 

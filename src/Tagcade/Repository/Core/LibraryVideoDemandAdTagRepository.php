@@ -63,7 +63,7 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
-     * @return array
+     * @return mixed
      */
     public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(UserRoleInterface $user, PagerParam $param)
     {
@@ -102,7 +102,7 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
-     * @return array
+     * @return mixed
      */
     public function getLibraryVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
     {

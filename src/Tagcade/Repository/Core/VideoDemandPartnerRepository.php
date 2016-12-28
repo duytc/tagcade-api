@@ -26,7 +26,7 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
-     * @return array
+     * @return mixed
      */
     public function getVideoDemandPartnersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
     {

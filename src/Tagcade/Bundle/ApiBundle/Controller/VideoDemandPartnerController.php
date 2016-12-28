@@ -181,7 +181,7 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      * @param $id
      * @return \Tagcade\Model\Core\VideoDemandAdTagInterface[]
      */
-    public function cgetLibraryVideoDemandAdTagsAction($id)
+    public function getLibraryVideoDemandAdTagsAction($id)
     {
         /** @var VideoDemandPartnerInterface $videoDemandPartner */
         $videoDemandPartner = $this->one($id);
