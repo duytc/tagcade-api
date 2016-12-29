@@ -250,6 +250,25 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @param LibraryVideoDemandAdTagInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsForLibraryVideoDemandAdTagWithPagination(LibraryVideoDemandAdTagInterface $user, PagerParam $param)
+    {
+
+        $qb = $this->createQueryBuilder('vdt');
+
+        if ($user instanceof PublisherInterface) {
+            $qb
+                ->where('vdt.libraryVideoDemandAdTag = :libraryVideoDemandAdTag')
+                ->setParameter('libraryVideoDemandAdTag', $user);
+        }
+
+        return $qb;
+    }
+
     public function getVideoDemandAdTagsForWaterfallPlacementRule(WaterfallPlacementRuleInterface $rule, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('vdt')
@@ -287,6 +306,4 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
             ->getResult()
             ;
     }
-
-
 }

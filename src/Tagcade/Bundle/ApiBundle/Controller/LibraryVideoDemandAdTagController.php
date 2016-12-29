@@ -53,7 +53,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
     {
         $role = $this->getUser();
 
-        $libraryVideoDemandAdTagManager = $this->get('tagcade.manager.library_video_demand_ad_tag');
+        $libraryVideoDemandAdTagManager = $this->get('tagcade.domain_manager.library_video_demand_ad_tag');
         $libraryVideoDemandAdTagRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
 
 
@@ -114,15 +114,25 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
      * )
      *
      * @param $id
+     * @param Request $request
      * @return \Tagcade\Model\Core\VideoDemandAdTagInterface[]
      */
-    public function getLinkedVideoDemandAdTagsAction($id)
+    public function cgetLinkedVideoDemandAdTagsAction($id, Request $request)
     {
-        /** @var LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag */
         $libraryVideoDemandAdTag = $this->one($id);
 
-        return $this->get('tagcade.domain_manager.video_demand_ad_tag')
-            ->getVideoDemandAdTagsForLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
+        $libraryVideoDemandAdTagManager = $this->get('tagcade.domain_manager.video_demand_ad_tag');
+        $libraryVideoDemandAdTagRepository = $this->get('tagcade.repository.video_demand_ad_tag');
+
+
+        if ($request->query->get('page') > 0) {
+            $qb = $libraryVideoDemandAdTagRepository->getVideoDemandAdTagsForLibraryVideoDemandAdTagWithPagination($libraryVideoDemandAdTag, $this->getParams());
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($libraryVideoDemandAdTag instanceof PublisherInterface)
+            ? $libraryVideoDemandAdTagManager->getVideoDemandAdTagsForLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
+            : $this->all();
     }
 
     /**

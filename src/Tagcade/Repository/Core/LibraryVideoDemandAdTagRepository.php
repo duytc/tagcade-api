@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Core;
 
 
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -61,11 +62,11 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
     }
 
     /**
-     * @param UserRoleInterface $user
-     * @param PagerParam $param
+     * @param VideoDemandPartnerInterface $user
+     * @param Request $request
      * @return mixed
      */
-    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(UserRoleInterface $user, PagerParam $param)
+    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(VideoDemandPartnerInterface $user, Request $request)
     {
         $qb = $this->createQueryBuilder('lvdt');
         if ($user instanceof PublisherInterface) {
@@ -74,26 +75,26 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
                 ->setParameter('videoDemandPartner', $user);
         }
 
-        if (is_string($param->getSearchKey())) {
-            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb
-                ->andWhere($qb->expr()->orX(
-                    $qb->expr()->like('lvdt.id', ':searchKey'),
-                    $qb->expr()->like('lvdt.name', ':searchKey'),
-                    $qb->expr()->like('lvdt.company', ':searchKey')
-                ))
-                ->setParameter('searchKey', $searchLike);
-        }
+//        if (is_string($param->getSearchKey())) {
+//            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+//            $qb
+//                ->andWhere($qb->expr()->orX(
+//                    $qb->expr()->like('lvdt.id', ':searchKey'),
+//                    $qb->expr()->like('lvdt.name', ':searchKey'),
+//                    $qb->expr()->like('lvdt.company', ':searchKey')
+//                ))
+//                ->setParameter('searchKey', $searchLike);
+//        }
 
-        if (is_string($param->getSortField()) &&
-            is_string($param->getSortDirection()) &&
-            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])&&
-            in_array($param->getSortField(), $this->SORT_FIELDS)
+        $sortField = $request->query->get('sortField');
+        $sortDirection = $request->query->get('orderBy');
+
+        if (is_string($sortField) &&
+            is_string($sortDirection) &&
+            in_array($sortDirection, ['asc', 'desc', 'ASC', 'DESC'])&&
+            in_array($sortField, $this->SORT_FIELDS)
         ) {
-            if ($param->getSortField() == 'videoDemandPartner.publisher.company'){
-                $qb->addOrderBy($param->getSortField(), $param->getSortDirection());
-            } else
-                $qb->addOrderBy('lvdt.' . $param->getSortField(), $param->getSortDirection());
+            $qb->addOrderBy('lvdt.' . $sortField, $sortDirection);
         }
 
         return $qb;
@@ -106,7 +107,6 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
      */
     public function getLibraryVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
     {
-        // TODO: Implement getLibraryVideoDemandAdTagsForDemandPartnerWithPagination() method.
         $qb = $this->createQueryBuilder('r')
             ->join('r.videoDemandPartner', 'vdp');
 

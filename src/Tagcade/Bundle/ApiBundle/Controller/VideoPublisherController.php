@@ -46,7 +46,7 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
     {
         $role = $this->getUser();
 
-        $videoPublisherManager = $this->get('tagcade.manager.video_publisher');
+        $videoPublisherManager = $this->get('tagcade.domain_manager.video_publisher');
         $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
 
         if ($request->query->get('page') > 0) {
@@ -133,14 +133,24 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      * )
      *
      * @param int $id
+     * @param Request $request
      * @return View
-     * @throws BadRequestHttpException when the query params is invalid
      */
-    public function getVideoWaterfallTagsAction($id)
+    public function cgetVideoWaterfallTagsAction($id, Request $request)
     {
-        /** @var VideoPublisherInterface $videoPublisher */
         $videoPublisher = $this->one($id);
-        return $this->get('tagcade.domain_manager.video_waterfall_tag')->getVideoWaterfallTagsForVideoPublisher($videoPublisher);
+
+        $videoWaterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');
+        $videoWaterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoWaterfallTagRepository->getVideoWaterfallTagsForVideoPublisherWithPagination($videoPublisher, $request);
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($videoPublisher instanceof PublisherInterface)
+            ? $videoWaterfallTagManager->getVideoWaterfallTagsForVideoPublisher($videoPublisher)
+            : $this->all();
     }
 
     /**

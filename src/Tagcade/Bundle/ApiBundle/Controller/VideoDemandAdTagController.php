@@ -49,7 +49,7 @@ class VideoDemandAdTagController extends RestControllerAbstract implements Class
     {
         $role = $this->getUser();
 
-        $videoDemandAdTagManager = $this->get('tagcade.m.video_demand_ad_tag');
+        $videoDemandAdTagManager = $this->get('tagcade.domain_manager.video_demand_ad_tag');
         $videoDemandAdTagRepository = $this->get('tagcade.repository.video_demand_ad_tag');
 
         if ($request->query->get('page') > 0) {

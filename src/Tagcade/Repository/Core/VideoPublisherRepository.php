@@ -13,9 +13,9 @@ use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 class VideoPublisherRepository extends EntityRepository implements VideoPublisherRepositoryInterface
 {
     protected $SORT_FIELDS = [
-        'id' => 'publisher_id',
+        'id' => 'id',
         'name' => 'name',
-        'company' => 'company',
+        'publisher.company' => 'publisher.company',
     ];
     /**
      * @param UserRoleInterface $user
@@ -46,7 +46,14 @@ class VideoPublisherRepository extends EntityRepository implements VideoPublishe
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])&&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('vp.' . $param->getSortField(), $param->getSortDirection());
+            switch ($param->getSortField()){
+                case 'publisher.company':
+                    $qb->addOrderBy('vp.publisher' , $param->getSortDirection());
+                    break;
+                default:
+                    $qb->addOrderBy('vp.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+            }
         }
         return $qb;
     }

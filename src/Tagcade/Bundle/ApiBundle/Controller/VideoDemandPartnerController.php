@@ -54,7 +54,7 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
     {
         $role = $this->getUser();
 
-        $videoDemandPartnerManager = $this->get('tagcade.manager.video_demand_partner');
+        $videoDemandPartnerManager = $this->get('tagcade.domain_manager.video_demand_partner');
         $videoDemandPartnerRepository = $this->get('tagcade.repository.video_demand_partner');
 
         if ($request->query->get('page') > 0) {
@@ -185,15 +185,24 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      * )
      *
      * @param $id
+     * @param Request $request
      * @return \Tagcade\Model\Core\VideoDemandAdTagInterface[]
      */
-    public function getLibraryVideoDemandAdTagsAction($id)
+    public function getLibraryVideoDemandAdTagsAction($id, Request $request)
     {
-        /** @var VideoDemandPartnerInterface $videoDemandPartner */
         $videoDemandPartner = $this->one($id);
 
-        return $this->get('tagcade.domain_manager.library_video_demand_ad_tag')
-            ->getLibraryVideoDemandAdTagsForDemandPartner($videoDemandPartner);
+        $videoDemandAdTagsManager = $this->get('tagcade.domain_manager.library_video_demand_ad_tag');
+        $videoDemandAdTagsRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoDemandAdTagsRepository->getLibraryVideoDemandAdTagsForDemandPartnerWithPagination($videoDemandPartner, $request);
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($videoDemandPartner instanceof PublisherInterface)
+            ? $videoDemandAdTagsManager->getLibraryVideoDemandAdTagsForDemandPartner($videoDemandPartner)
+            : $this->all();
     }
 
     /**

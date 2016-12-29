@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
@@ -18,9 +19,9 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
     protected $SORT_FIELDS = [
         'id' => 'id',
         'name' => 'name',
-        'publisher.company' => 'company',
-        'activeAdTagsCount' => 'active_ad_tags_count',
-        'pausedAdTagsCount' => 'paused_ad_tags_count',
+        'publisher.company' => 'publisher.company',
+        'activeAdTagsCount' => 'activeAdTagsCount',
+        'pausedAdTagsCount' => 'pausedAdTagsCount',
     ];
 
     /**
@@ -31,11 +32,7 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
     public function getVideoDemandPartnersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('vdm');
-        if ($user instanceof PublisherInterface) {
-            $qb
-                ->where('vdm.publisher = :publisher_id')
-                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
-        }
+//            ->join('vdm.', 'vdu');
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
@@ -53,7 +50,15 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('vdm.' . $param->getSortField(), $param->getSortDirection());
+
+            switch ($param->getSortField()){
+                case 'publisher.company':
+                    $qb->addOrderBy('vdm.publisher' , $param->getSortDirection());
+                    break;
+                default:
+                    $qb->addOrderBy('vdm.'.$param->getSortField(), $param->getSortDirection());
+                    break;
+            }
         }
 
         return $qb;

@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Core;
 
 
 use Doctrine\Common\Persistence\ObjectRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
@@ -35,6 +36,13 @@ interface VideoWaterfallTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $limit = null, $offset = null);
+
+    /**
+     * @param VideoPublisherInterface $user
+     * @param Request $request
+     * @return mixed
+     */
+    public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, Request $request);
 
     /**
      * Get all video ad tag by filter parameter

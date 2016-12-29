@@ -6,6 +6,8 @@ namespace Tagcade\Repository\Core;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
+use Tagcade\Entity\Core\VideoPublisher;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
@@ -18,7 +20,14 @@ use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 
 class VideoWaterfallTagRepository extends EntityRepository implements VideoWaterfallTagRepositoryInterface
 {
-    protected $SORT_FIELDS = ['id', 'name'];
+    protected $SORT_FIELDS = [
+        'id'=>'id',
+        'name'=>'name',
+        'timeout'=>'timeout',
+        'sellPrice'=>'sellPrice',
+        'buyPrice' => 'buyPrice',
+//        'videoPublisher.name'=>'videoPublisher.name'
+    ];
 
     /**
      * @inheritdoc
@@ -77,6 +86,40 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
 
         return $qb->getQuery()->getResult();
     }
+    /**
+     * @param VideoPublisherInterface $user
+     * @param Request $request
+     * @return mixed
+     */
+    public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, Request $request)
+    {
+        $qb = $this->createQueryBuilder('vwt')
+            ->leftJoin('vwt.videoPublisher', 'vp');
+
+//        if (is_string($param->getSearchKey())) {
+//            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+//            $qb->andWhere(
+//                $qb->expr()->orX(
+//                    $qb->expr()->like('wt.name', ':searchKey'),
+//                    $qb->expr()->like('wt.id', ':searchKey')
+//                )
+//            )->setParameter('searchKey', $searchLike);
+//        }
+        $sortField = $request->query->get('sortField');
+        $sortDirection = $request->query->get('orderBy');
+
+        if (is_string($sortField) &&
+            is_string($sortDirection) &&
+            in_array($sortDirection, ['asc', 'desc', 'ASC', 'DESC'])&&
+            in_array($sortField, $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('vwt.' . $sortField, $sortDirection);
+        }
+
+        return $qb;
+    }
+
+
 
     /**
      * @inheritdoc
@@ -177,13 +220,8 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
      */
     public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param)
     {
-        $qb = $this->createQueryBuilderForUser($user);
-
-        if (is_int($param->getPublisherId()) && $param->getPublisherId() > 0 && $user instanceof AdminInterface) {
-            $qb ->join('wt.videoPublisher', 'vp')
-                ->andWhere('vp.publisher = :publisherId')
-                ->setParameter('publisherId', $param->getPublisherId());
-        }
+        $qb = $this->createQueryBuilderForUser($user)
+            ->leftJoin('wt.videoPublisher', 'vp');
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
@@ -196,7 +234,14 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('wt.' . $param->getSortField(), $param->getSortDirection());
+            switch ($param->getSortField()){
+                case 'videoPublisher.name':
+                    $qb->addOrderBy('vp.name', $param->getSortDirection());
+                    break;
+                default :
+                    $qb->addOrderBy('wt.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+            }
         }
 
         return $qb;

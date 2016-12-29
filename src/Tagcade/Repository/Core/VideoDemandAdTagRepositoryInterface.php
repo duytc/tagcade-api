@@ -81,6 +81,12 @@ interface VideoDemandAdTagRepositoryInterface extends ObjectRepository
     public function getVideoDemandAdTagsForLibraryVideoDemandAdTag(LibraryVideoDemandAdTagInterface $libraryVideoDemandAdTag, $limit = null, $offset = null);
 
     /**
+     * @param LibraryVideoDemandAdTagInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsForLibraryVideoDemandAdTagWithPagination(LibraryVideoDemandAdTagInterface $user, PagerParam $param);
+    /**
      * @param WaterfallPlacementRuleInterface $rule
      * @param null $limit
      * @param null $offset
