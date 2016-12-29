@@ -67,7 +67,11 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('vdm.id', ':searchKey'),
-                    $qb->expr()->like('vdm.name', ':searchKey')
+                    $qb->expr()->like('vdm.priority', ':searchKey'),
+                    $qb->expr()->like('vdm.rotation_weight', ':searchKey'),
+                    $qb->expr()->like('libraryVideoDemandAdTag.name', ':searchKey'),
+                    $qb->expr()->like('libraryVideoDemandAdTag.timeout', ':searchKey'),
+                    $qb->expr()->like('libraryVideoDemandAdTag.sellPrice', ':searchKey')
                 ))
                 ->setParameter('searchKey', $searchLike);
         }

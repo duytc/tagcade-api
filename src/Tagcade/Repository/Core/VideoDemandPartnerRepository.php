@@ -39,8 +39,7 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('vdm.id', ':searchKey'),
-                    $qb->expr()->like('vdm.name', ':searchKey'),
-                    $qb->expr()->like('vdm.company', ':searchKey')
+                    $qb->expr()->like('vdm.name', ':searchKey')
                 ))
                 ->setParameter('searchKey', $searchLike);
         }

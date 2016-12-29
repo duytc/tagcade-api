@@ -34,7 +34,6 @@ class VideoPublisherRepository extends EntityRepository implements VideoPublishe
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
             $qb
                 ->andWhere($qb->expr()->orX(
-                    $qb->expr()->like('vp.publisher', ':searchKey'),
                     $qb->expr()->like('vp.name', ':searchKey'),
                     $qb->expr()->like('vp.id', ':searchKey')
                 ))

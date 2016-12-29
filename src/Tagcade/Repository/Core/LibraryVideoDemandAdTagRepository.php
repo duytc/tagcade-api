@@ -75,16 +75,16 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
                 ->setParameter('videoDemandPartner', $user);
         }
 
-//        if (is_string($param->getSearchKey())) {
-//            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-//            $qb
-//                ->andWhere($qb->expr()->orX(
-//                    $qb->expr()->like('lvdt.id', ':searchKey'),
-//                    $qb->expr()->like('lvdt.name', ':searchKey'),
-//                    $qb->expr()->like('lvdt.company', ':searchKey')
-//                ))
-//                ->setParameter('searchKey', $searchLike);
-//        }
+        $searchKey = $request->query->get('searchKey');
+        if (is_string($searchKey)) {
+            $searchLike = sprintf('%%%s%%', $searchKey);
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('lvdt.id', ':searchKey'),
+                    $qb->expr()->like('lvdt.name', ':searchKey')
+                ))
+                ->setParameter('searchKey', $searchLike);
+        }
 
         $sortField = $request->query->get('sortField');
         $sortDirection = $request->query->get('orderBy');

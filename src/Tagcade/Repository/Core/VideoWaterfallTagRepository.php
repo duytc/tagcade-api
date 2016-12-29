@@ -96,15 +96,16 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         $qb = $this->createQueryBuilder('vwt')
             ->leftJoin('vwt.videoPublisher', 'vp');
 
-//        if (is_string($param->getSearchKey())) {
-//            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-//            $qb->andWhere(
-//                $qb->expr()->orX(
-//                    $qb->expr()->like('wt.name', ':searchKey'),
-//                    $qb->expr()->like('wt.id', ':searchKey')
-//                )
-//            )->setParameter('searchKey', $searchLike);
-//        }
+        $searchKey = $request->query->get('searchKey');
+        if (is_string($searchKey)) {
+            $searchLike = sprintf('%%%s%%', $searchKey);
+            $qb->andWhere(
+                $qb->expr()->orX(
+                    $qb->expr()->like('vwt.name', ':searchKey'),
+                    $qb->expr()->like('vwt.id', ':searchKey')
+                )
+            )->setParameter('searchKey', $searchLike);
+        }
         $sortField = $request->query->get('sortField');
         $sortDirection = $request->query->get('orderBy');
 
