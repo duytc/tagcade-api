@@ -8,6 +8,8 @@ use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheProvider;
 
 class RedisArrayNamespaceCache extends NamespaceCacheProvider
 {
+    const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
+
     /**
      * @var Redis
      */
@@ -27,9 +29,16 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
         parent::__construct($maxCacheVersion);
 
         $redis = new Redis();
-        $redis->connect($host, $port);
+
+        try {
+            $redis->connect($host, $port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
+            $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+        } catch (\RedisException $e) {
+            // do not let redis connection errors crash the entire program
+            // todo refactor to check if redis is connected or not
+        }
+
         $this->redis = $redis;
-        $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
     }
 
     /**
