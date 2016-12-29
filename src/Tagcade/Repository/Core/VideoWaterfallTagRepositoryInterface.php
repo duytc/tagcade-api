@@ -39,10 +39,10 @@ interface VideoWaterfallTagRepositoryInterface extends ObjectRepository
 
     /**
      * @param VideoPublisherInterface $user
-     * @param Request $request
+     * @param PagerParam $param
      * @return mixed
      */
-    public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, Request $request);
+    public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, PagerParam $param);
 
     /**
      * Get all video ad tag by filter parameter

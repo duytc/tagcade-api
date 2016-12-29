@@ -170,7 +170,12 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      * Get all active demand ad tags belonging to this demand partner
      *
      * @Rest\Get("/videodemandpartners/{id}/libraryvideodemandadtags", requirements={"id" = "\d+"})
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @Rest\View(
      *      serializerGroups={"libraryVideoDemandAdTag.summaryWithLinkedCount", "videoDemandPartner.summary", "videoPublisher.summary", "user.summary"}
      * )
@@ -196,7 +201,7 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
         $videoDemandAdTagsRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
 
         if ($request->query->get('page') > 0) {
-            $qb = $videoDemandAdTagsRepository->getLibraryVideoDemandAdTagsForDemandPartnerWithPagination($videoDemandPartner, $request);
+            $qb = $videoDemandAdTagsRepository->getLibraryVideoDemandAdTagsForDemandPartnerWithPagination($videoDemandPartner, $this->getParams());
             return $this->getPagination($qb, $request);
         }
 

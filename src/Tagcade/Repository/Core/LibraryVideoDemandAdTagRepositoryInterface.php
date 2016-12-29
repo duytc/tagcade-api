@@ -31,10 +31,10 @@ interface LibraryVideoDemandAdTagRepositoryInterface extends ObjectRepository
 
     /**
      * @param VideoDemandPartnerInterface $user
-     * @param Request $request
+     * @param PagerParam $param
      * @return mixed
      */
-    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(VideoDemandPartnerInterface $user, Request $request);
+    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(VideoDemandPartnerInterface $user, PagerParam $param);
 
     /**
      * @param UserRoleInterface $user

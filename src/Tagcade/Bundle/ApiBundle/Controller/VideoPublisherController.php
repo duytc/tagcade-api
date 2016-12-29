@@ -120,7 +120,12 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      * Get all videoWaterfallTags for video publisher
      *
      * @Rest\Get("/videopublishers/{id}/videowaterfalltags", requirements="")
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @Rest\View(serializerGroups={"videoWaterfallTag.summary", "user.summary", "videoPublisher.summary", "videoWaterfallTagItem.summary", "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary"})
      *
      * @ApiDoc(
@@ -136,7 +141,7 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      * @param Request $request
      * @return View
      */
-    public function cgetVideoWaterfallTagsAction($id, Request $request)
+    public function getVideoWaterfallTagsAction($id, Request $request)
     {
         $videoPublisher = $this->one($id);
 
@@ -144,7 +149,7 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
         $videoWaterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
 
         if ($request->query->get('page') > 0) {
-            $qb = $videoWaterfallTagRepository->getVideoWaterfallTagsForVideoPublisherWithPagination($videoPublisher, $request);
+            $qb = $videoWaterfallTagRepository->getVideoWaterfallTagsForVideoPublisherWithPagination($videoPublisher, $this->getParams());
             return $this->getPagination($qb, $request);
         }
 

@@ -63,10 +63,10 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
 
     /**
      * @param VideoDemandPartnerInterface $user
-     * @param Request $request
+     * @param PagerParam $param
      * @return mixed
      */
-    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(VideoDemandPartnerInterface $user, Request $request)
+    public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(VideoDemandPartnerInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('lvdt');
         if ($user instanceof PublisherInterface) {
@@ -75,9 +75,8 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
                 ->setParameter('videoDemandPartner', $user);
         }
 
-        $searchKey = $request->query->get('searchKey');
-        if (is_string($searchKey)) {
-            $searchLike = sprintf('%%%s%%', $searchKey);
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('lvdt.id', ':searchKey'),
@@ -86,15 +85,12 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
                 ->setParameter('searchKey', $searchLike);
         }
 
-        $sortField = $request->query->get('sortField');
-        $sortDirection = $request->query->get('orderBy');
-
-        if (is_string($sortField) &&
-            is_string($sortDirection) &&
-            in_array($sortDirection, ['asc', 'desc', 'ASC', 'DESC'])&&
-            in_array($sortField, $this->SORT_FIELDS)
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('lvdt.' . $sortField, $sortDirection);
+            $qb->addOrderBy('lvdt.'.$param->getSortField(), $param->getSortDirection());
         }
 
         return $qb;

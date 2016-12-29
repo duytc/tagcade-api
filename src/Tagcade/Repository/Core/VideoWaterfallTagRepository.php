@@ -88,33 +88,30 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
     }
     /**
      * @param VideoPublisherInterface $user
-     * @param Request $request
+     * @param PagerParam $param
      * @return mixed
      */
-    public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, Request $request)
+    public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('vwt')
             ->leftJoin('vwt.videoPublisher', 'vp');
 
-        $searchKey = $request->query->get('searchKey');
-        if (is_string($searchKey)) {
-            $searchLike = sprintf('%%%s%%', $searchKey);
-            $qb->andWhere(
-                $qb->expr()->orX(
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb
+                ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('vwt.name', ':searchKey'),
                     $qb->expr()->like('vwt.id', ':searchKey')
-                )
-            )->setParameter('searchKey', $searchLike);
+                ))
+                ->setParameter('searchKey', $searchLike);
         }
-        $sortField = $request->query->get('sortField');
-        $sortDirection = $request->query->get('orderBy');
 
-        if (is_string($sortField) &&
-            is_string($sortDirection) &&
-            in_array($sortDirection, ['asc', 'desc', 'ASC', 'DESC'])&&
-            in_array($sortField, $this->SORT_FIELDS)
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('vwt.' . $sortField, $sortDirection);
+            $qb->addOrderBy('vwt.' . $param->getSortField(), $param->getSortDirection());
         }
 
         return $qb;
