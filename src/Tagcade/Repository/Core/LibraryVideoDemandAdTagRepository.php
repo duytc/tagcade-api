@@ -116,8 +116,7 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
             $qb
                 ->andWhere($qb->expr()->orX(
                     $qb->expr()->like('r.id', ':searchKey'),
-                    $qb->expr()->like('r.name', ':searchKey'),
-                    $qb->expr()->like('r.company', ':searchKey')
+                    $qb->expr()->like('r.name', ':searchKey')
                 ))
                 ->setParameter('searchKey', $searchLike);
         }
