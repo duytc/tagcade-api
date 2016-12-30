@@ -16,7 +16,7 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
     protected $SORT_FIELDS = [
         'id' => 'id',
         'name' => 'name',
-        'videoDemandPartner.publisher.company' => 'videoDemandPartner.publisher.company',
+//        'videoDemandPartner.publisher.company' => 'videoDemandPartner.publisher.company',
         'timeout' => 'timeout',
         'sellPrice' => 'sellPrice',
     ];
@@ -126,7 +126,9 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('vdp.' . $param->getSortField(), $param->getSortDirection());
+            $qb->addOrderBy('r.' . $param->getSortField(), $param->getSortDirection());
+        } else {
+            $qb->addOrderBy('r.id', 'asc');
         }
 
         return $qb;
