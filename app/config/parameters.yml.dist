@@ -18,6 +18,9 @@ parameters:
 
     locale:            en
     secret:            ThisTokenIsNotSoSecretChangeIt
+
+    pheanstalk_primary_host: 127.0.0.1
+
     rtb.exchanges:
         -
             name: Index Exchange
