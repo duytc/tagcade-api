@@ -23,10 +23,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
     protected $SORT_FIELDS = [
         'id'=>'id',
         'name'=>'name',
-        'timeout'=>'timeout',
-        'sellPrice'=>'sellPrice',
         'buyPrice' => 'buyPrice',
-//        'videoPublisher.name'=>'videoPublisher.name'
     ];
 
     /**
@@ -218,8 +215,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
      */
     public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param)
     {
-        $qb = $this->createQueryBuilderForUser($user)
-            ->leftJoin('wt.videoPublisher', 'vp');
+        $qb = $this->createQueryBuilderForUser($user);
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
@@ -232,14 +228,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            switch ($param->getSortField()){
-                case 'videoPublisher.name':
-                    $qb->addOrderBy('vp.name', $param->getSortDirection());
-                    break;
-                default :
-                    $qb->addOrderBy('wt.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-            }
+            $qb->addOrderBy('wt.' . $param->getSortField(), $param->getSortDirection());
         }
 
         return $qb;
