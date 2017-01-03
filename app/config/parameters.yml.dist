@@ -48,6 +48,8 @@ parameters:
     tc.redis.video_tag_cache.host: '127.0.0.1'
     tc.redis.video_tag_cache.port: 6379
 
+    tc.report.performance.event_counter.redis_pipeline_size_threshold: 10000
+
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
     tc.max_cache_version: 20 # maximum cache version of a specific key is kept in Redis cache
     tc.display.billing.thresholds:

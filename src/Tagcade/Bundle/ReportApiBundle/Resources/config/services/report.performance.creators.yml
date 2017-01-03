@@ -90,6 +90,7 @@ services:
             - @tagcade.legacy.cache.performance_report_data
             - @tagcade.domain_manager.ad_tag
             - @tagcade.domain_manager.ad_slot
+            - %tc.report.performance.event_counter.redis_pipeline_size_threshold%
 
     ### Report creator service
 
