@@ -1,6 +1,5 @@
 <?php
 namespace tagcade\dev;
-
 use AppKernel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -19,39 +18,32 @@ use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Entity\Core\VideoPublisher;
 use Tagcade\Entity\Core\VideoWaterfallTag;
 use Tagcade\Entity\Core\VideoWaterfallTagItem;
-
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
-
 $kernel = new AppKernel('dev', true);
 $kernel->boot();
-
 /** @var ContainerInterface $container */
 $container = $kernel->getContainer();
-
 // display module
-const NUM_PUBLISHER = 10;
-const NUM_SITES = 20;
-const NUM_AD_SLOTS_PER_SITE = 50;
+const NUM_PUBLISHER = 1;
+const NUM_SITES = 10000;
+const NUM_AD_SLOTS_PER_SITE = 10;
+const NUM_AD_TAG_PER_AD_SLOT = 5;
 const NUM_EXCHANGE_PER_PUBLISHER = 1;
-
 // video module
 const NUM_VIDEO_PUBLISHER = 1;
 const NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER = 1;
 const NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL = 1;
-
 function xrange($max = 1000) {
     for ($i = 1; $i <= $max; $i++) {
         yield $i;
     }
 }
-
 /** @var EntityManagerInterface $em */
 $em = $container->get('doctrine.orm.entity_manager');
 $em->getConnection()->getConfiguration()->setSQLLogger(null);
 /** @var PublisherManagerInterface $publisherManager */
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
-
 foreach(xrange(NUM_PUBLISHER) as $userId) {
     //create publisher
     $publisher = new User();
@@ -62,8 +54,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setEmail(sprintf('tctest%d@tagcade.com', $userId))
         ->setEnabled(true)
     ;
-
-    $publisher->setCompany('tctest'.$userId); // doesn't return $this so cannot chain
+    $publisher->setCompany('tctest' . $userId); // doesn't return $this so cannot chain
     $enabledModules = [$publisher::MODULE_DISPLAY, $publisher::MODULE_RTB, $publisher::MODULE_VIDEO, $publisher::MODULE_HEADER_BIDDING, $publisher::MODULE_VIDEO_ANALYTICS, $publisher::MODULE_UNIFIED_REPORT];
     $publisher->setEnabledModules($enabledModules);
 
@@ -93,21 +84,15 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
 
     $publisherManager->save($publisher);
 
-    $em->flush();
-
     foreach(xrange(NUM_SITES) as $id) {
         gc_enable();
-
-        $tempObjs = [];
         // create ad network
         $adNetwork = (new AdNetwork())
             ->setName('Test Ad Network ' . $id)
             ->setActiveAdTagsCount(0) // why do I have to do this? it should default to 0
             ->setPausedAdTagsCount(0)
             ->setPublisher($publisher);
-
         $em->persist($adNetwork);
-        $tempObjs[] = $adNetwork;
 
         //create sites
         $site = (new Site())
@@ -118,15 +103,16 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             ->setPublisher($publisher)
         ;
         $em->persist($site);
-        $tempObjs[] = $site;
 
-        foreach(xrange(NUM_AD_SLOTS_PER_SITE) as $slotId) {
+        $numAdSlot = random_int(1, NUM_AD_SLOTS_PER_SITE);
+        foreach(xrange($numAdSlot) as $slotId) {
             // create ad slot
             $libraryAdSlot = (new LibraryDisplayAdSlot())
                 ->setName("Display AdSlot " . $slotId)
                 ->setType('display')
                 ->setVisible(false)
                 ->setPublisher($publisher);
+
             $adSlot = (new DisplayAdSlot())
                 ->setLibraryAdSlot($libraryAdSlot)
                 ->setAutoFit(true)
@@ -135,86 +121,60 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                 ->setWidth(400)
                 ->setSite($site);
 
-            $tempObjs[] = $adSlot;
-            $tempObjs[] = $libraryAdSlot;
             // create ad tag
-            $libraryAdTag = (new LibraryAdTag())->setName('ad tag 1')
-                ->setVisible(false)
-                ->setHtml('ad tag 1 html')
-                ->setAdType(0)
-                ->setAdNetwork($adNetwork)
-                ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
-            $tempObjs[] = $libraryAdTag;
+            foreach(xrange(NUM_AD_TAG_PER_AD_SLOT) as $adTagId) {
+                $libraryAdTag = (new LibraryAdTag())->setName(sprintf('ad tag %d', $adTagId))
+                    ->setVisible(false)
+                    ->setHtml(sprintf('ad tag %d html', $adTagId))
+                    ->setAdType(0)
+                    ->setAdNetwork($adNetwork)
+                    ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
 
-            $adTag = (new AdTag())
-                ->setLibraryAdTag($libraryAdTag)
-                ->setAdSlot($adSlot)
-                ->setActive(true)
-                ->setFrequencyCap(11)
-                ->setRefId(uniqid('', true));
-            $adSlot->getAdTags()->add($adTag);
-            $tempObjs[] = $adTag;
+                $adTag = (new AdTag())
+                    ->setLibraryAdTag($libraryAdTag)
+                    ->setAdSlot($adSlot)
+                    ->setActive(true)
+                    ->setFrequencyCap(11)
+                    ->setRefId(uniqid('', true));
 
-            unset($libraryAdTag);
-            unset($adTag);
+                $adSlot->getAdTags()->add($adTag);
+                unset($libraryAdTag);
+                unset($adTag);
+            }
 
-            $libraryAdTag = (new LibraryAdTag())->setName('ad tag 2')
-                ->setVisible(false)
-                ->setHtml('ad tag 2 html')
-                ->setAdType(0)
-                ->setAdNetwork($adNetwork)
-                ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
-            $tempObjs[] = $libraryAdTag;
-            $adTag = (new AdTag())
-                ->setLibraryAdTag($libraryAdTag)
-                ->setAdSlot($adSlot)
-                ->setActive(true)
-                ->setFrequencyCap(11)
-                ->setRefId(uniqid('', true));
-            $adSlot->getAdTags()->add($adTag);
-            $tempObjs[] = $adTag;
-            unset($libraryAdTag);
-            unset($adTag);
             $em->persist($adSlot);
             unset($adSlot);
             unset($libraryAdSlot);
+            $em->clear(AdTag::class);
+            $em->clear(LibraryAdTag::class);
+            $em->clear(LibraryDisplayAdSlot::class);
+            $em->clear(DisplayAdSlot::class);
         }
 
+        $em->flush();
+
+        $em->detach($adNetwork);
+        $em->detach($site);
         unset($adNetwork);
         unset($site);
 
-        $em->flush();
-        foreach(array_reverse($tempObjs) as $obj) {
-            $em->detach($obj);
-        }
-
-
         gc_collect_cycles();
-
         echo sprintf('finish inserting site "Site %d"'. "\n", $id) ;
-        unset($tempObjs);
     }
 
     foreach(xrange(NUM_VIDEO_PUBLISHER) as $videoPublisherId) {
         gc_enable();
-        $tempObjs = [];
-
         $videoDemandPartner = (new VideoDemandPartner())
             ->setName(sprintf('Video Demand Partner %d - %s', $videoPublisherId, $username))
             ->setPublisher($publisher)
         ;
-
         $em->persist($videoDemandPartner);
-        $tempObjs[] = $videoDemandPartner;
 
-        $videoPublisher =
-            (new VideoPublisher())
+        $videoPublisher = (new VideoPublisher())
                 ->setName(sprintf('Video Publisher %d - %s', $videoPublisherId, $username))
-                ->setPublisher($publisher)
-        ;
+                ->setPublisher($publisher);
 
         $em->persist($videoPublisher);
-        $tempObjs[] = $videoPublisher;
 
         // create waterfall tag
         foreach(xrange(NUM_WATERFALL_TAG_PER_VIDEO_PUBLISHER) as $waterfallTag) {
@@ -223,22 +183,15 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                 ->setName(sprintf('Waterfall Tag %d - %s - %s', $waterfallTag, $videoPublisher->getName(), $username))
                 ->setPlatform(['flash', 'js'])
                 ->setUuid(generateUuidV4())
-                ->setTargeting([])
-            ;
+                ->setTargeting([]);
 
             $em->persist($videoWaterfall);
-            $tempObjs[] = $videoWaterfall;
-
             // create demand ad tag and demand partner
             foreach(xrange(NUM_VIDEO_DEMAND_AD_TAG_PER_WATERFALL) as $demandAdTag) {
-
                 $videoWaterfallTagItem = (new VideoWaterfallTagItem())
                     ->setStrategy('linear')
                     ->setVideoWaterfallTag($videoWaterfall)
-                    ->setPosition($demandAdTag)
-                ;
-
-                $tempObjs[] = $videoWaterfallTagItem;
+                    ->setPosition($demandAdTag);
 
                 $videoDemandAdTagLibrary = (new LibraryVideoDemandAdTag())
                     ->setName(sprintf('Demand Ad Tag %d - %s - %s', $demandAdTag, $videoPublisher->getName(), $username))
@@ -249,31 +202,28 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
 
                 $videoDemandAdTag = (new VideoDemandAdTag())
                     ->setLibraryVideoDemandAdTag($videoDemandAdTagLibrary)
-                    ->setTargetingOverride(false)
-                ;
+                    ->setTargetingOverride(false);
+
                 $videoDemandAdTag->setVideoWaterfallTagItem($videoWaterfallTagItem);
-
-                $tempObjs[] = $videoDemandAdTag;
-                $tempObjs[] = $videoDemandAdTagLibrary;
-
                 $videoWaterfallTagItem->addVideoDemandAdTag($videoDemandAdTag);
 
                 $em->persist($videoWaterfallTagItem);
-                $tempObjs[] = $videoWaterfallTagItem;
             }
         }
 
         $em->flush();
 
-        foreach(array_reverse($tempObjs) as $obj) {
-            $em->detach($obj);
-        }
+        $em->clear(VideoDemandAdTag::class);
+        $em->clear(LibraryVideoDemandAdTag::class);
+        $em->clear(VideoWaterfallTagItem::class);
+        $em->clear(VideoWaterfallTag::class);
+        $em->clear(VideoPublisher::class);
+        $em->clear(VideoDemandPartner::class);
 
         gc_collect_cycles();
         echo sprintf("\t". '- finish inserting Video Publisher "%s"'. "\n", $videoPublisher->getName()) ;
         unset($tempObjs);
     }
-
     $em->detach($publisher);
     unset($publisher);
     echo sprintf('finish inserting publisher "%s"' . "\n", 'tagcade' . $userId) ;
@@ -281,7 +231,6 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
 
 $em->flush();
 $em->clear();
-
 
 function generateUuidV4() {
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
