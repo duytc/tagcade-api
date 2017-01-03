@@ -105,12 +105,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
      */
     protected $adSlotManager;
 
-    public function __construct(RedisArrayCacheInterface $cache, AdTagManagerInterface $adTagManager, AdSlotManagerInterface $adSlotManager)
+    protected $pipelineSizeThreshold;
+    public function __construct(RedisArrayCacheInterface $cache, AdTagManagerInterface $adTagManager, AdSlotManagerInterface $adSlotManager, $pipelineSizeThreshold)
     {
         $this->adTagManager = $adTagManager;
         $this->adSlotManager = $adSlotManager;
         $this->cache = $cache;
         $this->setDate(new DateTime('today'));
+        $this->pipelineSizeThreshold = $pipelineSizeThreshold;
     }
 
     public function setDate(DateTime $date = null)
@@ -596,34 +598,65 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     public function getNetworkReport(array $tagIds, $nativeSlot = false)
     {
+        $tempData = array (
+            SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_FIRST_OPPORTUNITY => 0,
+            SnapshotCreatorInterface::CACHE_KEY_VERIFIED_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
+            SnapshotCreatorInterface::CACHE_KEY_UNVERIFIED_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_BLANK_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_VOID_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_CLICK => 0,
+        );
+
         $cacheKeys = [];
+        $keyCount = 0;
         foreach ($tagIds as $id) {
             $cacheKeys[] = $this->createCacheKeysForAdTag($id, $nativeSlot);
+            $keyCount++;
+            if ($keyCount >= $this->pipelineSizeThreshold) {
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($cacheKeys, function($keys) use ($pipe) {
+                    $pipe->mGet($keys);
+                });
+                $results = $pipe->exec(); // sequence of output is sequence of slot ids
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY] += array_sum(array_column($results, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION] += array_sum(array_column($results, 1));
+
+                if (false === $nativeSlot) {
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_FIRST_OPPORTUNITY] += array_sum(array_column($results, 2));
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_VERIFIED_IMPRESSION] += array_sum(array_column($results, 3));
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] += array_sum(array_column($results, 4)) + array_sum(array_column($results, 9));
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_UNVERIFIED_IMPRESSION] += array_sum(array_column($results, 5));
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_BLANK_IMPRESSION] += array_sum(array_column($results, 6));
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_VOID_IMPRESSION] += array_sum(array_column($results, 7));
+                    $tempData[SnapshotCreatorInterface::CACHE_KEY_CLICK] += array_sum(array_column($results, 8));
+                }
+                $cacheKeys = [];
+                $keyCount = 0;
+            }
         }
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($cacheKeys, function($keys) use ($pipe) {
             $pipe->mGet($keys);
         });
-
-        $result = $pipe->exec();
-
-        $networkCount = array (
-            SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($result, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($result, 1)),
-        );
+        $results = $pipe->exec();
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY] += array_sum(array_column($results, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION] += array_sum(array_column($results, 1));
 
         if (false === $nativeSlot) {
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_FIRST_OPPORTUNITY] = array_sum(array_column($result, 2));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_VERIFIED_IMPRESSION] = array_sum(array_column($result, 3));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] = array_sum(array_column($result, 4)) + array_sum(array_column($result, 9));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_UNVERIFIED_IMPRESSION] = array_sum(array_column($result, 5));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_BLANK_IMPRESSION] = array_sum(array_column($result, 6));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_VOID_IMPRESSION] = array_sum(array_column($result, 7));
-            $networkCount[SnapshotCreatorInterface::CACHE_KEY_CLICK] = array_sum(array_column($result, 8));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_FIRST_OPPORTUNITY] += array_sum(array_column($results, 2));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_VERIFIED_IMPRESSION] += array_sum(array_column($results, 3));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] += array_sum(array_column($results, 4)) + array_sum(array_column($results, 9));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_UNVERIFIED_IMPRESSION] += array_sum(array_column($results, 5));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_BLANK_IMPRESSION] += array_sum(array_column($results, 6));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_VOID_IMPRESSION] += array_sum(array_column($results, 7));
+            $tempData[SnapshotCreatorInterface::CACHE_KEY_CLICK] += array_sum(array_column($results, 8));
         }
 
-        return $networkCount;
+        return $tempData;
     }
 
 
@@ -698,22 +731,24 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $inBannerCacheKeys =[];
         $rtbCacheKeys =[];
 
+        $tempData = array (
+            SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
+            SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
+            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
+        );
+
         $adSlotIds = $this->adSlotManager->getReportableAdSlotIdsForPublisher($publisher);
         if (count($adSlotIds) < 1) {
-            return array (
-                SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
-                SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
-                SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
-                SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
-                SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
-//            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
-            );
+            return $tempData;
         }
 
+        $keyCount = 0;
         foreach ($adSlotIds as $id) {
             $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $id);
             $cacheKeys[] = array (
@@ -728,44 +763,96 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             );
 
             $rtbCacheKeys[] = $this->getCacheKey(self::CACHE_KEY_RTB_IMPRESSION, $namespace);
+
+            $keyCount++;
+            if ($keyCount >= $this->pipelineSizeThreshold) {
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($cacheKeys, function($keys) use ($pipe) {
+                    $pipe->mGet($keys);
+                });
+                $results = $pipe->exec(); // sequence of output is sequence of slot ids
+
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
+                    $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
+                });
+                $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
+
+                $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
+
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
+
+                $cacheKeys = [];
+                $inBannerCacheKeys = [];
+                $rtbCacheKeys = [];
+                $keyCount = 0;
+            }
         }
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($cacheKeys, function($keys) use ($pipe) {
             $pipe->mGet($keys);
         });
-
         $results = $pipe->exec(); // sequence of output is sequence of slot ids
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
             $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
         });
-
         $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
         $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
-        $adTagCacheKeys = $this->getAdTagCacheKeysForAccount($publisher);
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
+
+        $adTagIds = $this->adTagManager->getActiveAdTagsIdsForPublisher($publisher);
+        $keyCount = 0;
+        $adTagCacheKeys = [];
+        foreach($adTagIds as $id) {
+            $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $id);
+            $adTagCacheKeys[] = array (
+                $this->getCacheKey(self::CACHE_KEY_OPPORTUNITY, $namespace),
+                $this->getCacheKey(self::CACHE_KEY_IMPRESSION, $namespace),
+                $this->getCacheKey(self::CACHE_KEY_PASSBACK, $namespace),
+                $this->getCacheKey(self::CACHE_KEY_FALLBACK, $namespace),
+            );
+            $keyCount++;
+
+            if ($keyCount >= $this->pipelineSizeThreshold) {
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($adTagCacheKeys, function($keys) use ($pipe) {
+                    $pipe->mGet($keys);
+                });
+                $adTagResults = $pipe->exec();
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY] += array_sum(array_column($adTagResults, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION] += array_sum(array_column($adTagResults, 1));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] += array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3));
+
+                $keyCount = 0;
+                $adTagCacheKeys = [];
+            }
+        }
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($adTagCacheKeys, function($keys) use ($pipe) {
             $pipe->mGet($keys);
         });
         $adTagResults = $pipe->exec();
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY] += array_sum(array_column($adTagResults, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION] += array_sum(array_column($adTagResults, 1));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] += array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3));
 
-        return array (
-            SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => array_sum(array_column($results, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => array_sum(array_column($results, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => array_sum(array_column($inBannerResults, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => array_sum(array_column($inBannerResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => array_sum(array_column($inBannerResults, 2)),
-            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => array_sum($rtbResults),
-            SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($adTagResults, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($adTagResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3)),
-//            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
-        );
+        return $tempData;
     }
 
     public function getSiteReportData(SiteInterface $site)
@@ -774,22 +861,24 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $inBannerCacheKeys =[];
         $rtbCacheKeys =[];
 
+        $tempData = array (
+            SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
+            SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
+            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
+            SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
+            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
+        );
+
         $adSlotIds = $this->adSlotManager->getAdSlotIdsForSite($site);
         if (count($adSlotIds) < 1) {
-            return array (
-                SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
-                SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
-                SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
-                SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
-                SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
-                SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
-//            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
-            );
+            return $tempData;
         }
 
+        $keyCount = 0;
         foreach ($adSlotIds as $id) {
             $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $id);
             $cacheKeys[] = array (
@@ -804,44 +893,96 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             );
 
             $rtbCacheKeys[] = $this->getCacheKey(self::CACHE_KEY_RTB_IMPRESSION, $namespace);
+
+            $keyCount++;
+            if ($keyCount >= $this->pipelineSizeThreshold) {
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($cacheKeys, function($keys) use ($pipe) {
+                    $pipe->mGet($keys);
+                });
+                $results = $pipe->exec(); // sequence of output is sequence of slot ids
+
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
+                    $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
+                });
+                $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
+
+                $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
+
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
+
+                $cacheKeys = [];
+                $inBannerCacheKeys = [];
+                $rtbCacheKeys = [];
+                $keyCount = 0;
+            }
         }
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($cacheKeys, function($keys) use ($pipe) {
             $pipe->mGet($keys);
         });
-
         $results = $pipe->exec(); // sequence of output is sequence of slot ids
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
-            $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);;
+            $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
         });
-
         $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
         $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
 
-        $adTagCacheKeys = $this->getAdTagCacheKeysForSite($site);
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
+
+        $adTagIds = $this->adTagManager->getAdTagIdsForSite($site);
+        $keyCount = 0;
+        $adTagCacheKeys = [];
+        foreach($adTagIds as $id) {
+            $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $id);
+            $adTagCacheKeys[] = array (
+                $this->getCacheKey(self::CACHE_KEY_OPPORTUNITY, $namespace),
+                $this->getCacheKey(self::CACHE_KEY_IMPRESSION, $namespace),
+                $this->getCacheKey(self::CACHE_KEY_PASSBACK, $namespace),
+                $this->getCacheKey(self::CACHE_KEY_FALLBACK, $namespace),
+            );
+            $keyCount++;
+
+            if ($keyCount >= $this->pipelineSizeThreshold) {
+                $pipe = $this->cache->multi(Redis::PIPELINE);
+                array_walk($adTagCacheKeys, function($keys) use ($pipe) {
+                    $pipe->mGet($keys);
+                });
+                $adTagResults = $pipe->exec();
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY] += array_sum(array_column($adTagResults, 0));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION] += array_sum(array_column($adTagResults, 1));
+                $tempData[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] += array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3));
+
+                $keyCount = 0;
+                $adTagCacheKeys = [];
+            }
+        }
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($adTagCacheKeys, function($keys) use ($pipe) {
             $pipe->mGet($keys);
         });
         $adTagResults = $pipe->exec();
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY] += array_sum(array_column($adTagResults, 0));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION] += array_sum(array_column($adTagResults, 1));
+        $tempData[SnapshotCreatorInterface::CACHE_KEY_PASSBACK] += array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3));
 
-        return array (
-            SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => array_sum(array_column($results, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => array_sum(array_column($results, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => array_sum(array_column($inBannerResults, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => array_sum(array_column($inBannerResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => array_sum(array_column($inBannerResults, 2)),
-            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => array_sum($rtbResults),
-            SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($adTagResults, 0)),
-            SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($adTagResults, 1)),
-            SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3)),
-//            SnapshotCreatorInterface::F => array_sum(array_column($adTagResults, 3))
-        );
+        return $tempData;
     }
 
 
