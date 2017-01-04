@@ -10,12 +10,18 @@ use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 
 class VideoDemandAdTagRepository extends EntityRepository implements VideoDemandAdTagRepositoryInterface
 {
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'timeout' => 'timeout',
+        'sellPrice' => 'sellPrice',
+    ];
     /**
      * @inheritdoc
      */
@@ -35,6 +41,68 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('vdm')
+            ->leftJoin('vdm.libraryVideoDemandAdTag', 'libraryVideoDemandAdTag')
+            ->leftJoin('libraryVideoDemandAdTag.videoDemandPartner', 'videoDemandPartner')
+            ->andWhere('vdm.deletedAt IS NULL')
+            ->andWhere('vdm.videoWaterfallTagItem IS NOT NULL');
+
+        if ($user instanceof PublisherInterface) {
+            $qb
+                ->where('videoDemandPartner.publisher = :publisher_id')
+                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('vdm.id', ':searchKey'),
+                    $qb->expr()->like('vdm.priority', ':searchKey'),
+                    $qb->expr()->like('vdm.rotation_weight', ':searchKey'),
+                    $qb->expr()->like('libraryVideoDemandAdTag.name', ':searchKey'),
+                    $qb->expr()->like('libraryVideoDemandAdTag.timeout', ':searchKey'),
+                    $qb->expr()->like('libraryVideoDemandAdTag.sellPrice', ':searchKey')
+                ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()){
+                case 'name':
+                    $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'timeout':
+                    $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'sellPrice':
+                    $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'priority':
+                    $qb->addOrderBy('vdm.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'rotation_weight' :
+                    $qb->addOrderBy('vdm.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $qb;
     }
 
     /**
@@ -184,6 +252,20 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param LibraryVideoDemandAdTagInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getVideoDemandAdTagsForLibraryVideoDemandAdTagWithPagination(LibraryVideoDemandAdTagInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('vdt')
+            ->where('vdt.libraryVideoDemandAdTag = :libraryVideoDemandAdTag')
+            ->setParameter('libraryVideoDemandAdTag', $user);
+
+        return $qb;
     }
 
     public function getVideoDemandAdTagsForWaterfallPlacementRule(WaterfallPlacementRuleInterface $rule, $limit = null, $offset = null)

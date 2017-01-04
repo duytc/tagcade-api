@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\VideoPublisherInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 
 /**
@@ -24,8 +25,12 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      *
      * @Rest\View(serializerGroups={"videoPublisher.summary", "user.summary", "videoWaterfallTag.summary", "videoWaterfallTagItem.summary", "videoDemandAdTag.summary"})
      *
-     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @ApiDoc(
      *  section = "Video Publishers",
      *  resource = true,
@@ -34,24 +39,24 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      *  }
      * )
      *
+     * @param Request $request
      * @return VideoPublisherInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $publisherId = $paramFetcher->get('publisher');
+        $role = $this->getUser();
 
-        if (!$this->getUser() instanceof AdminInterface || ($this->getUser() instanceof AdminInterface && $publisherId == null)) {
-            $all = $this->all();
-        } else {
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+        $videoPublisherManager = $this->get('tagcade.domain_manager.video_publisher');
+        $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
 
-            $all = $this->get('tagcade.domain_manager.video_publisher')->getVideoPublishersForPublisher($publisher);
+        if ($request->query->get('page') > 0) {
+            $qb = $videoPublisherRepository->getVideoPublishersForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        $this->checkUserPermission($all);
-
-        return $all;
+        return ($role instanceof PublisherInterface)
+            ? $videoPublisherManager->getVideoPublishersForPublisher($role)
+            : $this->all();
     }
 
     /**
@@ -115,7 +120,12 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      * Get all videoWaterfallTags for video publisher
      *
      * @Rest\Get("/videopublishers/{id}/videowaterfalltags", requirements="")
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @Rest\View(serializerGroups={"videoWaterfallTag.summary", "user.summary", "videoPublisher.summary", "videoWaterfallTagItem.summary", "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary"})
      *
      * @ApiDoc(
@@ -128,15 +138,24 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      * )
      *
      * @param int $id
+     * @param Request $request
      * @return View
-     * @throws BadRequestHttpException when the query params is invalid
      */
-    public function getVideoWaterfallTagsAction($id)
+    public function getVideoWaterfallTagsAction($id, Request $request)
     {
-        /** @var VideoPublisherInterface $videoPublisher */
         $videoPublisher = $this->one($id);
 
-        return $this->get('tagcade.domain_manager.video_waterfall_tag')->getVideoWaterfallTagsForVideoPublisher($videoPublisher);
+        $videoWaterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');
+        $videoWaterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoWaterfallTagRepository->getVideoWaterfallTagsForVideoPublisherWithPagination($videoPublisher, $this->getParams());
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($videoPublisher instanceof PublisherInterface)
+            ? $videoWaterfallTagManager->getVideoWaterfallTagsForVideoPublisher($videoPublisher)
+            : $this->all();
     }
 
     /**

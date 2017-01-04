@@ -15,6 +15,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 
 /**
@@ -27,8 +28,12 @@ class VideoDemandAdTagController extends RestControllerAbstract implements Class
      *
      * @Rest\View(serializerGroups={"videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary", "user.summary", "videoDemandPartner.summary"})
      *
-     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @ApiDoc(
      *  section = "Video AdSources",
      *  resource = true,
@@ -37,24 +42,24 @@ class VideoDemandAdTagController extends RestControllerAbstract implements Class
      *  }
      * )
      *
+     * @param Request $request
      * @return VideoDemandAdTagInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $publisherId = $paramFetcher->get('publisher');
+        $role = $this->getUser();
 
-        if (!$this->getUser() instanceof AdminInterface || ($this->getUser() instanceof AdminInterface && $publisherId == null)) {
-            $all = $this->all();
-        } else {
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+        $videoDemandAdTagManager = $this->get('tagcade.domain_manager.video_demand_ad_tag');
+        $videoDemandAdTagRepository = $this->get('tagcade.repository.video_demand_ad_tag');
 
-            $all = $this->get('tagcade.domain_manager.video_demand_ad_tag')->getVideoDemandAdTagsForPublisher($publisher);
+        if ($request->query->get('page') > 0) {
+            $qb = $videoDemandAdTagRepository->getVideoDemandAdTagsForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        $this->checkUserPermission($all);
-
-        return $all;
+        return ($role instanceof PublisherInterface)
+            ? $videoDemandAdTagManager->getVideoDemandAdTagsForPublisher($role)
+            : $this->all();
     }
 
     /**
