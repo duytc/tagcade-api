@@ -135,9 +135,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
             return $this->getPagination($qb, $request);
         }
 
-        return ($libraryVideoDemandAdTag instanceof PublisherInterface)
-            ? $libraryVideoDemandAdTagManager->getVideoDemandAdTagsForLibraryVideoDemandAdTag($libraryVideoDemandAdTag)
-            : $this->all();
+        return $libraryVideoDemandAdTagManager->getVideoDemandAdTagsForLibraryVideoDemandAdTag($libraryVideoDemandAdTag);
     }
 
     /**

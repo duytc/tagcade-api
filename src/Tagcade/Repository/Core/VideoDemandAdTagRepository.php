@@ -261,14 +261,9 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
      */
     public function getVideoDemandAdTagsForLibraryVideoDemandAdTagWithPagination(LibraryVideoDemandAdTagInterface $user, PagerParam $param)
     {
-
-        $qb = $this->createQueryBuilder('vdt');
-
-        if ($user instanceof PublisherInterface) {
-            $qb
-                ->where('vdt.libraryVideoDemandAdTag = :libraryVideoDemandAdTag')
-                ->setParameter('libraryVideoDemandAdTag', $user);
-        }
+        $qb = $this->createQueryBuilder('vdt')
+            ->where('vdt.libraryVideoDemandAdTag = :libraryVideoDemandAdTag')
+            ->setParameter('libraryVideoDemandAdTag', $user);
 
         return $qb;
     }

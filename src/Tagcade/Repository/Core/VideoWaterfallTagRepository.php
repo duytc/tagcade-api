@@ -91,7 +91,9 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
     public function getVideoWaterfallTagsForVideoPublisherWithPagination(VideoPublisherInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('vwt')
-            ->leftJoin('vwt.videoPublisher', 'vp');
+            ->leftJoin('vwt.videoPublisher', 'vp')
+            ->where('vwt.videoPublisher = :videoPublisher')
+            ->setParameter('videoPublisher', $user  ->getId(), Type::INTEGER);
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
