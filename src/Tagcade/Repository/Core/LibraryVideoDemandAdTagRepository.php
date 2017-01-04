@@ -68,12 +68,9 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
      */
     public function getLibraryVideoDemandAdTagsForDemandPartnerWithPagination(VideoDemandPartnerInterface $user, PagerParam $param)
     {
-        $qb = $this->createQueryBuilder('lvdt');
-        if ($user instanceof PublisherInterface) {
-            $qb
-                ->where('lvdt.videoDemandPartner = :videoDemandPartner')
-                ->setParameter('videoDemandPartner', $user);
-        }
+        $qb = $this->createQueryBuilder('lvdt')
+            ->where('lvdt.videoDemandPartner = :videoDemandPartner')
+            ->setParameter('videoDemandPartner', $user);
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());

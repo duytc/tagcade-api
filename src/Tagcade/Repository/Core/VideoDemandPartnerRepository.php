@@ -32,7 +32,11 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
     public function getVideoDemandPartnersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('vdm');
-//            ->join('vdm.', 'vdu');
+        if ($user instanceof PublisherInterface){
+            $qb
+                ->where('vdm.publisher = :publisher_id')
+                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+        }
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
