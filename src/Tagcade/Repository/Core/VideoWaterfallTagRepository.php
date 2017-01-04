@@ -111,6 +111,8 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             $qb->addOrderBy('vwt.' . $param->getSortField(), $param->getSortDirection());
+        } else {
+            $qb->addOrderBy('vwt.id', 'asc');
         }
 
         return $qb;
@@ -231,6 +233,8 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             $qb->addOrderBy('wt.' . $param->getSortField(), $param->getSortDirection());
+        } else {
+            $qb->addOrderBy('wt.id', 'asc');
         }
 
         return $qb;
