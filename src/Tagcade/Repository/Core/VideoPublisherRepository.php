@@ -5,11 +5,57 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 
 class VideoPublisherRepository extends EntityRepository implements VideoPublisherRepositoryInterface
 {
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'name' => 'name',
+        'publisher.company' => 'publisher.company',
+    ];
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getVideoPublishersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param){
+        $qb = $this->createQueryBuilder('vp');
+        if ($user instanceof PublisherInterface) {
+            $qb
+                ->where('vp.publisher = :publisher_id')
+                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb
+                ->andWhere($qb->expr()->orX(
+                    $qb->expr()->like('vp.name', ':searchKey'),
+                    $qb->expr()->like('vp.id', ':searchKey')
+                ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])&&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            switch ($param->getSortField()){
+                case 'publisher.company':
+                    $qb->addOrderBy('vp.publisher' , $param->getSortDirection());
+                    break;
+                default:
+                    $qb->addOrderBy('vp.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+            }
+        }
+        return $qb;
+    }
     /**
      * @inheritdoc
      */

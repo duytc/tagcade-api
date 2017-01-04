@@ -50,14 +50,19 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      */
     public function cgetAction(Request $request)
     {
-        if ($request->query->count() < 1) {
-            return $this->all();
+        $role = $this->getUser();
+
+        $waterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');
+        $waterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        /** @var VideoWaterfallTagRepository $waterfallTagRepository */
-        $waterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
-        $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams());
-        return $this->getPagination($qb, $request);
+        return ($role instanceof PublisherInterface)
+            ? $waterfallTagManager->getVideoWaterfallTagsForPublisher($role)
+            : $this->all();
     }
 
     /**
@@ -205,6 +210,7 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      * @Rest\Post("/videowaterfalltags/{id}/positions", requirements={"id" = "\d+"})
      *
      * @param Request $request
+     * @param $id
      * @return mixed
      */
     public function postWaterfallTagItemPositionAction(Request $request, $id)

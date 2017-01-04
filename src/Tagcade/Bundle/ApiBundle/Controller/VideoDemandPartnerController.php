@@ -14,6 +14,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\User\Role\AdminInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\VideoDemandPartnerRepositoryInterface;
 use Tagcade\Service\Report\VideoReport\Creator\Creators\Hierarchy\Platform\WaterfallTagInterface;
 use Tagcade\Service\StringUtilTrait;
 
@@ -30,7 +32,12 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      *
      * @Rest\View(serializerGroups={"videoDemandPartner.summary", "user.summary"})
      *
-     * @Rest\QueryParam(name="publisher", nullable=true, requirements="\d+", description="the publisher id")
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      *
      * @ApiDoc(
      *  section = "Video Demand Partners",
@@ -40,24 +47,24 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      *  }
      * )
      *
+     * @param Request $request
      * @return VideoDemandPartnerInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $publisherId = $paramFetcher->get('publisher');
+        $role = $this->getUser();
 
-        if (!$this->getUser() instanceof AdminInterface || ($this->getUser() instanceof AdminInterface && $publisherId == null)) {
-            $all = $this->all();
-        } else {
-            $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+        $videoDemandPartnerManager = $this->get('tagcade.domain_manager.video_demand_partner');
+        $videoDemandPartnerRepository = $this->get('tagcade.repository.video_demand_partner');
 
-            $all = $this->get('tagcade.domain_manager.video_demand_partner')->getVideoDemandPartnersForPublisher($publisher);
+        if ($request->query->get('page') > 0) {
+            $qb = $videoDemandPartnerRepository->getVideoDemandPartnersForPublisherWithPagination($this->getUser(), $this->getParams());
+            return $this->getPagination($qb, $request);
         }
 
-        $this->checkUserPermission($all);
-
-        return $all;
+        return ($role instanceof PublisherInterface)
+            ? $videoDemandPartnerManager->getVideoDemandPartnersForPublisher($role)
+            : $this->all();
     }
 
     /**
@@ -163,7 +170,12 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      * Get all active demand ad tags belonging to this demand partner
      *
      * @Rest\Get("/videodemandpartners/{id}/libraryvideodemandadtags", requirements={"id" = "\d+"})
-     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @Rest\View(
      *      serializerGroups={"libraryVideoDemandAdTag.summaryWithLinkedCount", "videoDemandPartner.summary", "videoPublisher.summary", "user.summary"}
      * )
@@ -178,15 +190,24 @@ class VideoDemandPartnerController extends RestControllerAbstract implements Cla
      * )
      *
      * @param $id
+     * @param Request $request
      * @return \Tagcade\Model\Core\VideoDemandAdTagInterface[]
      */
-    public function getLibraryVideoDemandAdTagsAction($id)
+    public function getLibraryVideoDemandAdTagsAction($id, Request $request)
     {
-        /** @var VideoDemandPartnerInterface $videoDemandPartner */
         $videoDemandPartner = $this->one($id);
 
-        return $this->get('tagcade.domain_manager.library_video_demand_ad_tag')
-            ->getLibraryVideoDemandAdTagsForDemandPartner($videoDemandPartner);
+        $videoDemandAdTagsManager = $this->get('tagcade.domain_manager.library_video_demand_ad_tag');
+        $videoDemandAdTagsRepository = $this->get('tagcade.repository.library_video_demand_ad_tag');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $videoDemandAdTagsRepository->getLibraryVideoDemandAdTagsForDemandPartnerWithPagination($videoDemandPartner, $this->getParams());
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($videoDemandPartner instanceof PublisherInterface)
+            ? $videoDemandAdTagsManager->getLibraryVideoDemandAdTagsForDemandPartner($videoDemandPartner)
+            : $this->all();
     }
 
     /**
