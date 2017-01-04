@@ -23,12 +23,21 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 class DynamicAdSlotController extends RestControllerAbstract implements ClassResourceInterface
 {
     use UpdateSiteForAdSlotValidator;
+
     /**
      * Get all dynamic ad slots
      *
      * @Rest\View(
      *      serializerGroups={"adslot.detail", "dynamicadslot.summary", "librarydynamicadslot.detail" , "site.summary" , "user.min", "expression.detail", "libraryexpression.detail", "libraryExpression.summary", "displayadslot.summary", "nativeadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "slotlib.summary"}
      * )
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section = "Ad Slots",
      *  resource = true,
@@ -37,10 +46,19 @@ class DynamicAdSlotController extends RestControllerAbstract implements ClassRes
      *  }
      * )
      *
-     * @return DynamicAdSlotInterface[]
+     * @param Request $request
+     * @return \Tagcade\Model\Core\DynamicAdSlotInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
+        $role = $this->getUser();
+        $dynamicAdSlotRepository = $this->get('tagcade.repository.dynamic_ad_slot');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $dynamicAdSlotRepository->getAdSlotsForUserWithPagination($role, $this->getParams());
+            return $this->getPagination($qb, $request);
+        }
+
         return $this->all();
     }
 

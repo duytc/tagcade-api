@@ -31,11 +31,18 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
     use UpdateSiteForAdSlotValidator;
 
     /**
+     * Get all display ad slots
      *
      * @Rest\View(
      *      serializerGroups={"adslot.detail", "displayadslot.summary", "site.summary", "librarydisplayadslot.summary", "user.min", "slotlib.summary"}
      * )
-     * Get all display ad slots
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      *
      * @ApiDoc(
      *  section = "Ad Slots",
@@ -45,10 +52,19 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      *  }
      * )
      *
-     * @return DisplayAdSlotInterface[]
+     * @param Request $request
+     * @return \Tagcade\Model\Core\DisplayAdSlotInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
+        $role = $this->getUser();
+        $displayAdSlotRepository = $this->get('tagcade.repository.display_ad_slot');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $displayAdSlotRepository->getAdSlotsForUserWithPagination($role, $this->getParams());
+            return $this->getPagination($qb, $request);
+        }
+
         return $this->all();
     }
 

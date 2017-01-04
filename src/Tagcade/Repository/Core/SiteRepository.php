@@ -393,13 +393,18 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $user instanceof PublisherInterface ? $this->createQueryBuilderForPublisher($user) : $this->createQueryBuilder('st');
     }
 
-    public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null)
+    public function getSitesForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoCreate = null, $enableSourceReport = null)
     {
         $qb = $this->createQueryBuilderForUser($user);
 
         if (is_int($autoCreate)) {
             $qb->andWhere('st.autoCreate = :autoCreate')
                 ->setParameter('autoCreate', $autoCreate);
+        }
+
+        if (is_bool($enableSourceReport)) {
+            $qb->andWhere('st.enableSourceReport = :enableSourceReport')
+                ->setParameter('enableSourceReport', $enableSourceReport);
         }
 
         if (is_int($param->getPublisherId()) && $param->getPublisherId() > 0) {

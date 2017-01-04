@@ -6,6 +6,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
+use Tagcade\Model\PagerParam;
 
 interface LibrarySlotTagRepositoryInterface extends ObjectRepository
 {
@@ -16,6 +17,8 @@ interface LibrarySlotTagRepositoryInterface extends ObjectRepository
      * @return LibrarySlotTagInterface[]
      */
     public function getByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null);
+
+    public function getByLibraryAdSlotWithPagination(BaseLibraryAdSlotInterface $libraryAdSlot, PagerParam $param);
 
     public function getLibrarySlotTagIdsByLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot, $limit = null, $offset = null);
 

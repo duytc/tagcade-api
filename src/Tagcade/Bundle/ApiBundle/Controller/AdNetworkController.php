@@ -60,13 +60,18 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      */
     public function cgetAction(Request $request)
     {
+        $role = $this->getUser();
         $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
+        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
         if ($request->query->count() < 1) {
+            if ($role instanceof PublisherInterface) {
+                return $adNetworkRepository->getAdNetworksForPublisher($role);
+            }
+
             return $this->all();
         }
 
-        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
-        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
         $builtIn = null;
         if (is_string($request->query->get('autoCreate'))) {
             $builtIn = filter_var($params['autoCreate'], FILTER_VALIDATE_BOOLEAN);
@@ -351,6 +356,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "libraryadtag.detail"}
      * )
      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section = "Ad Networks",
      *  resource = true,
@@ -360,16 +372,23 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *  }
      * )
      *
+     * @param Request $request
      * @param $id
+     *
      * @return \Tagcade\Model\Core\AdTagInterface[]
      */
-    public function getAdtagsAction($id)
+    public function getAdtagsAction(Request $request, $id)
     {
         /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->one($id);
+        $adTagRepository = $this->get('tagcade.repository.ad_tag');
+        if ($request->query->get('page') > 0) {
+            $qb = $adTagRepository->getAdTagsForAdNetworkWithPagination($adNetwork, $this->getParams());
 
-        return $this->get('tagcade.domain_manager.ad_tag')
-            ->getAdTagsForAdNetwork($adNetwork);
+            return $this->getPagination($qb, $request);
+        }
+
+        return $adTagRepository->getAdTagsForAdNetwork($adNetwork);
     }
 
     /**

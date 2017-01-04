@@ -11,6 +11,7 @@ use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -42,6 +43,8 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return AdTagInterface[]
      */
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null);
+
+    public function getAdTagsForSiteWithPagination(SiteInterface $site, PagerParam $param);
 
     public function getAdTagIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
@@ -95,6 +98,10 @@ interface AdTagRepositoryInterface extends ObjectRepository
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
+
+    public function getAdTagsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param);
+
+    public function getAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
 
     public function getAdTagsForAdNetworkAndSite(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 

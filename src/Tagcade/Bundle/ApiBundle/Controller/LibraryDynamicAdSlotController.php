@@ -11,9 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
+use Tagcade\DomainManager\LibraryDynamicAdSlotManagerInterface;
 use Tagcade\Handler\Handlers\Core\LibraryDynamicAdSlotHandlerAbstract;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\LibraryDynamicAdSlotRepositoryInterface;
 
 /**
  * @Rest\RouteResource("LibraryDynamicAdSlot")
@@ -26,8 +29,16 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      * Get all library dynamic adSlot
      *
      * @Rest\View(
-     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.extra", "user.summary", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary" , "libraryexpression.detail"}
+     *      serializerGroups={"librarydynamicadslot.summary" , "slotlib.extra", "user.min", "dynamicadslot.summary", "site.summary", "expression.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary" , "libraryexpression.detail"}
      * )
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section = "Library Ad Slots",
      *  resource = true,
@@ -35,12 +46,38 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
      *      200 = "Returned when successful"
      *  }
      * )
-     *
+     * @param Request $request
      * @return LibraryDynamicAdSlotInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $role = $this->getUser();
+        /**
+         * @var LibraryDynamicAdSlotRepositoryInterface $libraryAdSlotRepository
+         */
+        $libraryAdSlotRepository = $this->get('tagcade.repository.library_dynamic_ad_slot');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $libraryAdSlotRepository->getLibraryAdSlotsWithPagination($this->getUser(), $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        }
+
+        return $this->getAllLibraryAdSlot($role);
+    }
+
+    protected function getAllLibraryAdSlot($role)
+    {
+        /**
+         * @var LibraryDynamicAdSlotManagerInterface $libraryAdSlotManager
+         */
+        $libraryAdSlotManager = $this->get('tagcade.domain_manager.library_dynamic_ad_slot');
+
+        if ($role instanceof PublisherInterface) {
+            return $libraryAdSlotManager->getLibraryDynamicAdSlotsForPublisher($role);
+        }
+
+        return $libraryAdSlotManager->all();
     }
 
     /**
