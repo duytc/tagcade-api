@@ -30,7 +30,11 @@ $redis->connect($host, $port);
 $cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
 $cache->setRedis($redis);
 
-$cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache, $adTagManager, $adSlotManager);
+$cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache,
+    $adTagManager,
+    $adSlotManager,
+    $container->getParameter('tc.report.performance.event_counter.redis_pipeline_size_threshold')
+    );
 $cacheEventCounter->setDate(new DateTime('yesterday'));
 
 writeln('### creating test live data for account ###');
