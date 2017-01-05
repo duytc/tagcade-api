@@ -66,7 +66,7 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
                  impressions = :impressions,
                  total_opportunities = :totalOpportunities,
                  passbacks = :passbacks,
-                 fill_rate = :impressions / :totalOpportunities,
+                 fill_rate = :impressions / :slotOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
                  in_banner_requests = :inBannerRequests,

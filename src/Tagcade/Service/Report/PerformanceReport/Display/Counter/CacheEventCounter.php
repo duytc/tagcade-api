@@ -403,7 +403,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         );
         $result = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $keys);
 
-        return (int) $result[0] + (int) $result[1];
+        return array_sum($result);
     }
 
     /**

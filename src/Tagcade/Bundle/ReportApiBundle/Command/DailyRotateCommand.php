@@ -90,31 +90,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         if ($skipUpdateBillingThreshold === false) {
             $this->updateBilledAmountThreshold($allPublishers, $timeout, $logger);
         }
-
-        $this->createPerformanceReportForPartner($date, $allPublishers, $timeout, $logger, $override);
     }
-
-    protected function createPerformanceReportForPartner(DateTime $date, array $publishers, $timeout, LoggerInterface $logger, $override = false)
-    {
-        $logger->info('Start updating performance report for partner');
-
-        foreach($publishers as $publisher){
-            if(!$publisher instanceof PublisherInterface){
-                continue;
-            }
-
-            $id = $publisher->getId();
-            $logger->info(sprintf('Start updating performance report for partner of publisher %d',$id));
-
-            $cmd = sprintf('%s tc:report:create-partner-report --publisher %d --start-date %s %s', $this->getAppConsoleCommand(), $id, $date->format('Y-m-d'), $override === true ? '--override' : '');
-            $this->executeProcess($process = new Process($cmd), ['timeout' => $timeout], $logger);
-
-            $logger->info(sprintf('Finish updating performance report for partner of publisher %d',$id));
-        }
-
-        $logger->info('Finish updating performance report for partner');
-    }
-
 
     protected function updateBilledAmountThreshold(array $publishers, $timeout, LoggerInterface $logger)
     {
