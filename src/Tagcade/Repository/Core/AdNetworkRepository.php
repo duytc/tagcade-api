@@ -13,7 +13,13 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 
 class AdNetworkRepository extends EntityRepository implements AdNetworkRepositoryInterface
 {
-    protected $SORT_FIELDS = ['id', 'name', 'pausedAdTagsCount', 'activeAdTagsCount', 'networkOpportunityCap'];
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'name' => 'name',
+        'pausedAdTagsCount' => 'pausedAdTagsCount',
+        'activeAdTagsCount' => 'activeAdTagsCount',
+        'networkOpportunityCap' => 'networkOpportunityCap'
+    ];
 
     /**
      * @inheritdoc
@@ -21,23 +27,27 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
     public function getAdNetworksForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->getAdNetworksForPublisherQuery($publisher, $limit, $offset)
-            ->addOrderBy('n.name', 'asc')
-        ;
+            ->addOrderBy('n.name', 'asc');
 
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAdNetworksForPublisherAndPartner(PublisherInterface $publisher, AdNetworkPartnerInterface $partner, $limit = null, $offset = null)
     {
         $qb = $this->getAdNetworksForPublisherQuery($publisher, $limit, $offset)
             ->andWhere('n.networkPartner = :partner_id')
             ->setParameter('partner_id', $partner->getId(), Type::INTEGER)
-            ->addOrderBy('n.name', 'asc')
-        ;
+            ->addOrderBy('n.name', 'asc');
 
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAdNetworksThatHavePartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->getAdNetworksForPublisherQuery($publisher, $limit, $offset);
@@ -46,6 +56,9 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAdNetworksThatHavePartnerForSubPublisher(SubPublisherInterface $publisher, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('n');
@@ -56,8 +69,7 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             ->join('sl.site', 'st')
             ->where('st.subPublisher = :sub_publisher_id')
             ->setParameter('sub_publisher_id', $publisher->getId(), Type::INTEGER)
-            ->andWhere($qb->expr()->isNotNull('n.networkPartner'))
-        ;
+            ->andWhere($qb->expr()->isNotNull('n.networkPartner'));
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -70,12 +82,14 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function allHasCap($limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('n');
-            $qb->where($qb->expr()->gt('n.networkOpportunityCap', 0))
-                ->orWhere($qb->expr()->gt('n.impressionCap', 0))
-        ;
+        $qb->where($qb->expr()->gt('n.networkOpportunityCap', 0))
+            ->orWhere($qb->expr()->gt('n.impressionCap', 0));
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
         }
@@ -96,8 +110,7 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
 
         $qb = $this->createQueryBuilder('n')
             ->where('n.publisher = :publisher_id')
-            ->setParameter('publisher_id', $publisherId, Type::INTEGER)
-        ;
+            ->setParameter('publisher_id', $publisherId, Type::INTEGER);
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -110,6 +123,9 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
         return $qb;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPartnerConfigurationForAllPublishers($partnerCName, $publisherId, $withUnifiedReportModuleEnabled = true)
     {
         $qb = $this->createQueryBuilder('r')
@@ -121,7 +137,7 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             ->andWhere('r.encryptedPassword is not NULL')
             ->setParameter('cname', $partnerCName);
 
-        if(!!$publisherId) {
+        if (!!$publisherId) {
             $qb
                 ->andWhere('p.id = :publisher_id')
                 ->setParameter('publisher_id', intval($publisherId));
@@ -135,11 +151,14 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             return $result;
         }
 
-        return array_filter($result, function(AdNetworkInterface $adNetwork){
+        return array_filter($result, function (AdNetworkInterface $adNetwork) {
             return $adNetwork->getPublisher()->hasUnifiedReportModule();
         });
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAdNetworkByPublisherAndPartnerCName($publisher, $partnerCName)
     {
         return $this->createQueryBuilder('r')
@@ -149,10 +168,12 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
             ->setParameter('publisher', $publisher)
             ->setParameter('cname', $partnerCName)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function validateEmailToken($publisherId, $partnerCName, $emailToken)
     {
         $adNetwork = $this->createQueryBuilder('r')
@@ -169,6 +190,9 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
         return $adNetwork instanceof AdNetworkInterface;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAdNetworksForUserWithPagination(UserRoleInterface $user, PagerParam $param, $builtIn = null)
     {
         $qb = $this->createQueryBuilder('nw');

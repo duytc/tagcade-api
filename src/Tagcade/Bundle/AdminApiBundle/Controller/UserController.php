@@ -14,6 +14,8 @@ use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
+use Tagcade\Repository\Core\SiteRepositoryInterface;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
@@ -149,6 +151,16 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Get ad networks for publisher
      *
+     * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary"})
+     *
      * @ApiDoc(
      *  section = "admin",
      *  resource = true,
@@ -157,12 +169,12 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      *  }
      * )
      *
+     * @param Request $request
      * @param $publisherId
      * @return array|\Tagcade\Model\Core\AdNetworkInterface[]
      */
-    public function getAdnetworksAction($publisherId)
+    public function getAdnetworksAction(Request $request, $publisherId)
     {
-        $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
         $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
 
         $publisher = $publisherManager->findPublisher($publisherId);
@@ -170,16 +182,37 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
             throw new NotFoundHttpException('That publisher does not exist');
         }
 
-        return $adNetworkManager->getAdNetworksForPublisher($publisher);
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
+        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
+        if ($request->query->count() < 1) {
+            return $adNetworkRepository->getAdNetworksForPublisher($publisher);
+        }
+
+        $builtIn = null;
+        if (is_string($request->query->get('autoCreate'))) {
+            $builtIn = filter_var($params['autoCreate'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams(), $builtIn);
+        return $this->getPagination($qb, $request);
     }
 
     /**
      * Get sites with option enable source report for publisher
      *
-     * @param $publisherId
-     *
+     * @Rest\QueryParam(name="autoCreate", nullable=true)
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @Rest\QueryParam(name="enableSourceReport", requirements="(true|false)", nullable=true)
      *
+     * @Rest\View(
+     *      serializerGroups={"site.detail", "user.min", "publisherexchange.summary", "exchange.summary"}
+     * )
      *
      * @ApiDoc(
      *  section = "admin",
@@ -189,10 +222,12 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      *  }
      * )
      *
+     * @param Request $request
+     * @param $publisherId
      * @return SiteInterface[]
      * @throws NotFoundHttpException
      */
-    public function getSitesAction($publisherId)
+    public function getSitesAction(Request $request, $publisherId)
     {
         $paramFetcher = $this->get('fos_rest.request.param_fetcher');
         $enableSourceReport = $paramFetcher->get('enableSourceReport');
@@ -206,18 +241,40 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
         $siteManager = $this->get('tagcade.domain_manager.site');
 
-        if (null !== $enableSourceReport) {
 
+
+        if ($request->query->count() < 1) {
+            if (null !== $enableSourceReport) {
+                if (!$publisher->hasAnalyticsModule()) {
+                    throw new NotFoundHttpException('That publisher does not have analytics module enabled');
+                }
+
+                $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
+                return $siteManager->getSitesThatEnableSourceReportForPublisher($publisher, $enableSourceReport);
+            }
+
+            return $siteManager->getSitesForPublisher($publisher);
+        }
+
+        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
+        /** @var SiteRepositoryInterface $siteRepository */
+        $siteRepository = $this->get('tagcade.repository.site');
+        $autoCreate = null;
+
+        if (is_string($request->query->get('autoCreate'))) {
+            $autoCreate = filter_var($params['autoCreate'], FILTER_VALIDATE_INT);
+        }
+
+        if (null !== $enableSourceReport) {
             if (!$publisher->hasAnalyticsModule()) {
                 throw new NotFoundHttpException('That publisher does not have analytics module enabled');
             }
 
             $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
-
-            return $siteManager->getSitesThatEnableSourceReportForPublisher($publisher, $enableSourceReport);
         }
 
-        return $siteManager->getSitesForPublisher($publisher);
+        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate, $enableSourceReport);
+        return $this->getPagination($qb, $request);
     }
 
     /**

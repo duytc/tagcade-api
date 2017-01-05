@@ -30,6 +30,8 @@ class VideoDailyAccountRotateCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        /** @var \Psr\Log\LoggerInterface $logger */
+        $logger = $container->get('logger');
         $id = $input->getOption('id');
         $date = $input->getOption('date');
         $override = filter_var($input->getOption('force'), FILTER_VALIDATE_BOOLEAN);
@@ -43,11 +45,9 @@ class VideoDailyAccountRotateCommand extends ContainerAwareCommand
         }
 
         if ($date->setTime(0,0,0) == new DateTime('today')) {
-            throw new InvalidArgumentException('Can not rotate report for Today');
+            $logger->error(sprintf('can not create today video report for publisher %d', $id));
+            return;
         }
-
-        /** @var \Psr\Log\LoggerInterface $logger */
-        $logger = $container->get('logger');
 
         $entityManager = $container->get('doctrine.orm.entity_manager');
         $reportCreator = $container->get('tagcade.service.report.video_report.creator.report_creator');
@@ -57,16 +57,19 @@ class VideoDailyAccountRotateCommand extends ContainerAwareCommand
         $publisher = $publisherManager->findPublisher($id);
         /** @var PublisherInterface|UserEntityInterface $publisher */
         if (!$publisher instanceof PublisherInterface || $publisher->isTestAccount() || !$publisher->isEnabled()) {
-            throw new \Exception(sprintf('Not found that publisher %s', $id));
+            $logger->error(sprintf('The publisher %d does not exist or being disable', $id));
+            return;
         }
 
         if (!$publisher->hasVideoModule()) {
-            throw new \Exception(sprintf('publisher %d does not have module VIDEO enabled', $id));
+            $logger->error(sprintf('publisher %d does not have module VIDEO enabled', $id));
+            return;
         }
 
         $report = current($accountReportRepository->getReportsFor($publisher, $date, $date));
         if ($report instanceof ReportInterface && $override === false) {
-            throw new RuntimeException('report for the given date is already existed, use "--force" option to override.');
+            $logger->error(sprintf('Video report for publisher %d on %s is already existed, use "--force" option to override', $id, $date->format('Y-m-d')));
+            return;
         }
 
         $reportCreator->setDate($date);
