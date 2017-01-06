@@ -60,8 +60,8 @@ doctrine:
                     1002:  "SET NAMES 'UTF8'"
                 mapping_types:
                     enum: string
-                logging: false
-                profiling: false
+#                logging: false
+#                profiling: false
 
     orm:
         default_entity_manager:         default
