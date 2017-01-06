@@ -3,6 +3,7 @@
 namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
@@ -31,7 +32,7 @@ abstract class LibraryAdSlotAbstract
     protected $libSlotTags;
 
     /**
-     * @var BaseAdSlotInterface[]
+     * @var Collection
      */
     protected $adSlots;
     /**
@@ -227,7 +228,7 @@ abstract class LibraryAdSlotAbstract
     }
 
     /**
-     * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
+     * @return ArrayCollection|Collection
      */
     public function getAdSlots()
     {
@@ -253,7 +254,7 @@ abstract class LibraryAdSlotAbstract
      */
     public function getAssociatedSlotCount()
     {
-        return count($this->getAdSlots());
+        return $this->adSlots->count();
     }
 
     /**
