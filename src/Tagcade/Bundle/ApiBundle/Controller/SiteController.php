@@ -277,6 +277,12 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\View(
      *      serializerGroups={"user.min", "slotlib.summary", "adslot.detail", "displayadslot.summary", "librarydisplayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary"}
      * )
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      * @ApiDoc(
      *  section="Sites",
      *  resource = true,
@@ -287,13 +293,19 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * )
      *
      * @param int $id
+     * @param Request $request
      * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
      */
-    public function getAdslotsAction($id)
+    public function getAdslotsAction($id, Request $request)
     {
         /** @var SiteInterface $site */
         $site = $this->one($id);
 
+        if ($request->query->get('page') > 0) {
+            $adSlotRepository = $this->get('tagcade.repository.ad_slot');
+            $qb = $adSlotRepository->getAdSlotsForSiteWithPagination($site, $this->getParams());
+            return $this->getPagination($qb, $request);
+        }
         return $this->get('tagcade.domain_manager.ad_slot')
             ->getAdSlotsForSite($site);
     }

@@ -156,13 +156,6 @@ class DailyReportCreator
 
         $accountReports = $accountReportRepository->getReportsByDateRange($reportDate, $reportDate);
         foreach ($accountReports as $accountReport) {
-            /**
-             * @var AccountReport $accountReport
-             */
-            if ($accountReport->getSuperReport() != null) {
-                throw new \Exception('Something went wrong. Platform report has not been created but the account report already has reference');
-            }
-
             $accountReport->setSuperReport($report);
             $report->addSubReport($accountReport);
         }
