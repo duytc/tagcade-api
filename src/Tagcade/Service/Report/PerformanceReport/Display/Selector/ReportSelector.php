@@ -110,7 +110,7 @@ class ReportSelector implements ReportSelectorInterface
                     ) {
                         // the report types above do not have creator, they're derived from other reports
                         // Create today's report and add it to the first position in the array
-                        //$reports[] = $this->reportCreator->getReport($reportType);
+                        $reports[] = $this->reportCreator->getReport($reportType);
                     }
                 } else {
                     $reports = array_merge($reports, $yesterdayReport);
