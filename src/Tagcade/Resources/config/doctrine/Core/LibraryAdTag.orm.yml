@@ -65,6 +65,7 @@ Tagcade\Entity\Core\LibraryAdTag:
             targetEntity: Tagcade\Entity\Core\AdTag
             mappedBy: libraryAdTag
             cascade: ['remove']
+            fetch: EXTRA_LAZY
         libSlotTags:
             targetEntity: Tagcade\Entity\Core\LibrarySlotTag
             mappedBy: libraryAdTag

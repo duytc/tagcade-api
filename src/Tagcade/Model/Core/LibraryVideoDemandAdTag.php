@@ -4,6 +4,7 @@
 namespace Tagcade\Model\Core;
 
 
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, VideoTargetingInterface
@@ -25,8 +26,12 @@ class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, Video
 
     /** @var VideoDemandPartnerInterface */
     protected $videoDemandPartner;
-    protected $videoDemandAdTags;
     protected $waterfallPlacementRules;
+
+    /**
+     * @var Collection
+     */
+    protected $videoDemandAdTags;
 
     /**
      * @inheritdoc
@@ -177,7 +182,7 @@ class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, Video
      */
     public function getLinkedCount()
     {
-        return count($this->videoDemandAdTags);
+        return $this->videoDemandAdTags->count();
     }
 
     /**

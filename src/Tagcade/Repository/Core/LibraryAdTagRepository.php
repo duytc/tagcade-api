@@ -27,12 +27,15 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
     public function getLibraryAdTagsWithPagination(UserRoleInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('lat')
-            ->andWhere('lat.visible = :visible')
+            ->where('lat.visible = :visible')
             ->setParameter('visible', true, Type::BOOLEAN);
 
         if ($user instanceof PublisherInterface) {
             // get all library ad slots that used for SHARING, without order
-            $qb = $this->getLibraryAdTagsForPublisherQuery($user);
+            $qb
+                ->join('lat.adNetwork', 'nw')
+                ->andWhere('nw.publisher = :publisher_id')
+                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
         }
 
         if (is_string($param->getSearchKey())) {

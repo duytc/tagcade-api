@@ -261,7 +261,7 @@ class LibraryAdTag implements LibraryAdTagInterface
      */
     public function getAssociatedTagCount()
     {
-        return count($this->getAdTags());
+        return $this->adTags->count();
     }
 
 

@@ -43,6 +43,7 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract
             mappedBy: libraryAdSlot
             cascade: ['remove']
+            fetch: EXTRA_LAZY
         ronAdSlot:
             targetEntity: Tagcade\Entity\Core\RonAdSlot
             mappedBy: libraryAdSlot
