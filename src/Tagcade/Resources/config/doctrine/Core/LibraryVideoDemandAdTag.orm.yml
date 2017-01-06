@@ -40,6 +40,7 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
             targetEntity: Tagcade\Entity\Core\VideoDemandAdTag
             cascade: ['remove', 'detach']
             mappedBy: libraryVideoDemandAdTag
+            fetch: EXTRA_LAZY
         waterfallPlacementRules:
             targetEntity: Tagcade\Entity\Core\WaterfallPlacementRule
             cascade: ['persist', 'remove', 'detach']
