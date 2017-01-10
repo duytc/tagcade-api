@@ -84,3 +84,10 @@ services:
         arguments:
             - @tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher
             - @tagcade.domain_manager.video_waterfall_tag
+
+    tagcade.cache.video.vast_tag_request_manager:
+        class: Tagcade\Cache\Video\VastTagRequestManager
+        arguments:
+            - %tc.redis.video_tag_cache.host%
+            - %tc.redis.video_tag_cache.port%
+            - %tc.redis.vast_tag_request_namespace%

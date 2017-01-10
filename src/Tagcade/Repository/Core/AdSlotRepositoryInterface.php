@@ -23,6 +23,13 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      */
     public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
 
+    /**
+     * @param SiteInterface $site
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getAdSlotsForSiteWithPagination(SiteInterface $site, $param);
+
     public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
     public function getDisplayAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);

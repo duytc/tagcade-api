@@ -162,3 +162,8 @@ api_white_list:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\WhiteListController
     name_prefix:  api_1_
+
+api_vasttaghistory:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\VastTagRequestController
+    name_prefix:  api_1_
