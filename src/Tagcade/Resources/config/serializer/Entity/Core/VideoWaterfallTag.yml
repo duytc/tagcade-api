@@ -31,3 +31,9 @@ Tagcade\Entity\Core\VideoWaterfallTag:
         buyPrice:
             expose: true
             groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+        isServerToServer:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+        isVastOnly:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]

@@ -53,6 +53,9 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     protected $deletedAt;
     protected $targeting;
 
+    /* new feature: server-to-server */
+    protected $isServerToServer;
+    protected $isVastOnly;
 
     /**
      * @var VideoWaterfallTagItemInterface[]
@@ -62,6 +65,8 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     function __construct()
     {
         $this->adDuration = self::DEFAULT_AD_DURATION;
+        $this->isServerToServer = false;
+        $this->isVastOnly = false;
     }
 
     /**
@@ -278,10 +283,44 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     }
 
     /**
-     * @return array supported targeting keys
+     * @inheritdoc
      */
     public static function getSupportedTargetingKeys()
     {
         return [self::TARGETING_KEY_PLAYER_SIZE];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isIsServerToServer()
+    {
+        return $this->isServerToServer;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setIsServerToServer($isServerToServer)
+    {
+        $this->isServerToServer = $isServerToServer;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isIsVastOnly()
+    {
+        return $this->isVastOnly;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setIsVastOnly($isVastOnly)
+    {
+        $this->isVastOnly = $isVastOnly;
+        return $this;
     }
 }

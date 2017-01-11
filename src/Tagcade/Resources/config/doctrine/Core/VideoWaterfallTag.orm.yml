@@ -45,6 +45,14 @@ Tagcade\Entity\Core\VideoWaterfallTag:
             type: float
             scale: 4
             nullable: true
+        isServerToServer:
+            type: boolean
+            options:
+                default: false
+        isVastOnly:
+            type: boolean
+            options:
+                default: false
     manyToOne:
         videoPublisher:
             targetEntity: Tagcade\Entity\Core\VideoPublisher

@@ -3,11 +3,9 @@
 namespace Tagcade\Cache\Video\Refresher;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache;
 use Tagcade\Cache\Video\DomainListManager;
-use Tagcade\Entity\Core\Blacklist;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
@@ -91,6 +89,8 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
      *      "id": "04d73b13-7673-4de7-b237-88c37f33ac7a", // uuid, required
      *      "platform": ["flash", "js"], // either flash or js, required
      *      "adDuration": 30, required
+     *      "serverSide": true, required
+     *      "vastOnly": true, required
      *      "waterfall": [
      *          0: [
      *              "strategy": "parallel", // parallel or linear, required
@@ -123,6 +123,8 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
             'platform' => $videoWaterfallTag->getPlatform(),
             'adDuration' => $videoWaterfallTag->getAdDuration(),
             'waterfall' => [],
+            'serverSide' => $videoWaterfallTag->isIsServerToServer(),
+            'vastOnly' => $videoWaterfallTag->isIsVastOnly(),
             'companionAds' => $videoWaterfallTag->getCompanionAds(),
         ];
 
@@ -138,7 +140,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
         }
 
         // sort all videoWaterfallTagItems by position
-        usort($videoWaterfallTagItems, function(VideoWaterfallTagItemInterface $a, VideoWaterfallTagItemInterface $b) {
+        usort($videoWaterfallTagItems, function (VideoWaterfallTagItemInterface $a, VideoWaterfallTagItemInterface $b) {
             return $a->getPosition() > $b->getPosition();
         });
 
@@ -217,14 +219,14 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                     }
 
                     if ($vdtValue === VideoTargetingInterface::TARGETING_KEY_EXCLUDE_DOMAINS) {
-                        $demandAdTagItem['targeting'][$vdtValue] = array_map(function(array $item) {
-                            return sprintf('%s:%s', DomainListManager::BLACK_LIST_PREFIX,$item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
-                        },$targeting[$vdtValue]) ;
+                        $demandAdTagItem['targeting'][$vdtValue] = array_map(function (array $item) {
+                            return sprintf('%s:%s', DomainListManager::BLACK_LIST_PREFIX, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
+                        }, $targeting[$vdtValue]);
                         continue;
                     } else if ($vdtValue === VideoTargetingInterface::TARGETING_KEY_DOMAINS) {
-                        $demandAdTagItem['targeting'][$vdtValue] = array_map(function(array $item) {
-                            return sprintf('%s:%s', DomainListManager::WHITE_LIST_PREFIX,$item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
-                        },$targeting[$vdtValue]) ;
+                        $demandAdTagItem['targeting'][$vdtValue] = array_map(function (array $item) {
+                            return sprintf('%s:%s', DomainListManager::WHITE_LIST_PREFIX, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
+                        }, $targeting[$vdtValue]);
                         continue;
                     }
 
