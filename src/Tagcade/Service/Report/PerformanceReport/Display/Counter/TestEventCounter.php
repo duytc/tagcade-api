@@ -137,15 +137,15 @@ class TestEventCounter extends AbstractEventCounter
                 $totalRonSlotOpportunities = $this->ronAdSlotData[$ronAdSlot->getId()][static::KEY_SLOT_OPPORTUNITY];
                 $segmentCount = count($ronAdSlot->getSegments());
                 $slotSegments = $this->distributeValueToArray($totalRonSlotOpportunities, $segmentCount);
-                $i = 0;
-                foreach ($ronAdSlot->getSegments() as $segment) {
+                $slotSegmentRtbImpressions = $this->distributeValueToArray($rtbImpressions, $segmentCount);
+                foreach ($ronAdSlot->getSegments() as $index => $segment) {
                     /**
                      * @var SegmentInterface $segment
                      */
                     $this->ronAdSlotSegmentData[$ronAdSlot->getId()][$segment->getId()] =  [
-                        static::KEY_SLOT_OPPORTUNITY => $slotSegments[$i],
+                        static::KEY_SLOT_OPPORTUNITY => $slotSegments[$index],
+                        static::KEY_RTB_IMPRESSION => $slotSegmentRtbImpressions[$index],
                     ];
-                    $i ++;
                 }
             }
 

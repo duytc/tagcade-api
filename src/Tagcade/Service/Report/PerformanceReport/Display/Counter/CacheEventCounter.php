@@ -692,7 +692,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronTagKeys);
         $reports = [];
         foreach($tagIds as $id) {
-            $reports[] = new RonAdTagReportCount($id, $results, $segmentId);
+            $reports[] = new RonAdTagReportCount($this->formattedDate, $id, $results, $segmentId);
         }
 
         return $reports;
@@ -704,7 +704,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronTagKeys);
 
-        return new RonAdTagReportCount($ronTagId, $results, $segmentId);
+        return new RonAdTagReportCount($this->formattedDate, $ronTagId, $results, $segmentId);
     }
 
     public function getRonAdSlotReport($ronAdSlotId, $segmentId = null)
@@ -717,7 +717,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $inBannerRequests = $this->getRonInBannerRequestCount($ronAdSlotId, $segmentId);
         $inBannerTimeouts = $this->getRonInBannerTimeoutCount($ronAdSlotId, $segmentId);
         $inBannerImpressions = $this->getRonInBannerImpressionCount($ronAdSlotId, $segmentId);
-        $ronSlotCount = new RonAdSlotReportCount($ronAdSlotId, $results, $segmentId);
+        $ronSlotCount = new RonAdSlotReportCount($this->formattedDate, $ronAdSlotId, $results, $segmentId);
         $ronSlotCount->setRtbImpression($rtbImpression);
         $ronSlotCount->setInBannerRequests($inBannerRequests);
         $ronSlotCount->setInBannerTimeouts($inBannerTimeouts);

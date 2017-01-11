@@ -34,7 +34,7 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
     const NAMESPACE_APPEND_SEGMENT         = 'segment_%d';
 
 
-    function __construct($ronTagId, array $redisReportData, $segment = null)
+    function __construct($formattedDate, $ronTagId, array $redisReportData, $segment = null)
     {
         $this->ronTagId = $ronTagId;
         $namespace = sprintf(self::NAMESPACE_RON_AD_TAG, $ronTagId);
@@ -42,9 +42,7 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
             $namespace = sprintf($namespace . ':' .  self::NAMESPACE_APPEND_SEGMENT, $segment);
         }
 
-        $today = new \DateTime('today');
-
-        $namespaceAndToday = sprintf('%s:%s', $namespace, $today->format('ymd'));
+        $namespaceAndToday = sprintf('%s:%s', $namespace, $formattedDate);
 
         $cacheKey = sprintf('%s:%s', self::CACHE_KEY_OPPORTUNITY, $namespaceAndToday);
         if (array_key_exists($cacheKey, $redisReportData)) {
