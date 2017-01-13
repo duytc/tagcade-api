@@ -22,8 +22,17 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 
 class AdTagRepository extends EntityRepository implements AdTagRepositoryInterface
 {
-    protected $SORT_FIELDS = ['id' => 'id', 'rotation' => 'rotation', 'name' => 'name', 'frequencyCap' => 'frequencyCap', 'impressionsCap' => 'impressionsCap',
-        'networkOpportunityCap' => 'networkOpportunityCap', 'adSlot' => 'adSlot', 'domain' => 'domain'];
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'rotation' => 'rotation',
+        'name' => 'name',
+        'frequencyCap' => 'frequencyCap',
+        'impressionsCap' => 'impressionsCap',
+        'networkOpportunityCap' => 'networkOpportunityCap',
+        'adSlot' => 'adSlot',
+        'domain' => 'domain',
+        'active' => 'active'
+    ];
 
     /**
      * @inheritdoc
@@ -337,6 +346,9 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             switch ($param->getSortField()) {
+                case $this->SORT_FIELDS['active']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
                 case $this->SORT_FIELDS['id']:
                 case $this->SORT_FIELDS['rotation']:
                 case $this->SORT_FIELDS['frequencyCap']:
@@ -396,6 +408,9 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             switch ($param->getSortField()){
+                case $this->SORT_FIELDS['active']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
                 case $this->SORT_FIELDS['id']:
                     $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
@@ -450,6 +465,9 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             switch ($param->getSortField()) {
+                case $this->SORT_FIELDS['active']:
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
+                    break;
                 case $this->SORT_FIELDS['id']:
                 case $this->SORT_FIELDS['rotation']:
                 case $this->SORT_FIELDS['frequencyCap']:
