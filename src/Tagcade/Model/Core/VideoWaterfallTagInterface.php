@@ -128,4 +128,26 @@ interface VideoWaterfallTagInterface extends ModelInterface
      * @return self
      */
     public function setTargeting($targeting);
+
+    /**
+     * @return boolean
+     */
+    public function isIsServerToServer();
+
+    /**
+     * @param boolean $isServerToServer
+     * @return self
+     */
+    public function setIsServerToServer($isServerToServer);
+
+    /**
+     * @return boolean
+     */
+    public function isIsVastOnly();
+
+    /**
+     * @param boolean $isVastOnly
+     * @return self
+     */
+    public function setIsVastOnly($isVastOnly);
 }

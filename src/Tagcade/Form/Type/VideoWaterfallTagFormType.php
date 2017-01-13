@@ -26,7 +26,10 @@ class VideoWaterfallTagFormType extends AbstractRoleSpecificFormType
             ->add('companionAds')
             ->add('targeting')
             ->add('videoPublisher')
-            ->add('buyPrice');
+            ->add('buyPrice')
+            /* new feature: server-to-server */
+            ->add('isServerToServer')
+            ->add('isVastOnly');
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,

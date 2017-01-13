@@ -22,16 +22,14 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
      */
     private $ronAdSlotId;
 
-    function __construct($ronAdSlotId, array $redisReportData, $segment = null)
+    function __construct($formattedDate, $ronAdSlotId, array $redisReportData, $segment = null)
     {
         $namespace = sprintf(self::NAMESPACE_RON_AD_SLOT, $ronAdSlotId);
         if (null !== $segment) {
             $namespace = sprintf($namespace . ':' .  self::NAMESPACE_APPEND_SEGMENT, $segment);
         }
 
-        $today = new \DateTime('today');
-
-        $namespaceAndToday = sprintf('%s:%s', $namespace, $today->format('ymd'));
+        $namespaceAndToday = sprintf('%s:%s', $namespace, $formattedDate);
 
         $cacheKeySlotOpportunity = sprintf('%s:%s', self::CACHE_KEY_SLOT_OPPORTUNITY, $namespaceAndToday);
         if (array_key_exists($cacheKeySlotOpportunity, $redisReportData)) {

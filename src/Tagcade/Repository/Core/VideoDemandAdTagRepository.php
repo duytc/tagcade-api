@@ -21,6 +21,7 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
         'id' => 'id',
         'timeout' => 'timeout',
         'sellPrice' => 'sellPrice',
+        'active' => 'active'
     ];
     /**
      * @inheritdoc
@@ -82,6 +83,9 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
             switch ($param->getSortField()){
+                case 'active':
+                    $qb->addOrderBy('vdm'.$param->getSortField(), $param->getSortDirection());
+                    break;
                 case 'name':
                     $qb->addOrderBy('libraryVideoDemandAdTag'.$param->getSortField(), $param->getSortDirection());
                     break;

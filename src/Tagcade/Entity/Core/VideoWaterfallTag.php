@@ -19,4 +19,16 @@ class VideoWaterfallTag extends VideoWaterfallTagModel
     protected $deletedAt;
     protected $buyPrice;
     protected $targeting;
+
+    /* new feature: server-to-server */
+    protected $isServerToServer;
+    protected $isVastOnly;
+
+    /**
+     * call parent construct for default in form
+     */
+    function __construct()
+    {
+        parent::__construct();
+    }
 }

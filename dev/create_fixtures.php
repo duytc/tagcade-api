@@ -5,13 +5,18 @@ use AppKernel;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
+use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
+use Tagcade\Entity\Core\RonAdSlot;
+use Tagcade\Entity\Core\RonAdSlotSegment;
+use Tagcade\Entity\Core\Segment;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 use Tagcade\Entity\Core\VideoDemandAdTag;
@@ -19,6 +24,7 @@ use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Entity\Core\VideoPublisher;
 use Tagcade\Entity\Core\VideoWaterfallTag;
 use Tagcade\Entity\Core\VideoWaterfallTagItem;
+use Tagcade\Service\TagLibrary\AdSlotGeneratorInterface;
 
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
@@ -32,8 +38,11 @@ $container = $kernel->getContainer();
 // display module
 const NUM_PUBLISHER = 1;
 const NUM_SITES = 15;
-const NUM_AD_SLOTS_PER_SITE = 35;
+const NUM_AD_SLOTS_PER_SITE = 10;
 const NUM_AD_TAG_PER_AD_SLOT = 5;
+const NUM_RON_AD_SLOT = 5;
+const NUM_RON_TAG_PER_RON_AD_SLOT = 5;
+const NUM_SITE_TO_DEPLOY_RON_AD_SLOT = 10;
 const NUM_EXCHANGE_PER_PUBLISHER = 1;
 
 // video module
@@ -53,6 +62,12 @@ $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
 /** @var PublisherManagerInterface $publisherManager */
 $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+
+/** @var AdSlotGeneratorInterface $adSlotGenerator */
+$adSlotGenerator = $container->get('tagcade_api.service.tag_library.ad_slot_generator_service');
+
+/** @var SiteManagerInterface $siteManager */
+$siteManager = $container->get('tagcade.domain_manager.site');
 
 foreach(xrange(NUM_PUBLISHER) as $userId) {
     //create publisher
@@ -173,6 +188,64 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         unset($tempObjs);
     }
 
+    $adNetworkForRON = (new AdNetwork())
+        ->setName('Ad Network for RON')
+        ->setActiveAdTagsCount(0) // why do I have to do this? it should default to 0
+        ->setPausedAdTagsCount(0)
+        ->setPublisher($publisher);
+    $em->persist($adNetworkForRON);
+
+    $segment = (new Segment())->setName('test segment')->setPublisher($publisher);
+    $em->persist($segment);
+
+    foreach(xrange(NUM_RON_AD_SLOT) as $ronAdSlotId) {
+        // create ad slot
+        $libraryAdSlot = (new LibraryDisplayAdSlot())
+            ->setName("RON AdSlot " . $ronAdSlotId)
+            ->setType('display')
+            ->setWidth(100)
+            ->setHeight(100)
+            ->setVisible(true)
+            ->setAutoFit(true)
+            ->setPassbackMode('position')
+            ->setPublisher($publisher);
+
+        foreach(xrange(NUM_RON_TAG_PER_RON_AD_SLOT) as $ronAdTagId) {
+            $libraryAdTag = (new LibraryAdTag())->setName(sprintf('ron ad tag %d', $ronAdTagId))
+                ->setVisible(true)
+                ->setHtml(sprintf('ron ad tag %d html', $ronAdTagId))
+                ->setAdType(0)
+                ->setAdNetwork($adNetworkForRON)
+                ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
+
+            $ronAdTag = (new LibrarySlotTag())
+                ->setLibraryAdTag($libraryAdTag)
+                ->setLibraryAdSlot($libraryAdSlot)
+                ->setActive(true)
+                ->setFrequencyCap(11)
+                ->setRefId(uniqid('', true));
+
+            $libraryAdSlot->addLibSlotTag($ronAdTag);
+            unset($libraryAdTag);
+            unset($ronAdTag);
+        }
+
+        $em->persist($libraryAdSlot);
+
+        $ronAdSlot = (new RonAdSlot())->setLibraryAdSlot($libraryAdSlot);
+        $ronSlotSegment = (new RonAdSlotSegment())->setSegment($segment)->setRonAdSlot($ronAdSlot);
+        $ronAdSlot->addRonAdSlotSegment($ronSlotSegment);
+
+        $em->persist($ronAdSlot);
+
+        $em->flush();
+
+        $sites = $siteManager->getSitesForPublisher($publisher, NUM_SITE_TO_DEPLOY_RON_AD_SLOT);
+        $adSlotGenerator->generateAdSlotFromLibraryForSites($libraryAdSlot, $sites);
+    }
+
+    $em->flush();
+
     foreach(xrange(NUM_VIDEO_PUBLISHER) as $videoPublisherId) {
         gc_enable();
         $tempObjs = [];
@@ -237,13 +310,12 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         echo sprintf("\t". '- finish inserting Video Publisher "%s"'. "\n", $videoPublisher->getName()) ;
         unset($tempObjs);
     }
+
+    $em->detach($adNetworkForRON);
     $em->detach($publisher);
     unset($publisher);
     echo sprintf('finish inserting publisher "%s"' . "\n", 'tagcade' . $userId) ;
 }
-
-$em->flush();
-$em->clear();
 
 function generateUuidV4() {
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
