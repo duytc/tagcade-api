@@ -182,6 +182,10 @@ class LibraryVideoDemandAdTag implements LibraryVideoDemandAdTagInterface, Video
      */
     public function getLinkedCount()
     {
+        if (!($this->videoDemandAdTags instanceof Collection)) {
+            return 0;
+        }
+
         return $this->videoDemandAdTags->count();
     }
 
