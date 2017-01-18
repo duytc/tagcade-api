@@ -63,12 +63,4 @@ interface TagCacheV2Interface
      * @return array
      */
     public function getAdTagsForRonAdSlot($ronAdSlotId);
-
-    /**
-     * @param $id
-     * @param $cndCacheData
-     * @param bool $ron
-     * @return mixed
-     */
-    public function refreshCacheForCdn($id, $cndCacheData, $ron = false);
 }

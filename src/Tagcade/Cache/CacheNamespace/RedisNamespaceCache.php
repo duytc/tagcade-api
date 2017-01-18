@@ -3,10 +3,8 @@
 namespace Tagcade\Cache\CacheNamespace;
 
 use Redis;
-use Tagcade\Cache\Legacy\Cache\Tag\CacheInterface;
-use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheProvider;
 
-class RedisArrayNamespaceCache extends NamespaceCacheProvider
+class RedisNamespaceCache extends NamespaceCacheProvider
 {
     const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
 
@@ -15,30 +13,16 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     private $redis;
 
-    /*function __construct($redisArray, $maxCacheVersion)
-    {
-        parent::__construct($maxCacheVersion);
+    private $host;
 
-        $ra = new Redis($redisArray);
-        $this->redis = $ra;
-        $this->redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
-    }/* NOT USE RedisArray from 20161209. Leave this code to backup */
+    private $port;
 
     function __construct($host, $port, $maxCacheVersion)
     {
         parent::__construct($maxCacheVersion);
 
-        $redis = new Redis();
-
-        try {
-            $redis->connect($host, $port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
-            $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
-        } catch (\RedisException $e) {
-            // do not let redis connection errors crash the entire program
-            // todo refactor to check if redis is connected or not
-        }
-
-        $this->redis = $redis;
+        $this->host = $host;
+        $this->port = $port;
     }
 
     /**
@@ -106,6 +90,19 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     public function getRedis()
     {
+        if (!$this->redis instanceof Redis) {
+            $redis = new Redis();
+
+            try {
+                $redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
+                $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+                $this->redis = $redis;
+            } catch (\RedisException $e) {
+                // todo refactor to check if redis is connected or not
+                $this->redis = null;
+            }
+        }
+
         return $this->redis;
     }
 
@@ -114,7 +111,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     public function doFetch($id)
     {
-        return $this->redis->get($id);
+        return $this->getRedis()->get($id);
     }
 
     /**
@@ -122,7 +119,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doContains($id)
     {
-        return $this->redis->exists($id);
+        return $this->getRedis()->exists($id);
     }
 
     /**
@@ -130,7 +127,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doIncrement($id)
     {
-        return (bool)$this->redis->incr($id);
+        return (bool)$this->getRedis()->incr($id);
     }
 
     /**
@@ -138,10 +135,12 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doSave($id, $data, $lifeTime = 0)
     {
-        $result = $this->redis->set($id, $data);
+        $result = $this->getRedis()->set($id, $data);
+
         if ($lifeTime > 0) {
-            $this->redis->expire($id, $lifeTime);
+            $this->getRedis()->expire($id, $lifeTime);
         }
+
         return $result;
     }
 
@@ -150,7 +149,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doDelete($id)
     {
-        return $this->redis->delete($id);
+        return $this->getRedis()->delete($id);
     }
 
     /**
@@ -158,7 +157,7 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doFlush()
     {
-        return $this->redis->flushDB();
+        return $this->getRedis()->flushDB();
     }
 
     /**
@@ -166,7 +165,8 @@ class RedisArrayNamespaceCache extends NamespaceCacheProvider
      */
     protected function doGetStats()
     {
-        $info = $this->redis->info();
+        $info = $this->getRedis()->info();
+
         return array(
             CacheInterface::STATS_HITS => false,
             CacheInterface::STATS_MISSES => false,

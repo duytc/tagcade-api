@@ -3,7 +3,7 @@
 namespace Tagcade\Cache\V2\Refresher;
 
 
-use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
+use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;

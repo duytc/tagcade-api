@@ -4,7 +4,7 @@ namespace Tagcade\Cache\V2\Refresher;
 
 
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
-use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
+use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateRonAdSlotDataTrait;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;

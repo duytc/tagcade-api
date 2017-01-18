@@ -32,12 +32,8 @@ writeln('   --> Finished refreshing random test data');
 writeln('   --> Start preparing redis cache ###');
 writeln('       ...');
 
-$host = $container->getParameter('tc.redis.app_cache.host'); // or manually set value as tagcade.dev or localhost
-$port = $container->getParameter('tc.redis.app_cache.port'); // or manually set value as 6379
-$redis = new Redis();
-$redis->connect($host, $port);
-$cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
-$cache->setRedis($redis);
+$cache = $container->get('tagcade.cache.performance_report_data');
+
 writeln('   --> Finished preparing redis cache ###');
 
 writeln('   --> Start saving data to redis ###');

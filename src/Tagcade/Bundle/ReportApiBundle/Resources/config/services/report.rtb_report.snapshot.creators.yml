@@ -45,7 +45,7 @@ services:
     tagcade.service.report.rtb_report.counter.cache_event_counter:
         class: Tagcade\Service\Report\RtbReport\Counter\RtbCacheEventCounter
         arguments:
-            - @tagcade.legacy.cache.performance_report_data
+            - '@tagcade.cache.performance_report_data'
 
     ### Rtb Snapshot report creator
     tagcade.service.report.rtb_report.creator.snapshot_report_creator:

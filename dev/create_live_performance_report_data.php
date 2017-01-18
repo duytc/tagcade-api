@@ -23,18 +23,14 @@ writeln('### Start creating test live data for performance reports ###');
 $testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($allAdSLot);
 $testEventCounter->refreshTestData();
 
-$host = $container->getParameter('tc.redis.app_cache.host'); // or manually set value as tagcade.dev or localhost
-$port = $container->getParameter('tc.redis.app_cache.port'); // or manually set value as 6379
-$redis = new Redis();
-$redis->connect($host, $port);
-$cache = new Tagcade\Cache\Legacy\Cache\RedisArrayCache();
-$cache->setRedis($redis);
+$cache = $container->get('tagcade.cache.performance_report_data');
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache,
     $adTagManager,
     $adSlotManager,
     $container->getParameter('tc.report.performance.event_counter.redis_pipeline_size_threshold')
-    );
+);
+
 $cacheEventCounter->setDate(new DateTime('yesterday'));
 
 writeln('### creating test live data for account ###');

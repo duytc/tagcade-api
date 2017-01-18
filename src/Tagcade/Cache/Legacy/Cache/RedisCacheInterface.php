@@ -4,7 +4,7 @@ namespace Tagcade\Cache\Legacy\Cache;
 
 use Doctrine\Common\Cache\Cache;
 
-interface RedisArrayCacheInterface extends Cache
+interface RedisCacheInterface extends Cache
 {
 
     /**

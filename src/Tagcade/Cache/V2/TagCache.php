@@ -2,7 +2,7 @@
 
 namespace Tagcade\Cache\V2;
 
-use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
+use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\TagCacheAbstract;
 use Tagcade\Cache\TagCacheInterface;
 use Tagcade\Cache\V2\Refresher\AdSlotCacheInterface;
@@ -11,7 +11,6 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
@@ -54,28 +53,6 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     public function refreshCacheForRonAdSlot(RonAdSlotInterface $ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot = true)
     {
         return $this->ronAdSlotCache->refreshCacheForRonAdSlot($ronAdSlot, $alsoRefreshRelatedDynamicRonAdSlot);
-    }
-
-    /**
-     * This refresh is after namespacecache key version has been increased for ad slot,
-     * hence we don't need to increase version for cdn. We just save cdn data with current version and remove last version
-     *
-     * @param $id
-     * @param $cndCacheData
-     * @param bool $ron
-     * @return $this|mixed
-     */
-    public function refreshCacheForCdn($id, $cndCacheData, $ron = false)
-    {
-        $namespace = $ron ? $this->ronAdSlotCache->getNamespace($id) : $this->adSlotCache->getNamespace($id);
-        $this->cache->setNamespace($namespace);
-        $currentVersion = (int)$this->cache->getNamespaceVersion(true);
-//        $newVersion = $oldVersion + 1;
-        $this->cache->setNamespaceVersion($currentVersion);
-
-        $this->cache->save(static::CACHE_KEY_CDN_AD_SLOT, $cndCacheData);
-
-        return $this;
     }
 
     /**

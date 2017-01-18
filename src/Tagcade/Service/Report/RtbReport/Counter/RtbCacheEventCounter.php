@@ -2,7 +2,7 @@
 
 namespace Tagcade\Service\Report\RtbReport\Counter;
 
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Cache\RedisCacheInterface;
 use Tagcade\Domain\DTO\Report\RtbReport\RtbAdSlotReportCount;
 use Tagcade\Domain\DTO\Report\RtbReport\RtbRonAdSlotReportCount;
 
@@ -25,14 +25,14 @@ class RtbCacheEventCounter extends RtbAbstractEventCounter implements RtbCacheEv
     const REDIS_HASH_RTB_EVENT_COUNT = 'rtb_event_processor:event_count';
 
     /**
-     * @var RedisArrayCacheInterface
+     * @var RedisCacheInterface
      */
     protected $cache;
 
     protected $formattedDate;
     protected $useLocalCache = true;
 
-    public function __construct(RedisArrayCacheInterface $cache)
+    public function __construct(RedisCacheInterface $cache)
     {
         $this->cache = $cache;
         $this->setDate(new \DateTime('today'));

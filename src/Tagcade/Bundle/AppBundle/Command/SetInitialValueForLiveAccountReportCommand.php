@@ -44,7 +44,7 @@ class SetInitialValueForLiveAccountReportCommand extends ContainerAwareCommand
         //performance report
         $eventCounter = $container->get('tagcade.service.report.performance_report.display.counter.cache_event_counter');
         $eventCounter->setDate($date);
-        $cache = $container->get('tagcade.legacy.cache.performance_report_data');
+        $cache = $container->get('tagcade.cache.performance_report_data');
 
 
         $activePublishers = $publisherManager->allPublisherWithDisplayModule();

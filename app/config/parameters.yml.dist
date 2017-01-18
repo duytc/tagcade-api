@@ -86,17 +86,6 @@ parameters:
         - {threshold: 2000000000, cpmRate: 0.015}
         - {threshold: 5000000000, cpmRate: 0.010}
 
-    tc.cdn_config:
-        host: '192.168.55.100'
-        secured: false
-        username: 'user'
-        password: 'guest'
-        port: 2121
-        timeout: 90
-        ad_slot_path: adslot/
-        ron_ad_slot_path: ronadslot/
-        push_ftp_enabled: true
-        
     tc.builtin.black_list:
         -
             name: 'Aol Default Blacklist'

@@ -2,12 +2,12 @@
 
 namespace Tagcade\Service\Report\RtbReport\Counter;
 
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Cache\Legacy\Cache\RedisCacheInterface;
 
 interface RtbCacheEventCounterInterface extends RtbEventCounterInterface
 {
     /**
-     * @return RedisArrayCacheInterface cache
+     * @return RedisCacheInterface cache
      */
     public function getCache();
 

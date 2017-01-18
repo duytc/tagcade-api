@@ -6,8 +6,10 @@ namespace Tagcade\Cache\Legacy\Cache;
 
 use Redis;
 
-class RedisArrayCache implements RedisArrayCacheInterface
+class RedisCache implements RedisCacheInterface
 {
+    const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
+
     /**
      * @var Redis
      */
@@ -17,15 +19,35 @@ class RedisArrayCache implements RedisArrayCacheInterface
     private $port;
 
     /**
-     * Sets the redis array instance to use.
-     *
-     * @param Redis $redis
-     *
-     * @return void
+     * RedisCache constructor.
+     * @param $host
+     * @param $port
      */
-    public function setRedis(Redis $redis)
+    public function __construct($host, $port)
     {
-        $this->redis = $redis;
+        $this->host = $host;
+        $this->port = $port;
+    }
+
+    /**
+     * @return Redis|null
+     */
+    public function getRedis()
+    {
+        if (!$this->redis instanceof Redis) {
+            $redis = new Redis();
+
+            try {
+                $redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
+                $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+                $this->redis = $redis;
+            } catch (\RedisException $e) {
+                // todo refactor to check if redis is connected or not
+                $this->redis = null;
+            }
+        }
+
+        return $this->redis;
     }
 
     /**
@@ -46,17 +68,17 @@ class RedisArrayCache implements RedisArrayCacheInterface
 
     public function multi($host)
     {
-        return $this->redis->multi($host);
+        return $this->getRedis()->multi($host);
     }
 
     public function exec()
     {
-        return $this->redis->exec();
+        return $this->getRedis()->exec();
     }
 
     public function hosts()
     {
-        return $this->redis->_hosts();
+        return $this->getRedis()->_hosts();
     }
 
     public function target($key)
@@ -70,7 +92,7 @@ class RedisArrayCache implements RedisArrayCacheInterface
      */
     public function incr($hash)
     {
-        return $this->redis->incr($hash);
+        return $this->getRedis()->incr($hash);
     }
 
     /**
@@ -78,7 +100,7 @@ class RedisArrayCache implements RedisArrayCacheInterface
      */
     public function fetch($id)
     {
-        return $this->redis->get($id);
+        return $this->getRedis()->get($id);
     }
 
     /**
@@ -86,7 +108,7 @@ class RedisArrayCache implements RedisArrayCacheInterface
      */
     public function hFetch($hash, $field)
     {
-        return $this->redis->hGet($hash, $field);
+        return $this->getRedis()->hGet($hash, $field);
     }
 
     /**
@@ -94,7 +116,7 @@ class RedisArrayCache implements RedisArrayCacheInterface
      */
     public function contains($id)
     {
-        return $this->redis->exists($id);
+        return $this->getRedis()->exists($id);
     }
 
     /**
@@ -103,15 +125,15 @@ class RedisArrayCache implements RedisArrayCacheInterface
     public function save($id, $data, $lifeTime = 0)
     {
         if ($lifeTime > 0) {
-            return $this->redis->setex($id, $lifeTime, $data);
+            return $this->getRedis()->setex($id, $lifeTime, $data);
         }
 
-        return $this->redis->set($id, $data);
+        return $this->getRedis()->set($id, $data);
     }
 
     public function hSave($hash, $field, $data)
     {
-        return $this->redis->hSet($hash, $field, $data);
+        return $this->getRedis()->hSet($hash, $field, $data);
     }
 
     /**
@@ -119,22 +141,22 @@ class RedisArrayCache implements RedisArrayCacheInterface
      */
     public function delete($id)
     {
-        return $this->redis->delete($id) > 0;
+        return $this->getRedis()->delete($id) > 0;
     }
 
     public function hDelete($hash, $field)
     {
-        return $this->redis->hDel($hash, $field);
+        return $this->getRedis()->hDel($hash, $field);
     }
 
     public function mGet(array $keys)
     {
-        return $this->redis->mget($keys);
+        return $this->getRedis()->mget($keys);
     }
 
     public function hMGet($key, array $fields)
     {
-        return $this->redis->hMGet($key, $fields);
+        return $this->getRedis()->hMGet($key, $fields);
     }
 
     /**
