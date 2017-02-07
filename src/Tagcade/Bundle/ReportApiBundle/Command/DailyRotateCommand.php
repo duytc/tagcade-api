@@ -64,24 +64,29 @@ class DailyRotateCommand extends ContainerAwareCommand
         /* create performance and billing reports */
         $logger->info('start daily rotate');
 
-        // Creating network hierarchy reports
-        $allAdNetworks = $adNetworkManager->all();
-        $this->rotateNetworkReports($date, $allAdNetworks, $timeout, $logger, $override);
-        unset($allAdNetworks);
+
+
+        // creating video reports
+        $this->rotateVideoReports($date, $timeout, $logger, $override);
 
         // Creating accounts reports
         $allPublishers = $publisherManager->allActivePublishers();
         $this->rotateAccountReports($date, $allPublishers, $timeout, $logger, $override);
 
-        // Creating header bidding reports
-        $this->rotateHeaderBiddingReports($date, $timeout, $logger, $override);
-
-        // creating video reports
-        $this->rotateVideoReports($date, $timeout, $logger, $override);
-
         // Creating platform reports
         $dailyReportCreator->setReportDate($date);
         $dailyReportCreator->createPlatformReport($date, $override);
+
+        // Creating network hierarchy reports
+        $allAdNetworks = $adNetworkManager->all();
+        $this->rotateNetworkReports($date, $allAdNetworks, $timeout, $logger, $override);
+        unset($allAdNetworks);
+
+        // Creating header bidding reports
+        $this->rotateHeaderBiddingReports($date, $timeout, $logger, $override);
+
+        // creating RON slot reports
+        $dailyReportCreator->setReportDate($date);
         $dailyReportCreator->createSegmentReports($autoFlush = true, $override = true);
         $dailyReportCreator->createRonSlotReports();
 
