@@ -41,8 +41,6 @@ abstract class RefresherAbstract
         $this->cache->save($cacheKey, $this->createCacheDataForEntity($model));
         $this->cache->deleteAll();
 
-        $this->workerManager->updateCdnForEntity($model);
-
         return $this;
     }
 

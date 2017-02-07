@@ -3,15 +3,13 @@
 namespace Tagcade\Cache;
 
 
-use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
+use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 
 abstract class TagCacheAbstract
 {
     const CACHE_KEY_AD_SLOT = 'all_tags_array';
-    const CACHE_KEY_CDN_AD_SLOT = 'cdn_all_tags_array';
 
     protected $cache;
 
@@ -49,7 +47,6 @@ abstract class TagCacheAbstract
         for ($i = 1; $i <= $maxVersion; $i++) {
             $this->cache->setNamespaceVersion($i);
             $this->cache->delete(static::CACHE_KEY_AD_SLOT);
-            $this->cache->delete(static::CACHE_KEY_CDN_AD_SLOT);
         }
     }
     /**

@@ -4,12 +4,12 @@
 namespace Tagcade\Service\Report\VideoReport\Counter;
 
 
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Cache\Legacy\Cache\RedisCacheInterface;
 
 interface VideoCacheEventCounterInterface extends VideoEventCounterInterface
 {
     /**
-     * @return RedisArrayCacheInterface cache
+     * @return RedisCacheInterface cache
      */
     public function getCache();
 

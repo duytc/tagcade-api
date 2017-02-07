@@ -28,7 +28,6 @@ $queue = $container->get("leezy.pheanstalk");
 $worker = $container->get('tagcade.worker.workers.replicate_existing_lib_slot_tag_worker');
 $availableWorkers = [
     $container->get('tagcade.worker.workers.update_revenue_worker'),
-    $container->get('tagcade.worker.workers.update_cdn_worker'),
     $container->get('tagcade.worker.workers.update_cache_for_site_worker'),
     $container->get('tagcade.worker.workers.update_cache_for_channel_worker'),
     $container->get('tagcade.worker.workers.update_cache_for_publisher_worker'),

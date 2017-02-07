@@ -3,7 +3,7 @@
 
 namespace Tagcade\Service\Report\VideoReport\Counter;
 
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Cache\RedisCacheInterface;
 use Tagcade\Domain\DTO\Report\VideoReport\VideoDemandAdTagReportData;
 use Tagcade\Domain\DTO\Report\VideoReport\VideoWaterfallTagReportData;
 
@@ -20,16 +20,16 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     const REDIS_HASH_VIDEO_EVENT_COUNT = 'video_event_processor:event_count';
 
     /**
-     * @var RedisArrayCacheInterface
+     * @var RedisCacheInterface
      */
     protected $cache;
     protected $useLocalCache = true;
 
     /**
      * VideoCacheEventCounter constructor.
-     * @param RedisArrayCacheInterface $cache
+     * @param RedisCacheInterface $cache
      */
-    public function __construct(RedisArrayCacheInterface $cache)
+    public function __construct(RedisCacheInterface $cache)
     {
         $this->cache = $cache;
         $this->setDate(new \DateTime('today'));

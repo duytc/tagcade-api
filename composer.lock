@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "35c16cc5f24d85bc0732b2385cf9af63",
-    "content-hash": "ea2b6acbce80cf2cde870c8af87a022c",
+    "hash": "a9404027a4f3c4049d27a67f2ffc59b0",
+    "content-hash": "da366616d748b0124af064781ae89b74",
     "packages": [
         {
             "name": "akeneo-labs/spreadsheet-parser",
@@ -2849,6 +2849,7 @@
                 "rollerworks",
                 "user"
             ],
+            "abandoned": true,
             "time": "2015-04-27 07:09:17"
         },
         {
@@ -3980,45 +3981,6 @@
                 "framework"
             ],
             "time": "2016-06-06 16:05:37"
-        },
-        {
-            "name": "touki/ftp",
-            "version": "v1.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/touki653/php-ftp-wrapper.git",
-                "reference": "9cb0d85fe695058db4a7daafd07b884f987feae3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/touki653/php-ftp-wrapper/zipball/9cb0d85fe695058db4a7daafd07b884f987feae3",
-                "reference": "9cb0d85fe695058db4a7daafd07b884f987feae3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Touki\\FTP": [
-                        "lib/",
-                        "tests/"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Touki",
-                    "email": "g.vincendon@vithemis.com"
-                }
-            ],
-            "description": "A fully object oriented library for PHP FTP functions",
-            "time": "2014-06-27 14:24:15"
         },
         {
             "name": "twig/twig",

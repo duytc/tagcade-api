@@ -8,6 +8,8 @@ use Tagcade\Exception\InvalidArgumentException;
 
 class VastTagRequestManager implements VastTagRequestManagerInterface
 {
+    const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
+
     const TOTAL_RECORD = 'totalRecord';
     const RECORDS = 'records';
     const ITEM_PER_PAGE = 'itemsPerPage';
@@ -18,6 +20,9 @@ class VastTagRequestManager implements VastTagRequestManagerInterface
      */
     private $redis;
 
+    private $host;
+
+    private $port;
     /**
      * @var string
      */
@@ -25,9 +30,31 @@ class VastTagRequestManager implements VastTagRequestManagerInterface
 
     function __construct($host, $port, $vastTagRequestNamespace)
     {
-        $this->redis = new Redis();
-        $this->redis->connect($host, $port);
+        $this->host = $host;
+        $this->port = $port;
+
         $this->vastTagRequestNamespace = $vastTagRequestNamespace;
+    }
+
+    /**
+     * @return Redis|null
+     */
+    public function getRedis()
+    {
+        if (!$this->redis instanceof Redis) {
+            $redis = new Redis();
+
+            try {
+                $redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
+                $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+                $this->redis = $redis;
+            } catch (\RedisException $e) {
+                // todo refactor to check if redis is connected or not
+                $this->redis = null;
+            }
+        }
+
+        return $this->redis;
     }
 
     /**
@@ -43,12 +70,12 @@ class VastTagRequestManager implements VastTagRequestManagerInterface
         }
 
         $redisList = sprintf($this->vastTagRequestNamespace, $uuid);
-        $totalRecord = $this->redis->llen($redisList);
+        $totalRecord = $this->getRedis()->llen($redisList);
 
         $from = $itemPerPage*($currentPage - 1);
         $to = $itemPerPage*$currentPage - 1;
 
-        $rawVastTags = $this->redis->lRange($redisList, $from, $to);
+        $rawVastTags = $this->getRedis()->lRange($redisList, $from, $to);
 
         if (empty($rawVastTags)) {
             return [self::TOTAL_RECORD => 0, self::RECORDS => [], self::ITEM_PER_PAGE => $itemPerPage, self::CURRENT_PAGE => $currentPage];

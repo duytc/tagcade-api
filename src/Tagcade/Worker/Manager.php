@@ -3,17 +3,13 @@
 namespace Tagcade\Worker;
 
 use DateTime;
+use Leezy\PheanstalkBundle\Proxy\PheanstalkProxyInterface;
 use Pheanstalk_PheanstalkInterface;
 use StdClass;
-use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\BaseAdSlotInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\ModelInterface;
-use Tagcade\Service\DateUtilInterface;
-use Leezy\PheanstalkBundle\Proxy\PheanstalkProxyInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Service\DateUtilInterface;
 
 // responsible for creating background tasks
 
@@ -68,40 +64,6 @@ class Manager
         $params->endDate = $endDate ? $this->dateUtil->formatDate($endDate) : null;
 
         $this->queueTask('updateRevenueForAdNetworkAndSite', $params);
-    }
-
-    public function updateCdnForAdSlot($adSlotId)
-    {
-        $params = new StdClass;
-        $params->adSlotId = $adSlotId;
-
-        $this->queueTask('updateCdnForAdSlot', $params);
-    }
-
-    public function updateCdnForRonSlot($ronSlotId)
-    {
-        $params = new StdClass;
-        $params->ronSlotId = $ronSlotId;
-
-        $this->queueTask('updateCdnForRonSlot', $params);
-    }
-
-    public function updateCdnForEntity(ModelInterface $entity) {
-        $id = $entity->getId();
-        if (!is_int($id)) {
-            throw new RuntimeException('Could not put entity without id to cdn');
-        }
-
-        if ($entity instanceof BaseAdSlotInterface) {
-            $this->updateCdnForAdSlot($id);
-        }
-        else if ($entity instanceof RonAdSlotInterface) {
-            $this->updateCdnForRonSlot($id);
-        }
-        else {
-
-            throw new RuntimeException(sprintf('Not support putting entity of type %s', get_class($entity)));
-        }
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Tagcade\Cache\Video\Refresher;
 
 
 use Doctrine\ORM\PersistentCollection;
-use Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache;
+use Tagcade\Cache\CacheNamespace\RedisNamespaceCache;
 use Tagcade\Cache\Video\DomainListManager;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTag;
@@ -19,11 +19,11 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
     const NAMESPACE_CACHE_KEY = 'video:waterfall_tag:%s:tag_config'; // using %s for uuid
     const CACHE_KEY_VIDEO_DEMAND_AD_TAG = 'all_demand_ad_tags_array';
     /**
-     * @var RedisArrayNamespaceCache
+     * @var RedisNamespaceCache
      */
     private $cacheNamespace;
 
-    function __construct(RedisArrayNamespaceCache $cacheNamespace)
+    function __construct(RedisNamespaceCache $cacheNamespace)
     {
         $this->cacheNamespace = $cacheNamespace;
     }

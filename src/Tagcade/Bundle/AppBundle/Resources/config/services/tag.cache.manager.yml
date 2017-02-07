@@ -1,72 +1,76 @@
 services:
-
     tagcade.cache.legacy.cache.tag.redis_namespace_cache:
-        class: Tagcade\Cache\Legacy\Cache\Tag\RedisNamespacedCache
+        class: Tagcade\Cache\Legacy\Cache\Tag\RedisNamespaceCache
         arguments:
-            - %tc.max_cache_version%
+            - '%tc.max_cache_version%'
             - '%tc.redis.display_tag_cache.host%'
             - '%tc.redis.display_tag_cache.port%'
 
     tagcade.cache.legacy.tag_cache:
         class: Tagcade\Cache\Legacy\TagCache
         arguments:
-            - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
-            - @tagcade.domain_manager.display_ad_slot
+            - '@tagcade.cache.legacy.cache.tag.redis_namespace_cache'
+            - '@tagcade.domain_manager.display_ad_slot'
 
     tagcade.cache.v2.tag_cache:
         class: Tagcade\Cache\V2\TagCache
         arguments:
-            - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
-            - @tagcade.cache.v2.refresher.ad_slot_cache
-            - @tagcade.cache.v2.refresher.ron_ad_slot_cache
+            - '@tagcade.cache.cache_namespace.redis_namespace_cache'
+            - '@tagcade.cache.v2.refresher.ad_slot_cache'
+            - '@tagcade.cache.v2.refresher.ron_ad_slot_cache'
 
     tagcade.cache.v2.refresher.ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\AdSlotCache
         arguments:
-            - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
-            - @tagcade.worker.manager
-            - @tagcade.domain_manager.display_ad_slot
-            - @tagcade.domain_manager.native_ad_slot
-            - @tagcade.domain_manager.dynamic_ad_slot
-            - @tagcade.repository.expression
-            - @tagcade.service.tag_generator
+            - '@tagcade.cache.cache_namespace.redis_namespace_cache'
+            - '@tagcade.worker.manager'
+            - '@tagcade.domain_manager.display_ad_slot'
+            - '@tagcade.domain_manager.native_ad_slot'
+            - '@tagcade.domain_manager.dynamic_ad_slot'
+            - '@tagcade.repository.expression'
+            - '@tagcade.service.tag_generator'
 
     tagcade.cache.v2.refresher.ron_ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache
         arguments:
-            - @tagcade.cache.legacy.cache.tag.redis_namespace_cache
-            - @tagcade.worker.manager
-            - @tagcade.domain_manager.ron_ad_slot
-            - @tagcade.repository.library_expression
-            - @tagcade.repository.library_dynamic_ad_slot
-            - @tagcade_api.service.expression_in_js_generator
+            - '@tagcade.cache.cache_namespace.redis_namespace_cache'
+            - '@tagcade.worker.manager'
+            - '@tagcade.domain_manager.ron_ad_slot'
+            - '@tagcade.repository.library_expression'
+            - '@tagcade.repository.library_dynamic_ad_slot'
+            - '@tagcade_api.service.expression_in_js_generator'
 
     tagcade.cache.tag_cache_manager:
         class: Tagcade\Cache\TagCacheManager
         arguments:
             -
-                - @tagcade.cache.legacy.tag_cache
-                - @tagcade.cache.v2.tag_cache
+#                - '@tagcade.cache.legacy.tag_cache'
+                - '@tagcade.cache.v2.tag_cache'
 
     tagcade.cache.configuration_cache:
         class: Tagcade\Cache\ConfigurationCache
         arguments:
-            - @tagcade.legacy.cache.performance_report_data
+            - '@tagcade.cache.performance_report_data'
 
-# service for update video ad tag cache
-    tagcade.cache.cache_namespace.redis_array_namespace_cache:
-        class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
+    tagcade.cache.cache_namespace.redis_namespace_cache:
+        class: Tagcade\Cache\CacheNamespace\RedisNamespaceCache
         arguments:
             - '%tc.redis.app_cache.host%'
             - '%tc.redis.app_cache.port%'
             - '%tc.max_cache_version%'
 
-    tagcade.cache.cache_namespace.video.redis_array_namespace_cache:
-        class: Tagcade\Cache\CacheNamespace\RedisArrayNamespaceCache
+# service for video cache
+    tagcade.cache.cache_namespace.video.redis_namespace_cache:
+        class: Tagcade\Cache\CacheNamespace\RedisNamespaceCache
         arguments:
             - '%tc.redis.video_tag_cache.host%'
             - '%tc.redis.video_tag_cache.port%'
             - '%tc.max_cache_version%'
+
+    tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher:
+        class: Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresher
+        arguments:
+            - '@tagcade.cache.cache_namespace.video.redis_namespace_cache'
 
     tagcade.cache.video.domain_list_manager:
         class: Tagcade\Cache\Video\DomainListManager
@@ -74,20 +78,16 @@ services:
             - '%tc.redis.video_tag_cache.host%'
             - '%tc.redis.video_tag_cache.port%'
 
-    tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher:
-        class: Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresher
-        arguments:
-            - @tagcade.cache.cache_namespace.video.redis_array_namespace_cache
 
     tagcade.cache.video.video_cache_manager:
         class: Tagcade\Cache\Video\VideoCacheManager
         arguments:
-            - @tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher
-            - @tagcade.domain_manager.video_waterfall_tag
+            - '@tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher'
+            - '@tagcade.domain_manager.video_waterfall_tag'
 
     tagcade.cache.video.vast_tag_request_manager:
         class: Tagcade\Cache\Video\VastTagRequestManager
         arguments:
-            - %tc.redis.video_tag_cache.host%
-            - %tc.redis.video_tag_cache.port%
-            - %tc.redis.vast_tag_request_namespace%
+            - '%tc.redis.video_tag_cache.host%'
+            - '%tc.redis.video_tag_cache.port%'
+            - '%tc.redis.vast_tag_request_namespace%'

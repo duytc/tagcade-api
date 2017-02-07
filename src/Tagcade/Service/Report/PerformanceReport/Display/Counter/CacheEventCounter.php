@@ -4,7 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Counter;
 
 use DateTime;
 use Redis;
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
+use Tagcade\Cache\RedisCacheInterface;
 use Tagcade\Domain\DTO\Report\Performance\AccountReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdSlotReportCount;
 use Tagcade\Domain\DTO\Report\Performance\AdTagReportCount;
@@ -87,7 +87,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     ];
 
     /**
-     * @var RedisArrayCacheInterface
+     * @var RedisCacheInterface
      */
     protected $cache;
 
@@ -106,7 +106,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     protected $adSlotManager;
 
     protected $pipelineSizeThreshold;
-    public function __construct(RedisArrayCacheInterface $cache, AdTagManagerInterface $adTagManager, AdSlotManagerInterface $adSlotManager, $pipelineSizeThreshold)
+    public function __construct(RedisCacheInterface $cache, AdTagManagerInterface $adTagManager, AdSlotManagerInterface $adSlotManager, $pipelineSizeThreshold)
     {
         $this->adTagManager = $adTagManager;
         $this->adSlotManager = $adSlotManager;

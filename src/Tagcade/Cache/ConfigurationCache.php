@@ -4,7 +4,6 @@ namespace Tagcade\Cache;
 
 
 use Tagcade\Behaviors\CreateSiteTokenTrait;
-use Tagcade\Cache\Legacy\Cache\RedisArrayCacheInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -23,11 +22,11 @@ class ConfigurationCache implements ConfigurationCacheInterface
     const NONE = 0;
     const SUCCESS = 1;
     /**
-     * @var RedisArrayCacheInterface
+     * @var RedisCacheInterface
      */
     private $redis;
 
-    function __construct(RedisArrayCacheInterface $redis)
+    function __construct(RedisCacheInterface $redis)
     {
         $this->redis = $redis;
     }
