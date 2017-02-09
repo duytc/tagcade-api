@@ -98,7 +98,7 @@ class DynamicAdSlotImportBulkData implements  DynamicAdSlotImportBulkDataInterfa
        'Android'            =>'Android',
        'Windows 10 Mobile'  =>'Windows Phone 10.0',
        'BlackBerry 10'      =>'BB10',
-       'Firefox OS'         =>'Firefox',
+       'Firefox OS'         =>'Mobile.*Firefox',
        'Sailfish OS'        => 'Sailfish',
        'Tizen'              =>'Tizen',
        'Ubuntu Touch OS'   =>'Ubuntu'
