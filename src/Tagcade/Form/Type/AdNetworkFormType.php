@@ -32,8 +32,6 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('url')
             ->add('defaultCpmRate')
-            ->add('username')
-            ->add('password')
             ->add('impressionCap')
             ->add('emailHookToken')
             ->add('networkOpportunityCap')

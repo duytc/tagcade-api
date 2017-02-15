@@ -1,10 +1,5 @@
 Tagcade\Entity\Core\AdNetwork:
     exclusion_policy: ALL
-    virtual_properties:
-        getBase64EncryptedPassword:
-            type: string
-            groups: [adnetwork.credential]
-
     properties:
         id:
             expose: true
@@ -30,9 +25,6 @@ Tagcade\Entity\Core\AdNetwork:
         networkPartner:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
-        username:
-            expose: true
-            groups: [adnetwork.extra, adnetwork.credential, adnetwork.detail, adnetwork.summary]
         impressionCap:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]

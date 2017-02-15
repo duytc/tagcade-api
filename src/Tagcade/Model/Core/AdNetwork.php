@@ -15,9 +15,6 @@ class AdNetwork implements AdNetworkInterface
     protected $url;
     protected $active;
     protected $libraryAdTags;
-    protected $username;
-    protected $password;
-    protected $encryptedPassword;
     protected $emailHookToken;
     /** @var AdNetworkPartnerInterface */
     protected $networkPartner;
@@ -99,42 +96,6 @@ class AdNetwork implements AdNetworkInterface
 
         return substr($uuid, 0, 16);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-
-        return $this->createEncryptedPassword();
-    }
-
-    public function createEncryptedPassword()
-    {
-        if (!empty($this->password)) {
-            $this->encryptedPassword = \Crypto::Encrypt($this->getPassword(), $this->getEncryptionKey());
-        }
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
 
     public function __construct()
     {
@@ -331,27 +292,6 @@ class AdNetwork implements AdNetworkInterface
         );
 
         return array_unique($allAdTags);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEncryptedPassword()
-    {
-        return $this->encryptedPassword;
-    }
-
-    public function getBase64EncryptedPassword()
-    {
-        return $this->encryptedPassword != null ? base64_encode(stream_get_contents($this->encryptedPassword)) : null;
-    }
-
-    /**
-     * @param mixed $encryptedPassword
-     */
-    public function setEncryptedPassword($encryptedPassword)
-    {
-        $this->encryptedPassword = $encryptedPassword;
     }
 
     /**

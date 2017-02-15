@@ -34,33 +34,6 @@ interface AdNetworkInterface extends ModelInterface
      */
     public function setName($name);
 
-
-    /**
-     * @return string|null
-     */
-
-    public function getUsername();
-
-    /**
-     * @param string $username
-     * @return self
-     */
-    public function setUsername($username);
-
-
-    /**
-     * @return string|null
-     */
-
-    public function getPassword();
-
-    /**
-     * @param string $password
-     * @return self
-     */
-    public function setPassword($password);
-
-
     /**
      * @return string|null
      */
@@ -168,16 +141,6 @@ interface AdNetworkInterface extends ModelInterface
     /**
      * @return mixed
      */
-    public function getEncryptedPassword();
-
-    /**
-     * @param mixed $encryptedPassword
-     */
-    public function setEncryptedPassword($encryptedPassword);
-
-    /**
-     * @return mixed
-     */
     public function getEmailHookToken();
 
     /**
@@ -186,5 +149,4 @@ interface AdNetworkInterface extends ModelInterface
      */
     public function setEmailHookToken($emailHookToken);
 
-    public function createEncryptedPassword();
 }

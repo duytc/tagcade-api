@@ -31,13 +31,6 @@ Tagcade\Entity\Core\AdNetwork:
             type: integer
             options:
                 default: 0
-        username:
-            type: string
-            length: 255
-            nullable: true
-        encryptedPassword:
-            type: blob
-            nullable: true
         impressionCap:
             type: integer
             nullable: true
