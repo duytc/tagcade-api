@@ -3,8 +3,9 @@
 namespace Tagcade\Entity\Report\VideoReport\Hierarchy\Platform;
 
 use Tagcade\Model\Report\VideoReport\Hierarchy\Platform\WaterfallTagReport as WaterfallTagReportModel;
-class WaterfallTagReport extends WaterfallTagReportModel {
 
+class WaterfallTagReport extends WaterfallTagReportModel
+{
     protected $id;
     protected $date;
     protected $requests;
@@ -29,4 +30,4 @@ class WaterfallTagReport extends WaterfallTagReportModel {
     protected $netRevenue;
 
     protected $videoWaterfallTag;
-} 
+}

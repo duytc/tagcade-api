@@ -3,7 +3,7 @@ Tagcade\Entity\Core\VideoWaterfallTagItem:
     properties:
         id:
             expose: true
-            groups: [videoWaterfallTagItem.summary, videoWaterfallTagItem.detail, videoWaterfallTagItem.report]
+            groups: [videoWaterfallTagItem.summary, videoWaterfallTagItem.detail]
         position:
             expose: true
             groups: [videoWaterfallTagItem.summary, videoWaterfallTagItem.detail]

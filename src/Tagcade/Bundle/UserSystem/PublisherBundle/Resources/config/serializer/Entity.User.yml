@@ -34,7 +34,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             groups: [user.detail]
         company:
             expose: true
-            groups: [user.summary, user.uuid, user.detail, user.min]
+            groups: [user.summary, user.uuid, user.detail, user.min, user.report]
         phone:
             expose: true
             groups: [user.detail]

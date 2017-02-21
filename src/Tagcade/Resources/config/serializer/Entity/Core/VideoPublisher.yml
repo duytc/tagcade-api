@@ -3,10 +3,10 @@ Tagcade\Entity\Core\VideoPublisher:
     properties:
         id:
             expose: true
-            groups: [videoPublisher.summary, videoPublisher.detail, videoPublisher.report]
+            groups: [videoPublisher.summary, videoPublisher.detail]
         publisher:
             expose: true
-            groups: [videoPublisher.summary, videoPublisher.detail, videoPublisher.report]
+            groups: [videoPublisher.summary, videoPublisher.detail]
         name:
             expose: true
             groups: [videoPublisher.summary, videoPublisher.detail, videoPublisher.report]

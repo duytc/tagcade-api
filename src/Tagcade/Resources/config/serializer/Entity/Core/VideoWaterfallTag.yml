@@ -27,13 +27,13 @@ Tagcade\Entity\Core\VideoWaterfallTag:
 #            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
         targeting:
             expose: true
-            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
         buyPrice:
             expose: true
-            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
         isServerToServer:
             expose: true
-            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
         isVastOnly:
             expose: true
-            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail, videoWaterfallTag.report]
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]

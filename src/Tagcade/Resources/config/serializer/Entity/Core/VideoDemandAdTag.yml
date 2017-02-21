@@ -6,13 +6,13 @@ Tagcade\Entity\Core\VideoDemandAdTag:
     properties:
         id:
             expose: true
-            groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall, videoDemandAdTag.report]
         tagURL:
             expose: true
             groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.editInWaterfall]
         name:
             expose: true
-            groups: [videoDemandAdTag.videoReport, videoDemandAdTag.summary, videoDemandAdTag.detail]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.report]
         priority:
             expose: true
             groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
@@ -36,7 +36,7 @@ Tagcade\Entity\Core\VideoDemandAdTag:
             groups: [videoDemandAdTag.summary, videoDemandAdTag.detail,videoDemandAdTag.editInWaterfall]
         videoWaterfallTagItem:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport, videoDemandAdTag.editInWaterfall]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.report, videoDemandAdTag.editInWaterfall]
         libraryVideoDemandAdTag:
             expose: true
-            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.videoReport, videoDemandAdTag.editInWaterfall]
+            groups: [videoDemandAdTag.summary, videoDemandAdTag.detail, videoDemandAdTag.report, videoDemandAdTag.editInWaterfall]

@@ -12,10 +12,10 @@ Tagcade\Entity\Core\VideoDemandPartner:
             groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
         activeAdTagsCount:
             expose: true
-            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail]
         pausedAdTagsCount:
             expose: true
-            groups: [videoDemandPartner.summary, videoDemandPartner.detail, videoDemandPartner.report]
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail]
         defaultTagURL:
             expose: true
             groups: [videoDemandPartner.summary, videoDemandPartner.detail]

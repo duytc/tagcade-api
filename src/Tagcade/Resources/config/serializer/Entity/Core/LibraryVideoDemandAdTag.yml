@@ -7,10 +7,10 @@ Tagcade\Entity\Core\LibraryVideoDemandAdTag:
     properties:
         id:
             expose: true
-            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail]
         tagURL:
             expose: true
-            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
+            groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail]
         name:
             expose: true
             groups: [libraryVideoDemandAdTag.summary, libraryVideoDemandAdTag.summaryWithLinkedCount, libraryVideoDemandAdTag.detail, libraryVideoDemandAdTag.report]
