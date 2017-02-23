@@ -55,8 +55,8 @@ services:
     tagcade.cache.cache_namespace.redis_namespace_cache:
         class: Tagcade\Cache\CacheNamespace\RedisNamespaceCache
         arguments:
-            - '%tc.redis.app_cache.host%'
-            - '%tc.redis.app_cache.port%'
+            - '%tc.redis.display_tag_cache.host%'
+            - '%tc.redis.display_tag_cache.port%'
             - '%tc.max_cache_version%'
 
 # service for video cache
@@ -88,6 +88,6 @@ services:
     tagcade.cache.video.vast_tag_request_manager:
         class: Tagcade\Cache\Video\VastTagRequestManager
         arguments:
-            - '%tc.redis.video_tag_cache.host%'
-            - '%tc.redis.video_tag_cache.port%'
+            - '%tc.redis.app_cache.host%'
+            - '%tc.redis.app_cache.port%'
             - '%tc.redis.vast_tag_request_namespace%'
