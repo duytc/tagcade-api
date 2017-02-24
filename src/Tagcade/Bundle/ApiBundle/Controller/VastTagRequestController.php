@@ -42,7 +42,7 @@ class VastTagRequestController extends FOSRestController
         $page = filter_var($params['page'], FILTER_VALIDATE_INT) ? $params['page'] : 1;
         $limit = filter_var($params['limit'], FILTER_VALIDATE_INT) ? $params['limit'] : 10;
 
-        $vastTagRequestManager =  $this->get('tagcade.cache.video.vast_tag_request_manager');
+        $vastTagRequestManager =  $this->get('tagcade.cache.app.vast_tag_request_manager');
         return $vastTagRequestManager->getVastTagHistory($uuid, $page, $limit);
     }
 }

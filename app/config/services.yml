@@ -35,145 +35,145 @@ parameters:
 
 services:
     tagcade.security.auth.voter.library_slot_tag:
-        class:  %tagcade.security.auth.voter.library_slot_tag.class%
+        class:  '%tagcade.security.auth.voter.library_slot_tag.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.site:
-        class:  %tagcade.security.auth.voter.site.class%
+        class:  '%tagcade.security.auth.voter.site.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.segment:
-        class:  %tagcade.security.auth.voter.segment.class%
+        class:  '%tagcade.security.auth.voter.segment.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.ad_slot:
-        class:  %tagcade.security.auth.voter.ad_slot.class%
+        class:  '%tagcade.security.auth.voter.ad_slot.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.ron_ad_slot:
-        class:  %tagcade.security.auth.voter.ron_ad_slot.class%
+        class:  '%tagcade.security.auth.voter.ron_ad_slot.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.library_display_ad_slot:
-            class:  %tagcade.security.auth.voter.library_display_ad_slot.class%
+            class:  '%tagcade.security.auth.voter.library_display_ad_slot.class%'
             public: false
             tags:
                 - { name: security.voter }
 
     tagcade.security.auth.voter.dynamic_ad_slot:
-        class:  %tagcade.security.auth.voter.dynamic_ad_slot.class%
+        class:  '%tagcade.security.auth.voter.dynamic_ad_slot.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.library_dynamic_ad_slot:
-            class:  %tagcade.security.auth.voter.library_dynamic_ad_slot.class%
+            class:  '%tagcade.security.auth.voter.library_dynamic_ad_slot.class%'
             public: false
             tags:
                 - { name: security.voter }
 
     tagcade.security.auth.voter.native_ad_slot:
-        class:  %tagcade.security.auth.voter.native_ad_slot.class%
+        class:  '%tagcade.security.auth.voter.native_ad_slot.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.library_native_ad_slot:
-            class:  %tagcade.security.auth.voter.library_native_ad_slot.class%
+            class:  '%tagcade.security.auth.voter.library_native_ad_slot.class%'
             public: false
             tags:
                 - { name: security.voter }
 
     tagcade.security.auth.voter.ad_tag:
-        class:  %tagcade.security.auth.voter.ad_tag.class%
+        class:  '%tagcade.security.auth.voter.ad_tag.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.library_ad_tag:
-        class:  %tagcade.security.auth.voter.library_ad_tag.class%
+        class:  '%tagcade.security.auth.voter.library_ad_tag.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.ad_network:
-        class:  %tagcade.security.auth.voter.ad_network.class%
+        class:  '%tagcade.security.auth.voter.ad_network.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.user:
-        class:  %tagcade.security.auth.voter.user.class%
+        class:  '%tagcade.security.auth.voter.user.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.library_expression.user:
-        class:  %tagcade.security.auth.voter.library_expresison.class%
+        class:  '%tagcade.security.auth.voter.library_expresison.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.channel:
-            class:  %tagcade.security.auth.voter.channel.class%
+            class:  '%tagcade.security.auth.voter.channel.class%'
             public: false
             tags:
                 - { name: security.voter }
 
     tagcade.security.auth.voter.video_demand_partner:
-        class:  %tagcade.security.auth.voter.video_demand_partner.class%
+        class:  '%tagcade.security.auth.voter.video_demand_partner.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.video_demand_ad_tag:
-        class:  %tagcade.security.auth.voter.video_demand_ad_tag.class%
+        class:  '%tagcade.security.auth.voter.video_demand_ad_tag.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.video_publisher:
-        class:  %tagcade.security.auth.voter.video_publisher.class%
+        class:  '%tagcade.security.auth.voter.video_publisher.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.video_waterfall_tag:
-        class:  %tagcade.security.auth.voter.video_waterfall_tag.class%
+        class:  '%tagcade.security.auth.voter.video_waterfall_tag.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.video_waterfall_tag_item:
-        class:  %tagcade.security.auth.voter.video_waterfall_tag_item.class%
+        class:  '%tagcade.security.auth.voter.video_waterfall_tag_item.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.blacklist:
-        class:  %tagcade.security.auth.voter.blacklist.class%
+        class:  '%tagcade.security.auth.voter.blacklist.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.white_list:
-        class:  %tagcade.security.auth.voter.white_list.class%
+        class:  '%tagcade.security.auth.voter.white_list.class%'
         public: false
         tags:
             - { name: security.voter }
 
     tagcade.security.auth.voter.library_video_demand_ad_tag:
-        class:  %tagcade.security.auth.voter.library_video_demand_ad_tag.class%
+        class:  '%tagcade.security.auth.voter.library_video_demand_ad_tag.class%'
         public: false
         tags:
             - { name: security.voter }
@@ -181,17 +181,17 @@ services:
     tagcade.service.tag_generator:
         class: Tagcade\Service\TagGenerator
         arguments:
-            - %tc.default_tag_url%
-            - @tagcade.domain_manager.ron_ad_slot
-            - @tagcade.domain_manager.ad_slot
+            - '%tc.default_tag_url%'
+            - '@tagcade.domain_manager.ron_ad_slot'
+            - '@tagcade.domain_manager.ad_slot'
 
     tagcade.service.video_vast_tag_generator:
         class: Tagcade\Service\VideoVastTagGenerator
         arguments:
-            - %tc.video_vast_tag_base_url%
-            - @tagcade.domain_manager.video_waterfall_tag
-            - @tagcade.domain_manager.video_publisher
-            - @tagcade.domain_manager.video_demand_ad_tag
+            - '%tc.video_vast_tag_base_url%'
+            - '@tagcade.domain_manager.video_waterfall_tag'
+            - '@tagcade.domain_manager.video_publisher'
+            - '@tagcade.domain_manager.video_demand_ad_tag'
 
     tagcade.service.console_output:
         class: Symfony\Component\Console\Output\ConsoleOutput
@@ -202,7 +202,7 @@ services:
         public: false
         calls:
             - [setEventDispatcher, ["@event_dispatcher"]]
-            - [setEvent, [%tagcade.events.handler_event%]]
+            - [setEvent, ['%tagcade.events.handler_event%']]
 
     tagcade.service.date_util:
         class: Tagcade\Service\DateUtil
@@ -210,95 +210,95 @@ services:
     tagcade.worker.manager:
         class: Tagcade\Worker\Manager
         arguments:
-            - @tagcade.service.date_util
-            - @leezy.pheanstalk
+            - '@tagcade.service.date_util'
+            - '@leezy.pheanstalk'
 
     tagcade.worker.workers.update_revenue_worker:
         class: Tagcade\Worker\Workers\UpdateRevenueWorker
         arguments:
-            - @tagcade.service.date_util
-            - @tagcade.service.revenue_editor
-            - @tagcade.domain_manager.ad_tag
-            - @tagcade.domain_manager.ad_network
-            - @tagcade.domain_manager.site
+            - '@tagcade.service.date_util'
+            - '@tagcade.service.revenue_editor'
+            - '@tagcade.domain_manager.ad_tag'
+            - '@tagcade.domain_manager.ad_network'
+            - '@tagcade.domain_manager.site'
 
     tagcade.worker.workers.update_cache_for_site_worker:
         class: Tagcade\Worker\Workers\UpdateCacheForSiteWorker
         arguments:
-            - @tagcade.cache.v2.tag_cache
-            - @tagcade.domain_manager.site
-            - @tagcade.domain_manager.ad_slot
+            - '@tagcade.cache.display.v2.tag_cache'
+            - '@tagcade.domain_manager.site'
+            - '@tagcade.domain_manager.ad_slot'
 
     tagcade.worker.workers.update_cache_for_channel_worker:
         class: Tagcade\Worker\Workers\UpdateCacheForChannelWorker
         arguments:
-            - @tagcade.cache.v2.tag_cache
-            - @tagcade.domain_manager.channel
-            - @tagcade.domain_manager.ad_slot
+            - '@tagcade.cache.display.v2.tag_cache'
+            - '@tagcade.domain_manager.channel'
+            - '@tagcade.domain_manager.ad_slot'
 
     tagcade.worker.workers.update_cache_for_publisher_worker:
         class: Tagcade\Worker\Workers\UpdateCacheForPublisherWorker
         arguments:
-            - @tagcade.cache.v2.tag_cache
-            - @tagcade_user.domain_manager.publisher
-            - @tagcade.domain_manager.ad_slot
-            - @tagcade.domain_manager.ron_ad_slot
+            - '@tagcade.cache.display.v2.tag_cache'
+            - '@tagcade_user.domain_manager.publisher'
+            - '@tagcade.domain_manager.ad_slot'
+            - '@tagcade.domain_manager.ron_ad_slot'
 
     tagcade.worker.workers.update_comparison_for_publisher_worker:
         class: Tagcade\Worker\Workers\UpdateComparisonForPublisherWorker
         arguments:
-            - @tagcade.service.report.unified_report.report_comparison_creator
-            - @tagcade_user.domain_manager.publisher
+            - '@tagcade.service.report.unified_report.report_comparison_creator'
+            - '@tagcade_user.domain_manager.publisher'
 
     tagcade.worker.workers.update_ad_tag_status_for_ad_network_worker:
         class: Tagcade\Worker\Workers\UpdateAdTagStatusForAdNetworkWorker
         arguments:
-            - @tagcade.domain_manager.ad_tag
-            - @tagcade.domain_manager.ad_network
-            - @tagcade.domain_manager.site
+            - '@tagcade.domain_manager.ad_tag'
+            - '@tagcade.domain_manager.ad_network'
+            - '@tagcade.domain_manager.site'
 
     tagcade.worker.workers.update_ad_tag_position_for_ad_network_and_sites_worker:
         class: Tagcade\Worker\Workers\UpdateAdTagPositionForAdNetworkAndSitesWorker
         arguments:
-            - @tagcade.domain_manager.ad_network
-            - @tagcade.domain_manager.site
-            - @tagcade_app.service.core.ad_tag.ad_tag_position_editor
+            - '@tagcade.domain_manager.ad_network'
+            - '@tagcade.domain_manager.site'
+            - '@tagcade_app.service.core.ad_tag.ad_tag_position_editor'
 
     tagcade.worker.workers.update_cache_for_video_waterfall_tag_worker:
         class: Tagcade\Worker\Workers\UpdateCacheForVideoWaterfallTagWorker
         arguments:
-            - @tagcade.cache.video.video_cache_manager
+            - '@tagcade.cache.video.video_cache_manager'
 
     tagcade.worker.workers.remove_cache_for_video_waterfall_tag_worker:
         class: Tagcade\Worker\Workers\RemoveCacheForVideoWaterfallTagWorker
         arguments:
-            - @tagcade.cache.video.video_cache_manager
+            - '@tagcade.cache.video.video_cache_manager'
 
     tagcade.worker.workers.auto_pause_video_demand_ad_tag_worker:
         class: Tagcade\Worker\Workers\AutoPauseVideoDemandAdTagWorker
         arguments:
-            - @doctrine.orm.entity_manager
-            - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade_app.service.core.video_demand_ad_tag.auto_pause_service'
 
     tagcade.worker.workers.auto_active_video_demand_ad_tag_worker:
         class: Tagcade\Worker\Workers\AutoActiveVideoDemandAdTagWorker
         arguments:
-            - @doctrine.orm.entity_manager
-            - @tagcade_app.service.core.video_demand_ad_tag.auto_pause_service
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade_app.service.core.video_demand_ad_tag.auto_pause_service'
 
     tagcade.worker.workers.deploy_video_demand_ad_tag_for_new_placement_rule_worker:
         class: Tagcade\Worker\Workers\DeployVideoDemandAdTagForNewPlacementRuleWorker
         arguments:
-            - @tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag
-            - @tagcade.repository.waterfall_placement_rule
+            - '@tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag'
+            - '@tagcade.repository.waterfall_placement_rule'
 
     tagcade.worker.workers.update_video_demand_ad_tag_status_worker:
         class: Tagcade\Worker\Workers\UpdateVideoDemandAdTagStatusForDemandPartnerWorker
         arguments:
-            - @doctrine.orm.entity_manager
-            - @tagcade.domain_manager.video_demand_ad_tag
-            - @tagcade.domain_manager.video_waterfall_tag
-            - @tagcade.domain_manager.video_demand_partner
+            - '@doctrine.orm.entity_manager'
+            - '@tagcade.domain_manager.video_demand_ad_tag'
+            - '@tagcade.domain_manager.video_waterfall_tag'
+            - '@tagcade.domain_manager.video_demand_partner'
 
     tagcade.worker.workers.replicate_existing_lib_slot_tag_worker:
         class: Tagcade\Worker\Workers\ReplicateExistingLibSlotTagWorker
@@ -321,8 +321,8 @@ services:
     tagcade.worker.workers.remove_cache_for_ad_slot_worker:
         class: Tagcade\Worker\Workers\RemoveCacheForAdSlotWorker
         arguments:
-            - @tagcade.cache.tag_cache_manager
-            - @tagcade.domain_manager.ad_slot
+            - '@tagcade.cache.display.tag_cache_manager'
+            - '@tagcade.domain_manager.ad_slot'
 
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil

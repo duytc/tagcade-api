@@ -78,7 +78,7 @@ services:
     tagcade_app.event_listener.update_cache_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\UpdateCacheListener
         arguments:
-            - @tagcade.cache.tag_cache_manager
+            - '@tagcade.cache.display.tag_cache_manager'
         tags:
             - { name: kernel.event_listener, event: tagcade_app.event.update_cache, method: onUpdateCache }
 

@@ -71,7 +71,7 @@ services:
     tagcade_api.event_listener.update_existing_ron_slot_domain_cache_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonSlotDomainCacheListener
         arguments:
-            - @tagcade.cache.configuration_cache
+            - '@tagcade.cache.app.configuration_cache'
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postSoftDelete }
@@ -79,7 +79,7 @@ services:
     tagcade_api.event_listener.update_existing_ron_tag_slot_cache_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateExistingRonTagSlotCacheListener
         arguments:
-            - @tagcade.cache.configuration_cache
+            - '@tagcade.cache.app.configuration_cache'
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postSoftDelete }

@@ -43,7 +43,7 @@ writeln('');
 writeln('   --> Start preparing redis cache');
 writeln('       ...');
 
-$cache = $container->get('tagcade.cache.performance_report_data');
+$cache = $container->get('tagcade.cache.app_cache');
 
 writeln('   --> Finished preparing redis cache');
 writeln('------------------------------------------------------------------------------------------------------------');

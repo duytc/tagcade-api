@@ -42,7 +42,7 @@ class RefreshConfigurationCacheCommand extends ContainerAwareCommand
         /**
          * @var ConfigurationCacheInterface $configCache
          */
-        $configCache = $this->getContainer()->get('tagcade.cache.configuration_cache');
+        $configCache = $this->getContainer()->get('tagcade.cache.app.configuration_cache');
         $ronAdSlots = $ronAdSlotManager->all();
         if ($ronAdSlots instanceof PersistentCollection) {
             $ronAdSlots = $ronAdSlots->toArray();

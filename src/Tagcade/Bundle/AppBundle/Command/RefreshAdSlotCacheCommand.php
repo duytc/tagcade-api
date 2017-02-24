@@ -43,7 +43,7 @@ class RefreshAdSlotCacheCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var TagCacheManagerInterface $tagCacheManager */
-        $tagCacheManager = $this->getContainer()->get('tagcade.cache.tag_cache_manager');
+        $tagCacheManager = $this->getContainer()->get('tagcade.cache.display.tag_cache_manager');
 
         // get publisher if has option
         $publisher = null;

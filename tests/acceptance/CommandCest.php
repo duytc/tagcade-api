@@ -14,7 +14,7 @@ class CommandCest
     // tests
     public function refreshCacheCommandTest(AcceptanceTester $I)
     {
-        $tagCacheManager = $I->grabServiceFromContainer('tagcade.cache.tag_cache_manager');
+        $tagCacheManager = $I->grabServiceFromContainer('tagcade.cache.display.tag_cache_manager');
 
         $tagCacheManager->refreshCache();
 

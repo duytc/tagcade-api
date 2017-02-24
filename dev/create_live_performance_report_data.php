@@ -23,7 +23,7 @@ writeln('### Start creating test live data for performance reports ###');
 $testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter($allAdSLot);
 $testEventCounter->refreshTestData();
 
-$cache = $container->get('tagcade.cache.performance_report_data');
+$cache = $container->get('tagcade.cache.app_cache');
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache,
     $adTagManager,

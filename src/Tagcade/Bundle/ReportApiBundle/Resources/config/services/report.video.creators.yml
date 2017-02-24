@@ -46,7 +46,7 @@ services:
     tagcade.service.report.video_report.counter.cache_event_counter:
         class: Tagcade\Service\Report\VideoReport\Counter\VideoCacheEventCounter
         arguments:
-            - '@tagcade.cache.performance_report_data'
+            - '@tagcade.cache.app_cache'
 
     ### Report creator service
 

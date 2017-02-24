@@ -83,7 +83,7 @@ services:
             - '%tc.redis.app_cache.host%'
             - '%tc.redis.app_cache.port%'
 
-    tagcade.cache.performance_report_data:
+    tagcade.cache.app_cache:
         class: Tagcade\Cache\RedisCache
         arguments:
             - '%tc.redis.app_cache.host%'
@@ -92,7 +92,7 @@ services:
     tagcade.service.report.performance_report.display.counter.cache_event_counter:
         class: Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter
         arguments:
-            - '@tagcade.cache.performance_report_data'
+            - '@tagcade.cache.app_cache'
             - '@tagcade.domain_manager.ad_tag'
             - '@tagcade.domain_manager.ad_slot'
             - '%tc.report.performance.event_counter.redis_pipeline_size_threshold%'
