@@ -195,8 +195,6 @@ class VideoDemandAdTagManager implements VideoDemandAdTagManagerInterface
             }
 
             $videoWaterfallTagItem->setVideoDemandAdTags([$videoDemandAdTag]);
-
-            $oldVideoWaterfallTagItems[] = $videoWaterfallTagItem;
             $videoWaterfallTag->setVideoWaterfallTagItems($oldVideoWaterfallTagItems);
         }
 
