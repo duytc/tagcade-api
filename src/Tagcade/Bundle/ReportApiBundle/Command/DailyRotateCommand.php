@@ -78,7 +78,7 @@ class DailyRotateCommand extends ContainerAwareCommand
         $dailyReportCreator->createPlatformReport($date, $override);
 
         // Creating network hierarchy reports
-        $allAdNetworks = $adNetworkManager->all();
+        $allAdNetworks = $adNetworkManager->allActiveAdNetworks();
         $this->rotateNetworkReports($date, $allAdNetworks, $timeout, $logger, $override);
         unset($allAdNetworks);
 

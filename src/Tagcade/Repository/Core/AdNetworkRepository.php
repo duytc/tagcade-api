@@ -35,6 +35,18 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
     /**
      * @inheritdoc
      */
+    public function getAdNetworksForActivePublishers()
+    {
+        $qb = $this->createQueryBuilder('adNetwork')
+            ->leftJoin('adNetwork.publisher', 'publisher')
+            ->where('publisher.enabled = 1');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getAdNetworksForPublisherAndPartner(PublisherInterface $publisher, AdNetworkPartnerInterface $partner, $limit = null, $offset = null)
     {
         $qb = $this->getAdNetworksForPublisherQuery($publisher, $limit, $offset)

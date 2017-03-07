@@ -80,6 +80,14 @@ class AdNetworkManager implements AdNetworkManagerInterface
     }
 
     /**
+     * @return array
+     */
+    public function allActiveAdNetworks()
+    {
+        return $this->repository->getAdNetworksForActivePublishers();
+    }
+
+    /**
      * @inheritdoc
      */
     public function getAdNetworksForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)

@@ -311,8 +311,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         unset($tempObjs);
     }
 
-    $em->detach($adNetworkForRON);
-    $em->detach($publisher);
+    $em->clear();
     unset($publisher);
     echo sprintf('finish inserting publisher "%s"' . "\n", 'tagcade' . $userId) ;
 }

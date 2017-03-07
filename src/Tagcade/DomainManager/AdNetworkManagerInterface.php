@@ -20,6 +20,10 @@ interface AdNetworkManagerInterface extends ManagerInterface
 
     public function getAdNetworksThatHavePartnerForSubPublisher(SubPublisherInterface $publisher, $limit = null, $offset = null);
 
+    /**
+     * @return AdNetworkInterface[]
+     */
+    public function allActiveAdNetworks();
 
     /**
      * @inheritdoc

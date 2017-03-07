@@ -20,6 +20,8 @@ interface AdNetworkRepositoryInterface extends ObjectRepository
      */
     public function getAdNetworksForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
+    public function getAdNetworksForActivePublishers();
+
     public function getAdNetworksThatHavePartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
     public function getAdNetworksThatHavePartnerForSubPublisher(SubPublisherInterface $publisher, $limit = null, $offset = null);
