@@ -3,12 +3,14 @@
 namespace Tagcade\Bundle\AppBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 
 /**
  * Provides a command-line interface for generating and assigning uuid for all publisher
@@ -35,7 +37,14 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
                 'a',
                 InputOption::VALUE_NONE,
                 'If set, all ad networks will be updated'
-            );
+            )
+            ->addOption(
+                'publisher',
+                'p',
+                InputOption::VALUE_OPTIONAL,
+                'Publisher id, if set, all ad networks belongs to this publisher will be updated'
+            )
+        ;
     }
 
     /**
@@ -48,15 +57,46 @@ class RefreshAdTagsCountForAdNetworkCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $count = 0;
+        $publisherId = $input->getOption('publisher');
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
+        $publisherManager = $this->getContainer()->get('tagcade_user.domain_manager.publisher');
         if ($input->getOption('all')) {
-            $allAdNetworks = $adNetworkManager->all();
+            $allAdNetworks = $adNetworkManager->allActiveAdNetworks();
+            $progress = new ProgressBar($output, count($allAdNetworks));
             /** @var AdNetworkInterface $adNetwork */
             foreach ($allAdNetworks as $adNetwork) {
                 $this->recalculateAdTagCountForAdNetwork($adNetwork);
                 $count++;
+                $progress->advance();
             }
 
+            $progress->finish();
+            $output->writeln('');
+            $output->writeln(sprintf('%d ad network(s) have been updated', $count));
+        } else if($publisherId) {
+            $publisherId = filter_var($publisherId, FILTER_VALIDATE_INT);
+            $publisher = $publisherManager->find($publisherId);
+            if (!$publisher instanceof PublisherInterface) {
+                $output->writeln(sprintf('<error>The Publisher %d does not exist</error>', $publisherId));
+                return;
+            }
+
+            if (!$publisher->isEnabled()) {
+                $output->writeln(sprintf('0 ad network have been updated, publisher is inactive', $count));
+                return;
+            }
+            
+            $allAdNetworks = $adNetworkManager->getAdNetworksForPublisher($publisher);
+            $progress = new ProgressBar($output, count($allAdNetworks));
+            /** @var AdNetworkInterface $adNetwork */
+            foreach ($allAdNetworks as $adNetwork) {
+                $this->recalculateAdTagCountForAdNetwork($adNetwork);
+                $count++;
+                $progress->advance();
+            }
+
+            $progress->finish();
+            $output->writeln('');
             $output->writeln(sprintf('%d ad network(s) have been updated', $count));
         } else {
             $id = $input->getArgument('id');
