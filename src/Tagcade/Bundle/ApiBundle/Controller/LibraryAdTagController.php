@@ -304,7 +304,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      *  }
      * )
      *
-     * @Rest\View(serializerGroups={"adtag.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "libraryadtag.summary", "slotlib.summary", "site.summary"})
+     * @Rest\View(serializerGroups={"adtag.detail", "adslot.detail", "nativeadslot.summary", "displayadslot.summary", "dynamicadslot.summary", "libraryadtag.summary", "slotlib.summary", "site.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "librarydynamicadslot.summary"})
      * @param $id
      * @return array
      */
