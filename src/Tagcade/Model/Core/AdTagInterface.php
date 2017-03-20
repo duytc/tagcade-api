@@ -131,11 +131,6 @@ interface AdTagInterface extends PositionInterface
     public function checkSum();
 
     /**
-     * @return mixed
-     */
-    public function getPartnerTagId();
-
-    /**
      * @return int
      */
     public function getImpressionCap();

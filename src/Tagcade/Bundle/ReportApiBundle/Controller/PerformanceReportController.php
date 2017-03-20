@@ -382,18 +382,18 @@ class PerformanceReportController extends FOSRestController
      * @param int $publisherId
      * @return array
      */
-    public function getPublisherAllPartnersByDayAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersReportByDayForPublisher($publisher, $this->getParams())
-        );
-    }
+//    public function getPublisherAllPartnersByDayAction($publisherId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        return $this->getResult(
+//            $this->getReportBuilder()->getAllPartnersReportByDayForPublisher($publisher, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -416,18 +416,18 @@ class PerformanceReportController extends FOSRestController
      *
      * @return array
      */
-    public function getPublisherAllPartnersBySiteAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersReportBySiteForPublisher($publisher, $this->getParams())
-        );
-    }
+//    public function getPublisherAllPartnersBySiteAction($publisherId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        return $this->getResult(
+//            $this->getReportBuilder()->getAllPartnersReportBySiteForPublisher($publisher, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -450,18 +450,18 @@ class PerformanceReportController extends FOSRestController
      *
      * @return array
      */
-    public function getPublisherAllPartnersByAdTagAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersReportByAdTagForPublisher($publisher, $this->getParams())
-        );
-    }
+//    public function getPublisherAllPartnersByAdTagAction($publisherId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        return $this->getResult(
+//            $this->getReportBuilder()->getAllPartnersReportByAdTagForPublisher($publisher, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -522,21 +522,21 @@ class PerformanceReportController extends FOSRestController
      * @param $partnerId
      * @return array
      */
-    public function getPartnerAllSiteBySiteAction($publisherId, $partnerId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-
-        return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getAllSitesReportBySiteForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getAllSitesReportBySiteForPartner($partner, $this->getParams())
-        );
-    }
+//    public function getPartnerAllSiteBySiteAction($publisherId, $partnerId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+//
+//        return $this->getResult(
+//            $publisher instanceof SubPublisherInterface
+//                ? $this->getReportBuilder()->getAllSitesReportBySiteForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
+//                : $this->getReportBuilder()->getAllSitesReportBySiteForPartner($partner, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -560,21 +560,21 @@ class PerformanceReportController extends FOSRestController
      * @param $partnerId
      * @return array
      */
-    public function getPartnerAllSitesByAdTagAction($publisherId, $partnerId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-
-        return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getAllSitesReportByAdTagForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getAllSitesReportByAdTagForPartner($partner, $this->getParams())
-        );
-    }
+//    public function getPartnerAllSitesByAdTagAction($publisherId, $partnerId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+//
+//        return $this->getResult(
+//            $publisher instanceof SubPublisherInterface
+//                ? $this->getReportBuilder()->getAllSitesReportByAdTagForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
+//                : $this->getReportBuilder()->getAllSitesReportByAdTagForPartner($partner, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -598,20 +598,20 @@ class PerformanceReportController extends FOSRestController
      * @param $siteId
      * @return array
      */
-    public function getPartnerSiteByDayAction($publisherId, $partnerId, $siteId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-        $site = $this->getSite($siteId);
-
-        return $this->getResult(
-            $this->getReportBuilder()->getSiteReportByDayForPartner($partner, $site, $this->getParams())
-        );
-    }
+//    public function getPartnerSiteByDayAction($publisherId, $partnerId, $siteId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+//        $site = $this->getSite($siteId);
+//
+//        return $this->getResult(
+//            $this->getReportBuilder()->getSiteReportByDayForPartner($partner, $site, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -636,22 +636,22 @@ class PerformanceReportController extends FOSRestController
      * @param $siteId
      * @return array
      */
-    public function getPartnerSiteByAdTagAction($publisherId, $partnerId, $siteId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-        $site = $this->getSite($siteId);
-
-        return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getSiteReportByAdTagForPartnerWithSubPublisher($partner, $site, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getSiteReportByAdTagForPartner($partner, $site, $this->getParams())
-        );
-    }
+//    public function getPartnerSiteByAdTagAction($publisherId, $partnerId, $siteId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
+//        $site = $this->getSite($siteId);
+//
+//        return $this->getResult(
+//            $publisher instanceof SubPublisherInterface
+//                ? $this->getReportBuilder()->getSiteReportByAdTagForPartnerWithSubPublisher($partner, $site, $publisher, $this->getParams())
+//                : $this->getReportBuilder()->getSiteReportByAdTagForPartner($partner, $site, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")

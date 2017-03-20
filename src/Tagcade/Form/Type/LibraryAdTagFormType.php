@@ -72,7 +72,6 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('inBannerDescriptor')
             ->add('name')
             ->add('id')
-            ->add('partnerTagId')
         ;
 
         $builder->addEventListener(

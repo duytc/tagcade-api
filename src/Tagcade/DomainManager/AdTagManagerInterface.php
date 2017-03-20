@@ -107,18 +107,7 @@ interface AdTagManagerInterface
      * @param int|null $offset
      * @return AdTagInterface[]
      */
-    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
-
-    /**
-     * get Ad Tags That Have Partner For AdNetwork with a SubPublisher
-     *
-     * @param AdNetworkInterface $adNetwork
-     * @param SubPublisherInterface $subPublisher
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return AdTagInterface[]
-     */
-    public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
+//    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
@@ -171,8 +160,6 @@ interface AdTagManagerInterface
     public function getAdTagsByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
 
     public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false);
-
-    public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null);
 
     public function getAllAdTagsByStatus($status);
 

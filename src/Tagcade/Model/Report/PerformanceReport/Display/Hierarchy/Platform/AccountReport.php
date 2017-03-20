@@ -3,7 +3,6 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Partner\AggregatePartnerReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -11,7 +10,6 @@ use Tagcade\Model\User\UserEntityInterface;
 class AccountReport extends AbstractCalculatedReport implements AccountReportInterface
 {
     use SuperReportTrait;
-    use AggregatePartnerReportTrait;
 
     /** @var UserEntityInterface */
     protected $publisher;

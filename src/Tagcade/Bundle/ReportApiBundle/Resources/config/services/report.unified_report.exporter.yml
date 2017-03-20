@@ -1,6 +1,0 @@
-services:
-    # unified report exporter
-    tagcade.service.report.unified_report.exporter.report_exporter:
-        class: Tagcade\Service\Report\UnifiedReport\Exporter\ReportExporter
-        arguments:
-            - @tagcade.service.report.unified_report.selector.report_builder

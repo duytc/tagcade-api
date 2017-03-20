@@ -350,22 +350,6 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdNetwork($adNetwork, $limit, $offset);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
-    {
-        return $this->repository->getAdTagsThatHavePartnerForAdNetwork($adNetwork, $limit, $offset);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null)
-    {
-        return $this->repository->getAdTagsThatHavePartnerForAdNetworkWithSubPublisher($adNetwork, $subPublisher, $limit, $offset);
-    }
-
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
         return $this->repository->getAdTagIdsForAdNetwork($adNetwork, $limit, $offset);
@@ -490,11 +474,6 @@ class AdTagManager implements AdTagManagerInterface
 
         $this->em->flush();
         $this->em->clear();
-    }
-
-    public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null)
-    {
-        return $this->repository->getAdTagsThatHavePartner($publisher, $uniquePartnerTagId, $limit, $offset);
     }
 
     public function getAllAdTagsByStatus($status)

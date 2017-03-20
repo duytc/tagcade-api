@@ -39,8 +39,6 @@ class LibraryAdTag implements LibraryAdTagInterface
 
     protected $name;
 
-    protected $partnerTagId;
-
     /**
      * @inheritdoc
      */
@@ -111,24 +109,6 @@ class LibraryAdTag implements LibraryAdTagInterface
     public function getVisible()
     {
         return $this->visible;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPartnerTagId()
-    {
-        return $this->partnerTagId;
-    }
-
-    /**
-     * @param mixed $partnerTagId
-     * @return self
-     */
-    public function setPartnerTagId($partnerTagId)
-    {
-        $this->partnerTagId = $partnerTagId;
-        return $this;
     }
 
     /**

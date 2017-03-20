@@ -23,8 +23,6 @@ class AdTag implements AdTagInterface
     protected $libraryAdTag;
     protected $refId;
 
-    /** string for mapping tag id of ad network vs ad network partner */
-    protected $partnerTagId;
     /** string for mapping tag size of ad network with vs network partner */
     protected $partnerTagSize;
 
@@ -399,18 +397,6 @@ class AdTag implements AdTagInterface
     public function getSiblings()
     {
         return $this->getAdSlot()->getAdTags();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPartnerTagId()
-    {
-        if ($this->libraryAdTag instanceof LibraryAdTagInterface) {
-            return $this->libraryAdTag->getPartnerTagId();
-        }
-
-        return null;
     }
 
     /**

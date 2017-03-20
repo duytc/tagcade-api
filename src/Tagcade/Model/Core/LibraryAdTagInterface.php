@@ -62,17 +62,6 @@ interface LibraryAdTagInterface extends ModelInterface
     public function getAdType();
 
     /**
-     * @return mixed
-     */
-    public function getPartnerTagId();
-
-    /**
-     * @param mixed $partnerTagId
-     * @return self
-     */
-    public function setPartnerTagId($partnerTagId);
-
-    /**
      * set AdType
      * @param int $adType
      * @return self

@@ -22,9 +22,6 @@ Tagcade\Entity\Core\AdTag:
         libraryAdTag:
             expose: true
             groups: [adtag.detail, adtag.summary]
-        partnerTagId:
-            expose: true
-            groups: [adtag.detail, adtag.summary]
         impressionCap:
             expose: true
             groups: [adtag.detail, adtag.summary]

@@ -34,6 +34,3 @@ Tagcade\Entity\Report\UnifiedReport\Comparison\AdNetworkAdTagReport:
             expose: true
             groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]
             type: float
-        partnerTagId:
-            expose: true
-            groups: [comparison_network_ad_tag_report.detail, comparison_network_ad_tag_report.summary]

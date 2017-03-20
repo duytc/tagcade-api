@@ -29,10 +29,6 @@ Tagcade\Entity\Core\LibraryAdTag:
             options:
                 default: 0
 
-        partnerTagId:
-            type: string
-            nullable: true
-
         descriptor:
             type: json_array
             nullable: true

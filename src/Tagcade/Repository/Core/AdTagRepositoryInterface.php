@@ -72,29 +72,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
      */
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
-    public function getAdTagsThatHavePartnerConfigForAdNetwork(AdNetworkInterface $adNetwork, $partnerTagIdNullAllowed = false, $limit = null, $offset = null);
-
-    /**
-     * get Ad Tags That Have Partner For AdNetwork
-     *
-     * @param AdNetworkInterface $adNetwork
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return AdTagInterface[]
-     */
-    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
-
-    /**
-     * get Ad Tags That Have Partner For AdNetwork
-     *
-     * @param AdNetworkInterface $adNetwork
-     * @param SubPublisherInterface $subPublisher
-     * @param int|null $limit
-     * @param int|null $offset
-     * @return AdTagInterface[]
-     */
-    public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null);
-
     public function getAdTagIdsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null);
@@ -143,23 +120,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getAdTagsForPartner(AdNetworkPartnerInterface $partner, UserRoleInterface $user, $partnerTagId = null);
-
-    /**
-     * get AdTags That Have Partner
-     *
-     * @param PublisherInterface $publisher
-     * @param $uniquePartnerTagId
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
-     */
-    public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null);
-
-    /**
-     * @param $partnerTagId
-     * @return mixed
-     */
-    public function getAdTagsThatHavePartnerTagId($partnerTagId);
 
     /**
      * @param $status

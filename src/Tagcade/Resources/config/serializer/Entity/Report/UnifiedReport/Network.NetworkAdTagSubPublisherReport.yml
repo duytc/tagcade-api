@@ -29,6 +29,3 @@ Tagcade\Entity\Report\UnifiedReport\Network\NetworkAdTagSubPublisherReport:
         estCpm:
             expose: true
             groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
-        partnerTagId:
-            expose: true
-            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]

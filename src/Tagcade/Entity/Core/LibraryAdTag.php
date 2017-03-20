@@ -13,7 +13,6 @@ class LibraryAdTag extends LibraryAdTagModel {
     protected $libSlotTags;
     protected $name;
     protected $adType;
-    protected $partnerTagId;
     protected $descriptor;
     protected $inBannerDescriptor;
 

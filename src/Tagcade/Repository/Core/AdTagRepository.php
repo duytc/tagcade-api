@@ -219,16 +219,6 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         return $qb->getQuery()->getResult();
     }
 
-    public function getAdTagsThatHavePartnerConfigForAdNetwork(AdNetworkInterface $adNetwork, $partnerTagIdNullAllowed = false, $limit = null, $offset = null)
-    {
-        $qb = $this->getAdTagsForAdNetworkQueryBuilder($adNetwork, $limit, $offset);
-        if ($partnerTagIdNullAllowed === false) {
-            $qb->andWhere('tLib.partnerTagId IS NOT NULL');
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
     protected function getAdTagsForAdNetworkQueryBuilder(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('t')
@@ -245,61 +235,6 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         }
 
         return $qb;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdTagsThatHavePartnerForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
-    {
-        $qb = $this->createQueryBuilder('t');
-        $qb
-            ->join('t.libraryAdTag', 'tLib')
-            ->join('tLib.adNetwork', 'nw')
-            ->where('tLib.adNetwork = :adNetwork')
-            ->andWhere($qb->expr()->isNotNull('nw.networkPartner'))
-            ->andWhere('tLib.partnerTagId IS NOT NULL')
-            ->setParameter('adNetwork', $adNetwork, Type::INTEGER);
-
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
-
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdTagsThatHavePartnerForAdNetworkWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, $limit = null, $offset = null)
-    {
-        $qb = $this->createQueryBuilder('t');
-        $qb
-            ->join('t.adSlot', 'sl')
-            ->join('sl.site', 'st')
-            ->join('t.libraryAdTag', 'tLib')
-            ->join('tLib.adNetwork', 'nw')
-            ->where('st.subPublisher = :subPublisher')
-            ->andWhere('tLib.adNetwork = :adNetwork')
-            ->andWhere($qb->expr()->isNotNull('nw.networkPartner'))
-            ->andWhere('tLib.partnerTagId IS NOT NULL')
-            ->setParameter('subPublisher', $subPublisher)
-            ->setParameter('adNetwork', $adNetwork, Type::INTEGER);
-
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
-
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
-
-        return $qb->getQuery()->getResult();
     }
 
     public function getAdTagsForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
@@ -697,88 +632,6 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             $qb->andWhere('tLib.partnerTagId = :partner_tag_id')
                 ->setParameter('partner_tag_id', $partnerTagId, Type::STRING);
         }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdTagsThatHavePartner(PublisherInterface $publisher, $uniquePartnerTagId = false, $limit = null, $offset = null)
-    {
-        if ($publisher instanceof SubPublisherInterface) {
-            return $this->getAdTagsThatHavePartnerForSubPublisher($publisher, $uniquePartnerTagId, $limit, $offset);
-        }
-
-        $qb = $this->createQueryBuilder('t');
-        $qb
-            ->join('t.libraryAdTag', 'tLib')
-            ->join('tLib.adNetwork', 'nw')
-            ->where($qb->expr()->isNotNull('nw.networkPartner'))
-            ->andWhere('nw.publisher = :publisher_id')
-            ->andWhere('tLib.partnerTagId IS NOT NULL')
-            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER);
-
-        if ($uniquePartnerTagId === true) {
-            $qb->addGroupBy('tLib.partnerTagId');
-        }
-
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
-
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * get AdTags That Have Partner for a SubPublisher
-     * @param SubPublisherInterface $subPublisher
-     * @param bool $uniquePartnerTagId
-     * @param null $limit
-     * @param null $offset
-     * @return array|mixed
-     */
-    public function getAdTagsThatHavePartnerForSubPublisher(SubPublisherInterface $subPublisher, $uniquePartnerTagId = false, $limit = null, $offset = null)
-    {
-        $qb = $this->createQueryBuilder('t');
-        $qb
-            ->join('t.libraryAdTag', 'tLib')
-            ->join('t.adSlot', 'sl')
-            ->join('sl.site', 'st')
-            ->join('tLib.adNetwork', 'nw')
-            ->where('st.subPublisher = :subPublisher')
-            ->andWhere($qb->expr()->isNotNull('nw.networkPartner'))
-            ->andWhere('nw.publisher = :publisher_id')
-            ->andWhere('tLib.partnerTagId IS NOT NULL')
-            ->setParameter('subPublisher', $subPublisher)
-            ->setParameter('publisher_id', $subPublisher->getPublisher()->getId(), Type::INTEGER);
-
-        if ($uniquePartnerTagId === true) {
-            $qb->addGroupBy('tLib.partnerTagId');
-        }
-
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
-
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    public function getAdTagsThatHavePartnerTagId($partnerTagId)
-    {
-        $qb = $this->createQueryBuilder('t')
-            ->join('t.libraryAdTag', 'tLib')
-            ->andWhere('tLib.partnerTagId = :partner_tag_id')
-            ->setParameter('partner_tag_id', $partnerTagId, Type::STRING);
-
 
         return $qb->getQuery()->getResult();
     }

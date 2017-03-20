@@ -15,7 +15,6 @@ use Tagcade\Model\Core\ReportableLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReport;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Partner\AggregatePartnerReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
@@ -29,7 +28,6 @@ use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\Accou
 
 class DailyReportCreator
 {
-    use AggregatePartnerReportTrait;
     /**
      * @var ObjectManager
      */

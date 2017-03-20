@@ -166,12 +166,6 @@ services:
         arguments:
             - @tagcade.repository.ad_tag
 
-    tagcade_app.service.core.ad_tag.partner_tag_id_matcher:
-        class: Tagcade\Service\Core\AdTag\PartnerTagIdMatcher
-        arguments:
-            - %partner_tag_id.matching_config%
-            - @monolog.logger
-
     tagcade_app.service.core.ad_network.ad_network_service:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService
         arguments:
