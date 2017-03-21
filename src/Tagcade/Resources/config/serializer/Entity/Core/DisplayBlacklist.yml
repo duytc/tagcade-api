@@ -1,0 +1,21 @@
+Tagcade\Entity\Core\DisplayBlacklist:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [display.blacklist.detail, display.blacklist.summary, display.blacklist.min]
+        name:
+            expose: true
+            groups: [display.blacklist.detail, display.blacklist.summary, display.blacklist.min]
+        domains:
+            expose: true
+            groups: [display.blacklist.detail, display.blacklist.summary, display.blacklist.min]
+        isDefault:
+            expose: true
+            groups: [display.blacklist.detail, display.blacklist.summary, display.blacklist.min]
+        publisher:
+            expose: true
+            groups: [display.blacklist.detail, display.blacklist.summary, display.blacklist.min]
+        networkBlacklists:
+            expose: true
+            groups: [display.blacklist.detail, display.blacklist.summary]

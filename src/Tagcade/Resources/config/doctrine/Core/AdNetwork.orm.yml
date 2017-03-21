@@ -51,3 +51,8 @@ Tagcade\Entity\Core\AdNetwork:
             targetEntity: Tagcade\Entity\Core\LibraryAdTag
             mappedBy: adNetwork
             cascade: ['remove']
+        networkBlacklists:
+            targetEntity: Tagcade\Entity\Core\NetworkBlacklist
+            mappedBy: adNetwork
+            cascade: ["persist", "remove", "detach"]
+            orphanRemoval: true

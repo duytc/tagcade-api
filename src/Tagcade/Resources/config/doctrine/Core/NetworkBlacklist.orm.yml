@@ -1,0 +1,20 @@
+Tagcade\Entity\Core\NetworkBlacklist:
+    type: entity
+    table: core_network_blacklist
+    repositoryClass: Tagcade\Repository\Core\NetworkBlacklistRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork
+            inversedBy: displayBlacklists
+            joinColumn:
+                name: ad_network_id
+                referencedColumnName: id
+                nullable: true
+        displayBlacklist:
+            targetEntity: Tagcade\Entity\Core\DisplayBlacklist
+            inversedBy: networkBlacklists

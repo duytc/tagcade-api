@@ -36,7 +36,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all ad networks
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary", "display.blacklist.summary", "display.blacklist.min", "network.blacklist.summary"})
      *
      * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
@@ -123,7 +123,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get a single ad network for the given id
      *
-     * @Rest\View(serializerGroups={"adnetwork.detail", "user.summary", "adtag.summary", "partner.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary", "display.blacklist.summary", "display.blacklist.min", "network.blacklist.summary"})
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -147,7 +147,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * @Rest\Get("/adnetworks/{cname}/publishers")
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      *
-     * @Rest\View(serializerGroups={"adnetwork.credential", "user.uuid", "adtag.summary", "partner.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.credential", "user.uuid", "adtag.summary", "partner.summary", "display.blacklist.summary"})
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -353,7 +353,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Get all active ad tags belonging to this ad network
      *
      * @Rest\View(
-     *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "libraryadtag.detail"}
+     *      serializerGroups={"adtag.detail", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "site.summary", "libraryadtag.detail", "display.blacklist.summary"}
      * )
      *
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
@@ -422,6 +422,39 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $this->checkUserPermission($adNetwork, 'edit');
 
         return $this->get('tagcade.domain_manager.ad_network')->getUnifiedReportEmail($adNetwork, $resetToken);
+    }
+
+    /**
+     * Retrieve a list of displayBlacklist for this adNetwork
+     *
+     * @Rest\View(
+     *      serializerGroups={"adnetwork.summary", "user.summary", "display.blacklist.summary", "network.blacklist.min"}
+     * )
+     *
+     * @ApiDoc(
+     *  section="AdNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     *
+     * @param int $id
+     * @return \Tagcade\Model\Core\DisplayBlacklistInterface[]
+     */
+    public function getDisplayblacklistsAction($id)
+    {
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->one($id);
+        $displayBlacklistManager =  $this->get('tagcade.domain_manager.display.blacklist');
+
+        $displayBlacklists = array_unique(array_merge(
+            $adNetwork->getDisplayBlacklists(),
+            $displayBlacklistManager->getDefaultBlacklists($adNetwork->getPublisher())
+        ));
+        return array_values($displayBlacklists);
     }
 
     /**

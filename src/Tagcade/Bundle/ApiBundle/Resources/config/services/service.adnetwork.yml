@@ -37,6 +37,8 @@ services:
             - { name: form.type, alias: tagcade_form_ad_network }
         arguments:
           - @tagcade.repository.ad_network_partner
+          - @doctrine.orm.entity_manager
+          - @tagcade.domain_manager.network.blacklist
 
     tagcade.handler.handlers.ad_network.abstract:
         class: Tagcade\Handler\Handlers\Core\AdNetworkHandlerAbstract

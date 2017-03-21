@@ -19,3 +19,10 @@ services:
             - @tagcade.cache.video.domain_list_manager
             - @tagcade.domain_manager.whitelist
             - @logger
+
+    tagcade.service.csv.display.black_list_importer:
+        class: Tagcade\Service\CSV\DisplayBlackListImporter
+        arguments:
+            - @tagcade.cache.display_domain_list_manager
+            - @tagcade.domain_manager.display.blacklist
+            - @logger

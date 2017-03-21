@@ -6,6 +6,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\Core\DisplayBlacklistInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -233,5 +234,15 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
         }
 
         return $qb;
+    }
+
+    public function getAdNetworksForDisplayBlacklist(DisplayBlacklistInterface $displayBlacklist, $limit = null, $offset = null)
+    {
+        return $this->createQueryBuilder('nw')
+            ->leftJoin('nw.networkBlacklists', 'nb')
+            ->where('nb.displayBlacklist = :blacklist')
+            ->setParameter('blacklist', $displayBlacklist)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -3,16 +3,16 @@ Tagcade\Entity\Core\AdNetwork:
     properties:
         id:
             expose: true
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential, adnetwork.min]
         publisher:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
         name:
             expose: true
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential, adnetwork.min]
         url:
             expose: true
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.credential]
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.credential, adnetwork.min]
         defaultCpmRate:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail]
@@ -31,3 +31,6 @@ Tagcade\Entity\Core\AdNetwork:
         networkOpportunityCap:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
+        networkBlacklists:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.summary, adnetwork.credential]

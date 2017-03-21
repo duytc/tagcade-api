@@ -6,6 +6,7 @@ namespace Tagcade\Cache\V2\Refresher;
 use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
+use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
 use Tagcade\DomainManager\NativeAdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
@@ -46,13 +47,19 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
      */
     private $tagGenerator;
 
+    /**
+     * @var DisplayBlacklistManagerInterface $displayBlacklistManager
+     */
+    protected $displayBlacklistManager;
+
     public function __construct(NamespaceCacheInterface $cache,
                                 Manager $workerManager,
                                 DisplayAdSlotManagerInterface $displayAdSlotManager,
                                 NativeAdSlotManagerInterface $nativeAdSlotManager,
                                 DynamicAdSlotManagerInterface $dynamicAdSlotManager,
                                 ExpressionRepositoryInterface $expressionRepository,
-                                TagGenerator $tagGenerator)
+                                TagGenerator $tagGenerator,
+                                DisplayBlacklistManagerInterface $displayBlacklistManager)
     {
         parent::__construct($cache, $workerManager);
 
@@ -61,6 +68,7 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $this->displayAdSlotManager = $displayAdSlotManager;
         $this->nativeAdSlotManager = $nativeAdSlotManager;
         $this->tagGenerator = $tagGenerator;
+        $this->displayBlacklistManager = $displayBlacklistManager;
     }
 
     /**
@@ -249,5 +257,10 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     public function getTagGenerator()
     {
         return $this->tagGenerator;
+    }
+
+    protected function getDisplayBlacklistManager()
+    {
+        return  $this->displayBlacklistManager;
     }
 }

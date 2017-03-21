@@ -1,0 +1,30 @@
+Tagcade\Entity\Core\DisplayBlacklist:
+    type: entity
+    table: core_display_black_list
+    repositoryClass: Tagcade\Repository\Core\DisplayBlacklistRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        domains:
+             type: json_array
+        isDefault:
+            type: boolean
+            options:
+                default: false
+
+    oneToMany:
+        networkBlacklists:
+            targetEntity: Tagcade\Entity\Core\NetworkBlacklist
+            mappedBy: displayBlacklist
+            cascade: ["persist", "remove", "detach"]
+            orphanRemoval: true
+
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

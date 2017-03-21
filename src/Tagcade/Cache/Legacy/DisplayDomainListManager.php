@@ -1,13 +1,12 @@
 <?php
 
 
-namespace Tagcade\Cache\Video;
+namespace Tagcade\Cache\Legacy;
 
 use Redis;
-use Tagcade\Model\Core\BlacklistInterface;
-use Tagcade\Model\Core\WhiteListInterface;
+use Tagcade\Model\Core\DisplayBlacklistInterface;
 
-class DomainListManager implements DomainListManagerInterface
+class DisplayDomainListManager implements DisplayDomainListManagerInterface
 {
     const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
 
@@ -22,14 +21,11 @@ class DomainListManager implements DomainListManagerInterface
 
     private $blackListPrefix;
 
-    private $whiteListPrefix;
-
-    function __construct($host, $port, $blackListPrefix, $whiteListPrefix)
+    function __construct($host, $port, $blackListPrefix)
     {
         $this->host = $host;
         $this->port = $port;
         $this->blackListPrefix = $blackListPrefix;
-        $this->whiteListPrefix = $whiteListPrefix;
     }
 
     public function getRedis()
@@ -50,24 +46,12 @@ class DomainListManager implements DomainListManagerInterface
         return $this->redis;
     }
 
-    public function saveBlacklist(BlacklistInterface $blacklist)
+    public function saveBlacklist(DisplayBlacklistInterface $blacklist)
     {
-        $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getSuffixKey());
+        $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getName());
 
         $this->getRedis()->del($key);
         $domains = $blacklist->getDomains();
-
-        foreach($domains as $domain) {
-            $this->getRedis()->sAdd($key, $domain);
-        }
-    }
-
-    public function saveWhiteList(WhiteListInterface $whiteList)
-    {
-        $key = sprintf('%s:%s', $this->whiteListPrefix, $whiteList->getSuffixKey());
-
-        $this->getRedis()->del($key);
-        $domains = $whiteList->getDomains();
 
         foreach($domains as $domain) {
             $this->getRedis()->sAdd($key, $domain);

@@ -26,6 +26,7 @@ parameters:
     tagcade.security.auth.voter.video_waterfall_tag.class: Tagcade\Security\Authorization\Voter\VideoWaterfallTagVoter
     tagcade.security.auth.voter.video_waterfall_tag_item.class: Tagcade\Security\Authorization\Voter\VideoWaterfallTagItemVoter
     tagcade.security.auth.voter.blacklist.class: Tagcade\Security\Authorization\Voter\BlacklistVoter
+    tagcade.security.auth.voter.display.blacklist.class: Tagcade\Security\Authorization\Voter\DisplayBlacklistVoter
     tagcade.security.auth.voter.white_list.class: Tagcade\Security\Authorization\Voter\WhiteListVoter
     tagcade.security.auth.voter.library_expresison.class: Tagcade\Security\Authorization\Voter\LibraryExpressionVoter
     tagcade.security.auth.voter.library_video_demand_ad_tag.class: Tagcade\Security\Authorization\Voter\LibraryVideoDemandAdTagVoter
@@ -162,6 +163,12 @@ services:
 
     tagcade.security.auth.voter.blacklist:
         class:  '%tagcade.security.auth.voter.blacklist.class%'
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.display.blacklist:
+        class:  '%tagcade.security.auth.voter.display.blacklist.class%'
         public: false
         tags:
             - { name: security.voter }
@@ -312,6 +319,13 @@ services:
         arguments:
             - '@doctrine.orm.entity_manager'
             - '@tagcade_api.service.tag_library.checksum_validator'
+
+    tagcade.worker.workers.update_ad_slot_cache_due_to_display_blacklist_worker:
+        class: Tagcade\Worker\Workers\UpdateAdSlotCacheDueToDisplayBlacklistWorker
+        arguments:
+            - '@tagcade.cache.display.v2.tag_cache'
+            - '@tagcade.domain_manager.ad_network'
+            - '@tagcade.repository.ad_slot'
 
     tagcade.worker.workers.remove_cache_for_ad_slot_worker:
         class: Tagcade\Worker\Workers\RemoveCacheForAdSlotWorker

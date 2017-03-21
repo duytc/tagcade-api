@@ -2,17 +2,22 @@
 
 namespace Tagcade\Form\Type;
 
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\DomainManager\NetworkBlacklistManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdNetworkPartner;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
+use Tagcade\Model\Core\NetworkBlacklistInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Repository\Core\AdNetworkPartnerRepositoryInterface;
 
@@ -21,10 +26,23 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
     /** @var AdNetworkPartnerRepositoryInterface */
     private $adNetworkPartnerRepository;
 
-    function __construct(AdNetworkPartnerRepositoryInterface $adNetworkPartnerRepository)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var NetworkBlacklistManagerInterface $networkBlacklistManager
+     */
+    private $networkBlacklistManager;
+
+    function __construct(AdNetworkPartnerRepositoryInterface $adNetworkPartnerRepository, ObjectManager $om, NetworkBlacklistManagerInterface $networkBlacklistManager)
     {
         $this->adNetworkPartnerRepository = $adNetworkPartnerRepository;
+        $this->em = $om;
+        $this->networkBlacklistManager = $networkBlacklistManager;
     }
+
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -51,11 +69,21 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
             );
         }
 
+        $builder->add('networkBlacklists', 'collection', array(
+                'mapped' => true,
+                'type' => new NetworkBlacklistFormType(),
+                'allow_add' => true,
+                'allow_delete' => true,
+            )
+        );
+
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
                 /** @var AdNetworkInterface $adNetwork */
                 $adNetwork = $event->getData();
+                $form = $event->getForm();
+
                 // initialize adTags count when creating new ad network;
                 if ($adNetwork->getId() === null) {
                     $adNetwork->setActiveAdTagsCount(0);
@@ -80,6 +108,26 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 if ($adNetwork->getDefaultCpmRate() < 0) {
                     $event->getForm()->addError(new FormError('defaultCpmRate is either zero or positive numeric value'));
                 }
+
+                /** @var Collection| NetworkBlacklistInterface[] $networkBlacklists */
+                $networkBlacklists = $event->getForm()->get('networkBlacklists')->getData();
+
+                if ($networkBlacklists === null) {
+                    $form->get('networkBlacklists')->addError(new FormError('networkBlacklists must be an array string'));
+                    return;
+                }
+
+                foreach ($networkBlacklists as $networkBlacklist) {
+                    if (!$networkBlacklist->getAdNetwork() instanceof AdNetworkInterface) {
+                        $networkBlacklist->setAdNetwork($adNetwork);
+                    }
+                }
+
+                if ($networkBlacklists instanceof Collection) {
+                    $networkBlacklists = $networkBlacklists->toArray();
+                }
+
+                $adNetwork->setNetworkBlacklists($networkBlacklists);
             }
         );
     }
@@ -89,6 +137,7 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
         $resolver
             ->setDefaults([
                 'data_class' => AdNetwork::class,
+                'allow_extra_fields' => true,
             ]);
     }
 

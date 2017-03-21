@@ -23,9 +23,15 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
      */
     private $cacheNamespace;
 
-    function __construct(RedisNamespaceCache $cacheNamespace)
+    private $blackListPrefix;
+
+    private $whiteListPrefix;
+
+    function __construct(RedisNamespaceCache $cacheNamespace, $blackListPrefix, $whiteListPrefix)
     {
         $this->cacheNamespace = $cacheNamespace;
+        $this->blackListPrefix = $blackListPrefix;
+        $this->whiteListPrefix = $whiteListPrefix;
     }
 
     /**
@@ -220,12 +226,12 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
 
                     if ($vdtValue === VideoTargetingInterface::TARGETING_KEY_EXCLUDE_DOMAINS) {
                         $demandAdTagItem['targeting'][$vdtValue] = array_map(function (array $item) {
-                            return sprintf('%s:%s', DomainListManager::BLACK_LIST_PREFIX, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
+                            return sprintf('%s:%s', $this->blackListPrefix, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
                         }, $targeting[$vdtValue]);
                         continue;
                     } else if ($vdtValue === VideoTargetingInterface::TARGETING_KEY_DOMAINS) {
                         $demandAdTagItem['targeting'][$vdtValue] = array_map(function (array $item) {
-                            return sprintf('%s:%s', DomainListManager::WHITE_LIST_PREFIX, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
+                            return sprintf('%s:%s', $this->whiteListPrefix, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
                         }, $targeting[$vdtValue]);
                         continue;
                     }

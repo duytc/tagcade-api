@@ -167,3 +167,8 @@ api_vasttaghistory:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\VastTagRequestController
     name_prefix:  api_1_
+
+api_display_blacklist:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\DisplayBlacklistController
+    name_prefix:  api_1_

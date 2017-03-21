@@ -5,14 +5,17 @@ namespace Tagcade\Cache\V2\Behavior;
 
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
+use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\DisplayBlacklistInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\TagGenerator;
 
 trait CreateAdSlotDataTrait
@@ -157,6 +160,7 @@ trait CreateAdSlotDataTrait
             $dataItem = [
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
+                'blacklist' => $this->getBlacklists($adTag)
             ];
 
             if (null !== $adTag->getFrequencyCap()) {
@@ -316,6 +320,7 @@ trait CreateAdSlotDataTrait
             $dataItem = [
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
+                'blacklist' => $this->getBlacklists($adTag)
             ];
 
             if (null !== $adTag->getFrequencyCap()) {
@@ -333,7 +338,49 @@ trait CreateAdSlotDataTrait
     }
 
     /**
+     * @param AdTagInterface $adTag
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    private function getBlacklists($adTag)
+    {
+        $displayBlacklistManager = $this->getDisplayBlacklistManager();
+        $defaultBlacklists = $displayBlacklistManager->getDefaultBlacklists($adTag->getAdNetwork()->getPublisher());
+        $demandPartnerBlacklists = $adTag->getAdNetwork()->getDisplayBlacklists();
+        return $this->mergeBlacklists($defaultBlacklists, $demandPartnerBlacklists);
+    }
+
+    /**
+     * @param DisplayBlacklistInterface[] $defaultBlacklists
+     * @param DisplayBlacklistInterface[] $demandPartnerBlacklists
+     * @return mixed
+     */
+    private function mergeBlacklists($defaultBlacklists, $demandPartnerBlacklists)
+    {
+        $domains = [];
+
+        foreach ($defaultBlacklists as $blacklist){
+            if ($blacklist instanceof DisplayBlacklistInterface){
+                $domains = array_merge($domains, $blacklist->getDomains());
+            }
+        }
+
+        foreach ($demandPartnerBlacklists as $blacklist){
+            if ($blacklist instanceof DisplayBlacklistInterface){
+                $domains = array_merge($domains, $blacklist->getDomains());
+            }
+        }
+
+        return array_values(array_unique($domains));
+    }
+
+    /**
      * @return TagGenerator
      */
     abstract protected function getTagGenerator();
+
+    /**
+     * @return DisplayBlacklistManagerInterface
+     */
+    abstract protected function getDisplayBlacklistManager();
 }

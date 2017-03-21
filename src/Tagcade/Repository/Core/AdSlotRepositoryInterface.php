@@ -86,6 +86,8 @@ interface AdSlotRepositoryInterface extends ObjectRepository
 
     public function getReportableAdSlotIdsRelatedAdNetwork(AdNetworkInterface $adNetwork);
 
+    public function getReportableAdSlotRelatedAdNetwork(AdNetworkInterface $adNetwork);
+
     /**
      * getAdSlotsRelatedChannelForUser
      *

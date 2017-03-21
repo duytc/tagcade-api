@@ -149,4 +149,18 @@ interface AdNetworkInterface extends ModelInterface
      */
     public function setEmailHookToken($emailHookToken);
 
+    /**
+     * @return NetworkBlacklistInterface[]
+     */
+    public function getNetworkBlacklists();
+
+    /**
+     * @param NetworkBlacklistInterface[] $networkBlacklists
+     */
+    public function setNetworkBlacklists($networkBlacklists);
+
+    /**
+     * @return DisplayBlacklistInterface[]
+     */
+    public function getDisplayBlacklists();
 }

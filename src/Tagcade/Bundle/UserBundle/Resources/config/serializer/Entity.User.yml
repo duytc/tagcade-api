@@ -13,7 +13,7 @@ Tagcade\Bundle\UserBundle\Entity\User:
     virtual_properties:
 #        getUserRoles: ~
         getEnabledModules:
-            groups: [user.summary, user.detail]
+            groups: [user.summary, user.detail, user.min]
 
     properties:
         id:

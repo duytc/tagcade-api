@@ -1,0 +1,76 @@
+parameters:
+    # entity class
+    tagcade.entity.core.display.blacklist.class: Tagcade\Entity\Core\DisplayBlacklist
+    # form class
+    tagcade.form.type.display.blacklist.class: Tagcade\Form\Type\DisplayBlacklistFormType
+
+services:
+
+    # display blacklist handler #####################################################
+
+    tagcade_api.handler.display.blacklist:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.display.blacklist
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    # network blacklist
+
+    tagcade.repository.display.network.blacklist:
+            class: Tagcade\Repository\Core\NetworkBlacklistRepositoryInterface
+            factory_service: doctrine.orm.entity_manager
+            factory_method: getRepository
+            arguments:
+                - Tagcade\Entity\Core\NetworkBlacklist
+
+    ###### dependencies and base classes for display blacklist handler ##############
+
+    tagcade.repository.display.blacklist:
+        class: Tagcade\Repository\Core\DisplayBlacklistRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\DisplayBlacklist
+
+    tagcade.domain_manager.display.blacklist:
+        class: Tagcade\DomainManager\DisplayBlacklistManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.display.blacklist
+
+    tagcade.form.type.display.blacklist:
+        class: %tagcade.form.type.display.blacklist.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+        tags:
+            - { name: form.type, alias: tagcade_form_display_blacklist }
+
+    tagcade.handler.handlers.display.blacklist.abstract:
+        class: Tagcade\Handler\Handlers\Core\DisplayBlacklistHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.display.blacklist
+            - @tagcade.domain_manager.display.blacklist
+
+    tagcade.handler.handlers.display.blacklist.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\DisplayBlacklistHandler
+        parent: tagcade.handler.handlers.display.blacklist.abstract
+        public: false
+
+    tagcade.handler.handlers.display.blacklist.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\DisplayBlacklistHandler
+        parent: tagcade.handler.handlers.display.blacklist.abstract
+        public: false
+
+    tagcade.handler.handler_manager.display.blacklist:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.display.blacklist.class%
+            -
+                - @tagcade.handler.handlers.display.blacklist.admin
+                - @tagcade.handler.handlers.display.blacklist.publisher
+
+    # end display blacklist #####################################################

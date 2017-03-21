@@ -163,3 +163,8 @@ parameters:
         html: 2
         position: 3
         rotation: 4
+
+    tc.video.blacklist.prefix: 'video:domain_blacklist'
+    tc.video.whitelist.prefix: 'video:domain_blacklist'
+    tc.display.blacklist.prefix: 'display:domain_blacklist'
+    tc.display.whitelist.prefix: 'display:domain_whitelist'

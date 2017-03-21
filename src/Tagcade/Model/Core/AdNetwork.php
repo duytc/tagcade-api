@@ -30,6 +30,26 @@ class AdNetwork implements AdNetworkInterface
     protected $networkOpportunityCap;
 
     /**
+     * @var NetworkBlacklistInterface[]
+     */
+    protected $networkBlacklists;
+
+    /**
+     * @return DisplayBlacklistInterface[]
+     */
+    public function getDisplayBlacklists()
+    {
+        $networkBlacklists = $this->getNetworkBlacklists();
+        $displayBlacklists = [];
+        foreach ($networkBlacklists as $networkBlacklist){
+            if ($networkBlacklist->getDisplayBlacklist() instanceof DisplayBlacklistInterface){
+                $displayBlacklists[] = $networkBlacklist->getDisplayBlacklist();
+            }
+        }
+        return $displayBlacklists;
+    }
+
+    /**
      * @return mixed
      */
     public function getImpressionCap()
@@ -315,5 +335,21 @@ class AdNetwork implements AdNetworkInterface
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * @return NetworkBlacklistInterface[]
+     */
+    public function getNetworkBlacklists()
+    {
+        return $this->networkBlacklists;
+    }
+
+    /**
+     * @param NetworkBlacklistInterface[] $networkBlacklists
+     */
+    public function setNetworkBlacklists($networkBlacklists)
+    {
+        $this->networkBlacklists = $networkBlacklists;
     }
 }

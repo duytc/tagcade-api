@@ -19,6 +19,7 @@ class AdNetwork extends AdNetworkModel
     protected $emailHookToken;
     protected $impressionCap;
     protected $networkOpportunityCap;
+    protected $networkBlacklists;
 
     /**
      * @var AdNetworkPartnerInterface

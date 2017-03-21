@@ -365,6 +365,18 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         );
     }
 
+    public function getReportableAdSlotRelatedAdNetwork(AdNetworkInterface $adNetwork)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->join('sl.adTags', 't')
+            ->join('t.libraryAdTag', 'lt')
+            ->where('lt.adNetwork = :ad_network_id')
+            ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER);
+
+        return $qb->getQuery()->getResult();
+    }
+
+
     /**
      * create QueryBuilder For Publisher due to Publisher or SubPublisher
      * @param PublisherInterface $publisher

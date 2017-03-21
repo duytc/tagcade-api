@@ -40,6 +40,7 @@ services:
             - '@tagcade.domain_manager.dynamic_ad_slot'
             - '@tagcade.repository.expression'
             - '@tagcade.service.tag_generator'
+            - '@tagcade.domain_manager.display.blacklist'
 
     tagcade.cache.display.v2.refresher.ron_ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache
@@ -58,6 +59,13 @@ services:
 #                - '@tagcade.cache.display.legacy.tag_cache'
                 - '@tagcade.cache.display.v2.tag_cache'
 
+    tagcade.cache.display_domain_list_manager:
+        class: Tagcade\Cache\Legacy\DisplayDomainListManager
+        arguments:
+            - '%tc.redis.display_tag_cache.host%'
+            - '%tc.redis.display_tag_cache.port%'
+            - '%tc.display.blacklist.prefix%'
+
     ############ END DISPLAY CACHE
 
     ############ VIDEO CACHE  ########################
@@ -72,12 +80,16 @@ services:
         class: Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresher
         arguments:
             - '@tagcade.cache.video.redis_namespace_cache'
+            - '%tc.video.blacklist.prefix%'
+            - '%tc.video.whitelist.prefix%'
 
     tagcade.cache.video.domain_list_manager:
         class: Tagcade\Cache\Video\DomainListManager
         arguments:
             - '%tc.redis.video_tag_cache.host%'
             - '%tc.redis.video_tag_cache.port%'
+            - '%tc.video.blacklist.prefix%'
+            - '%tc.video.whitelist.prefix%'
 
     tagcade.cache.video.video_cache_manager:
         class: Tagcade\Cache\Video\VideoCacheManager

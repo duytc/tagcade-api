@@ -1,0 +1,40 @@
+parameters:
+    # entity class
+    tagcade.entity.core.network.blacklist.class: Tagcade\Entity\Core\NetworkBlacklist
+
+services:
+
+    # network blacklist handler #####################################################
+
+    tagcade_api.handler.network.blacklist:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.network.blacklist
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    # network blacklist
+
+    tagcade.repository.network.network.blacklist:
+            class: Tagcade\Repository\Core\NetworkBlacklistRepositoryInterface
+            factory_service: doctrine.orm.entity_manager
+            factory_method: getRepository
+            arguments:
+                - Tagcade\Entity\Core\NetworkBlacklist
+
+    ###### dependencies and base classes for network blacklist handler ##############
+
+    tagcade.repository.network.blacklist:
+        class: Tagcade\Repository\Core\NetworkBlacklistRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\NetworkBlacklist
+
+    tagcade.domain_manager.network.blacklist:
+        class: Tagcade\DomainManager\NetworkBlacklistManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.network.blacklist
+
+    # end network blacklist #####################################################

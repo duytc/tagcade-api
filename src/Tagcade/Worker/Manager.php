@@ -219,6 +219,14 @@ class Manager
         $this->queueTask('removeCacheForAdSlot', $param);
     }
 
+    public function updateAdSlotCache($networkId)
+    {
+        $param = new StdClass();
+        $param->network = $networkId;
+
+        $this->queueTask('updateAdSlotCache', $param);
+    }
+
     /**
      * set AdTag Position For AdNetwork And Sites (optional, one or array or null for all),
      * also, we support auto-Increase-Position(shift down) for all ad tags of other ad network
