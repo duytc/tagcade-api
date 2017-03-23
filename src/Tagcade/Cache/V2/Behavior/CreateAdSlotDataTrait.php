@@ -5,6 +5,7 @@ namespace Tagcade\Cache\V2\Behavior;
 
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
+use Tagcade\Cache\V2\DisplayDomainListManagerInterface;
 use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
@@ -115,7 +116,7 @@ trait CreateAdSlotDataTrait
             'cpm' => $adSlot->getHbBidPrice()
         ];
 
-        if($adSlot->isAutoFit()) {
+        if ($adSlot->isAutoFit()) {
             $data['autoFit'] = true;
         }
 
@@ -142,11 +143,11 @@ trait CreateAdSlotDataTrait
         //step 3. build 'tags' for data
         ////sort all adTags by position
         usort($adTags, function (AdTagInterface $a, AdTagInterface $b) {
-                if ($a->getPosition() == $b->getPosition()) {
-                    return 0;
-                }
-                return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
-            });
+            if ($a->getPosition() == $b->getPosition()) {
+                return 0;
+            }
+            return ($a->getPosition() < $b->getPosition()) ? -1 : 1;
+        });
 
         ////group all adTags which same position into a group (array) with key is position
         ////each group can contain one or more items (as {'id', 'tag', 'cap', 'rot'})
@@ -157,10 +158,10 @@ trait CreateAdSlotDataTrait
                 continue;
             }
 
+            $data['blacklist'][] = implode(',', $this->getBlacklists($adTag));
             $dataItem = [
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
-                'blacklist' => $this->getBlacklists($adTag)
             ];
 
             if (null !== $adTag->getFrequencyCap()) {
@@ -209,7 +210,7 @@ trait CreateAdSlotDataTrait
         $data = [
             'id' => $dynamicAdSlot->getId(),
             'type' => 'dynamic',
-            'native' =>  $dynamicAdSlot->isSupportedNative(),
+            'native' => $dynamicAdSlot->isSupportedNative(),
             'expressions' => [],
             'defaultAdSlot' => $dynamicAdSlot->getDefaultAdSlot() instanceof ReportableAdSlotInterface ? $dynamicAdSlot->getDefaultAdSlot()->getId() : null,
             'jsTag' => $this->getTagGenerator()->createJsTags($dynamicAdSlot),
@@ -233,12 +234,12 @@ trait CreateAdSlotDataTrait
         if (is_array($expressions) && !empty($expressions)) {
             //step 1. set 'expressions' for data: get expressionInJS of each expression in expressions
             array_walk($expressions,
-                function(ExpressionInterface $expression ) use (&$data){
+                function (ExpressionInterface $expression) use (&$data) {
                     array_push($data['expressions'], $expression->getExpressionInJs());
 
                     $expressionDescriptor = $expression->getExpressionDescriptor();
                     $groupVals = $expressionDescriptor['groupVal'];
-                    if(!is_array($groupVals)) {
+                    if (!is_array($groupVals)) {
                         return;
                     }
 
@@ -249,8 +250,8 @@ trait CreateAdSlotDataTrait
             //step 2. get all AdSlots related to DynamicAdSlot and Expressions
             ////adSlots from expressionInJS of Expressions
             $tmpAdSlotsForSelecting = array_map(function (ExpressionInterface $expression) {
-                    return $expression->getExpectAdSlot();
-                },
+                return $expression->getExpectAdSlot();
+            },
                 $expressions
             );
 
@@ -260,13 +261,13 @@ trait CreateAdSlotDataTrait
         $adSlotsForSelecting = array_unique($adSlotsForSelecting);
 
         //step 3. build 'slots' for data
-        array_walk($adSlotsForSelecting, function(ReportableAdSlotInterface $adSlot) use (&$data){
-                if ($adSlot instanceof DisplayAdSlotInterface) {
-                    $data['slots'][$adSlot->getId()] =  $this->createDisplayAdSlotCacheData($adSlot);
-                }else if ($adSlot instanceof NativeAdSlotInterface) {
-                    $data['slots'][$adSlot->getId()] =  $this->createNativeAdSlotCacheData($adSlot);
-                }
+        array_walk($adSlotsForSelecting, function (ReportableAdSlotInterface $adSlot) use (&$data) {
+            if ($adSlot instanceof DisplayAdSlotInterface) {
+                $data['slots'][$adSlot->getId()] = $this->createDisplayAdSlotCacheData($adSlot);
+            } else if ($adSlot instanceof NativeAdSlotInterface) {
+                $data['slots'][$adSlot->getId()] = $this->createNativeAdSlotCacheData($adSlot);
             }
+        }
         );
 
         //step 5. return data
@@ -279,14 +280,13 @@ trait CreateAdSlotDataTrait
      */
     protected function updateServerVars(array $groupVals, &$data)
     {
-        foreach($groupVals as $groupVal) {
-            if(!array_key_exists('groupVal', $groupVal)) {
+        foreach ($groupVals as $groupVal) {
+            if (!array_key_exists('groupVal', $groupVal)) {
                 $varName = $groupVal['var'];
                 if (in_array($varName, ExpressionInJsGenerator::$SERVER_VARS) && (!isset($data['serverVars']) || !in_array($varName, $data['serverVars']))) {
                     $data['serverVars'][] = $varName;
                 }
-            }
-            else {
+            } else {
                 $this->updateServerVars($groupVal['groupVal'], $data);
             }
         }
@@ -317,10 +317,10 @@ trait CreateAdSlotDataTrait
                 continue;
             }
 
+            $data['blacklist'][] = implode(',', $this->getBlacklists($adTag));
             $dataItem = [
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
-                'blacklist' => $this->getBlacklists($adTag)
             ];
 
             if (null !== $adTag->getFrequencyCap()) {
@@ -359,15 +359,15 @@ trait CreateAdSlotDataTrait
     {
         $domains = [];
 
-        foreach ($defaultBlacklists as $blacklist){
-            if ($blacklist instanceof DisplayBlacklistInterface){
-                $domains = array_merge($domains, $blacklist->getDomains());
+        foreach ($defaultBlacklists as $blacklist) {
+            if ($blacklist instanceof DisplayBlacklistInterface) {
+                $domains[] = sprintf('%s', $blacklist->getId());
             }
         }
 
-        foreach ($demandPartnerBlacklists as $blacklist){
-            if ($blacklist instanceof DisplayBlacklistInterface){
-                $domains = array_merge($domains, $blacklist->getDomains());
+        foreach ($demandPartnerBlacklists as $blacklist) {
+            if ($blacklist instanceof DisplayBlacklistInterface) {
+                $domains[] = sprintf('%s', $blacklist->getId());
             }
         }
 
@@ -383,4 +383,9 @@ trait CreateAdSlotDataTrait
      * @return DisplayBlacklistManagerInterface
      */
     abstract protected function getDisplayBlacklistManager();
+
+    /**
+     * @return string
+     */
+    abstract protected function getBlacklistPrefix();
 }

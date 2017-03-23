@@ -5,6 +5,7 @@ namespace Tagcade\Cache\V2\Refresher;
 
 use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
+use Tagcade\Cache\V2\DisplayDomainListManagerInterface;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
@@ -52,6 +53,11 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
      */
     protected $displayBlacklistManager;
 
+    /**
+     * @var string
+     */
+    protected $blacklistPrefix;
+
     public function __construct(NamespaceCacheInterface $cache,
                                 Manager $workerManager,
                                 DisplayAdSlotManagerInterface $displayAdSlotManager,
@@ -59,7 +65,8 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
                                 DynamicAdSlotManagerInterface $dynamicAdSlotManager,
                                 ExpressionRepositoryInterface $expressionRepository,
                                 TagGenerator $tagGenerator,
-                                DisplayBlacklistManagerInterface $displayBlacklistManager)
+                                DisplayBlacklistManagerInterface $displayBlacklistManager,
+                                $blacklistPrefix)
     {
         parent::__construct($cache, $workerManager);
 
@@ -69,6 +76,7 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $this->nativeAdSlotManager = $nativeAdSlotManager;
         $this->tagGenerator = $tagGenerator;
         $this->displayBlacklistManager = $displayBlacklistManager;
+        $this->blacklistPrefix = $blacklistPrefix;
     }
 
     /**
@@ -261,6 +269,14 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
 
     protected function getDisplayBlacklistManager()
     {
-        return  $this->displayBlacklistManager;
+        return $this->displayBlacklistManager;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getBlacklistPrefix()
+    {
+        return $this->blacklistPrefix;
     }
 }

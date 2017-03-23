@@ -4,7 +4,7 @@ namespace Tagcade\Service\CSV;
 
 
 use Psr\Log\LoggerInterface;
-use Tagcade\Cache\Legacy\DisplayDomainListManager;
+use Tagcade\Cache\V2\DisplayDomainListManager;
 use Tagcade\Service\StringUtilTrait;
 
 abstract class DisplayListImporterAbstract implements ListImporterInterface

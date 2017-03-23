@@ -63,6 +63,7 @@ services:
         class: Tagcade\Bundle\AppBundle\EventListener\DisplayBlacklistChangeListener
         arguments:
             - '@tagcade.worker.manager'
+            - '@tagcade.cache.display_domain_list_manager'
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postFlush }

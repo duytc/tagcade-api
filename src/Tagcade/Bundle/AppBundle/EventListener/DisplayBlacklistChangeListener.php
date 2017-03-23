@@ -7,6 +7,7 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Cache\V2\DisplayDomainListManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
@@ -25,12 +26,19 @@ class DisplayBlacklistChangeListener
     protected $adNetworks;
 
     /**
+     * @var DisplayDomainListManagerInterface
+     */
+    protected $displayDomainListManager;
+
+    /**
      * DisplayBlacklistChangeListener constructor.
      * @param Manager $workerManager
+     * @param DisplayDomainListManagerInterface $displayDomainListManager
      */
-    public function __construct(Manager $workerManager)
+    public function __construct(Manager $workerManager, DisplayDomainListManagerInterface $displayDomainListManager)
     {
         $this->workerManager = $workerManager;
+        $this->displayDomainListManager = $displayDomainListManager;
         $this->adNetworks = [];
     }
 
@@ -49,6 +57,8 @@ class DisplayBlacklistChangeListener
         } else {
             $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
         }
+
+        $this->displayDomainListManager->saveBlacklist($entity);
     }
 
     public function preUpdate(PreUpdateEventArgs $args)
@@ -72,6 +82,7 @@ class DisplayBlacklistChangeListener
             } else {
                 $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
             }
+            $this->displayDomainListManager->saveBlacklist($entity);
         }
 
         if ($args->hasChangedField('isDefault')) {
@@ -94,6 +105,10 @@ class DisplayBlacklistChangeListener
         } else {
             $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
         }
+
+        if ($entity->getId()) {
+            $this->displayDomainListManager->delBlacklist($entity);
+        }
     }
 
     public function postFlush(PostFlushEventArgs $event)
@@ -103,7 +118,7 @@ class DisplayBlacklistChangeListener
             $this->adNetworks = [];
         }
     }
-    
+
     /**
      * @param AdNetworkInterface[] $adNetworks
      */

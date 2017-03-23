@@ -5,7 +5,7 @@ namespace Tagcade\Service\CSV;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
-use Tagcade\Cache\Legacy\DisplayDomainListManager;
+use Tagcade\Cache\V2\DisplayDomainListManager;
 use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Entity\Core\DisplayBlacklist;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -17,10 +17,10 @@ class DisplayBlackListImporter extends DisplayListImporterAbstract implements Bl
      */
     protected $displayBlackListManager;
 
-    public function __construct(DisplayDomainListManager $domainListManager, DisplayBlacklistManagerInterface $DisplayBlackListManager, LoggerInterface $logger)
+    public function __construct(DisplayDomainListManager $domainListManager, DisplayBlacklistManagerInterface $displayBlackListManager, LoggerInterface $logger)
     {
         parent::__construct($domainListManager, $logger);
-        $this->displayBlackListManager = $DisplayBlackListManager;
+        $this->displayBlackListManager = $displayBlackListManager;
     }
 
     public function importCsv($filename, PublisherInterface $publisher, $name, $csvSeparator = self::CSV_SEPARATOR)

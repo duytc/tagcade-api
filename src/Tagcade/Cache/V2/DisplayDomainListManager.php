@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tagcade\Cache\Legacy;
+namespace Tagcade\Cache\V2;
 
 use Redis;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
@@ -35,11 +35,11 @@ class DisplayDomainListManager implements DisplayDomainListManagerInterface
 
             try {
                 $redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
-                $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+//                $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
                 $this->redis = $redis;
             } catch (\RedisException $e) {
                 // todo refactor to check if redis is connected or not
-                $this->redis= null;
+                $this->redis = null;
             }
         }
 
@@ -48,19 +48,29 @@ class DisplayDomainListManager implements DisplayDomainListManagerInterface
 
     public function saveBlacklist(DisplayBlacklistInterface $blacklist)
     {
-        $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getName());
+        $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getId());
 
         $this->getRedis()->del($key);
         $domains = $blacklist->getDomains();
 
-        foreach($domains as $domain) {
+        foreach ($domains as $domain) {
             $this->getRedis()->sAdd($key, $domain);
         }
     }
 
-    public function getDomainsForBlacklist($suffixKey)
+    /**
+     * @param DisplayBlacklistInterface $blacklist
+     * @return mixed
+     */
+    public function delBlacklist(DisplayBlacklistInterface $blacklist)
     {
-        $key = sprintf('%s:%s', $this->blackListPrefix, $suffixKey);
+        $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getId());
+        $this->getRedis()->del($key);
+    }
+
+    public function getDomainsForBlacklist($displayBlacklistId)
+    {
+        $key = sprintf('%s:%s', $this->blackListPrefix, $displayBlacklistId);
 
         return $this->getRedis()->sMembers($key);
     }

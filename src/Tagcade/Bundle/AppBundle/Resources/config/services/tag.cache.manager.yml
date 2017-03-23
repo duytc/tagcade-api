@@ -41,6 +41,7 @@ services:
             - '@tagcade.repository.expression'
             - '@tagcade.service.tag_generator'
             - '@tagcade.domain_manager.display.blacklist'
+            - '%tc.display.blacklist.prefix%'
 
     tagcade.cache.display.v2.refresher.ron_ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache
@@ -60,7 +61,7 @@ services:
                 - '@tagcade.cache.display.v2.tag_cache'
 
     tagcade.cache.display_domain_list_manager:
-        class: Tagcade\Cache\Legacy\DisplayDomainListManager
+        class: Tagcade\Cache\V2\DisplayDomainListManager
         arguments:
             - '%tc.redis.display_tag_cache.host%'
             - '%tc.redis.display_tag_cache.port%'

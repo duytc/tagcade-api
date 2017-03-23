@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Tagcade\Cache\Legacy;
+namespace Tagcade\Cache\V2;
 
 
 use Tagcade\Model\Core\DisplayBlacklistInterface;
@@ -16,8 +16,14 @@ interface DisplayDomainListManagerInterface
     public function saveBlacklist(DisplayBlacklistInterface $blacklist);
 
     /**
-     * @param $suffixKey
+     * @param DisplayBlacklistInterface $blacklist
+     * @return mixed
+     */
+    public function delBlacklist(DisplayBlacklistInterface $blacklist);
+
+    /**
+     * @param $displayBlacklistId
      * @return array
      */
-    public function getDomainsForBlacklist($suffixKey);
+    public function getDomainsForBlacklist($displayBlacklistId);
 }
