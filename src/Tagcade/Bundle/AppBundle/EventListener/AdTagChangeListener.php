@@ -55,7 +55,10 @@ class AdTagChangeListener
 
         $tmp = array_merge($uow->getScheduledEntityInsertions(), $uow->getScheduledEntityUpdates(), $uow->getScheduledEntityDeletions());
 
-        $this->changedEntities = $tmp;
+        if (!is_array($this->changedEntities)){
+            $this->changedEntities = [];
+        }
+        $this->changedEntities = array_merge($tmp, $this->changedEntities);
     }
 
     // Truly refresh cache invocation
