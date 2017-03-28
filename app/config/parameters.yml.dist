@@ -167,4 +167,3 @@ parameters:
     tc.video.blacklist.prefix: 'video:domain_blacklist'
     tc.video.whitelist.prefix: 'video:domain_whitelist'
     tc.display.blacklist.prefix: 'display:domain_blacklist'
-    tc.display.whitelist.prefix: 'display:domain_whitelist'
