@@ -158,11 +158,15 @@ trait CreateAdSlotDataTrait
                 continue;
             }
 
-            $data['blacklist'][] = implode(',', $this->getBlacklists($adTag));
             $dataItem = [
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
             ];
+
+            $adTagBlacklist = implode(',', $this->getBlacklists($adTag));
+            if (!empty($adTagBlacklist) && strlen($adTagBlacklist) > 0){
+                $dataItem['blacklist'] = $adTagBlacklist;
+            }
 
             if (null !== $adTag->getFrequencyCap()) {
                 $dataItem['cap'] = $adTag->getFrequencyCap();
@@ -317,11 +321,15 @@ trait CreateAdSlotDataTrait
                 continue;
             }
 
-            $data['blacklist'][] = implode(',', $this->getBlacklists($adTag));
             $dataItem = [
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
             ];
+
+            $adTagBlacklist = implode(',', $this->getBlacklists($adTag));
+            if (!empty($adTagBlacklist) && strlen($adTagBlacklist) > 0){
+                $dataItem['blacklist'] = $adTagBlacklist;
+            }
 
             if (null !== $adTag->getFrequencyCap()) {
                 $dataItem['cap'] = $adTag->getFrequencyCap();
