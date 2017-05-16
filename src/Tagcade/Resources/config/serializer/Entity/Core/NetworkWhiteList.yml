@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\NetworkWhiteList:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [network.whitelist.detail, network.whitelist.summary, network.whitelist.min]
+        adNetwork:
+            expose: true
+            groups: [network.whitelist.detail, network.whitelist.min]
+        displayBlacklist:
+            expose: true
+            groups: [network.whitelist.detail, network.whitelist.summary]

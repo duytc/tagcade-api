@@ -34,3 +34,6 @@ Tagcade\Entity\Core\AdNetwork:
         networkBlacklists:
             expose: true
             groups: [adnetwork.extra, adnetwork.summary, adnetwork.credential]
+        networkWhiteLists:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.summary, adnetwork.credential]

@@ -47,16 +47,6 @@ interface DisplayBlacklistInterface extends ModelInterface
     public function getAdNetworks();
 
     /**
-     * @return boolean
-     */
-    public function isDefault();
-
-    /**
-     * @param boolean $default
-     */
-    public function setIsDefault($default);
-
-    /**
      * @return PublisherInterface
      */
     public function getPublisher();

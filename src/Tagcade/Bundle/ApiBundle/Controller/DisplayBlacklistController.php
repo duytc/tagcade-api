@@ -9,9 +9,11 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Handler\Handlers\Core\DisplayBlacklistHandlerAbstract;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\DisplayBlacklistRepositoryInterface;
 
 /**
  * @Rest\RouteResource("DisplayBlacklist")
@@ -24,6 +26,14 @@ class DisplayBlacklistController extends RestControllerAbstract implements Class
      * @Rest\View(
      *      serializerGroups={"display.blacklist.min", "user.min", "adnetwork.min"}
      * )
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="DisplayBlacklists",
      *  resource = true,
@@ -32,11 +42,28 @@ class DisplayBlacklistController extends RestControllerAbstract implements Class
      *  }
      * )
      *
+     * @param Request $request
      * @return \Tagcade\Model\Core\DisplayBlacklistInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $role = $this->getUser();
+
+        /** @var DisplayBlacklistRepositoryInterface $displayBlacklistRepository */
+        $displayBlacklistRepository = $this->get('tagcade.repository.display.blacklist');
+
+        /** @var DisplayBlacklistManagerInterface $displayBlacklistManager */
+        $displayBlacklistManager = $this->get('tagcade.domain_manager.display.blacklist');
+
+        if ($request->query->get('page') > 0) {
+            $qb = $displayBlacklistRepository->getDisplayBlacklistsForPublisherWithPagination($role, $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        }
+
+        return ($role instanceof PublisherInterface)
+            ? $displayBlacklistRepository->getDisplayBlacklistsForPublisher($role)
+            : $displayBlacklistManager->all();
     }
 
     /**
@@ -124,9 +151,6 @@ class DisplayBlacklistController extends RestControllerAbstract implements Class
     {
         /** @var DisplayBlacklistInterface $displayBlacklist */
         $displayBlacklist = $this->one($id);
-        if ($displayBlacklist->isDefault()){
-            return $this->get('tagcade.domain_manager.ad_network')->getAdNetworksForPublisher($displayBlacklist->getPublisher());
-        }
         return $displayBlacklist->getAdNetworks();
     }
 

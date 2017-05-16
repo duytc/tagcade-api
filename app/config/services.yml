@@ -27,6 +27,7 @@ parameters:
     tagcade.security.auth.voter.video_waterfall_tag_item.class: Tagcade\Security\Authorization\Voter\VideoWaterfallTagItemVoter
     tagcade.security.auth.voter.blacklist.class: Tagcade\Security\Authorization\Voter\BlacklistVoter
     tagcade.security.auth.voter.display.blacklist.class: Tagcade\Security\Authorization\Voter\DisplayBlacklistVoter
+    tagcade.security.auth.voter.display.white.list.class: Tagcade\Security\Authorization\Voter\DisplayWhiteListVoter
     tagcade.security.auth.voter.white_list.class: Tagcade\Security\Authorization\Voter\WhiteListVoter
     tagcade.security.auth.voter.library_expresison.class: Tagcade\Security\Authorization\Voter\LibraryExpressionVoter
     tagcade.security.auth.voter.library_video_demand_ad_tag.class: Tagcade\Security\Authorization\Voter\LibraryVideoDemandAdTagVoter
@@ -169,6 +170,12 @@ services:
 
     tagcade.security.auth.voter.display.blacklist:
         class:  '%tagcade.security.auth.voter.display.blacklist.class%'
+        public: false
+        tags:
+            - { name: security.voter }
+
+    tagcade.security.auth.voter.display.white.list.class:
+        class:  '%tagcade.security.auth.voter.display.white.list.class%'
         public: false
         tags:
             - { name: security.voter }

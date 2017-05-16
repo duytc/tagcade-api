@@ -4,7 +4,8 @@ namespace Tagcade\Service\CSV;
 
 
 use Psr\Log\LoggerInterface;
-use Tagcade\Cache\V2\DisplayDomainListManager;
+use Tagcade\Cache\V2\DisplayBlacklistCacheManager;
+use Tagcade\Cache\V2\DisplayBlacklistManager;
 use Tagcade\Service\StringUtilTrait;
 
 abstract class DisplayListImporterAbstract implements ListImporterInterface
@@ -15,18 +16,18 @@ abstract class DisplayListImporterAbstract implements ListImporterInterface
     const DOMAIN = 0;
 
     /**
-     * @var DisplayDomainListManager
+     * @var DisplayBlacklistCacheManager
      */
-    protected $domainListManager;
+    protected $displayBlacklistCacheManager;
 
     /**
      * @var LoggerInterface
      */
     protected $logger;
 
-    public function __construct(DisplayDomainListManager $domainListManager, LoggerInterface $logger)
+    public function __construct(DisplayBlacklistCacheManager $displayBlacklistCacheManager, LoggerInterface $logger)
     {
-        $this->domainListManager = $domainListManager;
+        $this->displayBlacklistCacheManager = $displayBlacklistCacheManager;
         $this->logger = $logger;
     }
 

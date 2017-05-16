@@ -41,7 +41,6 @@ class NetworkBlacklistChangeListener
 
     public function postPersist(LifecycleEventArgs $args)
     {
-        $em = $args->getEntityManager();
         $entity = $args->getEntity();
 
         if (!$entity instanceof NetworkBlacklistInterface) {
@@ -52,7 +51,6 @@ class NetworkBlacklistChangeListener
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        $em = $args->getEntityManager();
         $entity = $args->getEntity();
 
         if (!$entity instanceof NetworkBlacklistInterface) {
@@ -64,7 +62,6 @@ class NetworkBlacklistChangeListener
 
     public function postRemove(LifecycleEventArgs $args)
     {
-        $em = $args->getEntityManager();
         $entity = $args->getEntity();
 
         if (!$entity instanceof NetworkBlacklistInterface) {

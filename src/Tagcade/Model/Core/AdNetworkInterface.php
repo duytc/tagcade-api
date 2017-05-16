@@ -160,7 +160,22 @@ interface AdNetworkInterface extends ModelInterface
     public function setNetworkBlacklists($networkBlacklists);
 
     /**
+     * @return NetworkWhiteListInterface[]
+     */
+    public function getNetworkWhiteLists();
+
+    /**
+     * @param NetworkWhiteListInterface[] $networkWhiteLists
+     * @return self
+     */
+    public function setNetworkWhiteLists($networkWhiteLists);
+    /**
      * @return DisplayBlacklistInterface[]
      */
     public function getDisplayBlacklists();
+
+    /**
+     * @return DisplayWhiteListInterface[]
+     */
+    public function getDisplayWhiteLists();
 }

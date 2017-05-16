@@ -1,0 +1,40 @@
+parameters:
+    # entity class
+    tagcade.entity.core.network.white_list.class: Tagcade\Entity\Core\NetworkWhiteList
+
+services:
+
+    # network white_list handler #####################################################
+
+    tagcade_api.handler.network.white_list:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.network.white_list
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    # network white_list
+
+    tagcade.repository.network.network.white_list:
+            class: Tagcade\Repository\Core\NetworkWhiteListRepositoryInterface
+            factory_service: doctrine.orm.entity_manager
+            factory_method: getRepository
+            arguments:
+                - Tagcade\Entity\Core\NetworkWhiteList
+
+    ###### dependencies and base classes for network white_list handler ##############
+
+    tagcade.repository.network.white_list:
+        class: Tagcade\Repository\Core\NetworkWhiteListRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\NetworkWhiteList
+
+    tagcade.domain_manager.network.white_list:
+        class: Tagcade\DomainManager\NetworkWhiteListManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.network.white_list
+
+    # end network white_list #####################################################

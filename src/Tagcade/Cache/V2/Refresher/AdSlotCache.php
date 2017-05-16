@@ -5,9 +5,8 @@ namespace Tagcade\Cache\V2\Refresher;
 
 use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
-use Tagcade\Cache\V2\DisplayDomainListManagerInterface;
+use Tagcade\Cache\V2\DisplayBlacklistCacheManagerInterface;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
-use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
 use Tagcade\DomainManager\NativeAdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
@@ -49,15 +48,15 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     private $tagGenerator;
 
     /**
-     * @var DisplayBlacklistManagerInterface $displayBlacklistManager
+     * @var DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager
      */
-    protected $displayBlacklistManager;
+    protected $displayBlacklistCacheManager;
 
     /**
      * @var string
      */
     protected $blacklistPrefix;
-
+    protected $whiteListPrefix;
     public function __construct(NamespaceCacheInterface $cache,
                                 Manager $workerManager,
                                 DisplayAdSlotManagerInterface $displayAdSlotManager,
@@ -65,8 +64,8 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
                                 DynamicAdSlotManagerInterface $dynamicAdSlotManager,
                                 ExpressionRepositoryInterface $expressionRepository,
                                 TagGenerator $tagGenerator,
-                                DisplayBlacklistManagerInterface $displayBlacklistManager,
-                                $blacklistPrefix)
+//                                DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager,
+                                $blacklistPrefix, $whiteListPrefix)
     {
         parent::__construct($cache, $workerManager);
 
@@ -75,8 +74,9 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $this->displayAdSlotManager = $displayAdSlotManager;
         $this->nativeAdSlotManager = $nativeAdSlotManager;
         $this->tagGenerator = $tagGenerator;
-        $this->displayBlacklistManager = $displayBlacklistManager;
+//        $this->displayBlacklistCacheManager = $displayBlacklistCacheManager;
         $this->blacklistPrefix = $blacklistPrefix;
+        $this->whiteListPrefix = $whiteListPrefix;
     }
 
     /**
@@ -267,16 +267,16 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         return $this->tagGenerator;
     }
 
-    protected function getDisplayBlacklistManager()
-    {
-        return $this->displayBlacklistManager;
-    }
-
     /**
      * @return string
      */
     protected function getBlacklistPrefix()
     {
         return $this->blacklistPrefix;
+    }
+
+    protected function getWhiteListPrefix()
+    {
+        return $this->whiteListPrefix;
     }
 }

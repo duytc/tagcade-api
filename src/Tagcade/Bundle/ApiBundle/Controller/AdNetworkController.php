@@ -16,6 +16,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
+use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
@@ -26,6 +27,8 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
+use Tagcade\Repository\Core\DisplayBlacklistRepositoryInterface;
+use Tagcade\Repository\Core\DisplayWhiteListRepositoryInterface;
 
 
 /**
@@ -123,7 +126,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get a single ad network for the given id
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary", "display.blacklist.summary", "display.blacklist.min", "network.blacklist.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary"})
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -431,6 +434,13 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *      serializerGroups={"adnetwork.summary", "user.summary", "display.blacklist.summary", "network.blacklist.min"}
      * )
      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="AdNetworks",
      *  resource = true,
@@ -441,21 +451,74 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * )
      *
      *
+     * @param Request $request
      * @param int $id
      * @return \Tagcade\Model\Core\DisplayBlacklistInterface[]
      */
-    public function getDisplayblacklistsAction($id)
+    public function getDisplayblacklistsAction(Request $request, $id)
     {
         /** @var AdNetworkInterface $adNetwork */
         $adNetwork = $this->one($id);
-        $displayBlacklistManager =  $this->get('tagcade.domain_manager.display.blacklist');
 
-        $displayBlacklists = array_unique(array_merge(
-            $adNetwork->getDisplayBlacklists(),
-            $displayBlacklistManager->getDefaultBlacklists($adNetwork->getPublisher())
-        ));
-        return array_values($displayBlacklists);
+        /** @var DisplayBlacklistRepositoryInterface $displayBlacklistRepository */
+        $displayBlacklistRepository = $this->get('tagcade.repository.display.blacklist');
+
+
+        if ($request->query->get('page') > 0) {
+            $qb = $displayBlacklistRepository->getDisplayBlacklistsForAdNetworkWithPagination($adNetwork, $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        }
+
+        return $displayBlacklistRepository->getBlacklistsForAdNetwork($adNetwork);
     }
+
+    /**
+     * Retrieve a list of displayWhiteList for this adNetwork
+     *
+     * @Rest\View(
+     *      serializerGroups={"adnetwork.summary", "user.summary", "display.whitelist.summary", "network.whitelist.min"}
+     * )
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
+     * @ApiDoc(
+     *  section="AdNetworks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     *
+     * @param Request $request
+     * @param int $id
+     * @return \Tagcade\Model\Core\DisplayWhiteListInterface[]
+     */
+    public function getDisplaywhitelistsAction(Request $request, $id)
+    {
+        /** @var AdNetworkInterface $adNetwork */
+        $adNetwork = $this->one($id);
+
+        /** @var DisplayWhiteListRepositoryInterface $displayWhiteListRepository */
+        $displayWhiteListRepository = $this->get('tagcade.repository.display.white_list');
+
+
+        if ($request->query->get('page') > 0) {
+            $qb = $displayWhiteListRepository->getDisplayWhiteListsForAdNetworkWithPagination($adNetwork, $this->getParams());
+
+            return $this->getPagination($qb, $request);
+        }
+
+        return $displayWhiteListRepository->getWhiteListsForAdNetwork($adNetwork);
+    }
+
 
     /**
      * Create a ad network from the submitted data

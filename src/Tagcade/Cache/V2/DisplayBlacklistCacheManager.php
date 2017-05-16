@@ -6,7 +6,7 @@ namespace Tagcade\Cache\V2;
 use Redis;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
 
-class DisplayDomainListManager implements DisplayDomainListManagerInterface
+class DisplayBlacklistCacheManager implements DisplayBlacklistCacheManagerInterface
 {
     const REDIS_CONNECT_TIMEOUT_IN_SECONDS = 1;
 
@@ -46,12 +46,12 @@ class DisplayDomainListManager implements DisplayDomainListManagerInterface
         return $this->redis;
     }
 
-    public function saveBlacklist(DisplayBlacklistInterface $blacklist)
+    public function saveBlacklist(DisplayBlacklistInterface $blacklist, array $refinedDomains = null)
     {
         $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getId());
 
         $this->getRedis()->del($key);
-        $domains = $blacklist->getDomains();
+        $domains = $refinedDomains === null ? $blacklist->getDomains() : $refinedDomains;
 
         foreach ($domains as $domain) {
             $this->getRedis()->sAdd($key, $domain);
@@ -62,10 +62,11 @@ class DisplayDomainListManager implements DisplayDomainListManagerInterface
      * @param DisplayBlacklistInterface $blacklist
      * @return mixed
      */
-    public function delBlacklist(DisplayBlacklistInterface $blacklist)
+    public function deleteBlacklist(DisplayBlacklistInterface $blacklist)
     {
         $key = sprintf('%s:%s', $this->blackListPrefix, $blacklist->getId());
-        $this->getRedis()->del($key);
+
+        return $this->getRedis()->del($key);
     }
 
     public function getDomainsForBlacklist($displayBlacklistId)

@@ -1,0 +1,20 @@
+Tagcade\Entity\Core\NetworkWhiteList:
+    type: entity
+    table: core_network_white_list
+    repositoryClass: Tagcade\Repository\Core\NetworkWhiteListRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        adNetwork:
+            targetEntity: Tagcade\Entity\Core\AdNetwork
+            inversedBy: displayWhiteLists
+            joinColumn:
+                name: ad_network_id
+                referencedColumnName: id
+                nullable: true
+        displayWhiteList:
+            targetEntity: Tagcade\Entity\Core\DisplayWhiteList
+            inversedBy: networkWhiteLists

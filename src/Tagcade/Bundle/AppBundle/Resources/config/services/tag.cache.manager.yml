@@ -40,8 +40,9 @@ services:
             - '@tagcade.domain_manager.dynamic_ad_slot'
             - '@tagcade.repository.expression'
             - '@tagcade.service.tag_generator'
-            - '@tagcade.domain_manager.display.blacklist'
+#            - '@tagcade.domain_manager.display.blacklist'
             - '%tc.display.blacklist.prefix%'
+            - '%tc.display.white_list.prefix%'
 
     tagcade.cache.display.v2.refresher.ron_ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache
@@ -60,12 +61,19 @@ services:
 #                - '@tagcade.cache.display.legacy.tag_cache'
                 - '@tagcade.cache.display.v2.tag_cache'
 
-    tagcade.cache.display_domain_list_manager:
-        class: Tagcade\Cache\V2\DisplayDomainListManager
+    tagcade.cache.display_blacklist_cache_manager:
+        class: Tagcade\Cache\V2\DisplayBlacklistCacheManager
         arguments:
             - '%tc.redis.display_tag_cache.host%'
             - '%tc.redis.display_tag_cache.port%'
             - '%tc.display.blacklist.prefix%'
+
+    tagcade.cache.display_white_list_cache_manager:
+        class: Tagcade\Cache\V2\DisplayWhiteListCacheManager
+        arguments:
+            - '%tc.redis.display_tag_cache.host%'
+            - '%tc.redis.display_tag_cache.port%'
+            - '%tc.display.white_list.prefix%'
 
     ############ END DISPLAY CACHE
 

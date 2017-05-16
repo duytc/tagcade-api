@@ -2,14 +2,25 @@
 
 namespace Tagcade\Repository\Core;
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
+use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class DisplayBlacklistRepository extends EntityRepository implements DisplayBlacklistRepositoryInterface
 {
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'name' => 'name',
+        'publisher' => 'publisher'
+    ];
+
     /**
      * @return array
      */
@@ -123,5 +134,71 @@ class DisplayBlacklistRepository extends EntityRepository implements DisplayBlac
             ->setParameter('id', $networkBlacklist->getId());
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return QueryBuilder
+     */
+    public function getDisplayBlacklistsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('db');
+
+        if ($user instanceof PublisherInterface && !$user instanceof SubPublisherInterface) {
+            $qb->where('db.publisher = :publisher')
+                ->setParameter('publisher', $user);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX (
+                $qb->expr()->like('db.name', ':searchKey'),
+                $qb->expr()->like('db.id', ':searchKey')
+            ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('db.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getDisplayBlacklistsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('db')
+            ->join('db.networkBlacklists', 'nbl')
+            ->where('nbl.adNetwork = :adNetwork')
+            ->setParameter('adNetwork', $adNetwork);
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->orX (
+                $qb->expr()->like('db.name', ':searchKey'),
+                $qb->expr()->like('db.id', ':searchKey')
+            ))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('db.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
     }
 }

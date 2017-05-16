@@ -1,0 +1,76 @@
+parameters:
+    # entity class
+    tagcade.entity.core.display.white_list.class: Tagcade\Entity\Core\DisplayWhiteList
+    # form class
+    tagcade.form.type.display.white_list.class: Tagcade\Form\Type\DisplayWhiteListFormType
+
+services:
+
+    # display white_list handler #####################################################
+
+    tagcade_api.handler.display.white_list:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.display.white_list
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    # network white_list
+
+    tagcade.repository.display.network.white_list:
+            class: Tagcade\Repository\Core\NetworkWhiteListRepositoryInterface
+            factory_service: doctrine.orm.entity_manager
+            factory_method: getRepository
+            arguments:
+                - Tagcade\Entity\Core\NetworkWhiteList
+
+    ###### dependencies and base classes for display white_list handler ##############
+
+    tagcade.repository.display.white_list:
+        class: Tagcade\Repository\Core\DisplayWhiteListRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - Tagcade\Entity\Core\DisplayWhiteList
+
+    tagcade.domain_manager.display.white_list:
+        class: Tagcade\DomainManager\DisplayWhiteListManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.display.white_list
+
+    tagcade.form.type.display.white_list:
+        class: %tagcade.form.type.display.white_list.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+        tags:
+            - { name: form.type, alias: tagcade_form_display_white_list }
+
+    tagcade.handler.handlers.display.white_list.abstract:
+        class: Tagcade\Handler\Handlers\Core\DisplayWhiteListHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.display.white_list
+            - @tagcade.domain_manager.display.white_list
+
+    tagcade.handler.handlers.display.white_list.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\DisplayWhiteListHandler
+        parent: tagcade.handler.handlers.display.white_list.abstract
+        public: false
+
+    tagcade.handler.handlers.display.white_list.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\DisplayWhiteListHandler
+        parent: tagcade.handler.handlers.display.white_list.abstract
+        public: false
+
+    tagcade.handler.handler_manager.display.white_list:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.display.white_list.class%
+            -
+                - @tagcade.handler.handlers.display.white_list.admin
+                - @tagcade.handler.handlers.display.white_list.publisher
+
+    # end display white_list #####################################################

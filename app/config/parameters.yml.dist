@@ -107,29 +107,6 @@ parameters:
 
     unified_report_mail_domain: unifiedreports.tagcade.com
 
-    partner_tag_id.matching_config:
-        sovrn:
-            pattern: '/z\=([0-9]+)/'
-        33across:
-            pattern: /\(\'([0-9]+x[0-9]+)\'/
-        defy-media:
-            pattern: '/id\=([0-9]+)/'
-        yellow-hammer:
-            pattern: '/BEGIN JS TAG - (.*) </'
-        pulse-point:
-            pattern: '/cwtagid\=([0-9]+)/'
-        epom-market:
-            pattern: '/^.*?epmads_width = "([\d]+)".*?epmads_height = "([\d]+)".*?$/s'
-            finalize-pattern: '$1x$2 (JS Sync)'
-        native-ads:
-            pattern: '/(\d+)_\d+ - DO NOT MODIFY/'
-        google-adx:
-            pattern: '#google_ad_client\s*=\s*.*\n\s*/\*\s*([^*]+)\s*\*/#'
-        cpm-base:
-            use-size: true
-        rubicon:
-            pattern: '#Zone:\s*([^ ]+)#'
-
     tc.bulk_upload.site.index:
         name: 0
         domain: 1
@@ -166,4 +143,5 @@ parameters:
 
     tc.video.blacklist.prefix: 'video:domain_blacklist'
     tc.video.whitelist.prefix: 'video:domain_whitelist'
-    tc.display.blacklist.prefix: 'display:domain_blacklist'
+    tc.display.blacklist.prefix: 'dsp:nw_bl'
+    tc.display.white_list.prefix: 'dsp:nw_wl'

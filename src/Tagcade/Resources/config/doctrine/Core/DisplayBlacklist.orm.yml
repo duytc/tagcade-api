@@ -13,10 +13,6 @@ Tagcade\Entity\Core\DisplayBlacklist:
             length: 100
         domains:
              type: json_array
-        isDefault:
-            type: boolean
-            options:
-                default: false
 
     oneToMany:
         networkBlacklists:

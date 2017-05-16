@@ -249,6 +249,7 @@ fos_rest:
             'Tagcade\Exception\InvalidArgumentException': 400
             'Tagcade\Exception\LogicException': 400
             'Tagcade\Exception\Report\InvalidDateException': 400
+            'Tagcade\Exception\RuntimeException': 500
 
 lexik_jwt_authentication:
     private_key_path:   '%jwt_private_key_path%'

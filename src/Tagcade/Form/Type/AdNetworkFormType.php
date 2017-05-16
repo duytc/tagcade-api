@@ -14,10 +14,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\DomainManager\NetworkBlacklistManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdNetworkPartner;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
+use Tagcade\Model\Core\NetworkWhiteListInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Repository\Core\AdNetworkPartnerRepositoryInterface;
 
@@ -77,6 +79,14 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
             )
         );
 
+        $builder->add('networkWhiteLists', 'collection', array(
+                'mapped' => true,
+                'type' => new NetworkWhiteListFormType(),
+                'allow_add' => true,
+                'allow_delete' => true,
+            )
+        );
+
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,
             function (FormEvent $event) {
@@ -112,9 +122,21 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 /** @var Collection| NetworkBlacklistInterface[] $networkBlacklists */
                 $networkBlacklists = $event->getForm()->get('networkBlacklists')->getData();
 
+                /** @var Collection| NetworkWhiteListInterface[] $networkWhiteLists */
+                $networkWhiteLists = $event->getForm()->get('networkWhiteLists')->getData();
+
                 if ($networkBlacklists === null) {
                     $form->get('networkBlacklists')->addError(new FormError('networkBlacklists must be an array string'));
                     return;
+                }
+
+                if ($networkWhiteLists === null) {
+                    $form->get('$networkWhiteLists')->addError(new FormError('$networkWhiteLists must be an array string'));
+                    return;
+                }
+
+                if (count($networkWhiteLists) > 0 && count($networkBlacklists) > 0) {
+                    throw new InvalidArgumentException('Demand partner can not have both blacklist and white list');
                 }
 
                 foreach ($networkBlacklists as $networkBlacklist) {
@@ -128,6 +150,18 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 }
 
                 $adNetwork->setNetworkBlacklists($networkBlacklists);
+
+                foreach ($networkWhiteLists as $networkWhiteList) {
+                    if (!$networkWhiteList->getAdNetwork() instanceof AdNetworkInterface) {
+                        $networkWhiteList->setAdNetwork($adNetwork);
+                    }
+                }
+
+                if ($networkWhiteLists instanceof Collection) {
+                    $networkWhiteLists = $networkWhiteLists->toArray();
+                }
+
+                $adNetwork->setNetworkWhiteLists($networkWhiteLists);
             }
         );
     }

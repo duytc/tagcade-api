@@ -7,8 +7,7 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Tagcade\Cache\V2\DisplayDomainListManagerInterface;
-use Tagcade\Entity\Core\AdNetwork;
+use Tagcade\Cache\V2\DisplayBlacklistCacheManagerInterface;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
 use Tagcade\Worker\Manager;
@@ -26,88 +25,61 @@ class DisplayBlacklistChangeListener
     protected $adNetworks;
 
     /**
-     * @var DisplayDomainListManagerInterface
+     * @var DisplayBlacklistCacheManagerInterface
      */
-    protected $displayDomainListManager;
+    protected $displayBlacklistCacheManager;
 
     /**
      * DisplayBlacklistChangeListener constructor.
      * @param Manager $workerManager
-     * @param DisplayDomainListManagerInterface $displayDomainListManager
+     * @param DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager
      */
-    public function __construct(Manager $workerManager, DisplayDomainListManagerInterface $displayDomainListManager)
+    public function __construct(Manager $workerManager, DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager)
     {
         $this->workerManager = $workerManager;
-        $this->displayDomainListManager = $displayDomainListManager;
+        $this->displayBlacklistCacheManager = $displayBlacklistCacheManager;
         $this->adNetworks = [];
     }
 
     public function postPersist(LifecycleEventArgs $args)
     {
-        $em = $args->getEntityManager();
         $entity = $args->getEntity();
 
         if (!$entity instanceof DisplayBlacklistInterface) {
             return;
         }
 
-        if ($entity->isDefault()) {
-            $adNetworkRepository = $em->getRepository(AdNetwork::class);
-            $this->adNetworks = array_merge($this->adNetworks, $adNetworkRepository->getAdNetworksForPublisher($entity->getPublisher()));
-        } else {
-            $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
-        }
-
-        $this->displayDomainListManager->saveBlacklist($entity);
+        $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
+        $this->displayBlacklistCacheManager->saveBlacklist($entity);
     }
 
     public function preUpdate(PreUpdateEventArgs $args)
     {
-        $em = $args->getEntityManager();
         $entity = $args->getEntity();
 
-        if (!$entity instanceof DisplayBlacklistInterface || (
-                $entity instanceof DisplayBlacklistInterface && !(
-                    $args->hasChangedField('domains') ||
-                    $args->hasChangedField('isDefault')))
+        if (!$entity instanceof DisplayBlacklistInterface ||
+            ($entity instanceof DisplayBlacklistInterface && !$args->hasChangedField('domains'))
         ) {
             return;
         }
 
         $this->adNetworks = [];
         if ($args->hasChangedField('domains')) {
-            if ($entity->isDefault()) {
-                $adNetworkRepository = $em->getRepository(AdNetwork::class);
-                $this->adNetworks = array_merge($this->adNetworks, $adNetworkRepository->getAdNetworksForPublisher($entity->getPublisher()));
-            } else {
-                $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
-            }
-            $this->displayDomainListManager->saveBlacklist($entity);
-        }
-
-        if ($args->hasChangedField('isDefault')) {
-            $adNetworkRepository = $em->getRepository(AdNetwork::class);
-            $this->adNetworks = array_merge($this->adNetworks, $adNetworkRepository->getAdNetworksForPublisher($entity->getPublisher()));
+            $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
+            $this->displayBlacklistCacheManager->saveBlacklist($entity);
         }
     }
 
-    public function postRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
-        $em = $args->getEntityManager();
         if (!$entity instanceof DisplayBlacklistInterface) {
             return;
         }
 
-        if ($entity->isDefault()) {
-            $adNetworkRepository = $em->getRepository(AdNetwork::class);
-            $this->adNetworks = array_merge($this->adNetworks, $adNetworkRepository->getAdNetworksForPublisher($entity->getPublisher()));
-        } else {
-            $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
-        }
-
+        $this->adNetworks = array_merge($this->adNetworks, $entity->getAdNetworks());
         if ($entity->getId()) {
-            $this->displayDomainListManager->delBlacklist($entity);
+            $this->displayBlacklistCacheManager->deleteBlacklist($entity);
         }
     }
 
