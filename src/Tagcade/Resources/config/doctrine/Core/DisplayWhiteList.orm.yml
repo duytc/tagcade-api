@@ -1,0 +1,26 @@
+Tagcade\Entity\Core\DisplayWhiteList:
+    type: entity
+    table: core_display_white_list
+    repositoryClass: Tagcade\Repository\Core\DisplayWhiteListRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        domains:
+             type: json_array
+
+    oneToMany:
+        networkWhiteLists:
+            targetEntity: Tagcade\Entity\Core\NetworkWhiteList
+            mappedBy: displayWhiteList
+            cascade: ["persist", "remove", "detach"]
+            orphanRemoval: true
+
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

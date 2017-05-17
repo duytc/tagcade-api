@@ -31,7 +31,9 @@ imports:
     - { resource: services/service.whitelist.yml }
     - { resource: services/service.waterfalltagRules.yml }
     - { resource: services/service.displayblacklist.yml }
+    - { resource: services/service.displaywhitelist.yml }
     - { resource: services/service.networkblacklist.yml }
+    - { resource: services/service.networkwhitelist.yml }
 
 
 parameters:

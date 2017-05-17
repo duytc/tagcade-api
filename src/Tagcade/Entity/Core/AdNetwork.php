@@ -20,6 +20,7 @@ class AdNetwork extends AdNetworkModel
     protected $impressionCap;
     protected $networkOpportunityCap;
     protected $networkBlacklists;
+    protected $networkWhiteLists;
 
     /**
      * @var AdNetworkPartnerInterface

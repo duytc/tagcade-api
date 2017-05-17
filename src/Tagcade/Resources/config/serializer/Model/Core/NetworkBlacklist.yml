@@ -1,0 +1,2 @@
+Tagcade\Model\Core\NetworkBlacklist:
+    exclusion_policy: ALL

@@ -63,15 +63,36 @@ services:
         class: Tagcade\Bundle\AppBundle\EventListener\DisplayBlacklistChangeListener
         arguments:
             - '@tagcade.worker.manager'
-            - '@tagcade.cache.display_domain_list_manager'
+            - '@tagcade.cache.display_blacklist_cache_manager'
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preRemove }
+
+    tagcade_app.event_listener.display_white_list_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\DisplayWhiteListChangeListener
+        arguments:
+            - '@tagcade.worker.manager'
+            - '@tagcade.cache.display_white_list_cache_manager'
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preRemove }
+
+    tagcade_app.event_listener.network_blacklist_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\NetworkBlacklistChangeListener
+        arguments:
+            - '@tagcade.worker.manager'
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postFlush }
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postRemove }
 
-    tagcade_app.event_listener.network_blacklist_change_listener:
-        class: Tagcade\Bundle\AppBundle\EventListener\NetworkBlacklistChangeListener
+    tagcade_app.event_listener.network_white_list_change_listener:
+        class: Tagcade\Bundle\AppBundle\EventListener\NetworkWhiteListChangeListener
         arguments:
             - '@tagcade.worker.manager'
         tags:
@@ -195,6 +216,18 @@ services:
         class: Tagcade\Service\Core\AdTag\PartnerTagIdFinder
         arguments:
             - '@tagcade.repository.ad_tag'
+
+    tagcade_app.service.core.display_blacklist.refresh_display_blacklist_cache:
+        class: Tagcade\Service\Core\DisplayBlacklist\RefreshBlacklistCacheService
+        arguments:
+            - '@tagcade.cache.display_blacklist_cache_manager'
+            - '@tagcade.domain_manager.display.blacklist'
+
+    tagcade_app.service.core.display_whitelist.refresh_display_whitelist_cache:
+        class: Tagcade\Service\Core\DisplayWhiteList\RefreshDisplayWhiteListService
+        arguments:
+            - '@tagcade.cache.display_white_list_cache_manager'
+            - '@tagcade.domain_manager.display.white_list'
 
     tagcade_app.service.core.ad_network.ad_network_service:
         class: Tagcade\Service\Core\AdNetwork\AdNetworkService

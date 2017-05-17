@@ -50,7 +50,7 @@ class UpdatePublisherListener
             return;
         }
 
-        if ($args->hasChangedField('enabled') || $args->hasChangedField('roles')) {
+        if ($args->hasChangedField('enabled') || $args->hasChangedField('roles') || $args->hasChangedField('username')) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
         }

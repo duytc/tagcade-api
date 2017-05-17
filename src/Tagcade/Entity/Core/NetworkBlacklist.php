@@ -6,5 +6,6 @@ class NetworkBlacklist extends NetworkBlacklistModel
 {
     protected $id;
     protected $adNetwork;
+    protected $publisher;
     protected $displayBlacklist;
 }

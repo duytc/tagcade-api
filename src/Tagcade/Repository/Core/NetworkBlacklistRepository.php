@@ -4,11 +4,16 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
 
 class NetworkBlacklistRepository extends EntityRepository implements NetworkBlacklistRepositoryInterface
 {
-    public function getAdNetworksForDisplayBlacklist(DisplayBlacklistInterface $displayBlacklist)
+    /**
+     * @param DisplayBlacklistInterface $displayBlacklist
+     * @return array
+     */
+    public function getForDisplayBlacklist(DisplayBlacklistInterface $displayBlacklist)
     {
         return $this->createQueryBuilder('nb')
             ->where('nb.displayBlacklist = :blacklist')
@@ -17,12 +22,15 @@ class NetworkBlacklistRepository extends EntityRepository implements NetworkBlac
             ->getResult();
     }
 
-    public function getDefaultNetworkForDisplayBlacklist(DisplayBlacklistInterface $displayBlacklist)
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @return array
+     */
+    public function getForAdNetwork(AdNetworkInterface $adNetwork)
     {
         return $this->createQueryBuilder('nb')
-            ->where('nb.displayBlacklist = :blacklist')
-            ->andWhere('nb.adNetwork is NULL')
-            ->setParameter('blacklist', $displayBlacklist)
+            ->where('nb.adNetwork = :adNetwork')
+            ->setParameter('adNetwork', $adNetwork)
             ->getQuery()
             ->getResult();
     }

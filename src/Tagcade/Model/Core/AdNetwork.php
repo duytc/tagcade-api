@@ -33,6 +33,10 @@ class AdNetwork implements AdNetworkInterface
      * @var NetworkBlacklistInterface[]
      */
     protected $networkBlacklists;
+    /**
+     * @var NetworkWhiteListInterface[]
+     */
+    protected $networkWhiteLists;
 
     /**
      * @return DisplayBlacklistInterface[]
@@ -47,6 +51,23 @@ class AdNetwork implements AdNetworkInterface
             }
         }
         return $displayBlacklists;
+    }
+
+    /**
+     * @return DisplayWhiteListInterface[]
+     */
+    public function getDisplayWhiteLists()
+    {
+        $networkWhiteLists = $this->getNetworkWhiteLists();
+        $displayWhiteLists = [];
+
+        foreach ($networkWhiteLists as $networkWhiteList) {
+            if ($networkWhiteList->getDisplayWhiteList() instanceof DisplayWhiteListInterface) {
+                $displayWhiteLists[] = $networkWhiteList->getDisplayWhiteList();
+            }
+        }
+
+        return $displayWhiteLists;
     }
 
     /**
@@ -351,5 +372,23 @@ class AdNetwork implements AdNetworkInterface
     public function setNetworkBlacklists($networkBlacklists)
     {
         $this->networkBlacklists = $networkBlacklists;
+    }
+
+    /**
+     * @return NetworkWhiteListInterface[]
+     */
+    public function getNetworkWhiteLists()
+    {
+        return $this->networkWhiteLists;
+    }
+
+    /**
+     * @param NetworkWhiteListInterface[] $networkWhiteLists
+     * @return self
+     */
+    public function setNetworkWhiteLists($networkWhiteLists)
+    {
+        $this->networkWhiteLists = $networkWhiteLists;
+        return $this;
     }
 }

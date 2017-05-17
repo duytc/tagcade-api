@@ -56,3 +56,8 @@ Tagcade\Entity\Core\AdNetwork:
             mappedBy: adNetwork
             cascade: ["persist", "remove", "detach"]
             orphanRemoval: true
+        networkWhiteLists:
+            targetEntity: Tagcade\Entity\Core\NetworkWhiteList
+            mappedBy: adNetwork
+            cascade: ["persist", "remove", "detach"]
+            orphanRemoval: true

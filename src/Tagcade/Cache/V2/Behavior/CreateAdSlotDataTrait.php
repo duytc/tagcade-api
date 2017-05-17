@@ -5,18 +5,16 @@ namespace Tagcade\Cache\V2\Behavior;
 
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
-use Tagcade\Cache\V2\DisplayDomainListManagerInterface;
-use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
+use Tagcade\Model\Core\DisplayWhiteListInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\TagGenerator;
 
 trait CreateAdSlotDataTrait
@@ -163,9 +161,16 @@ trait CreateAdSlotDataTrait
                 'tag' => $adTag->getHtml(),
             ];
 
-            $adTagBlacklist = implode(',', $this->getBlacklists($adTag));
-            if (!empty($adTagBlacklist) && strlen($adTagBlacklist) > 0){
-                $dataItem['blacklist'] = $adTagBlacklist;
+            $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
+            if (count($adTagBlacklist) > 0) {
+                $dataItem['blacklist'] = implode(',', $adTagBlacklist);
+                $dataItem['hasBlacklist'] = true;
+            }
+
+            $adTagWhiteList = $this->getDisplayWhiteListsForAdTag($adTag);
+            if (count($adTagWhiteList) > 0) {
+                $dataItem['whiteList'] = implode(',', $adTagWhiteList);
+                $dataItem['hasWhiteList'] = true;
             }
 
             if (null !== $adTag->getFrequencyCap()) {
@@ -326,9 +331,16 @@ trait CreateAdSlotDataTrait
                 'tag' => $adTag->getHtml(),
             ];
 
-            $adTagBlacklist = implode(',', $this->getBlacklists($adTag));
-            if (!empty($adTagBlacklist) && strlen($adTagBlacklist) > 0){
-                $dataItem['blacklist'] = $adTagBlacklist;
+            $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
+            if (count($adTagBlacklist) > 0) {
+                $dataItem['blacklist'] = implode(',', $adTagBlacklist);
+                $dataItem['hasBlacklist'] = true;
+            }
+
+            $adTagWhiteList = $this->getDisplayWhiteListsForAdTag($adTag);
+            if (count($adTagWhiteList) > 0) {
+                $dataItem['whiteList'] = implode(',', $adTagWhiteList);
+                $dataItem['hasWhiteList'] = true;
             }
 
             if (null !== $adTag->getFrequencyCap()) {
@@ -345,41 +357,33 @@ trait CreateAdSlotDataTrait
         return $data;
     }
 
-    /**
-     * @param AdTagInterface $adTag
-     * @param PublisherInterface $publisher
-     * @return mixed
-     */
-    private function getBlacklists($adTag)
+    private function getDisplayBlacklistForAdTag(AdTagInterface $adTag)
     {
-        $displayBlacklistManager = $this->getDisplayBlacklistManager();
-        $defaultBlacklists = $displayBlacklistManager->getDefaultBlacklists($adTag->getAdNetwork()->getPublisher());
-        $demandPartnerBlacklists = $adTag->getAdNetwork()->getDisplayBlacklists();
-        return $this->mergeBlacklists($defaultBlacklists, $demandPartnerBlacklists);
+        $blacklists = [];
+
+        $displayBlacklists = $adTag->getAdNetwork()->getDisplayBlacklists();
+        foreach ($displayBlacklists as $displayBlacklist) {
+            if ($displayBlacklist instanceof DisplayBlacklistInterface) {
+                $blacklists[] = sprintf('%s', $displayBlacklist->getId());
+            }
+        }
+
+        return array_values(array_unique($blacklists));
     }
 
-    /**
-     * @param DisplayBlacklistInterface[] $defaultBlacklists
-     * @param DisplayBlacklistInterface[] $demandPartnerBlacklists
-     * @return mixed
-     */
-    private function mergeBlacklists($defaultBlacklists, $demandPartnerBlacklists)
+
+    private function getDisplayWhiteListsForAdTag(AdTagInterface $adTag)
     {
-        $domains = [];
+        $whiteLists = [];
 
-        foreach ($defaultBlacklists as $blacklist) {
-            if ($blacklist instanceof DisplayBlacklistInterface) {
-                $domains[] = sprintf('%s', $blacklist->getId());
+        $displayWhiteLists = $adTag->getAdNetwork()->getDisplayWhiteLists();
+        foreach ($displayWhiteLists as $displayWhiteList) {
+            if ($displayWhiteList instanceof DisplayWhiteListInterface) {
+                $whiteLists[] = sprintf('%s', $displayWhiteList->getId());
             }
         }
 
-        foreach ($demandPartnerBlacklists as $blacklist) {
-            if ($blacklist instanceof DisplayBlacklistInterface) {
-                $domains[] = sprintf('%s', $blacklist->getId());
-            }
-        }
-
-        return array_values(array_unique($domains));
+        return array_values(array_unique($whiteLists));
     }
 
     /**
@@ -388,12 +392,12 @@ trait CreateAdSlotDataTrait
     abstract protected function getTagGenerator();
 
     /**
-     * @return DisplayBlacklistManagerInterface
+     * @return string
      */
-    abstract protected function getDisplayBlacklistManager();
+    abstract protected function getBlacklistPrefix();
 
     /**
      * @return string
      */
-    abstract protected function getBlacklistPrefix();
+    abstract protected function getWhiteListPrefix();
 }

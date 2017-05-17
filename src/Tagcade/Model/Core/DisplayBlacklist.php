@@ -21,11 +21,6 @@ class DisplayBlacklist implements DisplayBlacklistInterface
     protected $domains;
 
     /**
-     * @var bool
-     */
-    protected $isDefault;
-
-    /**
      * @var PublisherInterface
      */
     protected $publisher;
@@ -118,23 +113,6 @@ class DisplayBlacklist implements DisplayBlacklistInterface
 
         $this->networkBlacklists->add($networkBlacklist);
         return $this;
-    }
-
-
-    /**
-     * @return boolean
-     */
-    public function isDefault()
-    {
-        return $this->isDefault;
-    }
-
-    /**
-     * @param boolean $pubDefault
-     */
-    public function setIsDefault($pubDefault)
-    {
-        $this->isDefault = $pubDefault;
     }
 
     /**
