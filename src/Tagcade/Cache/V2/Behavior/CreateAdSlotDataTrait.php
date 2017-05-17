@@ -163,19 +163,12 @@ trait CreateAdSlotDataTrait
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
             if (count($adTagBlacklist) > 0) {
-                $adTagBlacklist = array_map(function($blacklist) {
-                    return sprintf('%s:%s', $this->getBlacklistPrefix(), $blacklist);
-                }, $adTagBlacklist);
-
                 $dataItem['blacklist'] = implode(',', $adTagBlacklist);
                 $dataItem['hasBlacklist'] = true;
             }
 
             $adTagWhiteList = $this->getDisplayWhiteListsForAdTag($adTag);
             if (count($adTagWhiteList) > 0) {
-                $adTagWhiteList = array_map(function($whiteList) {
-                    return sprintf('%s:%s', $this->getWhiteListPrefix(), $whiteList);
-                }, $adTagWhiteList);
                 $dataItem['whiteList'] = implode(',', $adTagWhiteList);
                 $dataItem['hasWhiteList'] = true;
             }
