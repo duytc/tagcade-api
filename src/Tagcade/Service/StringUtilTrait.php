@@ -72,6 +72,8 @@ trait StringUtilTrait
                 $domain = false;
             }
         }
+        
+        $domain = strtolower($domain);
 
         return $domain;
     }
