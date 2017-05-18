@@ -69,6 +69,11 @@ class DisplayBlacklistFormType extends AbstractRoleSpecificFormType
                 foreach ($domains as $domain) {
                     $filterDomains[] = $this->extractDomain($domain);
                 }
+
+                $filterDomains = array_map(function($domain) {
+                    return strtolower($domain);
+                }, $filterDomains);
+                $filterDomains = array_values(array_unique($filterDomains));
                 $displayBlacklist->setDomains($filterDomains);
 
                 /** @var Collection| NetworkBlacklistInterface[] $networkBlacklists */

@@ -67,6 +67,10 @@ class DisplayWhiteListFormType extends AbstractRoleSpecificFormType
                 foreach ($domains as $domain) {
                     $filterDomains[] = $this->extractDomain($domain);
                 }
+                $filterDomains = array_map(function($domain) {
+                    return strtolower($domain);
+                }, $filterDomains);
+                $filterDomains = array_values(array_unique($filterDomains));
                 $displayWhiteList->setDomains($filterDomains);
 
                 /** @var Collection| NetworkWhiteListInterface[] $networkWhiteLists */
