@@ -36,11 +36,14 @@ class RefreshBlacklistCacheService implements RefreshBlacklistCacheServiceInterf
     {
         $domains = $blacklist->getDomains();
         $domains = array_map(function($domain) {
+            $domain = strtolower($domain);
             return preg_replace('/^www./', '', $domain);
         }, $domains);
 
-        $domains = array_unique($domains);
+        $domains = array_values(array_unique($domains));
         $this->displayBlacklistCacheManager->saveBlacklist($blacklist, $domains);
+        $blacklist->setDomains($domains);
+        $this->displayBlacklistManager->save($blacklist);
     }
 
     public function refreshCacheForAllBlacklist()

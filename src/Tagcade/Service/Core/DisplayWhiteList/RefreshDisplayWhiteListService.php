@@ -38,11 +38,14 @@ class RefreshDisplayWhiteListService implements RefreshDisplayWhiteListServiceIn
     {
         $domains = $whiteList->getDomains();
         $domains = array_map(function($domain) {
+            $domain = strtolower($domain);
             return preg_replace('/^www./', '', $domain);
         }, $domains);
 
-        $domains = array_unique($domains);
+        $domains = array_values(array_unique($domains));
         $this->displayWhiteListCacheManager->saveWhiteList($whiteList, $domains);
+        $whiteList->setDomains($domains);
+        $this->displayWhiteListManager->save($whiteList);
     }
 
     public function refreshCacheForAllWhiteList()
