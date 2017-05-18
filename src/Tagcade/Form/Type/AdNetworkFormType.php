@@ -78,6 +78,8 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 'allow_delete' => true,
             )
         );
+        /* custom impression pixel */
+        $builder->add('customImpressionPixels');
 
         $builder->add('networkWhiteLists', 'collection', array(
                 'mapped' => true,
@@ -162,6 +164,15 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 }
 
                 $adNetwork->setNetworkWhiteLists($networkWhiteLists);
+
+                /* custom Impress Pixels */
+                $customImpressionPixels = $adNetwork->getCustomImpressionPixels();
+                if (!is_array($customImpressionPixels) && null !== $customImpressionPixels) {
+                    $form->get('customImpressionPixels')->addError(new FormError('customImpressionPixels must be an array or null'));
+                }
+
+                $adNetwork->setCustomImpressionPixels($customImpressionPixels);
+
             }
         );
     }

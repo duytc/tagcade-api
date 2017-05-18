@@ -109,6 +109,7 @@ services:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postRemove }
+            - { name: doctrine.event_listener, event: postFlush }
 
     tagcade_app.event_listener.publisher_change_listener:
         class: Tagcade\Bundle\AppBundle\EventListener\PublisherChangeListener

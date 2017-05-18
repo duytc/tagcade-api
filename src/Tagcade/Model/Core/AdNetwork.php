@@ -39,17 +39,23 @@ class AdNetwork implements AdNetworkInterface
     protected $networkWhiteLists;
 
     /**
-     * @return DisplayBlacklistInterface[]
+     * @var
+     */
+    protected $customImpressionPixels;
+
+    /**
+     * @inheritdoc
      */
     public function getDisplayBlacklists()
     {
         $networkBlacklists = $this->getNetworkBlacklists();
         $displayBlacklists = [];
-        foreach ($networkBlacklists as $networkBlacklist){
-            if ($networkBlacklist->getDisplayBlacklist() instanceof DisplayBlacklistInterface){
+        foreach ($networkBlacklists as $networkBlacklist) {
+            if ($networkBlacklist->getDisplayBlacklist() instanceof DisplayBlacklistInterface) {
                 $displayBlacklists[] = $networkBlacklist->getDisplayBlacklist();
             }
         }
+
         return $displayBlacklists;
     }
 
@@ -71,7 +77,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getImpressionCap()
     {
@@ -79,7 +85,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @param mixed $impressionCap
+     * @inheritdoc
      */
     public function setImpressionCap($impressionCap)
     {
@@ -95,16 +101,15 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @param mixed $networkOpportunityCap
+     * @inheritdoc
      */
     public function setNetworkOpportunityCap($networkOpportunityCap)
     {
         $this->networkOpportunityCap = $networkOpportunityCap;
     }
 
-
     /**
-     * @return AdNetworkPartnerInterface
+     * @inheritdoc
      */
     public function getNetworkPartner()
     {
@@ -112,7 +117,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @param AdNetworkPartnerInterface $networkPartner
+     * @inheritdoc
      */
     public function setNetworkPartner($networkPartner)
     {
@@ -120,7 +125,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getPassword()
     {
@@ -176,6 +181,7 @@ class AdNetwork implements AdNetworkInterface
     public function setPublisher(PublisherInterface $publisher)
     {
         $this->publisher = $publisher->getUser();
+
         return $this;
     }
 
@@ -193,6 +199,7 @@ class AdNetwork implements AdNetworkInterface
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -210,6 +217,7 @@ class AdNetwork implements AdNetworkInterface
     public function setUrl($url)
     {
         $this->url = $url;
+
         return $this;
     }
 
@@ -250,7 +258,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return self
+     * @inheritdoc
      */
     public function increaseActiveAdTagsCount()
     {
@@ -262,7 +270,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return self
+     * @inheritdoc
      */
     public function decreaseActiveAdTagsCount()
     {
@@ -293,7 +301,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return self
+     * @inheritdoc
      */
     public function increasePausedAdTagsCount()
     {
@@ -305,7 +313,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return self
+     * @inheritdoc
      */
     public function decreasePausedAdTagsCount()
     {
@@ -336,7 +344,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getEmailHookToken()
     {
@@ -344,8 +352,7 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @param mixed $emailHookToken
-     * @return self
+     * @inheritdoc
      */
     public function setEmailHookToken($emailHookToken)
     {
@@ -353,13 +360,16 @@ class AdNetwork implements AdNetworkInterface
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function __toString()
     {
         return $this->name;
     }
 
     /**
-     * @return NetworkBlacklistInterface[]
+     * @inheritdoc
      */
     public function getNetworkBlacklists()
     {
@@ -367,11 +377,52 @@ class AdNetwork implements AdNetworkInterface
     }
 
     /**
-     * @param NetworkBlacklistInterface[] $networkBlacklists
+     * @inheritdoc
      */
     public function setNetworkBlacklists($networkBlacklists)
     {
         $this->networkBlacklists = $networkBlacklists;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCustomImpressionPixels()
+    {
+        return $this->customImpressionPixels;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getCustomImpressionPixelsForCache()
+    {
+        $customImpressionPixels = $this->customImpressionPixels;
+        
+        $customImpressionPixelsForCache= [];
+        if (is_array($customImpressionPixels)) {
+            foreach ($customImpressionPixels as $customImpressionPixel) {
+                if (!is_array($customImpressionPixel) || !array_key_exists('url', $customImpressionPixel)) {
+                    continue;
+                }
+
+                $customImpressionPixelsForCache[] = $customImpressionPixel['url'];
+            }
+        }
+
+        return $customImpressionPixelsForCache;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setCustomImpressionPixels($customImpressionPixels)
+    {
+        $this->customImpressionPixels = $customImpressionPixels;
+
+        return $this;
     }
 
     /**

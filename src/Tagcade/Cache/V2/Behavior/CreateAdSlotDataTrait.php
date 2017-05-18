@@ -2,7 +2,6 @@
 
 namespace Tagcade\Cache\V2\Behavior;
 
-
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Exception\LogicException;
@@ -111,7 +110,7 @@ trait CreateAdSlotDataTrait
             'passbackMode' => $adSlot->getPassbackMode(),
             'jsTag' => $this->getTagGenerator()->createJsTags($adSlot),
             'tags' => [],
-            'cpm' => $adSlot->getHbBidPrice()
+            'cpm' => $adSlot->getHbBidPrice(),
         ];
 
         if ($adSlot->isAutoFit()) {
@@ -136,7 +135,6 @@ trait CreateAdSlotDataTrait
         if (empty($adTags)) {
             return $data;
         }
-
 
         //step 3. build 'tags' for data
         ////sort all adTags by position
@@ -179,6 +177,14 @@ trait CreateAdSlotDataTrait
 
             if (null !== $adTag->getRotation()) {
                 $dataItem['rot'] = $adTag->getRotation();
+            }
+
+            // custom impression pixels
+            $customImpressionPixels = $adTag->getAdNetwork()->getCustomImpressionPixelsForCache();
+
+            //// only add if not empty
+            if (count($customImpressionPixels) > 0) {
+                $dataItem['customImpressionPixels'] = $customImpressionPixels;
             }
 
             // grouping same position into array
@@ -349,6 +355,14 @@ trait CreateAdSlotDataTrait
 
             if (null !== $adTag->getRotation()) {
                 $dataItem['rot'] = $adTag->getRotation();
+            }
+
+            // custom impression pixels
+            $customImpressionPixels = $adTag->getAdNetwork()->getCustomImpressionPixelsForCache();
+
+            //// only add if not empty
+            if (count($customImpressionPixels) > 0) {
+                $dataItem['customImpressionPixels'] = $customImpressionPixels;
             }
 
             array_push($data['tags'], $dataItem);

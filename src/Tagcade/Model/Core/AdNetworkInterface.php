@@ -115,6 +115,7 @@ interface AdNetworkInterface extends ModelInterface
 
     /**
      * @param AdNetworkPartnerInterface $networkPartner
+     * @return self
      */
     public function setNetworkPartner($networkPartner);
 
@@ -125,6 +126,7 @@ interface AdNetworkInterface extends ModelInterface
 
     /**
      * @param mixed $impressionCap
+     * @return self
      */
     public function setImpressionCap($impressionCap);
 
@@ -135,6 +137,7 @@ interface AdNetworkInterface extends ModelInterface
 
     /**
      * @param mixed $networkOpportunityCap
+     * @return self
      */
     public function setNetworkOpportunityCap($networkOpportunityCap);
 
@@ -156,6 +159,7 @@ interface AdNetworkInterface extends ModelInterface
 
     /**
      * @param NetworkBlacklistInterface[] $networkBlacklists
+     * @return self
      */
     public function setNetworkBlacklists($networkBlacklists);
 
@@ -178,4 +182,25 @@ interface AdNetworkInterface extends ModelInterface
      * @return DisplayWhiteListInterface[]
      */
     public function getDisplayWhiteLists();
+
+    /**
+     * @return array|null
+     */
+    public function getCustomImpressionPixels();
+    
+    /**
+     * parse from format
+     * [ { "url" => "<url-1>" }, { "url" => "<url-2>" }, ... ]
+     * to format
+     * [ "<url-1>", "<url-2>", ... ]
+     *
+     * @return array|null
+     */
+    public function getCustomImpressionPixelsForCache();
+
+    /**
+     * @param array|null $customImpressionPixels
+     * @return self
+     */
+    public function setCustomImpressionPixels($customImpressionPixels);
 }

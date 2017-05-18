@@ -28,6 +28,7 @@ class UpdateAdSlotCacheDueToDisplayBlacklistWorker
 
     /**
      * UpdateAdSlotCacheDueToDisplayBlacklistWorker constructor.
+     *
      * @param TagCacheV2Interface $tagCache
      * @param AdNetworkManagerInterface $adNetworkManager
      * @param AdSlotRepositoryInterface $adSlotRepository
@@ -39,13 +40,12 @@ class UpdateAdSlotCacheDueToDisplayBlacklistWorker
         $this->adSlotRepository = $adSlotRepository;
     }
 
-
     /**
-     * update cache for multiple ad slot when display blacklist changed
+     * update cache for multiple ad slot when ad network changed
      *
      * @param StdClass $params
      */
-    public function updateAdSlotCache(StdClass $params)
+    public function updateAdSlotCacheForAdNetwork(StdClass $params)
     {
         $adNetworkId = $params->network;
         $adNetwork = $this->adNetworkManager->find($adNetworkId);

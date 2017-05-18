@@ -219,12 +219,17 @@ class Manager
         $this->queueTask('removeCacheForAdSlot', $param);
     }
 
-    public function updateAdSlotCache($networkId)
+    /**
+     * update AdSlot Cache Due To Ad Network Changed
+     *
+     * @param $networkId
+     */
+    public function updateAdSlotCacheForAdNetwork($networkId)
     {
         $param = new StdClass();
         $param->network = $networkId;
 
-        $this->queueTask('updateAdSlotCache', $param);
+        $this->queueTask('updateAdSlotCacheForAdNetwork', $param);
     }
 
     /**

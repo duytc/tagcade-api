@@ -37,3 +37,6 @@ Tagcade\Entity\Core\AdNetwork:
         networkWhiteLists:
             expose: true
             groups: [adnetwork.extra, adnetwork.summary, adnetwork.credential]
+        customImpressionPixels:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary]

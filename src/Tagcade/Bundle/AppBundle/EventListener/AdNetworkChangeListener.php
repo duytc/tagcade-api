@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Worker\Manager;
@@ -15,6 +16,8 @@ class AdNetworkChangeListener
      * @var Manager
      */
     protected $workerManager;
+
+    protected $changedAdNetworks = [];
 
     /**
      * DisplayBlacklistChangeListener constructor.
@@ -33,8 +36,8 @@ class AdNetworkChangeListener
             return;
         }
 
-        if (count($entity->getNetworkBlacklists()) > 0){
-            $this->workerManager->updateAdSlotCache($entity->getId());
+        if (count($entity->getNetworkBlacklists()) > 0 || count($entity->getCustomImpressionPixels()) > 0) {
+            $this->changedAdNetworks[] = $entity;
         }
     }
 
@@ -46,8 +49,8 @@ class AdNetworkChangeListener
             return;
         }
 
-        if ($args->hasChangedField('networkBlacklists')) {
-            $this->workerManager->updateAdSlotCache($entity->getId());
+        if ($args->hasChangedField('customImpressionPixels')) {
+            $this->changedAdNetworks[] = $entity;
         }
     }
 
@@ -59,6 +62,30 @@ class AdNetworkChangeListener
             return;
         }
 
-        $this->workerManager->updateAdSlotCache($entity->getId());
+        $this->changedAdNetworks[] = $entity;
+    }
+
+    /**
+     * Handle event postFlush for building and dispatching cache event to update cache for all need-be-updated-AdSlots
+     *
+     * @param PostFlushEventArgs $args
+     */
+    public function postFlush(PostFlushEventArgs $args)
+    {
+        if (count($this->changedAdNetworks) < 1) {
+            return;
+        }
+
+        // filter all sites changed on rtb & exchanges, then build needBeUpdatedAdSlots
+        foreach ($this->changedAdNetworks as $adNetwork) {
+            if (!$adNetwork instanceof AdNetworkInterface) {
+                continue;
+            }
+
+            $this->workerManager->updateAdSlotCacheForAdNetwork($adNetwork->getId());
+        }
+
+        // reset for new onFlush event
+        $this->changedAdNetworks = [];
     }
 }

@@ -40,6 +40,9 @@ Tagcade\Entity\Core\AdNetwork:
         emailHookToken:
             type: string
             nullable: true
+        customImpressionPixels:
+            type: json_array
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

@@ -100,7 +100,7 @@ class DisplayBlacklistChangeListener
         if ($adNetworks) {
             foreach ($adNetworks as $adNetwork) {
                 if ($adNetwork instanceof AdNetworkInterface) {
-                    $this->workerManager->updateAdSlotCache($adNetwork->getId());
+                    $this->workerManager->updateAdSlotCacheForAdNetwork($adNetwork->getId());
                 }
             }
         }
