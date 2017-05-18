@@ -95,8 +95,7 @@ class DisplayWhiteListFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
-                'data_class' => DisplayWhiteList::class,
-                'allow_extra_fields' => true,
+                'data_class' => DisplayWhiteList::class
             ]);
     }
 

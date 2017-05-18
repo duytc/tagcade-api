@@ -98,8 +98,7 @@ class DisplayBlacklistFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
-                'data_class' => DisplayBlacklist::class,
-                'allow_extra_fields' => true,
+                'data_class' => DisplayBlacklist::class
             ]);
     }
 

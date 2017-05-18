@@ -126,7 +126,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get a single ad network for the given id
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary", "display.whitelist.summary", "network.whitelist.summary"})
      *
      * @ApiDoc(
      *  section = "Ad Networks",

@@ -30,8 +30,7 @@ class NetworkWhiteListFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
-                'data_class' => NetworkWhiteList::class,
-                'allow_extra_fields' => true
+                'data_class' => NetworkWhiteList::class
             ]);
     }
 
