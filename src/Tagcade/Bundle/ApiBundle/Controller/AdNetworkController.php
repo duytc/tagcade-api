@@ -39,7 +39,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all ad networks
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary", "display.blacklist.summary", "display.blacklist.min", "network.blacklist.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary", "display.whitelist.summary", "network.whitelist.summary"})
      *
      * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
