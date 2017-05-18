@@ -10,9 +10,6 @@ Tagcade\Entity\Core\DisplayWhiteList:
         domains:
             expose: true
             groups: [display.whitelist.detail, display.whitelist.summary, display.whitelist.min]
-        isDefault:
-            expose: true
-            groups: [display.whitelist.detail, display.whitelist.summary, display.whitelist.min]
         publisher:
             expose: true
             groups: [display.whitelist.detail, display.whitelist.summary, display.whitelist.min]
