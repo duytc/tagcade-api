@@ -18,3 +18,12 @@ Tagcade\Entity\Core\AdSlotAbstract:
             accessor: # access_type must be set to public_method
                 getter: getType
             groups: [adslot.detail, adslot.summary]
+        autoRefresh:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+        refreshEvery:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
+        maximumRefreshTimes:
+            expose: true
+            groups: [adslot.detail, adslot.summary]

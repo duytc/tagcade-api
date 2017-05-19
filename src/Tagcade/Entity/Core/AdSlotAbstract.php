@@ -35,11 +35,17 @@ abstract class AdSlotAbstract
     protected $deletedAt;
 
     protected $deleteToken;
+    protected $autoRefresh = false;
+    protected $refreshEvery;
+    protected $maximumRefreshTimes;
 
     public function __construct()
     {
         $this->adTags = new ArrayCollection();
         $this->autoCreate = false;
+        $this->autoRefresh = false;
+        $this->refreshEvery = 0;
+        $this->maximumRefreshTimes = 0;
     }
 
     /**
@@ -90,8 +96,7 @@ abstract class AdSlotAbstract
      */
     public function getName()
     {
-        if($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface)
-        {
+        if ($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface) {
             return $this->libraryAdSlot->getName();
         }
 
@@ -100,8 +105,7 @@ abstract class AdSlotAbstract
 
     public function setName($name)
     {
-        if($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface)
-        {
+        if ($this->libraryAdSlot instanceof BaseLibraryAdSlotInterface) {
             return $this->libraryAdSlot->setName($name);
         }
 
@@ -199,5 +203,56 @@ abstract class AdSlotAbstract
     public function getChannels()
     {
         return $this->site->getChannels();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoRefresh()
+    {
+        return $this->autoRefresh;
+    }
+
+    /**
+     * @param boolean $autoRefresh
+     * @return self
+     */
+    public function setAutoRefresh($autoRefresh)
+    {
+        $this->autoRefresh = $autoRefresh;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRefreshEvery()
+    {
+        return $this->refreshEvery;
+    }
+
+    /**
+     * @param mixed $refreshEvery
+     * @return self
+     */
+    public function setRefreshEvery($refreshEvery)
+    {
+        $this->refreshEvery = $refreshEvery;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaximumRefreshTimes()
+    {
+        return $this->maximumRefreshTimes;
+    }
+
+    /**
+     * @param mixed $maximumRefreshTimes
+     * @return self
+     */
+    public function setMaximumRefreshTimes($maximumRefreshTimes)
+    {
+        $this->maximumRefreshTimes = $maximumRefreshTimes;
     }
 }

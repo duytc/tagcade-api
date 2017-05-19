@@ -36,6 +36,12 @@ class AdTag implements AdTagInterface
      * @var integer
      */
     protected $networkOpportunityCap;
+
+    /**
+     * @var boolean
+     */
+    protected $passback;
+
     /**
      * @param LibraryAdTagInterface $libraryAdTag
      */
@@ -460,5 +466,21 @@ class AdTag implements AdTagInterface
     public function __toString()
     {
         return $this->id . $this->getName();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isPassback()
+    {
+        return $this->passback;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPassback($passback)
+    {
+        $this->passback = $passback;
     }
 }

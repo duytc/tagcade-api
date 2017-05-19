@@ -162,4 +162,15 @@ interface AdTagInterface extends PositionInterface
      * @return self
      */
     public function setAutoIncreasePosition($autoIncreasePosition);
+
+    /**
+     * @return boolean
+     */
+    public function isPassback();
+
+    /**
+     * @param boolean $passback
+     * @return self
+     */
+    public function setPassback($passback);
 }

@@ -124,6 +124,12 @@ trait CreateAdSlotDataTrait
             $data['floorPrice'] = $adSlot->getFloorPrice();
         }
 
+        if ($adSlot->isAutoRefresh()) {
+            $data['autoRefresh'] = true;
+            $data['refreshEvery'] = $adSlot->getRefreshEvery();
+            $data['maximumRefreshTimes'] = $adSlot->getMaximumRefreshTimes();
+        }
+
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
         $adTags = $adSlot->getAdTags();
@@ -158,6 +164,10 @@ trait CreateAdSlotDataTrait
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml(),
             ];
+
+            if ($adTag->isPassback()) {
+                $dataItem['passBack'] = true;
+            }
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
             if (count($adTagBlacklist) > 0) {
@@ -315,6 +325,12 @@ trait CreateAdSlotDataTrait
             'tags' => []
         ];
 
+        if ($nativeAdSlot->isAutoRefresh()) {
+            $data['autoRefresh'] = true;
+            $data['refreshEvery'] = $nativeAdSlot->getRefreshEvery();
+            $data['maximumRefreshTimes'] = $nativeAdSlot->getMaximumRefreshTimes();
+        }
+
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
         $adTags = $nativeAdSlot->getAdTags();
@@ -334,8 +350,12 @@ trait CreateAdSlotDataTrait
 
             $dataItem = [
                 'id' => $adTag->getId(),
-                'tag' => $adTag->getHtml(),
+                'tag' => $adTag->getHtml()
             ];
+
+            if ($adTag->isPassback()) {
+                $dataItem['passBack'] = true;
+            }
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
             if (count($adTagBlacklist) > 0) {

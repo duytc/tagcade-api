@@ -28,3 +28,6 @@ Tagcade\Entity\Core\AdTag:
         networkOpportunityCap:
             expose: true
             groups: [adtag.detail, adtag.summary]
+        passback:
+            expose: true
+            groups: [adtag.detail, adtag.summary]

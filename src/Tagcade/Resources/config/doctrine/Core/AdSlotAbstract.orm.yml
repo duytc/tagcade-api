@@ -29,6 +29,14 @@ Tagcade\Entity\Core\AdSlotAbstract:
         deleteToken:
             type: string
             nullable: false
+        autoRefresh:
+            type: boolean
+            options:
+                default: false
+        refreshEvery:
+            type: integer
+        maximumRefreshTimes:
+            type: integer
 
     inheritanceType: JOINED
 

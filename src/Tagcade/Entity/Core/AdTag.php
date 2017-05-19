@@ -20,6 +20,7 @@ class AdTag extends AdTagModel
 
     protected $impressionCap;
     protected $networkOpportunityCap;
+    protected $passback;
 
     public function __construct()
     {
@@ -32,7 +33,7 @@ class AdTag extends AdTagModel
     public static function createAdTagFromArray(array $fieldValues)
     {
         $adTagObject = new self();
-        foreach($fieldValues as $field=>$value) {
+        foreach ($fieldValues as $field => $value) {
             $method = sprintf('set%s', ucwords($field));
             $adTagObject->$method($value);
         }

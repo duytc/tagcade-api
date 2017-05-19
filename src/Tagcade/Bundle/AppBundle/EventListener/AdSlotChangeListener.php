@@ -38,14 +38,23 @@ class AdSlotChangeListener
         }
 
         if ($entity instanceof DisplayAdSlotInterface &&
-            ($args->hasChangedField('rtbStatus') || $args->hasChangedField('floorPrice')
-            || $args->hasChangedField('hbBidPrice'))
+            ($args->hasChangedField('rtbStatus')
+                || $args->hasChangedField('floorPrice')
+                || $args->hasChangedField('hbBidPrice')
+                || $args->hasChangedField('autoRefresh')
+                || $args->hasChangedField('refreshEvery')
+                || $args->hasChangedField('maximumRefreshTimes')
+            )
         ) {
             $this->updatedAdSlots = array($entity);
         }
 
         if ($entity instanceof LibraryDisplayAdSlotInterface &&
-            ($args->hasChangedField('width') || $args->hasChangedField('height') || $args->hasChangedField('autoFit') || $args->hasChangedField('passbackMode'))
+            ($args->hasChangedField('width')
+                || $args->hasChangedField('height')
+                || $args->hasChangedField('autoFit')
+                || $args->hasChangedField('passbackMode')
+            )
         ) {
             $this->updatedAdSlots = $entity->getAdSlots();
         }
@@ -64,14 +73,13 @@ class AdSlotChangeListener
         }
 
         $adSlots = $this->updatedAdSlots;
-        if($adSlots instanceof PersistentCollection) {
+        if ($adSlots instanceof PersistentCollection) {
             $adSlots = $adSlots->toArray();
         }
 
         unset($this->updatedAdSlots);
 
         $this->eventDispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($adSlots));
-
     }
 
     protected function dispatchUpdateCacheEventDueToAdSlot(LifecycleEventArgs $args)

@@ -77,6 +77,7 @@ interface BaseAdSlotInterface extends ModelInterface, RTBEnabledInterface
      * @return mixed
      */
     public function getDeleteToken();
+
     /**
      * @param mixed $deleteToken
      */
@@ -86,4 +87,34 @@ interface BaseAdSlotInterface extends ModelInterface, RTBEnabledInterface
      * @return array
      */
     public function getChannels();
+
+    /**
+     * @return boolean
+     */
+    public function isAutoRefresh();
+
+    /**
+     * @param boolean $autoRefresh
+     */
+    public function setAutoRefresh($autoRefresh);
+
+    /**
+     * @return mixed
+     */
+    public function getRefreshEvery();
+
+    /**
+     * @param mixed $refreshEvery
+     */
+    public function setRefreshEvery($refreshEvery);
+
+    /**
+     * @return mixed
+     */
+    public function getMaximumRefreshTimes();
+
+    /**
+     * @param mixed $maximumRefreshTimes
+     */
+    public function setMaximumRefreshTimes($maximumRefreshTimes);
 }

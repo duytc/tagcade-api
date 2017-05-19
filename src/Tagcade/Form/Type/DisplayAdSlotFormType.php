@@ -41,6 +41,9 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('floorPrice')
             ->add('hbBidPrice')
+            ->add('autoRefresh')
+            ->add('refreshEvery')
+            ->add('maximumRefreshTimes')
             ->add('rtbStatus', ChoiceType::class, array(
                 'choices' => array(
                     RTB_STATUS::RTB_ENABLED,

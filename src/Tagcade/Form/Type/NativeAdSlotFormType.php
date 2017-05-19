@@ -37,6 +37,11 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder
+            ->add('autoRefresh')
+            ->add('refreshEvery')
+            ->add('maximumRefreshTimes');
+
         if ($this->userRole instanceof AdminInterface) {
             // allow all sites, default is fine
             $builder
