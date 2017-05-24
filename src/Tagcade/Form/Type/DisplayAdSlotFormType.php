@@ -154,6 +154,7 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => DisplayAdSlot::class,
                 'cascade_validation' => true,
             ]);

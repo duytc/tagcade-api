@@ -129,6 +129,7 @@ class NativeAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => NativeAdSlot::class,
                 'cascade_validation' => true,
             ]);

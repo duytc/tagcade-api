@@ -64,6 +64,7 @@ class SubPublisherPartnerRevenueFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => \Tagcade\Entity\Core\SubPublisherPartnerRevenue::class,
             ]);
     }
