@@ -73,6 +73,7 @@ class LibraryAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => LibraryDisplayAdSlot::class,
             ]);
     }

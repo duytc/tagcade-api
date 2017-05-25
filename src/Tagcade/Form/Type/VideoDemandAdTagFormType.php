@@ -100,6 +100,7 @@ class VideoDemandAdTagFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => VideoDemandAdTag::class,
                 'cascade_validation' => true
             ]);

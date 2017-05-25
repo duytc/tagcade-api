@@ -68,6 +68,7 @@ class WaterfallPlacementRuleFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => WaterfallPlacementRule::class
             ]);
     }

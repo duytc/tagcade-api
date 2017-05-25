@@ -148,6 +148,7 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
+                'allow_extra_fields' => true,
                 'data_class' => RonAdSlot::class,
                 'cascade_validation' => true
             ]);

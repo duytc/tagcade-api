@@ -181,8 +181,8 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
     {
         $resolver
             ->setDefaults([
-                'data_class' => AdNetwork::class,
                 'allow_extra_fields' => true,
+                'data_class' => AdNetwork::class,
             ]);
     }
 
