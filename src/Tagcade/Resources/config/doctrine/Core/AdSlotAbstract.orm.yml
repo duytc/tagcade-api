@@ -35,8 +35,10 @@ Tagcade\Entity\Core\AdSlotAbstract:
                 default: false
         refreshEvery:
             type: integer
+            nullable: true
         maximumRefreshTimes:
             type: integer
+            nullable: true
 
     inheritanceType: JOINED
 
