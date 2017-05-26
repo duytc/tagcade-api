@@ -17,7 +17,6 @@ class AdTag extends AdTagModel
     protected $rotation;
     protected $refId;
     protected $libraryAdTag;
-
     protected $impressionCap;
     protected $networkOpportunityCap;
     protected $passback;

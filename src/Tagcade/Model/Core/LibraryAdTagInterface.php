@@ -120,4 +120,14 @@ interface LibraryAdTagInterface extends ModelInterface
      * @return int
      */
     public function getAssociatedTagCount();
+
+    /**
+     * @return array
+     */
+    public function getExpressionDescriptor();
+
+    /**
+     * @param array $expressionDescriptor
+     */
+    public function setExpressionDescriptor($expressionDescriptor);
 }

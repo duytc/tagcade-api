@@ -43,4 +43,13 @@ class ExpressionRepository extends EntityRepository implements ExpressionReposit
 
         return $qb->getQuery()->getResult();
     }
+
+    public function getByDynamicAdSlot(BaseAdSlotInterface $adSlot)
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.dynamicAdSlot = :adSlot')
+            ->setParameter('adSlot', $adSlot)
+            ->getQuery()
+            ->getResult();
+    }
 }

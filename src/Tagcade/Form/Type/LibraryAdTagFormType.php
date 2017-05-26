@@ -3,12 +3,12 @@
 namespace Tagcade\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Exception\InvalidArgumentException;
@@ -72,6 +72,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('inBannerDescriptor')
             ->add('name')
             ->add('id')
+            ->add('expressionDescriptor')
         ;
 
         $builder->addEventListener(
@@ -79,6 +80,11 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             function(FormEvent $event){
                 /** @var LibraryAdTagInterface $libraryAdTag */
                 $libraryAdTag = $event->getData();
+
+                if (!empty($libraryAdTag->getExpressionDescriptor())) {
+                    // validate expression descriptor
+                    ExpressionInJsGenerator::validateExpressionDescriptor($libraryAdTag->getExpressionDescriptor());
+                }
 
                 try {
                     switch ($libraryAdTag->getAdType()) {

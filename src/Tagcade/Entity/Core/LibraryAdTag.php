@@ -15,10 +15,10 @@ class LibraryAdTag extends LibraryAdTagModel {
     protected $adType;
     protected $descriptor;
     protected $inBannerDescriptor;
-
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;
+    protected $expressionDescriptor;
 
     function __construct()
     {

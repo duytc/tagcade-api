@@ -3,7 +3,9 @@
 namespace Tagcade\Cache\V2\Behavior;
 
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
+use Tagcade\Entity\Core\Expression;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -166,7 +168,11 @@ trait CreateAdSlotDataTrait
             ];
 
             if ($adTag->isPassback()) {
-                $dataItem['passBack'] = true;
+                $dataItem['passback'] = true;
+            }
+
+            if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
+                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($adTag->getLibraryAdTag()->getExpressionDescriptor());
             }
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
@@ -254,8 +260,10 @@ trait CreateAdSlotDataTrait
         }
 
         //check expressions
+        $expressionRepository = $this->getEntityManager()->getRepository(Expression::class);
+
         /** @var ExpressionInterface[] $expressions */
-        $expressions = $dynamicAdSlot->getExpressions()->toArray();
+        $expressions = $expressionRepository->getByDynamicAdSlot($dynamicAdSlot);
         if (is_array($expressions) && !empty($expressions)) {
             //step 1. set 'expressions' for data: get expressionInJS of each expression in expressions
             array_walk($expressions,
@@ -354,7 +362,11 @@ trait CreateAdSlotDataTrait
             ];
 
             if ($adTag->isPassback()) {
-                $dataItem['passBack'] = true;
+                $dataItem['passback'] = true;
+            }
+
+            if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
+                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($adTag->getLibraryAdTag()->getExpressionDescriptor());
             }
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
@@ -434,4 +446,14 @@ trait CreateAdSlotDataTrait
      * @return string
      */
     abstract protected function getWhiteListPrefix();
+
+    /**
+     * @return EntityManagerInterface
+     */
+    abstract protected function getEntityManager();
+
+    /**
+     * @return ExpressionInJsGenerator
+     */
+    abstract protected function getExpressionInJsGenerator();
 }

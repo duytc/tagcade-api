@@ -77,7 +77,8 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         '>', '<', '==', '>=', '<=', '!=', '===', '!==',
         //STRING
         'contains', 'startsWith', 'endsWith', 'notContains', 'notEndsWith', 'notStartsWith',
-        'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !=', 'is', 'isNot'
+        'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !=', 'is', 'isNot',
+        'inBlacklist', 'inWhitelist', 'notInBlacklist', 'notInWhitelist'
     ];
 
     static $EXPRESSION_CMP_VALUES_FOR_MATH = [
@@ -194,13 +195,21 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         }
 
         $vars = [];
-
+        $domainChecks = [];
         $expString = '(' . implode(
                 $this->getOperatorInJS($operator),
                 array_map(
-                    function (array $expElement) use (&$vars) {
+                    function (array $expElement) use (&$vars, &$domainChecks) {
 
                         $exp = $this->createExpressionObject($expElement);
+//                        if (array_key_exists(self::KEY_EXPRESSION_VAR, $expElement) && $expElement[self::KEY_EXPRESSION_VAR] == '${DOMAIN}') {
+//                            $domainChecks[] = $expElement;
+//                        }
+
+                        if (!empty($exp['domainChecks'])) {
+                            $domainChecks = array_merge($domainChecks, $exp['domainChecks']);
+                        }
+
                         $vars = array_merge($vars, $exp['vars']);
                         return $exp['expression'];
                     },
@@ -213,7 +222,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $vars = array_unique($vars, SORT_REGULAR);
         $vars = array_values($vars);
 
-        return ['vars' => $vars, 'expression' => $expString];
+        return ['vars' => $vars, 'expression' => $expString, 'domainChecks' => $domainChecks];
     }
 
     /**
@@ -236,9 +245,15 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
                 break;
         }
 
-        $exp = $this->getConditionInJS($expressionDescriptor[self::KEY_EXPRESSION_VAR], $expressionDescriptor[self::KEY_EXPRESSION_CMP], $val);
+        $domainChecks = [];
+        if ($expressionDescriptor[self::KEY_EXPRESSION_VAR] == '${DOMAIN}') {
+            $exp = '${DOMAIN}';
+            $domainChecks[] = $expressionDescriptor;
+        } else {
+            $exp = $this->getConditionInJS($expressionDescriptor[self::KEY_EXPRESSION_VAR], $expressionDescriptor[self::KEY_EXPRESSION_CMP], $val);
+        }
 
-        return ['vars' => [['name' => $expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type' => $type]], 'expression' => $exp];
+        return ['vars' => [['name' => $expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type' => $type]], 'expression' => $exp, 'domainChecks' => $domainChecks];
     }
 
     /**

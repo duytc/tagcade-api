@@ -33,6 +33,7 @@ services:
     tagcade.cache.display.v2.refresher.ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\AdSlotCache
         arguments:
+            - '@doctrine.orm.entity_manager'
             - '@tagcade.cache.display.redis_namespace_cache'
             - '@tagcade.worker.manager'
             - '@tagcade.domain_manager.display_ad_slot'
@@ -43,6 +44,7 @@ services:
 #            - '@tagcade.domain_manager.display.blacklist'
             - '%tc.display.blacklist.prefix%'
             - '%tc.display.white_list.prefix%'
+            - '@tagcade_api.service.expression_in_js_generator'
 
     tagcade.cache.display.v2.refresher.ron_ad_slot_cache:
         class: Tagcade\Cache\V2\Refresher\RonAdSlotCache

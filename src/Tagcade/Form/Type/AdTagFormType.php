@@ -24,13 +24,13 @@ class AdTagFormType extends AbstractRoleSpecificFormType
 
     protected $autoIncreasePosition = false;
 
-    public function __construct(AdSlotRepositoryInterface $adSlotRepository){
+    public function __construct(AdSlotRepositoryInterface $adSlotRepository)
+    {
         $this->adSlotRepository = $adSlotRepository;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $builder
             ->add('position')
             ->add('frequencyCap')
@@ -40,13 +40,12 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             ->add('networkOpportunityCap')
             ->add('passback')
             ->add('libraryAdTag', 'entity', array(
-                    'class' => LibraryAdTag::class,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('libAdTag')->select('libAdTag');
-                    }
-                ))
-            ->add('autoIncreasePosition', null, array('mapped' => false))
-            ;
+                'class' => LibraryAdTag::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('libAdTag')->select('libAdTag');
+                }
+            ))
+            ->add('autoIncreasePosition', null, array('mapped' => false));
 
         // TODO: need re-check the var "AdSlotRepositoryInterface $er", may be incompatible type, must EntityRepository???
         $builder->add('adSlot', 'entity', array(
@@ -67,12 +66,12 @@ class AdTagFormType extends AbstractRoleSpecificFormType
                 $adTag = $event->getData();
 
                 //create new Library
-                if(array_key_exists('libraryAdTag', $adTag) && is_array($adTag['libraryAdTag'])){
+                if (array_key_exists('libraryAdTag', $adTag) && is_array($adTag['libraryAdTag'])) {
                     $form->remove('libraryAdTag');
                     $form->add('libraryAdTag', new LibraryAdTagFormType($this->userRole));
                 }
 
-                if (array_key_exists('autoIncreasePosition', $adTag)){
+                if (array_key_exists('autoIncreasePosition', $adTag)) {
                     $this->autoIncreasePosition = $adTag['autoIncreasePosition'];
                 }
             }
@@ -102,7 +101,8 @@ class AdTagFormType extends AbstractRoleSpecificFormType
      * @param PublisherInterface $publisher
      * @return array
      */
-    protected function getReportableAdSlotsForPublisher(PublisherInterface $publisher) {
+    protected function getReportableAdSlotsForPublisher(PublisherInterface $publisher)
+    {
 
         return $this->adSlotRepository->getReportableAdSlotsForPublisher($publisher);
     }
@@ -114,8 +114,7 @@ class AdTagFormType extends AbstractRoleSpecificFormType
                 'allow_extra_fields' => true,
                 'data_class' => AdTag::class,
                 'cascade_validation' => true,
-            ])
-        ;
+            ]);
     }
 
     public function getName()

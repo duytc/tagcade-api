@@ -45,7 +45,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($this->userRole instanceof AdminInterface) {
-
             // allow all sites, default is fine
             $builder->add('site', 'entity', array(
                 'class' => Site::class,
@@ -54,15 +53,13 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                 }
 
             ))
-                ->add('defaultAdSlot', 'entity', array(
-                    'class' => AdSlotAbstract::class,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('adslot')->select('adslot');
-                    }
-                ));
-
+            ->add('defaultAdSlot', 'entity', array(
+                'class' => AdSlotAbstract::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('adslot')->select('adslot');
+                }
+            ));
         } else if ($this->userRole instanceof PublisherInterface) {
-
             // for publishers, only allow their sites
             $builder
                 ->add('site', 'entity', [
@@ -82,7 +79,6 @@ class DynamicAdSlotFormType extends AbstractRoleSpecificFormType
                         return $er->getAdSlotsForPublisherQuery($publisher);
                     }
                 ));
-
         } else {
             throw new LogicException('A valid user role is required by AdSlotFormType');
         }

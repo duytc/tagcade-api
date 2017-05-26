@@ -14,7 +14,7 @@ class LibraryExpression implements LibraryExpressionInterface, ExpressionJsProdu
      */
     protected $name;
 
-    /** @var string */
+    /** @var array */
     protected $expressionDescriptor;
 
     /** @var int */

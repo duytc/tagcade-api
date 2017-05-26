@@ -24,6 +24,9 @@ Tagcade\Entity\Core\LibraryAdTag:
         inBannerDescriptor:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
+        expressionDescriptor:
+            expose: true
+            groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]
         name:
             expose: true
             groups: [libraryadtag.detail, libraryadtag.summary, libraryadtag.ref]

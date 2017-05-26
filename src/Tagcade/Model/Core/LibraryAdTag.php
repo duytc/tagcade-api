@@ -12,6 +12,7 @@ class LibraryAdTag implements LibraryAdTagInterface
     const AD_TYPE_THIRD_PARTY = 0;
     const AD_TYPE_IMAGE = 1;
     const AD_TYPE_IN_BANNER = 2;
+    const AD_TYPE_DYNAMIC = 3;
 
     protected $id;
 
@@ -38,6 +39,10 @@ class LibraryAdTag implements LibraryAdTagInterface
     protected $libSlotTags;
 
     protected $name;
+    /**
+     * @var array
+     */
+    protected $expressionDescriptor;
 
     /**
      * @inheritdoc
@@ -116,7 +121,7 @@ class LibraryAdTag implements LibraryAdTagInterface
      */
     public function getAdTags()
     {
-        if(null === $this->adTags) {
+        if (null === $this->adTags) {
             $this->adTags = new ArrayCollection();
         }
 
@@ -125,7 +130,7 @@ class LibraryAdTag implements LibraryAdTagInterface
 
     public function addAdTag(AdTagInterface $adTag)
     {
-        if( null === $this->adTags) {
+        if (null === $this->adTags) {
             $this->adTags = new ArrayCollection();
         }
 
@@ -210,7 +215,8 @@ class LibraryAdTag implements LibraryAdTagInterface
         return $this;
     }
 
-    public function isReferenced() {
+    public function isReferenced()
+    {
         return $this->adTags != null && $this->adTags->count() > 0;
     }
 
@@ -244,9 +250,24 @@ class LibraryAdTag implements LibraryAdTagInterface
         return $this->adTags->count();
     }
 
-
     function __toString()
     {
         return $this->id . $this->getName();
+    }
+
+    /**
+     * @return array
+     */
+    public function getExpressionDescriptor()
+    {
+        return $this->expressionDescriptor;
+    }
+
+    /**
+     * @param array $expressionDescriptor
+     */
+    public function setExpressionDescriptor($expressionDescriptor)
+    {
+        $this->expressionDescriptor = $expressionDescriptor;
     }
 }

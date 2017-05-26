@@ -21,4 +21,6 @@ interface ExpressionRepositoryInterface extends ObjectRepository {
      * @return mixed
      */
     public function getByExpectAdSlot(BaseAdSlotInterface $adSlot);
+
+    public function getByDynamicAdSlot(BaseAdSlotInterface $adSlot);
 } 

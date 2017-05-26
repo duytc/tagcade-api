@@ -42,6 +42,7 @@ class AdTag implements AdTagInterface
      */
     protected $passback;
 
+    protected $expressionDescriptor;
     /**
      * @param LibraryAdTagInterface $libraryAdTag
      */

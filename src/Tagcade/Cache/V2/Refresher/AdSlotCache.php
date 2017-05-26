@@ -3,6 +3,8 @@
 namespace Tagcade\Cache\V2\Refresher;
 
 
+use Doctrine\ORM\EntityManagerInterface;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
 use Tagcade\Cache\V2\Behavior\CreateAdSlotDataTrait;
 use Tagcade\Cache\V2\DisplayBlacklistCacheManagerInterface;
@@ -26,46 +28,40 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
 {
     use CreateAdSlotDataTrait;
 
-    /**
-     * @var DynamicAdSlotManagerInterface
-     */
+    /** @var DynamicAdSlotManagerInterface */
     protected $dynamicAdSlotManager;
-    /**
-     * @var ExpressionRepositoryInterface
-     */
+
+    /** @var ExpressionRepositoryInterface */
     protected $expressionRepository;
-    /**
-     * @var DisplayAdSlotManagerInterface
-     */
+
+    /** @var DisplayAdSlotManagerInterface */
     private $displayAdSlotManager;
-    /**
-     * @var NativeAdSlotManagerInterface
-     */
+
+    /** @var NativeAdSlotManagerInterface */
     private $nativeAdSlotManager;
-    /**
-     * @var TagGenerator
-     */
+
+    /** @var TagGenerator */
     private $tagGenerator;
 
-    /**
-     * @var DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager
-     */
+    /** @var DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager */
     protected $displayBlacklistCacheManager;
 
-    /**
-     * @var string
-     */
+    /** @var EntityManagerInterface */
+    protected $em;
+
+    /** @var ExpressionInJsGeneratorInterface */
+    protected $expressionInJsGenerator;
+
+    /** @var string */
     protected $blacklistPrefix;
+
+    /** @var string */
     protected $whiteListPrefix;
-    public function __construct(NamespaceCacheInterface $cache,
-                                Manager $workerManager,
-                                DisplayAdSlotManagerInterface $displayAdSlotManager,
-                                NativeAdSlotManagerInterface $nativeAdSlotManager,
-                                DynamicAdSlotManagerInterface $dynamicAdSlotManager,
-                                ExpressionRepositoryInterface $expressionRepository,
-                                TagGenerator $tagGenerator,
-//                                DisplayBlacklistCacheManagerInterface $displayBlacklistCacheManager,
-                                $blacklistPrefix, $whiteListPrefix)
+
+    public function __construct(EntityManagerInterface $em, NamespaceCacheInterface $cache, Manager $workerManager,
+            DisplayAdSlotManagerInterface $displayAdSlotManager, NativeAdSlotManagerInterface $nativeAdSlotManager,
+            DynamicAdSlotManagerInterface $dynamicAdSlotManager, ExpressionRepositoryInterface $expressionRepository,
+            TagGenerator $tagGenerator, $blacklistPrefix, $whiteListPrefix, ExpressionInJsGeneratorInterface $expressionInJsGenerator)
     {
         parent::__construct($cache, $workerManager);
 
@@ -74,9 +70,10 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $this->displayAdSlotManager = $displayAdSlotManager;
         $this->nativeAdSlotManager = $nativeAdSlotManager;
         $this->tagGenerator = $tagGenerator;
-//        $this->displayBlacklistCacheManager = $displayBlacklistCacheManager;
+        $this->expressionInJsGenerator = $expressionInJsGenerator;
         $this->blacklistPrefix = $blacklistPrefix;
         $this->whiteListPrefix = $whiteListPrefix;
+        $this->em = $em;
     }
 
     /**
@@ -278,5 +275,15 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     protected function getWhiteListPrefix()
     {
         return $this->whiteListPrefix;
+    }
+
+    protected function getEntityManager()
+    {
+        return $this->em;
+    }
+
+    protected function getExpressionInJsGenerator()
+    {
+        return $this->expressionInJsGenerator;
     }
 }

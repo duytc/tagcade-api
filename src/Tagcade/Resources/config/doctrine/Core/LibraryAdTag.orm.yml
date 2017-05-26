@@ -50,6 +50,9 @@ Tagcade\Entity\Core\LibraryAdTag:
         deletedAt:
             type: date
             nullable: true
+        expressionDescriptor:
+            type: json_array
+            nullable: true
 
     manyToOne:
         adNetwork:
