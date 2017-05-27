@@ -393,7 +393,8 @@ trait CreateRonAdSlotDataTrait
 
             $expInJs = [
                 'vars' => $convertedExpression['vars'],
-                'expression' => $convertedExpression['expression']
+                'expression' => $convertedExpression['expression'],
+                'domainTargetings' => $convertedExpression['domainTargetings'],
             ];
 
             $libraryAdSlot = $expression->getExpectLibraryAdSlot();

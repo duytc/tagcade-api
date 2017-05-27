@@ -48,11 +48,13 @@ class AdTag implements AdTagInterface
      */
     public function __construct(LibraryAdTagInterface $libraryAdTag = null)
     {
-        $this->html = $libraryAdTag->getHtml();
-
         if ($libraryAdTag) {
+            $this->html = $libraryAdTag->getHtml();
+
             $this->setAdNetwork($libraryAdTag->getAdNetwork());
         }
+
+        $this->passback = false;
     }
 
     /**

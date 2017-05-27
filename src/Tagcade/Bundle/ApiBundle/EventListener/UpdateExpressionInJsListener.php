@@ -80,7 +80,8 @@ class UpdateExpressionInJsListener
         if (null !== $convertedExpression) {
             $expInJs = [
                 'vars' => $convertedExpression['vars'],
-                'expression' => $convertedExpression['expression']
+                'expression' => $convertedExpression['expression'],
+                'domainChecks' => $convertedExpression['domainChecks']
             ];
 
             if ($expression instanceof ExpressionInterface) {

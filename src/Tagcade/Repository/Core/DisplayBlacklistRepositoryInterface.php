@@ -4,6 +4,8 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -71,4 +73,21 @@ interface DisplayBlacklistRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getDisplayBlacklistsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param);
+
+    /**
+     * get BlackList for AdSlot
+     *
+     * @param BaseAdSlotInterface $adSlot
+     * @return array
+     */
+    public function getBlacklistForAdSlot(BaseAdSlotInterface $adSlot);
+
+    /**
+     * get BlackList for AdSlot
+     *
+     * @param BaseLibraryAdSlotInterface $libAdSlot
+     * @return array
+     */
+    public function getBlacklistForLibAdSlot(BaseLibraryAdSlotInterface $libAdSlot);
+
 }

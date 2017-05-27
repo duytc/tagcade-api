@@ -23,6 +23,7 @@ class AdTag extends AdTagModel
 
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**

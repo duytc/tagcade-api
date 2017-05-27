@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -201,4 +203,39 @@ class DisplayBlacklistRepository extends EntityRepository implements DisplayBlac
 
         return $qb;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBlacklistForAdSlot(BaseAdSlotInterface $adSlot)
+    {
+        $qb = $this->createQueryBuilder('dbl')
+            ->join('dbl.networkBlacklists', 'nbl')
+            ->join('nbl.adNetwork', 'adnw')
+            ->join('adnw.libraryAdTags', 'lt')
+            ->join('lt.adTags', 't')
+            ->join('t.adSlot', 's')
+            ->where('s.id = :adSlotId')
+            ->setParameter('adSlotId', $adSlot->getId());
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBlacklistForLibAdSlot(BaseLibraryAdSlotInterface $libAdSlot)
+    {
+        $qb = $this->createQueryBuilder('dbl')
+            ->join('dbl.networkBlacklists', 'nbl')
+            ->join('nbl.adNetwork', 'adnw')
+            ->join('adnw.libraryAdTags', 'lt')
+            ->join('lt.libSlotTags', 'lst')
+            ->join('lst.libraryAdSlot', 'las')
+            ->where('las.id = :libAdSlotId')
+            ->setParameter('libAdSlotId', $libAdSlot->getId());
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

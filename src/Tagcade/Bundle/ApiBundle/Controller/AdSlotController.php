@@ -2,6 +2,7 @@
 
 namespace Tagcade\Bundle\ApiBundle\Controller;
 
+use Doctrine\ORM\Query\Expr\Base;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\Util\Codes;
@@ -146,6 +147,65 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         }
 
         return $this->get('tagcade.domain_manager.ad_slot')->getAdSlotsRelatedChannelForUser($this->getUser());
+
+    }
+
+    /**
+     * get Blacklist belong to AdSlot
+     *
+     * @Rest\View(
+     *     serializerGroups={"display.blacklist.min", "user.min", "adnetwork.min"}
+     * )
+     *
+     * @Rest\Get("/adslots/{id}/displayblacklists")
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getBlackListForAdSlotAction(Request $request, $id)
+    {
+        /* find ad slot */
+        /** @var BaseAdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        if (!$adSlot instanceof BaseAdSlotInterface) {
+            throw new NotFoundHttpException('Ad Slot is not found');
+        }
+
+        /* get black lists */
+        $displayBlacklistRepository = $this->get('tagcade.repository.display.blacklist');
+        $displayBlackLists = $displayBlacklistRepository->getBlacklistForAdSlot($adSlot);
+
+        return $displayBlackLists;
+    }
+
+    /**
+     * get Whitelist belong to AdSlot
+     *
+     * @Rest\View(
+     *     serializerGroups={"display.whitelist.min", "user.min", "adnetwork.min"}
+     * )
+     *
+     * @Rest\Get("/adslots/{id}/displaywhitelists")
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getWhiteListForAdSlotAction(Request $request, $id)
+    {
+        /* find ad slot */
+        /** @var BaseAdSlotInterface $adSlot */
+        $adSlot = $this->one($id);
+
+        if (!$adSlot instanceof BaseAdSlotInterface) {
+            throw new NotFoundHttpException('Ad Slot is not found');
+        }
+
+        /* get white lists */
+        $displayWhitelistRepository = $this->get('tagcade.repository.display.white_list');
+        $displayWhiteLists = $displayWhitelistRepository->getWhitelistForAdSlot($adSlot);
+
+        return  $displayWhiteLists;
 
     }
 

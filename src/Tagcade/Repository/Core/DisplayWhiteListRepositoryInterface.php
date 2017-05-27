@@ -4,6 +4,8 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -46,4 +48,21 @@ interface DisplayWhiteListRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getDisplayWhiteListsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param);
+
+    /**
+     * get WhiteList for AdSlot
+     *
+     * @param BaseAdSlotInterface $adSlot
+     * @return array
+     */
+    public function getWhitelistForAdSlot(BaseAdSlotInterface $adSlot);
+
+    /**
+     * get WhiteList for LibAdSlot
+     *
+     * @param BaseLibraryAdSlotInterface $libAdSlot
+     * @return array
+     */
+    public function getWhitelistForLibAdSlot(BaseLibraryAdSlotInterface $libAdSlot);
+
 }

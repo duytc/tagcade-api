@@ -323,4 +323,68 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
 
         return $sites;
     }
+
+    /**
+     * get Blacklist belong to LibAdSlot
+     *
+     * @Rest\View(
+     *     serializerGroups={"display.blacklist.min", "user.min", "adnetwork.min","slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
+     * )
+     *
+     * @Rest\Get("/libraryadslots/{id}/displayblacklists")
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getBlackListForLibAdSlotAction(Request $request, $id)
+    {
+
+        /* find ad slot */
+        /** @var BaseLibraryAdSlotInterface $libAdSlot */
+        $libAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($id);
+
+        if (!$libAdSlot instanceof BaseLibraryAdSlotInterface) {
+            throw new NotFoundHttpException('Library Ad Slot is not found');
+        }
+        /* check permission */
+        $this->checkUserPermission($libAdSlot, 'view');
+
+        /* get black lists */
+        $displayBlacklistRepository = $this->get('tagcade.repository.display.blacklist');
+        $displayBlackLists = $displayBlacklistRepository->getBlacklistForLibAdSlot($libAdSlot);
+
+        return $displayBlackLists;
+    }
+
+    /**
+     * get Whitelist belong to LibAdSlot
+     *
+     * @Rest\View(
+     *     serializerGroups={"display.whitelist.min", "user.min", "adnetwork.min","slotlib.summary", "librarynativeadslot.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "user.summary", "adslot.summary", "displayadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.summary"}
+     * )
+     *
+     * @Rest\Get("/libraryadslots/{id}/displaywhitelists")
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function getWhiteListForLibAdSlotAction(Request $request, $id)
+    {
+        /* find ad slot */
+        /** @var BaseLibraryAdSlotInterface $libAdSlot */
+        $libAdSlot = $this->get('tagcade.domain_manager.library_ad_slot')->find($id);
+
+        if (!$libAdSlot instanceof BaseLibraryAdSlotInterface) {
+            throw new NotFoundHttpException('Library Ad Slot is not found');
+        }
+        /* check permission */
+        $this->checkUserPermission($libAdSlot, 'view');
+
+        /* get white lists */
+        $displayWhitelistRepository = $this->get('tagcade.repository.display.white_list');
+        $displayWhiteLists = $displayWhitelistRepository->getWhitelistForLibAdSlot($libAdSlot);
+
+        return  $displayWhiteLists;
+
+    }
 }

@@ -5,6 +5,8 @@ namespace Tagcade\Repository\Core;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping;
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
@@ -132,4 +134,39 @@ class DisplayWhiteListRepository extends EntityRepository implements DisplayWhit
 
         return $qb;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWhitelistForAdSlot(BaseAdSlotInterface $adSlot)
+    {
+        $qb = $this->createQueryBuilder('dwl')
+            ->join('dwl.networkWhiteLists', 'nwl')
+            ->join('nwl.adNetwork', 'adnw')
+            ->join('adnw.libraryAdTags', 'lt')
+            ->join('lt.adTags', 't')
+            ->join('t.adSlot', 'adslot')
+            ->where('adslot.id = :adslotID')
+            ->setParameter('adslotID', $adSlot->getId());
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getWhitelistForLibAdSlot(BaseLibraryAdSlotInterface $libraryAdSlot)
+    {
+        $qb = $this->createQueryBuilder('dwl')
+            ->join('dwl.networkWhiteLists', 'nwl')
+            ->join('nwl.adNetwork', 'adnw')
+            ->join('adnw.libraryAdTags', 'lt')
+            ->join('lt.libSlotTags', 'lst')
+            ->join('lst.libraryAdSlot', 'las')
+            ->where('las.id = :libAdSlotId')
+            ->setParameter('libAdSlotId', $libraryAdSlot->getId());
+
+        return $qb->getQuery()->getResult();
+    }
+
 }
