@@ -77,9 +77,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         '>', '<', '==', '>=', '<=', '!=', '===', '!==',
         //STRING
         'contains', 'startsWith', 'endsWith', 'notContains', 'notEndsWith', 'notStartsWith',
-        'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !=',
-        'is', 'isNot',
-        // ${DOMAIN} checking for blacklist/whitelist
+        'length >', 'length <', 'length ==', 'length >=', 'length <=', 'length !=', 'is', 'isNot',
         'inBlacklist', 'inWhitelist', 'notInBlacklist', 'notInWhitelist'
     ];
 
@@ -102,13 +100,6 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         'length !=' => ['func' => 'length', 'cmp' => '!='],
         'is' => ['func' => 'search', 'cmp' => ''],
         'isNot' => ['func' => 'search', 'cmp' => ''],
-    ];
-
-    static $EXPRESSION_CMP_VALUES_FOR_STRING_DOMAIN = [
-        'inBlacklist',
-        'inWhitelist',
-        'notInBlacklist',
-        'notInWhitelist'
     ];
 
     static $INTERNAL_VARIABLE_MAP = [
@@ -145,7 +136,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
     /**
      * @param array $descriptor
-     * @return array format as [ [name:'', type: '], [name:'', type: ']] , 'expression'=>'' ]
+     * @return array|\array[ [name:'', type: '], [name:'', type: ']] , 'expression'=>'')
      * @throws InvalidFormatException
      */
     public function generateExpressionInJsFromDescriptor(array $descriptor)
@@ -163,7 +154,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
      * simplify Expression, converting from descriptor structure with groupType, etc. into object containing string expression and all available variables
      *
      * @param array $expressionDescriptor
-     * @return array format as [ 'vars'=>[ [name:'', type: '], [name:'', type: ']] , 'expression'=>'' ]
+     * @return array('vars'=>[ [name:'', type: '], [name:'', type: ']] , 'expression'=>'')
      */
     protected function simplifyExpression(array $expressionDescriptor)
     {
@@ -205,31 +196,18 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         $vars = [];
         $domainChecks = [];
-
         $expString = '(' . implode(
                 $this->getOperatorInJS($operator),
                 array_map(
                     function (array $expElement) use (&$vars, &$domainChecks) {
+
                         $exp = $this->createExpressionObject($expElement);
-                        $vars = array_merge($vars, $exp['vars']);
 
-                        if (is_array($exp['domainChecks'])) {
-                            // if single domainChecks as [ 'cmp' => '', 'val' => ''] => only append to array
-                            // this for ${DOMAIN is in a single condition}
-                            if (array_key_exists(self::KEY_EXPRESSION_CMP, $exp['domainChecks'])) {
-                                $domainChecks[] = $exp['domainChecks'];
-                            } else {
-                                // else, domainChecks has multiple [ 'cmp' => '', 'val' => ''] => merge to array
-                                // this for ${DOMAIN is in a group nested in a group}
-
-                                //foreach ($exp['domainChecks'] as $domainCheck) {
-                                //    $domainChecks[] = $domainCheck;
-                                //}
-
-                                $domainChecks = array_merge($domainChecks, $exp['domainChecks']);
-                            }
+                        if (!empty($exp['domainChecks'])) {
+                            $domainChecks = array_merge($domainChecks, $exp['domainChecks']);
                         }
 
+                        $vars = array_merge($vars, $exp['vars']);
                         return $exp['expression'];
                     },
                     $expressionAsGroup
@@ -241,24 +219,18 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $vars = array_unique($vars, SORT_REGULAR);
         $vars = array_values($vars);
 
-        return [
-            'vars' => $vars,
-            'expression' => $expString,
-            'domainChecks' => $domainChecks
-        ];
+        return ['vars' => $vars, 'expression' => $expString, 'domainChecks' => $domainChecks];
     }
 
     /**
      * create Other Expression String as condition as 'a > 1', 'b != 2', ...
      * @param array $expressionDescriptor
-     * @return array format as [ 'vars'=>[], 'expression'=>'', 'domainChecks' => [] ]
+     * @return array('vars'=>, 'expression'=>)
      */
     protected function createExpressionAsConditionObject(array $expressionDescriptor)
     {
         $type = array_key_exists(self::KEY_EXPRESSION_TYPE, $expressionDescriptor) ? $expressionDescriptor[self::KEY_EXPRESSION_TYPE] : "";
         $val = $expressionDescriptor[self::KEY_EXPRESSION_VAL];
-        $var = $expressionDescriptor[self::KEY_EXPRESSION_VAR];
-        $cmp = $expressionDescriptor[self::KEY_EXPRESSION_CMP];
 
         if (null !== $type) {
             $type = strtolower($type);
@@ -266,33 +238,19 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         switch ($type) {
             case 'string' :
-                if ($var === '${DOMAIN}') {
-                    break; // not need wrap double quote for ${DOMAIN} var because it is checked by serve ads only, not evaluated by js
-                }
-
                 $val = '"' . $val . '"';
-
                 break;
         }
 
-        /**
-         * @var string|array $exp array if var is ${DOMAIN}
-         */
-        $exp = $this->getConditionInJS($var, $cmp, $val);
-
-        if ($var === '${DOMAIN}' && is_array($exp)) {
-            $expression = $exp['expDomain'];
-            $domainChecks = $exp['domainCheck'];
+        $domainChecks = [];
+        if ($expressionDescriptor[self::KEY_EXPRESSION_VAR] == '${DOMAIN}') {
+            $exp = '${DOMAIN}';
+            $domainChecks[] = array(self::KEY_EXPRESSION_CMP => $expressionDescriptor[self::KEY_EXPRESSION_CMP], self::KEY_EXPRESSION_VAL => $expressionDescriptor[self::KEY_EXPRESSION_VAL]) ;
         } else {
-            $expression = $exp;
-            $domainChecks = null;
+            $exp = $this->getConditionInJS($expressionDescriptor[self::KEY_EXPRESSION_VAR], $expressionDescriptor[self::KEY_EXPRESSION_CMP], $val);
         }
 
-        return [
-            'vars' => [['name' => $var, 'type' => $type]],
-            'expression' => $expression,
-            'domainChecks' => $domainChecks
-        ];
+        return ['vars' => [['name' => $expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type' => $type]], 'expression' => $exp, 'domainChecks' => $domainChecks];
     }
 
     /**
@@ -330,11 +288,6 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         //if STRING => format as 'func($var) . $real-cmp . $val', where func = $cmp['func'], $real-cmp = $cmp['cmp']
         if (array_key_exists($cmp, self::$EXPRESSION_CMP_VALUES_FOR_STRING)) {
             return $this->getConditionInJSForString($var, $cmp, $val);
-        }
-
-        //if $var = "${DOMAIN}"
-        if (in_array($cmp, self::$EXPRESSION_CMP_VALUES_FOR_STRING_DOMAIN)) {
-            return $this->getConditionForStringDomain($var, $cmp, $val);
         }
 
         return null;
@@ -497,26 +450,6 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         }
 
         return null;
-    }
-
-    /**
-     * get Condition For String Domain
-     *
-     * @param $var
-     * @param $cmp
-     * @param $val
-     * @return array
-     */
-    private function getConditionForStringDomain($var, $cmp, $val)
-    {
-        return
-            [
-                'expDomain' => '(${DOMAIN})',
-                'domainCheck' => [
-                    'cmp' => $cmp,
-                    'val' => $val
-                ]
-            ];
     }
 
     /**
