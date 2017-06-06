@@ -11,6 +11,7 @@ class DisplayBlacklist extends DisplayBlacklistModel
     protected $domains;
     protected $networkBlacklists;
     protected $publisher;
+    protected $blacklistExpressions;
 
     /**
      * @var bool

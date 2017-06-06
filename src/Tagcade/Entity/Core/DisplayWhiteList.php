@@ -11,4 +11,5 @@ class DisplayWhiteList extends DisplayWhiteListModel
     protected $domains;
     protected $networkWhiteLists;
     protected $publisher;
+    protected $whiteListExpressions;
 }

@@ -669,4 +669,17 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotByAdNetwork ($adNetwork)
+    {
+        $qb = $this->createQueryBuilder('sl')
+            ->join('sl.adTags', 't')
+            ->join('t.libraryAdTag', 'lt')
+            ->where('lt.adNetwork = :ad_network_id')
+            ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER);
+        return $qb->getQuery()->getResult();
+    }
 }

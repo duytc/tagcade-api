@@ -24,8 +24,36 @@ services:
             - @tagcade_api.service.expression_in_js_generator
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postFlush }
+
+    tagcade_api.event_listener.library_ad_tag_expression_descriptor_change_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\LibraryAdTagExpressionDescriptorChangeListener
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+
+    ## Update expression in js, for tagcache latter
+    tagcade_api.event_listener.update_adslot_cache_when_update_expression_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotCacheWhenUpdateExpressionListener
+        arguments:
+            - '@event_dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: preRemove }
+
+    ## Update expression in js, for tagcache latter
+    tagcade_api.event_listener.update_adslot_cache_when_delete_blacklist_white_list_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotCacheWhenDeleteBlacklistWhiteListListener
+        arguments:
+            - '@event_dispatcher'
+        tags:
+            - { name: doctrine.event_listener, event: postFlush }
+            - { name: doctrine.event_listener, event: preRemove }
 
     tagcade_api.event_listener.move_ad_tag_to_library_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\MoveAdTagToLibraryListener

@@ -3,11 +3,19 @@
 namespace Tagcade\Bundle\ApiBundle\EventListener;
 
 
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
+use Tagcade\Entity\Core\BlacklistExpression;
+use Tagcade\Entity\Core\DisplayBlacklist;
+use Tagcade\Entity\Core\DisplayWhiteList;
+use Tagcade\Entity\Core\WhiteListExpression;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
+use Tagcade\Model\Core\DisplayBlacklistInterface;
+use Tagcade\Model\Core\DisplayWhiteListInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
@@ -39,6 +47,15 @@ class UpdateExpressionInJsListener
         $this->createExpressionInJs($entity);
     }
 
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        if ($entity instanceof LibraryExpressionInterface) {
+            $this->createDomainMappingForLibraryExpression($entity, $args->getEntityManager());
+        }
+    }
+
     /**
      * handle event preUpdate one expression, this auto update expressionInJS field.
      * @param PreUpdateEventArgs $args
@@ -56,8 +73,72 @@ class UpdateExpressionInJsListener
                 $this->createExpressionInJs($exp);
                 $this->updatedExpressions[] = $exp;
             }
+
+            $this->createDomainMappingForLibraryExpression($entity, $args->getEntityManager());
         }
     }
+
+    protected function createDomainMappingForLibraryExpression(LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
+    {
+        $descriptor = $libraryExpression->getExpressionDescriptor();
+        $this->createDomainMappingForDescriptor($descriptor, $libraryExpression, $em);
+    }
+
+    protected function createDomainMappingForDescriptor($descriptor, LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
+    {
+        if (array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $descriptor)) {
+            $this->createDomainMappingForGroupObject($descriptor, $libraryExpression, $em);
+        } else {
+            $this->createDomainMappingForConditionObject($descriptor, $libraryExpression, $em);
+        }
+    }
+
+    protected function createDomainMappingForGroupObject($descriptor, LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
+    {
+        foreach ($descriptor[ExpressionInJsGenerator::KEY_GROUP_VAL] as $expression) {
+            $this->createDomainMappingForDescriptor($expression, $libraryExpression, $em);
+        }
+    }
+
+    protected function createDomainMappingForConditionObject($expression, LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
+    {
+        $blacklistExpressionRepository = $em->getRepository(BlacklistExpression::class);
+        $whiteListExpressionRepository= $em->getRepository(WhiteListExpression::class);
+        $displayBlacklistRepository = $em->getRepository(DisplayBlacklist::class);
+        $displayWhiteListRepository = $em->getRepository(DisplayWhiteList::class);
+
+        if (
+            array_key_exists(ExpressionInJsGenerator::KEY_EXPRESSION_VAR, $expression) &&
+            array_key_exists(ExpressionInJsGenerator::KEY_EXPRESSION_CMP, $expression) &&
+            array_key_exists(ExpressionInJsGenerator::KEY_EXPRESSION_VAL, $expression) &&
+            $expression[ExpressionInJsGenerator::KEY_EXPRESSION_VAR] == '${DOMAIN}'
+        ) {
+            if (in_array($expression[ExpressionInJsGenerator::KEY_EXPRESSION_CMP], ['inBlacklist', 'notInBlacklist'])) {
+                $id = intval($expression[ExpressionInJsGenerator::KEY_EXPRESSION_VAL]);
+                if (!$blacklistExpressionRepository->checkLibraryExpressionExist($libraryExpression, $id)) {
+                    $blacklist = $displayBlacklistRepository->find($id);
+                    if ($blacklist instanceof DisplayBlacklistInterface) {
+                        $blacklistExpression = (new BlacklistExpression())->setBlacklist($blacklist)->setLibraryExpression($libraryExpression);
+                        $em->persist($blacklistExpression);
+                        $this->updatedExpressions[] = $blacklistExpression;
+                    }
+                }
+            }
+
+            if (in_array($expression[ExpressionInJsGenerator::KEY_EXPRESSION_CMP], ['inWhitelist', 'notInWhitelist'])) {
+                $id = intval($expression[ExpressionInJsGenerator::KEY_EXPRESSION_VAL]);
+                if (!$whiteListExpressionRepository->checkLibraryExpressionExist($libraryExpression, $id)) {
+                    $whiteList = $displayWhiteListRepository->find($id);
+                    if ($whiteList instanceof DisplayWhiteListInterface) {
+                        $whiteListExpression = (new WhiteListExpression())->setWhiteList($whiteList)->setLibraryExpression($libraryExpression);
+                        $em->persist($whiteListExpression);
+                        $this->updatedExpressions[] = $whiteListExpression;
+                    }
+                }
+            }
+        }
+    }
+
 
     public function postFlush(PostFlushEventArgs $args)
     {

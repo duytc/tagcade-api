@@ -30,6 +30,11 @@ class DisplayWhiteList implements DisplayWhiteListInterface
      */
     protected $networkWhiteLists;
 
+    /**
+     * @var WhiteListExpressionInterface[]
+     */
+    protected $whiteListExpressions;
+
     public function getId()
     {
         return $this->id;

@@ -21,6 +21,10 @@ Tagcade\Entity\Core\DisplayBlacklist:
             cascade: ["persist", "remove", "detach"]
             orphanRemoval: true
 
+        blacklistExpressions:
+            targetEntity: Tagcade\Entity\Core\BlacklistExpression
+            mappedBy: blacklist
+
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

@@ -154,4 +154,10 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @return array|mixed
+     */
+    public function getAdSlotByAdNetwork ($adNetwork);
 }

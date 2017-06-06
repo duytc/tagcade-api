@@ -15,6 +15,10 @@ Tagcade\Entity\Core\DisplayWhiteList:
              type: json_array
 
     oneToMany:
+        whiteListExpressions:
+            targetEntity: Tagcade\Entity\Core\WhiteListExpression
+            mappedBy: whiteList
+
         networkWhiteLists:
             targetEntity: Tagcade\Entity\Core\NetworkWhiteList
             mappedBy: displayWhiteList

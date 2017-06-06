@@ -116,4 +116,12 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
         }
         return $qb->getQuery()->getResult();
     }
+
+    public function getLibraryAdTagHasExpressionDescriptor()
+    {
+        return $this->createQueryBuilder('lat')
+            ->where('lat.expressionDescriptor IS NOT NULL')
+            ->getQuery()
+            ->getResult();
+    }
 }

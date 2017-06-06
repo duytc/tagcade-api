@@ -30,6 +30,11 @@ class DisplayBlacklist implements DisplayBlacklistInterface
      */
     protected $networkBlacklists;
 
+    /**
+     * @var BlacklistExpressionInterface[]
+     */
+    protected $blacklistExpressions;
+
     public function getId()
     {
         return $this->id;

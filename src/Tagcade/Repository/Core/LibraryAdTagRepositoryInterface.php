@@ -47,4 +47,6 @@ interface LibraryAdTagRepositoryInterface extends ObjectRepository{
 
 
     public function getLibraryAdTagsWithPagination(UserRoleInterface $user, PagerParam $param);
+
+    public function getLibraryAdTagHasExpressionDescriptor();
 }

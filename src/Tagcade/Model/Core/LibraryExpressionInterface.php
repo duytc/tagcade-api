@@ -85,4 +85,8 @@ interface LibraryExpressionInterface extends ModelInterface
      */
     public function getExpressionInJs();
 
+    /**
+     * @param mixed $expressionInJs
+     */
+    public function setExpressionInJs($expressionInJs);
 }
