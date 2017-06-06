@@ -14,49 +14,53 @@ use Tagcade\Entity\Core\AdTag;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
+use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
-use Tagcade\Model\Core\RonAdSlotInterface;
 
 class VerifySlotSynchronizationCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
-            ->setName('tc:ron-slot-sync:verify')
-            ->addOption('id', 'i', InputOption::VALUE_OPTIONAL, 'the ron slot id')
-            ->setDescription('verify if the ron slot is in sync with its co-referenced');
+            ->setName('tc:ad-slot-sync:verify')
+            ->addOption('id', 'i', InputOption::VALUE_OPTIONAL, 'the ad slot id')
+            ->setDescription('verify if the ad slot is in sync with its co-referenced');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $ronSlotManager = $container->get('tagcade.domain_manager.ron_ad_slot');
+        $libSlotManager = $container->get('tagcade.domain_manager.library_ad_slot');
         $id = $input->getOption('id');
-        $ronAdSlots = [];
+        $libSlots = [];
         if ($id !== null) {
-            $ronSlot = $ronSlotManager->find($id);
-            if (!$ronSlot instanceof RonAdSlotInterface) {
-                throw new InvalidArgumentException(sprintf('not found any RON ad slot with id %s', $id));
+            $libSlot = $libSlotManager->find($id);
+            if (!$libSlot instanceof BaseLibraryAdSlotInterface) {
+                throw new InvalidArgumentException(sprintf('not found any library ad slot with id %s', $id));
             }
-            $ronAdSlots[] = $ronSlot;
+            $libSlots[] = $libSlot;
         } else {
-            $ronAdSlots = $ronSlotManager->all();
+            $libSlots = $libSlotManager->all();
         }
 
         /**
-         * @var RonAdSlotInterface $ronSlot
+         * @var BaseLibraryAdSlotInterface $libSlot
          */
-        foreach($ronAdSlots as $ronSlot) {
-            $this->verifySingleRonSlot($em, $ronSlot, $output);
+        foreach($libSlots as $libSlot) {
+            if ($libSlot instanceof LibraryDynamicAdSlotInterface) {
+                continue;
+            }
+
+            $this->verifySingleRonSlot($em, $libSlot, $output);
         }
     }
 
-    protected function verifySingleRonSlot(EntityManagerInterface $em, RonAdSlotInterface $ronSlot, OutputInterface $output)
+    protected function verifySingleRonSlot(EntityManagerInterface $em, BaseLibraryAdSlotInterface $libraryAdSlot, OutputInterface $output)
     {
         $adSlotRepository = $em->getRepository(AdSlotAbstract::class);
 
-        $libraryAdSlot = $ronSlot->getLibraryAdSlot();
         $coReferencedAdSlots = $adSlotRepository->getCoReferencedAdSlots($libraryAdSlot);
         if ($coReferencedAdSlots instanceof PersistentCollection) {
             $coReferencedAdSlots = $coReferencedAdSlots->toArray();
@@ -68,7 +72,7 @@ class VerifySlotSynchronizationCommand extends ContainerAwareCommand
          */
         foreach($coReferencedAdSlots as $slot) {
             if ($libraryAdSlot->checkSum() != $slot->checkSum()) {
-                $output->writeln(sprintf('<error>RON slot %d has its child, ad slot %d, out of sync</error>', $ronSlot->getId(), $slot->getId()));
+                $output->writeln(sprintf('<error>library slot %d has its child, ad slot %d, out of sync</error>', $libraryAdSlot->getId(), $slot->getId()));
 
                 $output->writeln(sprintf('<info>start fixing the bad ad slot %d</info>', $slot->getId()));
                 $this->fixSingleAdSlot($em, $slot);
@@ -78,7 +82,7 @@ class VerifySlotSynchronizationCommand extends ContainerAwareCommand
         }
 
         if ($count === 0) {
-            $output->writeln(sprintf('<info>RON ad slot %d are in sync with its children</info>', $ronSlot->getId()));
+            $output->writeln(sprintf('<info>library ad slot %d are in sync with its children</info>', $libraryAdSlot->getId()));
         }
     }
 

@@ -610,9 +610,9 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
         switch ($type) {
             case 'string':
-                if (empty($val)) {
-                    throw new InvalidFormatException('not allow empty string in condition');
-                }
+//                if (empty($val)) {
+//                    throw new InvalidFormatException('not allow empty string in condition');
+//                }
 
                 //validate as escape syntax
                 if (trim($val) != '' && preg_match("/[^a-zA-Z0-9_=@&!',:;#\.\$\+\*\(\)\[\]\-\/\?\s\|]/", $val))  {
