@@ -61,7 +61,9 @@ class LibraryAdTagExpressionDescriptorChangeListener
     protected function createDomainMappingForLibraryAdTag(LibraryAdTagInterface $libraryAdTag, EntityManagerInterface $em)
     {
         $descriptor = $libraryAdTag->getExpressionDescriptor();
-        $this->createDomainMappingForDescriptor($descriptor, $libraryAdTag, $em);
+        if (is_array($descriptor)) {
+            $this->createDomainMappingForDescriptor($descriptor, $libraryAdTag, $em);
+        }
     }
 
     protected function createDomainMappingForDescriptor($descriptor, LibraryAdTagInterface $libraryAdTag, EntityManagerInterface $em)

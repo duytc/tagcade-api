@@ -102,6 +102,10 @@ class UpdateAdSlotCacheWhenDeleteBlacklistWhiteListListener
     protected function updateBlacklistExpressionForLibraryAdTag(LibraryAdTagInterface $libraryAdTag, $blacklistId)
     {
         $descriptor = $libraryAdTag->getExpressionDescriptor();
+        if (!is_array($descriptor)) {
+            return;
+        }
+
         $descriptor = $this->updateDomainExpression($descriptor, $blacklistId);
         $libraryAdTag->setExpressionDescriptor($descriptor);
         $this->changedEntities[] = $libraryAdTag;
@@ -110,6 +114,9 @@ class UpdateAdSlotCacheWhenDeleteBlacklistWhiteListListener
     protected function updateBlacklistExpressionForLibraryExpression(LibraryExpressionInterface $libraryExpression, $blacklistId)
     {
         $descriptor = $libraryExpression->getExpressionDescriptor();
+        if (!is_array($descriptor)) {
+            return;
+        }
         $descriptor = $this->updateDomainExpression($descriptor, $blacklistId);
         $libraryExpression->setExpressionDescriptor($descriptor);
         $this->changedEntities[] = $libraryExpression;
@@ -118,6 +125,9 @@ class UpdateAdSlotCacheWhenDeleteBlacklistWhiteListListener
     protected function updateWhiteListExpressionForLibraryAdTag(LibraryAdTagInterface $libraryAdTag, $whiteListId)
     {
         $descriptor = $libraryAdTag->getExpressionDescriptor();
+        if (!is_array($descriptor)) {
+            return;
+        }
         $descriptor = $this->updateDomainExpression($descriptor, $whiteListId, $isBlacklist = false);
         $libraryAdTag->setExpressionDescriptor($descriptor);
         $this->changedEntities[] = $libraryAdTag;
@@ -126,6 +136,9 @@ class UpdateAdSlotCacheWhenDeleteBlacklistWhiteListListener
     protected function updateWhiteListExpressionForLibraryExpression(LibraryExpressionInterface $libraryExpression, $whiteListId)
     {
         $descriptor = $libraryExpression->getExpressionDescriptor();
+        if (!is_array($descriptor)) {
+            return;
+        }
         $descriptor = $this->updateDomainExpression($descriptor, $whiteListId, $isBlacklist = false);
         $libraryExpression->setExpressionDescriptor($descriptor);
         $this->changedEntities[] = $libraryExpression;
