@@ -81,7 +81,7 @@ class UpdateExpressionInJsListener
     protected function createDomainMappingForLibraryExpression(LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
     {
         $descriptor = $libraryExpression->getExpressionDescriptor();
-        if (is_array($descriptor)) {
+        if (is_array($descriptor) && count($descriptor) >= 2) {
             $this->createDomainMappingForDescriptor($descriptor, $libraryExpression, $em);
         }
     }
