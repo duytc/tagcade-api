@@ -81,12 +81,15 @@ class UpdateExpressionInJsListener
     protected function createDomainMappingForLibraryExpression(LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
     {
         $descriptor = $libraryExpression->getExpressionDescriptor();
-        $this->createDomainMappingForDescriptor($descriptor, $libraryExpression, $em);
+        if (is_array($descriptor)) {
+            $this->createDomainMappingForDescriptor($descriptor, $libraryExpression, $em);
+        }
     }
 
     protected function createDomainMappingForDescriptor($descriptor, LibraryExpressionInterface $libraryExpression, EntityManagerInterface $em)
     {
-        if (array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $descriptor)) {
+        $groupType = (isset($descriptor[ExpressionInJsGenerator::KEY_GROUP_TYPE])) ? ExpressionInJsGenerator::$VAL_GROUPS[$descriptor[ExpressionInJsGenerator::KEY_GROUP_TYPE]] : null;
+        if ($groupType != null) {
             $this->createDomainMappingForGroupObject($descriptor, $libraryExpression, $em);
         } else {
             $this->createDomainMappingForConditionObject($descriptor, $libraryExpression, $em);

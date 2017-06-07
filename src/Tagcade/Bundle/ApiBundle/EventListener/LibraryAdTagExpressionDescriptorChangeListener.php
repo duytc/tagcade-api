@@ -68,7 +68,8 @@ class LibraryAdTagExpressionDescriptorChangeListener
 
     protected function createDomainMappingForDescriptor($descriptor, LibraryAdTagInterface $libraryAdTag, EntityManagerInterface $em)
     {
-        if (array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $descriptor)) {
+        $groupType = (isset($descriptor[ExpressionInJsGenerator::KEY_GROUP_TYPE])) ? ExpressionInJsGenerator::$VAL_GROUPS[$descriptor[ExpressionInJsGenerator::KEY_GROUP_TYPE]] : null;
+        if ($groupType != null) {
             $this->createDomainMappingForGroupObject($descriptor, $libraryAdTag, $em);
         } else {
             $this->createDomainMappingForConditionObject($descriptor, $libraryAdTag, $em);
