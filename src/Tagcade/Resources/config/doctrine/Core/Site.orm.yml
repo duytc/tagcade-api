@@ -22,6 +22,7 @@ Tagcade\Entity\Core\Site:
         domain:
             type: string
             length: 240
+            nullable: true
         autoCreate:
              type: boolean
              options:
