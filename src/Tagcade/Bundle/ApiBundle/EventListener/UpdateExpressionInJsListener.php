@@ -122,7 +122,6 @@ class UpdateExpressionInJsListener
                     $blacklist = $displayBlacklistRepository->find($id);
                     if ($blacklist instanceof DisplayBlacklistInterface) {
                         $blacklistExpression = (new BlacklistExpression())->setBlacklist($blacklist)->setLibraryExpression($libraryExpression);
-                        $em->persist($blacklistExpression);
                         $this->updatedExpressions[] = $blacklistExpression;
                     }
                 }
@@ -134,7 +133,6 @@ class UpdateExpressionInJsListener
                     $whiteList = $displayWhiteListRepository->find($id);
                     if ($whiteList instanceof DisplayWhiteListInterface) {
                         $whiteListExpression = (new WhiteListExpression())->setWhiteList($whiteList)->setLibraryExpression($libraryExpression);
-                        $em->persist($whiteListExpression);
                         $this->updatedExpressions[] = $whiteListExpression;
                     }
                 }
@@ -148,7 +146,7 @@ class UpdateExpressionInJsListener
         if (!empty($this->updatedExpressions)) {
             $em = $args->getEntityManager();
             foreach ($this->updatedExpressions as $exp) {
-                $em->merge($exp);
+                $em->persist($exp);
             }
 
             $this->updatedExpressions = []; // reset updated expressions

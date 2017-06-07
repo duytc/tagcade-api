@@ -49,7 +49,7 @@ class LibraryAdTagExpressionDescriptorChangeListener
         if (!empty($this->changedEntities)) {
             $em = $args->getEntityManager();
             foreach ($this->changedEntities as $entity) {
-                $em->merge($entity);
+                $em->persist($entity);
             }
 
             $this->changedEntities = []; // reset updated expressions
@@ -107,7 +107,6 @@ class LibraryAdTagExpressionDescriptorChangeListener
 
                     if (!$blacklistExpressionRepository->checkLibraryAdTagExist($libraryAdTag, $blacklist)) {
                         $blacklistExpression = (new BlacklistExpression())->setBlacklist($blacklist)->setLibraryAdTag($libraryAdTag);
-                        $em->persist($blacklistExpression);
                         $this->changedEntities[] = $blacklistExpression;
                     }
                 }
@@ -124,7 +123,6 @@ class LibraryAdTagExpressionDescriptorChangeListener
 
                     if (!$whiteListExpressionRepository->checkLibraryAdTagExist($libraryAdTag, $id)) {
                         $whiteListExpression = (new WhiteListExpression())->setWhiteList($whiteList)->setLibraryAdTag($libraryAdTag);
-                        $em->persist($whiteListExpression);
                         $this->changedEntities[] = $whiteListExpression;
                     }
                 }
