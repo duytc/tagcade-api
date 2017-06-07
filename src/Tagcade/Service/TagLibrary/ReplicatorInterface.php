@@ -40,4 +40,6 @@ interface ReplicatorInterface {
      * @return mixed
      */
     public function replicateLibraryDynamicAdSlotForAllReferencedDynamicAdSlots(LibraryDynamicAdSlotInterface $libraryDynamicAdSlot);
+
+    public function replicateExistingLibrarySlotTagsToAllReferencedAdTags(array $librarySlotTags, $remove = false);
 }

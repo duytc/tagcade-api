@@ -2,6 +2,7 @@
 
 namespace Tagcade\DomainManager;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionClass;
 use Tagcade\Entity\Core\AdTag;
@@ -108,6 +109,10 @@ class AdTagManager implements AdTagManagerInterface
         if($adTag->getId() !== null) {
             $this->updateAdTagOfSharedAdSlot($adTag);
         } else {
+            if ($adTag->getRefId() == null) {
+                $adTag->setRefId(uniqid("", true));
+            }
+
             $createdAdTags = $this->createNewAdTagForSharedAdSlot($adSlot, $adTag);
             foreach ($createdAdTags as $t) {
                 if ($t->getAdSlot()->getId() === $adTag->getAdSlot()->getId()) {
@@ -172,16 +177,17 @@ class AdTagManager implements AdTagManagerInterface
         $librarySlotTag->setRefId($refId);
         $librarySlotTag->setImpressionCap($adTag->getImpressionCap());
         $librarySlotTag->setNetworkOpportunityCap($adTag->getNetworkOpportunityCap());
-
+        $librarySlotTag->setAutoIncreasePosition($adTag->getAutoIncreasePosition());
         $this->em->persist($librarySlotTag);
 
         $adSlotLib = $adSlot->getLibraryAdSlot();
 
         // support "auto increase position" feature: update for all referenced ad tags
-        if ($adTag->getAutoIncreasePosition() && $adSlot instanceof DisplayAdSlotInterface) {
-            // increase for library slot tag
-            $this->autoIncreasePositionForRelatedLibrarySlotTags($librarySlotTag);
-        }
+//        if ($adTag->getAutoIncreasePosition() && $adSlot instanceof DisplayAdSlotInterface) {
+//            // increase for library slot tag
+//            $this->autoIncreasePositionForRelatedLibrarySlotTags($librarySlotTag);
+//        }
+        $librarySlotTag->getLibraryAdSlot();
 
         // make sure library slot tag is inserted before it's ad tag
         $this->em->flush();
@@ -196,6 +202,9 @@ class AdTagManager implements AdTagManagerInterface
             if (is_array($createdAdTags)) {
                 $allCreatedAdTags = array_merge($allCreatedAdTags, $createdAdTags);
             }
+
+            // increase for library slot tag
+            $this->autoIncreasePositionForRelatedLibrarySlotTags($librarySlotTag);
 
             // STEP.2: replicate new for other librarySlotTags
             $this->replicator->replicateExistingLibrarySlotTagsToAllReferencedAdTags($adSlotLib->getLibSlotTags()->toArray());
@@ -538,7 +547,7 @@ class AdTagManager implements AdTagManagerInterface
         }
 
         // update back to input $librarySlotTag
-        $libraryAdSlot->setLibSlotTags($newLibSlotTags);
+        $libraryAdSlot->setLibSlotTags(new ArrayCollection($newLibSlotTags));
         $librarySlotTag->setLibraryAdSlot($libraryAdSlot);
     }
 
