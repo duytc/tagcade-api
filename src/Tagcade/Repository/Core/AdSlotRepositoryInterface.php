@@ -8,6 +8,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\PagerParam;
@@ -155,9 +156,5 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      */
     public function getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @return array|mixed
-     */
-    public function getAdSlotByAdNetwork ($adNetwork);
+    public function getAdSlotByLibraryAdTag(LibraryAdTagInterface $libraryAdTag);
 }

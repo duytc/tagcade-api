@@ -14,6 +14,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\PagerParam;
@@ -670,16 +671,13 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getAdSlotByAdNetwork ($adNetwork)
+    public function getAdSlotByLibraryAdTag(LibraryAdTagInterface $libraryAdTag)
     {
-        $qb = $this->createQueryBuilder('sl')
+        return $this->createQueryBuilder('sl')
             ->join('sl.adTags', 't')
-            ->join('t.libraryAdTag', 'lt')
-            ->where('lt.adNetwork = :ad_network_id')
-            ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER);
-        return $qb->getQuery()->getResult();
+            ->where('t.libraryAdTag = :libraryAdTag')
+            ->setParameter('libraryAdTag', $libraryAdTag)
+            ->getQuery()
+            ->getResult();
     }
 }

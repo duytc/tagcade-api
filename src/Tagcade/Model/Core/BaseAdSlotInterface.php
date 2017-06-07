@@ -117,4 +117,6 @@ interface BaseAdSlotInterface extends ModelInterface, RTBEnabledInterface
      * @param mixed $maximumRefreshTimes
      */
     public function setMaximumRefreshTimes($maximumRefreshTimes);
+
+    public function getDeletedAt();
 }

@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
 use Tagcade\Entity\Core\AdSlotAbstract;
+use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
@@ -87,7 +88,9 @@ class UpdateAdSlotCacheWhenUpdateExpressionListener
         if (!empty($this->updatedExpressions)) {
             $adSlots = $this->filterAdSlotBlackListWhiteListExpression($this->updatedExpressions);
 
-            $this->dispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($adSlots));
+            if (count($adSlots) > 0) {
+                $this->dispatcher->dispatch(UpdateCacheEvent::NAME, new UpdateCacheEvent($adSlots));
+            }
 
             $this->updatedExpressions = []; // reset updated expressions
         }
@@ -100,6 +103,7 @@ class UpdateAdSlotCacheWhenUpdateExpressionListener
     private function filterAdSlotBlackListWhiteListExpression($updateExpressions)
     {
         $adSlots = [];
+        $adSlotIds = [];
 
         if (!is_array($updateExpressions)) {
             return $adSlots;
@@ -111,23 +115,25 @@ class UpdateAdSlotCacheWhenUpdateExpressionListener
                 $dynamicAdSlots = $this->adSlotRepository->getDisplayAdSlostByLibrary($libraryDynamicAdSlot);
 
                 foreach ($dynamicAdSlots as $dynamicAdSlot) {
+                    if (!$dynamicAdSlot instanceof DynamicAdSlotInterface || in_array($dynamicAdSlot->getId(), $adSlotIds) || $dynamicAdSlot->getDeletedAt() != null) {
+                        continue;
+                    }
+
                     $adSlots[] = $dynamicAdSlot;
                 }
 
                 continue;
             }
 
-            if ($updateExpression instanceof ExpressionInterface) {
-                $adSlots[] = $updateExpression->getDynamicAdSlot();
-                continue;
-            }
-            
             if ($updateExpression instanceof LibraryAdTagInterface) {
-                $adNetwork = $updateExpression->getAdNetwork();
-                $dynamicAdSlots = $this->adSlotRepository->getAdSlotByAdNetwork($adNetwork);
+                $reportableAdSlots = $this->adSlotRepository->getAdSlotByLibraryAdTag($updateExpression);
 
-                foreach ($dynamicAdSlots as $dynamicAdSlot) {
-                    $adSlots[] = $dynamicAdSlot;
+                foreach ($reportableAdSlots as $reportableAdSlot) {
+                    if (in_array($reportableAdSlot->getId(), $adSlotIds) || $reportableAdSlot->getDeletedAt() != null) {
+                        continue;
+                    }
+
+                    $adSlots[] = $reportableAdSlot;
                 }
                 
                 continue;

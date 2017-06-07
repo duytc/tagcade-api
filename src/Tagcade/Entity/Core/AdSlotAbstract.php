@@ -255,4 +255,9 @@ abstract class AdSlotAbstract
     {
         $this->maximumRefreshTimes = $maximumRefreshTimes;
     }
+
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
 }
