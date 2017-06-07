@@ -90,8 +90,12 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
                 //validate domain
                 $domain = $site->getDomain();
-                if ($this->validateDomain($domain) === FALSE) {
-                    $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
+                /* check validate if $domain has value */
+                /* and if $domain == null -> continue */
+                if (!empty($domain)) {
+                    if ($this->validateDomain($domain) === FALSE) {
+                        $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
+                    }
                 }
 
                 $site->setAutoCreate(false);

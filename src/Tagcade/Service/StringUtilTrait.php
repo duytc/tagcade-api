@@ -64,14 +64,16 @@ trait StringUtilTrait
         if (false !== $slashPos) {
             $domain = substr($domain, 0, $slashPos);
         }
-
-        if (!$this->validateDomain($domain)) {
-            if ($throwException === true) {
-                throw new InvalidArgumentException(sprintf('The value "%s" is not a valid domain.', $domain));
-            } else {
-                $domain = false;
+        if (!empty($domain)){
+            if (!$this->validateDomain($domain)) {
+                if ($throwException === true) {
+                    throw new InvalidArgumentException(sprintf('The value "%s" is not a valid domain.', $domain));
+                } else {
+                    $domain = false;
+                }
             }
         }
+
         
         $domain = strtolower($domain);
 
