@@ -172,7 +172,12 @@ trait CreateAdSlotDataTrait
             }
 
             if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
-                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($adTag->getLibraryAdTag()->getExpressionDescriptor());
+                $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
+                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+                $groupVals = $expressionDescriptor['groupVal'];
+                if (is_array($groupVals)) {
+                    $this->updateServerVars($groupVals, $dataItem);
+                }
             }
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
@@ -366,7 +371,12 @@ trait CreateAdSlotDataTrait
             }
 
             if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
-                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($adTag->getLibraryAdTag()->getExpressionDescriptor());
+                $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
+                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+                $groupVals = $expressionDescriptor['groupVal'];
+                if (is_array($groupVals)) {
+                    $this->updateServerVars($groupVals, $dataItem);
+                }
             }
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
