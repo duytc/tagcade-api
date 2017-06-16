@@ -264,9 +264,14 @@ class Manager
     }
 
     public function synchronizeUser(array $entity){
-        $params = new StdClass;
-        $params->entity = $entity;
-        $this->queueTask('synchronizeUser', $params, Manager::UR_API_WORKER);
+        /* new worker design of ur api, so that the jobData is changed */
+
+        $jobData = [
+            'task' => 'synchronizeUser',
+            'entity' => $entity
+        ];
+
+        $this->queue->putInTube(Manager::UR_API_WORKER, json_encode($jobData));
     }
 
     /**
