@@ -275,7 +275,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Retrieve a list of ad slots for this site
      * @Rest\View(
-     *      serializerGroups={"user.min", "slotlib.summary", "adslot.detail", "displayadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "librarydynamicadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.detail"}
+     *      serializerGroups={"user.min", "slotlib.summary", "adslot.detail", "displayadslot.summary", "librarydisplayadslot.summary", "librarynativeadslot.summary", "librarydynamicadslot.summary", "nativeadslot.summary", "dynamicadslot.summary", "expression.detail", "libraryexpression.detail", "site.summary"}
      * )
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
      * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")

@@ -33,6 +33,7 @@ Tagcade\Entity\Core\AdSlotAbstract:
             type: boolean
             options:
                 default: false
+            nullable: true
         refreshEvery:
             type: integer
             nullable: true

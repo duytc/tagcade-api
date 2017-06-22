@@ -338,12 +338,6 @@ trait CreateAdSlotDataTrait
             'tags' => []
         ];
 
-        if ($nativeAdSlot->isAutoRefresh()) {
-            $data['autoRefresh'] = true;
-            $data['refreshEvery'] = $nativeAdSlot->getRefreshEvery();
-            $data['maximumRefreshTimes'] = $nativeAdSlot->getMaximumRefreshTimes();
-        }
-
         //step 1. get and check adTags
         /** @var AdTagInterface[]|Collection $adTags */
         $adTags = $nativeAdSlot->getAdTags();
@@ -365,10 +359,6 @@ trait CreateAdSlotDataTrait
                 'id' => $adTag->getId(),
                 'tag' => $adTag->getHtml()
             ];
-
-            if ($adTag->isPassback()) {
-                $dataItem['passback'] = true;
-            }
 
             if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
                 $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
