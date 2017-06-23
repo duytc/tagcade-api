@@ -64,6 +64,10 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             function (FormEvent $event) {
                 $form = $event->getForm();
                 $adTag = $event->getData();
+                if (array_key_exists('active', $adTag)) {
+                    $adTag['active'] = (int)$adTag['active'];
+                    $event->setData($adTag);
+                }
 
                 //create new Library
                 if (array_key_exists('libraryAdTag', $adTag) && is_array($adTag['libraryAdTag'])) {
