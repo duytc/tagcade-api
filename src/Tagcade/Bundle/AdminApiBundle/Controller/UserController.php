@@ -241,20 +241,18 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
         $siteManager = $this->get('tagcade.domain_manager.site');
 
-
-
-        if ($request->query->count() < 1) {
-            if (null !== $enableSourceReport) {
-                if (!$publisher->hasAnalyticsModule()) {
-                    throw new NotFoundHttpException('That publisher does not have analytics module enabled');
-                }
-
-                $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
-                return $siteManager->getSitesThatEnableSourceReportForPublisher($publisher, $enableSourceReport);
-            }
-
-            return $siteManager->getSitesForPublisher($publisher);
-        }
+//        if ($request->query->count() < 1) {
+//            if (null !== $enableSourceReport) {
+//                if (!$publisher->hasAnalyticsModule()) {
+//                    throw new NotFoundHttpException('That publisher does not have analytics module enabled');
+//                }
+//
+//                $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
+//                return $siteManager->getSitesThatEnableSourceReportForPublisher($publisher, $enableSourceReport);
+//            }
+//
+//            return $siteManager->getSitesForPublisher($publisher);
+//        }
 
         $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
         /** @var SiteRepositoryInterface $siteRepository */
@@ -273,7 +271,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
             $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
         }
 
-        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate, $enableSourceReport);
+        $qb = $siteRepository->getSitesForUserWithPagination($publisher, $this->getParams(), $autoCreate, $enableSourceReport);
         return $this->getPagination($qb, $request);
     }
 
