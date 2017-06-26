@@ -7,6 +7,8 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\PagerParam;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface LibrarySlotTagRepositoryInterface extends ObjectRepository
 {
@@ -45,4 +47,15 @@ interface LibrarySlotTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getByLibraryAdTag(LibraryAdTagInterface $libraryAdTag);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getLibrarySlotTagForPublisher(PublisherInterface $publisher);
+
+
+    public function getLibrarySlotTagForUserWithPagination(UserRoleInterface $user, PagerParam $params);
+
+
 }

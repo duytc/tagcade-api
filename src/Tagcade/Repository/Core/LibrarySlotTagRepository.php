@@ -9,6 +9,9 @@ use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Tagcade\Model\PagerParam;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTagRepositoryInterface
 {
@@ -120,5 +123,44 @@ class LibrarySlotTagRepository extends EntityRepository implements LibrarySlotTa
             ->setParameter('libraryAdTag', $libraryAdTag)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getLibrarySlotTagForPublisher(PublisherInterface $publisher)
+    {
+        return $this->createQueryBuilder('lst')
+            ->join('lst.libraryAdSlot', 'las')
+            ->where('las.publisher = :publisher')
+            ->setParameter('publisher', $publisher)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getLibrarySlotTagForUserWithPagination(UserRoleInterface $user, PagerParam $param)
+    {
+        $qb = $this->createQueryBuilder('lst');
+
+        if ($user instanceof PublisherInterface && !$user instanceof SubPublisherInterface) {
+            $qb->join('lst.libraryAdSlot', 'libSlot')
+                ->where('libSlot.publisher = :publisher')
+                ->setParameter('publisher', $user);
+        }
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->join('lst.libraryAdTag', 'lat')
+                ->andWhere($qb->expr()->like('lat.name', ':searchKey'))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('lst.' . $param->getSortField(), $param->getSortDirection());
+        }
+
+        return $qb;
     }
 }

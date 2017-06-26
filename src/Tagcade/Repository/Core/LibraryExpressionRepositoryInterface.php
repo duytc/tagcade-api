@@ -7,6 +7,9 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
+use Tagcade\Model\PagerParam;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 
 interface LibraryExpressionRepositoryInterface extends ObjectRepository {
     /**
@@ -30,4 +33,17 @@ interface LibraryExpressionRepositoryInterface extends ObjectRepository {
      * @return mixed
      */
     public function getByExpectLibraryAdSlot(BaseLibraryAdSlotInterface $libraryAdSLot, $limit = null, $offset = null);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param PagerParam $param
+     * @return mixed
+     */
+    public function getLibraryExpressionsForUserWithPagination(UserRoleInterface $user, PagerParam $param);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @return mixed
+     */
+    public function getLibraryExpressionsForPublisher(PublisherInterface $publisher);
 } 

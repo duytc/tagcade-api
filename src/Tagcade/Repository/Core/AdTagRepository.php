@@ -74,8 +74,8 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
 
     public function getAdTagsForSite(SiteInterface $site, $limit = null, $offset = null)
@@ -104,8 +104,8 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->select('t.id')->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
 
     protected function createAdTagForSiteQueryBuilder(SiteInterface $site, $limit = null, $offset = null)
@@ -143,8 +143,8 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->select('t.id')->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
 
     public function getAllActiveAdTagIds()
@@ -155,8 +155,8 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->select('t.id')->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
 
 
@@ -200,8 +200,8 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->select('t.id')->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
 
     public function getAdTagsForAdNetwork(AdNetworkInterface $adNetwork, $limit = null, $offset = null)
@@ -314,14 +314,12 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->leftJoin('t.adSlot', 'sl')
             ->leftJoin('t.libraryAdTag', 'lat')
             ->leftJoin('sl.libraryAdSlot', 'lsl')
-            ->leftJoin('sl.site', 'st')
-        ;
+            ->leftJoin('sl.site', 'st');
 
         if ($user instanceof PublisherInterface) {
             $qb = $this->createQueryBuilderForPublisher($user)
                 ->leftJoin('sl.libraryAdSlot', 'lsl')
-                ->leftJoin('t.libraryAdTag', 'lat')
-            ;
+                ->leftJoin('t.libraryAdTag', 'lat');
         }
 
         if (is_string($param->getSearchKey())) {
@@ -342,7 +340,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            switch ($param->getSortField()){
+            switch ($param->getSortField()) {
                 case $this->SORT_FIELDS['active']:
                     $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
@@ -608,8 +606,8 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $results = $qb->select('t.id')->getQuery()->getArrayResult();
 
         return array_map(function ($resultItem) {
-                return $resultItem['id'];
-            }, $results);
+            return $resultItem['id'];
+        }, $results);
     }
 
     /**
@@ -674,7 +672,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
      * @param $status
      * @return array
      */
-    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus ($status)
+    public function getAdTagsThatSetImpressionAndOpportunityCapByStatus($status)
     {
         $qb = $this->createQueryBuilder('t')
             ->where('t.impressionCap IS NOT NULL OR t.networkOpportunityCap IS NOT NULL')
@@ -710,7 +708,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->getQuery()->getSingleScalarResult() > 0;
     }
 
-    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
+    public function getActiveSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PagerParam $param, PublisherInterface $publisher = null)
     {
         $qb = $this->createQueryBuilder('t')
             ->join('t.libraryAdTag', 'lib')
@@ -720,6 +718,20 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->distinct()
             ->where('lib.adNetwork = :network')
             ->setParameter('network', $adNetwork);
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere($qb->expr()->like('site.name', ':searchKey'))
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
+            in_array($param->getSortField(), $this->SORT_FIELDS)
+        ) {
+            $qb->addOrderBy('site.' . $param->getSortField(), $param->getSortDirection());
+        }
 
         if ($publisher instanceof PublisherInterface) {
             $qb->andWhere('site.publisher = :publisher')

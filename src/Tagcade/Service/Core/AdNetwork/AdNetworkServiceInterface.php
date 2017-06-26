@@ -6,6 +6,7 @@ use Tagcade\Domain\DTO\Core\SiteStatus;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 
@@ -16,10 +17,11 @@ interface AdNetworkServiceInterface
 
     /**
      * @param AdNetworkInterface $adNetwork
+     * @param PagerParam $param
      * @param PublisherInterface $publisher null if not filter by any publisher
-     * @return SiteStatus[]
+     * @return \Tagcade\Domain\DTO\Core\SiteStatus[]
      */
-    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null);
+    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PagerParam $param, PublisherInterface $publisher = null);
 
     /**
      * @param AdNetworkInterface $adNetwork

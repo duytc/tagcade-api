@@ -39,7 +39,7 @@ $container = $kernel->getContainer();
 const NUM_PUBLISHER = 1;
 const NUM_SITES = 15;
 const NUM_AD_SLOTS_PER_SITE = 10;
-const NUM_AD_TAG_PER_AD_SLOT = 5;
+const NUM_AD_TAG_PER_AD_SLOT = 50;
 const NUM_RON_AD_SLOT = 5;
 const NUM_RON_TAG_PER_RON_AD_SLOT = 5;
 const NUM_SITE_TO_DEPLOY_RON_AD_SLOT = 10;
@@ -151,7 +151,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
             // create ad tag
             foreach(xrange(NUM_AD_TAG_PER_AD_SLOT) as $adTagId) {
                 $libraryAdTag = (new LibraryAdTag())->setName(sprintf('ad tag %d', $adTagId))
-                    ->setVisible(false)
+                    ->setVisible(true)
                     ->setHtml(sprintf('ad tag %d html', $adTagId))
                     ->setAdType(0)
                     ->setAdNetwork($adNetwork)
