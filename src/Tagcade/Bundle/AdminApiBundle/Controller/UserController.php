@@ -241,8 +241,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
 
         $siteManager = $this->get('tagcade.domain_manager.site');
 
-
-
         if ($request->query->count() < 1) {
             if (null !== $enableSourceReport) {
                 if (!$publisher->hasAnalyticsModule()) {
@@ -273,7 +271,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
             $enableSourceReport = $enableSourceReport ? filter_var($enableSourceReport, FILTER_VALIDATE_BOOLEAN) : true;
         }
 
-        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate, $enableSourceReport);
+        $qb = $siteRepository->getSitesForUserWithPagination($publisher, $this->getParams(), $autoCreate, $enableSourceReport);
         return $this->getPagination($qb, $request);
     }
 

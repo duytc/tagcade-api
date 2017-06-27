@@ -11,6 +11,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Handler\Handlers\Core\LibrarySlotTagHandlerAbstract;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 
 /**
  * @Rest\RouteResource("LibrarySlotTag")
@@ -20,6 +22,14 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
     /**
      * Get all library ad slots ad tag
      * @Rest\View(serializerGroups={"libraryslottag.summary", "libraryadtag.summary", "adnetwork.summary", "slotlib.summary", "librarydisplayadslot.summary", "librarydynamicadslot.summary", "librarynativeadslot.summary", "user.summary"})
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="Library Ad Slots",
      *  resource = true,
@@ -28,11 +38,24 @@ class LibrarySlotTagController extends RestControllerAbstract implements ClassRe
      *  }
      * )
      *
+     * @param $request
      * @return LibrarySlotTagInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $role = $this->getUser();
+        /** @var LibrarySlotTagRepositoryInterface $librarySlotTagRepository */
+        $librarySlotTagRepository = $this->get('tagcade.repository.library_slot_tag');
+        if ($request->query->count() < 1) {
+            if ($role instanceof PublisherInterface) {
+                return $librarySlotTagRepository->getLibrarySlotTagForPublisher($role);
+            }
+
+            return $this->all();
+        }
+
+        $qb = $librarySlotTagRepository->getLibrarySlotTagForUserWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
     }
 
     /**

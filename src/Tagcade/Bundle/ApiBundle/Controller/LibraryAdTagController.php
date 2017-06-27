@@ -36,6 +36,7 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="publisher used to filter")
      *
      * @ApiDoc(
      *  section="Library ad tags",
@@ -62,8 +63,15 @@ class LibraryAdTagController extends RestControllerAbstract implements ClassReso
             return $this->getPagination($qb, $request);
         }
 
-        if ($role instanceof PublisherInterface) {
-            return $libraryAdTagRepository->getLibraryAdTagsForPublisher($role);
+        $publisherId = $request->query->get('publisherId', 0);
+        $publisher = $this->get('tagcade_user.domain_manager.publisher')->find($publisherId);
+
+        if ($role instanceof PublisherInterface || $publisher instanceof PublisherInterface) {
+            if ($role instanceof PublisherInterface) {
+                return $libraryAdTagRepository->getLibraryAdTagsForPublisher($role);
+            } else {
+                return $libraryAdTagRepository->getLibraryAdTagsForPublisher($publisher);
+            }
         }
 
         return $libraryAdTagRepository->findBy(array('visible' => true));

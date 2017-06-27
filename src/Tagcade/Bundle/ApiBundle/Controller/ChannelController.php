@@ -15,6 +15,8 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Handler\Handlers\Core\ChannelHandlerAbstract;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\ChannelRepositoryInterface;
 
 /**
  * @Rest\RouteResource("Channel")
@@ -27,6 +29,15 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      * @Rest\View(
      *      serializerGroups={"channel.summary", "user.summary"}
      * )
+     *
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="Channels",
      *  resource = true,
@@ -35,11 +46,24 @@ class ChannelController extends RestControllerAbstract implements ClassResourceI
      *  }
      * )
      *
+     * @param Request $request
      * @return ChannelInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $role = $this->getUser();
+        /** @var ChannelRepositoryInterface $channelRepository */
+        $channelRepository = $this->get('tagcade.repository.channel');
+        if ($request->query->count() < 1) {
+            if ($role instanceof PublisherInterface) {
+                return $channelRepository->getChannelsForPublisher($role);
+            }
+
+            return $this->all();
+        }
+
+        $qb = $channelRepository->getChannelsForUserWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
     }
 
     /**

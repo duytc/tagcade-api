@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\LibraryExpressionInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\LibraryExpressionRepositoryInterface;
 
 /**
  * @Rest\RouteResource("LibraryExpression")
@@ -19,6 +21,13 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
     /**
      * Get all library expression
      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     *
      * @ApiDoc(
      *  section="Library expressions",
      *  resource = true,
@@ -27,11 +36,24 @@ class LibraryExpressionController extends RestControllerAbstract implements Clas
      *  }
      * )
      *
+     * @param Request $request
      * @return LibraryExpressionInterface[]
      */
-    public function cgetAction()
+    public function cgetAction(Request $request)
     {
-        return $this->all();
+        $role = $this->getUser();
+        /** @var LibraryExpressionRepositoryInterface $libraryExpressionRepository */
+        $libraryExpressionRepository = $this->get('tagcade.repository.library_expression');
+        if ($request->query->count() < 1) {
+            if ($role instanceof PublisherInterface) {
+                return $libraryExpressionRepository->getLibraryExpressionsForPublisher($role);
+            }
+
+            return $this->all();
+        }
+
+        $qb = $libraryExpressionRepository->getLibraryExpressionsForUserWithPagination($role, $this->getParams());
+        return $this->getPagination($qb, $request);
     }
 
     /**

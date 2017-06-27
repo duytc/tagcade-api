@@ -42,6 +42,7 @@ class LibraryAdSlotController extends RestControllerAbstract implements ClassRes
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering library ad slots")
      *
      * @ApiDoc(
      *   section = "Library Ad Slots",

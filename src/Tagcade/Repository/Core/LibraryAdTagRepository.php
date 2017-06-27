@@ -30,12 +30,16 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
             ->where('lat.visible = :visible')
             ->setParameter('visible', true, Type::BOOLEAN);
 
-        if ($user instanceof PublisherInterface) {
+        if ($user instanceof PublisherInterface || (is_int($param->getPublisherId()) && $param->getPublisherId() > 0)) {
             // get all library ad slots that used for SHARING, without order
             $qb
                 ->join('lat.adNetwork', 'nw')
-                ->andWhere('nw.publisher = :publisher_id')
-                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+                ->andWhere('nw.publisher = :publisher_id');
+            if ($user instanceof PublisherInterface) {
+                $qb->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+            } else {
+                $qb->setParameter('publisher_id', $param->getPublisherId(), Type::INTEGER);
+            }
         }
 
         if (is_string($param->getSearchKey())) {

@@ -182,6 +182,11 @@ class LibraryAdSlotRepository extends EntityRepository implements LibraryAdSlotR
             $qb = $this->getLibraryAdSlotsForPublisherQueryWithoutOrder($user);
         }
 
+        if (is_int($param->getPublisherId()) && $param->getPublisherId() > 0) {
+            $qb->andWhere('sl.publisher = :publisherId')
+                ->setParameter('publisherId', $param->getPublisherId());
+        }
+
         $qb->leftJoin('sl.publisher', 'pls');
 
         if (is_string($param->getSearchKey())) {

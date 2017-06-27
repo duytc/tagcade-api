@@ -11,6 +11,7 @@ use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -81,8 +82,7 @@ class AdNetworkService implements AdNetworkServiceInterface
                 }
 
                 $siteDirectOwnerId = $subPublisher->getId();
-            }
-            else if ($userRole instanceof PublisherInterface) {
+            } else if ($userRole instanceof PublisherInterface) {
                 $siteDirectOwnerId = $site->getPublisher()->getId();
             }
 
@@ -98,7 +98,7 @@ class AdNetworkService implements AdNetworkServiceInterface
         return $sites;
     }
 
-    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PublisherInterface $publisher = null)
+    public function getSitesForAdNetworkFilterPublisher(AdNetworkInterface $adNetwork, PagerParam $param, PublisherInterface $publisher = null)
     {
         $siteStatus = [];
 
@@ -106,8 +106,8 @@ class AdNetworkService implements AdNetworkServiceInterface
         $siteRepository = $this->em->getRepository(Site::class);
         /** @var AdTagRepositoryInterface $adTagRepository */
         $adTagRepository = $this->em->getRepository(AdTag::class);
-        $siteIds = $adTagRepository->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
-        foreach($siteIds as $siteId) {
+        $siteIds = $adTagRepository->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $param, $publisher);
+        foreach ($siteIds as $siteId) {
             $site = $siteRepository->find($siteId);
             if ($site instanceof SiteInterface) {
                 $active = $adTagRepository->countAdTagForSiteAndAdNetworkByStatus($adNetwork, $site, AdTagInterface::ACTIVE);

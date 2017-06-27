@@ -82,45 +82,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
 
         $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams(), $builtIn);
         return $this->getPagination($qb, $request);
-
-//        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-//        $publisher = $paramFetcher->get('publisher');
-//        $adNetworkManager = $this->get('tagcade.domain_manager.ad_network');
-//        $builtIn = $paramFetcher->get('builtIn');
-//        $builtIn = filter_var($builtIn, FILTER_VALIDATE_BOOLEAN);
-//
-//        if ($publisher != null && $this->getUser() instanceof AdminInterface) {
-//            $publisher = $this->get('tagcade_user.domain_manager.publisher')->findPublisher($publisher);
-//
-//            if (!$publisher instanceof PublisherInterface) {
-//                throw new NotFoundHttpException('That publisher does not exist');
-//            }
-//
-//            $all = $adNetworkManager->getAdNetworksForPublisher($publisher);
-//        }
-//
-//        $all = isset($all) ? $all : $this->all();
-//
-//        $this->checkUserPermission($all);
-//
-//
-//        if ($builtIn == false) {
-//            return $all;
-//        }
-//
-//        $results = [];
-//        foreach ($all as $adNetwork) {
-//            /**
-//             * @var AdNetworkInterface $adNetwork
-//             */
-//            if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
-//                continue;
-//            }
-//
-//            $results[] = $adNetwork;
-//        }
-//
-//        return $results;
     }
 
     /**
@@ -179,6 +140,11 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true)
      * @Rest\QueryParam(name="size", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering sites")
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -214,14 +180,14 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $page = $request->query->get('page', null);
 
         if ($page === null) {
-            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
+            return $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $this->getParams(), $publisher);
         }
 
         $size = $request->query->get('size', 10);
         $offset = ($page - 1) * $size;
-        $siteStatus = $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $publisher);
+        $siteStatus = $this->get('tagcade_app.service.core.ad_network.ad_network_service')->getSitesForAdNetworkFilterPublisher($adNetwork, $this->getParams(), $publisher);
 
-        return array (
+        return array(
             'totalRecord' => count($siteStatus),
             'records' => array_slice($siteStatus, $offset, $size),
             'itemPerPage' => $size,
@@ -266,6 +232,16 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get all active sites belonging to this ad network
      *
+     * @Rest\View(serializerGroups={"sitestatus.detail", "site.minimum"})
+     * @Rest\QueryParam(name="publisher", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="size", requirements="\d+", nullable=true)
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering sites")
+     *
      * @ApiDoc(
      *  section = "Ad Networks",
      *  resource = true,
@@ -292,15 +268,15 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         $role = $this->get('tagcade.user_role');
 
         if ($role instanceof AdminInterface) {
-            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork);
+            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $this->getParams());
         } else {
             /** @var PublisherInterface $role */
-            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $role);
+            $siteIds = $this->get('tagcade.repository.ad_tag')->getActiveSitesForAdNetworkFilterPublisher($adNetwork, $this->getParams(), $role);
         }
 
         $sites = [];
         $siteManager = $this->get('tagcade.domain_manager.site');
-        foreach($siteIds as $siteId) {
+        foreach ($siteIds as $siteId) {
             $site = $siteManager->find($siteId);
             if ($site instanceof SiteInterface) {
                 $sites[] = $site;
