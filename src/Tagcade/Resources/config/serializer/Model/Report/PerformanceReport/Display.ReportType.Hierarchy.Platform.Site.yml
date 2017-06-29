@@ -5,6 +5,10 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Sit
             type: integer
             expose: true
             groups: [report_type.summary]
+        getSiteName:
+            type: string
+            expose: true
+            groups: [report_type.summary]
     properties:
         site:
             exclude: true
