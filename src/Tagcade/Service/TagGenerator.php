@@ -495,7 +495,7 @@ class TagGenerator
      */
     public function createDisplayPassbackTag(PublisherInterface $publisher, $forceSecure = false)
     {
-        $tag = "<!-- Tagcade Universal Passback -->\n";
+        $tag = "<!-- Pubvantage Universal Passback -->\n";
         $template = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-passback="true"%s></script>' . "\n";
         $publisherUuid = $publisher->getUuid();
         if ($publisherUuid !== null) {
