@@ -38,6 +38,11 @@ class Site extends AbstractCalculatedReportType implements CalculatedReportTypeI
         return $this->site->getId();
     }
 
+    public function getSiteName()
+    {
+        return $this->site->getName();
+    }
+
     /**
      * @inheritdoc
      */

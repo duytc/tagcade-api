@@ -42,6 +42,10 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setName($adNetwork->getName())
             ->setDate($this->getDate());
 
+        if ($reportType->isGroupByAdNetwork()) {
+            $report->setName($adNetwork->getName());
+        }
+
         $adTagIds = $this->adTagManager->getAdTagIdsForAdNetworkAndSite($adNetwork, $site);
         $networkCount = $this->eventCounter->getNetworkReport($adTagIds);
 

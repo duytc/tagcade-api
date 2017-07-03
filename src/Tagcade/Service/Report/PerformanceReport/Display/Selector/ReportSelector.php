@@ -13,7 +13,6 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\ReportCreatorInterf
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use DateTime;
 
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Partner as PartnerReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher as SubPublisherReportType;
 
 class ReportSelector implements ReportSelectorInterface
@@ -75,10 +74,6 @@ class ReportSelector implements ReportSelectorInterface
 
         if ($todayIncludedInDateRange && $this->reportCreator instanceof ReportCreatorInterface) {
             if (
-                !$reportType instanceof PartnerReportType\Account &&
-                !$reportType instanceof PartnerReportType\AdNetworkAdTag &&
-                !$reportType instanceof PartnerReportType\AdNetworkDomain &&
-                !$reportType instanceof PartnerReportType\AdNetworkDomainAdTagSubPublisher &&
                 !$reportType instanceof SubPublisherReportType\SubPublisher &&
                 !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
             ) {
@@ -101,10 +96,6 @@ class ReportSelector implements ReportSelectorInterface
                 if ($yesterdayReport === false || empty($yesterdayReport)) {
                     $this->reportCreator->setDate($historicalEndDate);
                     if (
-                        !$reportType instanceof PartnerReportType\Account &&
-                        !$reportType instanceof PartnerReportType\AdNetworkAdTag &&
-                        !$reportType instanceof PartnerReportType\AdNetworkDomain &&
-                        !$reportType instanceof PartnerReportType\AdNetworkDomainAdTagSubPublisher &&
                         !$reportType instanceof SubPublisherReportType\SubPublisher &&
                         !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
                     ) {

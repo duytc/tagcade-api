@@ -46,6 +46,11 @@ class AdNetwork extends AbstractCalculatedReportType
         return $this->adNetwork instanceof AdNetworkInterface ? $this->adNetwork->getId() : null;
     }
 
+    public function getAdNetworkName()
+    {
+        return $this->adNetwork instanceof AdNetworkInterface ? $this->adNetwork->getName() : null;
+    }
+
     /**
      * @return PublisherInterface
      */

@@ -5,6 +5,8 @@ Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Ad
             type: integer
         getPublisherId:
             type: integer
+        getAdNetworkName:
+            type: string
     properties:
         adNetwork:
             exclude: true
