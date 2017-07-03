@@ -111,6 +111,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         '${WINDOW_HEIGHT}' => 'top.outerHeight',
         '${DOMAIN}' => '${DOMAIN}', // top.location.hostname
         '${DEVICE}' => 'navigator.userAgent',
+        '${REFRESH_COUNT}' => '${REFRESH_COUNT}', // refresh_count when auto-refresh enabled in ad slot
     ];
 
     static $SERVER_VARS = ['${COUNTRY}'];
@@ -556,7 +557,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         }
 
         //validate as javascript variable syntax
-        if (!preg_match('/\${PAGE_URL}|\${USER_AGENT}|\${COUNTRY}|\${SCREEN_WIDTH}|\${SCREEN_HEIGHT}|\${WINDOW_WIDTH}|\${WINDOW_HEIGHT}|\${DOMAIN}|\${DEVICE}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
+        if (!preg_match('/\${PAGE_URL}|\${USER_AGENT}|\${COUNTRY}|\${SCREEN_WIDTH}|\${SCREEN_HEIGHT}|\${WINDOW_WIDTH}|\${WINDOW_HEIGHT}|\${DOMAIN}|\${DEVICE}|\${REFRESH_COUNT}|^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $var)) {
             throw new InvalidFormatException('invalid variable name syntax of \'' . $var . '\' of condition');
         }
     }
