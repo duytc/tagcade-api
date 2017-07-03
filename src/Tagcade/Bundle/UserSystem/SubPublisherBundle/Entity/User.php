@@ -495,4 +495,20 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
 
         return array_unique($roles);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMasterAccount()
+    {
+        throw new NotSupportedException('getMasterAccount Not supported by SubPublisher');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setMasterAccount(PublisherInterface $masterAccount = null)
+    {
+        throw new NotSupportedException('setMasterAccount Not supported by SubPublisher');
+    }
 }

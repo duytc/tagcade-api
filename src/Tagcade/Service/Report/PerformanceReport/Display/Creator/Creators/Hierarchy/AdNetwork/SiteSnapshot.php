@@ -39,7 +39,7 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
         $site = $reportType->getSite();
         $report
             ->setSite($site)
-            ->setName($site->getName())
+            ->setName($adNetwork->getName())
             ->setDate($this->getDate());
 
         if ($reportType->isGroupByAdNetwork()) {
