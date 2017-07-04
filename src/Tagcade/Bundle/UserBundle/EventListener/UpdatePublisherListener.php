@@ -42,23 +42,29 @@ class UpdatePublisherListener
     {
         $entity = $args->getEntity();
 
-        if (!$entity instanceof PublisherInterface) {
+        if (!$entity instanceof PublisherInterface || $entity instanceof SubPublisherInterface) {
             return;
         }
 
-        if ($entity instanceof SubPublisherInterface) {
-            return;
-        }
-
-        if ($args->hasChangedField('enabled') || $args->hasChangedField('roles') || $args->hasChangedField('username')) {
+        if ($args->hasChangedField('enabled')
+            || $args->hasChangedField('roles')
+            || $args->hasChangedField('username')
+            || $args->hasChangedField('password')
+            || $args->hasChangedField('masterAccount')
+        ) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
         }
     }
 
-    private function generatePublisherData (PublisherInterface $entity)
+    /**
+     * @param PublisherInterface $entity
+     * @return array
+     */
+    private function generatePublisherData(PublisherInterface $entity)
     {
         $entityArray = array();
+
         $entityArray['id'] = $entity->getId();
         $entityArray['firstName'] = $entity->getFirstName();
         $entityArray['lastName'] = $entity->getLastName();
@@ -75,6 +81,7 @@ class UpdatePublisherListener
         $entityArray['email'] = $entity->getEmail();
         $entityArray['enabled'] = $entity->isEnabled();
         $entityArray['roles'] = $entity->getRoles();
+        $entityArray['masterAccount'] = ($entity->getMasterAccount() instanceof PublisherInterface) ? $entity->getMasterAccount()->getId() : null;
 
         return $entityArray;
     }

@@ -59,3 +59,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         subPublishers:
             targetEntity: Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User
             mappedBy: publisher
+
+    manyToOne:
+        masterAccount:
+            targetEntity: Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User

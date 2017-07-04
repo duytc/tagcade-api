@@ -32,6 +32,10 @@ class User extends BaseUser implements PublisherInterface
     protected $tagDomain;
     protected $bidders;
     /**
+     * @var PublisherInterface|null
+     */
+    protected $masterAccount;
+    /**
      * @var ArrayCollection
      */
     protected $billingConfigs;
@@ -399,5 +403,21 @@ class User extends BaseUser implements PublisherInterface
     {
         $this->subPublishers = $subPublishers;
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getMasterAccount()
+    {
+        return $this->masterAccount;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setMasterAccount(PublisherInterface $masterAccount = null)
+    {
+        $this->masterAccount = $masterAccount;
     }
 }
