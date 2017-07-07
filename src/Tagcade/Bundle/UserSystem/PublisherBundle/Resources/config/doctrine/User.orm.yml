@@ -49,6 +49,9 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
         bidders:
             type: json_array
             nullable: true
+        emailSendAlert:
+            type: string
+            nullable: true
     oneToMany:
         billingConfigs:
             targetEntity: Tagcade\Entity\Core\BillingConfiguration

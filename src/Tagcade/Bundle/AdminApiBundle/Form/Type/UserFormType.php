@@ -112,6 +112,7 @@ class UserFormType extends AbstractRoleSpecificFormType
             ->add('country')
             ->add('settings')
             ->add('exchanges')
+            ->add('emailSendAlert')
             ->add('bidders');
 
         if ($this->userRole instanceof AdminInterface) {
