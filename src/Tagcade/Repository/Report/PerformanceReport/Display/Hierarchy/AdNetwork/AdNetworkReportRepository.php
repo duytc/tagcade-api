@@ -33,42 +33,6 @@ class AdNetworkReportRepository extends AbstractReportRepository implements AdNe
         return $oneOrNull ? $qb->getQuery()->getOneOrNullResult() : $qb->getQuery()->getResult();
     }
 
-    public function getPublisherAllPartnersByDay($publisherId, DateTime $startDate, DateTime $endDate)
-    {
-        $item = new AdNetworkReport();
-        $item->setName('all partners');
-        $item->setDate(new DateTime('today'));
-
-        $qb = $this->createQueryBuilder('r');
-        $qb->select('r.date, SUM(r.totalOpportunities) as totalOpportunities, SUM(r.estRevenue) as estRevenue, AVG(r.fillRate) as fillRate, AVG(r.estCpm) as estCpm, SUM(r.impressions) as impressions, SUM(r.passbacks) as passbacks')
-            ->join('r.adNetwork', 'nw')
-            ->where('nw.publisher = :publisher_id')
-            ->setParameter('publisher_id', $publisherId, Type::INTEGER)
-            ->andWhere($qb->expr()->between('r.date', ':start_date', ':end_date'))
-            ->setParameter('start_date', $startDate, Type::DATE)
-            ->setParameter('end_date', $endDate, Type::DATE)
-            ->andWhere($qb->expr()->isNotNull('nw.networkPartner'))
-            ->groupBy('r.date');
-
-        $results = $qb->getQuery()->getResult();
-
-        $formattedResults = [];
-        foreach ($results as $item) {
-            $adNetworkReport = new AdNetworkReport();
-            $adNetworkReport->setDate($item['date']);
-            $adNetworkReport->setTotalOpportunities($item['totalOpportunities']);
-            $adNetworkReport->setImpressions($item['impressions']);
-            $adNetworkReport->setPassbacks($item['passbacks']);
-            $adNetworkReport->setFillRate();
-            $adNetworkReport->setEstRevenue($item['estRevenue']);
-            $adNetworkReport->setEstCpm($item['estCpm']);
-
-            $formattedResults[] = $adNetworkReport;
-        }
-
-        return $formattedResults;
-    }
-
     public function overrideReport(AdNetworkReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_ad_network`

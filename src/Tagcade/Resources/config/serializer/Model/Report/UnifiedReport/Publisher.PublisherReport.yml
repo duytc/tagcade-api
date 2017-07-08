@@ -1,8 +1,0 @@
-Tagcade\Model\Report\UnifiedReport\Publisher\PublisherReport:
-    exclusion_policy: NONE
-    virtual_properties:
-        getPublisherId:
-            type: integer
-    properties:
-        publisher:
-            exclude: true

@@ -29,14 +29,12 @@ services:
         arguments:
             - @doctrine.orm.entity_manager
             - @tagcade.repository.ad_network
-            - %unified_report_mail_domain%
 
     tagcade.form.type.ad_network:
         class: %tagcade.form.type.ad_network.class%
         tags:
             - { name: form.type, alias: tagcade_form_ad_network }
         arguments:
-          - @tagcade.repository.ad_network_partner
           - @doctrine.orm.entity_manager
           - @tagcade.domain_manager.network.blacklist
 

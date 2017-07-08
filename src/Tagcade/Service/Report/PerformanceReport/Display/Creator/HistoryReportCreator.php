@@ -14,11 +14,9 @@ use Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherAdN
 use Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherReport;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PartnerReportInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetworkReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdTagReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\SiteReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\SubPublisher\SubPublisherAdNetworkReportInterface;
@@ -138,6 +136,7 @@ class HistoryReportCreator
 
         try {
             foreach ($adNetworks as $adNetwork) {
+                // TODO: correct function and remove networkPartner
                 // sure adNetwork has a partner
                 if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
                     continue;

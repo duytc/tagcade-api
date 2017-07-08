@@ -8,7 +8,6 @@ use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
@@ -608,30 +607,6 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         return array_map(function ($resultItem) {
             return $resultItem['id'];
         }, $results);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getAdTagsForPartner(AdNetworkPartnerInterface $partner, UserRoleInterface $user, $partnerTagId = null)
-    {
-        $qb = $this->createQueryBuilder('t')
-            ->join('t.libraryAdTag', 'tLib')
-            ->join('tLib.adNetwork', 'nw')
-            ->where('nw.networkPartner = :partner_id')
-            ->setParameter('partner_id', $partner->getId(), Type::INTEGER);
-
-        if ($user instanceof PublisherInterface) {
-            $qb->andWhere('nw.publisher = :publisher_id')
-                ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
-        }
-
-        if ($partnerTagId != null) {
-            $qb->andWhere('tLib.partnerTagId = :partner_tag_id')
-                ->setParameter('partner_tag_id', $partnerTagId, Type::STRING);
-        }
-
-        return $qb->getQuery()->getResult();
     }
 
     public function getAllAdTagsByStatus($status)

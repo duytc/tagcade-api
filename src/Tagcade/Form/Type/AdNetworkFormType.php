@@ -13,21 +13,15 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\DomainManager\NetworkBlacklistManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
-use Tagcade\Entity\Core\AdNetworkPartner;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
 use Tagcade\Model\Core\NetworkWhiteListInterface;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Repository\Core\AdNetworkPartnerRepositoryInterface;
 
 class AdNetworkFormType extends AbstractRoleSpecificFormType
 {
-    /** @var AdNetworkPartnerRepositoryInterface */
-    private $adNetworkPartnerRepository;
-
     /**
      * @var EntityManagerInterface
      */
@@ -38,9 +32,8 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
      */
     private $networkBlacklistManager;
 
-    function __construct(AdNetworkPartnerRepositoryInterface $adNetworkPartnerRepository, ObjectManager $om, NetworkBlacklistManagerInterface $networkBlacklistManager)
+    function __construct(ObjectManager $om, NetworkBlacklistManagerInterface $networkBlacklistManager)
     {
-        $this->adNetworkPartnerRepository = $adNetworkPartnerRepository;
         $this->em = $om;
         $this->networkBlacklistManager = $networkBlacklistManager;
     }
@@ -50,17 +43,10 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('name')
-            ->add('url')
             ->add('defaultCpmRate')
             ->add('impressionCap')
             ->add('emailHookToken')
-            ->add('networkOpportunityCap')
-            ->add('networkPartner', 'entity', array(
-                'class' => AdNetworkPartner::class,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('np')->select('np');
-                }
-            ));;
+            ->add('networkOpportunityCap');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -100,16 +86,6 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 if ($adNetwork->getId() === null) {
                     $adNetwork->setActiveAdTagsCount(0);
                     $adNetwork->setPausedAdTagsCount(0);
-                }
-
-                if (!empty($adNetwork->getName()) || !empty($adNetwork->getUrl())) { // this is custom ad network
-                    $adNetwork->setNetworkPartner(null); // remove built-in network partner
-                }
-
-                $networkPartner = $adNetwork->getNetworkPartner();
-                if ($networkPartner instanceof AdNetworkPartnerInterface) {
-                    $adNetwork->setName($networkPartner->getName());
-                    $adNetwork->setUrl($networkPartner->getUrl());
                 }
 
                 $adNetworkName = $adNetwork->getName();

@@ -13,7 +13,5 @@ interface AdNetworkReportRepositoryInterface
 
     public function getReportForAllAdNetworkOfPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $oneOrNull = false);
 
-    public function getPublisherAllPartnersByDay($publisherId,  DateTime $startDate, DateTime $endDate);
-
     public function overrideReport(AdNetworkReportInterface $report);
 }

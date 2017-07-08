@@ -12,6 +12,19 @@ $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
 $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
 $allAdSLot = $adSlotManager->all();
 
+/*
+ * allow do for special publishers,
+ * - set [2,3,...] where 2,3 are publisher ids
+ * - or set empty for all
+ */
+$allowedPublishers = [];
+
+if (!empty($allowedPublishers)) {
+    $allAdSLot = array_filter($allAdSLot, function ($adSlot) use ($allowedPublishers) {
+        return in_array($adSlot->getSite()->getPublisherId(), $allowedPublishers);
+    });
+}
+
 $allAdSLotMap = [];
 /** @var \Tagcade\Model\Core\BaseAdSlotInterface[] $allAdSLot */
 foreach ($allAdSLot as $adSlot) {

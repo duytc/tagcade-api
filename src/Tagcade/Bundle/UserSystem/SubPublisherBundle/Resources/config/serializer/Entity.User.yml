@@ -17,9 +17,6 @@ Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
         publisher:
             expose: true
             groups: [subpublisher.detail]
-        subPublisherPartnerRevenue:
-            expose: true
-            groups: [subpublisher.detail]
         sites:
             expose: true
             groups: [subpublisher.detail]

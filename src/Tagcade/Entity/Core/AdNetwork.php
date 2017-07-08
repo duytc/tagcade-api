@@ -4,14 +4,12 @@ namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\Core\AdNetwork as AdNetworkModel;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 
 class AdNetwork extends AdNetworkModel
 {
     protected $id;
     protected $publisher;
     protected $name;
-    protected $url;
     protected $defaultCpmRate;
     protected $activeAdTagsCount;
     protected $pausedAdTagsCount;
@@ -22,11 +20,6 @@ class AdNetwork extends AdNetworkModel
     protected $networkBlacklists;
     protected $networkWhiteLists;
     protected $customImpressionPixels;
-
-    /**
-     * @var AdNetworkPartnerInterface
-     */
-    protected $networkPartner;
 
     public function __construct()
     {

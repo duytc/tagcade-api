@@ -6,13 +6,11 @@ use Tagcade\Exception\UnexpectedValueException;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
-use Tagcade\Model\Report\UnifiedReport\Comparison\ComparisonReportInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\BilledReportGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\DefaultGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\GrouperInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\ImpressionBreakdownGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
-use Tagcade\Service\Report\UnifiedReport\Grouper\Groupers\UnifiedComparisonReportGrouper;
 
 class ReportGrouper implements ReportGrouperInterface
 {
@@ -35,10 +33,6 @@ class ReportGrouper implements ReportGrouperInterface
 
         // get first report in array, use it to determine the grouper method
         $firstReport = reset($reports);
-
-        if ($firstReport instanceof ComparisonReportInterface) {
-            return new UnifiedComparisonReportGrouper($reportCollection);
-        }
 
         if (!$firstReport instanceof ReportDataInterface) {
             throw new UnexpectedValueException('Expected a ReportDataInterface');

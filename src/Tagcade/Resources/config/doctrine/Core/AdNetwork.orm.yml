@@ -2,11 +2,6 @@ Tagcade\Entity\Core\AdNetwork:
     type: entity
     table: core_ad_network
     repositoryClass: Tagcade\Repository\Core\AdNetworkRepository
-    uniqueConstraints:
-        publisher_network_partner_unique_key:
-            columns: # underscore column name
-                - publisher_id
-                - network_partner_id
     id:
         id:
             type: integer
@@ -16,9 +11,6 @@ Tagcade\Entity\Core\AdNetwork:
         name:
             type: string
             length: 100
-        url:
-            type: string
-            nullable: true
         defaultCpmRate:
             type: decimal
             scale: 4
@@ -46,9 +38,6 @@ Tagcade\Entity\Core\AdNetwork:
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User
-        networkPartner:
-            targetEntity: Tagcade\Entity\Core\AdNetworkPartner
-            inversedBy: publisherPartners
     oneToMany:
         libraryAdTags:
             targetEntity: Tagcade\Entity\Core\LibraryAdTag

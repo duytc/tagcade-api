@@ -12,12 +12,9 @@ class AdNetwork implements AdNetworkInterface
     /** @var UserEntityInterface */
     protected $publisher;
     protected $name;
-    protected $url;
     protected $active;
     protected $libraryAdTags;
     protected $emailHookToken;
-    /** @var AdNetworkPartnerInterface */
-    protected $networkPartner;
 
     /**
      * This is the default CPM assigned to all ad tags unless it is overwritten
@@ -111,22 +108,6 @@ class AdNetwork implements AdNetworkInterface
     /**
      * @inheritdoc
      */
-    public function getNetworkPartner()
-    {
-        return $this->networkPartner;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setNetworkPartner($networkPartner)
-    {
-        $this->networkPartner = $networkPartner;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getPassword()
     {
         return $this->password;
@@ -199,24 +180,6 @@ class AdNetwork implements AdNetworkInterface
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
 
         return $this;
     }

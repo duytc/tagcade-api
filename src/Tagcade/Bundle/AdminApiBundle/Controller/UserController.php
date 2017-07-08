@@ -151,7 +151,6 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     /**
      * Get ad networks for publisher
      *
-     * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
      * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
      * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
@@ -189,12 +188,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
             return $adNetworkRepository->getAdNetworksForPublisher($publisher);
         }
 
-        $builtIn = null;
-        if (is_string($request->query->get('autoCreate'))) {
-            $builtIn = filter_var($params['autoCreate'], FILTER_VALIDATE_BOOLEAN);
-        }
-
-        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams(), $builtIn);
+        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams());
         return $this->getPagination($qb, $request);
     }
 

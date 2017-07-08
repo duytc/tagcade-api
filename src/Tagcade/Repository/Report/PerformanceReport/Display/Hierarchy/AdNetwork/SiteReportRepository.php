@@ -25,12 +25,6 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->getResult();
     }
 
-    public function getSiteReportForAllPartners(SiteInterface $site, DateTime $startDate, DateTime $endDate)
-    {
-        // todo: remove
-        return [];
-    }
-
     public function getTopSitesByBilledAmount()
     {
         $qb = $this->createQueryBuilder('s');

@@ -22,8 +22,3 @@ admin_api_configuration_site_config:
     type: rest
     resource: Tagcade\Bundle\AdminApiBundle\Controller\ConfigurationController
     name_prefix: admin_api_1_
-
-admin_api_unified_report:
-    type: rest
-    resource: Tagcade\Bundle\AdminApiBundle\Controller\UnifiedReportController
-    name_prefix: admin_api_1_

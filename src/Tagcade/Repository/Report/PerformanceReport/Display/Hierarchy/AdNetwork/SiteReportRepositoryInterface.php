@@ -12,13 +12,5 @@ interface SiteReportRepositoryInterface
 {
     public function getReportFor(SiteInterface $site, AdNetworkInterface $adNetwork, DateTime $startDate, DateTime $endDate);
 
-    /**
-     * @param SiteInterface $site
-     * @param DateTime $startDate
-     * @param DateTime $endDate
-     * @return array
-     */
-    public function getSiteReportForAllPartners(SiteInterface $site, DateTime $startDate, DateTime $endDate);
-
     public function overrideReport(AdNetworkReportInterface $superReport, SiteReportInterface $report);
 }

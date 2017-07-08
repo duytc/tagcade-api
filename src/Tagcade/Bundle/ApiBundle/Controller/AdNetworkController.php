@@ -12,15 +12,11 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
-use Tagcade\DomainManager\DisplayBlacklistManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\ChannelInterface;
 use Tagcade\Model\Core\SiteInterface;
@@ -41,7 +37,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      *
      * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary", "display.whitelist.summary", "network.whitelist.summary"})
      *
-     * @Rest\QueryParam(name="builtIn", nullable=true, requirements="true|false", description="get built-in ad network or not")
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
      * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
      * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
@@ -75,12 +70,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             return $this->all();
         }
 
-        $builtIn = null;
-        if (is_string($request->query->get('autoCreate'))) {
-            $builtIn = filter_var($params['autoCreate'], FILTER_VALIDATE_BOOLEAN);
-        }
-
-        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams(), $builtIn);
+        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams());
         return $this->getPagination($qb, $request);
     }
 
@@ -368,39 +358,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
         }
 
         return $adTagRepository->getAdTagsForAdNetwork($adNetwork);
-    }
-
-    /**
-     * @Rest\QueryParam(name="resetToken", requirements="true|false", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Ad Networks",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful",
-     *      400 = "Returned when the submitted data has errors"
-     *  }
-     * )
-     *
-     * @param $id
-     * @return mixed|string
-     */
-    public function getEmailtokenAction($id)
-    {
-        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
-        $resetToken = $paramFetcher->get('resetToken');
-        $resetToken = filter_var($resetToken, FILTER_VALIDATE_BOOLEAN);
-
-        /** @var AdNetworkInterface $adNetwork */
-        $adNetwork = $this->one($id);
-
-        if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface) {
-            throw new InvalidArgumentException('This AdNetwork does not have any Partner');
-        }
-
-        $this->checkUserPermission($adNetwork, 'edit');
-
-        return $this->get('tagcade.domain_manager.ad_network')->getUnifiedReportEmail($adNetwork, $resetToken);
     }
 
     /**

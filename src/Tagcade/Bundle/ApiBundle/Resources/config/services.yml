@@ -17,9 +17,7 @@ imports:
     - { resource: services/service.libslottag.yml }
     - { resource: services/service.expression.yml }
     - { resource: services/service.expressionlib.yml }
-    - { resource: services/service.adnetwork.partner.yml }
     - { resource: services/service.csv.yml }
-    - { resource: services/service.imported_file.yml }
     - { resource: services/service.billing_configuration.yml }
     - { resource: services/service.video.demand.partner.yml }
     - { resource: services/service.video.demandadtag.yml }

@@ -207,33 +207,6 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         return $qb;
     }
 
-    protected function getSitesThatHaveAdTagsBelongingToPartnerQuery($adNetworkId = 'all', $limit = null, $offset = null)
-    {
-        $qb = $this->createQueryBuilder('st')
-            ->join('st.adSlots', 'sl')
-            ->join('sl.adTags', 't')
-            ->join('t.libraryAdTag', 'lt');
-
-        if ($adNetworkId != 'all') {
-            $qb->where('lt.adNetwork = :network_id')
-                ->setParameter('network_id', $adNetworkId, Type::INTEGER);
-        } else {
-            $qb
-                ->join('lt.adNetwork', 'nw')
-                ->where($qb->expr()->isNotNull('nw.networkPartner'));
-        }
-
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
-
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
-        }
-
-        return $qb;
-    }
-
     public function getSitesThatHastConfigSourceReportForPublisher(PublisherInterface $publisher, $hasSourceReportConfig = true)
     {
         $qb = $this->createQueryBuilder('st')

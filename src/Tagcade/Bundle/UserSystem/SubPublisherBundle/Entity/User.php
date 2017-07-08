@@ -2,14 +2,12 @@
 
 namespace Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Tagcade\Bundle\UserBundle\Entity\User as BaseUser;
 use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Exception\NotSupportedException;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\UserEntityInterface;
@@ -27,14 +25,11 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /** @var bool */
     protected $demandSourceTransparency;
 
-    /** @var bool enable view tab tagcade report, also tab comparison report, in unified report */
+    /** @var bool enable view tab tagcade report */
     protected $enableViewTagcadeReport;
 
     /** @var SegmentInterface[] */
     protected $segments;
-
-    /** @var array|SubPublisherPartnerRevenueInterface[] */
-    protected $subPublisherPartnerRevenue;
 
     /** @var array|SiteInterface[] */
     protected $sites;
@@ -384,24 +379,6 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     {
         throw new NotSupportedException('getBidders Not supported by SubPublisher');
 
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSubPublisherPartnerRevenue()
-    {
-        return $this->subPublisherPartnerRevenue;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setSubPublisherPartnerRevenue($subPublisherPartnerRevenue)
-    {
-        $this->subPublisherPartnerRevenue = $subPublisherPartnerRevenue;
-
-        return $this;
     }
 
     /**
