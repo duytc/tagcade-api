@@ -39,6 +39,8 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /** @var array|SiteInterface[] */
     protected $sites;
 
+    /** @var PublisherInterface */
+    protected $emailSendAlert;
     /**
      * this constructor will be called by FormType, must be used to call parent to set default values
      */
@@ -510,5 +512,24 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     public function setMasterAccount(PublisherInterface $masterAccount = null)
     {
         throw new NotSupportedException('setMasterAccount Not supported by SubPublisher');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEmailSendAlert()
+    {
+        // TODO: Implement getEmailSendAlert() method.
+        return $this->emailSendAlert;
+    }
+
+    /**
+     * @param $emailSendAlert
+     * @return
+     */
+    public function setEmailSendAlert($emailSendAlert)
+    {
+        // TODO: Implement setEmailSendAlert() method.
+        $this->emailSendAlert = $emailSendAlert;
     }
 }

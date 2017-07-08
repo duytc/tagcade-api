@@ -51,6 +51,7 @@ class UpdatePublisherListener
             || $args->hasChangedField('username')
             || $args->hasChangedField('password')
             || $args->hasChangedField('masterAccount')
+            || $args->hasChangedField('emailSendAlert')
         ) {
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
@@ -82,6 +83,7 @@ class UpdatePublisherListener
         $entityArray['enabled'] = $entity->isEnabled();
         $entityArray['roles'] = $entity->getRoles();
         $entityArray['masterAccount'] = ($entity->getMasterAccount() instanceof PublisherInterface) ? $entity->getMasterAccount()->getId() : null;
+        $entityArray['emailSendAlert'] = $entity->getEmailSendAlert();
 
         return $entityArray;
     }

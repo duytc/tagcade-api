@@ -253,4 +253,16 @@ interface PublisherInterface extends UserRoleInterface
      * @return self
      */
     public function setMasterAccount(PublisherInterface $masterAccount = null);
+
+    /**
+     * @return mixed
+     */
+    public function getEmailSendAlert();
+
+    /**
+     * @param $emailSendAlert
+     * @return
+     */
+    public function setEmailSendAlert($emailSendAlert);
+
 }
