@@ -35,17 +35,6 @@ interface AdNetworkInterface extends ModelInterface
     public function setName($name);
 
     /**
-     * @return string|null
-     */
-    public function getUrl();
-
-    /**
-     * @param string $url
-     * @return self
-     */
-    public function setUrl($url);
-
-    /**
      * @return float
      */
     public function getDefaultCpmRate();
@@ -106,18 +95,6 @@ interface AdNetworkInterface extends ModelInterface
      * @return self
      */
     public function decreasePausedAdTagsCount();
-
-
-    /**
-     * @return AdNetworkPartnerInterface
-     */
-    public function getNetworkPartner();
-
-    /**
-     * @param AdNetworkPartnerInterface $networkPartner
-     * @return self
-     */
-    public function setNetworkPartner($networkPartner);
 
     /**
      * @return mixed

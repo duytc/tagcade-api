@@ -9,14 +9,12 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Params;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\ReportBuilderInterface;
 
@@ -179,18 +177,19 @@ class PerformanceReportController extends FOSRestController
      *
      * @return array
      */
-    public function getSubPublishersReportAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->getResult(
-            $this->getReportBuilder()->getAllSubPublishersReport($publisher, $this->getParams())
-        );
-    }
+//    TODO: remove when stable
+//    public function getSubPublishersReportAction($publisherId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        return $this->getResult(
+//            $this->getReportBuilder()->getAllSubPublishersReport($publisher, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( has_role('ROLE_PUBLISHER') and has_role('MODULE_SUB_PUBLISHER'))")
@@ -214,20 +213,21 @@ class PerformanceReportController extends FOSRestController
      *
      * @return array
      */
-    public function getSubPublishersReportByNetworkAction($publisherId, $adNetworkId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        $adNetwork = $this->getAdNetworkHasPartnerWithPublisher($adNetworkId, $publisher);
-
-        return $this->getResult(
-            $this->getReportBuilder()->getAllSubPublishersReportByPartner($adNetwork, $publisher, $this->getParams())
-        );
-    }
+//    TODO: remove when stable
+//    public function getSubPublishersReportByNetworkAction($publisherId, $adNetworkId)
+//    {
+//        $publisher = $this->getPublisher($publisherId);
+//
+//        if (!$publisher->hasDisplayModule()) {
+//            throw new NotFoundHttpException();
+//        }
+//
+//        $adNetwork = $this->getAdNetwork($adNetworkId);
+//
+//        return $this->getResult(
+//            $this->getReportBuilder()->getAllSubPublishersReportByPartner($adNetwork, $publisher, $this->getParams())
+//        );
+//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -295,7 +295,6 @@ class PerformanceReportController extends FOSRestController
         );
     }
 
-
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
      *
@@ -328,330 +327,6 @@ class PerformanceReportController extends FOSRestController
             $this->getReportBuilder()->getPublisherAdNetworksByAdTagReport($publisher, $this->getParams())
         );
     }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/all/partners", requirements={"publisherId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param int $publisherId
-     * @return array
-     */
-    public function getPublisherAllPartnersByPartnerAction($publisherId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->getResult(
-            $this->getReportBuilder()->getAllPartnersReportByPartnerForPublisher($publisher, $this->getParams())
-        );
-    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners", requirements={"publisherId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param int $publisherId
-     * @return array
-     */
-//    public function getPublisherAllPartnersByDayAction($publisherId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        return $this->getResult(
-//            $this->getReportBuilder()->getAllPartnersReportByDayForPublisher($publisher, $this->getParams())
-//        );
-//    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/all/sites", requirements={"publisherId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param $publisherId
-     *
-     * @return array
-     */
-//    public function getPublisherAllPartnersBySiteAction($publisherId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        return $this->getResult(
-//            $this->getReportBuilder()->getAllPartnersReportBySiteForPublisher($publisher, $this->getParams())
-//        );
-//    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/all/adtags", requirements={"publisherId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param $publisherId
-     *
-     * @return array
-     */
-//    public function getPublisherAllPartnersByAdTagAction($publisherId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        return $this->getResult(
-//            $this->getReportBuilder()->getAllPartnersReportByAdTagForPublisher($publisher, $this->getParams())
-//        );
-//    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param int $publisherId
-     * @param $partnerId
-     * @return array
-     */
-    public function getPartnerAllSitesByDayAction($publisherId, $partnerId)
-    {
-        $publisher = $this->getPublisher($publisherId);
-        if (!$publisher->hasDisplayModule()) {
-            throw new NotFoundHttpException();
-        }
-
-        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-
-        return $this->getResult(
-            $publisher instanceof SubPublisherInterface
-                ? $this->getReportBuilder()->getAllSitesReportByDayForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-                : $this->getReportBuilder()->getAllSitesReportByDayForPartner($partner, $this->getParams())
-        );
-    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/all/sites", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param $publisherId
-     *
-     * @param $partnerId
-     * @return array
-     */
-//    public function getPartnerAllSiteBySiteAction($publisherId, $partnerId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-//
-//        return $this->getResult(
-//            $publisher instanceof SubPublisherInterface
-//                ? $this->getReportBuilder()->getAllSitesReportBySiteForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-//                : $this->getReportBuilder()->getAllSitesReportBySiteForPartner($partner, $this->getParams())
-//        );
-//    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/all/adtags", requirements={"publisherId" = "\d+", "partnerId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param $publisherId
-     *
-     * @param $partnerId
-     * @return array
-     */
-//    public function getPartnerAllSitesByAdTagAction($publisherId, $partnerId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-//
-//        return $this->getResult(
-//            $publisher instanceof SubPublisherInterface
-//                ? $this->getReportBuilder()->getAllSitesReportByAdTagForPartnerWithSubPublisher($partner, $publisher, $this->getParams())
-//                : $this->getReportBuilder()->getAllSitesReportByAdTagForPartner($partner, $this->getParams())
-//        );
-//    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/{siteId}", requirements={"publisherId" = "\d+", "partnerId" = "\d+", "siteId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param int $publisherId
-     * @param $partnerId
-     * @param $siteId
-     * @return array
-     */
-//    public function getPartnerSiteByDayAction($publisherId, $partnerId, $siteId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-//        $site = $this->getSite($siteId);
-//
-//        return $this->getResult(
-//            $this->getReportBuilder()->getSiteReportByDayForPartner($partner, $site, $this->getParams())
-//        );
-//    }
-
-    /**
-     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
-     *
-     * @Rest\Get("/accounts/{publisherId}/partners/{partnerId}/sites/{siteId}/adtags", requirements={"publisherId" = "\d+", "partnerId" = "\d+", "siteId" = "\d+"})
-     *
-     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
-     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
-     *
-     * @ApiDoc(
-     *  section = "Performance Report",
-     *  resource = true,
-     *  statusCodes = {
-     *      200 = "Returned when successful"
-     *  }
-     * )
-     *
-     * @param $publisherId
-     *
-     * @param $partnerId
-     * @param $siteId
-     * @return array
-     */
-//    public function getPartnerSiteByAdTagAction($publisherId, $partnerId, $siteId)
-//    {
-//        $publisher = $this->getPublisher($publisherId);
-//        if (!$publisher->hasDisplayModule()) {
-//            throw new NotFoundHttpException();
-//        }
-//
-//        $partner = $this->getAdNetworkHasPartnerWithPublisher($partnerId, $publisher);
-//        $site = $this->getSite($siteId);
-//
-//        return $this->getResult(
-//            $publisher instanceof SubPublisherInterface
-//                ? $this->getReportBuilder()->getSiteReportByAdTagForPartnerWithSubPublisher($partner, $site, $publisher, $this->getParams())
-//                : $this->getReportBuilder()->getSiteReportByAdTagForPartner($partner, $site, $this->getParams())
-//        );
-//    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
@@ -1651,26 +1326,6 @@ class PerformanceReportController extends FOSRestController
         $this->checkUserPermission($site);
 
         return $site;
-    }
-
-    /**
-     * get ad network by $adNetworkId that has a partner with publisher
-     * @param int $adNetworkId
-     * @param PublisherInterface|SubPublisherInterface $publisher
-     * @return \Tagcade\Model\Core\AdNetworkInterface
-     */
-    protected function getAdNetworkHasPartnerWithPublisher($adNetworkId, PublisherInterface $publisher)
-    {
-        $adNetwork = $this->getAdNetwork($adNetworkId);
-        $publisherId = ($publisher instanceof SubPublisherInterface) ? $publisher->getPublisher()->getId() : $publisher->getId();
-
-        if (!$adNetwork->getNetworkPartner() instanceof AdNetworkPartnerInterface
-            || $adNetwork->getPublisher()->getId() != $publisherId
-        ) {
-            throw new NotFoundHttpException('That ad network does not have partner with publisher');
-        }
-
-        return $adNetwork;
     }
 
     /**

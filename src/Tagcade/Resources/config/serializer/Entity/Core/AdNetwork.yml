@@ -10,9 +10,6 @@ Tagcade\Entity\Core\AdNetwork:
         name:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential, adnetwork.min]
-        url:
-            expose: true
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.credential, adnetwork.min]
         defaultCpmRate:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail]
@@ -22,9 +19,6 @@ Tagcade\Entity\Core\AdNetwork:
         pausedAdTagsCount:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail]
-        networkPartner:
-            expose: true
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]
         impressionCap:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]

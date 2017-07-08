@@ -11,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tagcade\Entity\Core\AdNetwork;
-use Tagcade\Entity\Core\AdNetworkPartner;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryAdTag;
@@ -20,7 +19,6 @@ use Tagcade\Entity\Core\LibraryNativeAdSlot;
 use Tagcade\Entity\Core\NativeAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
@@ -212,33 +210,12 @@ class ImportSiteCommand extends ContainerAwareCommand
 
     private function createAdNetwork($adNetwork) {
         $adNetworkFind =  count($this->addedAdNetworks) && !!$this->addedAdNetworks[$adNetwork->id];
-        $adNetworkPartner = null;
-
-        if(is_object($adNetwork->networkPartner)) {
-            $adNetworkPartner = $this->container->get('tagcade.domain_manager.ad_network_partner')->getByCanonicalName($adNetwork->networkPartner->nameCanonical);
-
-            if($adNetworkPartner instanceof AdNetworkPartnerInterface) {
-                $adNetwork = $this->container->get('tagcade.repository.ad_network')->getAdNetworkByPublisherAndPartnerCName( $this->publisher, $adNetworkPartner->getNameCanonical());
-
-                if($adNetwork instanceof AdNetworkInterface) {
-                    return $adNetwork;
-                }
-            }
-            else {
-                $adNetworkPartner = new AdNetworkPartner();
-                $adNetworkPartner->setUrl($adNetwork->networkPartner->url);
-                $adNetworkPartner->setName($adNetwork->networkPartner->name);
-
-                $this->em->persist($adNetworkPartner);
-            }
-        }
 
         if($adNetworkFind == false) {
             $this->addedAdNetworks[$adNetwork->id] = new AdNetwork();
             $this->addedAdNetworks[$adNetwork->id]->setPublisher($this->publisher);
             $this->addedAdNetworks[$adNetwork->id]->setName($adNetwork->name);
             $this->addedAdNetworks[$adNetwork->id]->setUrl($adNetwork->url);
-            $this->addedAdNetworks[$adNetwork->id]->setNetworkPartner($adNetworkPartner);
 
             $this->em->persist($this->addedAdNetworks[$adNetwork->id]);
 

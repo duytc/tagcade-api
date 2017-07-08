@@ -1,8 +1,0 @@
-Tagcade\Model\Report\PartnerReport\AbstractPartnerReport:
-    exclusion_policy: NONE
-    virtual_properties:
-        getAdNetworkPartnerId:
-            type: string
-    properties:
-        adNetworkPartner:
-            exclude: true

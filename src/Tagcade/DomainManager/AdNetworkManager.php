@@ -8,20 +8,17 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 
 class AdNetworkManager implements AdNetworkManagerInterface
 {
     protected $om;
     protected $repository;
-    protected $unifiedReportMailDomain;
 
-    public function __construct(ObjectManager $om, AdNetworkRepositoryInterface $repository, $unifiedReportMailDomain)
+    public function __construct(ObjectManager $om, AdNetworkRepositoryInterface $repository)
     {
         $this->om = $om;
         $this->repository = $repository;
-        $this->unifiedReportMailDomain = $unifiedReportMailDomain;
     }
 
     /**
@@ -95,37 +92,8 @@ class AdNetworkManager implements AdNetworkManagerInterface
         return $this->repository->getAdNetworksForPublisher($publisher, $limit, $offset);
     }
 
-    public function getAdNetworksThatHavePartnerForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
-    {
-        return $this->repository->getAdNetworksThatHavePartnerForPublisher($publisher, $limit, $offset);
-    }
-
-    public function getAdNetworksThatHavePartnerForSubPublisher(SubPublisherInterface $publisher, $limit = null, $offset = null)
-    {
-        return $this->repository->getAdNetworksThatHavePartnerForSubPublisher($publisher, $limit, $offset);
-    }
-
     public function allHasCap($limit = null, $offset = null)
     {
         return $this->repository->allHasCap($limit, $offset);
-    }
-
-    public function validateEmailHookToken($publisherId, $partnerCName, $token)
-    {
-        return $this->repository->validateEmailToken($publisherId, $partnerCName, $token);
-    }
-
-    public function getUnifiedReportEmail(AdNetworkInterface $adNetwork, $resetToken = false)
-    {
-        if ($resetToken === true) {
-            $adNetwork->setEmailHookToken(uniqid(''));
-            $this->save($adNetwork);
-        }
-
-        if (empty($adNetwork->getEmailHookToken())) {
-            return '';
-        }
-
-        return sprintf('pub%d.%s.%s@%s', $adNetwork->getPublisherId(), $adNetwork->getNetworkPartner()->getNameCanonical(), $adNetwork->getEmailHookToken(), $this->unifiedReportMailDomain);
     }
 }

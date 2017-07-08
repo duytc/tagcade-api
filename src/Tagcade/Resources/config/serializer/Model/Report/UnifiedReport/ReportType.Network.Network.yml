@@ -1,8 +1,0 @@
-Tagcade\Model\Report\UnifiedReport\ReportType\Network\Network:
-    exclusion_policy: NONE
-    virtual_properties:
-        getAdNetworkId:
-            type: integer
-    properties:
-        adNetwork:
-            exclude: true

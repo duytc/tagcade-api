@@ -8,7 +8,6 @@ use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\PagerParam;
@@ -30,37 +29,6 @@ class AdNetworkService implements AdNetworkServiceInterface
     function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-    }
-
-
-    public function getSitesForPartnerFilterPublisherAndDomain(AdNetworkPartnerInterface $partner, PublisherInterface $publisher, $domain = null)
-    {
-        /**
-         * @var AdNetworkRepositoryInterface $adNetworkRepository
-         */
-        $adNetworkRepository = $this->em->getRepository(AdNetwork::class);
-
-        $adNetworks = $adNetworkRepository->getAdNetworksForPublisherAndPartner($publisher, $partner);
-        $sites = [];
-
-        foreach ($adNetworks as $nw) {
-            $tmpSites = $this->getSitesForAdNetworkFilterUserRole($nw, $publisher);
-            foreach ($tmpSites as $st) {
-                /**
-                 * @var SiteInterface $st
-                 */
-
-                if ($domain != null && $st->getDomain() != $domain) {
-                    continue;
-                }
-
-                if (!in_array($st, $sites)) {
-                    $sites[] = $st;
-                }
-            }
-        }
-
-        return $sites;
     }
 
     /**

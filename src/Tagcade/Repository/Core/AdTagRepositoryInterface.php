@@ -5,7 +5,6 @@ namespace Tagcade\Repository\Core;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Model\Core\AdNetworkInterface;
-use Tagcade\Model\Core\AdNetworkPartnerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
@@ -112,14 +111,6 @@ interface AdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getAdTagsByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
-
-    /**
-     * @param AdNetworkPartnerInterface $partner
-     * @param UserRoleInterface $user
-     * @param null $partnerTagId
-     * @return array
-     */
-    public function getAdTagsForPartner(AdNetworkPartnerInterface $partner, UserRoleInterface $user, $partnerTagId = null);
 
     /**
      * @param $status

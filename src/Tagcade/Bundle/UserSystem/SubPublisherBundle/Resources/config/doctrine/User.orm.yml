@@ -19,11 +19,6 @@ Tagcade\Bundle\UserSystem\SubPublisherBundle\Entity\User:
         segments:
             targetEntity: Tagcade\Entity\Core\Segment
             mappedBy: subPublisher
-        subPublisherPartnerRevenue:
-            targetEntity: Tagcade\Entity\Core\SubPublisherPartnerRevenue
-            mappedBy: subPublisher
-            cascade: ["persist", "remove", "detach"]
-            orphanRemoval: true
         sites:
             targetEntity: Tagcade\Entity\Core\Site
             mappedBy: subPublisher

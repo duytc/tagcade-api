@@ -27,20 +27,22 @@ interface ReportBuilderInterface
      */
     public function getAllPublishersReport(Params $params, $inBanner = false);
 
-    /**
-     * @param PublisherInterface $publisher
-     * @param Params $params
-     * @return mixed
-     */
-    public function getAllSubPublishersReport(PublisherInterface $publisher, Params $params);
+//    TODO: remove when stable
+//    /**
+//     * @param PublisherInterface $publisher
+//     * @param Params $params
+//     * @return mixed
+//     */
+//    public function getAllSubPublishersReport(PublisherInterface $publisher, Params $params);
 
-    /**
-     * @param AdNetworkInterface $adNetwork
-     * @param PublisherInterface $publisher
-     * @param Params $params
-     * @return mixed
-     */
-    public function getAllSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params);
+//    TODO: remove when stable
+//    /**
+//     * @param AdNetworkInterface $adNetwork
+//     * @param PublisherInterface $publisher
+//     * @param Params $params
+//     * @return mixed
+//     */
+//    public function getAllSubPublishersReportByPartner(AdNetworkInterface $adNetwork, PublisherInterface $publisher, Params $params);
 
     /**
      * @param array $publishers
@@ -95,7 +97,7 @@ interface ReportBuilderInterface
      * @param Params $params
      * @return ReportResultInterface|false
      */
-    public function getAdnetworkSitesReport(AdNetworkInterface $adNetwork, Params $params);
+    public function getAdNetworkSitesReport(AdNetworkInterface $adNetwork, Params $params);
 
     /**
      * @param AdNetworkInterface $adNetwork
@@ -256,16 +258,6 @@ interface ReportBuilderInterface
     public function getAllAdSlotsReport(Params $params);
 
     /**
-     * get report of all partners breakdown by partner for a Publisher
-     * This is used for comparing with Unified report 'all partners by day for an account'
-     * @param PublisherInterface $publisher
-     * @param Params $params
-     * @return mixed
-     */
-    public function getAllPartnersReportByPartnerForPublisher(PublisherInterface $publisher, Params $params);
-
-
-    /**
      * get report of all sites breakdown by day For a Partner
      * This is used for comparing with Unified report 'a partner by day'
      * @param AdNetworkInterface $adNetwork
@@ -274,13 +266,14 @@ interface ReportBuilderInterface
      */
     public function getAllSitesReportByDayForPartner(AdNetworkInterface $adNetwork, Params $params);
 
-    /**
-     * get report of all sites breakdown by day For a Partner with a SubPublisher
-     * This is used for comparing with Unified report 'a partner by day'
-     * @param AdNetworkInterface $adNetwork
-     * @param SubPublisherInterface $subPublisher
-     * @param Params $params
-     * @return mixed
-     */
-    public function getAllSitesReportByDayForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params);
+//    TODO: remove when stable
+//    /**
+//     * get report of all sites breakdown by day For a Partner with a SubPublisher
+//     * This is used for comparing with Unified report 'a partner by day'
+//     * @param AdNetworkInterface $adNetwork
+//     * @param SubPublisherInterface $subPublisher
+//     * @param Params $params
+//     * @return mixed
+//     */
+//    public function getAllSitesReportByDayForPartnerWithSubPublisher(AdNetworkInterface $adNetwork, SubPublisherInterface $subPublisher, Params $params);
 }

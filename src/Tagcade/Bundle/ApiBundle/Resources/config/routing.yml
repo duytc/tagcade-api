@@ -103,11 +103,6 @@ api_reset_password_reset:
     defaults: { _controller: TagcadeApiBundle:ResetPassword:reset }
     methods: [POST]
 
-api_partner:
-    type: rest
-    resource: Tagcade\Bundle\ApiBundle\Controller\PartnerController
-    name_prefix:  api_1_
-
 api_exchange:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\ExchangeController
@@ -116,11 +111,6 @@ api_exchange:
 api_bidders:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\BidderController
-    name_prefix:  api_1_
-
-api_imported_file:
-    type: rest
-    resource: Tagcade\Bundle\ApiBundle\Controller\ImportedFileController
     name_prefix:  api_1_
 
 api_video_demand_partner:

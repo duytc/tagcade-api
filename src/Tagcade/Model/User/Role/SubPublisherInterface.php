@@ -3,7 +3,6 @@
 namespace Tagcade\Model\User\Role;
 
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\Core\SubPublisherPartnerRevenueInterface;
 
 interface SubPublisherInterface extends UserRoleInterface
 {
@@ -44,17 +43,6 @@ interface SubPublisherInterface extends UserRoleInterface
      * @return self
      */
     public function setEnableViewTagcadeReport($enableViewTagcadeReport);
-
-    /**
-     * @return array|SubPublisherPartnerRevenueInterface[]
-     */
-    public function getSubPublisherPartnerRevenue();
-
-    /**
-     * @param array|SubPublisherPartnerRevenueInterface[] $subPublisherPartnerRevenue
-     * @return self
-     */
-    public function setSubPublisherPartnerRevenue($subPublisherPartnerRevenue);
 
     /**
      * @return array|SiteInterface[] $sites
