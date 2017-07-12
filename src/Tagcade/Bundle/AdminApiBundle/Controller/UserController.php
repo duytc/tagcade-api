@@ -16,6 +16,7 @@ use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
+use Tagcade\Service\TagGenerator;
 
 class UserController extends RestControllerAbstract implements ClassResourceInterface
 {
@@ -110,13 +111,16 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     {
         $params = $request->query->all();
         $forceSecure = false;
+
         if (array_key_exists('forceSecure', $params)) {
             $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
         }
 
+        $type = $request->query->get('type', TagGenerator::PASSBACK_TYPE_JS);
+
         /** @var PublisherInterface $publisher */
         $publisher = $this->one($id);
-        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher, $forceSecure);
+        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher, $forceSecure, $type);
     }
 
     /**
