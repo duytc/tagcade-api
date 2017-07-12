@@ -35,6 +35,7 @@ parameters:
     tc.default_tag_url:
         domain: 'tags.tagcade.dev'
         secure: true
+    tc.passback_url: https://cdn.pubvantage.com/2.0/passback.html?publisherUUID=$UUID$ # keep pattern "$UUID$" for replacing by real uuid of video waterfall tag
 
     tc.video_vast_tag_base_url: http://vast-tag-server.tagcade.dev:9999/vast/UUID # keep pattern "UUID" for replacing by real uuid of video waterfall tag
     tc.in_banner_video_js_url: http://in-banner.pubvantage.dev:8081/inbannervideo.js

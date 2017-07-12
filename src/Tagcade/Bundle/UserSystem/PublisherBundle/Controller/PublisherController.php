@@ -19,6 +19,7 @@ use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Tagcade\Model\User\Role\SubPublisherInterface;
+use Tagcade\Service\TagGenerator;
 
 /**
  * @Rest\RouteResource("publishers/current")
@@ -57,6 +58,7 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
     }
 
     /**
+     * @param Request $request
      * @return array
      */
     public function getJspassbackAction(Request $request)
@@ -67,12 +69,14 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
             $forceSecure = filter_var($params['forceSecure'],FILTER_VALIDATE_BOOLEAN);
         }
 
+        $type = $request->query->get('type', TagGenerator::PASSBACK_TYPE_JS);
+
         $publisherId = $this->get('security.context')->getToken()->getUser()->getId();
 
         /** @var PublisherInterface $publisher */
         $publisher = $this->getPublisher($publisherId);
 
-        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher, $forceSecure);
+        return $this->get('tagcade.service.tag_generator')->getTagsForPassback($publisher, $forceSecure, $type);
     }
 
     /**

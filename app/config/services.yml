@@ -196,6 +196,7 @@ services:
         class: Tagcade\Service\TagGenerator
         arguments:
             - '%tc.default_tag_url%'
+            - '%tc.passback_url%'
             - '@tagcade.domain_manager.ron_ad_slot'
             - '@tagcade.domain_manager.ad_slot'
 

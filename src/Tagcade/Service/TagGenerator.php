@@ -3,8 +3,10 @@
 namespace Tagcade\Service;
 
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\RonAdSlotManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\ChannelInterface;
@@ -27,8 +29,14 @@ class TagGenerator
     const FORCED_HTTPS_PROTOCOL = 'https://';
     const PARAMETER_DOMAIN = 'domain';
     const PARAMETER_SECURE = 'secure';
+    const PASSBACK_TYPE_JS = 'js';
+    const PASSBACK_TYPE_URL = 'url';
+    const PASSBACK_URL_REPLACE_KEY_UUID = '$UUID$';
 
+    /** @var array */
     protected $defaultTagUrl;
+    /** @var string */
+    protected $passbackUrl;
 
     /** @var RonAdSlotManagerInterface */
     private $ronAdSlotManager;
@@ -38,12 +46,19 @@ class TagGenerator
 
     /**
      * @param array $defaultTagUrl
+     * @param string $passbackUrl
      * @param RonAdSlotManagerInterface $ronAdSlotManager
      * @param AdSlotManagerInterface $adSlotManager
      */
-    public function __construct($defaultTagUrl, RonAdSlotManagerInterface $ronAdSlotManager, AdSlotManagerInterface $adSlotManager)
+    public function __construct($defaultTagUrl, $passbackUrl, RonAdSlotManagerInterface $ronAdSlotManager, AdSlotManagerInterface $adSlotManager)
     {
         $this->defaultTagUrl = $defaultTagUrl;
+
+        $this->passbackUrl = $passbackUrl;
+        if (false === strpos($passbackUrl, self::PASSBACK_URL_REPLACE_KEY_UUID)) {
+            throw new InvalidArgumentException(sprintf('passbackUrl config missing replacement element %s', self::PASSBACK_URL_REPLACE_KEY_UUID));
+        }
+
         $this->ronAdSlotManager = $ronAdSlotManager;
         $this->adSlotManager = $adSlotManager;
     }
@@ -52,16 +67,18 @@ class TagGenerator
      * get Tags For Passback
      *
      * @param PublisherInterface $publisher
+     * @param bool $forceSecure
+     * @param string $type js or url
      * @return array
      */
-    public function getTagsForPassback(PublisherInterface $publisher, $forceSecure = false)
+    public function getTagsForPassback(PublisherInterface $publisher, $forceSecure = false, $type = self::PASSBACK_TYPE_JS)
     {
         // generate Passback js by SubPublisher is also by its Publisher
         if ($publisher instanceof SubPublisherInterface) {
             $publisher = $publisher->getPublisher();
         }
 
-        return array('passback' => $this->createDisplayPassbackTag($publisher, $forceSecure));
+        return array('passback' => $this->createDisplayPassbackTag($publisher, $forceSecure, $type));
     }
 
     /**
@@ -490,11 +507,24 @@ class TagGenerator
 
     /**
      * @param PublisherInterface $publisher
-     * @param $forceSecure = false
+     * @param bool $forceSecure = false
+     * @param string $type js or url
      * @return string
+     * @throws BadRequestHttpException if not supported $type
      */
-    public function createDisplayPassbackTag(PublisherInterface $publisher, $forceSecure = false)
+    public function createDisplayPassbackTag(PublisherInterface $publisher, $forceSecure = false, $type = self::PASSBACK_TYPE_JS)
     {
+        if (!in_array($type, [self::PASSBACK_TYPE_JS, self::PASSBACK_TYPE_URL])) {
+            throw new BadRequestHttpException(sprintf('Not supported passback type %s', $type));
+        }
+
+        if ($type === self::PASSBACK_TYPE_URL) {
+            // passback looks like this:
+            // https://cdn.pubvantage.com/2.0/passback.html?publisherUUID=41b30f06-306c-5b38-9b50-7a5bdd3d9f9a
+            return str_replace(self::PASSBACK_URL_REPLACE_KEY_UUID, $publisher->getUuid(), $this->passbackUrl);
+        }
+
+        // else: type = js
         $tag = "<!-- Pubvantage Universal Passback -->\n";
         $template = '<script type="text/javascript" src="%s/2.0/adtag.js" data-tc-passback="true"%s></script>' . "\n";
         $publisherUuid = $publisher->getUuid();
