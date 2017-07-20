@@ -125,14 +125,14 @@ interface PublisherInterface extends UserRoleInterface
     public function getEnabledModules();
 
     /**
-     * @return bool
+     * @param array $enabledModules
      */
-    public function hasAnalyticsModule();
+    public function setEnabledModules(array $enabledModules);
 
     /**
      * @return bool
      */
-    public function hasRtbModule();
+    public function hasAnalyticsModule();
 
     /**
      * @return bool

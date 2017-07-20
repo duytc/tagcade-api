@@ -42,8 +42,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
                     User::MODULE_FRAUD_DETECTION => 'Fraud Detection',
                     User::MODULE_UNIFIED_REPORT  => 'Unified Report',
                     User::MODULE_SUB_PUBLISHER   => 'Sub Publisher',
-                    User::MODULE_HEADER_BIDDING  => 'Header Bidding',
-                    User::MODULE_RTB             => 'RealTime Bidding'
+                    User::MODULE_HEADER_BIDDING  => 'Header Bidding'
                 ],
             ))
         ;

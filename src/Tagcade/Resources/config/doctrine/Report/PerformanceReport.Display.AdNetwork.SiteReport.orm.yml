@@ -11,6 +11,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
             generator:
                 strategy: IDENTITY
     fields:
+        # common Report metrics
         date:
             type: date
         name:
@@ -35,6 +36,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
             type: decimal
             scale: 4
             nullable: true
+        adOpportunities:
+            type: integer
+            nullable: true
+        # site
         firstOpportunities:
             type: integer
         verifiedImpressions:
@@ -48,6 +53,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
         clicks:
             type: integer
 
+        # inbanner metrics
         inBannerRequests:
             type: integer
             nullable: true

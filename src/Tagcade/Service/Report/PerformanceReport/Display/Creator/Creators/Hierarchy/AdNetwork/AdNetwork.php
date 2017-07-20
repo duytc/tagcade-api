@@ -27,12 +27,13 @@ class AdNetwork extends CreatorAbstract implements AdNetworkInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdNetworkReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $this->syncEventCounterForSubReports();
 
         $report = new AdNetworkReport();
 
+        /** @var AdNetworkReportType $reportType */
         $adNetwork = $reportType->getAdNetwork();
 
         $report

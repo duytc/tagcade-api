@@ -13,6 +13,9 @@ use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository
 
 class SiteReportRepository extends AbstractReportRepository implements SiteReportRepositoryInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function getReportFor(SiteInterface $site, AdNetworkInterface $adNetwork, DateTime $startDate, DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
@@ -35,13 +38,16 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function overrideReport(AdNetworkReportInterface $superReport, SiteReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_ad_network_site`
                  (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks
+                 first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, ad_opportunities
                  ) VALUES (:siteId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks
+                  :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :adOpportunities
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -54,7 +60,8 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
                  unverified_impressions = :unverifiedImpression,
                  blank_impressions = :blankImpressions,
                  void_impressions = :voidImpressions,
-                 clicks = :clicks
+                 clicks = :clicks,
+                 ad_opportunities = :adOpportunities
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -76,6 +83,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         $qb->bindValue('blankImpressions', $report->getBlankImpressions() !== null ? $report->getVoidImpressions() : 0);
         $qb->bindValue('voidImpressions', $report->getVoidImpressions() !== null ? $report->getPassbacks() : 0);
         $qb->bindValue('clicks', $report->getClicks() !== null ? $report->getClicks() : 0);
+        $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0);
 
         $connection->beginTransaction();
         try {

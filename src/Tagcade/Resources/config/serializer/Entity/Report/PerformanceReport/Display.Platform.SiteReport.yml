@@ -28,22 +28,23 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
             groups: [platform_site_report.detail, platform_site_report.summary]
         estRevenue:
             expose: true
-            groups: [platform_site_report.detail, platform_site_report.summary]                                                                                    
+            groups: [platform_site_report.detail, platform_site_report.summary]
         estCpm:
             expose: true
-            groups: [platform_site_report.detail, platform_site_report.summary]     
+            groups: [platform_site_report.detail, platform_site_report.summary]
+        adOpportunities:
+            expose: true
+            groups: [platform_site_report.detail, platform_site_report.summary]
+
         slotOpportunities:
             expose: true
-            groups: [platform_site_report.detail, platform_site_report.summary]     
+            groups: [platform_site_report.detail, platform_site_report.summary]
         billedAmount:
             expose: true
-            groups: [platform_site_report.detail, platform_site_report.summary]                             
+            groups: [platform_site_report.detail, platform_site_report.summary]
         billedRate:
             expose: true
             groups: [platform_site_report.detail, platform_site_report.summary]
         reportType:
-            expose: true
-            groups: [platform_site_report.detail, platform_site_report.summary]
-        rtbImpressions:
             expose: true
             groups: [platform_site_report.detail, platform_site_report.summary]

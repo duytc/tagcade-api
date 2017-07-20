@@ -11,7 +11,7 @@ use Tagcade\Worker\Manager;
 /**
  * Class SiteChangeListener
  *
- * Handle event site changed for updating cache for "Display ad slot" on fields relate to RTB-RealTime Bidding('rtbStatus', 'exchanges', ...)
+ * Handle event site changed for updating cache for ad slot
  *
  * @package Tagcade\Bundle\AppBundle\EventListener
  */
@@ -31,7 +31,7 @@ class SiteChangeListener
     }
 
     /**
-     * Handle event onFlush for detecting site changed on fields relate to RTB (rtbStatus), then update cache for display ad slot
+     * Handle event onFlush for detecting site changed, then update cache for display ad slot
      *
      * @param OnFlushEventArgs $args
      */
@@ -71,9 +71,9 @@ class SiteChangeListener
 
             $changedFields = $uow->getEntityChangeSet($entity);
 
-            if (array_key_exists('rtbStatus', $changedFields)) {
-                $needToBeUpdatedSiteIds[] = $entity->getId();
-            }
+            //if (array_key_exists('<any key>', $changedFields)) {
+            //    $needToBeUpdatedSiteIds[] = $entity->getId();
+            //}
         }
 
         // update cache due to sites
@@ -82,4 +82,4 @@ class SiteChangeListener
         // reset for new onFlush event
         $this->changedEntities = [];
     }
-} 
+}

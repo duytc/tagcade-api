@@ -28,26 +28,29 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
             groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         estRevenue:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]                                                                                    
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         estCpm:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]     
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         firstOpportunities:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]     
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         verifiedImpressions:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]     
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         unverifiedImpressions:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]     
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         blankImpressions:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]     
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         voidImpressions:
             expose: true
-            groups: [ad_network_site_report.detail, ad_network_site_report.summary]     
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
         clicks:
+            expose: true
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
+        adOpportunities:
             expose: true
             groups: [ad_network_site_report.detail, ad_network_site_report.summary]
 

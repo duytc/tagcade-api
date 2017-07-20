@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdTag as AdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -14,6 +15,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 
 class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, SnapshotCreatorInterface
 {
+    use CalculateAdOpportunitiesTrait;
 
     /**
      * @var EstCpmCalculatorInterface
@@ -28,9 +30,11 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdTagReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new AdTagReport();
+
+        /** @var AdTagReportType $reportType */
         $adTag = $reportType->getAdTag();
         $isNativeAdSlot = $reportType->getAdTag()->getAdSlot() instanceof NativeAdSlotInterface;
 
@@ -54,6 +58,9 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
         return $reportType instanceof AdTagReportType;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof AdTagReport) {
@@ -70,7 +77,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
             ->setFillRate()
-        ;
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
 
         // TODO latter
         $report->setEstCpm((float)0);

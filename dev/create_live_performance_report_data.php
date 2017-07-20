@@ -99,17 +99,6 @@ foreach($testEventCounter->getAccountData() as $publisherId => $accountData) {
         );
     }
 
-    if (array_key_exists($testEventCounter::KEY_RTB_IMPRESSION, $accountData)) {
-        $cache->hSave(
-            $cacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
-            $cacheEventCounter->getCacheKey(
-                $cacheEventCounter::CACHE_KEY_RTB_IMPRESSION,
-                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_ACCOUNT, $publisherId)
-            ),
-            $accountData[$testEventCounter::KEY_RTB_IMPRESSION]
-        );
-    }
-
     if (array_key_exists($testEventCounter::KEY_IN_BANNER_IMPRESSIONS, $accountData)) {
         $cache->hSave(
             $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
@@ -155,17 +144,6 @@ foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
                 $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
             ),
             $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
-        );
-    }
-
-    if (array_key_exists($testEventCounter::KEY_RTB_IMPRESSION, $slotData)) {
-        $cache->hSave(
-            $cacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
-            $cacheEventCounter->getCacheKey(
-                $cacheEventCounter::CACHE_KEY_RTB_IMPRESSION,
-                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-            ),
-            $slotData[$testEventCounter::KEY_RTB_IMPRESSION]
         );
     }
 
@@ -226,13 +204,6 @@ foreach($testEventCounter->getRonAdSlotData() as $ronSlotId => $ronSlotData) {
         $cache->hSave($cacheEventCounter::REDIS_HASH_EVENT_COUNT,
             $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY, $namespace ),
             $ronSlotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
-        );
-    }
-
-    if (array_key_exists($testEventCounter::KEY_RTB_IMPRESSION, $ronSlotData)) {
-        $cache->hSave($cacheEventCounter::REDIS_HASH_RTB_EVENT_COUNT,
-            $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_RTB_IMPRESSION, $namespace ),
-            $ronSlotData[$testEventCounter::KEY_RTB_IMPRESSION]
         );
     }
 

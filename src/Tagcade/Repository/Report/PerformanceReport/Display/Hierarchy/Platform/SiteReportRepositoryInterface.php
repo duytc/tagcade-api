@@ -9,12 +9,36 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 interface SiteReportRepositoryInterface
 {
+    /**
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return array
+     */
     public function getReportFor(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
+    /**
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
     public function getSumBilledAmountForSite(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
+    /**\
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
     public function getSumSlotOpportunities(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
+    /**
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
     public function getSumSlotHbRequests(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
     /**
@@ -38,5 +62,9 @@ interface SiteReportRepositoryInterface
      */
     public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10);
 
+    /**
+     * @param SiteReportInterface $report
+     * @return mixed
+     */
     public function overrideReport(SiteReportInterface $report);
 }

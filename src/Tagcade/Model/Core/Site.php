@@ -10,8 +10,6 @@ use Tagcade\Model\User\UserEntityInterface;
 
 class Site implements SiteInterface
 {
-    const RTB_STATUS_DEFAULT = self::RTB_DISABLED;
-
     protected $id;
 
     /** @var UserEntityInterface */
@@ -34,8 +32,6 @@ class Site implements SiteInterface
 
     protected $deletedAt;
 
-    protected $rtbStatus;
-
     protected $subPublisher;
 
     public function __construct()
@@ -43,7 +39,6 @@ class Site implements SiteInterface
         $this->adSlots = new ArrayCollection();
         $this->channelSites = new ArrayCollection();
         $this->autoCreate = false;
-        $this->rtbStatus = self::RTB_STATUS_DEFAULT;
     }
 
     public function getId()
@@ -283,55 +278,6 @@ class Site implements SiteInterface
     {
         $this->siteToken = $siteToken;
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRtbStatus()
-    {
-        return $this->rtbStatus;
-    }
-
-    /**
-     * @param int $rtbStatus
-     * @return self
-     */
-    public function setRtbStatus($rtbStatus)
-    {
-        $this->rtbStatus = null === $rtbStatus ? self::RTB_STATUS_DEFAULT : $rtbStatus;
-        return $this;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function isRTBEnabled()
-    {
-        if ($this->getPublisher() === null || !$this->getPublisher()->hasRtbModule()) {
-            return false;
-        }
-
-        if ($this->rtbStatus === self::RTB_INHERITED) {
-            $channels = $this->getChannels();
-            if (empty($channels)) {
-                return $this->getPublisher()->hasRtbModule();
-            }
-
-            $rtbEnabled = false;
-            /** @var ChannelInterface $channel */
-            foreach($channels as $channel) {
-                if ($channel->isRTBEnabled())
-                {
-                    return true;
-                }
-            }
-
-            return $rtbEnabled;
-        }
-
-        return $this->rtbStatus === self::RTB_ENABLED;
     }
 
     /**

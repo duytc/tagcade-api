@@ -241,10 +241,8 @@ class RonAdSlotChangeListener
 
         $this->updatingLibraryAdSlots = [];
 
-        // merge all changed ron ad slot due to fields related to rtb ('exchanges', 'rtbStatus')
+        // merge all changed ron ad slot due to fields changed
         if (count($this->changedEntities) > 0) {
-            $em = $args->getEntityManager();
-            $uow = $em->getUnitOfWork();
             $needBeUpdatedRonAdSlots = [];
             foreach ($this->changedEntities as $entity) {
                 if (!$entity instanceof RonAdSlotInterface) {
@@ -253,13 +251,6 @@ class RonAdSlotChangeListener
 
                 if (!$entity->getLibraryAdSlot() instanceof LibraryDisplayAdSlotInterface) {
                     continue;
-                }
-
-                $changedFields = $uow->getEntityChangeSet($entity);
-
-                if (array_key_exists('rtbStatus', $changedFields) || array_key_exists('floorPrice', $changedFields)) {
-                    // notice: current support rtb for "Ron Display ad slot" type!!!
-                    $needBeUpdatedRonAdSlots[] = $entity;
                 }
             }
 

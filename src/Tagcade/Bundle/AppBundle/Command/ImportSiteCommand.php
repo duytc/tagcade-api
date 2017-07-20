@@ -152,7 +152,6 @@ class ImportSiteCommand extends ContainerAwareCommand
                 if($adSlotFind == false) {
                     $this->addedAdSlots[$adSlot->id] = new DisplayAdSlot();
                     $this->addedAdSlots[$adSlot->id]->setLibraryDisplayAdSlot($this->addedLibraryAdSlot[$adSlot->libraryAdSlot->id]);
-                    $this->addedAdSlots[$adSlot->id]->setRtbStatus($adSlot->rtbStatus);
                     $this->addedAdSlots[$adSlot->id]->setSlotType($adSlot->slot_type);
                     $this->addedAdSlots[$adSlot->id]->setSite($site);
 
@@ -195,7 +194,6 @@ class ImportSiteCommand extends ContainerAwareCommand
             $this->addedSites[$site->id]->setPublisher($this->publisher);
             $this->addedSites[$site->id]->setName($site->name);
             $this->addedSites[$site->id]->setDomain($site->domain);
-            $this->addedSites[$site->id]->setRtbStatus($site->rtbStatus);
             $this->addedSites[$site->id]->setEnableSourceReport($site->enableSourceReport);
             $this->addedSites[$site->id]->setPlayers($site->players);
             $this->addedSites[$site->id]->setAutoCreate($site->autoCreate);

@@ -24,9 +24,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport:
         impressions:
             type: integer
             nullable: true
-        rtbImpressions:
-            type: integer
-            nullable: true
         passbacks:
             type: integer
             nullable: true

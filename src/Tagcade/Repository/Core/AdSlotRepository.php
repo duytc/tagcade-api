@@ -25,9 +25,8 @@ use Tagcade\Model\User\Role\SubPublisherInterface;
 
 class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInterface
 {
-
     protected $SORT_FIELDS = ['id'=>'id','name'=> 'name', 'channel'=>'channel',
-                              'domain'=>'domain', 'size'=>'size','type'=>'type', 'rtb'=>'rtb'];
+                              'domain'=>'domain', 'size'=>'size','type'=>'type'];
 
     public function allReportableAdSlotIds()
     {
@@ -209,9 +208,6 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                     break;
                 case $this->SORT_FIELDS['domain']:
                     $qb->addOrderBy('st.' . 'name', $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['rtb']:
-                    $qb->addOrderBy('st.' . 'rtbStatus', $param->getSortDirection());
                     break;
                 default:
                     break;
@@ -509,13 +505,10 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
                 case $this->SORT_FIELDS['domain']:
                     $qb->addOrderBy('st.' . 'name', $param->getSortDirection());
                     break;
-                case $this->SORT_FIELDS['rtb']:
-                    $qb->addOrderBy('st.' . 'rtbStatus', $param->getSortDirection());
-                    break;
                 default:
                     break;
-                    }
             }
+        }
 
         return $qb;
     }

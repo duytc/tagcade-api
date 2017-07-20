@@ -80,7 +80,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setEnabled(true)
     ;
     $publisher->setCompany('tctest'.$userId); // doesn't return $this so cannot chain
-    $enabledModules = [$publisher::MODULE_DISPLAY, $publisher::MODULE_RTB, $publisher::MODULE_VIDEO, $publisher::MODULE_HEADER_BIDDING, $publisher::MODULE_VIDEO_ANALYTICS, $publisher::MODULE_UNIFIED_REPORT];
+    $enabledModules = [$publisher::MODULE_DISPLAY, $publisher::MODULE_VIDEO, $publisher::MODULE_HEADER_BIDDING, $publisher::MODULE_VIDEO_ANALYTICS, $publisher::MODULE_UNIFIED_REPORT];
     $publisher->setEnabledModules($enabledModules);
 
     $billingConfiguration = new BillingConfiguration();

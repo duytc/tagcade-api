@@ -24,10 +24,8 @@ trait SlotOpportunitiesTrait
      */
     protected $billedRate;
 
-    /**
-     * @var int
-     */
-    protected $rtbImpressions;
+    // TODO: all following inbanner should be move to other trait. Or rename this trait to real it's mean
+    // current trait is for slot opportunities only
 
     /**
      * @var int
@@ -67,28 +65,9 @@ trait SlotOpportunitiesTrait
      */
     public function setSlotOpportunities($slotOpportunities)
     {
-        $this->slotOpportunities = (int) $slotOpportunities;
+        $this->slotOpportunities = (int)$slotOpportunities;
 
         return $this;
-    }
-
-    /**
-     * @param $rtbImpressions
-     * @return $this
-     */
-    public function setRtbImpressions($rtbImpressions)
-    {
-        $this->rtbImpressions = (int)$rtbImpressions;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRtbImpressions()
-    {
-        return (int)$this->rtbImpressions;
     }
 
     /**
@@ -105,7 +84,7 @@ trait SlotOpportunitiesTrait
      */
     public function setBilledAmount($billedAmount)
     {
-        $this->billedAmount = (float) $billedAmount;
+        $this->billedAmount = (float)$billedAmount;
 
         return $this;
     }
@@ -123,7 +102,7 @@ trait SlotOpportunitiesTrait
      */
     public function setBilledRate($billedRate)
     {
-        $this->billedRate = (float) $billedRate;
+        $this->billedRate = (float)$billedRate;
     }
 
     /**
@@ -140,7 +119,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerRequests($inBannerRequests)
     {
-        $this->inBannerRequests = (int) $inBannerRequests;
+        $this->inBannerRequests = (int)$inBannerRequests;
         return $this;
     }
 
@@ -158,7 +137,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerImpressions($inBannerImpressions)
     {
-        $this->inBannerImpressions = (int) $inBannerImpressions;
+        $this->inBannerImpressions = (int)$inBannerImpressions;
         return $this;
     }
 
@@ -176,7 +155,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerTimeouts($inBannerTimeouts)
     {
-        $this->inBannerTimeouts = (int) $inBannerTimeouts;
+        $this->inBannerTimeouts = (int)$inBannerTimeouts;
         return $this;
     }
 
@@ -194,7 +173,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerBilledRate($inBannerBilledRate)
     {
-        $this->inBannerBilledRate = (float) $inBannerBilledRate;
+        $this->inBannerBilledRate = (float)$inBannerBilledRate;
         return $this;
     }
 
@@ -212,7 +191,7 @@ trait SlotOpportunitiesTrait
      */
     public function setInBannerBilledAmount($inBannerBilledAmount)
     {
-        $this->inBannerBilledAmount = (float) $inBannerBilledAmount;
+        $this->inBannerBilledAmount = (float)$inBannerBilledAmount;
         return $this;
     }
 

@@ -1,7 +1,0 @@
-Tagcade\Service\Report\RtbReport\Selector\Result\ExpandedReportCollection:
-    exclusion_policy: NONE
-    properties:
-        expandedResult:
-            exclude: true
-        originalResult:
-            inline: true

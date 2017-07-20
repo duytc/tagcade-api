@@ -17,7 +17,6 @@ abstract class User extends BaseUser implements UserEntityInterface
     const MODULE_VIDEO_ANALYTICS = 'MODULE_VIDEO_ANALYTICS'; //source
     const MODULE_FRAUD_DETECTION = 'MODULE_FRAUD_DETECTION';
     const MODULE_UNIFIED_REPORT = 'MODULE_UNIFIED_REPORT';
-    const MODULE_RTB = 'MODULE_RTB';
     const MODULE_SUB_PUBLISHER = 'MODULE_SUB_PUBLISHER';
     const MODULE_HEADER_BIDDING = 'MODULE_HEADER_BIDDING';
     const MODULE_IN_BANNER = 'MODULE_IN_BANNER';
@@ -86,11 +85,6 @@ abstract class User extends BaseUser implements UserEntityInterface
     public function hasSubPubliserModule()
     {
         return in_array(static::MODULE_SUB_PUBLISHER, $this->getEnabledModules());
-    }
-
-    public function hasRtbModule()
-    {
-        return in_array(static::MODULE_RTB, $this->getEnabledModules());
     }
 
     /**

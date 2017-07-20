@@ -2,7 +2,8 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\ReportType;
 
-abstract class AbstractReportType implements ReportTypeInterface {
+abstract class AbstractReportType implements ReportTypeInterface
+{
     const REPORT_TYPE = null;
 
     /**
@@ -12,4 +13,4 @@ abstract class AbstractReportType implements ReportTypeInterface {
     {
         return static::REPORT_TYPE;
     }
-} 
+}

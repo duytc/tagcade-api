@@ -7,6 +7,13 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 
 interface SelectorInterface
 {
+    /**
+     * @param ReportTypeInterface $reportType
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @param null|array|mixed $queryParams
+     * @return array
+     */
     public function getReports(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null);
 
     /**

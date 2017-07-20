@@ -5,11 +5,6 @@ Tagcade\Entity\Core\Site:
             - Length:
                 min: 2
                 minMessage: "Site name must be at least {{ limit }} characters in length"
-        #domain:
-        #   - NotBlank: ~
-        #    - Length:
-        #        min: 4
-        #       minMessage: "Domain name must be at least {{ limit }} characters in length"
         publisher:
             - NotBlank: ~
             - Valid: ~

@@ -21,7 +21,7 @@ class AccountReport extends AccountReportModel
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
-    protected $rtbImpressions;
+    protected $adOpportunities;
 
     protected $inBannerRequests;
     protected $inBannerImpressions;

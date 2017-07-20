@@ -26,14 +26,17 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGro
             groups: [report_group.detail, report_group.summary]
         fillRate:
             expose: true
-            groups: [report_group.detail, report_group.summary]         
+            groups: [report_group.detail, report_group.summary]
         passbacks:
             expose: true
-            groups: [report_group.detail, report_group.summary]        
+            groups: [report_group.detail, report_group.summary]
         estCpm:
             expose: true
-            groups: [report_group.detail, report_group.summary]              
+            groups: [report_group.detail, report_group.summary]
         estRevenue:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        adOpportunities:
             expose: true
             groups: [report_group.detail, report_group.summary]
         averageTotalOpportunities:
@@ -52,5 +55,8 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGro
             expose: true
             groups: [report_group.detail, report_group.summary]
         averageFillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageAdOpportunities:
             expose: true
             groups: [report_group.detail, report_group.summary]

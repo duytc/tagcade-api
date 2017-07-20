@@ -6,13 +6,13 @@ use DateTime;
 use Tagcade\Model\Report\CalculateRatiosTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 
 class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
 {
     use CalculateWeightedValueTrait;
     use CalculateRatiosTrait;
+
     // inherited properties
     protected $reportType;
     protected $reports;
@@ -36,9 +36,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     // new properties
     protected $slotOpportunities;
     protected $billedAmount;
-    protected $rtbImpressions;
     protected $averageSlotOpportunities;
-    protected $averageRtbImpressions;
     protected $averageBilledAmount;
 
     protected $inBannerRequests;
@@ -68,6 +66,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param $billedAmount
      * @param $estCpm
      * @param $estRevenue
+     * @param $adOpportunities
      * @param $averageTotalOpportunities
      * @param $averageImpressions
      * @param $averagePassbacks
@@ -76,33 +75,30 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param $averageFillRate
      * @param $averageSlotOpportunities
      * @param $averageBilledAmount
-     * @param $rtbImpressions
-     * @param $averageRtbImpressions
      * @param $inBannerRequests
      * @param $inBannerTimeouts
      * @param $inBannerBilledAmount
      * @param $inBannerImpressions
      * @param $averageInBannerRequests
-     * @param $averageInBannerImpressions
-     * @param $averageInBannerBilledAmount
      * @param $averageInBannerTimeouts
+     * @param $averageInBannerBilledAmount
+     * @param $averageInBannerImpressions
+     * @param $averageAdOpportunities
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-        $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
-        $rtbImpressions, $averageRtbImpressions, $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions
+                                $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities,
+                                $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
+                                $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions, $averageAdOpportunities
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
-            $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
+            $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities
         );
 
         $this->slotOpportunities = $slotOpportunities;
-        $this->rtbImpressions = $rtbImpressions;
         $this->billedAmount = round($billedAmount, 4);
         $this->averageSlotOpportunities = round($averageSlotOpportunities);
-        $this->averageRtbImpressions = round($averageRtbImpressions);
         $this->averageBilledAmount = round($averageBilledAmount, 4);
 
         $this->inBannerRequests = $inBannerRequests;
@@ -124,11 +120,6 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         return $this->slotOpportunities;
     }
 
-    public function getRtbImpressions()
-    {
-        return $this->rtbImpressions;
-    }
-
     /**
      * @return float
      */
@@ -143,11 +134,6 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function getAverageSlotOpportunities()
     {
         return $this->averageSlotOpportunities;
-    }
-
-    public function getAverageRtbImpressions()
-    {
-        return $this->averageRtbImpressions;
     }
 
     /**

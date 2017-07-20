@@ -6,34 +6,36 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform
 use DateTime;
 use Doctrine\DBAL\Types\Type;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
-use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
 
 class AccountReportRepository extends AbstractReportRepository implements AccountReportRepositoryInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function getReportFor(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
             ->andWhere('r.publisher = :publisher')
             ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->getReportsByDateRangeQuery($startDate, $endDate);
-        $qb ->join('r.publisher', 'p')
+        $qb->join('r.publisher', 'p')
             ->andWhere($qb->expr()->orX('p.testAccount = 0', 'p.testAccount IS NULL'))
-            ->andWhere('p.enabled = 1')
-        ;
+            ->andWhere('p.enabled = 1');
         $qb->select('
             SUM(r.totalOpportunities) as totalOpportunities,
             SUM(r.slotOpportunities) as slotOpportunities,
             SUM(r.impressions) as impressions,
-            SUM(r.rtbImpressions) as rtbImpressions,
             SUM(r.passbacks) as passbacks,
             SUM(r.billedAmount) as billedAmount,
             SUM(r.inBannerRequests) as inBannerRequests,
@@ -47,6 +49,9 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return current($qb->getQuery()->getArrayResult());
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumSlotOpportunities(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -59,8 +64,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             ->setParameter('end_date', $endDate, Type::DATE)
             ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -69,6 +73,9 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumSlotInBannerImpressions(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -81,8 +88,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             ->setParameter('end_date', $endDate, Type::DATE)
             ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -91,7 +97,9 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return $result;
     }
 
-
+    /**
+     * @inheritdoc
+     */
     public function getSumBilledAmountForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -104,8 +112,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             ->setParameter('end_date', $endDate, Type::DATE)
             ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -114,6 +121,9 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumRevenueForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -126,8 +136,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             ->setParameter('end_date', $endDate, Type::DATE)
             ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -136,6 +145,9 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getStatsSummaryForPublisher(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -148,12 +160,14 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             ->setParameter('end_date', $endDate, Type::DATE)
             ->setParameter('publisher', $publisher->getUser())
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
 
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTopPublishersByBilledAmount(DateTime $startDate, DateTime $endDate, $limit = 10)
     {
         $qb = $this->createQueryBuilder('pr');
@@ -166,24 +180,27 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             ->setParameter('endDate', $endDate, Type::DATE)
             ->groupBy('pr.publisher')
             ->orderBy('totalBilledAmount', 'DESC')
-            ->setMaxResults($limit)
-        ;
+            ->setMaxResults($limit);
 
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function overrideReport(AccountReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_account`
-                 (publisher_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 slot_opportunities, billed_rate, billed_amount, rtb_impressions, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
-                 ) VALUES (:publisherId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :slotOpportunities, :billedRate, :billedAmount, :rtbImpressions, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
+                 (publisher_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities,
+                 slot_opportunities, billed_rate, billed_amount, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
+                 ) VALUES (:publisherId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities,
+                  :slotOpportunities, :billedRate, :billedAmount, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
                  total_opportunities = :totalOpportunities,
                  passbacks = :passbacks,
+                 ad_opportunities = :adOpportunities,
                  fill_rate = :impressions / :slotOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
@@ -193,8 +210,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
                  in_banner_billed_amount = :inBannerBilledAmount,
                  in_banner_billed_rate = :inBannerBilledRate,
                  billed_rate = :billedRate,
-                 billed_amount = :billedAmount,
-                 rtb_impressions = :rtbImpressions
+                 billed_amount = :billedAmount
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -210,6 +226,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         $qb->bindValue('impressions', $report->getImpressions() !== null ? $report->getImpressions() : 0, Type::INTEGER);
         $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
+        $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
         $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
         $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
@@ -218,7 +235,6 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
         $qb->bindValue('inBannerBilledRate', $report->getInBannerBilledRate() !== null ? $report->getInBannerBilledRate() : 0);
         $qb->bindValue('billedRate', $report->getBilledRate() !== null ? $report->getBilledRate() : 0);
         $qb->bindValue('billedAmount', $report->getBilledAmount() !== null ? $report->getBilledAmount() : 0);
-        $qb->bindValue('rtbImpressions', $report->getRtbImpressions() !== null ? $report->getRtbImpressions() : 0);
 
         $connection->beginTransaction();
         try {

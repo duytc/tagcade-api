@@ -19,7 +19,7 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 {
     use CreateSiteTokenTrait;
 
-    protected $SORT_FIELDS = ['id', 'name', 'domain', 'rtbStatus'];
+    protected $SORT_FIELDS = ['id', 'name', 'domain'];
 
     /**
      * @inheritdoc
@@ -45,14 +45,6 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
         if (is_int($offset)) {
             $qb->setFirstResult($offset);
         }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    public function getRTBEnabledSitesForPublisher(PublisherInterface $publisher, $limit = null, $offset = null)
-    {
-        $qb = $this->getSitesForPublisherQuery($publisher, $limit, $offset);
-        $qb->andWhere('st.rtbEnabled = true');
 
         return $qb->getQuery()->getResult();
     }

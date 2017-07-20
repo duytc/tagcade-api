@@ -6,6 +6,7 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Site as AdNetworkSiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -16,6 +17,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, SnapshotCreatorInterface
 {
     use HasSubReportsTrait;
+    use CalculateAdOpportunitiesTrait;
 
     /** @var AdSlotManagerInterface */
     private $adSlotManager;
@@ -32,9 +34,11 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdNetworkSiteReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new SiteReport();
+
+        /** @var AdNetworkSiteReportType $reportType */
         $adNetwork = $reportType->getAdNetwork();
         $site = $reportType->getSite();
         $report
@@ -67,6 +71,9 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
         $this->constructReportModel($report, $redisReportData);
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof SiteReport) {
@@ -82,7 +89,8 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setBlankImpressions($data[self::CACHE_KEY_BLANK_IMPRESSION])
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
-            ->setFillRate();
+            ->setFillRate()
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
 
         // TODO latter
         $report->setEstCpm((float)0);

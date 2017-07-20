@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
@@ -11,6 +12,8 @@ use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 
 class AdTag extends CreatorAbstract implements AdTagInterface
 {
+    use CalculateAdOpportunitiesTrait;
+
     /** @var EstCpmCalculatorInterface */
     private $estCpmCalculator;
 
@@ -22,10 +25,11 @@ class AdTag extends CreatorAbstract implements AdTagInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdTagReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new AdTagReport();
 
+        /** @var AdTagReportType $reportType */
         $adTag = $reportType->getAdTag();
         $totalOpportunities = $this->eventCounter->getOpportunityCount($adTag->getId());
         $impressions = $this->eventCounter->getImpressionCount($adTag->getId());
@@ -39,16 +43,20 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setImpressions($impressions)
             ->setFirstOpportunities($firstOpportunities)
             ->setVerifiedImpressions($verifiedImpressions)
-            ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()));
+            ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
+            ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities));
 
         if (!$isNativeAdSlot) {
+            $passbacks = $this->eventCounter->getPassbackCount($adTag->getId());
+
             $report
                 ->setPassbacks($this->eventCounter->getPassbackCount($adTag->getId()))
                 ->setUnverifiedImpressions($this->eventCounter->getUnverifiedImpressionCount($adTag->getId()))
                 ->setBlankImpressions($this->eventCounter->getBlankImpressionCount($adTag->getId()))
                 ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
                 ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
-                ->setPosition($adTag->getPosition());
+                ->setPosition($adTag->getPosition())
+                ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities, $passbacks));
         }
 
         return $report;

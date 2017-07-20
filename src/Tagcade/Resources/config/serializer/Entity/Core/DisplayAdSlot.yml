@@ -4,21 +4,11 @@ Tagcade\Entity\Core\DisplayAdSlot:
         getChannels:
             serialized_name: channels
             groups: [displayadslot.withChannel]
-#        isRTBEnabled:
-#            serialized_name: rtbEnabled
-#            groups: [displayadslot.detail, displayadslot.summary]
-#            max_depth: 1
     properties:
         id:
             expose: true
             groups: [displayadslot.detail, displayadslot.summary, displayadslot.withChannel]
-        floorPrice:
-            expose: true
-            groups: [displayadslot.detail, displayadslot.summary]
         site:
-            expose: true
-            groups: [displayadslot.detail, displayadslot.summary, displayadslot.withChannel]
-        rtbStatus:
             expose: true
             groups: [displayadslot.detail, displayadslot.summary, displayadslot.withChannel]
         hbBidPrice:

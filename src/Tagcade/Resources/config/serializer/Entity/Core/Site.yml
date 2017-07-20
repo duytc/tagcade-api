@@ -1,9 +1,5 @@
 Tagcade\Entity\Core\Site:
     exclusion_policy: ALL
-#    virtual_properties:
-#        isRTBEnabled:
-#            serialized_name: rtbEnabled
-#            groups: [site.detail, site.summary]
     properties:
         id:
             expose: true
@@ -23,9 +19,6 @@ Tagcade\Entity\Core\Site:
         autoCreate:
             groups: [site.detail, site.summary]
         players:
-            expose: true
-            groups: [site.detail, site.summary]
-        rtbStatus:
             expose: true
             groups: [site.detail, site.summary]
         subPublisher:

@@ -11,7 +11,7 @@ use Tagcade\Worker\Manager;
 /**
  * Class PublisherChangeListener
  *
- * Handle event publisher changed for updating cache for "Display ad slot" on fields relate to RTB-RealTime Bidding('rtbStatus', 'exchanges', ...)
+ * Handle event publisher changed for updating cache for ad slot
  *
  * @package Tagcade\Bundle\AppBundle\EventListener
  */
@@ -31,7 +31,7 @@ class PublisherChangeListener
     }
 
     /**
-     * Handle event onFlush for detecting publisher changed on fields relate to RTB (rtb, exchanges, ...), then update cache for display ad slot
+     * Handle event onFlush for detecting publisher changed, then update cache for display ad slot
      *
      * @param OnFlushEventArgs $args
      */
@@ -71,22 +71,10 @@ class PublisherChangeListener
 
             $changedFields = $uow->getEntityChangeSet($entity);
 
-            if (array_key_exists('exchanges', $changedFields)) {
-                $needToBeUpdatedPublisherIds[] = $entity->getId();
-                continue;
-            }
-
-            if (array_key_exists('roles', $changedFields)) { // the 'exchanges' field is already listened by SiteChangeListener!!!
-                $roles = $changedFields['roles'];
-
-                if (!is_array($roles) || count($roles) < 2) {
-                    continue;
-                }
-
-                if ($this->hasModuleRTB($roles[0]) xor $this->hasModuleRTB($roles[1])) {
-                    $needToBeUpdatedPublisherIds[] = $entity->getId();
-                }
-            }
+            //if (array_key_exists('<any key>', $changedFields)) {
+            //    $needToBeUpdatedPublisherIds[] = $entity->getId();
+            //    continue;
+            //}
         }
 
         // update cache due to publisher
@@ -97,9 +85,4 @@ class PublisherChangeListener
         // reset for new onFlush event
         $this->changedEntities = [];
     }
-
-    private function hasModuleRTB(array $roles)
-    {
-        return in_array('MODULE_RTB', $roles);
-    }
-} 
+}

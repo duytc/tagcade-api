@@ -18,11 +18,11 @@ class SiteReport extends SiteReportModel
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
+    protected $adOpportunities;
 
     protected $slotOpportunities;
     protected $billedAmount;
     protected $billedRate;
-    protected $rtbImpressions;
 
     protected $inBannerRequests;
     protected $inBannerImpressions;

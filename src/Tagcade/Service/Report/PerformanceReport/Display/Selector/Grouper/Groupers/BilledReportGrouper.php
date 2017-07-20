@@ -14,10 +14,8 @@ class BilledReportGrouper extends AbstractGrouper
 
     private $slotOpportunities;
     private $billedAmount;
-    private $rtbImpressions;
 
     private $averageSlotOpportunities;
-    private $averageRtbImpressions;
     private $averageBilledAmount;
 
     private $inBannerRequests;
@@ -48,6 +46,7 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getBilledAmount(),
             $this->getEstCpm(),
             $this->getEstRevenue(),
+            $this->getAdOpportunities(),
 
             $this->getAverageTotalOpportunities(),
             $this->getAverageImpressions(),
@@ -57,8 +56,6 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageFillRate(),
             $this->getAverageSlotOpportunities(),
             $this->getAverageBilledAmount(),
-            $this->getRtbImpressions(),
-            $this->getAverageRtbImpressions(),
 
             $this->getInBannerRequests(),
             $this->getInBannerTimeouts(),
@@ -68,11 +65,12 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageInBannerRequests(),
             $this->getAverageInBannerTimeouts(),
             $this->getAverageInBannerBilledAmount(),
-            $this->getAverageInBannerImpressions()
+            $this->getAverageInBannerImpressions(),
+            $this->getAverageAdOpportunities()
         );
     }
 
-    protected  function groupReports(array $reports)
+    protected function groupReports(array $reports)
     {
         parent::groupReports($reports);
 
@@ -80,7 +78,6 @@ class BilledReportGrouper extends AbstractGrouper
 
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
-        $this->averageRtbImpressions = $this->getRatio($this->getRtbImpressions(), $reportCount);
 
         $this->averageInBannerTimeouts = $this->getRatio($this->getInBannerTimeouts(), $reportCount);
         $this->averageInBannerRequests = $this->getRatio($this->getInBannerRequests(), $reportCount);
@@ -99,7 +96,6 @@ class BilledReportGrouper extends AbstractGrouper
 
         $this->addSlotOpportunities($report->getSlotOpportunities());
         $this->addBilledAmount($report->getBilledAmount());
-        $this->addRtbImpressions($report->getRtbImpressions());
 
         $this->addInBannerTimeouts($report->getInBannerTimeouts());
         $this->addInBannerRequests($report->getInBannerRequests());
@@ -110,42 +106,37 @@ class BilledReportGrouper extends AbstractGrouper
 
     protected function addSlotOpportunities($slotOpportunities)
     {
-        $this->slotOpportunities += (int) $slotOpportunities;
-    }
-
-    protected function addRtbImpressions($rtbImpressions)
-    {
-        $this->rtbImpressions += (int)$rtbImpressions;
+        $this->slotOpportunities += (int)$slotOpportunities;
     }
 
     protected function addBilledAmount($billedAmount)
     {
-        $this->billedAmount += (float) $billedAmount;
+        $this->billedAmount += (float)$billedAmount;
     }
 
     protected function addInBannerRequests($inBannerRequests)
     {
-        $this->inBannerRequests += (int) $inBannerRequests;
+        $this->inBannerRequests += (int)$inBannerRequests;
     }
 
     protected function addInBannerBilledAmount($inBannerBilledAmount)
     {
-        $this->inBannerBilledAmount += (float) $inBannerBilledAmount;
+        $this->inBannerBilledAmount += (float)$inBannerBilledAmount;
     }
 
     protected function addInBannerBilledRate($inBannerBilledRate)
     {
-        $this->inBannerBilledRate += (float) $inBannerBilledRate;
+        $this->inBannerBilledRate += (float)$inBannerBilledRate;
     }
 
     protected function addInBannerImpressions($inBannerImpressions)
     {
-        $this->inBannerImpressions += (int) $inBannerImpressions;
+        $this->inBannerImpressions += (int)$inBannerImpressions;
     }
 
     protected function addInBannerTimeouts($inBannerTimeouts)
     {
-        $this->inBannerTimeouts += (int) $inBannerTimeouts;
+        $this->inBannerTimeouts += (int)$inBannerTimeouts;
     }
 
     protected function calculateFillRate()
@@ -159,11 +150,6 @@ class BilledReportGrouper extends AbstractGrouper
     public function getSlotOpportunities()
     {
         return $this->slotOpportunities;
-    }
-
-    public function getRtbImpressions()
-    {
-        return $this->rtbImpressions;
     }
 
     /**
@@ -180,11 +166,6 @@ class BilledReportGrouper extends AbstractGrouper
     public function getAverageSlotOpportunities()
     {
         return $this->averageSlotOpportunities;
-    }
-
-    public function getAverageRtbImpressions()
-    {
-        return $this->averageRtbImpressions;
     }
 
     /**

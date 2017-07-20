@@ -108,11 +108,6 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
                         }
                     }
 
-                    if ($site->isRTBEnabled()) {
-                        $moduleConfigs[] = $this->mapModuleConfig(array('MODULE_RTB' => array('exchanges' => $publisher->getExchanges())));
-                    }
-
-
                     // build data for key 'config'
                     $configs = [];
                     if (count($moduleConfigs) > 0) {

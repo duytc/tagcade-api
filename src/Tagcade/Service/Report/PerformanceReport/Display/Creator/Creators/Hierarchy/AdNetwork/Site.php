@@ -28,12 +28,13 @@ class Site extends CreatorAbstract implements SiteInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdNetworkSiteReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $this->syncEventCounterForSubReports();
 
         $report = new SiteReport();
 
+        /** @var AdNetworkSiteReportType $reportType */
         $adNetwork = $reportType->getAdNetwork();
         $site = $reportType->getSite();
 

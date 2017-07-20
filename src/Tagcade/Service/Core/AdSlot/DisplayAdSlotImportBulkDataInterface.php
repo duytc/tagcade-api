@@ -5,11 +5,10 @@ namespace Tagcade\Service\Core\AdSlot;
 
 
 use Tagcade\Entity\Core\Site;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface DisplayAdSlotImportBulkDataInterface {
-
+interface DisplayAdSlotImportBulkDataInterface
+{
     /**
      * @param array $allDisplayAdSlotsData
      * @param Site $site
@@ -36,5 +35,4 @@ interface DisplayAdSlotImportBulkDataInterface {
      * @return mixed
      */
     public function getAdSlotNameIndex();
-
-} 
+}

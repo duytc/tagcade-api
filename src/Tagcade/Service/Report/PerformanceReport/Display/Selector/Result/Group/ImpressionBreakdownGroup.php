@@ -7,7 +7,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportData
 
 class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdownReportDataInterface
 {
-
     private $firstOpportunities;
     private $verifiedImpressions;
     private $unverifiedImpressions;
@@ -23,15 +22,15 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     private $averageClicks;
 
     public function __construct($reportType, $startDate, $endDate, $reports, $name,
-        $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate,
-        $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks,
-        $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions, $averageVoidImpressions, $averageClicks
+                                $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
+                                $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate,
+                                $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks, $adOpportunities,
+                                $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions, $averageVoidImpressions, $averageClicks, $averageAdOpportunities
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
-            $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
+            $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities
         );
 
         $this->firstOpportunities = $firstOpportunities;
@@ -145,7 +144,4 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     {
         return $this->averageClicks;
     }
-
-
-
 }

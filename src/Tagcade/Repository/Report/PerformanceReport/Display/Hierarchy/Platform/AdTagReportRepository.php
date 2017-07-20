@@ -11,7 +11,10 @@ use Tagcade\Model\Core\AdTagInterface;
 
 class AdTagReportRepository extends AbstractReportRepository implements AdTagReportRepositoryInterface
 {
-    public function getReportFor(AdtagInterface $adTag, DateTime $startDate, DateTime $endDate)
+    /**
+     * @inheritdoc
+     */
+    public function getReportFor(AdTagInterface $adTag, DateTime $startDate, DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
             ->andWhere('r.adTag = :ad_tag')
@@ -21,13 +24,16 @@ class AdTagReportRepository extends AbstractReportRepository implements AdTagRep
         ;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function overrideReport(AdTagReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_ad_tag`
                  (ad_tag_id, super_report_id, date, name, position, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 relative_fill_rate, first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks
+                 relative_fill_rate, first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, ad_opportunities
                  ) VALUES (:adTagId, :superReportId, :date, :name, :position, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :relativeFillRate, :firstOpportunities, :verifiedImpressoins, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks
+                  :relativeFillRate, :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :adOpportunities
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -38,11 +44,12 @@ class AdTagReportRepository extends AbstractReportRepository implements AdTagRep
                  position = :position,
                  relative_fill_rate = :relativeFillRate,
                  first_opportunities = :firstOpportunities,
-                 verified_impressions = :verifiedImpressoins,
+                 verified_impressions = :verifiedImpressions,
                  unverified_impressions = :unverifiedImpression,
                  blank_impressions = :blankImpressions,
                  void_impressions = :voidImpressions,
-                 clicks = :clicks
+                 clicks = :clicks,
+                 ad_opportunities = :adOpportunities
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -61,11 +68,12 @@ class AdTagReportRepository extends AbstractReportRepository implements AdTagRep
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
         $qb->bindValue('relativeFillRate', $report->getRelativeFillRate() !== null ? $report->getRelativeFillRate() : 0);
         $qb->bindValue('firstOpportunities', $report->getFirstOpportunities() !== null ? $report->getFirstOpportunities() : 0);
-        $qb->bindValue('verifiedImpressoins', $report->getVerifiedImpressions() !== null ? $report->getVerifiedImpressions() : 0);
+        $qb->bindValue('verifiedImpressions', $report->getVerifiedImpressions() !== null ? $report->getVerifiedImpressions() : 0);
         $qb->bindValue('unverifiedImpression', $report->getUnverifiedImpressions() !== null ? $report->getUnverifiedImpressions() : 0);
         $qb->bindValue('blankImpressions', $report->getBlankImpressions() !== null ? $report->getVoidImpressions() : 0);
         $qb->bindValue('voidImpressions', $report->getVoidImpressions() !== null ? $report->getPassbacks() : 0);
         $qb->bindValue('clicks', $report->getClicks() !== null ? $report->getClicks() : 0);
+        $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0);
 
         $connection->beginTransaction();
         try {

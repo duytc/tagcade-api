@@ -6,9 +6,8 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Model\RTBEnabledInterface;
 
-interface RonAdSlotInterface extends ModelInterface, RTBEnabledInterface
+interface RonAdSlotInterface extends ModelInterface
 {
     /**
      * @param int $id
@@ -80,25 +79,4 @@ interface RonAdSlotInterface extends ModelInterface, RTBEnabledInterface
      * @return self
      */
     public function addRonAdSlotSegment(RonAdSlotSegmentInterface $ronAdSlotSegment);
-
-    /**
-     * @return int
-     */
-    public function getRtbStatus();
-
-    /**
-     * @return float
-     */
-    public function getFloorPrice();
-
-    /**
-     * @param float $floorPrice
-     */
-    public function setFloorPrice($floorPrice);
-
-    /**
-     * @param int $rtbStatus
-     * @return self
-     */
-    public function setRtbStatus($rtbStatus);
 }

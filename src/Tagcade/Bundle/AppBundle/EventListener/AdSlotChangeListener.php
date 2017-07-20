@@ -38,9 +38,7 @@ class AdSlotChangeListener
         }
 
         if ($entity instanceof DisplayAdSlotInterface &&
-            ($args->hasChangedField('rtbStatus')
-                || $args->hasChangedField('floorPrice')
-                || $args->hasChangedField('hbBidPrice')
+            ($args->hasChangedField('hbBidPrice')
                 || $args->hasChangedField('autoRefresh')
                 || $args->hasChangedField('refreshEvery')
                 || $args->hasChangedField('maximumRefreshTimes')

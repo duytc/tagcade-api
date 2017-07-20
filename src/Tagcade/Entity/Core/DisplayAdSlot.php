@@ -8,8 +8,6 @@ class DisplayAdSlot extends DisplayAdSlotModel
 {
     protected $id;
     protected $site;
-    protected $rtbStatus;
-    protected $floorPrice;
     protected $deletedAt;
     protected $hbBidPrice;
 

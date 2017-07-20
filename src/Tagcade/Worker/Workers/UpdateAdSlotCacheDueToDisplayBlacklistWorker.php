@@ -2,7 +2,7 @@
 
 namespace Tagcade\Worker\Workers;
 
-use StdClass;
+use stdClass;
 use Tagcade\Cache\V2\TagCacheV2Interface;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
@@ -45,7 +45,7 @@ class UpdateAdSlotCacheDueToDisplayBlacklistWorker
      *
      * @param StdClass $params
      */
-    public function updateAdSlotCacheForAdNetwork(StdClass $params)
+    public function updateAdSlotCacheForAdNetwork(stdClass $params)
     {
         $adNetworkId = $params->network;
         $adNetwork = $this->adNetworkManager->find($adNetworkId);
@@ -59,7 +59,7 @@ class UpdateAdSlotCacheDueToDisplayBlacklistWorker
         foreach ($adSlots as $adSlot) {
             /** @var DisplayAdSlotInterface|ReportableAdSlotInterface $adSlot */
             if (!$adSlot instanceof DisplayAdSlotInterface && !$adSlot instanceof NativeAdSlotInterface) {
-                continue; // only supported DisplayAdSlot and rtbStatus is enabled
+                continue; // only supported DisplayAdSlot and NativeAdSlot
             }
 
             $this->tagCache->refreshCacheForReportableAdSlot($adSlot, true);

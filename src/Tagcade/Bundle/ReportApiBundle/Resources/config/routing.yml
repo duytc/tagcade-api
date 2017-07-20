@@ -16,12 +16,6 @@ report_api_header_bidding_report:
     name_prefix: header_bidding_report_api_1_
     prefix: /headerbiddingreports
 
-report_api_rtb_report:
-    type: rest
-    resource: Tagcade\Bundle\ReportApiBundle\Controller\RtbReportController
-    name_prefix: rtb_report_api_1_
-    prefix: /rtbreports
-
 # functional api calls
 
 report_api_functional_billing:

@@ -15,7 +15,6 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
     private $inBannerRequests = 0;
     private $inBannerTimeouts = 0;
     private $inBannerImpressions = 0;
-    private $rtbImpression = 0;
 
     /**
      * @var
@@ -54,19 +53,6 @@ class RonAdSlotReportCount implements BaseAdSlotReportCountInterface
     public function getRonAdSlotId()
     {
         return $this->ronAdSlotId;
-    }
-
-    public function getRtbImpression()
-    {
-        return $this->rtbImpression;
-    }
-
-    /**
-     * @param int $rtbImpression
-     */
-    public function setRtbImpression($rtbImpression)
-    {
-        $this->rtbImpression = $rtbImpression;
     }
 
     /**

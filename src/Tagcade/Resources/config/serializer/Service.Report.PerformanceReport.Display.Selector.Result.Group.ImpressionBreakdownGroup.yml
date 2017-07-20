@@ -18,7 +18,10 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Impressio
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
         clicks:
             expose: true
-            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]      
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        adOpportunities:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
         averageFirstOpportunities:
             expose: true
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
@@ -33,7 +36,10 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Impressio
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
         averageVoidImpressions:
             expose: true
-            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
         averageClicks:
             expose: true
-            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]                                                                                
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        averageAdOpportunities:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]

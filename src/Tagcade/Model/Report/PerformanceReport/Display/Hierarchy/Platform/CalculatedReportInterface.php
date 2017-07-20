@@ -69,16 +69,5 @@ interface CalculatedReportInterface extends ReportInterface, BilledReportDataInt
      */
     public function setInBannerRequests($inBannerRequests);
 
-    /**
-     * @param int $rtbImpressions
-     * @return $this
-     */
-    public function setRtbImpressions($rtbImpressions);
-
-    /**
-     * @return int
-     */
-    public function getRtbImpressions();
-
     public function setThresholdBilledAmount($chainToSubReports = true);
 }

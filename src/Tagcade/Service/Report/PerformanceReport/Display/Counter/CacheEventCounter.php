@@ -36,7 +36,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
     const CACHE_KEY_HB_BID_REQUEST         = 'hb_bid_request';
-    const CACHE_KEY_RTB_IMPRESSION         = 'impression';
     const CACHE_KEY_IN_BANNER_REQUEST      = 'requests';
     const CACHE_KEY_IN_BANNER_IMPRESSION   = 'impressions';
     const CACHE_KEY_IN_BANNER_TIMEOUT      = 'timeouts';
@@ -47,7 +46,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const KEY_HB_REQUESTS                  = 'hb_requests';
     const KEY_PASSBACKS                    = 'passbacks';
     const KEY_FALLBACKS                    = 'fallbacks';
-    const KEY_RTB_IMPRESSIONS              = 'rtb_impressions';
     const KEY_IN_BANNER_IMPRESSIONS        = 'inbanner_impressions';
     const KEY_IN_BANNER_REQUESTS           = 'inbanner_requests';
     const KEY_IN_BANNER_TIMEOUTS           = 'inbanner_requests';
@@ -59,10 +57,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const NAMESPACE_APPEND_SEGMENT         = 'segment_%d';
     const NAMESPACE_ACCOUNT                = 'account_%d';
 
-    /* for rtb event count redis cache */
-
     const REDIS_HASH_EVENT_COUNT           = 'event_processor:event_count';
-    const REDIS_HASH_RTB_EVENT_COUNT       = 'rtb_event_processor:event_count';
     const REDIS_HASH_IN_BANNER_EVENT_COUNT = 'inbanner_event_processor:event_count';
 
     private static $adTagReportKeys = [
@@ -137,24 +132,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $this->fetchFromCache(
             $this->getCacheKey(static::CACHE_KEY_SLOT_OPPORTUNITY, $namespace)
         );
-    }
-
-    /**
-     * @param $slotId
-     * @return int|mixed
-     */
-    public function getRtbImpressionsCount($slotId)
-    {
-        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
-
-        return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
-    }
-
-    public function getAccountRtbImpressionsCount($publisherId)
-    {
-        $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
-
-        return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
     }
 
     public function getOpportunityCount($tagId)
@@ -377,18 +354,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     }
 
     /**
-     * @param $ronSlotId
-     * @param null $segment
-     * @return mixed
-     */
-    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null)
-    {
-        $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $ronSlotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
-
-        return $this->hFetchFromCache(self::REDIS_HASH_RTB_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_RTB_IMPRESSION, $namespace));
-    }
-
-    /**
      * @param int $ronTagId
      * @param int|null $segment
      * @return mixed
@@ -495,7 +460,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         $results = $this->cache->mGet($cacheKeys);
         $inBannerResults = $this->cache->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $inBannerCacheKeys);
-        $rtbResults = $this->getRtbImpressionsCount($slot->getId());
 
         $adTagCacheKeys = $this->getAdTagCacheKeysForAdSlot($slot);
 
@@ -511,7 +475,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => $inBannerResults[$inBannerCacheKeys[0]],
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => $inBannerResults[$inBannerCacheKeys[1]],
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => $inBannerResults[$inBannerCacheKeys[2]],
-            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => $rtbResults,
             SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => array_sum(array_column($adTagResults, 0)),
             SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => array_sum(array_column($adTagResults, 1)),
             SnapshotCreatorInterface::CACHE_KEY_PASSBACK => array_sum(array_column($adTagResults, 2)) + array_sum(array_column($adTagResults, 3)),
@@ -533,7 +496,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $index = 0;
 
         foreach($adSlotIds as $id) {
-            $rtbImpression = $this->getRtbImpressionsCount($id);
             $hbRequests = $this->getHeaderBidRequestCount($id);
             $inBannerRequests = $this->getInBannerRequestCount($id);
             $inBannerImpressions = $this->getInBannerImpressionCount($id);
@@ -541,7 +503,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $convertedResults[$id] = new AdSlotReportCount(
                 array(
                     self::CACHE_KEY_SLOT_OPPORTUNITY => $results[$index],
-                    self::CACHE_KEY_RTB_IMPRESSION => $rtbImpression,
                     self::CACHE_KEY_HB_BID_REQUEST => $hbRequests,
                     self::CACHE_KEY_IN_BANNER_REQUEST => $inBannerRequests,
                     self::CACHE_KEY_IN_BANNER_IMPRESSION => $inBannerImpressions,
@@ -713,12 +674,10 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         $results = $this->cache->hMGet(self::REDIS_HASH_EVENT_COUNT, $ronAdSlotKeys);
 
-        $rtbImpression = $this->getRonSlotRtbImpressionsCount($ronAdSlotId, $segmentId);
         $inBannerRequests = $this->getRonInBannerRequestCount($ronAdSlotId, $segmentId);
         $inBannerTimeouts = $this->getRonInBannerTimeoutCount($ronAdSlotId, $segmentId);
         $inBannerImpressions = $this->getRonInBannerImpressionCount($ronAdSlotId, $segmentId);
         $ronSlotCount = new RonAdSlotReportCount($this->formattedDate, $ronAdSlotId, $results, $segmentId);
-        $ronSlotCount->setRtbImpression($rtbImpression);
         $ronSlotCount->setInBannerRequests($inBannerRequests);
         $ronSlotCount->setInBannerTimeouts($inBannerTimeouts);
         $ronSlotCount->setInBannerImpressions($inBannerImpressions);
@@ -733,7 +692,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     {
         $cacheKeys =[];
         $inBannerCacheKeys =[];
-        $rtbCacheKeys =[];
 
         $tempData = array (
             SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
@@ -741,7 +699,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
-            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
             SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
             SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
             SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
@@ -766,8 +723,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
                 $this->getCacheKey(self::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace)
             );
 
-            $rtbCacheKeys[] = $this->getCacheKey(self::CACHE_KEY_RTB_IMPRESSION, $namespace);
-
             $keyCount++;
             if ($keyCount >= $this->pipelineSizeThreshold) {
                 $pipe = $this->cache->multi(Redis::PIPELINE);
@@ -782,18 +737,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
                 });
                 $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
-                $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
-
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
-                $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
 
                 $cacheKeys = [];
                 $inBannerCacheKeys = [];
-                $rtbCacheKeys = [];
                 $keyCount = 0;
             }
         }
@@ -810,14 +761,11 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         });
         $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
-        $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
-
         $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
-        $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
 
         $adTagIds = $this->adTagManager->getActiveAdTagsIdsForPublisher($publisher);
         $keyCount = 0;
@@ -863,7 +811,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     {
         $cacheKeys =[];
         $inBannerCacheKeys =[];
-        $rtbCacheKeys =[];
 
         $tempData = array (
             SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => 0,
@@ -871,7 +818,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => 0,
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => 0,
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => 0,
-            SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION => 0,
             SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY => 0,
             SnapshotCreatorInterface::CACHE_KEY_IMPRESSION => 0,
             SnapshotCreatorInterface::CACHE_KEY_PASSBACK => 0,
@@ -896,8 +842,6 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
                 $this->getCacheKey(self::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace)
             );
 
-            $rtbCacheKeys[] = $this->getCacheKey(self::CACHE_KEY_RTB_IMPRESSION, $namespace);
-
             $keyCount++;
             if ($keyCount >= $this->pipelineSizeThreshold) {
                 $pipe = $this->cache->multi(Redis::PIPELINE);
@@ -912,18 +856,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
                 });
                 $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
-                $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
-
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
                 $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
-                $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
 
                 $cacheKeys = [];
                 $inBannerCacheKeys = [];
-                $rtbCacheKeys = [];
                 $keyCount = 0;
             }
         }
@@ -940,14 +880,11 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         });
         $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
-        $rtbResults = $this->cache->hMGet(self::REDIS_HASH_RTB_EVENT_COUNT, $rtbCacheKeys);
-
         $tempData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY] += array_sum(array_column($results, 0));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST] += array_sum(array_column($results, 1));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] += array_sum(array_column($inBannerResults, 0));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] += array_sum(array_column($inBannerResults, 1));
         $tempData[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] += array_sum(array_column($inBannerResults, 2));
-        $tempData[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION] += array_sum($rtbResults);
 
         $adTagIds = $this->adTagManager->getAdTagIdsForSite($site);
         $keyCount = 0;

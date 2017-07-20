@@ -23,5 +23,3 @@ tests/acceptance/AcceptanceTester.php
 
 tests/_output/*
 app/var/jwt/
-dev/redis-cli.dev/
-startRedisCliTool.sh

@@ -9,8 +9,6 @@ use Tagcade\Entity\Core\LibraryAdSlotAbstract;
 
 class RonAdSlot implements RonAdSlotInterface
 {
-    const RTB_STATUS_DEFAULT = self::RTB_DISABLED;
-
     /** @var int */
     protected $id;
 
@@ -21,9 +19,6 @@ class RonAdSlot implements RonAdSlotInterface
      * @var ArrayCollection
      */
     protected $ronAdSlotSegments;
-
-    protected $rtbStatus;
-    protected $floorPrice;
 
     /** @var \Datetime */
     protected $createdAt;
@@ -36,7 +31,6 @@ class RonAdSlot implements RonAdSlotInterface
 
     public function __construct()
     {
-        $this->rtbStatus = self::RTB_STATUS_DEFAULT;
     }
 
     /**
@@ -158,51 +152,6 @@ class RonAdSlot implements RonAdSlotInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function getRtbStatus()
-    {
-        return $this->rtbStatus;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setRtbStatus($rtbStatus)
-    {
-        $this->rtbStatus = null === $rtbStatus ? self::RTB_STATUS_DEFAULT : $rtbStatus;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getFloorPrice()
-    {
-        return $this->floorPrice;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setFloorPrice($floorPrice)
-    {
-        $this->floorPrice = $floorPrice;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isRTBEnabled()
-    {
-        if (!$this->getLibraryAdSlot()->getPublisher()->hasRtbModule()) {
-            return false;
-        }
-
-        return $this->rtbStatus === self::RTB_ENABLED;
-    }
-
-    /**
      * @return \Datetime
      */
     public function getCreatedAt()
@@ -226,30 +175,8 @@ class RonAdSlot implements RonAdSlotInterface
         return $this->deletedAt;
     }
 
-//    /**
-//     * @return string
-//     */
-//    public function getType() {
-//        if (!$this->libraryAdSlot instanceof BaseLibraryAdSlotInterface) {
-//            return 'unknown';
-//        }
-//
-//        if ($this->libraryAdSlot instanceof LibraryDisplayAdSlotInterface) {
-//            return 'display';
-//        }
-//
-//        if ($this->libraryAdSlot instanceof LibraryNativeAdSlotInterface) {
-//            return 'native';
-//        }
-//
-//        if ($this->libraryAdSlot instanceof LibraryDynamicAdSlotInterface) {
-//            return 'dynamic';
-//        }
-//    }
-
     function __toString()
     {
         return $this->id . '';
     }
-
 }

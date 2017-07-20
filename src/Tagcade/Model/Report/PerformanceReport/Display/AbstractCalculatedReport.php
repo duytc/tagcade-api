@@ -39,13 +39,14 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->impressions = 0;
         $this->passbacks = 0;
         $this->estRevenue = 0;
+        $this->adOpportunities = 0;
     }
 
     protected function doCalculateFields()
     {
         $this->resetCounts();
 
-        foreach($this->subReports as $subReport) {
+        foreach ($this->subReports as $subReport) {
             /** @var ReportInterface $subReport */
             $subReport->setCalculatedFields(); // chain the calls to setCalculatedFields
 
@@ -63,6 +64,7 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->addImpressions($subReport->getImpressions());
         $this->addPassbacks($subReport->getPassbacks());
         $this->addEstRevenue($subReport->getEstRevenue());
+        $this->addAdOpportunities($subReport->getAdOpportunities());
     }
 
     protected function addTotalOpportunities($totalOpportunities)
@@ -83,5 +85,10 @@ abstract class AbstractCalculatedReport extends AbstractReport
     protected function addEstRevenue($estRevenue)
     {
         $this->estRevenue += (float)$estRevenue;
+    }
+
+    protected function addAdOpportunities($adOpportunities)
+    {
+        $this->adOpportunities += (int)$adOpportunities;
     }
 }

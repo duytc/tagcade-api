@@ -1,5 +1,0 @@
-Tagcade\Model\Report\RtbReport\ReportType\Hierarchy\Platform:
-    exclusion_policy: NONE
-    properties:
-        publishers:
-            exclude: true

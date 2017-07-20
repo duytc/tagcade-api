@@ -38,8 +38,13 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
         $this->publisherManager = $publisherManager;
     }
 
-    public function doCreateReport(PlatformReportType $reportType)
+    /**
+     * @inheritdoc
+     */
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
+        // not use reportType
+
         $report = new PlatformReport();
         $report
             ->setDate($this->getDate())
@@ -47,7 +52,6 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
 
         $result = array(
             self::CACHE_KEY_SLOT_OPPORTUNITY => 0,
-            self::CACHE_KEY_RTB_IMPRESSION => 0,
             self::CACHE_KEY_OPPORTUNITY => 0,
             self::CACHE_KEY_IMPRESSION => 0,
             self::CACHE_KEY_PASSBACK => 0,
@@ -78,7 +82,6 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
             $this->logger->info(sprintf('Finished report for publisher %d', $publisher->getId()));
 
             $result[self::CACHE_KEY_SLOT_OPPORTUNITY] += $accountReport->getSlotOpportunities();
-            $result[self::CACHE_KEY_RTB_IMPRESSION] += $accountReport->getRtbImpressions();
             $result[self::CACHE_KEY_OPPORTUNITY] += $accountReport->getTotalOpportunities();
             $result[self::CACHE_KEY_IMPRESSION] += $accountReport->getImpressions();
             $result[self::CACHE_KEY_PASSBACK] += $accountReport->getPassbacks();
@@ -114,25 +117,4 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
     {
         return $reportType instanceof PlatformReportType;
     }
-
-
-//    protected function constructReportModel(ReportInterface $report, array $data)
-//    {
-//        if (!$report instanceof PlatformReport) {
-//            throw new InvalidArgumentException('Expect PlatformReport');
-//        }
-//
-//        $report->setSlotOpportunities($data[self::CACHE_KEY_SLOT_OPPORTUNITY])
-//            ->setTotalOpportunities($data[self::CACHE_KEY_OPPORTUNITY])
-//            ->setImpressions($data[self::CACHE_KEY_IMPRESSION])
-//            ->setPassbacks($data[self::CACHE_KEY_PASSBACK])
-//            ->setFillRate()
-//            ->setBilledAmount($data[self::BILLED_AMOUNT])
-//            ->setBilledRate($data[self::BILLED_RATE])
-//
-//        ;
-//        // TODO latter
-//        $report->setEstCpm((float)0);
-//        $report->setEstRevenue((float)0);
-//    }
 }

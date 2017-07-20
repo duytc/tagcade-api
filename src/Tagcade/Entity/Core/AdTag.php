@@ -39,5 +39,4 @@ class AdTag extends AdTagModel
         }
         return $adTagObject;
     }
-
 }
