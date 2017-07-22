@@ -28,11 +28,11 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
         estRevenue:
             expose: true
-            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]                                                                                    
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
         estCpm:
             expose: true
-            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]     
-        rtbImpressions:
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        adOpportunities:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
 

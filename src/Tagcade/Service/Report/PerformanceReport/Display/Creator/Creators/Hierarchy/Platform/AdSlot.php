@@ -30,10 +30,11 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdSlotReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $this->syncEventCounterForSubReports();
 
+        /** @var AdSlotReportType $reportType */
         $report = new AdSlotReport();
 
         $adSlot = $reportType->getAdSlot();
@@ -45,7 +46,6 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
         ;
 
         if ($adSlot instanceof DisplayAdSlotInterface) {
-            $report->setRtbImpressions($this->eventCounter->getRtbImpressionsCount($adSlot->getId()));
             $report->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));
             $report->setInBannerImpressions($this->eventCounter->getInBannerImpressionCount($adSlot->getId()));
             $report->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));

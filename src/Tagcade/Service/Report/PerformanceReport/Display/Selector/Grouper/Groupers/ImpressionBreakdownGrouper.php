@@ -38,6 +38,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getFillRate(),
             $this->getEstCpm(),
             $this->getEstRevenue(),
+
             $this->getAverageTotalOpportunities(),
             $this->getAverageImpressions(),
             $this->getAveragePassbacks(),
@@ -51,16 +52,17 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getBlankImpressions(),
             $this->getVoidImpressions(),
             $this->getClicks(),
+            $this->getAdOpportunities(),
 
             $this->getAverageFirstOpportunities(),
             $this->getAverageVerifiedImpressions(),
             $this->getAverageUnverifiedImpressions(),
             $this->getAverageBlankImpressions(),
             $this->getAverageVoidImpressions(),
-            $this->getAverageClicks()
+            $this->getAverageClicks(),
+            $this->getAverageAdOpportunities()
         );
     }
-
 
     protected function groupReports(array $reports)
     {
@@ -75,7 +77,6 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->averageVoidImpressions = $this->getRatio($this->getVoidImpressions(), $reportCount);
         $this->averageClicks = $this->getRatio($this->getClicks(), $reportCount);
     }
-
 
     protected function doGroupReport(ReportDataInterface $report)
     {
@@ -220,7 +221,4 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     {
         return $this->averageVoidImpressions;
     }
-
-
-
-} 
+}

@@ -6,9 +6,8 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReport;
-use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -34,12 +33,13 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
     }
 
     /**
-     * @param SiteReportType $reportType
-     * @return SiteReportInterface
+     * @inheritdoc
      */
-    public function doCreateReport(SiteReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new SiteReport();
+
+        /** @var SiteReportType $reportType */
         $site = $reportType->getSite();
         $report
             ->setSite($site)
@@ -53,6 +53,9 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
         return $report;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
         if (!$report instanceof SiteReport) {

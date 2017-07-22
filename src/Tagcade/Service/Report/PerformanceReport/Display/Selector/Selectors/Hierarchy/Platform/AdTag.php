@@ -3,10 +3,10 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\Hierarchy\Platform;
 
 use DateTime;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\AbstractSelector;
-use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportRepositoryInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagReportRepositoryInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Selectors\AbstractSelector;
 
 class AdTag extends AbstractSelector
 {
@@ -21,11 +21,18 @@ class AdTag extends AbstractSelector
         $this->repository = $repository;
     }
 
-    protected function doGetReports(AdTagReportType $reportType, DateTime $startDate, DateTime $endDate)
+    /**
+     * @inheritdoc
+     */
+    protected function doGetReports(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null)
     {
+        /** @var AdTagReportType $reportType */
         return $this->repository->getReportFor($reportType->getAdTag(), $startDate, $endDate);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supportsReportType(ReportTypeInterface $reportType)
     {
         return $reportType instanceof AdTagReportType;

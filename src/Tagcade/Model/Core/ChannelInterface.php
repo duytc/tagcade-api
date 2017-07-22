@@ -4,10 +4,9 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Model\RTBEnabledInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface ChannelInterface extends ModelInterface, RTBEnabledInterface
+interface ChannelInterface extends ModelInterface
 {
     /**
      * @param string $name
@@ -56,15 +55,4 @@ interface ChannelInterface extends ModelInterface, RTBEnabledInterface
      * @return array
      */
     public function getSites();
-
-    /**
-     * @return int
-     */
-    public function getRtbStatus();
-
-    /**
-     * @param int $rtbStatus
-     * @return self
-     */
-    public function setRtbStatus($rtbStatus);
 }

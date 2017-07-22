@@ -4,15 +4,10 @@
 namespace Tagcade\Service\Core\Site;
 
 
-use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Tagcade\Behaviors\CreateSiteTokenTrait;
 use Tagcade\DomainManager\SiteManagerInterface;
-
-use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\Site;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\AdSlot\DisplayAdSlotImportBulkDataInterface;
 use Tagcade\Service\Core\AdSlot\DynamicAdSlotImportBulkDataInterface;
@@ -20,26 +15,24 @@ use Tagcade\Service\Core\AdTag\AdTagImportBulkDataInterface;
 
 class SiteImportBulkData implements SiteImportBulkDataInterface
 {
-
     use CreateSiteTokenTrait;
 
-    const NAME_KEY                              = 'name';
-    const DOMAIN_KEY                            = 'domain';
-    const SOURCE_REPORT_KEY                     = 'enableSourceReport';
-    const RTB_STATUS_KEY                        = 'rtbStatus';
-    const PLAYER_KEY                            = 'players';
-    const PUBLISHER_KEY                         = 'publisher';
-    const SITE_NAME_KEY                         = 'site';
+    const NAME_KEY = 'name';
+    const DOMAIN_KEY = 'domain';
+    const SOURCE_REPORT_KEY = 'enableSourceReport';
+    const PLAYER_KEY = 'players';
+    const PUBLISHER_KEY = 'publisher';
+    const SITE_NAME_KEY = 'site';
 
-    const ENABLE_SOURCE_REPORT_DEFAULT_VALUE    = false;
-    const RTB_STATUS_DEFAULT_VALUE              = 2;
-    const PLAYER_DEFAULT_VALUE                  = null;
+    const ENABLE_SOURCE_REPORT_DEFAULT_VALUE = false;
+    const PLAYER_DEFAULT_VALUE = null;
 
-    const SITE_SHEET_NAME                       =   'Sites';
-    const AD_TAGS_SHEET_NAME                    =   'Ad Tags';
-    const DISPLAY_AD_SLOT_NAME                  =   'Display Ad Slots';
-    const DYNAMIC_AD_SLOT_NAME                  =   'Dynamic Ad Slots';
-    const EXPRESSION_TARGETING_NAME             =   'Expression Targeting';
+    const SITE_SHEET_NAME = 'Sites';
+    const AD_TAGS_SHEET_NAME = 'Ad Tags';
+    const DISPLAY_AD_SLOT_NAME = 'Display Ad Slots';
+    const DYNAMIC_AD_SLOT_NAME = 'Dynamic Ad Slots';
+    const EXPRESSION_TARGETING_NAME = 'Expression Targeting';
+
     /**
      * @var SiteManagerInterface
      */
@@ -66,7 +59,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     private $adTagImportBulkData;
 
     function __construct(SiteManagerInterface $siteManager, DisplayAdSlotImportBulkDataInterface $displayAdSlotBulkUpload,
-                         DynamicAdSlotImportBulkDataInterface $dynamicAdSlotBulkUpload, AdTagImportBulkDataInterface $adTagImportBulkData ,
+                         DynamicAdSlotImportBulkDataInterface $dynamicAdSlotBulkUpload, AdTagImportBulkDataInterface $adTagImportBulkData,
                          $siteConfigs, Logger $logger)
     {
         $this->siteManager = $siteManager;
@@ -93,7 +86,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         foreach ($arrayMapSitesData as $site) {
             $displayAdSlotsOfThisSite = [];
             $dynamicAdSlotsOfThisSite = [];
-            if (array_key_exists('displayAdSlots',$site)) {
+            if (array_key_exists('displayAdSlots', $site)) {
                 $displayAdSlotsOfThisSite = $this->getDisplayAdSlotForSite($site);
                 unset($site['displayAdSlots']);
             }
@@ -103,29 +96,29 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
             }
 
             $siteObject = Site::createSiteFromArray($site);
-            $siteToken = $this->createSiteHash ($siteObject->getPublisherId(), $siteObject->getDomain());
+            $siteToken = $this->createSiteHash($siteObject->getPublisherId(), $siteObject->getDomain());
 
             $existSites = $this->siteManager->getSiteBySiteToken($siteToken);
             if (count($existSites) > 0) {
-                $sitesExitsInSystem ++;
+                $sitesExitsInSystem++;
                 $siteObject = array_shift($existSites);
                 $this->logger->warning(sprintf('This site %s of publisher = %d has existed in system!', $siteObject->getDomain(), $publisher->getId()));
             } else {
-                $newSiteImport ++;
+                $newSiteImport++;
             }
 
             if (true == $dryOption) {
                 $this->logger->info(sprintf('Site: %s', $siteObject->getName()));
             }
 
-            $adSlots =[];
+            $adSlots = [];
 
             if (count($displayAdSlotsOfThisSite) > 0) {
-                $displayAdSlots = $this->displayAdSlotBulkUpload->importDisplayAdSlots($displayAdSlotsOfThisSite, $siteObject ,$publisher, $dryOption);
+                $displayAdSlots = $this->displayAdSlotBulkUpload->importDisplayAdSlots($displayAdSlotsOfThisSite, $siteObject, $publisher, $dryOption);
                 $adSlots = $displayAdSlots;
             }
 
-            if ((count($dynamicAdSlotsOfThisSite) > 0) && (count($adSlots)) >0) {
+            if ((count($dynamicAdSlotsOfThisSite) > 0) && (count($adSlots)) > 0) {
                 $dynamicAdSlotsObject = $this->dynamicAdSlotBulkUpload->importDynamicAdSlots($dynamicAdSlotsOfThisSite, $siteObject, $adSlots, $dryOption);
                 $adSlots = array_merge($adSlots, $dynamicAdSlotsObject);
             }
@@ -152,7 +145,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getDisplayAdSlotForSite($site)
     {
-        $displayAdSlots =  $site['displayAdSlots'];
+        $displayAdSlots = $site['displayAdSlots'];
 
         return $displayAdSlots;
     }
@@ -178,7 +171,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         $adSlotNameIndex = $this->displayAdSlotBulkUpload->getAdSlotNameIndex();
         $expectAdSlotsWithAdTags = [];
         foreach ($expectAdSlots as $expectAdSlot) {
-          $displayAdSlotName = $expectAdSlot[$adSlotNameIndex];
+            $displayAdSlotName = $expectAdSlot[$adSlotNameIndex];
             $adTagsOfOneAdSlot = [];
             foreach ($adTags as $adTag) {
                 $adSlotNameIndexOfAdTag = $this->adTagImportBulkData->getAdSlotNameIndex();
@@ -206,12 +199,13 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         $siteNameIndexInDynamicAdSlotSheet = $this->dynamicAdSlotBulkUpload->getSiteNameIndexOfDynamicAdSlot();
         $dynamicAdSlotNameIndex = $this->dynamicAdSlotBulkUpload->getNameIndexOfDynamicAdSlot();
         $targetingExpressionArray = $this->dynamicAdSlotBulkUpload->convertExpressionTargetingToArray($targetingExpression);
+
         foreach ($dynamicAdSlots as $dynamicAdSlot) {
             if (0 == strcmp($siteName, $dynamicAdSlot[$siteNameIndexInDynamicAdSlotSheet])) {
-                $dynamicAdSlotName                      = $dynamicAdSlot[$dynamicAdSlotNameIndex];
-                $dynamicBuilderExpression               = $targetingExpressionArray[$dynamicAdSlotName];
-                $dynamicAdSlot['builderExpressions']    = $dynamicBuilderExpression;
-                $expectAdSlots[$dynamicAdSlotName]      = $dynamicAdSlot;
+                $dynamicAdSlotName = $dynamicAdSlot[$dynamicAdSlotNameIndex];
+                $dynamicBuilderExpression = $targetingExpressionArray[$dynamicAdSlotName];
+                $dynamicAdSlot['builderExpressions'] = $dynamicBuilderExpression;
+                $expectAdSlots[$dynamicAdSlotName] = $dynamicAdSlot;
             }
         }
 
@@ -224,7 +218,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getDynamicAdSlotForSite($site)
     {
-        $dynamicAdSlots =  $site['dynamicAdSlots'];
+        $dynamicAdSlots = $site['dynamicAdSlots'];
         unset($site['dynamicAdSlots']);
 
         return $dynamicAdSlots;
@@ -237,15 +231,16 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     public function createDataForSites($excelRows, PublisherInterface $publisher)
     {
-        $sitesData= [];
+        $sitesData = [];
         foreach ($excelRows as $excelRow) {
-           $site =  $this->createDataForOneSite($excelRow,$publisher);
+            $site = $this->createDataForOneSite($excelRow, $publisher);
             $sitesData[] = $site;
         }
 
         return $sitesData;
 
     }
+
     /**
      * @param $inputSite
      * @param PublisherInterface $publisher
@@ -255,52 +250,48 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     {
         $oneSite = [];
 
-        $siteName           = $this->getNameSiteValue($inputSite);
-        $domain             = $this->getDomainValue($inputSite);
-        $sourceReportValue  = $this->getEnableSourceReportValue($inputSite);
-        $rtbStatusValue     = $this->getRtbStatusValue($inputSite);
-        $playerValue        = $this->getPlayerValue($inputSite);
+        $siteName = $this->getNameSiteValue($inputSite);
+        $domain = $this->getDomainValue($inputSite);
+        $sourceReportValue = $this->getEnableSourceReportValue($inputSite);
+        $playerValue = $this->getPlayerValue($inputSite);
 
-        $oneSite[self::PUBLISHER_KEY]       = $publisher;
-        $oneSite[self::NAME_KEY]            = $siteName;
-        $oneSite[self::DOMAIN_KEY]          = $domain;
-        $oneSite[self::SOURCE_REPORT_KEY]   = $sourceReportValue;
-        $oneSite[self::RTB_STATUS_KEY]      = $rtbStatusValue;
-        $oneSite[self::PLAYER_KEY]          = $playerValue;
+        $oneSite[self::PUBLISHER_KEY] = $publisher;
+        $oneSite[self::NAME_KEY] = $siteName;
+        $oneSite[self::DOMAIN_KEY] = $domain;
+        $oneSite[self::SOURCE_REPORT_KEY] = $sourceReportValue;
+        $oneSite[self::PLAYER_KEY] = $playerValue;
 
         return $oneSite;
     }
 
     public function createFullDataForSites($excelFileArray, PublisherInterface $publisher)
     {
-        $excelSites                  = $this->getSitesFromExcelArray($excelFileArray);
-        $excelDisplayAdSlots         = $this->getDisplayAdSlotsFromExcelArray($excelFileArray);
-        $excelAdTags                 = $this->getAdTagsFromExcelArray($excelFileArray);
-        $excelDynamicAdSlots         = $this->getDynamicAdSlotsFromExcelArray($excelFileArray);
-        $excelExpressionsTargeting   = $this->getExpressionTargetingFromExcelArray($excelFileArray);
+        $excelSites = $this->getSitesFromExcelArray($excelFileArray);
+        $excelDisplayAdSlots = $this->getDisplayAdSlotsFromExcelArray($excelFileArray);
+        $excelAdTags = $this->getAdTagsFromExcelArray($excelFileArray);
+        $excelDynamicAdSlots = $this->getDynamicAdSlotsFromExcelArray($excelFileArray);
+        $excelExpressionsTargeting = $this->getExpressionTargetingFromExcelArray($excelFileArray);
 
         $allSites = [];
         foreach ($excelSites as $inputSite) {
-            $siteName               = $this->getNameSiteValue($inputSite);
-            $domain                 = $this->getDomainValue($inputSite);
-            $sourceReportValue      = $this->getEnableSourceReportValue($inputSite);
-            $rtbStatusValue         = $this->getRtbStatusValue($inputSite);
-            $playerValue            = $this->getPlayerValue($inputSite);
+            $siteName = $this->getNameSiteValue($inputSite);
+            $domain = $this->getDomainValue($inputSite);
+            $sourceReportValue = $this->getEnableSourceReportValue($inputSite);
+            $playerValue = $this->getPlayerValue($inputSite);
 
-            $oneSite[self::PUBLISHER_KEY]       = $publisher;
-            $oneSite[self::NAME_KEY]            = $siteName;
-            $oneSite[self::DOMAIN_KEY]          = $domain;
-            $oneSite[self::SOURCE_REPORT_KEY]   = $sourceReportValue;
-            $oneSite[self::RTB_STATUS_KEY]      = $rtbStatusValue;
-            $oneSite[self::PLAYER_KEY]          = $playerValue;
+            $oneSite[self::PUBLISHER_KEY] = $publisher;
+            $oneSite[self::NAME_KEY] = $siteName;
+            $oneSite[self::DOMAIN_KEY] = $domain;
+            $oneSite[self::SOURCE_REPORT_KEY] = $sourceReportValue;
+            $oneSite[self::PLAYER_KEY] = $playerValue;
 
             if (null != $excelDisplayAdSlots) {
-                $displayAdSlots = $this->getDisplayAdSlotsForSiteByName($siteName, $excelDisplayAdSlots,$excelAdTags);
-                $oneSite['displayAdSlots']   = $displayAdSlots;
+                $displayAdSlots = $this->getDisplayAdSlotsForSiteByName($siteName, $excelDisplayAdSlots, $excelAdTags);
+                $oneSite['displayAdSlots'] = $displayAdSlots;
             }
             if (null != $excelDynamicAdSlots && null != $excelExpressionsTargeting) {
                 $dynamicAdSlots = $this->getDynamicAdSlotsForSiteByName($siteName, $excelDynamicAdSlots, $excelExpressionsTargeting);
-                $oneSite['dynamicAdSlots']   = $dynamicAdSlots;
+                $oneSite['dynamicAdSlots'] = $dynamicAdSlots;
             }
             $allSites[$siteName] = $oneSite;
         }
@@ -317,8 +308,10 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         if (array_key_exists(self::SITE_SHEET_NAME, $contents)) {
             $sites = $contents[self::SITE_SHEET_NAME];
             array_shift($sites); // Remove header of site sheet
+
             return $sites;
         }
+
         return null;
     }
 
@@ -328,11 +321,12 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getDisplayAdSlotsFromExcelArray($contents)
     {
-        if (array_key_exists(self::DISPLAY_AD_SLOT_NAME,$contents)) {
+        if (array_key_exists(self::DISPLAY_AD_SLOT_NAME, $contents)) {
             $displayAdSlotData = $contents[self::DISPLAY_AD_SLOT_NAME];
             array_shift($displayAdSlotData); // Remove header of display ad slot
             return $displayAdSlotData;
         }
+
         return null;
     }
 
@@ -342,11 +336,12 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getAdTagsFromExcelArray($contents)
     {
-        if (array_key_exists(self::AD_TAGS_SHEET_NAME,$contents)) {
+        if (array_key_exists(self::AD_TAGS_SHEET_NAME, $contents)) {
             $adTagsData = $contents[self::AD_TAGS_SHEET_NAME];
             array_shift($adTagsData); // Remove header of display ad slot
             return $adTagsData;
         }
+
         return null;
     }
 
@@ -361,8 +356,8 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
             array_shift($dynamicAdSlotData); // Remove header of display ad slot
             return $dynamicAdSlotData;
         }
-        return null;
 
+        return null;
     }
 
     /**
@@ -371,13 +366,13 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getExpressionTargetingFromExcelArray($contents)
     {
-        if (array_key_exists(self::EXPRESSION_TARGETING_NAME,$contents)) {
+        if (array_key_exists(self::EXPRESSION_TARGETING_NAME, $contents)) {
             $expressionTargeting = $contents[self::EXPRESSION_TARGETING_NAME];
             array_shift($expressionTargeting); // Remove header of expression targeting
             return $expressionTargeting;
         }
-        return null;
 
+        return null;
     }
 
     /**
@@ -408,24 +403,10 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     protected function getEnableSourceReportValue($oneSite)
     {
         if (array_key_exists(self::SOURCE_REPORT_KEY, $this->siteConfigs) && array_key_exists($this->getSourceReportIndex(), $oneSite)) {
-            return    $oneSite[$this->getSourceReportIndex()];
+            return $oneSite[$this->getSourceReportIndex()];
         }
 
         return self::ENABLE_SOURCE_REPORT_DEFAULT_VALUE;
-    }
-
-    /**
-     * @param $oneSite
-     * @return int
-     * @throws \Exception
-     */
-    protected function getRtbStatusValue($oneSite)
-    {
-        if (array_key_exists(self::RTB_STATUS_KEY, $this->siteConfigs) && array_key_exists($this->getRtbStatusIndex(), $oneSite)) {
-            return    $oneSite[$this->getRtbStatusIndex()];
-        }
-
-        return (self::RTB_STATUS_DEFAULT_VALUE);
     }
 
     /**
@@ -436,7 +417,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
     protected function getPlayerValue($oneSite)
     {
         if (array_key_exists(self::PLAYER_KEY, $this->siteConfigs) && array_key_exists($this->getPlayerIndex(), $oneSite)) {
-            return    $oneSite[$this->getRtbStatusIndex()];
+            return $oneSite[$this->getPlayerIndex()];
         }
 
         return (self::PLAYER_DEFAULT_VALUE);
@@ -448,9 +429,10 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getNameIndex()
     {
-        if (!array_key_exists('name', $this->siteConfigs)){
+        if (!array_key_exists('name', $this->siteConfigs)) {
             throw new \Exception('There is not site name in config file');
         }
+
         return $this->siteConfigs['name'];
     }
 
@@ -485,19 +467,6 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      * @return mixed
      * @throws \Exception
      */
-    protected function getRtbStatusIndex()
-    {
-        if (!array_key_exists(self::RTB_STATUS_KEY, $this->siteConfigs)) {
-            throw new \Exception ('There is not source report in config file');
-        }
-
-        return $this->siteConfigs[self::RTB_STATUS_KEY];
-    }
-
-    /**
-     * @return mixed
-     * @throws \Exception
-     */
     protected function getPlayerIndex()
     {
         if (!array_key_exists(self::PLAYER_KEY, $this->siteConfigs)) {
@@ -506,4 +475,4 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
 
         return $this->siteConfigs[self::PLAYER_KEY];
     }
-} 
+}

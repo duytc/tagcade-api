@@ -31,10 +31,11 @@ class RonAdSlot extends CreatorAbstract implements RonAdSlotInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(RonAdSlotReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $this->syncEventCounterForSubReports();
 
+        /** @var RonAdSlotReportType $reportType */
         $ronAdSlot = $reportType->getRonAdSlot();
         $segment = $reportType->getSegment();
 
@@ -44,25 +45,23 @@ class RonAdSlot extends CreatorAbstract implements RonAdSlotInterface
             ->setSegment($segment)
             ->setDate($this->getDate())
             ->setSlotOpportunities($this->eventCounter->getRonSlotOpportunityCount($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId(): null))
-            ->setRtbImpressions($this->eventCounter->getRonSlotRtbImpressionsCount($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId(): null))
         ;
 
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $ronAdSlot->getLibraryAdSlot()->getPublisher(), $report->getSlotOpportunities());
+        $report->setBilledAmount($rateAmount->getAmount());
+        $report->setBilledRate($rateAmount->getRate()->getCpmRate());
 
-            $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $ronAdSlot->getLibraryAdSlot()->getPublisher(), $report->getSlotOpportunities());
-            $report->setBilledAmount($rateAmount->getAmount());
-            $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+        if ($rateAmount->getRate()->isCustom()) {
+            $report->setCustomRate($rateAmount->getRate()->getCpmRate());
+        }
 
-            if ($rateAmount->getRate()->isCustom()) {
-                $report->setCustomRate($rateAmount->getRate()->getCpmRate());
-            }
-
-            /** @var \Tagcade\Model\Core\RonAdTagInterface $ronAdTag */
-            foreach ($ronAdSlot->getLibraryAdSlot()->getLibSlotTags() as $ronAdTag) {
-                $report->addSubReport(
-                    $this->subReportCreator->createReport(new RonAdTagReportType($ronAdTag, $segment))
-                    ->setSuperReport($report)
-                );
-            }
+        /** @var \Tagcade\Model\Core\RonAdTagInterface $ronAdTag */
+        foreach ($ronAdSlot->getLibraryAdSlot()->getLibSlotTags() as $ronAdTag) {
+            $report->addSubReport(
+                $this->subReportCreator->createReport(new RonAdTagReportType($ronAdTag, $segment))
+                ->setSuperReport($report)
+            );
+        }
 
         return $report;
     }

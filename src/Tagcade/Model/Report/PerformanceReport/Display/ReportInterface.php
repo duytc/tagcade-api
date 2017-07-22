@@ -69,4 +69,15 @@ interface ReportInterface extends ReportDataInterface
      * @return $this
      */
     public function setFillRate();
+
+    /**
+     * @return int
+     */
+    public function getAdOpportunities();
+
+    /**
+     * @param int $adOpportunities
+     * @return self
+     */
+    public function setAdOpportunities($adOpportunities);
 }

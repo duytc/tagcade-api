@@ -8,6 +8,12 @@ use Tagcade\Model\User\Role\PublisherInterface;
 
 interface AccountReportRepositoryInterface
 {
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return array
+     */
     public function getReportFor(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);
 
     /**
@@ -41,6 +47,10 @@ interface AccountReportRepositoryInterface
      */
     public function getAggregatedReportsByDateRange(DateTime $startDate, DateTime $endDate);
 
+    /**
+     * @param AccountReportInterface $report
+     * @return mixed
+     */
     public function overrideReport(AccountReportInterface $report);
 
     public function getSumSlotInBannerImpressions(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate);

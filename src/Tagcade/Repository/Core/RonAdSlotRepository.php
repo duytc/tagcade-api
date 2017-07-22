@@ -13,7 +13,7 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 class RonAdSlotRepository extends EntityRepository implements RonAdSlotRepositoryInterface
 {
     protected $SORT_FIELDS = ['id' => 'id', 'name' => 'name', 'publisher' => 'publisher', 'type' => 'type',
-        'segment' => 'segment', 'rtbStatus' => 'rtbStatus'];
+        'segment' => 'segment'];
 
     /**
      * @param PublisherInterface $publisher
@@ -131,9 +131,6 @@ class RonAdSlotRepository extends EntityRepository implements RonAdSlotRepositor
                     break;
                 case $this->SORT_FIELDS['segment']:
                     $qb->addOrderBy('sg.' . $param->getSortField(), $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['rtbStatus']:
-                    $qb->addOrderBy('ra.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 default:
                     break;

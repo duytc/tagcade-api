@@ -9,8 +9,6 @@ class RonAdSlot extends RonAdSlotModel
     protected $id;
     protected $libraryAdSlot;
     protected $ronAdSlotSegments;
-    protected $rtbStatus;
-    protected $floorPrice;
     protected $createdAt;
     protected $updatedAt;
     protected $deletedAt;

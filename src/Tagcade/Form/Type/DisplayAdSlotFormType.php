@@ -15,7 +15,6 @@ use Tagcade\Entity\Core\Site;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Core\DisplayAdSlotRepositoryInterface;
@@ -39,18 +38,10 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('floorPrice')
             ->add('hbBidPrice')
             ->add('autoRefresh')
             ->add('refreshEvery')
-            ->add('maximumRefreshTimes')
-            ->add('rtbStatus', ChoiceType::class, array(
-                'choices' => array(
-                    RTB_STATUS::RTB_ENABLED,
-                    RTB_STATUS::RTB_DISABLED,
-                    RTB_STATUS::RTB_INHERITED
-                ),
-            ));
+            ->add('maximumRefreshTimes');
 
         if ($this->userRole instanceof AdminInterface) {
 
@@ -96,14 +87,7 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
             function (FormEvent $event) {
                 $form = $event->getForm();
 
-                // validate rtbStatus before submitting
-                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
-                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
-                        $form->get('rtbStatus')->addError(new FormError('this display ad slot belongs to publisher that does not have rtb module enabled'));
-                        return;
-                    }
-                }
-
+                // validate headerBidding before submitting
                 if($this->userRole instanceof PublisherInterface && !$this->userRole->hasHeaderBiddingModule()) {
 
                     if($form->has('headerBiddingPrice') && $form->get('headerBiddingPrice')->getData() !=null) {
@@ -135,19 +119,6 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
                         $displayAdSlot['libraryAdSlot']['publisher'] = $site->getPublisher()->getId();
                         $event->setData($displayAdSlot);
                     }
-                }
-            }
-        );
-
-        $builder->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function (FormEvent $event) {
-                /** @var DisplayAdSlotInterface $displayAdSlot */
-                $displayAdSlot = $event->getData();
-
-                // TODO why we need to remove floor price
-                if (!$displayAdSlot->isRTBEnabled()) {
-                    $displayAdSlot->removeFloorPrice();
                 }
             }
         );

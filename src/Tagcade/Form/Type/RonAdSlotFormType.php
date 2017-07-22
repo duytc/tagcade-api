@@ -15,7 +15,6 @@ use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotSegmentInterface;
-use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
@@ -39,13 +38,6 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'type' => new RonAdSlotSegmentFormType($this->userRole)
-            ))
-            ->add('floorPrice')
-            ->add('rtbStatus', ChoiceType::class, array(
-                'choices' => array(
-                    RTB_STATUS::RTB_ENABLED,
-                    RTB_STATUS::RTB_DISABLED
-                )
             ));
 
         $builder->addEventListener(
@@ -94,22 +86,13 @@ class RonAdSlotFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
-                $form = $event->getForm();
-
                 $ronAdSlot = $event->getData();
                 // if we are updating a ron ad slot
                 if ($ronAdSlot instanceof RonAdSlotInterface && $ronAdSlot->getId() !== null) {
                     $this->oldLibraryAdSlot = $ronAdSlot->getLibraryAdSlot();
                 }
-
-                // validate rtbStatus before submitting
-                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
-                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
-                        $form->get('rtbStatus')->addError(new FormError('this site belongs to publisher that does not have rtb module enabled'));
-                        return;
-                    }
-                }
-            });
+            }
+        );
 
         $builder->addEventListener(
             FormEvents::POST_SUBMIT,

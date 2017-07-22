@@ -82,17 +82,9 @@ class UserFormType extends AbstractRoleSpecificFormType
     private $oldSettings;
     private $exchanges;
 
-    public function __construct(UserEntityInterface $userRole, $exchanges)
+    public function __construct(UserEntityInterface $userRole)
     {
-        if ($exchanges == null) {
-            $exchanges = [];
-        }
-
         $this->setUserRole($userRole);
-
-        $this->exchanges = array_map(function (array $exchange) {
-            return $exchange[self::ABBREVIATION_KEY];
-        }, $exchanges);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -131,7 +123,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                         'MODULE_UNIFIED_REPORT' => 'Unified Report',
                         'MODULE_SUB_PUBLISHER' => 'Sub Publisher',
                         'MODULE_HEADER_BIDDING' => 'Header Bidding',
-                        'MODULE_RTB' => 'RealTime Bidding',
                         'MODULE_IN_BANNER' => 'In-Banner Video'
                     ],
                 ])
@@ -205,7 +196,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                     }
 
                     if (!$publisher->hasDisplayModule() && (
-                        $publisher->hasRtbModule() ||
                         $publisher->hasHeaderBiddingModule() ||
                         $publisher->hasSubPubliserModule() ||
                         $publisher->hasInBannerModule()

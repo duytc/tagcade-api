@@ -6,6 +6,7 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdNetwork as AdNetworkReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -16,6 +17,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInterface, SnapshotCreatorInterface
 {
     use HasSubReportsTrait;
+    use CalculateAdOpportunitiesTrait;
 
     /** @var AdSlotManagerInterface */
     private $adSlotManager;
@@ -32,9 +34,11 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdNetworkReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new AdNetworkReport();
+
+        /** @var AdNetworkReportType $reportType */
         $adNetwork = $reportType->getAdNetwork();
 
         $report
@@ -50,11 +54,13 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
         return $report;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
         $this->constructReportModel($report, $redisReportData);
     }
-
 
     /**
      * @inheritdoc
@@ -64,6 +70,9 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
         return $reportType instanceof AdNetworkReportType;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof AdNetworkReport) {
@@ -79,7 +88,8 @@ class AdNetworkSnapshot extends SnapshotCreatorAbstract implements AdNetworkInte
             ->setBlankImpressions($data[self::CACHE_KEY_BLANK_IMPRESSION])
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
-            ->setFillRate();
+            ->setFillRate()
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
 
         // TODO latter
         $report->setEstCpm((float)0);

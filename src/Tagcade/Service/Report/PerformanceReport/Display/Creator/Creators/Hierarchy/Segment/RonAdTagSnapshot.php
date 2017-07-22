@@ -6,6 +6,7 @@ use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdTagReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag as RonAdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -13,23 +14,25 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 
 class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterface
 {
+    use CalculateAdOpportunitiesTrait;
+
     /**
      * @inheritdoc
      */
-    public function doCreateReport(RonAdTagReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new RonAdTagReport();
 
+        /** @var RonAdTagReportType $reportType */
         $ronAdTag = $reportType->getRonAdTag();
         $segment = $reportType->getSegment();
-        $segmentId = $segment instanceof SegmentModelInterface ? $segment->getId(): null;
+        $segmentId = $segment instanceof SegmentModelInterface ? $segment->getId() : null;
         $isNativeAdSlot = $reportType->getRonAdTag()->getLibraryAdSlot() instanceof LibraryNativeAdSlotInterface;
 
         $report
             ->setRonAdTag($ronAdTag)
             ->setSegment($reportType->getSegment())
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $ronTagReportCounts = $this->eventCounter->getRonAdTagReport($ronAdTag->getId(), $segmentId, $isNativeAdSlot);
 
@@ -46,6 +49,9 @@ class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterf
         return $reportType instanceof RonAdTagReportType;
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof RonAdTagReport) {
@@ -63,8 +69,7 @@ class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterf
             ->setImpressions($impressions)
             ->setFirstOpportunities($firstOpportunities)
             ->setVerifiedImpressions($verifiedImpressions)
-            ->setFillRate()
-        ;
+            ->setFillRate();
 
         if (!$isNativeAdSlot) {
             $report
@@ -74,7 +79,7 @@ class RonAdTagSnapshot extends SnapshotCreatorAbstract implements RonAdTagInterf
                 ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
                 ->setClicks($data[self::CACHE_KEY_CLICK])
                 ->setPosition($report->getRonAdTag()->getPosition())
-            ;
+                ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
         }
     }
 }

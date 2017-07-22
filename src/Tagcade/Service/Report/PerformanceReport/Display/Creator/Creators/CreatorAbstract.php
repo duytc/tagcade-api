@@ -3,9 +3,12 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators;
 
 use Psr\Log\LoggerInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\SubReportInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Counter\EventCounterInterface;
 
 abstract class CreatorAbstract implements CreatorInterface
 {
@@ -59,6 +62,8 @@ abstract class CreatorAbstract implements CreatorInterface
      */
     public function createReport(ReportTypeInterface $reportType)
     {
+        $this->validateReportType($reportType);
+
         return $this->doCreateReport($reportType);
     }
 
@@ -70,5 +75,20 @@ abstract class CreatorAbstract implements CreatorInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @param ReportTypeInterface $reportType
+     * @return ReportInterface|SubReportInterface
+     */
+    public abstract function doCreateReport(ReportTypeInterface $reportType);
 
+    /**
+     * validate report type
+     * @param ReportTypeInterface $reportType
+     */
+    protected function validateReportType(ReportTypeInterface $reportType)
+    {
+        if (!$this->supportsReportType($reportType)) {
+            throw new InvalidArgumentException(sprintf('Not support report type', $reportType->getReportType()));
+        }
+    }
 }

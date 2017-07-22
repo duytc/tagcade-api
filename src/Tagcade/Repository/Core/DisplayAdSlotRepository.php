@@ -20,8 +20,7 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
         'channel' => 'channel',
         'domain' => 'domain',
         'size'=>'size',
-        'type'=>'type',
-        'rtb'=>'rtb'
+        'type'=>'type'
     ];
 
     /**
@@ -150,9 +149,6 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
                     break;
                 case $this->SORT_FIELDS['domain']:
                     $qb->addOrderBy('st.' . 'name', $param->getSortDirection());
-                    break;
-                case $this->SORT_FIELDS['rtb']:
-                    $qb->addOrderBy('st.' . 'rtbStatus', $param->getSortDirection());
                     break;
                 default:
                     break;

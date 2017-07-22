@@ -17,7 +17,7 @@ class AdNetworkReport extends AdNetworkReportModel
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
-
+    protected $adOpportunities;
 
     protected $firstOpportunities;
     protected $verifiedImpressions;

@@ -4,7 +4,6 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
-use Tagcade\Model\RTBEnabledInterface;
 
 class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, ReportableAdSlotInterface
 {
@@ -46,11 +45,6 @@ class NativeAdSlot extends AdSlotAbstract implements NativeAdSlotInterface, Repo
     public function getType()
     {
         return self::TYPE_NATIVE;
-    }
-
-    public function isRTBEnabled()
-    {
-        return RTBEnabledInterface::RTB_DISABLED;
     }
 
     public function __toString()

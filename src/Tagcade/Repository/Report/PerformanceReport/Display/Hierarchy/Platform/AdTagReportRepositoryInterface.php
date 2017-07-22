@@ -8,7 +8,17 @@ use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdTagRepor
 
 interface AdTagReportRepositoryInterface
 {
-    public function getReportFor(AdtagInterface $adTag, DateTime $startDate, DateTime $endDate);
+    /**
+     * @param AdTagInterface $adTag
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getReportFor(AdTagInterface $adTag, DateTime $startDate, DateTime $endDate);
 
+    /**
+     * @param AdTagReportInterface $report
+     * @return mixed
+     */
     public function overrideReport(AdTagReportInterface $report);
 }

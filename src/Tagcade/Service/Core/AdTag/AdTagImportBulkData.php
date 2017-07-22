@@ -5,9 +5,7 @@ namespace Tagcade\Service\Core\AdTag;
 
 
 use Monolog\Logger;
-use Symfony\Component\Security\Acl\Exception\Exception;
 use Tagcade\DomainManager\AdNetworkManagerInterface;
-use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\DomainManager\LibraryAdTagManagerInterface;
 use Tagcade\Entity\Core\AdTag;
@@ -15,54 +13,51 @@ use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
 use Tagcade\Model\Core\AdNetworkInterface;
-
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
-use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
 class AdTagImportBulkData implements AdTagImportBulkDataInterface
 {
+    const SITE_SHEET_NAME = 'Sites';
+    const AD_TAGS_SHEET_NAME = 'Ad Tags';
+    const DISPLAY_AD_SLOT_SHEET_NAME = 'Display Ad Slots';
+    const DYNAMIC_AD_SLOT_NAME = 'Dynamic Ad Slots';
+    const EXPRESSION_TARGETING_NAME = 'Expression Targeting';
 
-    const SITE_SHEET_NAME               =   'Sites';
-    const AD_TAGS_SHEET_NAME            =   'Ad Tags';
-    const DISPLAY_AD_SLOT_SHEET_NAME    =   'Display Ad Slots';
-    const DYNAMIC_AD_SLOT_NAME          =   'Dynamic Ad Slots';
-    const EXPRESSION_TARGETING_NAME     =   'Expression Targeting';
+    const POSITION_KEY_OF_AD_TAG = 'position';
+    const ACTIVE_KEY_OF_AD_TAG = 'active';
+    const FREQUENCY_CAP_KEY_OF_AD_TAG = 'frequencyCap';
+    const ROTATION_KEY_OF_AD_TAG = 'rotation';
+    const IMPRESSION_CAP_KEY_OF_AD_TAG = 'impressionCap';
+    const NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG = 'networkOpportunityCap';
+    const LIBRARY_AD_TAG_KEY_OF_AD_TAG = 'libraryAdTag';
+    const AD_SLOT_KEY_OF_AD_TAG = 'adSlot';
+    const REF_ID_KEY_OF_AD_TAG = 'refId';
 
-    const POSITION_KEY_OF_AD_TAG                      = 'position';
-    const ACTIVE_KEY_OF_AD_TAG                        = 'active';
-    const FREQUENCY_CAP_KEY_OF_AD_TAG                 ='frequencyCap';
-    const ROTATION_KEY_OF_AD_TAG                      = 'rotation';
-    const IMPRESSION_CAP_KEY_OF_AD_TAG                = 'impressionCap';
-    const NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG       = 'networkOpportunityCap';
-    const LIBRARY_AD_TAG_KEY_OF_AD_TAG                = 'libraryAdTag';
-    const AD_SLOT_KEY_OF_AD_TAG                       = 'adSlot';
-    const REF_ID_KEY_OF_AD_TAG                        = 'refId';
+    const NAME_KEY_OF_LIB_AD_TAG = 'name';
+    const HTML_KEY_OF_LIB_AD_TAG = 'html';
+    const VISIBLE_KEY_OF_LIB_AD_TAG = 'visible';
+    const AD_TYPE_KEY_OF_LIB_AD_TAG = 'adType';
+    const AD_NETWORK_KEY_OF_LIB_AD_TAG = 'adNetwork';
+    const PARTNER_TAG_ID_KEY_OF_AD_TAG = 'partnerTagId';
 
-    const NAME_KEY_OF_LIB_AD_TAG                       = 'name';
-    const HTML_KEY_OF_LIB_AD_TAG                       = 'html';
-    const VISIBLE_KEY_OF_LIB_AD_TAG                    = 'visible';
-    const AD_TYPE_KEY_OF_LIB_AD_TAG                    = 'adType';
-    const AD_NETWORK_KEY_OF_LIB_AD_TAG                 = 'adNetwork';
-    const PARTNER_TAG_ID_KEY_OF_AD_TAG                 = 'partnerTagId';
+    const HTML_DEFAULT_VALUE_OF_LIB_AD_TAG = null;
+    const VISIBLE_DEFAULT_VALUE_OF_LIB_AD_TAG = false;
+    const AD_TYPE_DEFAULT_VALUE_OF_LIB_AD_TAG = 0;
+    const PARTNER_TAG_ID_DEFAULT_VALUE_OF_AD_TAG = null;
 
-    const HTML_DEFAULT_VALUE_OF_LIB_AD_TAG              = null;
-    const VISIBLE_DEFAULT_VALUE_OF_LIB_AD_TAG           = false;
-    const AD_TYPE_DEFAULT_VALUE_OF_LIB_AD_TAG           = 0;
-    const PARTNER_TAG_ID_DEFAULT_VALUE_OF_AD_TAG        = null;
+    const AD_SLOT_NAME_KEY = 'adSlotName';
 
-    const AD_SLOT_NAME_KEY                              ='adSlotName';
+    const POSITION_DEFAULT_VALUE = 1;
+    const ACTIVE_DEFAULT_VALUE = 1;
+    const FREQUENCY_CAP_DEFAULT_VALUE = null;
+    const ROTATION_DEFAULT_VALUE = null;
+    const IMPRESSION_CAP_DEFAULT_VALUE = null;
+    const NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE = null;
 
-    const POSITION_DEFAULT_VALUE                        = 1;
-    const ACTIVE_DEFAULT_VALUE                          = 1;
-    const FREQUENCY_CAP_DEFAULT_VALUE                   = null;
-    const ROTATION_DEFAULT_VALUE                        = null;
-    const IMPRESSION_CAP_DEFAULT_VALUE                  = null;
-    const NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE         = null;
-
-    private  $libraryAdTagObjectsInOneSection = [];
+    private $libraryAdTagObjectsInOneSection = [];
     /**
      * @var AdTagManagerInterface
      */
@@ -85,8 +80,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     private $libraryAdTagManager;
 
-    function __construct( AdNetworkManagerInterface $adNetworkManager, Logger $logger, $adTagConfigs,
-                          LibraryAdTagManagerInterface $libraryAdTagManager, AdTagManagerInterface $adTagManager)
+    function __construct(AdNetworkManagerInterface $adNetworkManager, Logger $logger, $adTagConfigs,
+                         LibraryAdTagManagerInterface $libraryAdTagManager, AdTagManagerInterface $adTagManager)
     {
         $this->adTagConfigs = $adTagConfigs;
         $this->adNetworkManager = $adNetworkManager;
@@ -111,8 +106,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $numberOfExitedAdTags = 0;
 
         $publisher = $displayAdSlotObject->getSite()->getPublisher();
-        $allAdTags = $this->createAllAdTagsData($allAdTags,$publisher);
-        $isLibraryDisplayAdSlot = $displayAdSlotObject->getLibraryAdSlot()->isVisible()? true : false;
+        $allAdTags = $this->createAllAdTagsData($allAdTags, $publisher);
+        $isLibraryDisplayAdSlot = $displayAdSlotObject->getLibraryAdSlot()->isVisible() ? true : false;
 
         $adTagsOfThisAdSlotInSystem = $this->adTagManager->getAdTagsForAdSlot($displayAdSlotObject);
         foreach ($adTagsOfThisAdSlotInSystem as $adTag) {
@@ -132,11 +127,11 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
                 $adTagObjects[$md5OfHtmlTag] = $adTagObject;
 
                 if (true == $isLibraryDisplayAdSlot) {
-                    $libraryAdSlotAdTags[] =  $this->makeLibraryAdSlotAdTag($adTagObject, $displayAdSlotObject);
+                    $libraryAdSlotAdTags[] = $this->makeLibraryAdSlotAdTag($adTagObject, $displayAdSlotObject);
                 }
-                $numberOfNewAdTags ++;
+                $numberOfNewAdTags++;
             } else {
-                $numberOfExitedAdTags ++;
+                $numberOfExitedAdTags++;
             }
 
         }
@@ -169,6 +164,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
 
         return $librarySlotTag;
     }
+
     /**
      * @param $excelRows
      * @param PublisherInterface $publisher
@@ -196,14 +192,14 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     {
         $adTag = [];
 
-        $positionValue              = $this->getPositionValue($excelRow);
-        $activeValue                = $this->getActiveValue($excelRow);
-        $rotationValue              = $this->getRotationValue($excelRow);
-        $frequencyCapValue          = $this->getFrequencyCapValue($excelRow);
-        $impressionCapValue         = $this->getImpressionCapValue($excelRow);
+        $positionValue = $this->getPositionValue($excelRow);
+        $activeValue = $this->getActiveValue($excelRow);
+        $rotationValue = $this->getRotationValue($excelRow);
+        $frequencyCapValue = $this->getFrequencyCapValue($excelRow);
+        $impressionCapValue = $this->getImpressionCapValue($excelRow);
         $networkOpportunityCapValue = $this->getNetworkOpportunityCapValue($excelRow);
 
-        $libraryAdTagData           = $this->createLibraryAdTagDataFromExcelRow($excelRow, $publisher);
+        $libraryAdTagData = $this->createLibraryAdTagDataFromExcelRow($excelRow, $publisher);
 
         $htmlOfLibraryAdTag = $libraryAdTagData[self::HTML_KEY_OF_LIB_AD_TAG];
         $md5OfHtml = md5($htmlOfLibraryAdTag);
@@ -212,13 +208,13 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $libraryAdTagObjects = $this->getLibraryAdTagObjectsInOneSection();
 
         if (!array_key_exists($md5OfHtml, $libraryAdTagObjects)) {
-            /**@var LibraryAdTagInterface[] $libraryAdTagInSystem*/
+            /**@var LibraryAdTagInterface[] $libraryAdTagInSystem */
             $libraryAdTagInSystem = $this->libraryAdTagManager->getLibraryAdTagsByHtml($htmlOfLibraryAdTag);
             if (empty($libraryAdTagInSystem) || count($libraryAdTagInSystem) > 1) {
-                $libraryAdTagObject         = LibraryAdTag::createAdTagLibraryFromArray($libraryAdTagData);
+                $libraryAdTagObject = LibraryAdTag::createAdTagLibraryFromArray($libraryAdTagData);
                 $libraryAdTagObject->setName($displayAdSlotName); //Temporary set name to check below
                 $this->insertLibraryAdTagObjectsInOneSection($libraryAdTagObject, $md5OfHtml);
-            } else  {
+            } else {
                 $libraryAdTagObject = array_shift($libraryAdTagInSystem);
                 /**@var AdTagInterface[] $adTagsHaveTheSameLibAdTag */
                 $adTagsHaveTheSameLibAdTag = $this->adTagManager->getAdTagsHaveTheSameAdTabLib($libraryAdTagObject);
@@ -231,10 +227,10 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
             }
 
         } else {
-            /**@var LibraryAdTagInterface[] $libraryAdTagObjects*/
+            /**@var LibraryAdTagInterface[] $libraryAdTagObjects */
             $libraryAdTagObject = $libraryAdTagObjects[$md5OfHtml];
             $displayAdSlotNameInBuffer = $libraryAdTagObject->getName(); //Get name to set library or no
-            if ( 0 != strcmp($displayAdSlotName, $displayAdSlotNameInBuffer)) {
+            if (0 != strcmp($displayAdSlotName, $displayAdSlotNameInBuffer)) {
                 $libraryAdTagObject->setVisible(true);
             }
         }
@@ -242,15 +238,15 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $adNetWorkName = $libraryAdTagObject->getAdNetwork()->getName();
         $libraryAdTagObject->setName($adNetWorkName);
 
-        $adTag[self::POSITION_KEY_OF_AD_TAG]                = $positionValue;
-        $adTag[self::ACTIVE_KEY_OF_AD_TAG]                  = $activeValue;
-        $adTag[self::ROTATION_KEY_OF_AD_TAG]                = $rotationValue;
-        $adTag[self::FREQUENCY_CAP_KEY_OF_AD_TAG]           = $frequencyCapValue;
-        $adTag[self::IMPRESSION_CAP_KEY_OF_AD_TAG]          = $impressionCapValue;
+        $adTag[self::POSITION_KEY_OF_AD_TAG] = $positionValue;
+        $adTag[self::ACTIVE_KEY_OF_AD_TAG] = $activeValue;
+        $adTag[self::ROTATION_KEY_OF_AD_TAG] = $rotationValue;
+        $adTag[self::FREQUENCY_CAP_KEY_OF_AD_TAG] = $frequencyCapValue;
+        $adTag[self::IMPRESSION_CAP_KEY_OF_AD_TAG] = $impressionCapValue;
         $adTag[self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG] = $networkOpportunityCapValue;
-        $adTag[self::LIBRARY_AD_TAG_KEY_OF_AD_TAG]          = $libraryAdTagObject;
-        $adTag[self::AD_SLOT_KEY_OF_AD_TAG]                 = $excelRow[$this->getAdSlotNameIndex()];
-        $adTag[self::REF_ID_KEY_OF_AD_TAG]                  = $this->getRefId();
+        $adTag[self::LIBRARY_AD_TAG_KEY_OF_AD_TAG] = $libraryAdTagObject;
+        $adTag[self::AD_SLOT_KEY_OF_AD_TAG] = $excelRow[$this->getAdSlotNameIndex()];
+        $adTag[self::REF_ID_KEY_OF_AD_TAG] = $this->getRefId();
 
         return $adTag;
     }
@@ -275,18 +271,18 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
             throw new \Exception(sprintf('Publisher %d has not demand partner name: %s', $publisher->getId(), $demandPartnerName));
         }
 
-        $adTagNameValue     = $this->getNameValueForAdTagLibrary($excelRow);
-        $htmlValue          = $this->getHtmlValue($excelRow);
-        $visibleValue       = $this->getVisibleValueForAdTagLibrary($excelRow);
-        $adTypeValue        = $this->getAdTypeValueForAdTagLibrary($excelRow);
-        $partnerTagIdValue  = $this->getPartnerTagIdForAdTagLibrary($excelRow);
+        $adTagNameValue = $this->getNameValueForAdTagLibrary($excelRow);
+        $htmlValue = $this->getHtmlValue($excelRow);
+        $visibleValue = $this->getVisibleValueForAdTagLibrary($excelRow);
+        $adTypeValue = $this->getAdTypeValueForAdTagLibrary($excelRow);
+        $partnerTagIdValue = $this->getPartnerTagIdForAdTagLibrary($excelRow);
 
-        $libraryAdTag[self::NAME_KEY_OF_LIB_AD_TAG]         = $adTagNameValue;
-        $libraryAdTag[self::AD_NETWORK_KEY_OF_LIB_AD_TAG]   = $adNetworkValue;
-        $libraryAdTag[self::HTML_KEY_OF_LIB_AD_TAG]         = $htmlValue;
-        $libraryAdTag[self::VISIBLE_KEY_OF_LIB_AD_TAG]      = $visibleValue;
-        $libraryAdTag[self::AD_TYPE_KEY_OF_LIB_AD_TAG]      = $adTypeValue;
-        $libraryAdTag[self::PARTNER_TAG_ID_KEY_OF_AD_TAG]   = $partnerTagIdValue;
+        $libraryAdTag[self::NAME_KEY_OF_LIB_AD_TAG] = $adTagNameValue;
+        $libraryAdTag[self::AD_NETWORK_KEY_OF_LIB_AD_TAG] = $adNetworkValue;
+        $libraryAdTag[self::HTML_KEY_OF_LIB_AD_TAG] = $htmlValue;
+        $libraryAdTag[self::VISIBLE_KEY_OF_LIB_AD_TAG] = $visibleValue;
+        $libraryAdTag[self::AD_TYPE_KEY_OF_LIB_AD_TAG] = $adTypeValue;
+        $libraryAdTag[self::PARTNER_TAG_ID_KEY_OF_AD_TAG] = $partnerTagIdValue;
 
         return $libraryAdTag;
     }
@@ -309,8 +305,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         }
 
         foreach ($adNetworks as $adNetwork) {
-            if ( 0 == strcmp($demandPartName, $adNetwork->getName())) {
-             return $adNetwork;
+            if (0 == strcmp($demandPartName, $adNetwork->getName())) {
+                return $adNetwork;
             }
         }
     }
@@ -325,7 +321,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     {
         $expectAdTags = [];
         foreach ($adTags as $adTag) {
-            if(0 == strcmp($adTag[$this->getAdSlotNameIndex()], $adSlotName )) {
+            if (0 == strcmp($adTag[$this->getAdSlotNameIndex()], $adSlotName)) {
                 $expectAdTags[] = $adTag;
             }
         }
@@ -363,10 +359,10 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      * @return null
      * @throws \Exception
      */
-    protected function getPartnerTagIdForAdTagLibrary ($rawAdTag)
+    protected function getPartnerTagIdForAdTagLibrary($rawAdTag)
     {
         if (array_key_exists(self::PARTNER_TAG_ID_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPartnerTagIdIndex(), $rawAdTag)) {
-           return $rawAdTag[$this->getPartnerTagIdIndex()];
+            return $rawAdTag[$this->getPartnerTagIdIndex()];
         }
 
         return self::PARTNER_TAG_ID_DEFAULT_VALUE_OF_AD_TAG;
@@ -422,7 +418,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getNetworkOpportunityCapValue($rawAdTag)
     {
         if (array_key_exists(self::NETWORK_OPPORTUNITY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getOpportunityCapIndex(), $rawAdTag)) {
-          return is_int($rawAdTag[$this->getOpportunityCapIndex()]) ? $rawAdTag[$this->getOpportunityCapIndex()]:self::NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
+            return is_int($rawAdTag[$this->getOpportunityCapIndex()]) ? $rawAdTag[$this->getOpportunityCapIndex()] : self::NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
         }
 
         return self:: NETWORK_OPPORTUNITY_CAP_DEFAULT_VALUE;
@@ -436,11 +432,12 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     protected function getImpressionCapValue($rawAdTag)
     {
         if (array_key_exists(self::IMPRESSION_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getImpressionCapIndex(), $rawAdTag)) {
-            return is_int($rawAdTag[$this->getImpressionCapIndex()]) ? $rawAdTag[$this->getImpressionCapIndex()] : self::IMPRESSION_CAP_DEFAULT_VALUE ;
+            return is_int($rawAdTag[$this->getImpressionCapIndex()]) ? $rawAdTag[$this->getImpressionCapIndex()] : self::IMPRESSION_CAP_DEFAULT_VALUE;
         }
 
         return self:: IMPRESSION_CAP_DEFAULT_VALUE;
     }
+
     /**
      * @param $rawAdTag
      * @return null
@@ -448,12 +445,13 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getRotationValue($rawAdTag)
     {
-        if (array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getRotationIndex(),$rawAdTag)) {
-                return is_int($rawAdTag[$this->getRotationIndex()]) ? $rawAdTag[$this->getRotationIndex()] : self:: ROTATION_DEFAULT_VALUE ;
+        if (array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getRotationIndex(), $rawAdTag)) {
+            return is_int($rawAdTag[$this->getRotationIndex()]) ? $rawAdTag[$this->getRotationIndex()] : self:: ROTATION_DEFAULT_VALUE;
         }
 
         return self:: ROTATION_DEFAULT_VALUE;
     }
+
     /**
      * @param $rawAdTag
      * @return null
@@ -461,8 +459,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getFrequencyCapValue($rawAdTag)
     {
-        if (array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getFrequencyCapIndex(),$rawAdTag)) {
-            return is_int($rawAdTag[$this->getFrequencyCapIndex()]) ?$rawAdTag[$this->getFrequencyCapIndex()] : self::FREQUENCY_CAP_DEFAULT_VALUE;
+        if (array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getFrequencyCapIndex(), $rawAdTag)) {
+            return is_int($rawAdTag[$this->getFrequencyCapIndex()]) ? $rawAdTag[$this->getFrequencyCapIndex()] : self::FREQUENCY_CAP_DEFAULT_VALUE;
         }
 
         return self:: FREQUENCY_CAP_DEFAULT_VALUE;
@@ -476,8 +474,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getPositionValue($rawAdTag)
     {
-        if (array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPositionIndex(),$rawAdTag)) {
-            return is_int($rawAdTag[$this->getPositionIndex()]) ? $rawAdTag[$this->getPositionIndex()]: self::POSITION_DEFAULT_VALUE;
+        if (array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getPositionIndex(), $rawAdTag)) {
+            return is_int($rawAdTag[$this->getPositionIndex()]) ? $rawAdTag[$this->getPositionIndex()] : self::POSITION_DEFAULT_VALUE;
         }
 
         return self:: POSITION_DEFAULT_VALUE;
@@ -490,7 +488,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getActiveValue($rawAdTag)
     {
-        if (array_key_exists(self::ACTIVE_KEY_OF_AD_TAG, $this->adTagConfigs)  && array_key_exists($this->getActiveIndex(),$rawAdTag)) {
+        if (array_key_exists(self::ACTIVE_KEY_OF_AD_TAG, $this->adTagConfigs) && array_key_exists($this->getActiveIndex(), $rawAdTag)) {
             return $rawAdTag[$this->getActiveIndex()];
         }
         return self:: ACTIVE_DEFAULT_VALUE;
@@ -503,7 +501,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     public function getAdSlotNameIndex()
     {
-        if(!array_key_exists(self::AD_SLOT_NAME_KEY, $this->adTagConfigs)) {
+        if (!array_key_exists(self::AD_SLOT_NAME_KEY, $this->adTagConfigs)) {
             throw new \Exception ('There is not ad slot in config file');
         }
 
@@ -513,7 +511,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
 
     public function getAdTagNameIndex()
     {
-        if(!array_key_exists(self::NAME_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)){
+        if (!array_key_exists(self::NAME_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not ad tag name in config file');
         }
 
@@ -526,7 +524,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     public function getDemandPartnerIndex()
     {
-        if(!array_key_exists(self::AD_NETWORK_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::AD_NETWORK_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not demand partner in config file');
         }
 
@@ -540,7 +538,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getTagHtmlIndex()
     {
-        if(!array_key_exists(self::HTML_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::HTML_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not tag html in config file');
         }
 
@@ -549,7 +547,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
 
     protected function getHtmlValue($rawAdTag)
     {
-        if(!array_key_exists(self::HTML_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::HTML_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not tag html in config file');
         }
 
@@ -562,7 +560,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getPositionIndex()
     {
-        if(!array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::POSITION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not position in config file');
         }
 
@@ -576,7 +574,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getWeightIndex()
     {
-        if(!array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not weight key in config file');
         }
 
@@ -590,7 +588,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getActiveIndex()
     {
-        if(!array_key_exists(self::ACTIVE_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::ACTIVE_KEY_OF_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not active key in config file');
         }
 
@@ -604,7 +602,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      */
     protected function getRotationIndex()
     {
-        if(!array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
+        if (!array_key_exists(self::ROTATION_KEY_OF_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not rotation key in config file');
         }
 
@@ -668,7 +666,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      * @return mixed
      * @throws \Exception
      */
-    protected function  getPartnerTagIdIndex()
+    protected function getPartnerTagIdIndex()
     {
         if (!array_key_exists(self::PARTNER_TAG_ID_KEY_OF_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not partner tag id key in config file');
@@ -682,7 +680,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
      * @return mixed
      * @throws \Exception
      */
-    protected function  getFrequencyCapIndex()
+    protected function getFrequencyCapIndex()
     {
         if (!array_key_exists(self::FREQUENCY_CAP_KEY_OF_AD_TAG, $this->adTagConfigs)) {
             throw new \Exception ('There is not partner tag id key in config file');
@@ -691,4 +689,4 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         return $this->adTagConfigs[self::FREQUENCY_CAP_KEY_OF_AD_TAG];
 
     }
-} 
+}

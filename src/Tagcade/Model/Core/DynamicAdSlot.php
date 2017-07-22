@@ -5,7 +5,6 @@ namespace Tagcade\Model\Core;
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Entity\Core\AdSlotAbstract;
 use Tagcade\Exception\LogicException;
-use Tagcade\Model\RTBEnabledInterface;
 
 class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
 {
@@ -125,11 +124,6 @@ class DynamicAdSlot extends AdSlotAbstract implements DynamicAdSlotInterface
         $this->libraryAdSlot = $libraryAdSlot;
 
         return $this;
-    }
-
-    public function isRTBEnabled()
-    {
-        return RTBEnabledInterface::RTB_DISABLED;
     }
 
     /**

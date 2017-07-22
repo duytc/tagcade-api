@@ -4,11 +4,10 @@ namespace Tagcade\Model\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\ModelInterface;
-use Tagcade\Model\RTBEnabledInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 
-interface SiteInterface extends ModelInterface, RTBEnabledInterface
+interface SiteInterface extends ModelInterface
 {
     /**
      * @param string $name
@@ -138,17 +137,6 @@ interface SiteInterface extends ModelInterface, RTBEnabledInterface
      * @return self
      */
     public function setSiteToken($siteToken);
-
-    /**
-     * @return int
-     */
-    public function getRtbStatus();
-
-    /**
-     * @param int $rtbStatus
-     * @return self
-     */
-    public function setRtbStatus($rtbStatus);
 
     /**
      * @return SubPublisherInterface

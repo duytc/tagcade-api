@@ -29,9 +29,11 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AdSlotReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new AdSlotReport();
+
+        /** @var AdSlotReportType $reportType */
         $adSlot = $reportType->getAdSlot();
         $report
             ->setAdSlot($adSlot)
@@ -45,6 +47,9 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
         return $report;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
         if (!$report instanceof AdSlotReport) {

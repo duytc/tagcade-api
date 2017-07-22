@@ -11,6 +11,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             generator:
                 strategy: IDENTITY
     fields:
+        # common Report metrics
         date:
             type: date
         totalOpportunities:
@@ -19,9 +20,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             type: integer
         impressions:
             type: integer
-        rtbImpressions:
-            type: integer
-            nullable: true
         passbacks:
             type: integer
         fillRate:
@@ -36,6 +34,11 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             type: decimal
             scale: 4
             nullable: true
+        adOpportunities:
+            type: integer
+            nullable: true
+
+        # platform
         billedRate:
             type: decimal
             scale: 4
@@ -45,6 +48,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
             scale: 4
             nullable: true
 
+        # inbanner metrics
         inBannerRequests:
             type: integer
             nullable: true

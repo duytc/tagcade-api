@@ -6,15 +6,11 @@ use Tagcade\Entity\Core\AdSlotAbstract;
 
 class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, ReportableAdSlotInterface
 {
-    const RTB_STATUS_DEFAULT = self::RTB_DISABLED;
-
     protected $id;
     /**
      * @var SiteInterface
      */
     protected $site;
-    protected $rtbStatus;
-    protected $floorPrice;
     protected $hbBidPrice;
 
     /**
@@ -23,7 +19,6 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
     public function __construct()
     {
         parent::__construct();
-        $this->rtbStatus = self::RTB_STATUS_DEFAULT;
         $this->setSlotType(AdSlotAbstract::TYPE_DISPLAY);
     }
 
@@ -195,58 +190,6 @@ class DisplayAdSlot extends AdSlotAbstract implements DisplayAdSlotInterface, Re
         }
 
         return md5(serialize($array));
-    }
-
-    /**
-     * @return float
-     */
-    public function getFloorPrice()
-    {
-        return $this->floorPrice;
-    }
-
-    /**
-     * @param float $floorPrice
-     */
-    public function setFloorPrice($floorPrice)
-    {
-        $this->floorPrice = $floorPrice;
-    }
-
-    public function removeFloorPrice()
-    {
-        $this->floorPrice = null;
-    }
-
-    public function isRTBEnabled()
-    {
-        if (!$this->getSite()->getPublisher()->hasRtbModule()) {
-            return false;
-        }
-
-        if ($this->rtbStatus === self::RTB_INHERITED) {
-            return $this->getSite()->isRTBEnabled();
-        }
-
-        return $this->rtbStatus === self::RTB_ENABLED;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getRtbStatus()
-    {
-        return $this->rtbStatus;
-    }
-
-    /**
-     * @param integer $rtbStatus
-     * @return self
-     */
-    public function setRtbStatus($rtbStatus)
-    {
-        $this->rtbStatus = null === $rtbStatus ? self::RTB_STATUS_DEFAULT : $rtbStatus;
-        return $this;
     }
 
     public function __toString()

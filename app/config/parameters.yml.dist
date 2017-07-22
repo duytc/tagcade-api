@@ -21,11 +21,6 @@ parameters:
 
     pheanstalk_primary_host: 127.0.0.1
 
-    rtb.exchanges:
-        -
-            name: Index Exchange
-            abbreviation: index-exchange # This abbreviation will be used in the auction service configuration in order to enable this exchange
-
     hb.bidders:
         -
             name: "openx"
@@ -109,8 +104,7 @@ parameters:
     tc.bulk_upload.site.index:
         name: 0
         domain: 1
-        rtbStatus: 2
-        sourceReport: 3
+        sourceReport: 2
     tc.bulk_upload.display_ad_slot.index:
         site: 0
         name: 1

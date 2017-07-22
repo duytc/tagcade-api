@@ -18,6 +18,7 @@ abstract class AbstractReport implements ReportInterface
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
+    protected $adOpportunities;
 
     public function getId()
     {
@@ -189,5 +190,23 @@ abstract class AbstractReport implements ReportInterface
     protected function setDefaultName()
     {
         // do nothing by default
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdOpportunities()
+    {
+        return $this->adOpportunities;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAdOpportunities($adOpportunities)
+    {
+        $this->adOpportunities = $adOpportunities;
+
+        return $this;
     }
 }

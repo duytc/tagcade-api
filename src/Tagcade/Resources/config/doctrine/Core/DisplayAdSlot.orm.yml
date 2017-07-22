@@ -4,15 +4,6 @@ Tagcade\Entity\Core\DisplayAdSlot:
     repositoryClass: Tagcade\Repository\Core\DisplayAdSlotRepository
 
     fields:
-        floorPrice:
-            type: float
-            scale: 4
-            nullable: true
-        rtbStatus:
-            type: smallint
-            nullable: false
-            options:
-                default: 2 # inherit
         hbBidPrice:
             type: float
             scale: 4

@@ -30,10 +30,6 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setImpressions($data['impressions']);
         }
 
-        if (array_key_exists('rtbImpressions', $data)) {
-            $this->setRtbImpressions($data['rtbImpressions']);
-        }
-
         if (array_key_exists('passbacks', $data)) {
             $this->setPassbacks($data['passbacks']);
         }

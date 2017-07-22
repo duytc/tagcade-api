@@ -4,10 +4,10 @@
 namespace Tagcade\Service\Core\Site;
 
 
-use Tagcade\Entity\Core\Site;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface SiteImportBulkDataInterface {
+interface SiteImportBulkDataInterface
+{
     /**
      * @param array $arrayMapSitesData
      * @param PublisherInterface $publisher

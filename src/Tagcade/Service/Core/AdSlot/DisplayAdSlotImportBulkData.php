@@ -4,56 +4,43 @@
 namespace Tagcade\Service\Core\AdSlot;
 
 
-use LibraryAdSlot;
 use Monolog\Logger;
 use Tagcade\DomainManager\AdSlotManagerInterface;
-use Tagcade\DomainManager\DisplayAdSlotManager;
 use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\LibraryAdSlotManager;
 use Tagcade\DomainManager\LibraryAdSlotManagerInterface;
-use Tagcade\DomainManager\LibraryDisplayAdSlotManagerInterface;
-use Tagcade\DomainManager\SiteManager;
-use Tagcade\DomainManager\SiteManagerInterface;
-use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryDisplayAdSlot;
 use Tagcade\Entity\Core\Site;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
-use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\AdTag\AdTagImportBulkDataInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AdSlotInterface;
 
-class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterface {
+class DisplayAdSlotImportBulkData implements DisplayAdSlotImportBulkDataInterface
+{
+    const SITE_NAME_KEY = 'site';
+    const AD_SLOT_NAME_KEY = 'name';
+    const WIDTH_KEY = 'width';
+    const HEIGHT_KEY = 'height';
+    const AUTO_FIT_KEY = 'autoFit';
+    const HEADER_BID_PRICE_KEY = 'hbBidPrice';
+    const PASS_BACK_MODE_KEY = 'passbackMode';
+    const VISIBLE_KEY = 'visible';
+    const TYPE_KEY = 'type';
+    const PUBLISHER_KEY = 'publisher';
+    const LIBRARY_AD_SLOT_KEY = 'libraryAdSlot';
+    const SLOT_TYPE_KEY = 'slotType';
 
-    const SITE_NAME_KEY                = 'site';
-    const AD_SLOT_NAME_KEY             = 'name';
-    const WIDTH_KEY                    = 'width';
-    const HEIGHT_KEY                   = 'height';
-    const AUTO_FIT_KEY                 = 'autoFit';
-    const HEADER_BID_PRICE_KEY         = 'hbBidPrice';
-    const FLOOR_PRICE_KEY              = 'floorPrice';
-    const RTB_STATUS_KEY               = 'rtbStatus';
-    const PASS_BACK_MODE_KEY           = 'passbackMode';
-    const VISIBLE_KEY                  = 'visible';
-    const TYPE_KEY                     = 'type';
-    const PUBLISHER_KEY                = 'publisher';
-    const LIBRARY_AD_SLOT_KEY          = 'libraryAdSlot';
-    const SLOT_TYPE_KEY                = 'slotType';
+    const AD_SLOT_NAME_DEFAULT_VALUE = 'adSlotName';
+    const WIDTH_DEFAULT_VALUE = null;
+    const HEIGHT_DEFAULT_VALUE = null;
+    const AUTO_FIT_DEFAULT_VALUE = false;
+    const HEADER_BID_PRICE_DEFAULT_VALUE = null;
+    const PASS_BACK_MODE_DEFAULT_VALUE = 'position';
 
-    const AD_SLOT_NAME_DEFAULT_VALUE        = 'adSlotName';
-    const WIDTH_DEFAULT_VALUE               = null;
-    const HEIGHT_DEFAULT_VALUE              = null;
-    const AUTO_FIT_DEFAULT_VALUE            = false ;
-    const HEADER_BID_PRICE_DEFAULT_VALUE    = null;
-    const FLOOR_PRICE_DEFAULT_VALUE         = null;
-    const RTB_STATUS_DEFAULT_VALUE          = 2;
-    const PASS_BACK_MODE_DEFAULT_VALUE      = 'position';
+    const VISIBLE_DEFAULT_VALUE = false;
 
-    const VISIBLE_DEFAULT_VALUE         = false;
-    const RTB_DEFAULT_VALUE             = 2;
-
-    const AD_SLOT_KEY_OF_AD_TAG         = 'adSlot';
+    const AD_SLOT_KEY_OF_AD_TAG = 'adSlot';
 
     /**
      * @var
@@ -92,7 +79,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     function __construct(AdTagImportBulkDataInterface $importBulkAdTagService, Logger $logger, $adSlotsConfigs,
                          LibraryAdSlotManager $libraryAdSlotManager, DisplayAdSlotManagerInterface $displayAdSlotManager,
-                        AdSlotManagerInterface $adSlotManager)
+                         AdSlotManagerInterface $adSlotManager)
     {
         $this->logger = $logger;
         $this->adSlotsConfigs = $adSlotsConfigs;
@@ -130,20 +117,20 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
             $displayAdSlotBeforePersists = $this->getDisplayAdSlotBeforePersists();
 
             $displayAdSlotInThisSite = array_key_exists($displayAdSlotName, $displayAdSlotBeforePersists) ?
-                                                        $displayAdSlotBeforePersists[$displayAdSlotName] :
-                                                        $this->displayAdSlotManager->getAdSlotForSiteByName($site, $displayAdSlotName);
+                $displayAdSlotBeforePersists[$displayAdSlotName] :
+                $this->displayAdSlotManager->getAdSlotForSiteByName($site, $displayAdSlotName);
 
             if (empty($displayAdSlotInThisSite)) {
-                $displayAdSlotObject    = DisplayAdSlot::createDisplayAdSlotFromArray($displayAdSlot);
-                $newDisplayAdSlotImported ++;
-                $this->insertDisplayAdSlotBeforePersists($displayAdSlotObject,$displayAdSlotName);
+                $displayAdSlotObject = DisplayAdSlot::createDisplayAdSlotFromArray($displayAdSlot);
+                $newDisplayAdSlotImported++;
+                $this->insertDisplayAdSlotBeforePersists($displayAdSlotObject, $displayAdSlotName);
             } else {
                 /** @var DisplayAdSlot $displayAdSlotObject */
-                $displayAdSlotObject    = $displayAdSlotInThisSite;
-                $numberExistedDisplayAdSlot ++;
+                $displayAdSlotObject = $displayAdSlotInThisSite;
+                $numberExistedDisplayAdSlot++;
             }
 
-            $adTagObjects           = $this->importBulkAdTagService->importAdTagsForOneAdSlot($displayAdSlotObject, $expectAdTags, $dryOption);
+            $adTagObjects = $this->importBulkAdTagService->importAdTagsForOneAdSlot($displayAdSlotObject, $expectAdTags, $dryOption);
             $displayAdSlotObject->setAdTags($adTagObjects);
 
             $displayAdSlotObjects[] = $displayAdSlotObject;
@@ -180,12 +167,12 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @param PublisherInterface $publisher
      * @return array|mixed
      */
-    public function createAllDisplayAdSlotsData($excelRows, Site $site, PublisherInterface $publisher )
+    public function createAllDisplayAdSlotsData($excelRows, Site $site, PublisherInterface $publisher)
     {
         $allDisplayAdSlotsData = [];
 
-        foreach ($excelRows as  $excelRow) {
-            $displayAdSlotsData = $this->createDisplayAdSlotDataFromExcelRow($excelRow, $site ,$publisher);
+        foreach ($excelRows as $excelRow) {
+            $displayAdSlotsData = $this->createDisplayAdSlotDataFromExcelRow($excelRow, $site, $publisher);
             $allDisplayAdSlotsData[] = $displayAdSlotsData;
         }
 
@@ -200,12 +187,10 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @throws \Exception
      */
 
-    protected function createDisplayAdSlotDataFromExcelRow($excelRow, Site $site,  PublisherInterface $publisher)
+    protected function createDisplayAdSlotDataFromExcelRow($excelRow, Site $site, PublisherInterface $publisher)
     {
-        $slotTypeValue          = $this->getSlotTypeValue();
-        $floorPriceValue        = $this->getFloorPriceValue($excelRow);
-        $hbPriceValue           = $this->getHbPriceValue($excelRow);
-        $rtbStatusValue         = $this->getRtbStatusValue($excelRow);
+        $slotTypeValue = $this->getSlotTypeValue();
+        $hbPriceValue = $this->getHbPriceValue($excelRow);
 
         $libraryDisplayAdSlotData = $this->createDataForLibraryDisplayAdSlotFromExcelRow($excelRow, $publisher);
 
@@ -220,7 +205,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
             /** @var DisplayAdSlotInterface[] $displayAdSlotsInSystem */
             $displayAdSlotsInSystem = $this->adSlotManager->getDisplayAdSlotByLibrary($libraryDisplayAdSlotObject);
             foreach ($displayAdSlotsInSystem as $displayAdSlotInSystem) {
-                if ($displayAdSlotInSystem->getSite()->getSiteToken() != $site->getSiteToken()){
+                if ($displayAdSlotInSystem->getSite()->getSiteToken() != $site->getSiteToken()) {
                     $libraryDisplayAdSlotObject->setVisible(true);
                     break;
                 }
@@ -228,12 +213,10 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
         }
 
         $displayAdSlot = [];
-        $displayAdSlot[self::SITE_NAME_KEY]         = $site;
-        $displayAdSlot[self::SLOT_TYPE_KEY]         = $slotTypeValue;
-        $displayAdSlot[self::FLOOR_PRICE_KEY]       = $floorPriceValue;
-        $displayAdSlot[self::HEADER_BID_PRICE_KEY]  = $hbPriceValue;
-        $displayAdSlot[self::RTB_STATUS_KEY]        = $rtbStatusValue;
-        $displayAdSlot[self::LIBRARY_AD_SLOT_KEY]   = $libraryDisplayAdSlotObject;
+        $displayAdSlot[self::SITE_NAME_KEY] = $site;
+        $displayAdSlot[self::SLOT_TYPE_KEY] = $slotTypeValue;
+        $displayAdSlot[self::HEADER_BID_PRICE_KEY] = $hbPriceValue;
+        $displayAdSlot[self::LIBRARY_AD_SLOT_KEY] = $libraryDisplayAdSlotObject;
 
         return $displayAdSlot;
     }
@@ -245,23 +228,23 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function createDataForLibraryDisplayAdSlotFromExcelRow($excelRow, PublisherInterface $publisher)
     {
-        $adSlotNameValue    = $this->getAdSlotNameValue($excelRow);
-        $visibleValue       = $this->getVisibleValue();
-        $typeValue          = $this->getSlotTypeValue();
-        $widthValue         = $this->getWidthValue($excelRow);
-        $heightValue        = $this->getHeightValue($excelRow);
-        $passbackMode       = $this->getPassBackModeValue($excelRow);
-        $autoFitValue       = $this->getAutoFitValue($excelRow);
+        $adSlotNameValue = $this->getAdSlotNameValue($excelRow);
+        $visibleValue = $this->getVisibleValue();
+        $typeValue = $this->getSlotTypeValue();
+        $widthValue = $this->getWidthValue($excelRow);
+        $heightValue = $this->getHeightValue($excelRow);
+        $passbackMode = $this->getPassBackModeValue($excelRow);
+        $autoFitValue = $this->getAutoFitValue($excelRow);
 
-        $libraryAdSlot =[];
-        $libraryAdSlot[self::AD_SLOT_NAME_KEY]      = $adSlotNameValue;
-        $libraryAdSlot[self::VISIBLE_KEY]           = $visibleValue;
-        $libraryAdSlot[self::TYPE_KEY]              = $typeValue;
-        $libraryAdSlot[self::WIDTH_KEY]             = $widthValue;
-        $libraryAdSlot[self::HEIGHT_KEY]            = $heightValue;
-        $libraryAdSlot[self::PASS_BACK_MODE_KEY]    = $passbackMode;
-        $libraryAdSlot[self::AUTO_FIT_KEY]          = $autoFitValue;
-        $libraryAdSlot[self::PUBLISHER_KEY]         = $publisher;
+        $libraryAdSlot = [];
+        $libraryAdSlot[self::AD_SLOT_NAME_KEY] = $adSlotNameValue;
+        $libraryAdSlot[self::VISIBLE_KEY] = $visibleValue;
+        $libraryAdSlot[self::TYPE_KEY] = $typeValue;
+        $libraryAdSlot[self::WIDTH_KEY] = $widthValue;
+        $libraryAdSlot[self::HEIGHT_KEY] = $heightValue;
+        $libraryAdSlot[self::PASS_BACK_MODE_KEY] = $passbackMode;
+        $libraryAdSlot[self::AUTO_FIT_KEY] = $autoFitValue;
+        $libraryAdSlot[self::PUBLISHER_KEY] = $publisher;
 
         return $libraryAdSlot;
     }
@@ -276,7 +259,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     {
         $expectAdSlots = [];
         foreach ($displayAdSlots as $displayAdSlot) {
-            if (0 == strcmp($displayAdSlot[$this->getSiteNameIndex()], $siteName )) {
+            if (0 == strcmp($displayAdSlot[$this->getSiteNameIndex()], $siteName)) {
                 $expectAdSlots[] = $displayAdSlot;
             }
         }
@@ -293,7 +276,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
     public function getAdSlotDataByAdSlotName($adSlotName, array $allAdSlots)
     {
         foreach ($allAdSlots as $allAdSlot) {
-            if (0 == strcmp($allAdSlot[$this->getAdSlotNameIndex()], $adSlotName )) {
+            if (0 == strcmp($allAdSlot[$this->getAdSlotNameIndex()], $adSlotName)) {
                 return $allAdSlot;
             }
         }
@@ -330,7 +313,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAdSlotNameValue($oneAdSlot)
     {
-        if (array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs) && array_key_exists($this->getAdSlotNameIndex(),$oneAdSlot)) {
+        if (array_key_exists(self::AD_SLOT_NAME_KEY, $this->adSlotsConfigs) && array_key_exists($this->getAdSlotNameIndex(), $oneAdSlot)) {
             return $oneAdSlot[$this->getAdSlotNameIndex()];
         }
 
@@ -352,7 +335,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getWidthValue($oneAdSlot)
     {
-        if (array_key_exists(self::WIDTH_KEY, $this->adSlotsConfigs) && array_key_exists($this->getWidthIndex(),$oneAdSlot)) {
+        if (array_key_exists(self::WIDTH_KEY, $this->adSlotsConfigs) && array_key_exists($this->getWidthIndex(), $oneAdSlot)) {
             return $oneAdSlot[$this->getWidthIndex()];
         }
 
@@ -366,7 +349,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getHeightValue($oneAdSlot)
     {
-        if (array_key_exists(self::HEIGHT_KEY, $this->adSlotsConfigs) && array_key_exists($this->getHeightIndex(),$oneAdSlot)) {
+        if (array_key_exists(self::HEIGHT_KEY, $this->adSlotsConfigs) && array_key_exists($this->getHeightIndex(), $oneAdSlot)) {
             return $oneAdSlot[$this->getHeightIndex()];
         }
 
@@ -380,8 +363,8 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getAutoFitValue($oneAdSlot)
     {
-        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs) && array_key_exists($this->getAutoFitIndex(),$oneAdSlot)) {
-            $autoFitValue =  (strtoupper($oneAdSlot[$this->getAutoFitIndex()]) == 'YES')? 1:0;
+        if (array_key_exists(self::AUTO_FIT_KEY, $this->adSlotsConfigs) && array_key_exists($this->getAutoFitIndex(), $oneAdSlot)) {
+            $autoFitValue = (strtoupper($oneAdSlot[$this->getAutoFitIndex()]) == 'YES') ? 1 : 0;
 
             return $autoFitValue;
         }
@@ -396,7 +379,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     protected function getPassBackModeValue($oneAdSlot)
     {
-        if (array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getPassBackModeIndex(),$oneAdSlot)) {
+        if (array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getPassBackModeIndex(), $oneAdSlot)) {
             return $oneAdSlot[$this->getPassBackModeIndex()];
         }
 
@@ -405,45 +388,24 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
 
     /**
      * @param $oneAdSlot
-     * @return int
-     * @throws \Exception
-     */
-    protected function getRtbStatusValue($oneAdSlot)
-    {
-        if (array_key_exists(self::RTB_STATUS_KEY, $this->adSlotsConfigs) && array_key_exists($this->getRtbStatusIndex(), $oneAdSlot)) {
-            return $oneAdSlot[$this->getRtbStatusIndex()];
-        }
-
-        return self::RTB_DEFAULT_VALUE;
-    }
-    /**
-     * @param $oneAdSlot
      * @return null
      * @throws \Exception
      */
     protected function getHbPriceValue($oneAdSlot)
     {
-        if (array_key_exists(self::HEADER_BID_PRICE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getHeaderPriceIndex(),$oneAdSlot)) {
+        if (array_key_exists(self::HEADER_BID_PRICE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getHeaderPriceIndex(), $oneAdSlot)) {
             return $oneAdSlot[$this->getHeaderPriceIndex()];
         }
 
         return self::HEADER_BID_PRICE_DEFAULT_VALUE;
     }
+
     /**
      * @return string
      */
     protected function getSlotTypeValue()
     {
-          return DisplayAdSlot::TYPE_DISPLAY;
-    }
-
-    protected function getFloorPriceValue ($oneAdSlot)
-    {
-        if (array_key_exists(self::FLOOR_PRICE_KEY, $this->adSlotsConfigs) && array_key_exists($this->getFloorPriceIndex(),$oneAdSlot)) {
-           return $oneAdSlot[$this->getFloorPriceIndex()];
-        }
-
-        return self::FLOOR_PRICE_DEFAULT_VALUE;
+        return DisplayAdSlot::TYPE_DISPLAY;
     }
 
     /**
@@ -452,7 +414,7 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      */
     public function getSiteNameIndex()
     {
-        if (!array_key_exists(self::SITE_NAME_KEY, $this->adSlotsConfigs)){
+        if (!array_key_exists(self::SITE_NAME_KEY, $this->adSlotsConfigs)) {
             throw new \Exception(sprintf('There is not key =%s in configuration', self::SITE_NAME_KEY));
         }
 
@@ -528,32 +490,6 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
      * @return mixed
      * @throws \Exception
      */
-    protected function getFloorPriceIndex()
-    {
-        if (!array_key_exists(self::FLOOR_PRICE_KEY, $this->adSlotsConfigs)) {
-            throw new \Exception(sprintf('There is not key =%s in config string %s', self::FLOOR_PRICE_KEY, $this->adSlotsConfigs));
-        }
-
-        return $this->adSlotsConfigs[self::FLOOR_PRICE_KEY];
-    }
-
-    /**
-     * @return mixed
-     * @throws \Exception
-     */
-    protected function getRtbStatusIndex()
-    {
-        if (!array_key_exists(self::RTB_STATUS_KEY, $this->adSlotsConfigs)) {
-            throw new \Exception(sprintf('There is not key =%s in config string %s', self::RTB_STATUS_KEY, $this->adSlotsConfigs));
-        }
-
-        return $this->adSlotsConfigs[self::RTB_STATUS_KEY];
-    }
-
-    /**
-     * @return mixed
-     * @throws \Exception
-     */
     protected function getPassBackModeIndex()
     {
         if (!array_key_exists(self::PASS_BACK_MODE_KEY, $this->adSlotsConfigs)) {
@@ -562,4 +498,4 @@ class DisplayAdSlotImportBulkData implements  DisplayAdSlotImportBulkDataInterfa
 
         return $this->adSlotsConfigs[self::PASS_BACK_MODE_KEY];
     }
-} 
+}

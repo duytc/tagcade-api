@@ -76,7 +76,7 @@ class AdNetworkChangeListener
             return;
         }
 
-        // filter all sites changed on rtb & exchanges, then build needBeUpdatedAdSlots
+        // filter all ad networks changed, then build needBeUpdatedAdSlots
         foreach ($this->changedAdNetworks as $adNetwork) {
             if (!$adNetwork instanceof AdNetworkInterface) {
                 continue;

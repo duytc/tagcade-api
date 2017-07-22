@@ -5,23 +5,28 @@ namespace Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform
 
 use DateTime;
 use Doctrine\DBAL\Types\Type;
+use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository;
-use Tagcade\Model\Core\SiteInterface;
 
 class SiteReportRepository extends AbstractReportRepository implements SiteReportRepositoryInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function getReportFor(SiteInterface $site, DateTime $startDate, DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
             ->andWhere('r.site = :site')
             ->setParameter('site', $site)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumBilledAmountForSite(SiteInterface $site, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('st');
@@ -34,8 +39,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->setParameter('end_date', $endDate, Type::DATE)
             ->setParameter('site', $site)
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -44,6 +48,9 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumSlotOpportunities(SiteInterface $site, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -56,8 +63,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -66,6 +72,9 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumSlotHbRequests(SiteInterface $site, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -78,8 +87,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -88,7 +96,9 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         return $result;
     }
 
-
+    /**
+     * @inheritdoc
+     */
     public function getTopSitesByBilledAmount(DateTime $startDate, DateTime $endDate, $limit = 10)
     {
         $qb = $this->createQueryBuilder('sr');
@@ -100,12 +110,14 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->setParameter('endDate', $endDate, Type::DATE)
             ->groupBy('sr.site')
             ->orderBy('totalBilledAmount', 'DESC')
-            ->setMaxResults($limit)
-        ;
+            ->setMaxResults($limit);
 
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10)
     {
         $qb = $this->createQueryBuilder('sr');
@@ -120,24 +132,27 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
             ->setParameter('publisherId', $publisher->getId(), Type::INTEGER)
             ->groupBy('sr.site')
             ->orderBy('totalEstRevenue', 'DESC')
-            ->setMaxResults($limit)
-        ;
+            ->setMaxResults($limit);
 
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function overrideReport(SiteReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_site`
-                 (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 slot_opportunities, billed_rate, billed_amount, rtb_impressions, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
-                 ) VALUES (:siteId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :slotOpportunities, :billedRate, :billedAmount, :rtbImpressions, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
+                 (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities,
+                 slot_opportunities, billed_rate, billed_amount, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
+                 ) VALUES (:siteId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities,
+                  :slotOpportunities, :billedRate, :billedAmount, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
                  total_opportunities = :totalOpportunities,
                  passbacks = :passbacks,
+                 ad_opportunities = :adOpportunities,
                  fill_rate = :impressions / :slotOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
@@ -147,8 +162,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
                  in_banner_billed_amount = :inBannerBilledAmount,
                  in_banner_billed_rate = :inBannerBilledRate,
                  billed_rate = :billedRate,
-                 billed_amount = :billedAmount,
-                 rtb_impressions = :rtbImpressions
+                 billed_amount = :billedAmount
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -164,6 +178,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         $qb->bindValue('impressions', $report->getImpressions() !== null ? $report->getImpressions() : 0, Type::INTEGER);
         $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
+        $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
         $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
         $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
@@ -172,7 +187,6 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         $qb->bindValue('inBannerBilledRate', $report->getInBannerBilledRate() !== null ? $report->getInBannerBilledRate() : 0);
         $qb->bindValue('billedRate', $report->getBilledRate() !== null ? $report->getBilledRate() : 0);
         $qb->bindValue('billedAmount', $report->getBilledAmount() !== null ? $report->getBilledAmount() : 0);
-        $qb->bindValue('rtbImpressions', $report->getRtbImpressions() !== null ? $report->getRtbImpressions() : 0);
 
         $connection->beginTransaction();
         try {

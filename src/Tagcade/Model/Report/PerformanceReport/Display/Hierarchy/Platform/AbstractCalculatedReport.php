@@ -23,7 +23,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     {
         $this->slotOpportunities = 0;
         $this->billedAmount = 0;
-        $this->rtbImpressions = 0;
 
         $this->inBannerTimeouts = 0;
         $this->inBannerImpressions = 0;
@@ -70,7 +69,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         }
 
         $this->addSlotOpportunities($subReport->getSlotOpportunities());
-        $this->addRtbImpressions($subReport->getRtbImpressions());
         $this->addBilledAmount($subReport->getBilledAmount());
 
         $this->addInBannerBilledAmount($subReport->getInBannerBilledAmount());
@@ -85,11 +83,6 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     protected function addSlotOpportunities($slotOpportunities)
     {
         $this->slotOpportunities += $slotOpportunities;
-    }
-
-    protected function addRtbImpressions($rtbImpressions)
-    {
-        $this->rtbImpressions += $rtbImpressions;
     }
 
     protected function addBilledAmount($billedAmount)

@@ -11,17 +11,12 @@ class AdSlotReportCount implements BaseAdSlotReportCountInterface
     private $inBannerRequests = 0;
     private $inBannerImpressions = 0;
     private $inBannerTimeouts = 0;
-    private $rtbImpression = 0;
     private $hbRequests = 0;
 
     function __construct(array $reportCounts)
     {
         if (array_key_exists(CacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY, $reportCounts)) {
             $this->slotOpportunities = (int)$reportCounts[CacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY];
-        }
-
-        if (array_key_exists(CacheEventCounter::CACHE_KEY_RTB_IMPRESSION, $reportCounts)) {
-            $this->rtbImpression = (int)$reportCounts[CacheEventCounter::CACHE_KEY_RTB_IMPRESSION];
         }
 
         if (array_key_exists(CacheEventCounter::CACHE_KEY_HB_BID_REQUEST, $reportCounts)) {
@@ -47,14 +42,6 @@ class AdSlotReportCount implements BaseAdSlotReportCountInterface
     public function getSlotOpportunities()
     {
         return $this->slotOpportunities;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRtbImpression()
-    {
-        return $this->rtbImpression;
     }
 
     /**

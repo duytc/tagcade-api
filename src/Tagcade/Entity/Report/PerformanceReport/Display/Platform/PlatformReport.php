@@ -15,11 +15,12 @@ class PlatformReport extends PlatformReportModel
     protected $fillRate;
     protected $estRevenue;
     protected $estCpm;
+    protected $adOpportunities;
+
     protected $slotOpportunities;
     protected $billedAmount;
     protected $billedRate;
     protected $subReports;
-    protected $rtbImpressions;
 
     protected $inBannerRequests;
     protected $inBannerImpressions;

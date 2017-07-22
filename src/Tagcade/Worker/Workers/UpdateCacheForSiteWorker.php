@@ -2,7 +2,7 @@
 
 namespace Tagcade\Worker\Workers;
 
-use StdClass;
+use stdClass;
 use Tagcade\Cache\V2\TagCacheV2Interface;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\SiteManagerInterface;
@@ -37,7 +37,7 @@ class UpdateCacheForSiteWorker
      *
      * @param StdClass $params
      */
-    public function updateCacheForSites(StdClass $params)
+    public function updateCacheForSites(stdClass $params)
     {
         $siteIds = $params->siteIds;
 
@@ -57,8 +57,8 @@ class UpdateCacheForSiteWorker
 
             foreach ($adSlots as $adSlot) {
                 /** @var DisplayAdSlotInterface|ReportableAdSlotInterface $adSlot */
-                if (!$adSlot instanceof DisplayAdSlotInterface || !$adSlot->isRTBEnabled()) {
-                    continue; // only supported DisplayAdSlot and rtbStatus is enabled
+                if (!$adSlot instanceof DisplayAdSlotInterface) {
+                    continue; // only supported DisplayAdSlot
                 }
 
                 $this->tagCache->refreshCacheForReportableAdSlot($adSlot, true);

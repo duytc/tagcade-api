@@ -10,7 +10,6 @@ class AccountReportCount implements BaseAdSlotReportCountInterface
     private $slotOpportunities = 0;
     private $opportunities = 0;
     private $impression = 0;
-    private $rtbImpression = 0;
     private $hbRequests = 0;
     private $passbacks = 0;
     private $fallbacks = 0;
@@ -26,10 +25,6 @@ class AccountReportCount implements BaseAdSlotReportCountInterface
 
         if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY, $reportCounts)) {
             $this->opportunities = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY];
-        }
-
-        if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION, $reportCounts)) {
-            $this->rtbImpression = (int)$reportCounts[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION];
         }
 
         if (array_key_exists(SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST, $reportCounts)) {
@@ -95,14 +90,6 @@ class AccountReportCount implements BaseAdSlotReportCountInterface
     public function getFallbacks()
     {
         return $this->fallbacks;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRtbImpression()
-    {
-        return $this->rtbImpression;
     }
 
     /**

@@ -80,11 +80,6 @@ interface UserEntityInterface extends ModelInterface
     /**
      * @return bool
      */
-    public function hasRtbModule();
-
-    /**
-     * @return bool
-     */
     public function hasHeaderBiddingModule();
 
     /**

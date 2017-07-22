@@ -11,6 +11,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
             generator:
                 strategy: IDENTITY
     fields:
+        # common Report metrics
         date:
             type: date
         name:
@@ -42,6 +43,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
             type: decimal
             scale: 4
             nullable: true
+        adOpportunities:
+            type: integer
+            nullable: true
+        # Impression Breakdown
         firstOpportunities:
             type: integer
         verifiedImpressions:

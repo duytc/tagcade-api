@@ -36,9 +36,11 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AccountReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new AccountReport();
+
+        /** @var AccountReportType $reportType */
         $publisher = $reportType->getPublisher();
         $publisherName = $publisher->getCompany();
 
@@ -62,6 +64,9 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
         return $reportType instanceof AccountReportType;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
     {
         if (!$report instanceof AccountReport) {

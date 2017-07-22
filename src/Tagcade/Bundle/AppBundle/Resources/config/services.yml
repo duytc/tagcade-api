@@ -215,11 +215,6 @@ services:
         calls:
             - [setValidator, ["@tagcade_api.service.tag_library.checksum_validator"]]
 
-    tagcade_app.service.core.ad_tag.partner_tag_id_finder:
-        class: Tagcade\Service\Core\AdTag\PartnerTagIdFinder
-        arguments:
-            - '@tagcade.repository.ad_tag'
-
     tagcade_app.service.core.display_blacklist.refresh_display_blacklist_cache:
         class: Tagcade\Service\Core\DisplayBlacklist\RefreshBlacklistCacheService
         arguments:
@@ -241,19 +236,6 @@ services:
         class: Tagcade\Service\Core\VideoDemandPartner\DemandPartnerService
         arguments:
             - '@doctrine.orm.default_entity_manager'
-
-    tagcade_app.service.core.site.site_service:
-        class: Tagcade\Service\Core\Site\SiteService
-        arguments:
-            - "@tagcade_app.service.core.ad_network.ad_network_service"
-            - @tagcade.repository.site
-            - @tagcade_user.domain_manager.sub_publisher
-
-    tagcade_app.service.core.exchange.exchange_cache_updater:
-        class: Tagcade\Service\Core\Exchange\ExchangeCacheUpdater
-        arguments:
-            - @tagcade_user.domain_manager.publisher
-            - %rtb.exchanges%
 
     tagcade_app.service.core.video_demand_ad_tag.deploy_library_video_demand_ad_tag:
         class: Tagcade\Service\Core\VideoDemandAdTag\DeployLibraryVideoDemandAdTagService

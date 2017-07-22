@@ -4,16 +4,17 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport;
 use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot as RonAdSlotReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
-use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot as RonAdSlotReportType;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\BillableSnapshotCreatorAbstract;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\ConstructCalculatedReportTrait;
 
 class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAdSlotInterface
 {
     use ConstructCalculatedReportTrait;
+
     /**
      * @var LibrarySlotTagRepositoryInterface
      */
@@ -29,8 +30,9 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
     /**
      * @inheritdoc
      */
-    public function doCreateReport(RonAdSlotReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
+        /** @var RonAdSlotReportType $reportType */
         $ronAdSlot = $reportType->getRonAdSlot();
         $segment = $reportType->getSegment();
 
@@ -38,8 +40,7 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
         $report
             ->setRonAdSlot($ronAdSlot)
             ->setSegment($segment)
-            ->setDate($this->getDate())
-        ;
+            ->setDate($this->getDate());
 
         $ronAdSlotReportCounts[] = $this->eventCounter->getRonAdSlotReport($ronAdSlot->getId(), $segment instanceof SegmentModelInterface ? $segment->getId() : null);
 
@@ -50,7 +51,6 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
 
         return $report;
     }
-
 
     /**
      * @inheritdoc

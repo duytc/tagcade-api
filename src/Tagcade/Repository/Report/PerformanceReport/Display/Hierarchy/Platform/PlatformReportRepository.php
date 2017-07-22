@@ -10,14 +10,19 @@ use Tagcade\Repository\Report\PerformanceReport\Display\AbstractReportRepository
 
 class PlatformReportRepository extends AbstractReportRepository implements PlatformReportRepositoryInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function getReportFor(DateTime $startDate, DateTime $endDate)
     {
         return $this->getReportsInRange($startDate, $endDate)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getSumBilledAmountForDateRange(DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -28,8 +33,7 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()
-            ->getSingleScalarResult()
-        ;
+            ->getSingleScalarResult();
 
         if (null === $result) {
             return 0;
@@ -38,6 +42,9 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getStatsSummaryForDateRange(DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');
@@ -48,24 +55,27 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
             ->setParameter('start_date', $startDate, Type::DATE)
             ->setParameter('end_date', $endDate, Type::DATE)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getOneOrNullResult();
 
         return $result;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function overrideReport(PlatformReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform`
-                 (date, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 slot_opportunities, billed_rate, billed_amount, rtb_impressions, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
-                 ) VALUES (:date, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :slotOpportunities, :billedRate, :billedAmount, :rtbImpressions, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
+                 (date, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities,
+                 slot_opportunities, billed_rate, billed_amount, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
+                 ) VALUES (:date, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities,
+                  :slotOpportunities, :billedRate, :billedAmount, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
                  total_opportunities = :totalOpportunities,
                  passbacks = :passbacks,
+                 ad_opportunities = :adOpportunities,
                  fill_rate = :impressions / :slotOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
@@ -75,8 +85,7 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
                  in_banner_billed_amount = :inBannerBilledAmount,
                  in_banner_billed_rate = :inBannerBilledRate,
                  billed_rate = :billedRate,
-                 billed_amount = :billedAmount,
-                 rtb_impressions = :rtbImpressions
+                 billed_amount = :billedAmount
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -89,6 +98,7 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
         $qb->bindValue('impressions', $report->getImpressions() !== null ? $report->getImpressions() : 0, Type::INTEGER);
         $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
+        $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
         $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
         $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
@@ -97,7 +107,6 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
         $qb->bindValue('inBannerBilledRate', $report->getInBannerBilledRate() !== null ? $report->getInBannerBilledRate() : 0);
         $qb->bindValue('billedRate', $report->getBilledRate() !== null ? $report->getBilledRate() : 0);
         $qb->bindValue('billedAmount', $report->getBilledAmount() !== null ? $report->getBilledAmount() : 0);
-        $qb->bindValue('rtbImpressions', $report->getRtbImpressions() !== null ? $report->getRtbImpressions() : 0);
 
         $connection->beginTransaction();
         try {

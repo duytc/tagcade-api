@@ -22,6 +22,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     protected $passbacks;
     protected $estCpm;
     protected $estRevenue;
+    protected $adOpportunities;
 
     protected $averageTotalOpportunities;
     protected $averageImpressions;
@@ -29,6 +30,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     protected $averageEstCpm;
     protected $averageEstRevenue;
     protected $averageFillRate;
+    protected $averageAdOpportunities;
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
@@ -42,16 +44,18 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
      * @param float $fillRate
      * @param float $estCpm
      * @param float $estRevenue
+     * @param int $adOpportunities
      * @param float $averageTotalOpportunities
      * @param float $averageImpressions
      * @param float $averagePassbacks
      * @param float $averageEstCpm
      * @param float $averageEstRevenue
      * @param float $averageFillRate
+     * @param float $averageAdOpportunities
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-        $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-        $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate
+                                $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
+                                $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities
     )
     {
         $this->reportType = $reportType;
@@ -65,6 +69,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         $this->fillRate = $fillRate;
         $this->estCpm = round($estCpm, 4);
         $this->estRevenue = round($estRevenue, 4);
+        $this->adOpportunities = $adOpportunities;
 
         $this->averageTotalOpportunities = round($averageTotalOpportunities);
         $this->averageImpressions = round($averageImpressions);
@@ -72,6 +77,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         $this->averageEstCpm = round($averageEstCpm, 4);
         $this->averageEstRevenue = round($averageEstRevenue, 4);
         $this->averageFillRate = round($averageFillRate, 4);
+        $this->averageAdOpportunities = round($averageAdOpportunities, 4);
     }
 
     /**
@@ -123,6 +129,7 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     {
         return $this->date;
     }
+
     /**
      * @return int
      */
@@ -196,6 +203,14 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     }
 
     /**
+     * @return int
+     */
+    public function getAdOpportunities()
+    {
+        return $this->adOpportunities;
+    }
+
+    /**
      * @return float
      */
     public function getAverageEstCpm()
@@ -217,5 +232,13 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     public function getAverageFillRate()
     {
         return $this->averageFillRate;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageAdOpportunities()
+    {
+        return $this->averageAdOpportunities;
     }
 }

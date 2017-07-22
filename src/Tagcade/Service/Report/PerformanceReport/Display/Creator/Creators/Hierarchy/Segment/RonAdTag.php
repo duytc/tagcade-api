@@ -5,13 +5,17 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdTagReport;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
 use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdTag as RonAdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Model\Report\SourceReport\Report;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
 use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 
 class RonAdTag extends CreatorAbstract implements RonAdTagInterface
 {
+    use CalculateAdOpportunitiesTrait;
+
     /**
      * @var EstCpmCalculatorInterface
      */
@@ -25,10 +29,11 @@ class RonAdTag extends CreatorAbstract implements RonAdTagInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(RonAdTagReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $report = new RonAdTagReport();
 
+        /** @var RonAdTagReportType $reportType */
         $ronAdTag = $reportType->getRonAdTag();
         $segment = $reportType->getSegment();
         $segmentId = $segment instanceof SegmentModelInterface ? $segment->getId(): null;
@@ -46,9 +51,12 @@ class RonAdTag extends CreatorAbstract implements RonAdTagInterface
             ->setFirstOpportunities($firstOpportunities)
             ->setVerifiedImpressions($verifiedImpressions)
             ->setEstCpm($this->estCpmCalculator->getEstCpmForAdTag($ronAdTag, $this->getDate()))
+            ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities));
         ;
 
         if (!$isNativeAdSlot) {
+            $passbacks = $this->eventCounter->getPassbackCount($ronAdTag->getId());
+
             $report
                 ->setPassbacks($this->eventCounter->getRonPassbackCount($ronAdTag->getId(), $segmentId))
                 ->setUnverifiedImpressions($this->eventCounter->getRonUnverifiedImpressionCount($ronAdTag->getId(), $segmentId))
@@ -56,6 +64,7 @@ class RonAdTag extends CreatorAbstract implements RonAdTagInterface
                 ->setVoidImpressions($this->eventCounter->getRonVoidImpressionCount($ronAdTag->getId(), $segmentId))
                 ->setClicks($this->eventCounter->getRonClickCount($ronAdTag->getId(), $segmentId))
                 ->setPosition($ronAdTag->getPosition())
+                ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities, $passbacks));
             ;
         }
 

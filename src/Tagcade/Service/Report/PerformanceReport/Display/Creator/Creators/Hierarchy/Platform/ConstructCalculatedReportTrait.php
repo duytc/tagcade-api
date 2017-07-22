@@ -3,11 +3,15 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;
 
-trait ConstructCalculatedReportTrait {
+trait ConstructCalculatedReportTrait
+{
+    use CalculateAdOpportunitiesTrait;
+
     protected function constructReportModel(ReportInterface $report, array $data)
     {
         if (!$report instanceof CalculatedReportInterface) {
@@ -17,13 +21,12 @@ trait ConstructCalculatedReportTrait {
         $report->setTotalOpportunities($data[SnapshotCreatorInterface::CACHE_KEY_OPPORTUNITY])
             ->setSlotOpportunities($data[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY])
             ->setImpressions($data[SnapshotCreatorInterface::CACHE_KEY_IMPRESSION])
-            ->setRtbImpressions($data[SnapshotCreatorInterface::CACHE_KEY_RTB_IMPRESSION])
             ->setPassbacks($data[SnapshotCreatorInterface::CACHE_KEY_PASSBACK])
             ->setInBannerRequests(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST] : 0)
             ->setInBannerTimeouts(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] : 0)
             ->setInBannerImpressions(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] : 0)
             ->setFillRate()
-        ;
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
 
         if (isset($data[PlatformSnapshot::BILLED_AMOUNT])) {
             $report->setBilledAmount($data[PlatformSnapshot::BILLED_AMOUNT]);

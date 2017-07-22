@@ -11,8 +11,6 @@ class Site extends SiteModel
     protected $name;
     protected $domain;
     protected $deletedAt;
-    protected $rtbStatus;
-    protected $rtb;
     protected $enableSourceReport;
     protected $sourceReportSiteConfigs;
     protected $channelSites;

@@ -26,10 +26,11 @@ class Account extends CreatorAbstract implements AccountInterface
     /**
      * @inheritdoc
      */
-    public function doCreateReport(AccountReportType $reportType)
+    public function doCreateReport(ReportTypeInterface $reportType)
     {
         $this->syncEventCounterForSubReports();
 
+        /** @var AccountReportType $reportType */
         $report = new AccountReport();
 
         $publisher = $reportType->getPublisher();

@@ -10,6 +10,13 @@ use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork\AdNetwork
 
 interface SiteReportRepositoryInterface
 {
+    /**
+     * @param SiteInterface $site
+     * @param AdNetworkInterface $adNetwork
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return array
+     */
     public function getReportFor(SiteInterface $site, AdNetworkInterface $adNetwork, DateTime $startDate, DateTime $endDate);
 
     public function overrideReport(AdNetworkReportInterface $superReport, SiteReportInterface $report);

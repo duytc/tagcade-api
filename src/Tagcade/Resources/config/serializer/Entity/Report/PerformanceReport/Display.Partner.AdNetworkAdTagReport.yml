@@ -29,3 +29,6 @@ Tagcade\Entity\Report\PerformanceReport\Display\Partner\AdNetworkAdTagReport:
         estCpm:
             expose: true
             groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]
+        adOpportunities:
+            expose: true
+            groups: [network_network_ad_tag_report.detail, network_network_ad_tag_report.summary]

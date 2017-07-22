@@ -2,13 +2,14 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
-use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
-use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
-use Tagcade\Model\Report\CalculateRevenueTrait;
-use Tagcade\Model\Report\CalculateRatiosTrait;
-use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\CalculateRatiosTrait;
+use Tagcade\Model\Report\CalculateRevenueTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGroup;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportResultInterface;
 
 
 /**
@@ -20,12 +21,12 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Repor
  *
  * For this service, we need to create a new one and return it every time the service is requested
  */
-
 abstract class AbstractGrouper implements GrouperInterface
 {
     use CalculateRatiosTrait;
     use CalculateWeightedValueTrait;
     use CalculateRevenueTrait;
+    use CalculateAdOpportunitiesTrait;
 
     private $reportType;
     private $reports;
@@ -38,6 +39,7 @@ abstract class AbstractGrouper implements GrouperInterface
     private $fillRate;
     private $estCpm;
     private $estRevenue;
+    private $adOpportunities;
 
     private $averageTotalOpportunities;
     private $averageImpressions;
@@ -45,6 +47,7 @@ abstract class AbstractGrouper implements GrouperInterface
     private $averageFillRate;
     private $averageEstCpm;
     private $averageEstRevenue;
+    private $averageAdOpportunities;
 
     private $totalEstCpm;
     private $totalFillRate;
@@ -83,12 +86,14 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->getFillRate(),
             $this->getEstCpm(),
             $this->getEstRevenue(),
+            $this->getAdOpportunities(),
             $this->getAverageTotalOpportunities(),
             $this->getAverageImpressions(),
             $this->getAveragePassbacks(),
             $this->getAverageEstCpm(),
             $this->getAverageEstRevenue(),
-            $this->getAverageFillRate()
+            $this->getAverageFillRate(),
+            $this->getAverageAdOpportunities()
         );
     }
 
@@ -97,13 +102,13 @@ abstract class AbstractGrouper implements GrouperInterface
      */
     protected function groupReports(array $reports)
     {
-        foreach($reports as $report) {
+        foreach ($reports as $report) {
             $this->doGroupReport($report);
         }
 
         $this->setFillRate();
-//        $this->estCpm = $this->calculateWeightedValue($reports, $frequency = 'estCpm', $weight = 'estRevenue');
         $this->estCpm = $this->getRatio($this->getEstRevenue() * 1000, $this->getImpressions());
+        $this->adOpportunities = $this->calculateAdOpportunities($this->totalOpportunities, $this->passbacks);
 
         // Calculate average for totalOpportunities,impressions and passbacks
         $reportCount = count($this->getReports());
@@ -113,6 +118,7 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->averageEstCpm = $this->getRatio($this->getTotalEstCpm(), $reportCount);
         $this->averageFillRate = $this->getRatio($this->getTotalFillRate(), $reportCount);
         $this->averageEstRevenue = $this->getRatio($this->getEstRevenue(), $reportCount);
+        $this->averageAdOpportunities = $this->getRatio($this->getAdOpportunities(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -127,32 +133,32 @@ abstract class AbstractGrouper implements GrouperInterface
 
     protected function addTotalOpportunities($totalOpportunities)
     {
-        $this->totalOpportunities += (int) $totalOpportunities;
+        $this->totalOpportunities += (int)$totalOpportunities;
     }
 
     protected function addImpressions($impressions)
     {
-        $this->impressions += (int) $impressions;
+        $this->impressions += (int)$impressions;
     }
 
     protected function addPassbacks($passbacks)
     {
-        $this->passbacks += (int) $passbacks;
+        $this->passbacks += (int)$passbacks;
     }
 
     protected function addEstRevenue($estRevenue)
     {
-        $this->estRevenue += (float) $estRevenue;
+        $this->estRevenue += (float)$estRevenue;
     }
 
     protected function addTotalEstCpm($estCpm)
     {
-        $this->totalEstCpm += (float) $estCpm;
+        $this->totalEstCpm += (float)$estCpm;
     }
 
     protected function addTotalFillRate($fillRate)
     {
-        $this->totalFillRate += (float) $fillRate;
+        $this->totalFillRate += (float)$fillRate;
     }
 
     protected function setFillRate()
@@ -235,6 +241,11 @@ abstract class AbstractGrouper implements GrouperInterface
         return $this->estRevenue;
     }
 
+    public function getAdOpportunities()
+    {
+        return $this->adOpportunities;
+    }
+
     public function getAverageEstCpm()
     {
         return $this->averageEstCpm;
@@ -258,6 +269,11 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getTotalFillRate()
     {
         return $this->totalFillRate;
+    }
+
+    public function getAverageAdOpportunities()
+    {
+        return $this->averageAdOpportunities;
     }
 
     /**
@@ -308,6 +324,14 @@ abstract class AbstractGrouper implements GrouperInterface
     {
         $this->estRevenue = $estRevenue;
         return $this;
+    }
+
+    /**
+     * @param int $adOpportunities
+     */
+    public function setAdOpportunities($adOpportunities)
+    {
+        $this->adOpportunities = $adOpportunities;
     }
 
     /**
@@ -368,5 +392,13 @@ abstract class AbstractGrouper implements GrouperInterface
     {
         $this->averageEstRevenue = $averageEstRevenue;
         return $this;
+    }
+
+    /**
+     * @param float $averageAdOpportunities
+     */
+    public function setAverageAdOpportunities($averageAdOpportunities)
+    {
+        $this->averageAdOpportunities = $averageAdOpportunities;
     }
 }

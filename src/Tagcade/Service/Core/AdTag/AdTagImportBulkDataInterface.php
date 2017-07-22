@@ -5,18 +5,17 @@ namespace Tagcade\Service\Core\AdTag;
 
 
 use Tagcade\Entity\Core\DisplayAdSlot;
-use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 
-interface AdTagImportBulkDataInterface {
-
+interface AdTagImportBulkDataInterface
+{
     /**
      * @param DisplayAdSlot $displayAdSlotObject
      * @param array $allAdTags
      * @param $dryOption
      * @return mixed
      */
-    public function importAdTagsForOneAdSlot(DisplayAdSlot $displayAdSlotObject, array $allAdTags, $dryOption );
+    public function importAdTagsForOneAdSlot(DisplayAdSlot $displayAdSlotObject, array $allAdTags, $dryOption);
 
     /**
      * @param $excelRows
@@ -29,4 +28,4 @@ interface AdTagImportBulkDataInterface {
      * @return mixed
      */
     public function getAdSlotNameIndex();
-} 
+}

@@ -20,11 +20,18 @@ class Segment extends AbstractSelector
         $this->repository = $repository;
     }
 
-    protected function doGetReports(SegmentReportType $reportType, DateTime $startDate, DateTime $endDate)
+    /**
+     * @inheritdoc
+     */
+    protected function doGetReports(ReportTypeInterface $reportType, DateTime $startDate, DateTime $endDate, $queryParams = null)
     {
+        /** @var SegmentReportType $reportType */
         return $this->repository->getReportFor($reportType->getSegment(), $startDate, $endDate);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function supportsReportType(ReportTypeInterface $reportType)
     {
         return $reportType instanceof SegmentReportType;

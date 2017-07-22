@@ -30,7 +30,6 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_OPPORTUNITY            = 'opportunities';
     const KEY_SLOT_OPPORTUNITY       = 'opportunities';
     const KEY_IMPRESSION             = 'impressions';
-    const KEY_RTB_IMPRESSION         = 'impression';
     const KEY_HB_BID_REQUEST         = 'hb_bid_request';
     const KEY_PASSBACK               = 'passbacks';
     const KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
@@ -80,18 +79,16 @@ class TestEventCounter extends AbstractEventCounter
             $this->seedRandomGenerator();
 
             $slotOpportunities = mt_rand($minSlotOpportunities, $maxSlotOpportunities);
-            $rtbImpressions = mt_rand(0, $slotOpportunities * 0.01);
             $inBannerRequests = mt_rand(0, $slotOpportunities * 0.02);
             $inBannerImpressions = mt_rand(0, $inBannerRequests);
-            $hbRequests = mt_rand(0, $rtbImpressions);
-            $opportunitiesRemaining = $slotOpportunities - $rtbImpressions;
+            $hbRequests = mt_rand(0, $slotOpportunities * 0.01);
+            $opportunitiesRemaining = $slotOpportunities;
 
             $publisherId = $adSlot->getSite()->getPublisherId();
             if (!isset($this->accountData[$publisherId])) {
                 $this->accountData[$publisherId] = array(
                     static::CACHE_KEY_ACC_SLOT_OPPORTUNITY => 0,
                     static::CACHE_KEY_ACC_OPPORTUNITY => 0,
-                    static::KEY_RTB_IMPRESSION => 0,
                     static::KEY_IN_BANNER_REQUESTS => 0,
                     static::KEY_IN_BANNER_TIMEOUT => 0,
                     static::KEY_IN_BANNER_IMPRESSIONS => 0,
@@ -102,12 +99,10 @@ class TestEventCounter extends AbstractEventCounter
 
             if (!$adSlot instanceof DynamicAdSlotInterface) {
                 $this->adSlotData[$adSlot->getId()] = [
-                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
-                    static::KEY_RTB_IMPRESSION => $rtbImpressions
+                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities
                 ];
 
                 $this->accountData[$publisherId][static::CACHE_KEY_ACC_SLOT_OPPORTUNITY] += $slotOpportunities;
-                $this->accountData[$publisherId][static::KEY_RTB_IMPRESSION] += $rtbImpressions;
             }
 
             if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->getSite()->getPublisher()->hasInBannerModule()) {
@@ -130,21 +125,18 @@ class TestEventCounter extends AbstractEventCounter
                 $currentData = array_key_exists($ronAdSlot->getId(), $this->ronAdSlotData) ? $this->ronAdSlotData[$ronAdSlot->getId()] : null;
 
                 $this->ronAdSlotData[$ronAdSlot->getId()] = $this->arraySum([
-                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities,
-                    static::KEY_RTB_IMPRESSION => $rtbImpressions,
+                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities
                 ], $currentData);
 
                 $totalRonSlotOpportunities = $this->ronAdSlotData[$ronAdSlot->getId()][static::KEY_SLOT_OPPORTUNITY];
                 $segmentCount = count($ronAdSlot->getSegments());
                 $slotSegments = $this->distributeValueToArray($totalRonSlotOpportunities, $segmentCount);
-                $slotSegmentRtbImpressions = $this->distributeValueToArray($rtbImpressions, $segmentCount);
                 foreach ($ronAdSlot->getSegments() as $index => $segment) {
                     /**
                      * @var SegmentInterface $segment
                      */
                     $this->ronAdSlotSegmentData[$ronAdSlot->getId()][$segment->getId()] =  [
-                        static::KEY_SLOT_OPPORTUNITY => $slotSegments[$index],
-                        static::KEY_RTB_IMPRESSION => $slotSegmentRtbImpressions[$index],
+                        static::KEY_SLOT_OPPORTUNITY => $slotSegments[$index]
                     ];
                 }
             }
@@ -351,25 +343,6 @@ class TestEventCounter extends AbstractEventCounter
 
         return $this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY];
     }
-
-    public function getRtbImpressionsCount($slotId)
-    {
-        if (!isset($this->adSlotData[$slotId][static::KEY_RTB_IMPRESSION])) {
-            return false;
-        }
-
-        return $this->adSlotData[$slotId][static::KEY_RTB_IMPRESSION];
-    }
-
-    public function getAccountRtbImpressionsCount($publisherId)
-    {
-        if (!isset($this->accountData[$publisherId][static::KEY_RTB_IMPRESSION])) {
-            return false;
-        }
-
-        return $this->accountData[$publisherId][static::KEY_RTB_IMPRESSION];
-    }
-
 
     public function getHeaderBidRequestCount($slotId)
     {
@@ -608,20 +581,6 @@ class TestEventCounter extends AbstractEventCounter
 
         return null !== $segment ? $this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_SLOT_OPPORTUNITY] : $this->ronAdSlotData[$ronSlotId][static::KEY_SLOT_OPPORTUNITY];
     }
-
-    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null)
-    {
-        if (!isset($this->ronAdSlotData[$ronSlotId][static::KEY_RTB_IMPRESSION])) {
-            return false;
-        }
-
-        if (null !== $segment && !isset($this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_RTB_IMPRESSION] )) {
-            return false;
-        }
-
-        return null !== $segment ? $this->ronAdSlotSegmentData[$ronSlotId][$segment][static::KEY_RTB_IMPRESSION] : $this->ronAdSlotData[$ronSlotId][static::KEY_RTB_IMPRESSION];
-    }
-
 
     /**
      * @param int $ronTagId

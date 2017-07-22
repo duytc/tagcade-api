@@ -29,12 +29,6 @@ interface EventCounterInterface
 
     /**
      * @param $slotId
-     * @return int
-     */
-    public function getRtbImpressionsCount($slotId);
-
-    /**
-     * @param $slotId
      * @return mixed
      */
     public function getHeaderBidRequestCount($slotId);
@@ -54,9 +48,6 @@ interface EventCounterInterface
      */
     public function getRonInBannerRequestCount($slotId, $segment = null);
 
-    public function getAccountRtbImpressionsCount($publisherId);
-
-    public function getRonSlotRtbImpressionsCount($ronSlotId, $segment = null);
     /**
      * @param $slotId
      * @return mixed

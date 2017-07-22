@@ -13,7 +13,6 @@ use Tagcade\Entity\Core\Site;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\ChannelSiteInterface;
 use Tagcade\Model\Core\SiteInterface;
-use Tagcade\Model\RTBEnabledInterface as RTB_STATUS;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\StringUtilTrait;
@@ -30,13 +29,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('domain')
             ->add('enableSourceReport')
-            ->add('players')
-            ->add('rtbStatus', ChoiceType::class, array(
-                'choices' => array(
-                    RTB_STATUS::RTB_ENABLED,
-                    RTB_STATUS::RTB_DISABLED,
-                    RTB_STATUS::RTB_INHERITED
-                )));
+            ->add('players');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -58,22 +51,12 @@ class SiteFormType extends AbstractRoleSpecificFormType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) {
-                $form = $event->getForm();
-
                 // validate players before submitting if Publisher and Publisher does not have Video Module
                 if ($this->userRole instanceof PublisherInterface && !$this->userRole->getUser()->hasVideoAnalyticsModule()) {
                     $form = $event->getForm();
 
                     if ($form->has('players') && null !== $form->get('players')->getData()) {
                         $form->get('players')->addError(new FormError('this user does not have module video enabled'));
-                        return;
-                    }
-                }
-
-                // validate rtbStatus before submitting
-                if ($this->userRole instanceof PublisherInterface && !$this->userRole->hasRtbModule()) {
-                    if ($form->has('rtbStatus') && $form->get('rtbStatus')->getData() !== null) {
-                        $form->get('rtbStatus')->addError(new FormError('this site belongs to publisher that does not have rtb module enabled'));
                         return;
                     }
                 }

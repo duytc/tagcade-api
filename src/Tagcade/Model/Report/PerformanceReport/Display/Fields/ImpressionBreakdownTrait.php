@@ -13,95 +13,116 @@ trait ImpressionBreakdownTrait
     protected $clicks;
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getBlankImpressions()
     {
         return $this->blankImpressions;
     }
 
-
+    /**
+     * @param $blankImpressions
+     * @return $this
+     */
     public function setBlankImpressions($blankImpressions)
     {
-        $this->blankImpressions = (int) $blankImpressions;
+        $this->blankImpressions = (int)$blankImpressions;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getFirstOpportunities()
     {
         return $this->firstOpportunities;
     }
 
+    /**
+     * @param $firstOpportunities
+     * @return $this
+     */
     public function setFirstOpportunities($firstOpportunities)
     {
-        $this->firstOpportunities = (int) $firstOpportunities;
+        $this->firstOpportunities = (int)$firstOpportunities;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getUnverifiedImpressions()
     {
         return $this->unverifiedImpressions;
     }
 
+    /**
+     * @param $unverifiedImpressions
+     * @return $this
+     */
     public function setUnverifiedImpressions($unverifiedImpressions)
     {
-        $this->unverifiedImpressions = (int) $unverifiedImpressions;
+        $this->unverifiedImpressions = (int)$unverifiedImpressions;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVerifiedImpressions()
     {
         return $this->verifiedImpressions;
     }
 
+    /**
+     * @param $verifiedImpressions
+     * @return $this
+     */
     public function setVerifiedImpressions($verifiedImpressions)
     {
-        $this->verifiedImpressions = (int) $verifiedImpressions;
+        $this->verifiedImpressions = (int)$verifiedImpressions;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getClicks()
     {
         return $this->clicks;
     }
 
+    /**
+     * @param $clicks
+     * @return $this
+     */
     public function setClicks($clicks)
     {
-        $this->clicks = (int) $clicks;
+        $this->clicks = (int)$clicks;
 
         return $this;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVoidImpressions()
     {
         return $this->voidImpressions;
     }
 
+    /**
+     * @param $voidImpressions
+     * @return $this
+     */
     public function setVoidImpressions($voidImpressions)
     {
-        $this->voidImpressions = (int) $voidImpressions;
+        $this->voidImpressions = (int)$voidImpressions;
 
         return $this;
     }
-
-
-} 
+}

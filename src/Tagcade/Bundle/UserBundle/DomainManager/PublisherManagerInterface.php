@@ -69,8 +69,6 @@ interface PublisherManagerInterface
 
     public function allPublisherWithSourceReportModule();
 
-    public function allPublisherWithRtbModule();
-
     /**
      * @param int $id
      * @return PublisherInterface|bool

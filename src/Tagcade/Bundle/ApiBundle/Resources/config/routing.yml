@@ -103,11 +103,6 @@ api_reset_password_reset:
     defaults: { _controller: TagcadeApiBundle:ResetPassword:reset }
     methods: [POST]
 
-api_exchange:
-    type: rest
-    resource: Tagcade\Bundle\ApiBundle\Controller\ExchangeController
-    name_prefix:  api_1_
-
 api_bidders:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\BidderController
