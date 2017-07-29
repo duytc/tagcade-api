@@ -33,6 +33,7 @@ class UserFormType extends AbstractRoleSpecificFormType
         'clicks',
         'passbacks',
         'fillRate',
+        'adOpportunities'
     ];
 
     static $REPORT_SETTINGS_VR_METRICS_KEYS = [
