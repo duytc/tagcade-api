@@ -34,6 +34,10 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setPassbacks($data['passbacks']);
         }
 
+        if (array_key_exists('adOpportunities', $data)) {
+            $this->setAdOpportunities($data['adOpportunities']);
+        }
+
         if (array_key_exists('billedAmount', $data)) {
             $this->setBilledAmount($data['billedAmount']);
         }
