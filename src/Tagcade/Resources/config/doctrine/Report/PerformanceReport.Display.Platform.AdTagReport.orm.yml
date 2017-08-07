@@ -63,6 +63,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
         clicks:
             type: integer
             nullable: true
+        refreshes: # opp on refreshes
+            type: integer
+            nullable: true
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag

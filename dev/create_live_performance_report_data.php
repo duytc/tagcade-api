@@ -1,11 +1,14 @@
 <?php
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 $loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
 
 $kernel = new AppKernel('dev', true);
 $kernel->boot();
 
+/** @var ContainerInterface $container */
 $container = $kernel->getContainer();
 
 $adSlotManager = $container->get('tagcade.domain_manager.ad_slot');
@@ -37,6 +40,9 @@ $testEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counte
 $testEventCounter->refreshTestData();
 
 $cache = $container->get('tagcade.cache.app_cache');
+// set no serializer to make sure value is same as come from event processor module, where value is not serialized
+// e.g get opportunities:adtag_12:170803 > "3603" instead of "i:3603;"
+$cache->getRedis()->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_NONE);
 
 $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter($cache,
     $adTagManager,
@@ -400,6 +406,12 @@ foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
         $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_CLICK, $namespace),
         $tagData[$testEventCounter::KEY_CLICK]
     );
+
+    $cache->save(
+        $cacheEventCounter->getCacheKey($cacheEventCounter::CACHE_KEY_REFRESHES, $namespace),
+        $tagData[$testEventCounter::KEY_REFRESHES]
+    );
+
     unset($tagId, $tagData);
 }
 

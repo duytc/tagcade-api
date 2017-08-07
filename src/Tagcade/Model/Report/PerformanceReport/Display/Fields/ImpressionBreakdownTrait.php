@@ -11,6 +11,7 @@ trait ImpressionBreakdownTrait
     protected $blankImpressions;
     protected $voidImpressions;
     protected $clicks;
+    protected $refreshes; // opp on refreshes
 
     /**
      * @return int
@@ -122,6 +123,24 @@ trait ImpressionBreakdownTrait
     public function setVoidImpressions($voidImpressions)
     {
         $this->voidImpressions = (int)$voidImpressions;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRefreshes()
+    {
+        return $this->refreshes;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRefreshes($refreshes)
+    {
+        $this->refreshes = $refreshes;
 
         return $this;
     }

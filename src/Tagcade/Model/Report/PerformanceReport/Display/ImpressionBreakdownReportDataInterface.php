@@ -3,8 +3,8 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display;
 
 
-interface ImpressionBreakdownReportDataInterface extends ReportDataInterface {
-
+interface ImpressionBreakdownReportDataInterface extends ReportDataInterface
+{
     /**
      * @return mixed
      */
@@ -35,4 +35,8 @@ interface ImpressionBreakdownReportDataInterface extends ReportDataInterface {
      */
     public function getVoidImpressions();
 
-} 
+    /**
+     * @return mixed
+     */
+    public function getRefreshes();
+}

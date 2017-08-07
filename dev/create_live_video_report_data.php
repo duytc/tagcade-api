@@ -44,6 +44,9 @@ writeln('   --> Start preparing redis cache');
 writeln('       ...');
 
 $cache = $container->get('tagcade.cache.app_cache');
+// set no serializer to make sure value is same as come from event processor module, where value is not serialized
+// e.g HGETALL video_event_processor:event_count > clicks:demand_tag_39:170804 "8149" instead of clicks:demand_tag_39:170804 "i:8149;"
+$cache->getRedis()->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_NONE);
 
 writeln('   --> Finished preparing redis cache');
 writeln('------------------------------------------------------------------------------------------------------------');

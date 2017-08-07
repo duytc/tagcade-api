@@ -32,6 +32,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const CACHE_KEY_VOID_IMPRESSION        = 'void_impressions';
     const CACHE_KEY_CLICK                  = 'clicks';
+    const CACHE_KEY_REFRESHES              = 'refreshes';
     const CACHE_KEY_FALLBACK               = 'fallbacks'; // legacy
     const CACHE_KEY_PASSBACK               = 'passbacks'; // legacy name is fallbacks
     const CACHE_KEY_FORCED_PASSBACK        = 'forced_passbacks'; // not counted yet for now
@@ -71,6 +72,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         self::CACHE_KEY_VOID_IMPRESSION,
         self::CACHE_KEY_CLICK,
         self::CACHE_KEY_FALLBACK,
+        self::CACHE_KEY_REFRESHES,
     ];
 
     private static $accountReportKeys = [
@@ -305,6 +307,18 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         );
     }
 
+    /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getRefreshesCount($tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->fetchFromCache(
+            $this->getCacheKey(self::CACHE_KEY_REFRESHES, $namespace)
+        );
+    }
 
     public function useLocalCache($bool)
     {
@@ -1016,6 +1030,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
             $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_VOID_IMPRESSION, $namespace);
             $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_CLICK, $namespace);
             $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_FALLBACK, $namespace);
+            $adTagKeys[] = $this->getCacheKey(self::CACHE_KEY_REFRESHES, $namespace);
         }
 
         return $adTagKeys;

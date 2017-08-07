@@ -16,6 +16,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $blankImpressions;
     private $voidImpressions;
     private $clicks;
+    private $refreshes;
 
     private $averageFirstOpportunities;
     private $averageVerifiedImpressions;
@@ -23,6 +24,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $averageBlankImpressions;
     private $averageVoidImpressions;
     private $averageClicks;
+    private $averageRefreshes;
 
     public function getGroupedReport()
     {
@@ -52,6 +54,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getBlankImpressions(),
             $this->getVoidImpressions(),
             $this->getClicks(),
+            $this->getRefreshes(),
             $this->getAdOpportunities(),
 
             $this->getAverageFirstOpportunities(),
@@ -60,6 +63,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getAverageBlankImpressions(),
             $this->getAverageVoidImpressions(),
             $this->getAverageClicks(),
+            $this->getAverageRefreshes(),
             $this->getAverageAdOpportunities()
         );
     }
@@ -76,6 +80,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->averageBlankImpressions = $this->getRatio($this->getBlankImpressions(), $reportCount);
         $this->averageVoidImpressions = $this->getRatio($this->getVoidImpressions(), $reportCount);
         $this->averageClicks = $this->getRatio($this->getClicks(), $reportCount);
+        $this->averageRefreshes = $this->getRatio($this->getRefreshes(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -92,6 +97,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->addBlankImpressions($report->getBlankImpressions());
         $this->addVoidImpressions($report->getVoidImpressions());
         $this->addClicks($report->getClicks());
+        $this->addRefreshes($report->getRefreshes());
 
     }
 
@@ -123,6 +129,11 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     protected function addClicks($clicks)
     {
         $this->clicks += (int)$clicks;
+    }
+
+    protected function addRefreshes($refreshes)
+    {
+        $this->refreshes += (int)$refreshes;
     }
 
     /**
@@ -173,6 +184,13 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         return $this->clicks;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getRefreshes()
+    {
+        return $this->refreshes;
+    }
 
     /**
      * @return mixed
@@ -212,6 +230,14 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     public function getAverageClicks()
     {
         return $this->averageClicks;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageRefreshes()
+    {
+        return $this->averageRefreshes;
     }
 
     /**

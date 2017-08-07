@@ -204,6 +204,12 @@ interface EventCounterInterface
     public function getRonClickCount($ronTagId, $segment = null);
 
     /**
+     * @param int $tagId
+     * @return int|bool
+     */
+    public function getRefreshesCount($tagId);
+
+    /**
      *
      * @param array $adSlotIds
      *

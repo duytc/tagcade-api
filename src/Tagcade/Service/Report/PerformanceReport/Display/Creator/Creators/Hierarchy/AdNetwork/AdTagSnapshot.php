@@ -77,7 +77,8 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
             ->setFillRate()
-            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()))
+            ->setRefreshes($data[self::CACHE_KEY_REFRESHES]);
 
         // TODO latter
         $report->setEstCpm((float)0);

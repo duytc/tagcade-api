@@ -38,6 +38,7 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_BLANK_IMPRESSION       = 'blank_impressions';
     const KEY_VOID_IMPRESSION        = 'void_impressions';
     const KEY_CLICK                  = 'clicks';
+    const KEY_REFRESHES              = 'refreshes';
 
     const KEY_IN_BANNER_REQUESTS     = 'requests';
     const KEY_IN_BANNER_IMPRESSIONS  = 'impressions';
@@ -162,6 +163,13 @@ class TestEventCounter extends AbstractEventCounter
                 // can be used to simulate "missing impressions"
                 //$impressions -= mt_rand(0, $impressions);
 
+                // refreshes count, only for display ad slot
+                $refreshes = 0;
+                if ($adSlot->isAutoRefresh()) {
+                    $maxRefreshTimes = (int)$adSlot->getMaximumRefreshTimes();
+                    $refreshes = mt_rand(0, $maxRefreshTimes * $opportunities);
+                }
+
                 $this->adTagData[$adTag->getId()] = [
                     static::KEY_OPPORTUNITY => $opportunities,
                     static::KEY_IMPRESSION => $impressions,
@@ -172,6 +180,7 @@ class TestEventCounter extends AbstractEventCounter
                     static::KEY_BLANK_IMPRESSION => $blankImpressions,
                     static::KEY_VOID_IMPRESSION => $voidImpressions,
                     static::KEY_CLICK => $clicks,
+                    static::KEY_REFRESHES => $refreshes,
                 ];
 
                 $this->accountData[$publisherId][static::CACHE_KEY_ACC_OPPORTUNITY] += $opportunities;
@@ -562,6 +571,18 @@ class TestEventCounter extends AbstractEventCounter
         }
 
         return $this->adTagData[$tagId][static::KEY_CLICK];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRefreshesCount($tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::KEY_REFRESHES])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::KEY_REFRESHES];
     }
 
     /**
