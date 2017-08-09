@@ -12,4 +12,6 @@ interface UserHandlerInterface extends HandlerInterface
     public function allPublishers();
 
     public function allActivePublishers();
+
+    public function allTagPublishers();
 }
