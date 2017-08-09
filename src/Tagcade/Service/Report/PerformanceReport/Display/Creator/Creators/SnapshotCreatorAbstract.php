@@ -23,6 +23,7 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
             self::CACHE_KEY_BLANK_IMPRESSION => 0,
             self::CACHE_KEY_VOID_IMPRESSION => 0,
             self::CACHE_KEY_CLICK => 0,
+            self::CACHE_KEY_REFRESHES => 0,
             self::CACHE_KEY_PASSBACK => 0,
             self::CACHE_KEY_FORCED_PASSBACK => 0,
             self::CACHE_KEY_IN_BANNER_REQUEST => 0,
@@ -58,6 +59,7 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
         $result[self::CACHE_KEY_BLANK_IMPRESSION] += $adTagReportCount->getBlankImpressionCount();
         $result[self::CACHE_KEY_VOID_IMPRESSION] += $adTagReportCount->getVoidImpressionCount();
         $result[self::CACHE_KEY_CLICK] += $adTagReportCount->getClickCount();
+        $result[self::CACHE_KEY_REFRESHES] += $adTagReportCount->getRefreshesCount();
         $result[self::CACHE_KEY_PASSBACK] += $adTagReportCount->getPassbackCount();
         $result[self::CACHE_KEY_FORCED_PASSBACK] += $adTagReportCount->getForcedPassbacks();
     }

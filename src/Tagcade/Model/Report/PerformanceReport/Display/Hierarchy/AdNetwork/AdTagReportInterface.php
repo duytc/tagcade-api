@@ -66,4 +66,15 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
     public function getVoidImpressions();
 
     public function setVoidImpressions($voidImpressions);
+
+    /**
+     * @return mixed
+     */
+    public function getRefreshes();
+
+    /**
+     * @param $refreshes
+     * @return self
+     */
+    public function setRefreshes($refreshes);
 }

@@ -37,6 +37,7 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
             SUM(r.slotOpportunities) as slotOpportunities,
             SUM(r.impressions) as impressions,
             SUM(r.passbacks) as passbacks,
+            SUM(r.adOpportunities) as adOpportunities,
             SUM(r.billedAmount) as billedAmount,
             SUM(r.inBannerRequests) as inBannerRequests,
             SUM(r.inBannerBilledAmount) as inBannerBilledAmount,

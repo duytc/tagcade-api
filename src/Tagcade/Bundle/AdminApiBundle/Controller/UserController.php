@@ -48,6 +48,27 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     }
 
     /**
+     * Get all publishers who have unified report permission
+     * @Rest\View(serializerGroups={"user.detail","user.billing"})
+     * @Rest\Get("/users/urEnabled")
+     * @Rest\QueryParam(name="all", requirements="(true|false)", nullable=true)
+     * @ApiDoc(
+     *  section = "admin",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @return \Tagcade\Bundle\UserBundle\Entity\User[]
+     */
+    public function cgetTagPublishersAction()
+    {
+        return $this->getHandler()->allTagPublishers();
+    }
+
+
+    /**
      * Get a single publisher for the given id
      * @Rest\View(serializerGroups={"user.detail", "user.billing", "billingConfigs.detail","billingConfigs.summary"})
      * @ApiDoc(

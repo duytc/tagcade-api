@@ -35,4 +35,9 @@ class UserHandler extends HandlerAbstract implements UserHandlerInterface
     {
         return $this->getDomainManager()->allActivePublishers();
     }
+
+    public function allTagPublishers()
+    {
+        return $this->getDomainManager()->allPublisherWithUnifiedReportModule();
+    }
 }

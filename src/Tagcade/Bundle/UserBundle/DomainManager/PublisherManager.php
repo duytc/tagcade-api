@@ -137,6 +137,14 @@ class PublisherManager implements PublisherManagerInterface
         return array_values($publishers);
     }
 
+    public function allPublisherWithUnifiedReportModule()
+    {
+        $publishers = array_filter($this->all(), function(UserEntityInterface $user) {
+            return $user->hasRole(static::ROLE_PUBLISHER) && $user->hasUnifiedReportModule() && $user->isEnabled();
+        });
+
+        return array_values($publishers);
+    }
     /**
      * @return array
      */

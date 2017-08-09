@@ -205,7 +205,7 @@ abstract class AbstractReport implements ReportInterface
      */
     public function setAdOpportunities($adOpportunities)
     {
-        $this->adOpportunities = $adOpportunities;
+        $this->adOpportunities = (int)$adOpportunities;
 
         return $this;
     }
