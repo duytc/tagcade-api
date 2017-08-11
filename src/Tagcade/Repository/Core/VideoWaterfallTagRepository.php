@@ -24,6 +24,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         'id'=>'id',
         'name'=>'name',
         'buyPrice' => 'buyPrice',
+        'uuid' => 'uuid',
     ];
 
     /**
@@ -223,7 +224,11 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('wt.name', ':searchKey'), $qb->expr()->like('wt.id', ':searchKey')))
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('wt.name', ':searchKey'),
+                $qb->expr()->like('wt.id', ':searchKey'),
+                $qb->expr()->like('wt.uuid', ':searchKey'))
+            )
                 ->setParameter('searchKey', $searchLike);
         }
 
