@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\VideoPublisherInterface;
-use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagParam;
 
 
 /**
@@ -105,7 +105,7 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
         $videoPublisher = $this->one($id);
 
         // get "secure" param
-        $isSecure = $request->query->get('secure', null);
+        $isSecure = $request->query->get(VideoWaterfallTagParam::PARAM_SECURE, null);
 
         if (null == $isSecure || !in_array($isSecure, ['true', 'false'])) {
             throw new BadRequestHttpException('Missing required query param "secure" (true/false)');
@@ -113,7 +113,14 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
 
         $isSecure = filter_var($isSecure, FILTER_VALIDATE_BOOLEAN);
 
-        return $this->get('tagcade.service.video_vast_tag_generator')->getVideoVastTagsForVideoPublisher($videoPublisher, $isSecure);
+        $macros = $request->query->get(VideoWaterfallTagParam::PARAM_MACROS, '');
+        $macros = json_decode($macros);
+
+        $videoWaterfallTagParam = new VideoWaterfallTagParam();
+        $videoWaterfallTagParam->setSecure($isSecure);
+        $videoWaterfallTagParam->setMacros($macros);
+
+        return $this->get('tagcade.service.video_vast_tag_generator')->getVideoVastTagsForVideoPublisher($videoPublisher, $videoWaterfallTagParam);
     }
 
     /**

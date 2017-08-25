@@ -6,10 +6,10 @@ use Doctrine\Common\Collections\Collection;
 use Tagcade\DomainManager\VideoDemandAdTagManagerInterface;
 use Tagcade\DomainManager\VideoPublisherManagerInterface;
 use Tagcade\DomainManager\VideoWaterfallTagManagerInterface;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
 use Tagcade\Model\Core\VideoTargetingInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagParam;
 
 class VideoVastTagGenerator
 {
@@ -30,7 +30,14 @@ class VideoVastTagGenerator
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_VIDEO_DESCRIPTION,
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_APP_NAME,
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_USER_LAT,
-        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_USER_LON
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_USER_LON,
+        // new macros
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_COUNTRY,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_TIMESTAMP,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_WATERFALL_ID,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEMAND_TAG_ID,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEVICE_ID,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEVICE_NAME,
     ];
 
     protected $videoVastTagBaseUrl;
@@ -66,10 +73,10 @@ class VideoVastTagGenerator
      * get all Tags For Site
      *
      * @param VideoPublisherInterface $videoPublisher
-     * @param bool $isSecure true => use https, false => use http
+     * @param VideoWaterfallTagParam $videoWaterfallTagParam
      * @return array
      */
-    public function getVideoVastTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $isSecure)
+    public function getVideoVastTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, VideoWaterfallTagParam $videoWaterfallTagParam)
     {
         /** @var Collection|VideoWaterfallTagInterface[] $allVideoWaterfallTags */
         $allVideoWaterfallTags = $this->videoWaterfallTagManager->getVideoWaterfallTagsForVideoPublisher($videoPublisher);
@@ -78,14 +85,14 @@ class VideoVastTagGenerator
             $allVideoWaterfallTags = $allVideoWaterfallTags->toArray();
         }
 
-        return $this->getVideoVastTagsForVideoWaterfallTag($allVideoWaterfallTags, $isSecure);
+        return $this->getVideoVastTagsForVideoWaterfallTag($allVideoWaterfallTags, $videoWaterfallTagParam);
     }
 
     /**
      * get Tags For AdSlots
      *
      * @param VideoWaterfallTagInterface[] $videoWaterfallTags
-     * @param bool $isSecure true => use https, false => use http
+     * @param VideoWaterfallTagParam $videoWaterfallTagParam
      * @return array format as:
      * [
      *      videoWaterfallTagId => [
@@ -96,7 +103,7 @@ class VideoVastTagGenerator
      * ],
      * return empty if no video vast tags created
      */
-    private function getVideoVastTagsForVideoWaterfallTag(array $videoWaterfallTags, $isSecure)
+    private function getVideoVastTagsForVideoWaterfallTag(array $videoWaterfallTags, VideoWaterfallTagParam $videoWaterfallTagParam)
     {
         // filter all videoWaterfallTags have publisher that has video module enabled
         $filteredVideoWaterfallTags = array_filter($videoWaterfallTags, function ($videoWaterfallTag) {
@@ -121,7 +128,7 @@ class VideoVastTagGenerator
             }
 
             $videoVastTags[$videoWaterfallTag->getId()] = array(
-                'vasttag' => $this->createVideoVastTags($videoWaterfallTag, $isSecure),
+                'vasttag' => $this->createVideoVastTags($videoWaterfallTag, $videoWaterfallTagParam),
                 'name' => $videoWaterfallTag->getName()
             );
         }
@@ -139,76 +146,101 @@ class VideoVastTagGenerator
      * - &page_url=google.com&player_width=480: query string built from all required macros of all video demand ad tags belong to the video waterfall tag
      *
      * @param VideoWaterfallTagInterface $videoWaterfallTag
-     * @param bool $isSecure true => use https, false => use http
+     * @param VideoWaterfallTagParam $videoWaterfallTagParam
      * @return string
      */
-    public function createVideoVastTags(VideoWaterfallTagInterface $videoWaterfallTag, $isSecure)
+    public function createVideoVastTags(VideoWaterfallTagInterface $videoWaterfallTag, VideoWaterfallTagParam $videoWaterfallTagParam)
     {
         /* template: <$base_url> contain pattern UUID for replacing */
         $vastTagUrlTemplate = $this->videoVastTagBaseUrl;
 
         // process secure
-        $vastTagUrlTemplate = $isSecure
+        $vastTagUrlTemplate = $videoWaterfallTagParam->isSecure()
             ? preg_replace("/^http:/i", "https:", $vastTagUrlTemplate)
             : preg_replace("/^https:/i", "http:", $vastTagUrlTemplate);
 
         $vastTagUrl = str_replace('UUID', $videoWaterfallTag->getUuid(), $vastTagUrlTemplate);
 
-        $queryString = $this->createQueryStringForRequiredMacros($videoWaterfallTag);
+        $queryString = $this->createQueryStringWithCustomMacros($videoWaterfallTagParam->getMacros());
 
         if (empty($queryString)) {
             return $vastTagUrl;
         }
 
         if (strpos($vastTagUrl, '?') === false) {
-            $vastTagUrl .= '?';
+            $vastTagUrl .= '?' . $queryString;
         } else {
-            $vastTagUrl .= '&';
+            $vastTagUrl .= '&' . $queryString;
         }
-
-        $vastTagUrl .= $queryString;
 
         return $vastTagUrl;
     }
 
     /**
-     * create Query string for all required macros of all video demand ad tags belong to the video waterfall tag
+     * create Query string for all custom macros of all video demand ad tags belong to the video waterfall tag
      *
-     * @param VideoWaterfallTagInterface $videoWaterfallTag
+     * @param array $customMacros
      * @return string
      */
-    private function createQueryStringForRequiredMacros(VideoWaterfallTagInterface $videoWaterfallTag)
+    private function createQueryStringWithCustomMacros(array $customMacros)
     {
-        // get all required macros
-        /** @var VideoDemandAdTagInterface[] $videoDemandAdTags */
-        $videoDemandAdTags = $this->videoDemandAdTagManager->getVideoDemandAdTagsForVideoWaterfallTag($videoWaterfallTag);
+        // filter supported macros
+        $customMacros = array_filter($customMacros, function ($customMacro) {
+            return (in_array($customMacro, VideoVastTagGenerator::$SUPPORTED_MACROS_IN_VAST_TAG_URL));
+        });
 
-        $allRequiredMacros = [];
-        foreach ($videoDemandAdTags as $videoDemandAdTag) {
-            $targeting = $videoDemandAdTag->getTargeting();
-            if (!is_array($targeting) || !array_key_exists(VideoTargetingInterface::TARGETING_KEY_REQUIRED_MACROS, $targeting)) {
-                continue;
-            }
+        // make continuous array after filtering
+        $customMacros = array_values($customMacros);
 
-            $requiredMacros = $targeting[VideoTargetingInterface::TARGETING_KEY_REQUIRED_MACROS];
-            if (!is_array($requiredMacros)) {
-                continue;
-            }
+        return $this->createQueryStringFromMacros($customMacros);
+    }
 
-            $allRequiredMacros = array_merge($allRequiredMacros, $requiredMacros);
-        }
+//    /**
+//     * TODO: now creating vast tag url does not depend on required macros, we allow select from all macros, So, remove when stable
+//     * @param VideoWaterfallTagInterface $videoWaterfallTag
+//     * @return mixed
+//     */
+//    private function getRequiredMacros(VideoWaterfallTagInterface $videoWaterfallTag)
+//    {
+//        // get all required macros
+//        /** @var VideoDemandAdTagInterface[] $videoDemandAdTags */
+//        $videoDemandAdTags = $this->videoDemandAdTagManager->getVideoDemandAdTagsForVideoWaterfallTag($videoWaterfallTag);
+//
+//        $allRequiredMacros = [];
+//        foreach ($videoDemandAdTags as $videoDemandAdTag) {
+//            $targeting = $videoDemandAdTag->getTargeting();
+//            if (!is_array($targeting) || !array_key_exists(VideoTargetingInterface::TARGETING_KEY_REQUIRED_MACROS, $targeting)) {
+//                continue;
+//            }
+//
+//            $requiredMacros = $targeting[VideoTargetingInterface::TARGETING_KEY_REQUIRED_MACROS];
+//            if (!is_array($requiredMacros)) {
+//                continue;
+//            }
+//
+//            $allRequiredMacros = array_merge($allRequiredMacros, $requiredMacros);
+//        }
+//
+//        return $allRequiredMacros;
+//    }
 
-        // sure unique required macros
-        $allRequiredMacros = array_unique($allRequiredMacros);
+    /**
+     * @param array $macros
+     * @return string
+     */
+    private function createQueryStringFromMacros(array $macros)
+    {
+        // sure unique macros
+        $macros = array_unique($macros);
 
         // create query string
         $queryString = '';
 
-        if (empty($allRequiredMacros)) {
+        if (empty($macros)) {
             return $queryString;
         }
 
-        foreach ($allRequiredMacros as $macro) {
+        foreach ($macros as $macro) {
             $queryString .= sprintf('&%s=[REPLACE_ME]', $macro);
         }
 

@@ -32,6 +32,8 @@ imports:
     - { resource: services/service.displaywhitelist.yml }
     - { resource: services/service.networkblacklist.yml }
     - { resource: services/service.networkwhitelist.yml }
+    - { resource: services/service.ivtpixel.yml }
+    - { resource: services/service.ivtpixelwaterfalltag.yml }
 
 
 parameters:

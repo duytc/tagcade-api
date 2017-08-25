@@ -3,6 +3,7 @@
 
 namespace Tagcade\Entity\Core;
 
+use Tagcade\Model\Core\IvtPixelWaterfallTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTag as VideoWaterfallTagModel;
 
 class VideoWaterfallTag extends VideoWaterfallTagModel
@@ -20,9 +21,10 @@ class VideoWaterfallTag extends VideoWaterfallTagModel
     protected $buyPrice;
     protected $targeting;
 
-    /* new feature: server-to-server */
-    protected $isServerToServer;
-    protected $isVastOnly;
+    /* new feature: Server-Side VAST+VAPID, Server-Side VAST Only, Client-Side VAST+VAPID (default)*/
+    protected $runOn;
+    /** @var IvtPixelWaterfallTagInterface[] */
+    protected $ivtPixelWaterfallTags;
 
     /**
      * call parent construct for default in form

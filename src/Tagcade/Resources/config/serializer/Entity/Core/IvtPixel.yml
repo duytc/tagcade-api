@@ -1,0 +1,24 @@
+Tagcade\Entity\Core\IvtPixel:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential, ivtpixel.min]
+        publisher:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential]
+        name:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential, ivtpixel.min]
+        urls:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential, ivtpixel.min]
+        fireOn:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential, ivtpixel.min]
+        runningLimit:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential, ivtpixel.min]
+        ivtPixelWaterfallTags:
+            expose: true
+            groups: [ivtpixel.extra, ivtpixel.detail, ivtpixel.summary, ivtpixel.credential, ivtpixel.min]

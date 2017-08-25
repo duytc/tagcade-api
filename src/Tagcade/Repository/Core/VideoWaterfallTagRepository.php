@@ -6,13 +6,10 @@ namespace Tagcade\Repository\Core;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Component\HttpFoundation\Request;
-use Tagcade\Entity\Core\VideoPublisher;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
 use Tagcade\Model\PagerParam;
-use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -24,6 +21,7 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
         'id'=>'id',
         'name'=>'name',
         'buyPrice' => 'buyPrice',
+        'uuid' => 'uuid',
     ];
 
     /**
@@ -223,7 +221,11 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('wt.name', ':searchKey'), $qb->expr()->like('wt.id', ':searchKey')))
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('wt.name', ':searchKey'),
+                $qb->expr()->like('wt.id', ':searchKey'),
+                $qb->expr()->like('wt.uuid', ':searchKey'))
+            )
                 ->setParameter('searchKey', $searchLike);
         }
 

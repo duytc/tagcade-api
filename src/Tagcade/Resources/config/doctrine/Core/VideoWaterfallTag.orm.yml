@@ -45,18 +45,20 @@ Tagcade\Entity\Core\VideoWaterfallTag:
             type: float
             scale: 4
             nullable: true
-        isServerToServer:
-            type: boolean
+        runOn:
+            type: string
             options:
-                default: false
-        isVastOnly:
-            type: boolean
-            options:
-                default: false
+                default: 'Client-Side VAST+VPAID'
+            length: 50
     manyToOne:
         videoPublisher:
             targetEntity: Tagcade\Entity\Core\VideoPublisher
     oneToMany:
+        ivtPixelWaterfallTags:
+            targetEntity: Tagcade\Entity\Core\IvtPixelWaterfallTag
+            mappedBy: waterfallTag
+            cascade: ['persist', 'remove', 'detach']
+            orphanRemoval: true
         videoWaterfallTagItems:
             targetEntity: Tagcade\Entity\Core\VideoWaterfallTagItem
             mappedBy: videoWaterfallTag

@@ -1,0 +1,33 @@
+Tagcade\Entity\Core\IvtPixel:
+    type: entity
+    table: core_ivt_pixel
+    repositoryClass: Tagcade\Repository\Core\IvtPixelRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+            nullable: false
+        urls:
+            type: json_array
+            nullable: false
+        fireOn:
+            type: string
+            nullable: false
+        runningLimit:
+            type: integer
+            options:
+                default: 100
+    manyToOne:
+        publisher:
+            targetEntity: Tagcade\Bundle\UserBundle\Entity\User
+    oneToMany:
+        ivtPixelWaterfallTags:
+            targetEntity: Tagcade\Entity\Core\IvtPixelWaterfallTag
+            mappedBy: ivtPixel
+            cascade: ['persist', 'remove', 'detach']
+            orphanRemoval: true
