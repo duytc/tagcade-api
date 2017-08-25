@@ -14,9 +14,8 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
-use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\VideoWaterfallTagRepository;
+use Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagParam;
 
 
 /**
@@ -174,7 +173,7 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
         $videoWaterfallTag = $this->one($id);
 
         // get "secure" param
-        $isSecure = $request->query->get('secure', null);
+        $isSecure = $request->query->get(VideoWaterfallTagParam::PARAM_SECURE, null);
 
         if (null == $isSecure || !in_array($isSecure, ['true', 'false'])) {
             throw new BadRequestHttpException('Missing required query param "secure" (true/false)');
@@ -182,7 +181,14 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
 
         $isSecure = filter_var($isSecure, FILTER_VALIDATE_BOOLEAN);
 
-        return $this->get('tagcade.service.video_vast_tag_generator')->createVideoVastTags($videoWaterfallTag, $isSecure);
+        $macros = $request->query->get(VideoWaterfallTagParam::PARAM_MACROS, '');
+        $macros = json_decode($macros);
+
+        $videoWaterfallTagParam = new VideoWaterfallTagParam();
+        $videoWaterfallTagParam->setSecure($isSecure);
+        $videoWaterfallTagParam->setMacros($macros);
+
+        return $this->get('tagcade.service.video_vast_tag_generator')->createVideoVastTags($videoWaterfallTag, $videoWaterfallTagParam);
     }
 
     /**

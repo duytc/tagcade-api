@@ -37,6 +37,14 @@ interface VideoTargetingInterface
     const TARGETING_REQUIRED_MACRO_APP_NAME = 'app_name';
     const TARGETING_REQUIRED_MACRO_USER_LAT = 'user_lat';
     const TARGETING_REQUIRED_MACRO_USER_LON = 'user_lon';
+    // new macros - 2018/08/18
+    const TARGETING_REQUIRED_MACRO_COUNTRY = 'country';
+    const TARGETING_REQUIRED_MACRO_TIMESTAMP = 'timestamp';
+    const TARGETING_REQUIRED_MACRO_WATERFALL_ID = 'waterfall_id';
+    const TARGETING_REQUIRED_MACRO_DEMAND_TAG_ID = 'demand_tag_id';
+    const TARGETING_REQUIRED_MACRO_DEVICE_ID = 'device_id';
+    const TARGETING_REQUIRED_MACRO_DEVICE_NAME = 'device_name';
+    // macros for debugging
     const TARGETING_REQUIRED_MACRO__DEBUG = '_debug'; // not yet used, only for debug
     const TARGETING_REQUIRED_MACRO__ENV = '_env'; // not yet used, only for debug
 

@@ -31,7 +31,14 @@ trait ValidateVideoTargetingTrait
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_VIDEO_DESCRIPTION,
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_APP_NAME,
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_USER_LAT,
-        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_USER_LON
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_USER_LON,
+        // new macros
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_COUNTRY,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_TIMESTAMP,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_WATERFALL_ID,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEMAND_TAG_ID,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEVICE_ID,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEVICE_NAME,
     ];
 
     public static $TARGETING_SUPPORTED_PLATFORMS = [

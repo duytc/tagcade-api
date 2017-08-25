@@ -1,0 +1,70 @@
+parameters:
+    # entity class
+    tagcade.entity.core.ivt_pixel.class: Tagcade\Entity\Core\IvtPixel
+    # form class
+    tagcade.form.type.ivt_pixel.class: Tagcade\Form\Type\IvtPixelFormType
+
+services:
+
+    # ivt pixel ######################################################
+
+    tagcade_api.handler.ivt_pixel:
+        class: Tagcade\Handler\HandlerInterface
+        factory_service: tagcade.handler.handler_manager.IvtPixel
+        factory_method: getHandler
+        arguments:
+            - @tagcade.user_role
+
+    ###### dependencies and base classes for ivt pixel handler #######
+
+    tagcade.repository.ivt_pixel:
+        class: Tagcade\Repository\Core\IvtPixelRepositoryInterface
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %tagcade.entity.core.ivt_pixel.class%
+
+    tagcade.domain_manager.ivt_pixel:
+        class: Tagcade\DomainManager\IvtPixelManager
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @tagcade.repository.ivt_pixel
+
+    tagcade.form.type.ivt_pixel:
+        class: %tagcade.form.type.ivt_pixel.class%
+        tags:
+            - { name: form.type, alias: tagcade_form_ivt_pixel }
+        arguments:
+          - @doctrine.orm.entity_manager
+
+    tagcade.handler.handlers.ivt_pixel.abstract:
+        class: Tagcade\Handler\Handlers\Core\IvtPixelHandlerAbstract
+        parent: tagcade.handler.role_handler_abstract
+        abstract: true
+        public: false
+        arguments:
+            - @tagcade.form.type.ivt_pixel
+            - @tagcade.domain_manager.ivt_pixel
+            -
+
+    tagcade.handler.handlers.ivt_pixel.admin:
+        class: Tagcade\Handler\Handlers\Core\Admin\IvtPixelHandler
+        parent: tagcade.handler.handlers.ivt_pixel.abstract
+        public: false
+        arguments:
+            - @tagcade_user.domain_manager.publisher
+
+    tagcade.handler.handlers.ivt_pixel.publisher:
+        class: Tagcade\Handler\Handlers\Core\Publisher\IvtPixelHandler
+        parent: tagcade.handler.handlers.ivt_pixel.abstract
+        public: false
+
+    tagcade.handler.handler_manager.ivt_pixel:
+        class: Tagcade\Handler\HandlerManager
+        arguments:
+            - %tagcade.entity.core.ivt_pixel.class%
+            -
+                - @tagcade.handler.handlers.ivt_pixel.admin
+                - @tagcade.handler.handlers.ivt_pixel.publisher
+
+    # end ivt pixel #####################################################

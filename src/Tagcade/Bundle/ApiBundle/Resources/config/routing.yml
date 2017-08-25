@@ -162,3 +162,11 @@ api_display_white_list:
     type: rest
     resource: Tagcade\Bundle\ApiBundle\Controller\DisplayWhiteListController
     name_prefix:  api_1_
+api_ivt_pixel:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\IvtPixelController
+    name_prefix:  api_1_
+api_ivt_pixel_waterfall_tag:
+    type: rest
+    resource: Tagcade\Bundle\ApiBundle\Controller\IvtPixelWaterfallTagController
+    name_prefix:  api_1_

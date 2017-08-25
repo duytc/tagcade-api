@@ -1,0 +1,12 @@
+Tagcade\Entity\Core\IvtPixelWaterfallTag:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+            groups: [ivtpixelWaterfallTag.summary, ivtpixelWaterfallTag.detail, ivtpixelWaterfallTag.report, ivtpixelWaterfallTag.ivtonly, ivtpixelWaterfallTag.waterfallonly]
+        waterfallTag:
+            expose: true
+            groups: [ivtpixelWaterfallTag.summary, ivtpixelWaterfallTag.detail, ivtpixelWaterfallTag.report, ivtpixelWaterfallTag.waterfallonly]
+        ivtPixel:
+            expose: true
+            groups: [ivtpixelWaterfallTag.summary, ivtpixelWaterfallTag.detail, ivtpixelWaterfallTag.report, ivtpixelWaterfallTag.ivtonly]

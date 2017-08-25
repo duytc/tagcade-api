@@ -1,0 +1,16 @@
+Tagcade\Entity\Core\IvtPixelWaterfallTag:
+    type: entity
+    table: core_ivt_pixel_waterfall_tag
+    repositoryClass: Tagcade\Repository\Core\IvtPixelWaterfallTagRepository
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        waterfallTag:
+            targetEntity: Tagcade\Entity\Core\VideoWaterfallTag
+            inversedBy: ivtPixelWaterfallTags
+        ivtPixel:
+            targetEntity: Tagcade\Entity\Core\IvtPixel
+            inversedBy: ivtPixelWaterfallTags

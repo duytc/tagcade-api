@@ -2,11 +2,13 @@
 
 namespace Tagcade\Cache\Video\Refresher;
 
-
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Cache\CacheNamespace\RedisNamespaceCache;
-use Tagcade\Cache\Video\DomainListManager;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
+use Tagcade\Model\Core\IvtPixel;
+use Tagcade\Model\Core\IvtPixelInterface;
+use Tagcade\Model\Core\IvtPixelWaterfallTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoTargetingInterface;
@@ -95,8 +97,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
      *      "id": "04d73b13-7673-4de7-b237-88c37f33ac7a", // uuid, required
      *      "platform": ["flash", "js"], // either flash or js, required
      *      "adDuration": 30, required
-     *      "serverSide": true, required
-     *      "vastOnly": true, required
+     *      "runOn": Client-Side VAST+VPAID, required
      *      "waterfall": [
      *          0: [
      *              "strategy": "parallel", // parallel or linear, required
@@ -129,10 +130,11 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
             'platform' => $videoWaterfallTag->getPlatform(),
             'adDuration' => $videoWaterfallTag->getAdDuration(),
             'waterfall' => [],
-            'serverSide' => $videoWaterfallTag->isIsServerToServer(),
-            'vastOnly' => $videoWaterfallTag->isIsVastOnly(),
+            'runOn' => $videoWaterfallTag->getRunOn(),
             'companionAds' => $videoWaterfallTag->getCompanionAds(),
         ];
+
+        $data = $this->addIvtConfigsToVideoWaterfallTagCache($data, $videoWaterfallTag);
 
         /** @var VideoWaterfallTagItemInterface[] $videoWaterfallTagItems */
         $videoWaterfallTagItems = $videoWaterfallTag->getVideoWaterfallTagItems();
@@ -264,5 +266,63 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
         }
 
         return ($data);
+    }
+
+    /**
+     * add IvtConfigs To VideoWaterfallTagCache. The output formats as:
+     *
+     * [
+     *   <waterfall tag data...>,
+     *   [
+     *      'pixels' => [
+     *              'http://test-ivp-pixel.com?on=request&id=1',
+     *              'http://test-ivp-pixel-2.com?on=request&id=2',
+     *      ],
+     *      'fireOn' => 'request',
+     *      'runningLimit' => 50, // only for fireOn="request"
+     *   ],
+     *   [
+     *      'pixels' => [
+     *          'http://test-ivp-pixel-3.com?on=impression&id=3',
+     *      ],
+     *      'fireOn' => 'impression',
+     *   ]
+     * ]
+     * @param array $data
+     * @param VideoWaterfallTagInterface $videoWaterfallTag
+     * @return array
+     */
+    private function addIvtConfigsToVideoWaterfallTagCache(array $data, VideoWaterfallTagInterface $videoWaterfallTag)
+    {
+        $ivtWaterfallTags = $videoWaterfallTag->getIvtPixelWaterfallTags();
+
+        if ($ivtWaterfallTags instanceof Collection) {
+            $ivtWaterfallTags = $ivtWaterfallTags->toArray();
+        }
+
+        foreach ($ivtWaterfallTags as $ivtWaterfallTag) {
+            if (!$ivtWaterfallTag instanceof IvtPixelWaterfallTagInterface) {
+                continue;
+            }
+
+            $pixel = $ivtWaterfallTag->getIvtPixel();
+
+            if (!$pixel instanceof IvtPixelInterface) {
+                continue;
+            }
+
+            $pixelData = [
+                IvtPixelInterface::PIXELS => $pixel->getUrls(),
+                IvtPixelInterface::FIRE_ON => $pixel->getFireOn(),
+            ];
+
+            if ($pixel->getFireOn() == IvtPixel::FIRE_ON_REQUEST) {
+                $pixelData[IvtPixelInterface::RUNNING_LIMIT] = $pixel->getRunningLimit();
+            }
+
+            $data[IvtPixelInterface::IVT_PIXEL_CONFIGS][] = $pixelData;
+        }
+
+        return $data;
     }
 }

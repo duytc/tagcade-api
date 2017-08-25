@@ -76,8 +76,7 @@ class UpdateVideoWaterfallTagListener
             $args->hasChangedField('platform')
             || $args->hasChangedField('adDuration')
             || $args->hasChangedField('targeting')
-            || $args->hasChangedField('isServerToServer')
-            || $args->hasChangedField('isVastOnly')
+            || $args->hasChangedField('runOn')
         ) {
             $id = $entity->getId();
             if (!in_array($id, $this->changedVideoWaterfallTagIds)) {

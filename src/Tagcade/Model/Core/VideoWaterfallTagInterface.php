@@ -103,6 +103,23 @@ interface VideoWaterfallTagInterface extends ModelInterface
     public function setVideoWaterfallTagItems($videoWaterfallTagItems);
 
     /**
+     * @return array
+     */
+    public function getIvtPixelWaterfallTags();
+
+    /**
+     * @param IvtPixelWaterfallTagInterface $ivtPixelWaterfallTags
+     * @return self
+     */
+    public function addIvtPixelWaterfallTag(IvtPixelWaterfallTagInterface $ivtPixelWaterfallTags);
+
+    /**
+     * @param array $ivtPixelWaterfallTags
+     * @return self
+     */
+    public function setIvtPixelWaterfallTags($ivtPixelWaterfallTags);
+
+    /**
      * @return string
      */
     public function getName();
@@ -130,24 +147,13 @@ interface VideoWaterfallTagInterface extends ModelInterface
     public function setTargeting($targeting);
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isIsServerToServer();
+    public function getRunOn();
 
     /**
-     * @param boolean $isServerToServer
+     * @param string $runOn
      * @return self
      */
-    public function setIsServerToServer($isServerToServer);
-
-    /**
-     * @return boolean
-     */
-    public function isIsVastOnly();
-
-    /**
-     * @param boolean $isVastOnly
-     * @return self
-     */
-    public function setIsVastOnly($isVastOnly);
+    public function setRunOn($runOn);
 }

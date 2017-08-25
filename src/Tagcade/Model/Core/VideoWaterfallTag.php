@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Tagcade\Model\Core;
-
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -53,20 +51,22 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     protected $deletedAt;
     protected $targeting;
 
-    /* new feature: server-to-server */
-    protected $isServerToServer;
-    protected $isVastOnly;
+    /* new feature: Server-Side VAST+VAPID, Server-Side VAST Only, Client-Side VAST+VAPID (default)*/
+    protected $runOn;
 
     /**
      * @var VideoWaterfallTagItemInterface[]
      */
     protected $videoWaterfallTagItems;
 
+    /**
+     * @var IvtPixelWaterfallTagInterface[]
+     */
+    protected $ivtPixelWaterfallTags;
+
     function __construct()
     {
         $this->adDuration = self::DEFAULT_AD_DURATION;
-        $this->isServerToServer = false;
-        $this->isVastOnly = false;
     }
 
     /**
@@ -251,6 +251,36 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     /**
      * @inheritdoc
      */
+    public function getIvtPixelWaterfallTags()
+    {
+        return $this->ivtPixelWaterfallTags;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function addIvtPixelWaterfallTag(IvtPixelWaterfallTagInterface $ivtPixelWaterfallTags)
+    {
+        if ($this->ivtPixelWaterfallTags === null) {
+            $this->ivtPixelWaterfallTags = new ArrayCollection();
+        }
+
+        $this->ivtPixelWaterfallTags[] = $ivtPixelWaterfallTags;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setIvtPixelWaterfallTags($ivtPixelWaterfallTags)
+    {
+        $this->ivtPixelWaterfallTags = $ivtPixelWaterfallTags;
+        return $this;
+    }
+    /**
+     * @inheritdoc
+     */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
@@ -293,34 +323,17 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     /**
      * @inheritdoc
      */
-    public function isIsServerToServer()
+    public function getRunOn()
     {
-        return $this->isServerToServer;
+        return $this->runOn;
     }
 
     /**
      * @inheritdoc
      */
-    public function setIsServerToServer($isServerToServer)
+    public function setRunOn($runOn)
     {
-        $this->isServerToServer = $isServerToServer;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function isIsVastOnly()
-    {
-        return $this->isVastOnly;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setIsVastOnly($isVastOnly)
-    {
-        $this->isVastOnly = $isVastOnly;
+        $this->runOn = $runOn;
         return $this;
     }
 }
