@@ -127,6 +127,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
     {
         $data = [
             'id' => $videoWaterfallTag->getUuid(),
+            'waterfallId' => $videoWaterfallTag->getId(),
             'platform' => $videoWaterfallTag->getPlatform(),
             'adDuration' => $videoWaterfallTag->getAdDuration(),
             'waterfall' => [],
