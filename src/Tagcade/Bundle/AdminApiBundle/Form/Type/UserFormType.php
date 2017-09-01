@@ -37,44 +37,6 @@ class UserFormType extends AbstractRoleSpecificFormType
         'refreshes',
     ];
 
-    static $REPORT_SETTINGS_VR_METRICS_KEYS = [
-        'requests',
-        'bids',
-        'bidRate',
-        'impressions',
-        'fillRate',
-        'errors',
-        'errorRate',
-        'clicks',
-        'clickThroughRate',
-        'blocks',
-        'adTagRequests',
-        'adTagImpressions',
-        'adTagErrors',
-        'adTagBids',
-        'netRevenue',
-        'estSupplyCost',
-        'estDemandRevenue',
-        'requestFillRate'
-    ];
-
-    static $REPORT_SETTINGS_VR_FILTERS_KEYS = [
-        'publisher',
-        'videoPublisher',
-        'demandPartner',
-        'waterfallTag',
-        'videoDemandAdTag',
-    ];
-
-    static $REPORT_SETTINGS_VR_BREAKDOWNS_KEYS = [
-        'publisher',
-        'videoPublisher',
-        'demandPartner',
-        'waterfallTag',
-        'videoDemandAdTag',
-        'day'
-    ];
-
     const MODULE_CONFIG = 'moduleConfigs';
     const ABBREVIATION_KEY = 'abbreviation';
     const VIDEO_MODULE = 'MODULE_VIDEO_ANALYTICS';
@@ -259,31 +221,6 @@ class UserFormType extends AbstractRoleSpecificFormType
 
                         $publisher->setSettings($this->oldSettings);
                     }
-
-                    // videoReport
-                    if ($this->oldSettings !== null
-                        && isset($this->oldSettings['view']['report']['videoReport']['metrics'])
-                    ) {
-                        $this->oldSettings['view']['report']['videoReport']['metrics'] = $settings['view']['report']['videoReport']['metrics'];
-
-                        $publisher->setSettings($this->oldSettings);
-                    }
-
-                    if ($this->oldSettings !== null
-                        && isset($this->oldSettings['view']['report']['videoReport']['filters'])
-                    ) {
-                        $this->oldSettings['view']['report']['videoReport']['filters'] = $settings['view']['report']['videoReport']['filters'];
-
-                        $publisher->setSettings($this->oldSettings);
-                    }
-
-                    if ($this->oldSettings !== null
-                        && isset($this->oldSettings['view']['report']['videoReport']['breakdowns'])
-                    ) {
-                        $this->oldSettings['view']['report']['videoReport']['breakdowns'] = $settings['view']['report']['videoReport']['breakdowns'];
-
-                        $publisher->setSettings($this->oldSettings);
-                    }
                 }
             }
         );
@@ -341,10 +278,7 @@ class UserFormType extends AbstractRoleSpecificFormType
         // 1.1 validate performance report setting
         $isValidPRSettings = $this->validatePRSettings($settings, $form);
 
-        // 1.2 validate unified report setting
-        $isValidURSettings = $this->validateVRSettings($settings, $form);
-
-        return $isValidPRSettings && $isValidURSettings; // NOTE: fully validate both PR, UR setting
+        return $isValidPRSettings; // NOTE: fully validate PR setting
     }
 
     /**
@@ -384,74 +318,6 @@ class UserFormType extends AbstractRoleSpecificFormType
                 $form->get('settings')->addError(new FormError("value of show for '" . $adTagConfig['key'] . "' must be boolean!"));
                 return false;
             }
-        }
-
-        return true;
-    }
-
-    /**
-     * validate Unified Report Settings
-     *
-     * @param mixed $settings
-     * @param FormInterface $form
-     * @return bool false if has error
-     */
-    private function validateVRSettings($settings, FormInterface $form)
-    {
-        if (!isset($settings['view']['report']['videoReport']['metrics'])
-            || !isset($settings['view']['report']['videoReport']['filters'])
-            || !isset($settings['view']['report']['videoReport']['breakdowns'])
-        ) {
-            $form->get('settings')->addError(new FormError("either 'videoReport' or 'metrics' or 'filters' or 'breakdowns' field is missing!"));
-            return false;
-        }
-
-        // 1. validate metrics
-        $vrMetricConfigs = $settings['view']['report']['videoReport']['metrics'];
-
-        if (!is_array($vrMetricConfigs)) {
-            $form->get('settings')->addError(new FormError(sprintf('expect an array of metrics')));
-            return false;
-        }
-
-        $diff = array_diff($vrMetricConfigs, self::$REPORT_SETTINGS_VR_METRICS_KEYS);
-        if (count($diff) > 0) {
-            $form->get('settings')->addError(new FormError(sprintf('metrics "%s" is currently not supported', implode(',', $diff))));
-            return false;
-        }
-
-        // 2. validate filters
-        $vrFilterConfigs = $settings['view']['report']['videoReport']['filters'];
-
-        if (!is_array($vrFilterConfigs)) {
-            $form->get('settings')->addError(new FormError(sprintf('expect an array of filters')));
-            return false;
-        }
-
-        foreach($vrFilterConfigs as $key => $vrFilterConfig) {
-            if (!in_array($key, self::$REPORT_SETTINGS_VR_FILTERS_KEYS)) {
-                $form->get('settings')->addError(new FormError(sprintf('filters "%s" is currently not supported', $key)));
-                return false;
-            }
-
-            if (!is_array($vrFilterConfigs[$key])) {
-                $form->get('settings')->addError(new FormError(sprintf('expect "%s" to be an array', $vrFilterConfigs[$key])));
-                return false;
-            }
-        }
-
-        // 3. validate breakdowns
-        $vrBreakdownConfigs = $settings['view']['report']['videoReport']['breakdowns'];
-
-        if (!is_array($vrBreakdownConfigs)) {
-            $form->get('settings')->addError(new FormError(sprintf('expect an array of breakdowns')));
-            return false;
-        }
-
-        $diff = array_diff($vrBreakdownConfigs, self::$REPORT_SETTINGS_VR_BREAKDOWNS_KEYS);
-        if (count($diff) > 0) {
-            $form->get('settings')->addError(new FormError(sprintf('breakdowns "%s" is currently not supported', implode(',', $diff))));
-            return false;
         }
 
         return true;

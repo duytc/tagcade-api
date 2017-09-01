@@ -27,7 +27,7 @@ $reportCreators = [
 $redisCache = $container->get('tagcade.legacy.cache.performance_report_data');
 $eventCounter = new \Tagcade\Service\Report\VideoReport\Counter\VideoTestEventCounter($videoAdTagManager->all(), $adSourceManager);
 $reportCreator = new \Tagcade\Service\Report\VideoReport\Creator\ReportCreator($reportCreators, $eventCounter);
-$dailyReportCreator = new \Tagcade\Service\Report\VideoReport\Creator\DailyReportCreator($em, $reportCreator);
+$dailyReportCreator = new \Tagcade\Service\Report\VideoReport\Creator\DailyReportCreator($em, $reportCreator, $userManager);
 $dailyReportCreator->setLogger($container->get('logger'));
 
 $begin = new DateTime('2016-10-01');
@@ -65,7 +65,8 @@ foreach($dateRange as $date){
         ->setReportDate($date)
         ->createAndSave(
         $userManager->allActivePublishers(),
-        $videoDemandPartnerManager->all()
+        $videoDemandPartnerManager->all(),
+        true
     );
 
     echo sprintf("%s created @ %s\n", $date->format('Y-m-d'), date('c'));
