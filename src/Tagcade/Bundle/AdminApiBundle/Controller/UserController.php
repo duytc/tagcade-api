@@ -14,6 +14,7 @@ use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 use Tagcade\Repository\Core\SiteRepositoryInterface;
 use Tagcade\Service\TagGenerator;
@@ -201,6 +202,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
     {
         $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
 
+        /** @var PublisherInterface $publisher */
         $publisher = $publisherManager->findPublisher($publisherId);
         if (!$publisher) {
             throw new NotFoundHttpException('That publisher does not exist');
@@ -213,7 +215,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
             return $adNetworkRepository->getAdNetworksForPublisher($publisher);
         }
 
-        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams());
+        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($publisher, $this->getParams());
         return $this->getPagination($qb, $request);
     }
 
