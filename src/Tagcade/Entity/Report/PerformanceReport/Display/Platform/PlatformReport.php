@@ -16,6 +16,7 @@ class PlatformReport extends PlatformReportModel
     protected $estRevenue;
     protected $estCpm;
     protected $adOpportunities;
+    protected $opportunityFillRate;
 
     protected $slotOpportunities;
     protected $billedAmount;

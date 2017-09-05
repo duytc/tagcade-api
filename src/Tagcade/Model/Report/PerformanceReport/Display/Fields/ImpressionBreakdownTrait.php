@@ -12,6 +12,7 @@ trait ImpressionBreakdownTrait
     protected $voidImpressions;
     protected $clicks;
     protected $refreshes; // opp on refreshes
+    protected $networkOpportunityFillRate; // only for platform/adTag and AdNetwork/* levels
 
     /**
      * @return int
@@ -140,7 +141,25 @@ trait ImpressionBreakdownTrait
      */
     public function setRefreshes($refreshes)
     {
-        $this->refreshes = $refreshes;
+        $this->refreshes = (int)$refreshes;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getNetworkOpportunityFillRate()
+    {
+        return $this->networkOpportunityFillRate;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setNetworkOpportunityFillRate($networkOpportunityFillRate)
+    {
+        $this->networkOpportunityFillRate = (float)$networkOpportunityFillRate;
 
         return $this;
     }

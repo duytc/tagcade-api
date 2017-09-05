@@ -78,5 +78,4 @@ interface GrouperInterface
      * @return float
      */
     public function getAverageEstRevenue();
-
 }

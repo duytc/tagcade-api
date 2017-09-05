@@ -6,6 +6,7 @@ use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\CalculateRevenueTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\ImpressionBreakdownTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
@@ -17,6 +18,7 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
 {
     use SuperReportTrait;
     use CalculateRevenueTrait;
+    use CalculateNetworkOpportunityFillRateTrait;
     use ImpressionBreakdownTrait;
 
     /** @var AdTagInterface */
@@ -85,6 +87,9 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
     {
         $estRevenue = $this->calculateEstRevenue($this->getImpressions(), $this->getEstCpm());
         $this->setEstRevenue($estRevenue);
+
+        // difference calculate at network/adTag level
+        $this->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($this->getAdOpportunities(), $this->getTotalOpportunities()));
 
         parent::setCalculatedFields();
     }

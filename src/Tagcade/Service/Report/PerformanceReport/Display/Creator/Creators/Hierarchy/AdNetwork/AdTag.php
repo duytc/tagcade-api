@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdTagReport;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\AdTag as AdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\CreatorAbstract;
@@ -13,6 +14,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 class AdTag extends CreatorAbstract implements AdTagInterface
 {
     use CalculateAdOpportunitiesTrait;
+    use CalculateNetworkOpportunityFillRateTrait;
 
     /** @var EstCpmCalculatorInterface */
     private $cpmCalculator;
@@ -46,7 +48,8 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setFirstOpportunities($firstOpportunities)
             ->setVerifiedImpressions($verifiedImpressions)
             ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
-            ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities));
+            ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities))
+            ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $totalOpportunities));
 
         if (!$isNativeAdSlot) {
             $passbacks = $this->eventCounter->getPassbackCount($adTag->getId());
@@ -58,6 +61,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
                 ->setVoidImpressions($this->eventCounter->getVoidImpressionCount($adTag->getId()))
                 ->setClicks($this->eventCounter->getClickCount($adTag->getId()))
                 ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities, $passbacks))
+                ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $totalOpportunities))
                 ->setRefreshes($this->eventCounter->getRefreshesCount($adTag->getId()));
         }
 

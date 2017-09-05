@@ -10,7 +10,6 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\HasSubReportsTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
-use Tagcade\Bundle\UserBundle\Entity\User as AbstractUser;
 
 class AdSlot extends CreatorAbstract implements AdSlotInterface
 {
@@ -34,45 +33,45 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
     {
         $this->syncEventCounterForSubReports();
 
-        /** @var AdSlotReportType $reportType */
-        $report = new AdSlotReport();
+        $adSlotReport = new AdSlotReport();
 
+        /** @var AdSlotReportType $reportType */
         $adSlot = $reportType->getAdSlot();
 
-        $report
+        $adSlotReport
             ->setAdSlot($adSlot)
             ->setDate($this->getDate())
             ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()))
         ;
 
         if ($adSlot instanceof DisplayAdSlotInterface) {
-            $report->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));
-            $report->setInBannerImpressions($this->eventCounter->getInBannerImpressionCount($adSlot->getId()));
-            $report->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
+            $adSlotReport->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));
+            $adSlotReport->setInBannerImpressions($this->eventCounter->getInBannerImpressionCount($adSlot->getId()));
+            $adSlotReport->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
         }
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $report->getSlotOpportunities());
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $adSlotReport->getSlotOpportunities());
 
-        $report->setBilledAmount($rateAmount->getAmount());
-        $report->setBilledRate($rateAmount->getRate()->getCpmRate());
+        $adSlotReport->setBilledAmount($rateAmount->getAmount());
+        $adSlotReport->setBilledRate($rateAmount->getRate()->getCpmRate());
 
         if ($rateAmount->getRate()->isCustom()) {
-            $report->setCustomRate($rateAmount->getRate()->getCpmRate());
+            $adSlotReport->setCustomRate($rateAmount->getRate()->getCpmRate());
         }
 
-        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $report->getInBannerImpressions());
+        $inBannerRateAmount = $this->billingCalculator->calculateInBannerBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $adSlotReport->getInBannerImpressions());
 
-        $report->setInBannerBilledAmount($inBannerRateAmount->getAmount());
-        $report->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
+        $adSlotReport->setInBannerBilledAmount($inBannerRateAmount->getAmount());
+        $adSlotReport->setInBannerBilledRate($inBannerRateAmount->getRate()->getCpmRate());
 
         foreach ($adSlot->getAdTags() as $adTag) {
-            $report->addSubReport(
+            $adSlotReport->addSubReport(
                 $this->subReportCreator->createReport(new AdTagReportType($adTag))
-                    ->setSuperReport($report)
+                    ->setSuperReport($adSlotReport)
             );
         }
 
-        return $report;
+        return $adSlotReport;
     }
 
     /**

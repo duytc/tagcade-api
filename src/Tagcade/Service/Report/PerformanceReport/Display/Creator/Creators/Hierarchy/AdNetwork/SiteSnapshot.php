@@ -7,6 +7,7 @@ use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\AdNetwork\Site as AdNetworkSiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -18,6 +19,7 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
 {
     use HasSubReportsTrait;
     use CalculateAdOpportunitiesTrait;
+    use CalculateNetworkOpportunityFillRateTrait;
 
     /** @var AdSlotManagerInterface */
     private $adSlotManager;
@@ -90,7 +92,8 @@ class SiteSnapshot extends SnapshotCreatorAbstract implements SiteInterface, Sna
             ->setVoidImpressions($data[self::CACHE_KEY_VOID_IMPRESSION])
             ->setClicks($data[self::CACHE_KEY_CLICK])
             ->setFillRate()
-            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()))
+            ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $report->getTotalOpportunities()));
 
         // TODO latter
         $report->setEstCpm((float)0);

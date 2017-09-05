@@ -35,6 +35,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
         adOpportunities:
             expose: true
             groups: [platform_account_report.detail, platform_account_report.summary]
+        opportunityFillRate:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
 
         slotOpportunities:
             expose: true

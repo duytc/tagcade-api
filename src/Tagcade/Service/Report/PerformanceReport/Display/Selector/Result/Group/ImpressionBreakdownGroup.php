@@ -14,6 +14,7 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     private $voidImpressions;
     private $clicks;
     private $refreshes;
+    private $networkOpportunityFillRate;
 
     private $averageFirstOpportunities;
     private $averageVerifiedImpressions;
@@ -22,17 +23,18 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     private $averageVoidImpressions;
     private $averageClicks;
     private $averageRefreshes;
+    private $averageNetworkOpportunityFillRate;
 
     public function __construct($reportType, $startDate, $endDate, $reports, $name,
                                 $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
                                 $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate,
-                                $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks, $refreshes, $adOpportunities,
-                                $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions, $averageVoidImpressions, $averageClicks, $averageRefreshes, $averageAdOpportunities
+                                $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks, $refreshes, $adOpportunities, $networkOpportunityFillRate,
+                                $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions, $averageVoidImpressions, $averageClicks, $averageRefreshes, $averageOpportunities, $averageNetworkOpportunityFillRate
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
             $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageOpportunities
         );
 
         $this->firstOpportunities = $firstOpportunities;
@@ -42,6 +44,7 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
         $this->voidImpressions = $voidImpressions;
         $this->clicks = $clicks;
         $this->refreshes = $refreshes;
+        $this->networkOpportunityFillRate = $networkOpportunityFillRate;
 
         $this->averageFirstOpportunities = $averageFirstOpportunities;
         $this->averageVerifiedImpressions = $averageVerifiedImpressions;
@@ -50,6 +53,7 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
         $this->averageVoidImpressions = $averageVoidImpressions;
         $this->averageClicks = $averageClicks;
         $this->averageRefreshes = $averageRefreshes;
+        $this->averageNetworkOpportunityFillRate = $averageNetworkOpportunityFillRate;
     }
 
     /**
@@ -97,7 +101,15 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
      */
     public function getRefreshes()
     {
-        return $this->clicks;
+        return $this->refreshes;
+    }
+
+    /**
+     * @return float
+     */
+    public function getNetworkOpportunityFillRate()
+    {
+        return $this->networkOpportunityFillRate;
     }
 
     /**
@@ -161,6 +173,14 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
      */
     public function getAverageRefreshes()
     {
-        return $this->averageClicks;
+        return $this->averageRefreshes;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAverageNetworkOpportunityFillRate()
+    {
+        return $this->averageNetworkOpportunityFillRate;
     }
 }

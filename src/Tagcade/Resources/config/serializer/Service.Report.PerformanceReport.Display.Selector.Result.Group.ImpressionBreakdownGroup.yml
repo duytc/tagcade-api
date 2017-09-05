@@ -25,6 +25,9 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Impressio
         adOpportunities:
             expose: true
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        networkOpportunityFillRate:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
         averageFirstOpportunities:
             expose: true
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]  
@@ -47,5 +50,8 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Impressio
             expose: true
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
         averageAdOpportunities:
+            expose: true
+            groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]
+        averageNetworkOpportunityFillRate:
             expose: true
             groups: [impression_breakdown_group.detail, impression_breakdown_group.summary]

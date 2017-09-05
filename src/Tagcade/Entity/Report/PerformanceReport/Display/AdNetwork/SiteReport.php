@@ -26,6 +26,7 @@ class SiteReport extends SiteReportModel
     protected $blankImpressions;
     protected $voidImpressions;
     protected $clicks;
+    protected $networkOpportunityFillRate;
 
     protected $inBannerRequests;
     protected $inBannerImpressions;

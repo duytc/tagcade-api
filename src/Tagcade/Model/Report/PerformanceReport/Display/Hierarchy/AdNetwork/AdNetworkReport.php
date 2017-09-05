@@ -3,11 +3,14 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
 use Tagcade\Model\Core\AdNetworkInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkReportInterface, ImpressionBreakdownReportDataInterface
 {
+    use CalculateNetworkOpportunityFillRateTrait;
+
     /**
      * @var AdNetworkInterface
      */
@@ -47,6 +50,17 @@ class AdNetworkReport extends AbstractCalculatedReport implements AdNetworkRepor
     public function isValidSubReport(ReportInterface $report)
     {
         return $report instanceof SiteReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doCalculateFields()
+    {
+        parent::doCalculateFields();
+
+        // difference calculate at network/network level
+        $this->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($this->getAdOpportunities(), $this->getTotalOpportunities()));
     }
 
     protected function setDefaultName()

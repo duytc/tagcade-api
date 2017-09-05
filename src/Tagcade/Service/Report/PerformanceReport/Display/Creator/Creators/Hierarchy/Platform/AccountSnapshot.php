@@ -38,22 +38,22 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
      */
     public function doCreateReport(ReportTypeInterface $reportType)
     {
-        $report = new AccountReport();
+        $accountReport = new AccountReport();
 
         /** @var AccountReportType $reportType */
         $publisher = $reportType->getPublisher();
         $publisherName = $publisher->getCompany();
 
-        $report
+        $accountReport
             ->setPublisher($publisher)
             ->setName($publisherName === null ? $publisher->getUser()->getUsername() : $publisherName)
             ->setDate($this->getDate());
 
         $result = $this->eventCounter->getAccountReport($publisher);
 
-        $this->parseRawReportData($report, $result);
+        $this->parseRawReportData($accountReport, $result);
 
-        return $report;
+        return $accountReport;
     }
 
     /**

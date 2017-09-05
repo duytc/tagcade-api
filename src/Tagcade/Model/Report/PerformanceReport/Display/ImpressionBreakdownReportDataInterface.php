@@ -39,4 +39,9 @@ interface ImpressionBreakdownReportDataInterface extends ReportDataInterface
      * @return mixed
      */
     public function getRefreshes();
+
+    /**
+     * @return float
+     */
+    public function getNetworkOpportunityFillRate();
 }

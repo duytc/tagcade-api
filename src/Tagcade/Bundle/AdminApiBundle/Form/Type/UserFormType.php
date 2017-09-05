@@ -35,6 +35,7 @@ class UserFormType extends AbstractRoleSpecificFormType
         'fillRate',
         'adOpportunities',
         'refreshes',
+        'networkOpportunityFillRate',
     ];
 
     const MODULE_CONFIG = 'moduleConfigs';

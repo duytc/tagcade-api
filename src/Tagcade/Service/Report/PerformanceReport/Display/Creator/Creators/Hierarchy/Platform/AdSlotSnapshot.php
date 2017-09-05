@@ -31,20 +31,20 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
      */
     public function doCreateReport(ReportTypeInterface $reportType)
     {
-        $report = new AdSlotReport();
+        $adSlotReport = new AdSlotReport();
 
         /** @var AdSlotReportType $reportType */
         $adSlot = $reportType->getAdSlot();
-        $report
+        $adSlotReport
             ->setAdSlot($adSlot)
             ->setName($adSlot->getName())
             ->setDate($this->getDate());
 
         $result = $this->eventCounter->getAdSlotReport($adSlot);
 
-        $this->parseRawReportData($report, $result);
+        $this->parseRawReportData($adSlotReport, $result);
 
-        return $report;
+        return $adSlotReport;
     }
 
     /**

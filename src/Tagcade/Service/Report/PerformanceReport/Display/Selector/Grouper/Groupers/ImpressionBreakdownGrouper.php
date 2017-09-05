@@ -17,6 +17,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $voidImpressions;
     private $clicks;
     private $refreshes;
+    private $networkOpportunityFillRate;
 
     private $averageFirstOpportunities;
     private $averageVerifiedImpressions;
@@ -25,6 +26,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $averageVoidImpressions;
     private $averageClicks;
     private $averageRefreshes;
+    private $averageNetworkOpportunityFillRate;
 
     public function getGroupedReport()
     {
@@ -56,6 +58,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getClicks(),
             $this->getRefreshes(),
             $this->getAdOpportunities(),
+            $this->getNetworkOpportunityFillRate(),
 
             $this->getAverageFirstOpportunities(),
             $this->getAverageVerifiedImpressions(),
@@ -64,7 +67,8 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getAverageVoidImpressions(),
             $this->getAverageClicks(),
             $this->getAverageRefreshes(),
-            $this->getAverageAdOpportunities()
+            $this->getAverageAdOpportunities(),
+            $this->getAverageNetworkOpportunityFillRate()
         );
     }
 
@@ -81,6 +85,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->averageVoidImpressions = $this->getRatio($this->getVoidImpressions(), $reportCount);
         $this->averageClicks = $this->getRatio($this->getClicks(), $reportCount);
         $this->averageRefreshes = $this->getRatio($this->getRefreshes(), $reportCount);
+        $this->averageNetworkOpportunityFillRate = $this->getRatio($this->getNetworkOpportunityFillRate(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -98,6 +103,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->addVoidImpressions($report->getVoidImpressions());
         $this->addClicks($report->getClicks());
         $this->addRefreshes($report->getRefreshes());
+        $this->addNetworkOpportunityFillRate($report->getNetworkOpportunityFillRate());
 
     }
 
@@ -134,6 +140,11 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     protected function addRefreshes($refreshes)
     {
         $this->refreshes += (int)$refreshes;
+    }
+
+    protected function addNetworkOpportunityFillRate($networkOpportunityFillRate)
+    {
+        $this->networkOpportunityFillRate += (float)$networkOpportunityFillRate;
     }
 
     /**
@@ -193,6 +204,14 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     }
 
     /**
+     * @return float
+     */
+    public function getNetworkOpportunityFillRate()
+    {
+        return $this->networkOpportunityFillRate;
+    }
+
+    /**
      * @return mixed
      */
     public function getAverageFirstOpportunities()
@@ -238,6 +257,14 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     public function getAverageRefreshes()
     {
         return $this->averageRefreshes;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageNetworkOpportunityFillRate()
+    {
+        return $this->averageNetworkOpportunityFillRate;
     }
 
     /**

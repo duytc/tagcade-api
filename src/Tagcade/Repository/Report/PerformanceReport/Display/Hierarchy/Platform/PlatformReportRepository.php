@@ -66,9 +66,9 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
     public function overrideReport(PlatformReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform`
-                 (date, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities,
+                 (date, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities, opportunity_fill_rate,
                  slot_opportunities, billed_rate, billed_amount, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
-                 ) VALUES (:date, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities,
+                 ) VALUES (:date, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities, :opportunityFillRate,
                   :slotOpportunities, :billedRate, :billedAmount, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
@@ -76,6 +76,7 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
                  total_opportunities = :totalOpportunities,
                  passbacks = :passbacks,
                  ad_opportunities = :adOpportunities,
+                 opportunity_fill_rate = :opportunityFillRate,
                  fill_rate = :impressions / :slotOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
@@ -99,6 +100,7 @@ class PlatformReportRepository extends AbstractReportRepository implements Platf
         $qb->bindValue('totalOpportunities', $report->getTotalOpportunities() !== null ? $report->getTotalOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('passbacks', $report->getPassbacks() !== null ? $report->getPassbacks() : 0, Type::INTEGER);
         $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0, Type::INTEGER);
+        $qb->bindValue('opportunityFillRate', $report->getOpportunityFillRate() !== null ? $report->getOpportunityFillRate() : 0, Type::DECIMAL);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
         $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
         $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);

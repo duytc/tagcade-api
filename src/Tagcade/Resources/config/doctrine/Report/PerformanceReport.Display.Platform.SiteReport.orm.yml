@@ -41,6 +41,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\SiteReport:
         adOpportunities:
             type: integer
             nullable: true
+        opportunityFillRate:
+            type: decimal
+            scale: 4
+            nullable: true
         # site
         billedRate:
             type: decimal

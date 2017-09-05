@@ -26,7 +26,8 @@ trait ConstructCalculatedReportTrait
             ->setInBannerTimeouts(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT] : 0)
             ->setInBannerImpressions(array_key_exists(SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION, $data) ? $data[SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION] : 0)
             ->setFillRate()
-            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()));
+            ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()))
+            ->setOpportunityFillRate($this->calculateOpportunityFillRate($report->getAdOpportunities(), $report->getSlotOpportunities()));
 
         if (isset($data[PlatformSnapshot::BILLED_AMOUNT])) {
             $report->setBilledAmount($data[PlatformSnapshot::BILLED_AMOUNT]);

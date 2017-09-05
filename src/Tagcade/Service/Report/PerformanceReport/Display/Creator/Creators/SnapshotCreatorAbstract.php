@@ -76,4 +76,4 @@ abstract class SnapshotCreatorAbstract extends CreatorAbstract implements Snapsh
         $result[self::CACHE_KEY_IN_BANNER_IMPRESSION] += $adSlotReportCount->getInBannerImpressions();
         $result[self::CACHE_KEY_IN_BANNER_TIMEOUT] += $adSlotReportCount->getInBannerTimeouts();
     }
-} 
+}
