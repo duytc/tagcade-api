@@ -1,5 +1,4 @@
 <?php
-
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
 use Tagcade\Exception\InvalidArgumentException;
@@ -33,6 +32,8 @@ class BilledReportGrouper extends AbstractGrouper
     private $averageInBannerTimeouts;
     private $averageInBannerBilledRate;
     private $averageInBannerBilledAmount;
+
+    private $totalOpportunityFillRate; // temp for calculate this $averageOpportunityFillRate
 
     public function getGroupedReport()
     {
@@ -80,10 +81,12 @@ class BilledReportGrouper extends AbstractGrouper
     {
         parent::groupReports($reports);
 
+        $this->opportunityFillRate = $this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities());
+
         $reportCount = count($this->getReports());
 
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
-        $this->averageOpportunityFillRate = $this->getRatio($this->getOpportunityFillRate(), $reportCount);
+        $this->averageOpportunityFillRate = $this->getRatio($this->totalOpportunityFillRate, $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
 
         $this->averageInBannerTimeouts = $this->getRatio($this->getInBannerTimeouts(), $reportCount);
@@ -119,7 +122,7 @@ class BilledReportGrouper extends AbstractGrouper
 
     protected function addOpportunityFillRate($opportunityFillRate)
     {
-        $this->opportunityFillRate += (float)$opportunityFillRate;
+        $this->totalOpportunityFillRate += (float)$opportunityFillRate;
     }
 
     protected function addBilledAmount($billedAmount)

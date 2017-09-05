@@ -82,4 +82,14 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
 
         return $this;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function calculateFinalOpportunityFillRate()
+    {
+        $this->setOpportunityFillRate($this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities()));
+
+        return $this;
+    }
 }

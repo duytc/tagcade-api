@@ -4,12 +4,15 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Grou
 
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ImpressionBreakdownGroup;
 
 class ImpressionBreakdownGrouper extends AbstractGrouper
 {
+    use CalculateNetworkOpportunityFillRateTrait;
+
     private $firstOpportunities;
     private $verifiedImpressions;
     private $unverifiedImpressions;
@@ -17,7 +20,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $voidImpressions;
     private $clicks;
     private $refreshes;
-    private $networkOpportunityFillRate;
+    private $networkOpportunityFillRate; // only for platform adTag and network/* levels
 
     private $averageFirstOpportunities;
     private $averageVerifiedImpressions;
@@ -26,7 +29,9 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     private $averageVoidImpressions;
     private $averageClicks;
     private $averageRefreshes;
-    private $averageNetworkOpportunityFillRate;
+    private $averageNetworkOpportunityFillRate; // only for platform adTag and network/* levels
+
+    private $totalNetworkOpportunityFillRate; // temp for calculate this $averageNetworkOpportunityFillRate
 
     public function getGroupedReport()
     {
@@ -76,6 +81,8 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
     {
         parent::groupReports($reports);
 
+        $this->networkOpportunityFillRate = $this->calculateNetworkOpportunityFillRate($this->getAdOpportunities(), $this->getTotalOpportunities());
+
         $reportCount = count($this->getReports());
 
         $this->averageFirstOpportunities = $this->getRatio($this->getFirstOpportunities(), $reportCount);
@@ -85,7 +92,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->averageVoidImpressions = $this->getRatio($this->getVoidImpressions(), $reportCount);
         $this->averageClicks = $this->getRatio($this->getClicks(), $reportCount);
         $this->averageRefreshes = $this->getRatio($this->getRefreshes(), $reportCount);
-        $this->averageNetworkOpportunityFillRate = $this->getRatio($this->getNetworkOpportunityFillRate(), $reportCount);
+        $this->averageNetworkOpportunityFillRate = $this->getRatio($this->totalNetworkOpportunityFillRate, $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -144,7 +151,7 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
 
     protected function addNetworkOpportunityFillRate($networkOpportunityFillRate)
     {
-        $this->networkOpportunityFillRate += (float)$networkOpportunityFillRate;
+        $this->totalNetworkOpportunityFillRate += (float)$networkOpportunityFillRate;
     }
 
     /**
