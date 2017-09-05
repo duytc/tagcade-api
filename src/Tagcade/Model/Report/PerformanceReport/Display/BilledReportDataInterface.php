@@ -12,6 +12,11 @@ interface BilledReportDataInterface extends ReportDataInterface
     /**
      * @return float
      */
+    public function getOpportunityFillRate();
+
+    /**
+     * @return float
+     */
     public function getBilledAmount();
 
     /**

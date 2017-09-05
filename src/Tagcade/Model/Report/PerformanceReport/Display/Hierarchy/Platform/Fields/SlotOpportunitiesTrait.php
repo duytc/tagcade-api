@@ -17,6 +17,11 @@ trait SlotOpportunitiesTrait
     /**
      * @var float
      */
+    protected $opportunityFillRate; // calculated base on slotOpportunities
+
+    /**
+     * @var float
+     */
     protected $billedAmount;
 
     /**
@@ -66,6 +71,24 @@ trait SlotOpportunitiesTrait
     public function setSlotOpportunities($slotOpportunities)
     {
         $this->slotOpportunities = (int)$slotOpportunities;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOpportunityFillRate()
+    {
+        return $this->opportunityFillRate;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOpportunityFillRate($opportunityFillRate)
+    {
+        $this->opportunityFillRate = (float)$opportunityFillRate;
 
         return $this;
     }

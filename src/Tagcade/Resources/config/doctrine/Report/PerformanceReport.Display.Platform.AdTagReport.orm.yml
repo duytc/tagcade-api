@@ -66,6 +66,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
         refreshes: # opp on refreshes
             type: integer
             nullable: true
+        networkOpportunityFillRate:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag

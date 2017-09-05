@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\AdNetwork;
 
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -10,6 +11,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 class SiteReport extends AbstractCalculatedReport implements SiteReportInterface, ImpressionBreakdownReportDataInterface
 {
     use SuperReportTrait;
+    use CalculateNetworkOpportunityFillRateTrait;
 
     /** @var SiteInterface */
     protected $site;
@@ -53,6 +55,17 @@ class SiteReport extends AbstractCalculatedReport implements SiteReportInterface
     public function isValidSuperReport(ReportInterface $report)
     {
         return $report instanceof AdNetworkReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doCalculateFields()
+    {
+        parent::doCalculateFields();
+
+        // difference calculate at network/site level
+        $this->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($this->getAdOpportunities(), $this->getTotalOpportunities()));
     }
 
     protected function setDefaultName()

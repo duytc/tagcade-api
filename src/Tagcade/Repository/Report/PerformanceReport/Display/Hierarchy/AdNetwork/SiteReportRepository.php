@@ -45,9 +45,9 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_ad_network_site`
                  (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, ad_opportunities
+                 first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, ad_opportunities, network_opportunity_fill_rate
                  ) VALUES (:siteId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :adOpportunities
+                  :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :adOpportunities, :networkOpportunityFillRate
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -61,7 +61,8 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
                  blank_impressions = :blankImpressions,
                  void_impressions = :voidImpressions,
                  clicks = :clicks,
-                 ad_opportunities = :adOpportunities
+                 ad_opportunities = :adOpportunities,
+                 network_opportunity_fill_rate = :networkOpportunityFillRate
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -84,6 +85,7 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         $qb->bindValue('voidImpressions', $report->getVoidImpressions() !== null ? $report->getPassbacks() : 0);
         $qb->bindValue('clicks', $report->getClicks() !== null ? $report->getClicks() : 0);
         $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0);
+        $qb->bindValue('networkOpportunityFillRate', $report->getNetworkOpportunityFillRate() !== null ? $report->getNetworkOpportunityFillRate() : 0);
 
         $connection->beginTransaction();
         try {

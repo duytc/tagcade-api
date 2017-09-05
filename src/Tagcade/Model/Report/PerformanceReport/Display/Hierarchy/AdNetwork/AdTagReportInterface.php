@@ -23,48 +23,75 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
      */
     public function getSubPublisher();
 
+    /**
+     * @return int
+     */
     public function getSubPublisherId();
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getBlankImpressions();
 
+    /**
+     * @param int $blankImpressions
+     * @return self
+     */
     public function setBlankImpressions($blankImpressions);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getFirstOpportunities();
 
+    /**
+     * @param int $firstOpportunities
+     * @return self
+     */
     public function setFirstOpportunities($firstOpportunities);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getUnverifiedImpressions();
 
+    /**
+     * @param int $unverifiedImpressions
+     * @return self
+     */
     public function setUnverifiedImpressions($unverifiedImpressions);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVerifiedImpressions();
 
+    /**
+     * @param int $verifiedImpressions
+     * @return self
+     */
     public function setVerifiedImpressions($verifiedImpressions);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getClicks();
 
+    /**
+     * @param int $clicks
+     * @return self
+     */
     public function setClicks($clicks);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVoidImpressions();
 
+    /**
+     * @param int $voidImpressions
+     * @return self
+     */
     public function setVoidImpressions($voidImpressions);
 
     /**
@@ -77,4 +104,15 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
      * @return self
      */
     public function setRefreshes($refreshes);
+
+    /**
+     * @return float
+     */
+    public function getNetworkOpportunityFillRate();
+
+    /**
+     * @param float $networkOpportunityFillRate
+     * @return self
+     */
+    public function setNetworkOpportunityFillRate($networkOpportunityFillRate);
 }

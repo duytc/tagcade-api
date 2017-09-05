@@ -53,6 +53,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\SiteReport:
         adOpportunities:
             expose: true
             groups: [ad_network_site_report.detail, ad_network_site_report.summary]
+        networkOpportunityFillRate:
+            expose: true
+            groups: [ad_network_site_report.detail, ad_network_site_report.summary]
 
         inBannerRequests:
             expose: true

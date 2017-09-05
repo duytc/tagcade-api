@@ -2,6 +2,7 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -10,6 +11,7 @@ use Tagcade\Model\User\UserEntityInterface;
 class AccountReport extends AbstractCalculatedReport implements AccountReportInterface
 {
     use SuperReportTrait;
+    use CalculateAdOpportunitiesTrait;
 
     /** @var UserEntityInterface */
     protected $publisher;
@@ -68,6 +70,17 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
     public function getSubPublisherReports()
     {
         return $this->subPublisherReports;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doCalculateFields()
+    {
+        parent::doCalculateFields();
+
+        // difference calculate at account level
+        $this->setOpportunityFillRate($this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities()));
     }
 
     protected function setDefaultName()

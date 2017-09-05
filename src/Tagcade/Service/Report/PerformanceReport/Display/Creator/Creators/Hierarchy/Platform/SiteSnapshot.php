@@ -37,20 +37,20 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
      */
     public function doCreateReport(ReportTypeInterface $reportType)
     {
-        $report = new SiteReport();
+        $siteReport = new SiteReport();
 
         /** @var SiteReportType $reportType */
         $site = $reportType->getSite();
-        $report
+        $siteReport
             ->setSite($site)
             ->setName($site->getName())
             ->setDate($this->getDate());
 
         $result = $this->eventCounter->getSiteReportData($site);
 
-        $this->parseRawReportData($report, $result);
+        $this->parseRawReportData($siteReport, $result);
 
-        return $report;
+        return $siteReport;
     }
 
     /**

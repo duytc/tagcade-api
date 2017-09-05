@@ -30,25 +30,25 @@ class Site extends CreatorAbstract implements SiteInterface
     {
         $this->syncEventCounterForSubReports();
 
-        $report = new SiteReport();
+        $siteReport = new SiteReport();
 
         /** @var SiteReportType $reportType */
         $site = $reportType->getSite();
 
-        $report
+        $siteReport
             ->setSite($site)
             ->setDate($this->getDate());
 
         $allAdSlots = $this->adSlotRepository->getReportableAdSlotForSite($site);
 
         foreach ($allAdSlots as $adSlot) {
-            $report->addSubReport(
+            $siteReport->addSubReport(
                 $this->subReportCreator->createReport(new AdSlotReportType($adSlot))
-                    ->setSuperReport($report)
+                    ->setSuperReport($siteReport)
             );
         }
 
-        return $report;
+        return $siteReport;
     }
 
     /**

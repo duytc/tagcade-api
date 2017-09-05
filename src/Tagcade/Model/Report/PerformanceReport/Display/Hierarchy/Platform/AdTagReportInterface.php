@@ -11,7 +11,7 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
      * To calculate the relative fill rate, the total opportunities from the entire ad slot must be supplied
      *
      * @param int $totalOpportunities
-     * @return $this
+     * @return self
      */
     public function setRelativeFillRate($totalOpportunities);
 
@@ -21,11 +21,14 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
     public function getRelativeFillRate();
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getBlankImpressions();
 
-
+    /**
+     * @param int $blankImpressions
+     * @return self
+     */
     public function setBlankImpressions($blankImpressions);
 
     /**
@@ -34,26 +37,30 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
     public function getFirstOpportunities();
 
     /**
-     * @param mixed $firstOpportunities
+     * @param int $firstOpportunities
+     * @return self
      */
     public function setFirstOpportunities($firstOpportunities);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getUnverifiedImpressions();
+
     /**
-     * @param mixed $unverifiedImpressions
+     * @param int $unverifiedImpressions
+     * @return self
      */
     public function setUnverifiedImpressions($unverifiedImpressions);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVerifiedImpressions();
 
     /**
-     * @param mixed $verifiedImpressions
+     * @param int $verifiedImpressions
+     * @return self
      */
     public function setVerifiedImpressions($verifiedImpressions);
 
@@ -77,25 +84,40 @@ interface AdTagReportInterface extends BaseAdTagReportInterface
     public function getAdTag();
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getClicks();
 
+    /**
+     * @param int $clicks
+     * @return self
+     */
     public function setClicks($clicks);
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getVoidImpressions();
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getRefreshes();
 
     /**
-     * @param $refreshes
+     * @param int $refreshes
      * @return self
      */
     public function setRefreshes($refreshes);
+
+    /**
+     * @return float
+     */
+    public function getNetworkOpportunityFillRate();
+
+    /**
+     * @param float $networkOpportunityFillRate
+     * @return self
+     */
+    public function setNetworkOpportunityFillRate($networkOpportunityFillRate);
 }

@@ -8,6 +8,7 @@ use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\AbstractCalculatedReport as BaseAbstractCalculatedReport;
 use Tagcade\Model\Report\PerformanceReport\Display\Fields\SuperReportTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\Fields\SlotOpportunitiesTrait;
@@ -22,6 +23,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
 {
     use SuperReportTrait;
     use SlotOpportunitiesTrait;
+    use CalculateAdOpportunitiesTrait;
 
     /**
      * @var BaseAdSlotInterface
@@ -136,6 +138,9 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
         }
 
         parent::doCalculateFields();
+
+        // difference calculate at ad slot level
+        $this->setOpportunityFillRate($this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities()));
     }
 
     protected function aggregateSubReport(ReportInterface $subReport)

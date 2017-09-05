@@ -31,24 +31,24 @@ class Account extends CreatorAbstract implements AccountInterface
         $this->syncEventCounterForSubReports();
 
         /** @var AccountReportType $reportType */
-        $report = new AccountReport();
+        $accountReport = new AccountReport();
 
         $publisher = $reportType->getPublisher();
 
-        $report
+        $accountReport
             ->setPublisher($publisher)
             ->setDate($this->getDate());
 
         $sites = $this->siteManager->getSitesForPublisher($publisher);
 
         foreach ($sites as $site) {
-            $report->addSubReport(
+            $accountReport->addSubReport(
                 $this->subReportCreator->createReport(new SiteReportType($site))
-                    ->setSuperReport($report)
+                    ->setSuperReport($accountReport)
             );
         }
 
-        return $report;
+        return $accountReport;
     }
 
     /**

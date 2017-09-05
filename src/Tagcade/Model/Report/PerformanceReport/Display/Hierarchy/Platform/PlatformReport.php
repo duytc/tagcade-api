@@ -2,13 +2,27 @@
 
 namespace Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform;
 
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 
 class PlatformReport extends AbstractCalculatedReport implements PlatformReportInterface
 {
+    use CalculateAdOpportunitiesTrait;
+
     public function isValidSubReport(ReportInterface $report)
     {
         return $report instanceof AccountReportInterface;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function doCalculateFields()
+    {
+        parent::doCalculateFields();
+
+        // difference calculate at platform level
+        $this->setOpportunityFillRate($this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities()));
     }
 
     protected function setDefaultName()
@@ -38,6 +52,10 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setAdOpportunities($data['adOpportunities']);
         }
 
+        if (array_key_exists('opportunityFillRate', $data)) {
+            $this->setOpportunityFillRate($data['opportunityFillRate']);
+        }
+
         if (array_key_exists('billedAmount', $data)) {
             $this->setBilledAmount($data['billedAmount']);
         }
@@ -61,6 +79,16 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
         if (array_key_exists('inBannerTimeouts', $data)) {
             $this->setInBannerTimeouts($data['inBannerTimeouts']);
         }
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function calculateFinalOpportunityFillRate()
+    {
+        $this->setOpportunityFillRate($this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities()));
 
         return $this;
     }

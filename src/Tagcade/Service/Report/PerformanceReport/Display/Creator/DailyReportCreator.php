@@ -150,6 +150,7 @@ class DailyReportCreator
 
         $report->parseData($platformCounts)
             ->setFillRate()
+            ->calculateFinalOpportunityFillRate()
             ->setThresholdBilledAmount($chainToSubReports = false) // we don't need to calculate for sub reports
         ;
 

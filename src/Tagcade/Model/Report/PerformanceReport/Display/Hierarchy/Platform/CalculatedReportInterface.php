@@ -14,6 +14,17 @@ interface CalculatedReportInterface extends ReportInterface, BilledReportDataInt
     public function setSlotOpportunities($slotOpportunities);
 
     /**
+     * @param float $opportunityFillRate
+     * @return $this
+     */
+    public function setOpportunityFillRate($opportunityFillRate);
+
+    /**
+     * @return float
+     */
+    public function getOpportunityFillRate();
+
+    /**
      * @param float $billedAmount
      * @return $this
      */

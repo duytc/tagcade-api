@@ -1,8 +1,8 @@
 <?php
-
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers;
 
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateWeightedValueTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
@@ -11,11 +11,14 @@ use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\Bille
 class BilledReportGrouper extends AbstractGrouper
 {
     use CalculateWeightedValueTrait;
+    use CalculateAdOpportunitiesTrait;
 
     private $slotOpportunities;
+    private $opportunityFillRate; // only for platform slot/site/account/platform level
     private $billedAmount;
 
     private $averageSlotOpportunities;
+    private $averageOpportunityFillRate; // only for platform slot/site/account/platform level
     private $averageBilledAmount;
 
     private $inBannerRequests;
@@ -29,6 +32,8 @@ class BilledReportGrouper extends AbstractGrouper
     private $averageInBannerTimeouts;
     private $averageInBannerBilledRate;
     private $averageInBannerBilledAmount;
+
+    private $totalOpportunityFillRate; // temp for calculate this $averageOpportunityFillRate
 
     public function getGroupedReport()
     {
@@ -47,6 +52,7 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getEstCpm(),
             $this->getEstRevenue(),
             $this->getAdOpportunities(),
+            $this->getOpportunityFillRate(),
 
             $this->getAverageTotalOpportunities(),
             $this->getAverageImpressions(),
@@ -66,7 +72,8 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getAverageInBannerTimeouts(),
             $this->getAverageInBannerBilledAmount(),
             $this->getAverageInBannerImpressions(),
-            $this->getAverageAdOpportunities()
+            $this->getAverageAdOpportunities(),
+            $this->getAverageOpportunityFillRate()
         );
     }
 
@@ -74,9 +81,12 @@ class BilledReportGrouper extends AbstractGrouper
     {
         parent::groupReports($reports);
 
+        $this->opportunityFillRate = $this->calculateOpportunityFillRate($this->getAdOpportunities(), $this->getSlotOpportunities());
+
         $reportCount = count($this->getReports());
 
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
+        $this->averageOpportunityFillRate = $this->getRatio($this->totalOpportunityFillRate, $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
 
         $this->averageInBannerTimeouts = $this->getRatio($this->getInBannerTimeouts(), $reportCount);
@@ -95,6 +105,7 @@ class BilledReportGrouper extends AbstractGrouper
         parent::doGroupReport($report);
 
         $this->addSlotOpportunities($report->getSlotOpportunities());
+        $this->addOpportunityFillRate($report->getOpportunityFillRate());
         $this->addBilledAmount($report->getBilledAmount());
 
         $this->addInBannerTimeouts($report->getInBannerTimeouts());
@@ -107,6 +118,11 @@ class BilledReportGrouper extends AbstractGrouper
     protected function addSlotOpportunities($slotOpportunities)
     {
         $this->slotOpportunities += (int)$slotOpportunities;
+    }
+
+    protected function addOpportunityFillRate($opportunityFillRate)
+    {
+        $this->totalOpportunityFillRate += (float)$opportunityFillRate;
     }
 
     protected function addBilledAmount($billedAmount)
@@ -145,11 +161,19 @@ class BilledReportGrouper extends AbstractGrouper
     }
 
     /**
-     * @return float
+     * @return int
      */
     public function getSlotOpportunities()
     {
         return $this->slotOpportunities;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOpportunityFillRate()
+    {
+        return $this->opportunityFillRate;
     }
 
     /**
@@ -166,6 +190,14 @@ class BilledReportGrouper extends AbstractGrouper
     public function getAverageSlotOpportunities()
     {
         return $this->averageSlotOpportunities;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageOpportunityFillRate()
+    {
+        return $this->averageOpportunityFillRate;
     }
 
     /**

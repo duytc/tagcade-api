@@ -19,6 +19,7 @@ class SiteReport extends SiteReportModel
     protected $estRevenue;
     protected $estCpm;
     protected $adOpportunities;
+    protected $opportunityFillRate;
 
     protected $slotOpportunities;
     protected $billedAmount;

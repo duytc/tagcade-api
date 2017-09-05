@@ -53,6 +53,10 @@ Tagcade\Entity\Report\PerformanceReport\Display\AdNetwork\AdNetworkReport:
             type: integer
         clicks:
             type: integer
+        networkOpportunityFillRate:
+            type: decimal
+            scale: 4
+            nullable: true
 
         # inbanner metrics
         inBannerRequests:

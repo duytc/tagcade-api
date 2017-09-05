@@ -6,6 +6,7 @@ use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
+use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -16,6 +17,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\EstCpmCalculatorInterface;
 class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, SnapshotCreatorInterface
 {
     use CalculateAdOpportunitiesTrait;
+    use CalculateNetworkOpportunityFillRateTrait;
 
     /**
      * @var EstCpmCalculatorInterface
@@ -79,6 +81,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
             ->setClicks($data[self::CACHE_KEY_CLICK])
             ->setFillRate()
             ->setAdOpportunities($this->calculateAdOpportunities($report->getTotalOpportunities(), $report->getPassbacks()))
+            ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $report->getTotalOpportunities()))
             ->setRefreshes($data[self::CACHE_KEY_REFRESHES]);
 
         // TODO latter
