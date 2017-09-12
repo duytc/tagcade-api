@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\UserSystem\PublisherBundle\Controller;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\View;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTManagerInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -12,8 +13,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Bundle\AdminApiBundle\Handler\UserHandlerInterface;
 use Tagcade\Bundle\ApiBundle\Controller\RestControllerAbstract;
-use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\SubPublisherManagerInterface;
+use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -115,6 +116,17 @@ class PublisherController extends RestControllerAbstract implements ClassResourc
      */
     public function patchAction(Request $request)
     {
+        // do not allow edit if 2nd login
+        /** @var JWTManagerInterface $jwtManager */
+        $jwtManager = $this->get('lexik_jwt_authentication.jwt_manager');
+
+        $token = $this->get('security.context')->getToken();
+        $rawTokenData = $jwtManager->decode($token);
+
+        if (array_key_exists(PublisherInterface::IS_2ND_LOGIN, $rawTokenData) && $rawTokenData[PublisherInterface::IS_2ND_LOGIN] == true) {
+            throw new InvalidArgumentException('Not allow 2nd login to edit publisher info');
+        }
+
         $publisherId = $this->get('security.context')->getToken()->getUser()->getId();
 
         return $this->patch($request, $publisherId);
