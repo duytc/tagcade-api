@@ -7,6 +7,8 @@ use Tagcade\Entity\Core\BillingConfiguration;
 
 interface PublisherInterface extends UserRoleInterface
 {
+    const IS_2ND_LOGIN = 'is2ndLogin';
+    
     /**
      * @return string
      */

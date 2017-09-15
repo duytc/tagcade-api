@@ -58,7 +58,7 @@ services:
 
     tagcade.event.authentication_success_listener:
         class: %tagcade.event.authentication_success_listener.class%
-        arguments: [@tagcade_api.service.jwt_response_transformer, @fos_user.user_manager, @lexik_jwt_authentication.jwt_manager]
+        arguments: [@tagcade_api.service.jwt_response_transformer, @fos_user.user_manager, @lexik_jwt_authentication.jwt_manager, @lexik_jwt_authentication.jwt_encoder]
         tags:
             -
                name: kernel.event_listener
