@@ -83,7 +83,11 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 
                 if (!empty($libraryAdTag->getExpressionDescriptor())) {
                     // validate expression descriptor
-                    ExpressionInJsGenerator::validateExpressionDescriptor($libraryAdTag->getExpressionDescriptor());
+                    try {
+                        ExpressionInJsGenerator::validateExpressionDescriptor($libraryAdTag->getExpressionDescriptor());
+                    } catch (\Exception $e) {
+                        $libraryAdTag->setExpressionDescriptor(null);
+                    }
                 }
 
                 try {

@@ -159,14 +159,7 @@ trait CreateAdSlotDataTrait
                 $dataItem['passback'] = true;
             }
 
-            if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
-                $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
-                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
-                $groupVals = $expressionDescriptor['groupVal'];
-                if (is_array($groupVals)) {
-                    $this->updateServerVars($groupVals, $dataItem);
-                }
-            }
+           $dataItem = $this->updateTargetingFromAdTag($adTag, $dataItem);
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
             if (count($adTagBlacklist) > 0) {
@@ -264,7 +257,7 @@ trait CreateAdSlotDataTrait
                     array_push($data['expressions'], $expression->getExpressionInJs());
 
                     $expressionDescriptor = $expression->getExpressionDescriptor();
-                    $groupVals = $expressionDescriptor['groupVal'];
+                    $groupVals = $expressionDescriptor[ExpressionInJsGenerator::KEY_GROUP_VAL];
                     if (!is_array($groupVals)) {
                         return;
                     }
@@ -307,13 +300,13 @@ trait CreateAdSlotDataTrait
     protected function updateServerVars(array $groupVals, &$data)
     {
         foreach ($groupVals as $groupVal) {
-            if (!array_key_exists('groupVal', $groupVal)) {
+            if (!array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $groupVal)) {
                 $varName = $groupVal['var'];
                 if (in_array($varName, ExpressionInJsGenerator::$SERVER_VARS) && (!isset($data['serverVars']) || !in_array($varName, $data['serverVars']))) {
                     $data['serverVars'][] = $varName;
                 }
             } else {
-                $this->updateServerVars($groupVal['groupVal'], $data);
+                $this->updateServerVars($groupVal[ExpressionInJsGenerator::KEY_GROUP_VAL], $data);
             }
         }
     }
@@ -348,14 +341,7 @@ trait CreateAdSlotDataTrait
                 'tag' => $adTag->getHtml()
             ];
 
-            if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
-                $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
-                $dataItem['targeting'] = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
-                $groupVals = $expressionDescriptor['groupVal'];
-                if (is_array($groupVals)) {
-                    $this->updateServerVars($groupVals, $dataItem);
-                }
-            }
+			$dataItem = $this->updateTargetingFromAdTag($adTag, $dataItem);
 
             $adTagBlacklist = $this->getDisplayBlacklistForAdTag($adTag);
             if (count($adTagBlacklist) > 0) {
@@ -391,6 +377,41 @@ trait CreateAdSlotDataTrait
         return $data;
     }
 
+	/**
+	 * @param AdTagInterface $adTag
+	 * @param array $dataItem
+	 * @return array
+	 */
+	protected function updateTargetingFromAdTag(AdTagInterface $adTag, array $dataItem)
+	{
+		if (!array_key_exists('', $dataItem)) {
+			$dataItem[ExpressionInterface::TARGETING] = [];
+		}
+
+        $expressionDescriptor = [];
+
+		if (!empty($adTag->getAdNetwork()->getExpressionDescriptor())) {
+			$expressionDescriptor = $adTag->getAdNetwork()->getExpressionDescriptor();
+			$targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+			$dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
+		}
+
+		if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
+            $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
+            $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+            $dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
+        }
+
+        if (array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $expressionDescriptor)) {
+            $groupVals = $expressionDescriptor[ExpressionInJsGenerator::KEY_GROUP_VAL];
+            if (is_array($groupVals)) {
+                $this->updateServerVars($groupVals, $dataItem);
+            }
+        }
+
+		return $dataItem;
+	}
+
     private function getDisplayBlacklistForAdTag(AdTagInterface $adTag)
     {
         $blacklists = [];
@@ -418,6 +439,44 @@ trait CreateAdSlotDataTrait
         }
 
         return array_values(array_unique($whiteLists));
+    }
+
+    /**
+     * @param array $targets
+     * @return array
+     */
+    private function mergeTargetings(array $targets) {
+        $vars = [];
+        $expression = "";
+        $domainChecks = [];
+
+        foreach ($targets as $target) {
+            if (!is_array($target)) {
+                continue;
+            }
+
+            if (array_key_exists(ExpressionInterface::VARS, $target) && is_array($target[ExpressionInterface::VARS])) {
+                $vars = array_merge($vars, $target[ExpressionInterface::VARS]);
+            }
+
+            if (array_key_exists(ExpressionInterface::EXPRESSION, $target) && !empty($target[ExpressionInterface::EXPRESSION])) {
+                if (empty($expression)) {
+                    $expression = $target[ExpressionInterface::EXPRESSION];
+                } else {
+                    $expression = $expression. "&&" . $target[ExpressionInterface::EXPRESSION];
+                }
+            }
+
+            if (array_key_exists(ExpressionInterface::DOMAIN_CHECKS, $target) && is_array($target[ExpressionInterface::DOMAIN_CHECKS])) {
+                $domainChecks = array_merge($domainChecks, $target[ExpressionInterface::DOMAIN_CHECKS]);
+            }
+        }
+
+        return [
+            ExpressionInterface::VARS => $vars,
+            ExpressionInterface::EXPRESSION => $expression,
+            ExpressionInterface::DOMAIN_CHECKS => $domainChecks,
+        ];
     }
 
     /**

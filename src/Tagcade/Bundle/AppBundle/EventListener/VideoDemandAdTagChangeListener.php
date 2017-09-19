@@ -8,6 +8,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagItemInterface;
 
@@ -39,7 +40,7 @@ class VideoDemandAdTagChangeListener
 
         if ($entity instanceof VideoDemandAdTagInterface &&
             (
-              $args->hasChangedField('priority') || $args->hasChangedField('rotationWeight') || $args->hasChangedField('targetingOverride') || $args->hasChangedField('targeting') ||
+              $args->hasChangedField('priority') || $args->hasChangedField('rotationWeight') || $args->hasChangedField('targetingOverride') || $args->hasChangedField(ExpressionInterface::TARGETING) ||
               $args->hasChangedField('active') || $args->hasChangedField('videoWaterfallTagItem') || $args->hasChangedField('timeout')
             )
         ) {

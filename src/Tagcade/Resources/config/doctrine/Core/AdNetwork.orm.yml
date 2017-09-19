@@ -35,6 +35,9 @@ Tagcade\Entity\Core\AdNetwork:
         customImpressionPixels:
             type: json_array
             nullable: true
+        expressionDescriptor:
+            type: json_array
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

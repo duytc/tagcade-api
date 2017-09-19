@@ -7,6 +7,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tagcade\Bundle\AppBundle\Event\UpdateCacheEvent;
+use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\LibraryAdTagInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
@@ -42,7 +43,7 @@ class AdTagChangeListener
                 $uow->getScheduledEntityDeletions(),
                 function($entity)
                 {
-                    return $entity instanceof AdTagInterface || $entity instanceof LibrarySlotTagInterface;
+                    return $entity instanceof AdTagInterface || $entity instanceof LibrarySlotTagInterface || $entity instanceof AdNetworkInterface;
                 }
             )
         );
@@ -75,7 +76,7 @@ class AdTagChangeListener
         array_walk($changedEntities,
             function($entity) use (&$adSlots)
             {
-                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface && !$entity instanceof LibrarySlotTagInterface)
+                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface && !$entity instanceof LibrarySlotTagInterface && !$entity instanceof AdNetworkInterface)
                 {
                     return false;
                 }
@@ -91,18 +92,9 @@ class AdTagChangeListener
                     if ($ronAdSlot instanceof RonAdSlotInterface) {
                         $adSlots[] = $ronAdSlot;
                     }
+                } else if ($entity instanceof AdNetworkInterface) {
+                    $adTags = array_merge($adTags, $entity->getAdTags());
                 }
-//                else if ($entity instanceof LibrarySlotTagInterface) {
-//                    $tmpAdTags = $entity->getLibraryAdTag()->getAdTags()->toArray();
-//                    $tmpAdTags = array_filter( // filter for ad tags in the same library slot
-//                        $tmpAdTags,
-//                        function(WaterfallTagInterface $adTag) use($entity) {
-//                            return $adTag->getAdSlot()->getLibraryAdSlot()->getId() === $entity->getLibraryAdSlot()->getId();
-//                        }
-//                    );
-//
-//                    $adTags = array_merge($adTags, $tmpAdTags);
-//                }
                 else {
                     $adTags = array_merge($adTags, [$entity]);
                 }

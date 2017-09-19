@@ -161,9 +161,9 @@ class UpdateExpressionInJsListener
 
         if (null !== $convertedExpression) {
             $expInJs = [
-                'vars' => $convertedExpression['vars'],
-                'expression' => $convertedExpression['expression'],
-                'domainChecks' => $convertedExpression['domainChecks']
+                ExpressionInterface::VARS => $convertedExpression[ExpressionInterface::VARS],
+                ExpressionInterface::EXPRESSION => $convertedExpression[ExpressionInterface::EXPRESSION],
+                ExpressionInterface::DOMAIN_CHECKS => $convertedExpression[ExpressionInterface::DOMAIN_CHECKS]
             ];
 
             if ($expression instanceof ExpressionInterface) {

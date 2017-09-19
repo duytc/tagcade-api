@@ -56,6 +56,13 @@ class NetworkBlacklistChangeListener
         if (!$entity instanceof NetworkBlacklistInterface) {
             return;
         }
+
+        try {
+            $args->getOldValue('adNetwork');
+        } catch (\Exception $e) {
+            return;
+        }
+
         $this->oldAdNetworks[] = $args->getOldValue('adNetwork');
         $this->networkBlacklists[] = $entity;
     }

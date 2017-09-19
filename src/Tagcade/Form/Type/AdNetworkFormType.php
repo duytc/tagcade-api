@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\DomainManager\NetworkBlacklistManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Exception\InvalidArgumentException;
@@ -46,7 +47,8 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
             ->add('defaultCpmRate')
             ->add('impressionCap')
             ->add('emailHookToken')
-            ->add('networkOpportunityCap');
+            ->add('networkOpportunityCap')
+            ->add('expressionDescriptor');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(
@@ -149,6 +151,13 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
 
                 $adNetwork->setCustomImpressionPixels($customImpressionPixels);
 
+                if (!empty($adNetwork->getExpressionDescriptor())) {
+                    try {
+                        ExpressionInJsGenerator::validateExpressionDescriptor($adNetwork->getExpressionDescriptor());
+                    } catch (\Exception $e) {
+                        $adNetwork->setExpressionDescriptor(null);
+                    }
+                }
             }
         );
     }

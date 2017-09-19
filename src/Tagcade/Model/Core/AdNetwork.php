@@ -41,6 +41,11 @@ class AdNetwork implements AdNetworkInterface
     protected $customImpressionPixels;
 
     /**
+     * @var array
+     */
+    protected $expressionDescriptor;
+
+    /**
      * @inheritdoc
      */
     public function getDisplayBlacklists()
@@ -404,5 +409,21 @@ class AdNetwork implements AdNetworkInterface
     {
         $this->networkWhiteLists = $networkWhiteLists;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExpressionDescriptor()
+    {
+        return $this->expressionDescriptor;
+    }
+
+    /**
+     * @param array $expressionDescriptor
+     */
+    public function setExpressionDescriptor($expressionDescriptor)
+    {
+        $this->expressionDescriptor = $expressionDescriptor;
     }
 }

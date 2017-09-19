@@ -11,6 +11,7 @@ use Tagcade\Bundle\ApiBundle\Behaviors\ValidateVideoTargetingTrait;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Entity\Core\VideoDemandPartner;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoPublisherInterface;
 use Tagcade\Model\Core\WaterfallPlacementRule;
@@ -41,7 +42,7 @@ class LibraryVideoDemandAdTagFormType extends AbstractRoleSpecificFormType
             ->add('tagURL')
             ->add('name')
             ->add('timeout')
-            ->add('targeting')
+            ->add(ExpressionInterface::TARGETING)
             ->add('sellPrice')
             ->add('videoDemandPartner', 'entity', array(
                 'class' => VideoDemandPartner::class,

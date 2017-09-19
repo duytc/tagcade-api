@@ -180,4 +180,14 @@ interface AdNetworkInterface extends ModelInterface
      * @return self
      */
     public function setCustomImpressionPixels($customImpressionPixels);
+
+    /**
+     * @return array
+     */
+    public function getExpressionDescriptor();
+
+    /**
+     * @param array $expressionDescriptor
+     */
+    public function setExpressionDescriptor($expressionDescriptor);
 }
