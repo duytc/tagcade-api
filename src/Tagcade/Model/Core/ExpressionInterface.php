@@ -7,6 +7,11 @@ use Tagcade\Model\ModelInterface;
 
 interface ExpressionInterface extends ModelInterface
 {
+    const VARS = 'vars';
+    const EXPRESSION = 'expression';
+    const DOMAIN_CHECKS = 'domainChecks';
+    const TARGETING = 'targeting';
+
     /**
      * @return mixed
      */

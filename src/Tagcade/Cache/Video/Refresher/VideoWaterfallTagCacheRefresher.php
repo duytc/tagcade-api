@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\PersistentCollection;
 use Tagcade\Cache\CacheNamespace\RedisNamespaceCache;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\IvtPixel;
 use Tagcade\Model\Core\IvtPixelInterface;
 use Tagcade\Model\Core\IvtPixelWaterfallTagInterface;
@@ -215,7 +216,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                     $demandAdTagItem['httpRequestTimeout'] = $videoDemandAdTag->getTimeout();
                 }
 
-                $demandAdTagItem['targeting'] = [];
+                $demandAdTagItem[ExpressionInterface::TARGETING] = [];
 
                 // build targeting
                 $targeting = $videoDemandAdTag->getTargeting();
@@ -228,18 +229,18 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                     }
 
                     if ($vdtValue === VideoTargetingInterface::TARGETING_KEY_EXCLUDE_DOMAINS) {
-                        $demandAdTagItem['targeting'][$vdtValue] = array_map(function (array $item) {
+                        $demandAdTagItem[ExpressionInterface::TARGETING][$vdtValue] = array_map(function (array $item) {
                             return sprintf('%s:%s', $this->blackListPrefix, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
                         }, $targeting[$vdtValue]);
                         continue;
                     } else if ($vdtValue === VideoTargetingInterface::TARGETING_KEY_DOMAINS) {
-                        $demandAdTagItem['targeting'][$vdtValue] = array_map(function (array $item) {
+                        $demandAdTagItem[ExpressionInterface::TARGETING][$vdtValue] = array_map(function (array $item) {
                             return sprintf('%s:%s', $this->whiteListPrefix, $item[LibraryVideoDemandAdTag::LIST_DOMAIN_SUFFIX_KEY]);
                         }, $targeting[$vdtValue]);
                         continue;
                     }
 
-                    $demandAdTagItem['targeting'][$vdtValue] = $targeting[$vdtValue];
+                    $demandAdTagItem[ExpressionInterface::TARGETING][$vdtValue] = $targeting[$vdtValue];
                 }
 
                 // also check supported and use targeting of waterfall tag
@@ -252,7 +253,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                         continue; // skip targeting element if value not set
                     }
 
-                    $demandAdTagItem['targeting'][$wftValue] = $waterfallTagTargeting[$wftValue];
+                    $demandAdTagItem[ExpressionInterface::TARGETING][$wftValue] = $waterfallTagTargeting[$wftValue];
                 }
 
                 array_push($dataItem['demandTags'], $demandAdTagItem);

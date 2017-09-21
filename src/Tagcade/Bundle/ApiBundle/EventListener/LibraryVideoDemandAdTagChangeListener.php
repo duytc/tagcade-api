@@ -13,6 +13,7 @@ use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Entity\Core\WhiteList;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BlacklistInterface;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTag;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
@@ -79,7 +80,7 @@ class LibraryVideoDemandAdTagChangeListener
             return;
         }
 
-        if ($args->hasChangedField('targeting')) {
+        if ($args->hasChangedField(ExpressionInterface::TARGETING)) {
             $this->validateTargeting($em, $entity);
         }
 

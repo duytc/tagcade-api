@@ -20,6 +20,7 @@ class AdNetwork extends AdNetworkModel
     protected $networkBlacklists;
     protected $networkWhiteLists;
     protected $customImpressionPixels;
+    protected $expressionDescriptor;
 
     public function __construct()
     {

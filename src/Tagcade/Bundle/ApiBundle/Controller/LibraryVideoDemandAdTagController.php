@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
-use Tagcade\Repository\Core\LibraryVideoDemandAdTagRepository;
 use Tagcade\Service\Core\VideoDemandAdTag\DeployLibraryVideoDemandAdTagServiceInterface;
 
 
@@ -204,7 +204,7 @@ class LibraryVideoDemandAdTagController extends RestControllerAbstract implement
 
         // fetch all params
         $waterfallIds = $request->request->get('waterfalls', null);
-        $targeting = $request->request->get('targeting', false);
+        $targeting = $request->request->get(ExpressionInterface::TARGETING, false);
         $targetingOverride = $request->request->get('targetingOverride', false);
         $priority = $request->request->get('priority', null);
         $rotationWeight = $request->request->get('rotationWeight', null);

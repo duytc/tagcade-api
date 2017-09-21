@@ -7,6 +7,7 @@ namespace Tagcade\Bundle\AppBundle\EventListener;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagItemInterface;
@@ -39,7 +40,7 @@ class LibraryVideoDemandAdTagChangeListener
 
         if ($entity instanceof LibraryVideoDemandAdTagInterface &&
             ($args->hasChangedField('videoDemandPartner') || $args->hasChangedField('tagURL') ||
-                $args->hasChangedField('targeting') || $args->hasChangedField('timeout')
+                $args->hasChangedField(ExpressionInterface::TARGETING) || $args->hasChangedField('timeout')
             )
         ) {
             $demandAdTags = $entity->getVideoDemandAdTags();

@@ -7,6 +7,7 @@ use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryExpressionInterface;
@@ -379,8 +380,8 @@ trait CreateRonAdSlotDataTrait
         if (null !== $convertedExpression) {
 
             $expInJs = [
-                'vars' => $convertedExpression['vars'],
-                'expression' => $convertedExpression['expression'],
+                ExpressionInterface::VARS => $convertedExpression[ExpressionInterface::VARS],
+                ExpressionInterface::EXPRESSION => $convertedExpression[ExpressionInterface::EXPRESSION],
                 'domainTargetings' => $convertedExpression['domainTargetings'],
             ];
 

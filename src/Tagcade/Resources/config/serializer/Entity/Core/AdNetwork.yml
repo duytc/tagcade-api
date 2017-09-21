@@ -34,3 +34,6 @@ Tagcade\Entity\Core\AdNetwork:
         customImpressionPixels:
             expose: true
             groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary]
+        expressionDescriptor:
+            expose: true
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential]

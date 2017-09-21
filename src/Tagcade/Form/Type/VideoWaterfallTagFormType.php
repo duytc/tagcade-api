@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\ApiBundle\Behaviors\ValidateVideoTargetingTrait;
 use Tagcade\Entity\Core\VideoWaterfallTag;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\IvtPixelWaterfallTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Service\StringUtilTrait;
@@ -26,7 +27,7 @@ class VideoWaterfallTagFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('adDuration')
             ->add('companionAds')
-            ->add('targeting')
+            ->add(ExpressionInterface::TARGETING)
             ->add('videoPublisher')
             ->add('buyPrice')
             /* new feature: Server-Side VAST+VAPID, Server-Side VAST Only, Client-Side VAST+VAPID (default)*/

@@ -10,6 +10,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Tagcade\Behaviors\ValidateVideoDemandAdTagAgainstPlacementRuleTrait;
 use Tagcade\Cache\Video\Refresher\VideoWaterfallTagCacheRefresherInterface;
 use Tagcade\Entity\Core\VideoDemandAdTag;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\WaterfallPlacementRuleInterface;
@@ -75,7 +76,7 @@ class UpdateVideoWaterfallTagListener
         if (
             $args->hasChangedField('platform')
             || $args->hasChangedField('adDuration')
-            || $args->hasChangedField('targeting')
+            || $args->hasChangedField(ExpressionInterface::TARGETING)
             || $args->hasChangedField('runOn')
         ) {
             $id = $entity->getId();

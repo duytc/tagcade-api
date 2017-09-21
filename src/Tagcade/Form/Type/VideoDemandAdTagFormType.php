@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\LibraryVideoDemandAdTag;
 use Tagcade\Entity\Core\VideoDemandAdTag;
 use Tagcade\Entity\Core\VideoWaterfallTagItem;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Repository\Core\VideoPublisherRepositoryInterface;
 
@@ -35,7 +36,7 @@ class VideoDemandAdTagFormType extends AbstractRoleSpecificFormType
             ->add('priority')
             ->add('rotationWeight')
             ->add('active')
-            ->add('targeting')
+            ->add(ExpressionInterface::TARGETING)
             ->add('requestCap')
             ->add('targetingOverride')
             /* NOTE: we support submit 'videoWaterfallTagItemForm' in 2 ways:

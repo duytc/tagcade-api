@@ -5,6 +5,7 @@ namespace Tagcade\Bundle\ApiBundle\Service;
 
 use Tagcade\Exception\InvalidFormatException;
 use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\ExpressionInterface;
 use Tagcade\Model\Core\ExpressionJsProducibleInterface;
 
 class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
@@ -127,7 +128,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $descriptor = $expression->getDescriptor();
 
         if (null == $descriptor || count($descriptor) < 1) {
-            return array('vars' => [], 'expression' => '');
+            return array(ExpressionInterface::VARS => [], ExpressionInterface::EXPRESSION => '');
         }
 
         $this->validateExpressionDescriptor($descriptor);
@@ -143,7 +144,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
     public function generateExpressionInJsFromDescriptor(array $descriptor)
     {
         if (null == $descriptor || count($descriptor) < 1) {
-            return array('vars' => [], 'expression' => '');
+            return array(ExpressionInterface::VARS => [], ExpressionInterface::EXPRESSION => '');
         }
 
         $this->validateExpressionDescriptor($descriptor);
@@ -204,12 +205,12 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
 
                         $exp = $this->createExpressionObject($expElement);
 
-                        if (!empty($exp['domainChecks'])) {
-                            $domainChecks = array_merge($domainChecks, $exp['domainChecks']);
+                        if (!empty($exp[ExpressionInterface::DOMAIN_CHECKS])) {
+                            $domainChecks = array_merge($domainChecks, $exp[ExpressionInterface::DOMAIN_CHECKS]);
                         }
 
-                        $vars = array_merge($vars, $exp['vars']);
-                        return $exp['expression'];
+                        $vars = array_merge($vars, $exp[ExpressionInterface::VARS]);
+                        return $exp[ExpressionInterface::EXPRESSION];
                     },
                     $expressionAsGroup
                 )
@@ -220,7 +221,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
         $vars = array_unique($vars, SORT_REGULAR);
         $vars = array_values($vars);
 
-        return ['vars' => $vars, 'expression' => $expString, 'domainChecks' => $domainChecks];
+        return [ExpressionInterface::VARS => $vars, ExpressionInterface::EXPRESSION => $expString, ExpressionInterface::DOMAIN_CHECKS => $domainChecks];
     }
 
     /**
@@ -251,7 +252,7 @@ class ExpressionInJsGenerator implements ExpressionInJsGeneratorInterface
             $exp = $this->getConditionInJS($expressionDescriptor[self::KEY_EXPRESSION_VAR], $expressionDescriptor[self::KEY_EXPRESSION_CMP], $val);
         }
 
-        return ['vars' => [['name' => $expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type' => $type]], 'expression' => $exp, 'domainChecks' => $domainChecks];
+        return [ExpressionInterface::VARS => [['name' => $expressionDescriptor[self::KEY_EXPRESSION_VAR], 'type' => $type]], ExpressionInterface::EXPRESSION => $exp, ExpressionInterface::DOMAIN_CHECKS => $domainChecks];
     }
 
     /**
