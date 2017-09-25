@@ -384,19 +384,22 @@ trait CreateAdSlotDataTrait
 	 */
 	protected function updateTargetingFromAdTag(AdTagInterface $adTag, array $dataItem)
 	{
-		if (!array_key_exists('', $dataItem)) {
-			$dataItem[ExpressionInterface::TARGETING] = [];
-		}
+        if (!array_key_exists(ExpressionInterface::TARGETING, $dataItem)) {
+            $dataItem[ExpressionInterface::TARGETING] = [];
+        }
 
         $expressionDescriptor = [];
 
-		if (!empty($adTag->getAdNetwork()->getExpressionDescriptor())) {
-			$expressionDescriptor = $adTag->getAdNetwork()->getExpressionDescriptor();
-			$targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
-			$dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
-		}
+        if (!empty($adTag->getAdNetwork()->getExpressionDescriptor())) {
+            $expressionDescriptor = $adTag->getAdNetwork()->getExpressionDescriptor();
+            $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+            $dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
+        }
 
-		if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
+        // if libraryAdTag has targeting, it will merge the targeting that was built from demand partner (as above)
+        // The merge logic is adding '&&' to expression as: <expression from demand partner> && <expression from lib ad tag>
+        // TODO: think about override instead of merge
+        if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
             $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
             $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
             $dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
@@ -409,7 +412,20 @@ trait CreateAdSlotDataTrait
             }
         }
 
-		return $dataItem;
+        // VERY IMPORTANT: remove targeting if it is empty or it contains an empty expression
+        if (array_key_exists(ExpressionInterface::TARGETING, $dataItem)
+            && (
+                empty($dataItem[ExpressionInterface::TARGETING])
+                || (
+                    array_key_exists(ExpressionInterface::EXPRESSION, $dataItem[ExpressionInterface::TARGETING])
+                    && empty($dataItem[ExpressionInterface::TARGETING][ExpressionInterface::EXPRESSION])
+                )
+            )
+        ) {
+            unset($dataItem[ExpressionInterface::TARGETING]);
+        }
+
+        return $dataItem;
 	}
 
     private function getDisplayBlacklistForAdTag(AdTagInterface $adTag)
