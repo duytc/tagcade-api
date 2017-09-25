@@ -22,11 +22,6 @@ use Tagcade\Repository\Core\AdNetworkRepositoryInterface;
 
 class LibraryAdTagFormType extends AbstractRoleSpecificFormType
 {
-
-    const PLATFORM_FLASH = 'flash';
-    const PLATFORM_AUTO = 'auto';
-    const PLATFORM_HTML5 = 'html5';
-
     /** @var UserRoleInterface $userRole */
     protected $userRole;
 
@@ -138,14 +133,6 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
         }
 
         $inBannerDescriptor = $libraryAdTag->getInBannerDescriptor();
-
-        if($inBannerDescriptor['platform'] == null &&
-            ($inBannerDescriptor['platform'] != self::PLATFORM_FLASH ||
-            $inBannerDescriptor['platform'] != self::PLATFORM_AUTO ||
-            $inBannerDescriptor['platform'] != self::PLATFORM_HTML5)
-        ) {
-            throw new InvalidFormException('Platform value should not be blank');
-        }
 
         if(count($inBannerDescriptor['vastTags']) == 0) {
             throw new InvalidFormException('VastTag value should not be blank');

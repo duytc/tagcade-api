@@ -89,7 +89,6 @@ class UpdateAdTagHtmlListener
          *   data-pv-tag-url='[
          *       "http://vast-tag-server.tagcade.dev:9998/tag.php?id=73c441f2-87a4-4d41-9352-e53127d3bd20"
          *   ]'
-         *   data-pv-platform="flash"
          *   data-pv-timeout="10"
          *   data-pv-width="300"
          *   data-pv-height="250"
@@ -97,14 +96,12 @@ class UpdateAdTagHtmlListener
          *   data-pv-tag="2"></script>
          * where:
          * - required: src, data-pv-tag-url, data-pv-width, data-pv-height
-         * - optional: data-pv-platform
          * - auto: data-pv-slot, data-pv-tag
          */
         $template = ''
             . '<script'
             . ' src="%s"'
             . ' data-pv-tag-url=\'%s\''
-            . ' data-pv-platform="%s"'
             . ' $$DATA-PV-TIMEOUT$$'  // null for auto use timeout
             . ' $$DATA-PV-WIDTH$$'  // null for auto use slot width
             . ' $$DATA-PV-HEIGHT$$' // null for auto use slot height
@@ -120,7 +117,7 @@ class UpdateAdTagHtmlListener
 
         $vastTagStr = json_encode($vastTags, JSON_UNESCAPED_SLASHES);
 
-        $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr, $inBannerDescriptor['platform']);
+        $html = sprintf($template, $this->inBannerVideoJsUrl, $vastTagStr);
 
         if (is_numeric($inBannerDescriptor['timeout'])) {
             $html = str_replace('$$DATA-PV-TIMEOUT$$', sprintf('data-pv-timeout="%d"', $inBannerDescriptor['timeout']), $html);
