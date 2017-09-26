@@ -40,6 +40,8 @@ class RedisCache implements RedisCacheInterface
             try {
                 $redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
                 $redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+                // if we don't set this, the read timeout is the same as connect timeout of 1 second
+                $redis->setOption(Redis::OPT_READ_TIMEOUT, 5);
                 $this->redis = $redis;
             } catch (\RedisException $e) {
                 // todo refactor to check if redis is connected or not
