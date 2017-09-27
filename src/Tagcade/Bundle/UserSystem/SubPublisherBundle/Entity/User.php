@@ -34,8 +34,6 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     /** @var array|SiteInterface[] */
     protected $sites;
 
-    /** @var PublisherInterface */
-    protected $emailSendAlert;
     /**
      * this constructor will be called by FormType, must be used to call parent to set default values
      */
@@ -492,21 +490,19 @@ class User extends BaseUser implements SubPublisherInterface, PublisherInterface
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getEmailSendAlert()
     {
-        // TODO: Implement getEmailSendAlert() method.
-        return $this->emailSendAlert;
+        throw new NotSupportedException('this property is currently not supported');
     }
 
     /**
      * @param $emailSendAlert
-     * @return
+     * @return array
      */
     public function setEmailSendAlert($emailSendAlert)
     {
-        // TODO: Implement setEmailSendAlert() method.
-        $this->emailSendAlert = $emailSendAlert;
+        throw new NotSupportedException('this property is currently not supported');
     }
 }

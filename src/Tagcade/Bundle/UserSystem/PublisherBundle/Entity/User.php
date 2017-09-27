@@ -14,7 +14,6 @@ use Tagcade\Exception\LogicException;
 
 class User extends BaseUser implements PublisherInterface
 {
-
     protected $id;
     protected $uuid;
     protected $billingRate;
@@ -32,7 +31,7 @@ class User extends BaseUser implements PublisherInterface
     protected $tagDomain;
     protected $bidders;
 
-    /* @var string */
+    /* @var array */
     protected $emailSendAlert;
     /**
      * @var PublisherInterface|null
@@ -429,7 +428,6 @@ class User extends BaseUser implements PublisherInterface
      */
     public function getEmailSendAlert()
     {
-        // TODO: Implement getEmailSendAlert() method.
         return $this->emailSendAlert;
     }
 
@@ -438,7 +436,10 @@ class User extends BaseUser implements PublisherInterface
      */
     public function setEmailSendAlert($emailSendAlert)
     {
-        // TODO: Implement setEmailSendAlert() method.
+        if (!is_array($emailSendAlert)) {
+            $emailSendAlert = [];
+        }
+
         $this->emailSendAlert = $emailSendAlert;
     }
 }

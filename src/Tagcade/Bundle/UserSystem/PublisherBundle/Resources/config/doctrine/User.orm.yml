@@ -50,7 +50,7 @@ Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User:
             type: json_array
             nullable: true
         emailSendAlert:
-            type: string
+            type: json_array
             nullable: true
     oneToMany:
         billingConfigs:
