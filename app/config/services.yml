@@ -349,6 +349,12 @@ services:
             - '@tagcade.domain_manager.ad_network'
             - '@tagcade.repository.ad_slot'
 
+    tagcade.worker.workers.update_ad_slot_cache_worker:
+        class: Tagcade\Worker\Workers\UpdateAdSlotCacheWorker
+        arguments:
+            - '@tagcade.cache.display.v2.tag_cache'
+            - '@tagcade.domain_manager.ad_slot'
+
     tagcade.worker.workers.remove_cache_for_ad_slot_worker:
         class: Tagcade\Worker\Workers\RemoveCacheForAdSlotWorker
         arguments:

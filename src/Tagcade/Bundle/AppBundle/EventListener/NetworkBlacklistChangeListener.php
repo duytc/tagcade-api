@@ -57,13 +57,10 @@ class NetworkBlacklistChangeListener
             return;
         }
 
-        try {
-            $args->getOldValue('adNetwork');
-        } catch (\Exception $e) {
-            return;
+        if ($args->hasChangedField('adNetwork')) {
+            $this->oldAdNetworks[] = $args->getOldValue('adNetwork');
         }
 
-        $this->oldAdNetworks[] = $args->getOldValue('adNetwork');
         $this->networkBlacklists[] = $entity;
     }
 

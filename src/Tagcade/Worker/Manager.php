@@ -8,8 +8,10 @@ use Pheanstalk_PheanstalkInterface;
 use StdClass;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Service\DateUtilInterface;
+use Tagcade\Worker\Workers\UpdateAdSlotCacheWorker;
 
 // responsible for creating background tasks
 
@@ -272,6 +274,14 @@ class Manager
         ];
 
         $this->queue->putInTube(Manager::UR_API_WORKER, json_encode($jobData));
+    }
+
+    public function updateCacheForAdSlot(BaseAdSlotInterface $adSlot){
+
+        $params = new StdClass();
+        $params->adSlot =  $adSlot->getId();
+
+        $this->queueTask(UpdateAdSlotCacheWorker::JOB_NAME, $params);
     }
 
     /**

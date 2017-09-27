@@ -36,7 +36,7 @@ class AdNetworkChangeListener
             return;
         }
 
-        if (count($entity->getNetworkBlacklists()) > 0 || count($entity->getCustomImpressionPixels()) > 0) {
+        if (count($entity->getNetworkBlacklists()) > 0 || count($entity->getCustomImpressionPixels()) > 0 || !empty($entity->getExpressionDescriptor())) {
             $this->changedAdNetworks[] = $entity;
         }
     }
@@ -49,7 +49,7 @@ class AdNetworkChangeListener
             return;
         }
 
-        if ($args->hasChangedField('customImpressionPixels')) {
+        if ($args->hasChangedField('customImpressionPixels') || $args->hasChangedField('expressionDescriptor')) {
             $this->changedAdNetworks[] = $entity;
         }
     }

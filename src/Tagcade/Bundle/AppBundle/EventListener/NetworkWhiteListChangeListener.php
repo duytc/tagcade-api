@@ -58,7 +58,11 @@ class NetworkWhiteListChangeListener
         if (!$entity instanceof NetworkWhiteListInterface) {
             return;
         }
-        $this->oldAdNetworks[] = $args->getOldValue('adNetwork');
+
+        if ($args->hasChangedField('adNetwork')) {
+            $this->oldAdNetworks[] = $args->getOldValue('adNetwork');
+        }
+
         $this->networkWhiteLists[] = $entity;
     }
 

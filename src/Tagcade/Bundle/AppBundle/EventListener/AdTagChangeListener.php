@@ -76,7 +76,7 @@ class AdTagChangeListener
         array_walk($changedEntities,
             function($entity) use (&$adSlots)
             {
-                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface && !$entity instanceof LibrarySlotTagInterface && !$entity instanceof AdNetworkInterface)
+                if (!$entity instanceof AdTagInterface && !$entity instanceof LibraryAdTagInterface && !$entity instanceof LibrarySlotTagInterface)
                 {
                     return false;
                 }
@@ -92,8 +92,6 @@ class AdTagChangeListener
                     if ($ronAdSlot instanceof RonAdSlotInterface) {
                         $adSlots[] = $ronAdSlot;
                     }
-                } else if ($entity instanceof AdNetworkInterface) {
-                    $adTags = array_merge($adTags, $entity->getAdTags());
                 }
                 else {
                     $adTags = array_merge($adTags, [$entity]);
