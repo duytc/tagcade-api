@@ -5,12 +5,15 @@ namespace Tagcade\Bundle\UserBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Tagcade\Behaviors\UserUtilTrait;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\SubPublisherInterface;
 use Tagcade\Worker\Manager;
 
 class UpdatePublisherListener
 {
+    use UserUtilTrait;
+
     /**
      * @var Manager
      */
@@ -56,35 +59,5 @@ class UpdatePublisherListener
             $entityArray = $this->generatePublisherData($entity);
             $this->workerManager->synchronizeUser($entityArray);
         }
-    }
-
-    /**
-     * @param PublisherInterface $entity
-     * @return array
-     */
-    private function generatePublisherData(PublisherInterface $entity)
-    {
-        $entityArray = array();
-
-        $entityArray['id'] = $entity->getId();
-        $entityArray['firstName'] = $entity->getFirstName();
-        $entityArray['lastName'] = $entity->getLastName();
-        $entityArray['company'] = $entity->getCompany();
-        $entityArray['phone'] = $entity->getPhone();
-        $entityArray['city'] = $entity->getCity();
-        $entityArray['state'] = $entity->getState();
-        $entityArray['address'] = $entity->getAddress();
-        $entityArray['postalCode'] = $entity->getPostalCode();
-        $entityArray['country'] = $entity->getCountry();
-        $entityArray['enabledModules'] = $entity->getEnabledModules();
-        $entityArray['username'] = $entity->getUsername();
-        $entityArray['password'] = $entity->getPassword();
-        $entityArray['email'] = $entity->getEmail();
-        $entityArray['enabled'] = $entity->isEnabled();
-        $entityArray['roles'] = $entity->getRoles();
-        $entityArray['masterAccount'] = ($entity->getMasterAccount() instanceof PublisherInterface) ? $entity->getMasterAccount()->getId() : null;
-        $entityArray['emailSendAlert'] = $entity->getEmailSendAlert();
-
-        return $entityArray;
     }
 }
