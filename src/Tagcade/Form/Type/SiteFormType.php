@@ -23,6 +23,19 @@ class SiteFormType extends AbstractRoleSpecificFormType
 
     protected $listPlayers = ['5min', 'defy', 'jwplayer5', 'jwplayer6', 'limelight', 'ooyala', 'scripps', 'ulive'];
 
+    /** @var  integer */
+    protected $maxSubDomain;
+
+    /**
+     * SiteFormType constructor.
+     * @param $maxSubDomain
+     */
+    public function __construct($maxSubDomain)
+    {
+        $this->maxSubDomain = $maxSubDomain;
+    }
+
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -76,7 +89,7 @@ class SiteFormType extends AbstractRoleSpecificFormType
                 /* check validate if $domain has value */
                 /* and if $domain == null -> continue */
                 if (!empty($domain)) {
-                    if ($this->validateDomain($domain) === FALSE) {
+                    if ($this->validateDomain($domain, $this->maxSubDomain) === FALSE) {
                         $form->get('domain')->addError(new FormError(sprintf("'%s' is not a valid domain", $domain)));
                     }
                 }

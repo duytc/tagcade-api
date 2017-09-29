@@ -13,15 +13,15 @@ trait StringUtilTrait
      */
     public static $DOMAIN_MIN_LENGTH = 4; // minimum is 'a.bc'
     public static $DOMAIN_MAX_LENGTH = 255; // include '.' and all labels. Format: (63 letters).(63 letters).(63 letters).(62 letters)
-    public static $DOMAIN_LABEL_MAX_NUMBER = 4;
 
     /**
      * Check if the given string is a valid domain
      *
      * @param $domain
+     * @param int $maxSubDomains
      * @return bool
      */
-    protected function validateDomain($domain)
+    protected function validateDomain($domain, $maxSubDomains = 6)
     {
         // sure domain is string
         if (!is_string($domain)) {
@@ -35,7 +35,7 @@ trait StringUtilTrait
 
         // validate domain labels number
         $labels = explode('.', $domain);
-        if (count($labels) < 1 || count($labels) > self::$DOMAIN_LABEL_MAX_NUMBER) {
+        if (count($labels) < 1 || count($labels) > $maxSubDomains) {
             return false;
         }
 

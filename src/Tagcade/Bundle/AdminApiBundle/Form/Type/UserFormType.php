@@ -47,9 +47,18 @@ class UserFormType extends AbstractRoleSpecificFormType
     private $oldSettings;
     private $exchanges;
 
-    public function __construct(UserEntityInterface $userRole)
+    /** @var  integer */
+    protected $maxSubDomain;
+
+	/**
+     * UserFormType constructor.
+     * @param UserEntityInterface $userRole
+     * @param $maxSubDomain
+     */
+    public function __construct(UserEntityInterface $userRole, $maxSubDomain)
     {
         $this->setUserRole($userRole);
+        $this->maxSubDomain = $maxSubDomain;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -180,7 +189,7 @@ class UserFormType extends AbstractRoleSpecificFormType
                             throw new InvalidArgumentException('domain is missing');
                         }
 
-                        if (isset($tagDomain['domain']) && !$this->validateDomain($tagDomain['domain'])) {
+                        if (isset($tagDomain['domain']) && !$this->validateDomain($tagDomain['domain'], $this->maxSubDomain)) {
                             $form->get('tagDomain')->addError(new FormError(sprintf('"%s" is not a valid domain', $tagDomain['domain'])));
                             return;
                         }

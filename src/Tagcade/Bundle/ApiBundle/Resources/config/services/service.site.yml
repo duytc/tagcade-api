@@ -32,6 +32,8 @@ services:
 
     tagcade.form.type.site:
         class: %tagcade.form.type.site.class%
+        arguments:
+            - '%tc.display.domain.max_sub_domains%'
         tags:
             - { name: form.type, alias: tagcade_form_site }
 
