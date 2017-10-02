@@ -30,6 +30,12 @@ Tagcade\Entity\Core\VideoDemandPartner:
             type: integer
             options:
                 default: 0
+        requestCap:
+            type: integer
+            nullable: true
+        impressionCap:
+            type: integer
+            nullable: true
     manyToOne:
         publisher:
             targetEntity: Tagcade\Bundle\UserBundle\Entity\User

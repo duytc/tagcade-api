@@ -32,4 +32,11 @@ interface VideoDemandPartnerManagerInterface extends ManagerInterface
      * @return array|VideoDemandAdTagInterface[]
      */
     public function getVideoDemandAdTagsForVideoDemandPartner(VideoDemandPartnerInterface $videoDemandPartner, $limit = null, $offset = null);
+
+    /**
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return array|VideoDemandAdTagInterface[]
+     */
+    public function allHasCap($limit = null, $offset = null);
 }

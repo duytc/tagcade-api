@@ -17,6 +17,8 @@ class VideoDemandPartnerFormType extends AbstractRoleSpecificFormType
     {
         $builder
             ->add('name')
+            ->add('requestCap')
+            ->add('impressionCap')
             ->add('defaultTagURL');
 
         if ($this->userRole instanceof AdminInterface) {

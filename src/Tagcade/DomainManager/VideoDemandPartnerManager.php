@@ -5,7 +5,6 @@ namespace Tagcade\DomainManager;
 use Doctrine\Common\Persistence\ObjectManager;
 use InvalidArgumentException;
 use ReflectionClass;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -98,6 +97,14 @@ class VideoDemandPartnerManager implements VideoDemandPartnerManagerInterface
     public function getVideoDemandAdTagsForVideoDemandPartner(VideoDemandPartnerInterface $videoDemandPartner, $limit = null, $offset = null)
     {
         return $this->repository->getVideoDemandAdTagsForVideoDemandPartner($videoDemandPartner, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function allHasCap($limit = null, $offset = null)
+    {
+        return $this->repository->allHasCap($limit, $offset);
     }
 
     /**

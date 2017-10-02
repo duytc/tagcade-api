@@ -98,4 +98,26 @@ interface VideoDemandPartnerInterface extends ModelInterface
      * @return self
      */
     public function setPausedAdTagsCount($pausedAdTagsCount);
-} 
+
+    /**
+     * @return null|int
+     */
+    public function getRequestCap();
+
+    /**
+     * @param null|int $requestCap
+     * @return self
+     */
+    public function setRequestCap($requestCap);
+
+    /**
+     * @return null|int
+     */
+    public function getImpressionCap();
+
+    /**
+     * @param null|int $impressionCap
+     * @return self
+     */
+    public function setImpressionCap($impressionCap);
+}

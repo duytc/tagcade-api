@@ -3,6 +3,7 @@
 namespace Tagcade\Model\Core;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Tagcade\Model\User\UserEntityInterface;
 use Tagcade\Service\StringUtilTrait;
 
@@ -16,8 +17,11 @@ class VideoDemandPartner implements VideoDemandPartnerInterface
     protected $defaultTagURL;
     protected $activeAdTagsCount;
     protected $pausedAdTagsCount;
-    protected $libraryVideoDemandAdTags;
+    protected $requestCap;
+    protected $impressionCap;
 
+    /** @var ArrayCollection|LibraryVideoDemandAdTagInterface[] */
+    protected $libraryVideoDemandAdTags;
 
     /** @var UserEntityInterface $publisher */
     protected $publisher;
@@ -159,6 +163,42 @@ class VideoDemandPartner implements VideoDemandPartnerInterface
         if ($this->activeAdTagsCount === null || $this->activeAdTagsCount < 2) {
             $this->activeAdTagsCount = 0;
         } else --$this->activeAdTagsCount;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRequestCap()
+    {
+        return $this->requestCap;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRequestCap($requestCap)
+    {
+        $this->requestCap = $requestCap;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getImpressionCap()
+    {
+        return $this->impressionCap;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setImpressionCap($impressionCap)
+    {
+        $this->impressionCap = $impressionCap;
 
         return $this;
     }

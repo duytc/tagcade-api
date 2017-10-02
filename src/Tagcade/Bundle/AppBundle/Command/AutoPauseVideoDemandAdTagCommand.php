@@ -14,7 +14,7 @@ class AutoPauseVideoDemandAdTagCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tc:video-demand-ad-tag:auto-pause')
-            ->setDescription('Do pause all video demand ad tags that have reached its request cap per day');
+            ->setDescription('Do pause all video demand ad tags that have reached its request cap or impression cap per day');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -30,10 +30,20 @@ class AutoPauseVideoDemandAdTagCommand extends ContainerAwareCommand
          * @var VideoDemandAdTagInterface $adTag
          */
         foreach($demandAdTags as $adTag) {
-            if ($eventCounter->getVideoDemandAdTagRequestsCount($adTag->getId()) >= $adTag->getRequestCap()) {
+            $requestCap = $adTag->getRequestCap();
+            $impressionCap = $adTag->getImpressionCap();
+
+            if (($requestCap == null || $requestCap < 1) && ($impressionCap == null || $impressionCap < 1)) {
+                continue; // ignore video demand tags that do not set both request cap and impression cap
+            }
+
+            if (($requestCap > 0 && $eventCounter->getVideoDemandAdTagRequestsCount($adTag->getId()) >= $requestCap)
+                || ($impressionCap > 0 && $eventCounter->getVideoDemandAdTagImpressionsCount($adTag->getId()) >= $impressionCap)
+            ) {
                 $adTag->setActive(VideoDemandAdTag::AUTO_PAUSED);
                 $pausedAdTags++;
                 $em->merge($adTag);
+                continue;
             }
         }
         $em->flush();

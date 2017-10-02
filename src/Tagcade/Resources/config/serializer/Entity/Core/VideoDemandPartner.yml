@@ -19,3 +19,9 @@ Tagcade\Entity\Core\VideoDemandPartner:
         defaultTagURL:
             expose: true
             groups: [videoDemandPartner.summary, videoDemandPartner.detail]
+        requestCap:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail]
+        impressionCap:
+            expose: true
+            groups: [videoDemandPartner.summary, videoDemandPartner.detail]

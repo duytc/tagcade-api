@@ -5,10 +5,6 @@ namespace Tagcade\Repository\Core;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
-use Tagcade\Entity\Core\VideoDemandPartner;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
-use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
@@ -32,7 +28,7 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
     public function getVideoDemandPartnersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('vdm');
-        if ($user instanceof PublisherInterface){
+        if ($user instanceof PublisherInterface) {
             $qb
                 ->where('vdm.publisher = :publisher_id')
                 ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
@@ -54,18 +50,19 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
 
-            switch ($param->getSortField()){
+            switch ($param->getSortField()) {
                 case 'publisher.company':
-                    $qb->addOrderBy('vdm.publisher' , $param->getSortDirection());
+                    $qb->addOrderBy('vdm.publisher', $param->getSortDirection());
                     break;
                 default:
-                    $qb->addOrderBy('vdm.'.$param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('vdm.' . $param->getSortField(), $param->getSortDirection());
                     break;
             }
         }
 
         return $qb;
     }
+
     /**
      * @inheritdoc
      */
@@ -116,6 +113,27 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
         if ($filterParameter->getVideoDemandPartners() != null) {
             $qb
                 ->andWhere($qb->expr()->in('vdm.id', $filterParameter->getVideoDemandPartners()));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function allHasCap($limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('vdm');
+
+        $qb->where($qb->expr()->gt('vdm.requestCap', 0))
+            ->orWhere($qb->expr()->gt('vdm.impressionCap', 0));
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
         }
 
         return $qb->getQuery()->getResult();

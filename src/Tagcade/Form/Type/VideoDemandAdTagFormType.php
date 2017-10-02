@@ -38,6 +38,7 @@ class VideoDemandAdTagFormType extends AbstractRoleSpecificFormType
             ->add('active')
             ->add(ExpressionInterface::TARGETING)
             ->add('requestCap')
+            ->add('impressionCap')
             ->add('targetingOverride')
             /* NOTE: we support submit 'videoWaterfallTagItemForm' in 2 ways:
              * - id: if videoWaterfallTagItemForm existed

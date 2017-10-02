@@ -35,6 +35,9 @@ Tagcade\Entity\Core\VideoDemandAdTag:
         requestCap:
             type: integer
             nullable: true
+        impressionCap:
+            type: integer
+            nullable: true
     manyToOne:
         libraryVideoDemandAdTag:
             targetEntity: Tagcade\Entity\Core\LibraryVideoDemandAdTag

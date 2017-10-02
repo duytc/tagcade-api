@@ -4,6 +4,7 @@
 namespace Tagcade\Entity\Core;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartner as VideoDemandPartnerModel;
 use Tagcade\Model\User\UserEntityInterface;
 
@@ -16,6 +17,10 @@ class VideoDemandPartner extends VideoDemandPartnerModel
     protected $defaultTagURL;
     protected $activeAdTagsCount;
     protected $pausedAdTagsCount;
+    protected $requestCap;
+    protected $impressionCap;
+
+    /** @var ArrayCollection|LibraryVideoDemandAdTagInterface[] */
     protected $libraryVideoDemandAdTags;
 
     /** @var UserEntityInterface $publisher */

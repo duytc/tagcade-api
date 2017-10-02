@@ -4,7 +4,6 @@
 namespace Tagcade\Repository\Core;
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -44,4 +43,11 @@ interface VideoDemandPartnerRepositoryInterface extends ObjectRepository
      * @return array
      */
     public function getVideoDemandPartnersByFilterParams(FilterParameterInterface $filterParameter);
+
+    /**
+     * @param null|int $limit
+     * @param null|int $offset
+     * @return array|VideoDemandPartnerInterface[]
+     */
+    public function allHasCap($limit = null, $offset = null);
 }

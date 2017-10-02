@@ -17,6 +17,12 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     const PLATFORM_JAVASCRIPT = 'js';
     const PLATFORM_FLASH = 'flash';
 
+    public static $SUPPORTED_STATUS = [
+        self::ACTIVE,
+        self::PAUSED,
+        self::AUTO_PAUSED
+    ];
+
     /**
      * @var int
      */
@@ -51,6 +57,11 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
      * @var int
      */
     protected $requestCap;
+
+    /**
+     * @var int
+     */
+    protected $impressionCap;
 
     /**
      * @var DateTime
@@ -151,7 +162,7 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     }
 
     /**
-     * @return int
+     * @inheritdoc
      */
     public function getRequestCap()
     {
@@ -159,8 +170,7 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
     }
 
     /**
-     * @param int $requestCap
-     * @return self
+     * @inheritdoc
      */
     public function setRequestCap($requestCap)
     {
@@ -168,6 +178,22 @@ class VideoDemandAdTag implements VideoDemandAdTagInterface, VideoTargetingInter
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getImpressionCap()
+    {
+        return $this->impressionCap;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setImpressionCap($impressionCap)
+    {
+        $this->impressionCap = $impressionCap;
+        return $this;
+    }
 
     public function getSellPrice()
     {

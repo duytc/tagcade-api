@@ -161,4 +161,15 @@ interface VideoDemandAdTagInterface extends ModelInterface
      * @return self
      */
     public function setRequestCap($requestCap);
-} 
+
+    /**
+     * @return null|int
+     */
+    public function getImpressionCap();
+
+    /**
+     * @param null|int $impressionCap
+     * @return self
+     */
+    public function setImpressionCap($impressionCap);
+}
