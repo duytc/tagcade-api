@@ -40,9 +40,9 @@ class TestEventCounter extends AbstractEventCounter
     const KEY_CLICK                  = 'clicks';
     const KEY_REFRESHES              = 'refreshes';
 
-    const KEY_IN_BANNER_REQUESTS     = 'requests';
-    const KEY_IN_BANNER_IMPRESSIONS  = 'impressions';
-    const KEY_IN_BANNER_TIMEOUT      = 'timeouts';
+    const KEY_IN_BANNER_REQUESTS     = 'inbanner_requests';
+    const KEY_IN_BANNER_IMPRESSIONS  = 'inbanner_impressions';
+    const KEY_IN_BANNER_TIMEOUT      = 'inbanner_timeouts';
 
     protected $adSlots;
     protected $adSlotData = [];
@@ -53,6 +53,8 @@ class TestEventCounter extends AbstractEventCounter
     protected $ronAdTagSegmentData = [];
 
     protected $accountData = [];
+
+    protected $slotIds = [];
 
     /**
      * @param ReportableAdSlotInterface[] $adSlots
@@ -80,8 +82,6 @@ class TestEventCounter extends AbstractEventCounter
             $this->seedRandomGenerator();
 
             $slotOpportunities = mt_rand($minSlotOpportunities, $maxSlotOpportunities);
-            $inBannerRequests = mt_rand(0, $slotOpportunities * 0.02);
-            $inBannerImpressions = mt_rand(0, $inBannerRequests);
             $hbRequests = mt_rand(0, $slotOpportunities * 0.01);
             $opportunitiesRemaining = $slotOpportunities;
 
@@ -95,25 +95,19 @@ class TestEventCounter extends AbstractEventCounter
                     static::KEY_IN_BANNER_IMPRESSIONS => 0,
                     static::KEY_HB_BID_REQUEST => 0,
                     static::KEY_PASSBACK => 0,
+                    static::KEY_IMPRESSION => 0,
                 );
             }
 
+            $this->adSlotData[$adSlot->getId()] = array (
+                static::KEY_IN_BANNER_REQUESTS => 0,
+                static::KEY_IN_BANNER_TIMEOUT => 0,
+                static::KEY_IN_BANNER_IMPRESSIONS => 0,
+            );
+
             if (!$adSlot instanceof DynamicAdSlotInterface) {
-                $this->adSlotData[$adSlot->getId()] = [
-                    static::KEY_SLOT_OPPORTUNITY => $slotOpportunities
-                ];
-
+                $this->adSlotData[$adSlot->getId()][static::KEY_SLOT_OPPORTUNITY] = $slotOpportunities;
                 $this->accountData[$publisherId][static::CACHE_KEY_ACC_SLOT_OPPORTUNITY] += $slotOpportunities;
-            }
-
-            if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->getSite()->getPublisher()->hasInBannerModule()) {
-                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
-                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
-                $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT] = $inBannerRequests - $inBannerImpressions;
-
-                $this->accountData[$publisherId][static::KEY_IN_BANNER_REQUESTS] += $inBannerRequests;
-                $this->accountData[$publisherId][static::KEY_IN_BANNER_IMPRESSIONS] += $inBannerImpressions;
-                $this->accountData[$publisherId][static::KEY_IN_BANNER_TIMEOUT] += $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT];
             }
 
             if($adSlot->getSite()->getPublisher()->hasHeaderBiddingModule()) {
@@ -144,13 +138,16 @@ class TestEventCounter extends AbstractEventCounter
 
             foreach($adSlot->getAdTags() as $adTag) {
                 /** @var \Tagcade\Entity\Core\AdTag $adTag */
-
+                $this->slotIds[$adTag->getId()] = $adSlot->getId();
                 $opportunities = $opportunitiesRemaining;
                 $passbacks = mt_rand(1, $opportunities);
                 $impressions = (int)($opportunities - $passbacks);
-
+                $inBannerImpressions = mt_rand(0, $impressions);
+                $inBannerRequests = mt_rand($inBannerImpressions, $opportunities);
                 if ($impressions < 0) {
                     $impressions = 0;
+                    $inBannerImpressions = 0;
+                    $inBannerRequests = 0;
                 }
 
                 $firstOpportunities = mt_rand(0, round($opportunities/2));
@@ -180,8 +177,22 @@ class TestEventCounter extends AbstractEventCounter
                     static::KEY_BLANK_IMPRESSION => $blankImpressions,
                     static::KEY_VOID_IMPRESSION => $voidImpressions,
                     static::KEY_CLICK => $clicks,
-                    static::KEY_REFRESHES => $refreshes,
+                    static::KEY_REFRESHES => $refreshes
                 ];
+
+                if ($adSlot->getSite()->getPublisher()->hasInBannerModule() && $adTag->isActive() && $adTag->getLibraryAdTag()->getAdType() == 2) {
+                    $this->adTagData[$adTag->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
+                    $this->adTagData[$adTag->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
+                    $this->adTagData[$adTag->getId()][static::KEY_IN_BANNER_TIMEOUT] = $inBannerRequests - $inBannerImpressions;
+
+                    $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_IMPRESSIONS] += $inBannerImpressions;
+                    $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_REQUESTS] += $inBannerRequests;
+                    $this->adSlotData[$adSlot->getId()][static::KEY_IN_BANNER_TIMEOUT] += $this->adTagData[$adTag->getId()][self::KEY_IN_BANNER_TIMEOUT];
+
+                    $this->accountData[$publisherId][static::KEY_IN_BANNER_IMPRESSIONS] += $inBannerImpressions;
+                    $this->accountData[$publisherId][static::KEY_IN_BANNER_REQUESTS] += $inBannerRequests;
+                    $this->accountData[$publisherId][static::KEY_IN_BANNER_TIMEOUT] += $this->adTagData[$adTag->getId()][self::KEY_IN_BANNER_TIMEOUT];
+                }
 
                 $this->accountData[$publisherId][static::CACHE_KEY_ACC_OPPORTUNITY] += $opportunities;
                 $this->accountData[$publisherId][static::KEY_IMPRESSION] += $impressions;
@@ -891,5 +902,41 @@ class TestEventCounter extends AbstractEventCounter
         }
 
         return $convertedResults;
+    }
+
+    public function getSlotIdForTag($tagId)
+    {
+        if (array_key_exists($tagId, $this->slotIds)) {
+            return $this->slotIds[$tagId];
+        }
+
+        return null;
+    }
+
+    public function getAdTagInBannerRequestCount($slotId, $tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::KEY_IN_BANNER_REQUESTS])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::KEY_IN_BANNER_REQUESTS];
+    }
+
+    public function getAdTagInBannerImpressionCount($slotId, $tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::KEY_IN_BANNER_IMPRESSIONS])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::KEY_IN_BANNER_IMPRESSIONS];
+    }
+
+    public function getAdTagInBannerTimeoutCount($slotId, $tagId)
+    {
+        if (!isset($this->adTagData[$tagId][static::KEY_IN_BANNER_TIMEOUT])) {
+            return false;
+        }
+
+        return $this->adTagData[$tagId][static::KEY_IN_BANNER_TIMEOUT];
     }
 }

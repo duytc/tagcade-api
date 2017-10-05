@@ -33,4 +33,19 @@ interface ReportDataInterface
      * @return float
      */
     public function getEstCpm();
+
+    /**
+     * @return int
+     */
+    public function getInBannerRequests();
+
+    /**
+     * @return int
+     */
+    public function getInBannerImpressions();
+
+    /**
+     * @return int
+     */
+    public function getInBannerTimeouts();
 }

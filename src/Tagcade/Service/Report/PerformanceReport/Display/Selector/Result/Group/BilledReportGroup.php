@@ -41,15 +41,9 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     protected $averageOpportunityFillRate;
     protected $averageBilledAmount;
 
-    protected $inBannerRequests;
-    protected $inBannerImpressions;
-    protected $inBannerTimeouts;
     protected $inBannerBilledRate;
     protected $inBannerBilledAmount;
 
-    protected $averageInBannerRequests;
-    protected $averageInBannerImpressions;
-    protected $averageInBannerTimeouts;
     protected $averageInBannerBilledRate;
     protected $averageInBannerBilledAmount;
 
@@ -90,14 +84,15 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param $averageOpportunityFillRate
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-                                $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $opportunityFillRate,
-                                $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
-                                $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions, $averageAdOpportunities, $averageOpportunityFillRate
+    $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $opportunityFillRate,
+    $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
+    $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions, $averageAdOpportunities, $averageOpportunityFillRate
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
             $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities,
+            $inBannerImpressions, $inBannerRequests, $inBannerTimeouts, $averageInBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts
         );
 
         $this->slotOpportunities = $slotOpportunities;

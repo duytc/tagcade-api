@@ -49,7 +49,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const KEY_FALLBACKS                    = 'fallbacks';
     const KEY_IN_BANNER_IMPRESSIONS        = 'inbanner_impressions';
     const KEY_IN_BANNER_REQUESTS           = 'inbanner_requests';
-    const KEY_IN_BANNER_TIMEOUTS           = 'inbanner_requests';
+    const KEY_IN_BANNER_TIMEOUTS           = 'inbanner_timeouts';
 
     const NAMESPACE_AD_SLOT                = 'adslot_%d';
     const NAMESPACE_AD_TAG                 = 'adtag_%d';
@@ -177,6 +177,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
     }
 
+    public function getAdTagInBannerRequestCount($slotId, $tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId, self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+    }
+
+
     public function getRonInBannerRequestCount($slotId, $segment = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $slotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
@@ -199,6 +207,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
     }
 
+    public function getAdTagInBannerImpressionCount($slotId, $tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId, self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+    }
+
+
     public function getRonInBannerTimeoutCount($slotId, $segment = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_RON_AD_SLOT, $slotId, self::NAMESPACE_APPEND_SEGMENT, $segment);
@@ -220,6 +236,14 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
     }
+
+    public function getAdTagInBannerTimeoutCount($slotId, $tagId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId, self::NAMESPACE_AD_TAG, $tagId);
+
+        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+    }
+
 
     public function getRonInBannerImpressionCount($slotId, $segment = null)
     {

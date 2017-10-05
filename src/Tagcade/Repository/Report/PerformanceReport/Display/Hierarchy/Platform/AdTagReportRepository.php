@@ -31,9 +31,11 @@ class AdTagReportRepository extends AbstractReportRepository implements AdTagRep
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_ad_tag`
                  (ad_tag_id, super_report_id, date, name, position, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 relative_fill_rate, first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, refreshes, ad_opportunities, network_opportunity_fill_rate
+                 relative_fill_rate, first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, refreshes, ad_opportunities, network_opportunity_fill_rate,
+                 in_banner_impressions, in_banner_requests, in_banner_timeouts
                  ) VALUES (:adTagId, :superReportId, :date, :name, :position, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :relativeFillRate, :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :refreshes, :adOpportunities, :networkOpportunityFillRate
+                  :relativeFillRate, :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :refreshes, :adOpportunities, :networkOpportunityFillRate,
+                  :inBannerImpressions, :inBannerRequests, :inBannerTimeouts
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -51,7 +53,10 @@ class AdTagReportRepository extends AbstractReportRepository implements AdTagRep
                  clicks = :clicks,
                  refreshes = :refreshes,
                  ad_opportunities = :adOpportunities,
-                 network_opportunity_fill_rate = :networkOpportunityFillRate
+                 network_opportunity_fill_rate = :networkOpportunityFillRate,
+                 in_banner_impressions = :inBannerImpressions,
+                 in_banner_requests = :inBannerRequests,
+                 in_banner_timeouts = :inBannerTimeouts
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -78,6 +83,9 @@ class AdTagReportRepository extends AbstractReportRepository implements AdTagRep
         $qb->bindValue('refreshes', $report->getRefreshes() !== null ? $report->getRefreshes() : 0);
         $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0);
         $qb->bindValue('networkOpportunityFillRate', $report->getNetworkOpportunityFillRate() !== null ? $report->getNetworkOpportunityFillRate() : 0);
+        $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
+        $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
+        $qb->bindValue('inBannerTimeouts', $report->getInBannerTimeouts() !== null ? $report->getInBannerTimeouts() : 0);
 
         $connection->beginTransaction();
         try {

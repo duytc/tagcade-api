@@ -81,29 +81,10 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledRep
             expose: true
             groups: [billed_report_group.detail, billed_report_group.summary]
 
-        inBannerRequests:
-            expose: true
-            groups: [report_group.detail, report_group.summary]
-        inBannerImpressions:
-            expose: true
-            groups: [report_group.detail, report_group.summary]
-        inBannerTimeouts:
-            expose: true
-            groups: [report_group.detail, report_group.summary]
         inBannerBilledRate:
             expose: true
             groups: [report_group.detail, report_group.summary]
         inBannerBilledAmount:
-            expose: true
-            groups: [report_group.detail, report_group.summary]
-
-        averageInBannerRequests:
-            expose: true
-            groups: [report_group.detail, report_group.summary]
-        averageInBannerImpressions:
-            expose: true
-            groups: [report_group.detail, report_group.summary]
-        averageInBannerTimeouts:
             expose: true
             groups: [report_group.detail, report_group.summary]
         averageInBannerBilledRate:

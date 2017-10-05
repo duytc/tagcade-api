@@ -45,9 +45,11 @@ class AdNetworkReportRepository extends AbstractReportRepository implements AdNe
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_ad_network`
                  (ad_network_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks,
-                 first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, ad_opportunities, network_opportunity_fill_rate
+                 first_opportunities, verified_impressions, unverified_impressions, blank_impressions, void_impressions, clicks, ad_opportunities, network_opportunity_fill_rate,
+                 in_banner_impressions, in_banner_requests, in_banner_timeouts
                  ) VALUES (:adNetworkId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks,
-                  :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :adOpportunities, :networkOpportunityFillRate
+                  :firstOpportunities, :verifiedImpressions, :unverifiedImpression, :blankImpressions, :voidImpressions, :clicks, :adOpportunities, :networkOpportunityFillRate,
+                  :inBannerImpressions, :inBannerRequests, :inBannerTimeouts
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
                  impressions = :impressions,
@@ -62,7 +64,10 @@ class AdNetworkReportRepository extends AbstractReportRepository implements AdNe
                  void_impressions = :voidImpressions,
                  clicks = :clicks,
                  ad_opportunities = :adOpportunities,
-                 network_opportunity_fill_rate = :networkOpportunityFillRate
+                 network_opportunity_fill_rate = :networkOpportunityFillRate,
+                 in_banner_impressions = :inBannerImpressions,
+                 in_banner_requests = :inBannerRequests,
+                 in_banner_timeouts = :inBannerTimeouts
                  ';
 
         $connection = $this->getEntityManager()->getConnection();
@@ -85,6 +90,9 @@ class AdNetworkReportRepository extends AbstractReportRepository implements AdNe
         $qb->bindValue('clicks', $report->getClicks() !== null ? $report->getClicks() : 0);
         $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0);
         $qb->bindValue('networkOpportunityFillRate', $report->getNetworkOpportunityFillRate() !== null ? $report->getNetworkOpportunityFillRate() : 0);
+        $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
+        $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
+        $qb->bindValue('inBannerTimeouts', $report->getInBannerTimeouts() !== null ? $report->getInBannerTimeouts() : 0);
 
         $connection->beginTransaction();
         try {

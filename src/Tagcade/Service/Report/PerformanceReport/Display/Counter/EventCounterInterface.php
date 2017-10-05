@@ -41,6 +41,8 @@ interface EventCounterInterface
 
     public function getAccountInBannerRequestCount($publisherId);
 
+    public function getAdTagInBannerRequestCount($slotId, $tagId);
+
     /**
      * @param $slotId
      * @param $segment
@@ -56,6 +58,8 @@ interface EventCounterInterface
 
     public function getAccountInBannerImpressionCount($publisherId);
 
+    public function getAdTagInBannerImpressionCount($slotId, $tagId);
+
     /**
      * @param $slotId
      * @param $segment = null
@@ -70,6 +74,8 @@ interface EventCounterInterface
     public function getInBannerTimeoutCount($slotId);
 
     public function getAccountInBannerTimeoutCount($publisherId);
+
+    public function getAdTagInBannerTimeoutCount($slotId, $tagId);
 
     /**
      * @param $slotId

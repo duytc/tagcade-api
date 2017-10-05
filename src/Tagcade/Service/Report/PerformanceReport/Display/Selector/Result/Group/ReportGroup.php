@@ -23,6 +23,9 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     protected $estCpm;
     protected $estRevenue;
     protected $adOpportunities;
+    protected $inBannerImpressions;
+    protected $inBannerRequests;
+    protected $inBannerTimeouts;
 
     protected $averageTotalOpportunities;
     protected $averageImpressions;
@@ -31,6 +34,9 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     protected $averageEstRevenue;
     protected $averageFillRate;
     protected $averageAdOpportunities;
+    protected $averageInBannerImpressions;
+    protected $averageInBannerRequests;
+    protected $averageInBannerTimeouts;
 
     /**
      * @param ReportTypeInterface|ReportTypeInterface[] $reportType
@@ -52,10 +58,17 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
      * @param float $averageEstRevenue
      * @param float $averageFillRate
      * @param float $averageAdOpportunities
+     * @param $inBannerImpressions
+     * @param $inBannerRequests
+     * @param $inBannerTimeouts
+     * @param $averageInBannerImpressions
+     * @param $averageInBannerRequests
+     * @param $averageInBannerTimeouts
      */
-    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-                                $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
-                                $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities
+    public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name, $totalOpportunities, $impressions,
+    $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities, $averageTotalOpportunities, $averageImpressions, $averagePassbacks,
+    $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageAdOpportunities, $inBannerImpressions, $inBannerRequests, $inBannerTimeouts,
+    $averageInBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts
     )
     {
         $this->reportType = $reportType;
@@ -70,6 +83,9 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         $this->estCpm = round($estCpm, 4);
         $this->estRevenue = round($estRevenue, 4);
         $this->adOpportunities = $adOpportunities;
+        $this->inBannerTimeouts = $inBannerTimeouts;
+        $this->inBannerRequests = $inBannerRequests;
+        $this->inBannerImpressions = $inBannerImpressions;
 
         $this->averageTotalOpportunities = round($averageTotalOpportunities);
         $this->averageImpressions = round($averageImpressions);
@@ -78,6 +94,9 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         $this->averageEstRevenue = round($averageEstRevenue, 4);
         $this->averageFillRate = round($averageFillRate, 4);
         $this->averageAdOpportunities = round($averageAdOpportunities, 4);
+        $this->averageInBannerTimeouts = round($averageInBannerTimeouts, 4);
+        $this->averageInBannerRequests = round($averageInBannerRequests, 4);
+        $this->averageInBannerImpressions = round($averageInBannerImpressions, 4);
     }
 
     /**
@@ -241,4 +260,21 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
     {
         return $this->averageAdOpportunities;
     }
+
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
+    }
+
+
 }

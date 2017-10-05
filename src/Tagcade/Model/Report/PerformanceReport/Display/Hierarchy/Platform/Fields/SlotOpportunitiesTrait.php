@@ -33,21 +33,6 @@ trait SlotOpportunitiesTrait
     // current trait is for slot opportunities only
 
     /**
-     * @var int
-     */
-    protected $inBannerRequests;
-
-    /**
-     * @var int
-     */
-    protected $inBannerImpressions;
-
-    /**
-     * @var int
-     */
-    protected $inBannerTimeouts;
-
-    /**
      * @var float
      */
     protected $inBannerBilledRate;
@@ -126,60 +111,6 @@ trait SlotOpportunitiesTrait
     public function setBilledRate($billedRate)
     {
         $this->billedRate = (float)$billedRate;
-    }
-
-    /**
-     * @return int
-     */
-    public function getInBannerRequests()
-    {
-        return $this->inBannerRequests;
-    }
-
-    /**
-     * @param int $inBannerRequests
-     * @return self
-     */
-    public function setInBannerRequests($inBannerRequests)
-    {
-        $this->inBannerRequests = (int)$inBannerRequests;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getInBannerImpressions()
-    {
-        return $this->inBannerImpressions;
-    }
-
-    /**
-     * @param int $inBannerImpressions
-     * @return self
-     */
-    public function setInBannerImpressions($inBannerImpressions)
-    {
-        $this->inBannerImpressions = (int)$inBannerImpressions;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getInBannerTimeouts()
-    {
-        return $this->inBannerTimeouts;
-    }
-
-    /**
-     * @param int $inBannerTimeouts
-     * @return self
-     */
-    public function setInBannerTimeouts($inBannerTimeouts)
-    {
-        $this->inBannerTimeouts = (int)$inBannerTimeouts;
-        return $this;
     }
 
     /**

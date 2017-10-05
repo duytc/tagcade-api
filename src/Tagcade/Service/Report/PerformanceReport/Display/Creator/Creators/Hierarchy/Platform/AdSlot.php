@@ -44,11 +44,9 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()))
         ;
 
-        if ($adSlot instanceof DisplayAdSlotInterface) {
-            $adSlotReport->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));
-            $adSlotReport->setInBannerImpressions($this->eventCounter->getInBannerImpressionCount($adSlot->getId()));
-            $adSlotReport->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
-        }
+        $adSlotReport->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));
+        $adSlotReport->setInBannerImpressions($this->eventCounter->getInBannerImpressionCount($adSlot->getId()));
+        $adSlotReport->setInBannerTimeouts($this->eventCounter->getInBannerTimeoutCount($adSlot->getId()));
 
         $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($this->getDate(), $adSlot->getSite()->getPublisher(), $adSlotReport->getSlotOpportunities());
 

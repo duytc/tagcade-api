@@ -67,6 +67,9 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
             return;
         }
 
+        $this->inBannerTimeouts = 0;
+        $this->inBannerRequests = 0;
+        $this->inBannerImpressions = 0;
         $this->totalOpportunities = 0;
         $this->impressions = 0;
         $this->passbacks = null;

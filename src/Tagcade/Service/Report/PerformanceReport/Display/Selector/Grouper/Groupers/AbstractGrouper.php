@@ -40,6 +40,9 @@ abstract class AbstractGrouper implements GrouperInterface
     private $estCpm;
     private $estRevenue;
     private $adOpportunities;
+    private $inBannerImpressions;
+    private $inBannerRequests;
+    private $inBannerTimeouts;
 
     private $averageTotalOpportunities;
     private $averageImpressions;
@@ -48,6 +51,9 @@ abstract class AbstractGrouper implements GrouperInterface
     private $averageEstCpm;
     private $averageEstRevenue;
     private $averageAdOpportunities;
+    private $averageInBannerImpressions;
+    private $averageInBannerRequests;
+    private $averageInBannerTimeouts;
 
     private $totalEstCpm;
     private $totalFillRate;
@@ -93,7 +99,13 @@ abstract class AbstractGrouper implements GrouperInterface
             $this->getAverageEstCpm(),
             $this->getAverageEstRevenue(),
             $this->getAverageFillRate(),
-            $this->getAverageAdOpportunities()
+            $this->getAverageAdOpportunities(),
+            $this->getInBannerImpressions(),
+            $this->getInBannerRequests(),
+            $this->getInBannerTimeouts(),
+            $this->getAverageInBannerImpressions(),
+            $this->getAverageInBannerRequests(),
+            $this->getAverageInBannerTimeouts()
         );
     }
 
@@ -119,6 +131,9 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->averageFillRate = $this->getRatio($this->getTotalFillRate(), $reportCount);
         $this->averageEstRevenue = $this->getRatio($this->getEstRevenue(), $reportCount);
         $this->averageAdOpportunities = $this->getRatio($this->getAdOpportunities(), $reportCount);
+        $this->averageInBannerImpressions = $this->getRatio($this->getInBannerImpressions(), $reportCount);
+        $this->averageInBannerRequests = $this->getRatio($this->getInBannerRequests(), $reportCount);
+        $this->averageInBannerTimeouts = $this->getRatio($this->getInBannerTimeouts(), $reportCount);
     }
 
     protected function doGroupReport(ReportDataInterface $report)
@@ -129,6 +144,9 @@ abstract class AbstractGrouper implements GrouperInterface
         $this->addTotalEstCpm($report->getEstCpm());
         $this->addEstRevenue($report->getEstRevenue());
         $this->addTotalFillRate($report->getFillRate());
+        $this->addInBannerImpressions($report->getInBannerImpressions());
+        $this->addInBannerRequests($report->getInBannerRequests());
+        $this->addInBannerTimeouts($report->getInBannerTimeouts());
     }
 
     protected function addTotalOpportunities($totalOpportunities)
@@ -159,6 +177,21 @@ abstract class AbstractGrouper implements GrouperInterface
     protected function addTotalFillRate($fillRate)
     {
         $this->totalFillRate += (float)$fillRate;
+    }
+
+    protected function addInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions += (int)$inBannerImpressions;
+    }
+
+    protected function addInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests += (int)$inBannerRequests;
+    }
+
+    protected function addInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts += (int)$inBannerTimeouts;
     }
 
     protected function setFillRate()
@@ -204,6 +237,21 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getImpressions()
     {
         return $this->impressions;
+    }
+
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
     }
 
     public function getPassbacks()
@@ -274,6 +322,21 @@ abstract class AbstractGrouper implements GrouperInterface
     public function getAverageAdOpportunities()
     {
         return $this->averageAdOpportunities;
+    }
+
+    public function getAverageInBannerImpressions()
+    {
+        return $this->averageInBannerImpressions;
+    }
+
+    public function getAverageInBannerRequests()
+    {
+        return $this->averageInBannerRequests;
+    }
+
+    public function getAverageInBannerTimeouts()
+    {
+        return $this->averageInBannerTimeouts;
     }
 
     /**

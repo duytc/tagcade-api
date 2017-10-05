@@ -253,6 +253,10 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
      */
     public function getIvtPixelWaterfallTags()
     {
+        if ($this->ivtPixelWaterfallTags === null) {
+            return new ArrayCollection();
+        }
+
         return $this->ivtPixelWaterfallTags;
     }
 

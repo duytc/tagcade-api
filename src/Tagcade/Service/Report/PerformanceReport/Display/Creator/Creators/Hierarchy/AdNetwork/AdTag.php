@@ -49,7 +49,11 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setVerifiedImpressions($verifiedImpressions)
             ->setEstCpm($this->cpmCalculator->getEstCpmForAdTag($adTag, $this->getDate()))
             ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities))
-            ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $totalOpportunities));
+            ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $totalOpportunities))
+            ->setInBannerImpressions($this->eventCounter->getAdTagInBannerImpressionCount($adTag->getAdSlotId(), $adTag->getId()))
+            ->setInBannerRequests($this->eventCounter->getAdTagInBannerRequestCount($adTag->getAdSlotId(), $adTag->getId()))
+            ->setInBannerTimeouts($this->eventCounter->getAdTagInBannerTimeoutCount($adTag->getAdSlotId(), $adTag->getId()))
+        ;
 
         if (!$isNativeAdSlot) {
             $passbacks = $this->eventCounter->getPassbackCount($adTag->getId());

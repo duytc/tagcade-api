@@ -70,6 +70,17 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport:
             type: decimal
             scale: 4
             nullable: true
+
+        # inbanner metrics
+        inBannerRequests:
+            type: integer
+            nullable: true
+        inBannerImpressions:
+            type: integer
+            nullable: true
+        inBannerTimeouts:
+            type: integer
+            nullable: true
     manyToOne:
         adTag:
             targetEntity: Tagcade\Entity\Core\AdTag

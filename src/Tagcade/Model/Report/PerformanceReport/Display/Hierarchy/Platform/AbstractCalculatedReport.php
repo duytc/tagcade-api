@@ -70,14 +70,9 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
 
         $this->addSlotOpportunities($subReport->getSlotOpportunities());
         $this->addBilledAmount($subReport->getBilledAmount());
-
         $this->addInBannerBilledAmount($subReport->getInBannerBilledAmount());
-        $this->addInBannerTimeouts($subReport->getInBannerTimeouts());
-        $this->addInBannerRequests($subReport->getInBannerRequests());
-        $this->addInBannerImpressions($subReport->getInBannerImpressions());
 
         parent::aggregateSubReport($subReport);
-
     }
 
     protected function addSlotOpportunities($slotOpportunities)
@@ -90,23 +85,8 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->billedAmount += (float)$billedAmount;
     }
 
-    protected function addInBannerRequests($inBannerRequests)
-    {
-        $this->inBannerRequests += (int)$inBannerRequests;
-    }
-
-    protected function addInBannerImpressions($inBannerImpressions)
-    {
-        $this->inBannerImpressions += (int)$inBannerImpressions;
-    }
-
     protected function addInBannerBilledAmount($inBannerBilledAmount)
     {
         $this->inBannerBilledAmount += (float)$inBannerBilledAmount;
-    }
-
-    protected function addInBannerTimeouts($inBannerTimeouts)
-    {
-        $this->inBannerTimeouts += (int)$inBannerTimeouts;
     }
 }

@@ -40,6 +40,9 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->passbacks = 0;
         $this->estRevenue = 0;
         $this->adOpportunities = 0;
+        $this->inBannerTimeouts = 0;
+        $this->inBannerRequests = 0;
+        $this->inBannerImpressions = 0;
     }
 
     protected function doCalculateFields()
@@ -65,6 +68,9 @@ abstract class AbstractCalculatedReport extends AbstractReport
         $this->addPassbacks($subReport->getPassbacks());
         $this->addEstRevenue($subReport->getEstRevenue());
         $this->addAdOpportunities($subReport->getAdOpportunities());
+        $this->addInBannerTimeouts($subReport->getInBannerTimeouts());
+        $this->addInBannerRequests($subReport->getInBannerRequests());
+        $this->addInBannerImpressions($subReport->getInBannerImpressions());
     }
 
     protected function addTotalOpportunities($totalOpportunities)
@@ -90,5 +96,20 @@ abstract class AbstractCalculatedReport extends AbstractReport
     protected function addAdOpportunities($adOpportunities)
     {
         $this->adOpportunities += (int)$adOpportunities;
+    }
+
+    protected function addInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests += (int)$inBannerRequests;
+    }
+
+    protected function addInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions += (int)$inBannerImpressions;
+    }
+
+    protected function addInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts += (int)$inBannerTimeouts;
     }
 }

@@ -80,7 +80,7 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setEnabled(true)
     ;
     $publisher->setCompany('tctest'.$userId); // doesn't return $this so cannot chain
-    $enabledModules = [$publisher::MODULE_DISPLAY, $publisher::MODULE_VIDEO, $publisher::MODULE_HEADER_BIDDING, $publisher::MODULE_VIDEO_ANALYTICS, $publisher::MODULE_UNIFIED_REPORT];
+    $enabledModules = [$publisher::MODULE_DISPLAY, $publisher::MODULE_VIDEO, $publisher::MODULE_HEADER_BIDDING, $publisher::MODULE_VIDEO_ANALYTICS, $publisher::MODULE_UNIFIED_REPORT, $publisher::MODULE_IN_BANNER];
     $publisher->setEnabledModules($enabledModules);
 
     $billingConfiguration = new BillingConfiguration();
@@ -105,6 +105,14 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         ->setModule($publisher::MODULE_HEADER_BIDDING)
         ->setDefaultConfig(true)
         ->setBillingFactor($billingConfiguration::BILLING_FACTOR_HEADER_BID_REQUEST);
+    $publisher->addBillingConfig($billingConfiguration);
+
+    $billingConfiguration = new BillingConfiguration();
+    $billingConfiguration
+        ->setPublisher($publisher)
+        ->setModule($publisher::MODULE_IN_BANNER)
+        ->setDefaultConfig(true)
+        ->setBillingFactor($billingConfiguration::BILLING_FACTOR_IN_BANNER_IMPRESSION);
     $publisher->addBillingConfig($billingConfiguration);
 
     $publisherManager->save($publisher);
@@ -153,9 +161,9 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                 $libraryAdTag = (new LibraryAdTag())->setName(sprintf('ad tag %d', $adTagId))
                     ->setVisible(true)
                     ->setHtml(sprintf('ad tag %d html', $adTagId))
-                    ->setAdType(0)
+                    ->setAdType(2)
                     ->setAdNetwork($adNetwork)
-                    ->setInBannerDescriptor(array('platform' => null, 'timeout' => null, 'playerWidth' => null, 'playerHeight' => null, 'vastTags' => []));
+                    ->setInBannerDescriptor(array('platform' => null, 'timeout' => 12, 'playerWidth' => 33, 'playerHeight' => 55, 'vastTags' => [array('tag' => 'http://tagcade.dev/vasttag')]));
                 $tempObjs[] = $libraryAdTag;
                 $adTag = (new AdTag())
                     ->setLibraryAdTag($libraryAdTag)
@@ -270,7 +278,9 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                 ->setPlatform(['flash', 'js'])
                 ->setUuid(generateUuidV4())
                 ->setTargeting([])
+                ->setRunOn('Server-Side VAST+VAPID')
             ;
+
             $em->persist($videoWaterfall);
             $tempObjs[] = $videoWaterfall;
             // create demand ad tag and demand partner

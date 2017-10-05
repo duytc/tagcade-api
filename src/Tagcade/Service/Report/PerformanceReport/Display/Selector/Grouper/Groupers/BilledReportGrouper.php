@@ -107,10 +107,6 @@ class BilledReportGrouper extends AbstractGrouper
         $this->addSlotOpportunities($report->getSlotOpportunities());
         $this->addOpportunityFillRate($report->getOpportunityFillRate());
         $this->addBilledAmount($report->getBilledAmount());
-
-        $this->addInBannerTimeouts($report->getInBannerTimeouts());
-        $this->addInBannerRequests($report->getInBannerRequests());
-        $this->addInBannerImpressions($report->getInBannerImpressions());
         $this->addInBannerBilledRate($report->getInBannerBilledRate());
         $this->addInBannerBilledAmount($report->getInBannerBilledAmount());
     }

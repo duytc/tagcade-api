@@ -73,7 +73,13 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
             $this->getAverageClicks(),
             $this->getAverageRefreshes(),
             $this->getAverageAdOpportunities(),
-            $this->getAverageNetworkOpportunityFillRate()
+            $this->getAverageNetworkOpportunityFillRate(),
+            $this->getInBannerImpressions(),
+            $this->getInBannerRequests(),
+            $this->getInBannerTimeouts(),
+            $this->getAverageInBannerImpressions(),
+            $this->getAverageInBannerRequests(),
+            $this->getAverageInBannerTimeouts()
         );
     }
 
@@ -111,7 +117,6 @@ class ImpressionBreakdownGrouper extends AbstractGrouper
         $this->addClicks($report->getClicks());
         $this->addRefreshes($report->getRefreshes());
         $this->addNetworkOpportunityFillRate($report->getNetworkOpportunityFillRate());
-
     }
 
     protected function addFirstOpportunities($firstOpportunities)

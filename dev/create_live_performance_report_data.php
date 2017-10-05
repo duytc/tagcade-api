@@ -412,6 +412,47 @@ foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
         $tagData[$testEventCounter::KEY_REFRESHES]
     );
 
+    if ($tagId == 3878) {
+        $test = 2;
+    }
+
+    $slotId = $testEventCounter->getSlotIdForTag($tagId);
+    if ($slotId) {
+        $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId, $cacheEventCounter::NAMESPACE_AD_TAG, $tagId);
+        if (array_key_exists($testEventCounter::KEY_IN_BANNER_IMPRESSIONS, $tagData)) {
+            $cache->hSave(
+                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+                $cacheEventCounter->getCacheKey(
+                    $cacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION,
+                    $namespace
+                ),
+                $tagData[$testEventCounter::KEY_IN_BANNER_IMPRESSIONS]
+            );
+        }
+
+        if (array_key_exists($testEventCounter::KEY_IN_BANNER_REQUESTS, $tagData)) {
+            $cache->hSave(
+                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+                $cacheEventCounter->getCacheKey(
+                    $cacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST,
+                    $namespace
+                ),
+                $tagData[$testEventCounter::KEY_IN_BANNER_REQUESTS]
+            );
+        }
+
+        if (array_key_exists($testEventCounter::KEY_IN_BANNER_TIMEOUT, $tagData)) {
+            $cache->hSave(
+                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+                $cacheEventCounter->getCacheKey(
+                    $cacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT,
+                    $namespace
+                ),
+                $tagData[$testEventCounter::KEY_IN_BANNER_TIMEOUT]
+            );
+        }
+    }
+
     unset($tagId, $tagData);
 }
 

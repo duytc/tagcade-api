@@ -20,6 +20,10 @@ abstract class AbstractReport implements ReportInterface
     protected $estCpm;
     protected $adOpportunities;
 
+    protected $inBannerRequests;
+    protected $inBannerImpressions;
+    protected $inBannerTimeouts;
+
     public function getId()
     {
         return $this->id;
@@ -207,6 +211,60 @@ abstract class AbstractReport implements ReportInterface
     {
         $this->adOpportunities = (int)$adOpportunities;
 
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerRequests()
+    {
+        return $this->inBannerRequests;
+    }
+
+    /**
+     * @param int $inBannerRequests
+     * @return self
+     */
+    public function setInBannerRequests($inBannerRequests)
+    {
+        $this->inBannerRequests = (int)$inBannerRequests;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerImpressions()
+    {
+        return $this->inBannerImpressions;
+    }
+
+    /**
+     * @param int $inBannerImpressions
+     * @return self
+     */
+    public function setInBannerImpressions($inBannerImpressions)
+    {
+        $this->inBannerImpressions = (int)$inBannerImpressions;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInBannerTimeouts()
+    {
+        return $this->inBannerTimeouts;
+    }
+
+    /**
+     * @param int $inBannerTimeouts
+     * @return self
+     */
+    public function setInBannerTimeouts($inBannerTimeouts)
+    {
+        $this->inBannerTimeouts = (int)$inBannerTimeouts;
         return $this;
     }
 }

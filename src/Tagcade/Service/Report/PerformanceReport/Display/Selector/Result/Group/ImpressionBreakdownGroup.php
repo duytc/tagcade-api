@@ -25,16 +25,18 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
     private $averageRefreshes;
     private $averageNetworkOpportunityFillRate;
 
-    public function __construct($reportType, $startDate, $endDate, $reports, $name,
-                                $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue,
-                                $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate,
-                                $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks, $refreshes, $adOpportunities, $networkOpportunityFillRate,
-                                $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions, $averageVoidImpressions, $averageClicks, $averageRefreshes, $averageOpportunities, $averageNetworkOpportunityFillRate
+    public function __construct($reportType, $startDate, $endDate, $reports, $name, $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm,
+    $estRevenue, $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate,
+    $firstOpportunities, $verifiedImpressions, $unverifiedImpressions, $blankImpressions, $voidImpressions, $clicks, $refreshes, $adOpportunities,
+    $networkOpportunityFillRate, $averageFirstOpportunities, $averageVerifiedImpressions, $averageUnverifiedImpressions, $averageBlankImpressions,
+    $averageVoidImpressions, $averageClicks, $averageRefreshes, $averageOpportunities, $averageNetworkOpportunityFillRate,
+    $inBannerImpressions, $inBannerRequests, $inBannerTimeouts, $averageInBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
             $totalOpportunities, $impressions, $passbacks, $fillRate, $estCpm, $estRevenue, $adOpportunities,
-            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageOpportunities
+            $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageOpportunities,
+            $inBannerImpressions, $inBannerRequests, $inBannerTimeouts, $averageInBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts
         );
 
         $this->firstOpportunities = $firstOpportunities;
