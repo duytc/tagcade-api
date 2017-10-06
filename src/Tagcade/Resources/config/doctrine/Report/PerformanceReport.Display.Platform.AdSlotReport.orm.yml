@@ -22,6 +22,8 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
             type: integer
         slotOpportunities:
             type: integer
+        refreshedSlotOpportunities:
+            type: integer
         impressions:
             type: integer
             nullable: true

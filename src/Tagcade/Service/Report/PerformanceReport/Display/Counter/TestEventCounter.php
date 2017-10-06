@@ -29,6 +29,7 @@ class TestEventCounter extends AbstractEventCounter
 
     const KEY_OPPORTUNITY            = 'opportunities';
     const KEY_SLOT_OPPORTUNITY       = 'opportunities';
+    const KEY_SLOT_OPPORTUNITY_REFRESHES = 'refreshes';
     const KEY_IMPRESSION             = 'impressions';
     const KEY_HB_BID_REQUEST         = 'hb_bid_request';
     const KEY_PASSBACK               = 'passbacks';
@@ -108,6 +109,14 @@ class TestEventCounter extends AbstractEventCounter
             if (!$adSlot instanceof DynamicAdSlotInterface) {
                 $this->adSlotData[$adSlot->getId()][static::KEY_SLOT_OPPORTUNITY] = $slotOpportunities;
                 $this->accountData[$publisherId][static::CACHE_KEY_ACC_SLOT_OPPORTUNITY] += $slotOpportunities;
+
+                // $slotOpportunitiesRefreshes count, only for display ad slot
+                if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->isAutoRefresh()) {
+                    $maxRefreshTimes = (int)$adSlot->getMaximumRefreshTimes();
+                    $slotOpportunitiesRefreshes = mt_rand(0, $maxRefreshTimes * $slotOpportunities);
+
+                    $this->adSlotData[$adSlot->getId()][static::KEY_SLOT_OPPORTUNITY_REFRESHES] = $slotOpportunitiesRefreshes;
+                }
             }
 
             if($adSlot->getSite()->getPublisher()->hasHeaderBiddingModule()) {
@@ -362,6 +371,18 @@ class TestEventCounter extends AbstractEventCounter
         }
 
         return $this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSlotOpportunityRefreshesCount($slotId)
+    {
+        if (!isset($this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY_REFRESHES])) {
+            return false;
+        }
+
+        return $this->adSlotData[$slotId][static::KEY_SLOT_OPPORTUNITY_REFRESHES];
     }
 
     public function getHeaderBidRequestCount($slotId)

@@ -42,6 +42,7 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
             ->setAdSlot($adSlot)
             ->setDate($this->getDate())
             ->setSlotOpportunities($this->eventCounter->getSlotOpportunityCount($adSlot->getId()))
+            ->setRefreshedSlotOpportunities($this->eventCounter->getSlotOpportunityRefreshesCount($adSlot->getId()))
         ;
 
         $adSlotReport->setInBannerRequests($this->eventCounter->getInBannerRequestCount($adSlot->getId()));

@@ -28,6 +28,12 @@ interface EventCounterInterface
     public function getSlotOpportunityCount($slotId);
 
     /**
+     * @param int $slotId
+     * @return mixed
+     */
+    public function getSlotOpportunityRefreshesCount($slotId);
+
+    /**
      * @param $slotId
      * @return mixed
      */

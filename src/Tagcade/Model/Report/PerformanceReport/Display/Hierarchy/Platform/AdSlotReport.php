@@ -36,7 +36,12 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     protected $customRate;
 
     /**
-     * @return DisplayAdSlotInterface|NativeAdSlotInterface|null
+     * @var int
+     */
+    protected $refreshedSlotOpportunities; // special for ad slot only
+
+    /**
+     * @inheritdoc
      */
     public function getAdSlot()
     {
@@ -44,7 +49,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     }
 
     /**
-     * @return int|null
+     * @inheritdoc
      */
     public function getAdSlotId()
     {
@@ -85,7 +90,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     }
 
     /**
-     * @return float
+     * @inheritdoc
      */
     public function getCustomRate()
     {
@@ -93,8 +98,7 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     }
 
     /**
-     * @param float $customRate
-     * @return $this
+     * @inheritdoc
      */
     public function setCustomRate($customRate)
     {
@@ -104,12 +108,28 @@ class AdSlotReport extends BaseAbstractCalculatedReport implements AdSlotReportI
     }
 
     /**
-     * @param BaseAdSlotInterface $adSlot
-     * @return $this
+     * @inheritdoc
      */
     public function setAdSlot(BaseAdSlotInterface $adSlot)
     {
         $this->adSlot = $adSlot;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRefreshedSlotOpportunities()
+    {
+        return $this->refreshedSlotOpportunities;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setRefreshedSlotOpportunities($refreshedSlotOpportunities)
+    {
+        $this->refreshedSlotOpportunities = (int)$refreshedSlotOpportunities;
         return $this;
     }
 

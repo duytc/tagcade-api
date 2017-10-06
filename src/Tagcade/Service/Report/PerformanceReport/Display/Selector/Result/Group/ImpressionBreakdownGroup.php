@@ -48,14 +48,14 @@ class ImpressionBreakdownGroup extends ReportGroup implements ImpressionBreakdow
         $this->refreshes = $refreshes;
         $this->networkOpportunityFillRate = $networkOpportunityFillRate;
 
-        $this->averageFirstOpportunities = $averageFirstOpportunities;
-        $this->averageVerifiedImpressions = $averageVerifiedImpressions;
-        $this->averageUnverifiedImpressions = $averageUnverifiedImpressions;
-        $this->averageBlankImpressions = $averageBlankImpressions;
-        $this->averageVoidImpressions = $averageVoidImpressions;
-        $this->averageClicks = $averageClicks;
-        $this->averageRefreshes = $averageRefreshes;
-        $this->averageNetworkOpportunityFillRate = $averageNetworkOpportunityFillRate;
+        $this->averageFirstOpportunities = round($averageFirstOpportunities);
+        $this->averageVerifiedImpressions = round($averageVerifiedImpressions);
+        $this->averageUnverifiedImpressions = round($averageUnverifiedImpressions);
+        $this->averageBlankImpressions = round($averageBlankImpressions);
+        $this->averageVoidImpressions = round($averageVoidImpressions);
+        $this->averageClicks = round($averageClicks);
+        $this->averageRefreshes = round($averageRefreshes);
+        $this->averageNetworkOpportunityFillRate = round($averageNetworkOpportunityFillRate, 4);
     }
 
     /**

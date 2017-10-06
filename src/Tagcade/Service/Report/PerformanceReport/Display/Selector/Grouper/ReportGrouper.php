@@ -3,9 +3,11 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper;
 
 use Tagcade\Exception\UnexpectedValueException;
+use Tagcade\Model\Report\PerformanceReport\Display\AdSlotReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\BilledReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ImpressionBreakdownReportDataInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportDataInterface;
+use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\AdSlotReportGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\BilledReportGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\DefaultGrouper;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\Groupers\GrouperInterface;
@@ -36,6 +38,10 @@ class ReportGrouper implements ReportGrouperInterface
 
         if (!$firstReport instanceof ReportDataInterface) {
             throw new UnexpectedValueException('Expected a ReportDataInterface');
+        }
+
+        if ($firstReport instanceof AdSlotReportDataInterface) {
+            return new AdSlotReportGrouper($reportCollection);
         }
 
         if ($firstReport instanceof BilledReportDataInterface) {

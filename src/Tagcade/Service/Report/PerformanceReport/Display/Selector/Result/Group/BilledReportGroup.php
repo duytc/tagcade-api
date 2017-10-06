@@ -108,10 +108,10 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         $this->inBannerBilledAmount = $inBannerBilledAmount;
         $this->inBannerImpressions = $inBannerImpressions;
 
-        $this->averageInBannerRequests = $averageInBannerRequests;
-        $this->averageInBannerTimeouts = $averageInBannerTimeouts;
-        $this->averageInBannerBilledAmount = round($averageInBannerBilledAmount, 4);
-        $this->averageInBannerImpressions = $averageInBannerImpressions;
+        $this->averageInBannerRequests = round($averageInBannerRequests);
+        $this->averageInBannerTimeouts = round($averageInBannerTimeouts);
+        $this->averageInBannerBilledAmount = round($averageInBannerBilledAmount);
+        $this->averageInBannerImpressions = round($averageInBannerImpressions);
     }
 
     /**

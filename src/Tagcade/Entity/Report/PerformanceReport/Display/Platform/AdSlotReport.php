@@ -19,6 +19,7 @@ class AdSlotReport extends AdSlotReportModel
     protected $estRevenue;
     protected $estCpm;
     protected $slotOpportunities;
+    protected $refreshedSlotOpportunities;
     protected $billedRate;
     protected $billedAmount;
     protected $adOpportunities;

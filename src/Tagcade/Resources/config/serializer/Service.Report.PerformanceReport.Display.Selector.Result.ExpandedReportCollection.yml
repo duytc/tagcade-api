@@ -1,7 +1,5 @@
 Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ExpandedReportCollection:
     exclusion_policy: NONE
     properties:
-        expandedResult:
-            exclude: true
         originalResult:
             inline: true

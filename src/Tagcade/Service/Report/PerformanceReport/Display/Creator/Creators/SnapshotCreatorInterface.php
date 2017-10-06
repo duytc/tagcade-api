@@ -8,6 +8,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 interface SnapshotCreatorInterface extends CreatorInterface
 {
     const CACHE_KEY_SLOT_OPPORTUNITY       = 'slot_opportunities';
+    const CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES = 'refreshes';
     const CACHE_KEY_OPPORTUNITY            = 'opportunities';
     const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
     const CACHE_KEY_IMPRESSION             = 'impressions';

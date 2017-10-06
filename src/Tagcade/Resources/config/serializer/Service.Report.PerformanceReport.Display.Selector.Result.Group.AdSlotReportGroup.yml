@@ -1,0 +1,120 @@
+Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\AdSlotReportGroup:
+    exclusion_policy: ALL
+    properties:
+        slotOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        refreshedSlotOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        billedAmount:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageSlotOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageRefreshedSlotOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageBilledAmount:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+
+        reportType:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        startDate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+            type: DateTime<'Y-m-d'>
+        endDate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+            type: DateTime<'Y-m-d'>
+        reports:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        name:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        totalOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        impressions:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        fillRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        passbacks:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        estCpm:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        estRevenue:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        adOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        opportunityFillRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+
+        averageTotalOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageImpressions:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averagePassbacks:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageEstCpm:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageEstRevenue:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageFillRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageAdOpportunities:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageOpportunityFillRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+
+        inBannerRequests:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        inBannerImpressions:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        inBannerTimeouts:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        inBannerBilledRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        inBannerBilledAmount:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+
+        averageInBannerRequests:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageInBannerImpressions:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageInBannerTimeouts:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageInBannerBilledRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageInBannerBilledAmount:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]

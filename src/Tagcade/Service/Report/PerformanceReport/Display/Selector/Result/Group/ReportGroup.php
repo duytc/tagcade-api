@@ -93,10 +93,10 @@ class ReportGroup implements ReportDataInterface, ReportResultInterface
         $this->averageEstCpm = round($averageEstCpm, 4);
         $this->averageEstRevenue = round($averageEstRevenue, 4);
         $this->averageFillRate = round($averageFillRate, 4);
-        $this->averageAdOpportunities = round($averageAdOpportunities, 4);
-        $this->averageInBannerTimeouts = round($averageInBannerTimeouts, 4);
-        $this->averageInBannerRequests = round($averageInBannerRequests, 4);
-        $this->averageInBannerImpressions = round($averageInBannerImpressions, 4);
+        $this->averageAdOpportunities = round($averageAdOpportunities);
+        $this->averageInBannerTimeouts = round($averageInBannerTimeouts);
+        $this->averageInBannerRequests = round($averageInBannerRequests);
+        $this->averageInBannerImpressions = round($averageInBannerImpressions);
     }
 
     /**

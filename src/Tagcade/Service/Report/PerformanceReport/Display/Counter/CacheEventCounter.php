@@ -24,6 +24,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     const CACHE_KEY_ACC_SLOT_OPPORTUNITY   = 'slot_opportunities';
     const CACHE_KEY_ACC_OPPORTUNITY        = 'opportunities';
     const CACHE_KEY_SLOT_OPPORTUNITY       = 'opportunities'; // same "opportunities" key, used with different namespace
+    const CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES = 'refreshes'; // same "refreshes" key, used with different namespace
     const CACHE_KEY_OPPORTUNITY            = 'opportunities';
     const CACHE_KEY_FIRST_OPPORTUNITY      = 'first_opportunities';
     const CACHE_KEY_IMPRESSION             = 'impressions';
@@ -133,6 +134,15 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         return $this->fetchFromCache(
             $this->getCacheKey(static::CACHE_KEY_SLOT_OPPORTUNITY, $namespace)
+        );
+    }
+
+    public function getSlotOpportunityRefreshesCount($slotId)
+    {
+        $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+
+        return $this->fetchFromCache(
+            $this->getCacheKey(static::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES, $namespace)
         );
     }
 
@@ -487,6 +497,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slot->getId());
         $cacheKeys = array (
             $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY, $namespace),
+            $this->getCacheKey(self::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES, $namespace),
             $this->getCacheKey(self::CACHE_KEY_HB_BID_REQUEST, $namespace)
         );
 
@@ -509,7 +520,8 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         return array (
             SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY => $results[0],
-            SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => $results[1],
+            SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES => $results[1],
+            SnapshotCreatorInterface::CACHE_KEY_HEADER_BID_REQUEST => $results[2],
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_IMPRESSION => $inBannerResults[$inBannerCacheKeys[0]],
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_REQUEST => $inBannerResults[$inBannerCacheKeys[1]],
             SnapshotCreatorInterface::CACHE_KEY_IN_BANNER_TIMEOUT => $inBannerResults[$inBannerCacheKeys[2]],

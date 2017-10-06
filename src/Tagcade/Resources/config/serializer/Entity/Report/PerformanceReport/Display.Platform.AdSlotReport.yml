@@ -17,6 +17,9 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
         totalOpportunities:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        refreshedSlotOpportunities:
+            expose: true
+            groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
         impressions:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]

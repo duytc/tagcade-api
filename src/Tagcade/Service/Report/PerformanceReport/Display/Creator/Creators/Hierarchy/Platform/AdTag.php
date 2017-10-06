@@ -66,7 +66,12 @@ class AdTag extends CreatorAbstract implements AdTagInterface
                 ->setAdOpportunities($this->calculateAdOpportunities($totalOpportunities, $passbacks))
                 ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $totalOpportunities))
                 ->setRefreshes($this->eventCounter->getRefreshesCount($adTag->getId()));
+        } else {
+            $report
+                ->setPassbacks(0)
+                ->setRefreshes(0);
         }
+
 
         return $report;
     }

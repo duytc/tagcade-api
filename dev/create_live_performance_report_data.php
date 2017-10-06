@@ -153,6 +153,16 @@ foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
         );
     }
 
+    if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY_REFRESHES, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY_REFRESHES]
+        );
+    }
+
     if($adSlot->getSite()->getPublisher()->hasInBannerModule()) {
         if (array_key_exists($testEventCounter::KEY_IN_BANNER_REQUESTS, $slotData)) {
             $cache->hSave(

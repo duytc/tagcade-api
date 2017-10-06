@@ -58,6 +58,9 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
 
         $this->constructReportModel($report, $redisReportData);
 
+        // for ad slot only
+        $report->setRefreshedSlotOpportunities($redisReportData[SnapshotCreatorInterface::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES]);
+
         $slot = $report->getAdSlot();
 
         $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $slot->getSite()->getPublisher(), $report->getSlotOpportunities());
