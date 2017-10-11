@@ -29,6 +29,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         'impressionsCap' => 'impressionsCap',
         'networkOpportunityCap' => 'networkOpportunityCap',
         'adSlot' => 'adSlot',
+        'adNetwork' => 'adNetwork',
         'domain' => 'domain',
         'active' => 'active'
     ];
@@ -312,13 +313,15 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
         $qb = $this->createQueryBuilder('t')
             ->leftJoin('t.adSlot', 'sl')
             ->leftJoin('t.libraryAdTag', 'lat')
+            ->leftJoin('lat.adNetwork', 'nw')
             ->leftJoin('sl.libraryAdSlot', 'lsl')
             ->leftJoin('sl.site', 'st');
 
         if ($user instanceof PublisherInterface) {
             $qb = $this->createQueryBuilderForPublisher($user)
                 ->leftJoin('sl.libraryAdSlot', 'lsl')
-                ->leftJoin('t.libraryAdTag', 'lat');
+                ->leftJoin('t.libraryAdTag', 'lat')
+                ->leftJoin('lat.adNetwork', 'nw');
         }
 
         if (is_string($param->getSearchKey())) {
@@ -350,19 +353,25 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
                     $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['rotation']:
-                    $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['frequencyCap']:
-                    $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['impressionsCap']:
-                    $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['networkOpportunityCap']:
-                    $qb->addOrderBy('lsl.' . $param->getSortField(), $param->getSortDirection());
+                    $qb->addOrderBy('t.' . $param->getSortField(), $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['domain']:
                     $qb->addOrderBy('st.' . 'name', $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['adSlot']:
+                    $qb->addOrderBy('lat.name', $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['adNetwork']:
+                    $qb->addOrderBy('nw.name', $param->getSortDirection());
                     break;
                 default:
                     break;
@@ -378,6 +387,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->leftJoin('t.adSlot', 'sl')
             ->leftJoin('sl.libraryAdSlot', 'lsl')
             ->leftJoin('t.libraryAdTag', 'tLib')
+            ->leftJoin('tLib.adNetwork', 'nw')
             ->where('sl.site = :site_id')
             ->setParameter('site_id', $site->getId(), Type::INTEGER);
 
@@ -412,6 +422,9 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
                     break;
                 case $this->SORT_FIELDS['adSlot']:
                     $qb->addOrderBy('lsl.name', $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['adNetwork']:
+                    $qb->addOrderBy('nw.name', $param->getSortDirection());
                     break;
                 default:
                     break;
