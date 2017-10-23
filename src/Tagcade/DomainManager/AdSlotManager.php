@@ -163,7 +163,7 @@ class AdSlotManager implements AdSlotManagerInterface
     {
         $adSlots = [];
         foreach($publishers as $publisher) {
-            if (!$publishers instanceof PublisherInterface) {
+            if (!$publisher instanceof PublisherInterface) {
                 continue;
             }
 
@@ -172,7 +172,6 @@ class AdSlotManager implements AdSlotManagerInterface
 
         return $adSlots;
     }
-
 
     public function getReportableAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
     {
@@ -183,7 +182,6 @@ class AdSlotManager implements AdSlotManagerInterface
     {
         return $this->adSlotRepository->getReportableAdSlotIdsForPublisher($publisher, $limit, $offset);
     }
-
 
     /**
      * @param BaseAdSlotInterface|BaseLibraryAdSlotInterface $adSlot
@@ -295,5 +293,4 @@ class AdSlotManager implements AdSlotManagerInterface
     {
         return $this->adSlotRepository->getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
     }
-
 }

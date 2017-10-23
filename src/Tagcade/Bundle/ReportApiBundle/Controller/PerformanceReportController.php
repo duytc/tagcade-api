@@ -811,7 +811,7 @@ class PerformanceReportController extends FOSRestController
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
      *
      * @Rest\View(
-     *      serializerGroups={"billed_report_group.summary", "report_type.summary", "displayadslot.summary", "nativeadslot.summary", "site.primary"}
+     *      serializerGroups={"billed_report_group.summary", "report_type.summary", "displayadslot.summary", "nativeadslot.summary", "site.primary", "ad_slot_report_group.summary"}
      * )
      *
      *
