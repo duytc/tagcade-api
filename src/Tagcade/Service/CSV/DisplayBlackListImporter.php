@@ -37,7 +37,7 @@ class DisplayBlackListImporter extends DisplayListImporterAbstract implements Bl
         $displayBlackListDomains = [];
         $count = 0;
         while (($data = fgetcsv($handle, null, $csvSeparator)) !== FALSE) {
-            $DisplayBlackListDomain = $this->extractDomain($this->adjustDomainPart($data[self::DOMAIN]), false);
+            $DisplayBlackListDomain = $this->extractDomainAllowWildcard($this->adjustDomainPart($data[self::DOMAIN]), false);
 
             if ($DisplayBlackListDomain === false) {
                 $this->logger->info(sprintf('"%s" is not a valid domain', $data[0]));

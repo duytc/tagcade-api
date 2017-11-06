@@ -45,6 +45,35 @@ trait StringUtilTrait
     }
 
     /**
+     * Check if the given string is a valid domain but allow wildcard
+     *
+     * @param $domain
+     * @param int $maxSubDomains
+     * @return bool
+     */
+    protected function validateDomainAllowWildcard($domain, $maxSubDomains = 6)
+    {
+        // sure domain is string
+        if (!is_string($domain)) {
+            return false;
+        }
+
+        // validate domain length
+        if (strlen($domain) < self::$DOMAIN_MIN_LENGTH || strlen($domain) > self::$DOMAIN_MAX_LENGTH) {
+            return false;
+        }
+
+        // validate domain labels number
+        $labels = explode('.', $domain);
+        if (count($labels) < 1 || count($labels) > $maxSubDomains) {
+            return false;
+        }
+
+        // also validate to allow wildcard domain
+        return preg_match('/^(?:[\*]?\.)?(?:[-A-Za-z0-9]{1,63}+\.)+[A-Za-z]{2,62}$/', $domain) > 0;
+    }
+
+    /**
      * @param $domain
      * @param $throwException
      * @return mixed|string
@@ -75,6 +104,42 @@ trait StringUtilTrait
         }
 
         
+        $domain = strtolower($domain);
+
+        return $domain;
+    }
+
+    /**
+     * @param $domain
+     * @param $throwException
+     * @return mixed|string
+     */
+    protected function extractDomainAllowWildcard($domain, $throwException = true)
+    {
+        if (false !== stripos($domain, 'http')) {
+            $domain = parse_url($domain, PHP_URL_HOST); // remove http part, get only domain
+        }
+
+        // remove the 'www' prefix
+        if (0 === stripos($domain, 'www.')) {
+            $domain = substr($domain, 4);
+        }
+
+        $slashPos = strpos($domain, '/');
+        if (false !== $slashPos) {
+            $domain = substr($domain, 0, $slashPos);
+        }
+
+        if (!empty($domain)) {
+            if (!$this->validateDomainAllowWildcard($domain)) {
+                if ($throwException === true) {
+                    throw new InvalidArgumentException(sprintf('The value "%s" is not a valid domain.', $domain));
+                } else {
+                    $domain = false;
+                }
+            }
+        }
+
         $domain = strtolower($domain);
 
         return $domain;

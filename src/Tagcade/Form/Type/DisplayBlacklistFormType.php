@@ -67,7 +67,7 @@ class DisplayBlacklistFormType extends AbstractRoleSpecificFormType
 
                 $filterDomains = [];
                 foreach ($domains as $domain) {
-                    $filterDomains[] = $this->extractDomain($domain);
+                    $filterDomains[] = $this->extractDomainAllowWildcard($domain);
                 }
 
                 $filterDomains = array_map(function($domain) {
