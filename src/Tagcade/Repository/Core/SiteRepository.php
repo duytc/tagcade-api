@@ -379,7 +379,11 @@ class SiteRepository extends EntityRepository implements SiteRepositoryInterface
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->orX($qb->expr()->like('st.name', ':searchKey'), $qb->expr()->like('st.domain', ':searchKey')))
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('st.name', ':searchKey'),
+                $qb->expr()->like('st.domain', ':searchKey'),
+                $qb->expr()->like('st.id', ':searchKey')
+            ))
                 ->setParameter('searchKey', $searchLike);
         }
 
