@@ -133,6 +133,7 @@ parameters:
         html: 2
         position: 3
         rotation: 4
+        adTagName: 5
 
     tc.video.blacklist.prefix: 'video:domain_blacklist'
     tc.video.whitelist.prefix: 'video:domain_whitelist'

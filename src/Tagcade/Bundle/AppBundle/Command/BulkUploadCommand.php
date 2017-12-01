@@ -25,6 +25,7 @@ class BulkUploadCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $container = $this->getContainer();
         $logger = $this->getContainer()->get('logger');
         $logger->info('Start running upload data!');
 
@@ -33,7 +34,7 @@ class BulkUploadCommand extends ContainerAwareCommand
 
         $logger->debug(sprintf('File to get data %s', $file));
 
-        $dir = $this->getContainer()->getParameter('kernel.root_dir');
+        $dir = $container->getParameter('kernel.root_dir');
         $rootDir = rtrim($dir, '/app');
         if (strpos($file, '/') != 0) { // relative path
             $file = ltrim($file, './');
@@ -44,8 +45,6 @@ class BulkUploadCommand extends ContainerAwareCommand
             throw new \Exception(sprintf('The specified file in not found or not accessible %s', $file));
         }
         $logger->debug(sprintf('Full path to data file %s', $file));
-
-        $container = $this->getContainer();
 
         $publisherManager = $container->get('tagcade_user.domain_manager.publisher');
         $excelFileProcessingService = $container->get('tagcade_app.service.core.excel_file_processing');

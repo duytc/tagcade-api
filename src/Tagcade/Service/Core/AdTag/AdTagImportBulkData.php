@@ -49,6 +49,7 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     const PARTNER_TAG_ID_DEFAULT_VALUE_OF_AD_TAG = null;
 
     const AD_SLOT_NAME_KEY = 'adSlotName';
+    const AD_TAG_NAME_KEY = 'adTagName';
 
     const POSITION_DEFAULT_VALUE = 1;
     const ACTIVE_DEFAULT_VALUE = 1;
@@ -198,6 +199,8 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $frequencyCapValue = $this->getFrequencyCapValue($excelRow);
         $impressionCapValue = $this->getImpressionCapValue($excelRow);
         $networkOpportunityCapValue = $this->getNetworkOpportunityCapValue($excelRow);
+        // here get adtag name
+        $adTagNameValue = $this->getAdTagNameValue($excelRow);
 
         $libraryAdTagData = $this->createLibraryAdTagDataFromExcelRow($excelRow, $publisher);
 
@@ -235,8 +238,9 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
             }
         }
 
-        $adNetWorkName = $libraryAdTagObject->getAdNetwork()->getName();
-        $libraryAdTagObject->setName($adNetWorkName);
+        //$adNetWorkName = $libraryAdTagObject->getAdNetwork()->getName();
+        // Before we use $adNewWorkName to set libraryAdTagName, Now no need to use it, we can use AdTagName
+        $libraryAdTagObject->setName($adTagNameValue);
 
         $adTag[self::POSITION_KEY_OF_AD_TAG] = $positionValue;
         $adTag[self::ACTIVE_KEY_OF_AD_TAG] = $activeValue;
@@ -275,14 +279,12 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
         $htmlValue = $this->getHtmlValue($excelRow);
         $visibleValue = $this->getVisibleValueForAdTagLibrary($excelRow);
         $adTypeValue = $this->getAdTypeValueForAdTagLibrary($excelRow);
-        $partnerTagIdValue = $this->getPartnerTagIdForAdTagLibrary($excelRow);
 
         $libraryAdTag[self::NAME_KEY_OF_LIB_AD_TAG] = $adTagNameValue;
         $libraryAdTag[self::AD_NETWORK_KEY_OF_LIB_AD_TAG] = $adNetworkValue;
         $libraryAdTag[self::HTML_KEY_OF_LIB_AD_TAG] = $htmlValue;
         $libraryAdTag[self::VISIBLE_KEY_OF_LIB_AD_TAG] = $visibleValue;
         $libraryAdTag[self::AD_TYPE_KEY_OF_LIB_AD_TAG] = $adTypeValue;
-        $libraryAdTag[self::PARTNER_TAG_ID_KEY_OF_AD_TAG] = $partnerTagIdValue;
 
         return $libraryAdTag;
     }
@@ -496,6 +498,29 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     }
 
     /**
+     * @param $rawAdTag
+     * @return null
+     * @throws \Exception
+     */
+    protected function getAdTagNameValue($rawAdTag)
+    {
+        return $rawAdTag[$this->getAdTagNameIndex()];
+    }
+
+    /**
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getAdTagNameIndex()
+    {
+        if (!array_key_exists(self::AD_TAG_NAME_KEY, $this->adTagConfigs)) {
+            throw new \Exception ('There is not ad Tag Name in config file');
+        }
+
+        return $this->adTagConfigs[self::AD_TAG_NAME_KEY];
+    }
+
+    /**
      * @return mixed
      * @throws \Exception
      */
@@ -503,16 +528,6 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
     {
         if (!array_key_exists(self::AD_SLOT_NAME_KEY, $this->adTagConfigs)) {
             throw new \Exception ('There is not ad slot in config file');
-        }
-
-        return $this->adTagConfigs[self::AD_SLOT_NAME_KEY];
-    }
-
-
-    public function getAdTagNameIndex()
-    {
-        if (!array_key_exists(self::NAME_KEY_OF_LIB_AD_TAG, $this->adTagConfigs)) {
-            throw new \Exception ('There is not ad tag name in config file');
         }
 
         return $this->adTagConfigs[self::AD_SLOT_NAME_KEY];

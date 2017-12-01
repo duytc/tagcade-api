@@ -162,7 +162,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
         $siteNameIndexInDisplayAdSlotSheet = $this->displayAdSlotBulkUpload->getSiteNameIndex();
         $adSlotNameIndex = $this->displayAdSlotBulkUpload->getAdSlotNameIndex();
         foreach ($displayAdSlots as $displayAdSlot) {
-            if (0 == strcmp($siteName, $displayAdSlot[$siteNameIndexInDisplayAdSlotSheet])) {
+            if (0 == strcmp($siteName, strtolower($displayAdSlot[$siteNameIndexInDisplayAdSlotSheet]))) {
                 $displayAdSlotName = $displayAdSlot[$adSlotNameIndex];
                 $expectAdSlots[$displayAdSlotName] = $displayAdSlot;
             }
@@ -382,7 +382,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getNameSiteValue($oneSite)
     {
-        return $oneSite[$this->getNameIndex()];
+        return strtolower($oneSite[$this->getNameIndex()]);
     }
 
     /**
@@ -392,7 +392,7 @@ class SiteImportBulkData implements SiteImportBulkDataInterface
      */
     protected function getDomainValue($oneSite)
     {
-        return $oneSite[$this->getDomainIndex()];
+        return strtolower($oneSite[$this->getDomainIndex()]);
     }
 
     /**
