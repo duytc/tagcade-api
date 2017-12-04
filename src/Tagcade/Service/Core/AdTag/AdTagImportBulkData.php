@@ -12,6 +12,7 @@ use Tagcade\Entity\Core\AdTag;
 use Tagcade\Entity\Core\DisplayAdSlot;
 use Tagcade\Entity\Core\LibraryAdTag;
 use Tagcade\Entity\Core\LibrarySlotTag;
+use Tagcade\Entity\Core\AdNetwork;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -302,15 +303,24 @@ class AdTagImportBulkData implements AdTagImportBulkDataInterface
          */
         $adNetworks = $this->adNetworkManager->getAdNetworksForPublisher($publisher);
 
-        if (null == $adNetworks) {
-            throw new \Exception('Not found demand partner in system!');
-        }
-
         foreach ($adNetworks as $adNetwork) {
             if (0 == strcmp($demandPartName, $adNetwork->getName())) {
                 return $adNetwork;
             }
         }
+
+        //* adNetwork does not exist -> create a new adNetwork /
+        $this->logger->warning(sprintf('Not found demand partner (%s) in system! Create a new demand partner.', $demandPartName));
+        $newAdNetwork = new AdNetwork();
+        $newAdNetwork->setName($demandPartName);
+        $newAdNetwork->setPublisher($publisher);
+        try {
+            $this->adNetworkManager->save($newAdNetwork);
+            return $newAdNetwork;
+        } catch (\Exception $e) {
+            return null;
+        }
+
     }
 
     /**
