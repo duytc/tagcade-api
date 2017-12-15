@@ -93,4 +93,38 @@ class VideoPublisherRepository extends EntityRepository implements VideoPublishe
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @param $name
+     * @param $publisherId
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByNameAndPublisherId($name, $publisherId, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('vp');
+
+        if (!empty($name)) {
+            $qb
+                ->andWhere('vp.name = :name')
+                ->setParameter('name', $name, Type::STRING);
+        }
+
+        if (!empty($publisherId)) {
+            $qb
+                ->andWhere('vp.publisher = :publisher_id')
+                ->setParameter('publisher_id', $publisherId, Type::INTEGER);
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

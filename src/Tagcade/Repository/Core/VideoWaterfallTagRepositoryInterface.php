@@ -80,4 +80,13 @@ interface VideoWaterfallTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getWaterfallTagHaveBuyPriceLowerThanAndBelongsToListPublishers(PublisherInterface $publisher, array $videoPublisher, $price);
+
+    /**
+     * @param $name
+     * @param VideoPublisherInterface $videoPublisher
+     * @param $limit
+     * @param $offset
+     * @return mixed
+     */
+    public function findByNameAndVideoPublisher($name, VideoPublisherInterface $videoPublisher, $limit, $offset);
 }

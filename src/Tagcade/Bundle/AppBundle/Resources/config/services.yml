@@ -323,3 +323,31 @@ services:
         class: Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagService
         arguments:
             - @tagcade.repository.video_waterfall_tag
+
+    tagcade_app.service.importer.video_publisher_importer:
+        class: Tagcade\Service\Importer\VideoPublisherImporter
+        arguments:
+            - @tagcade.domain_manager.video_publisher
+            - @tagcade_user.domain_manager.publisher
+
+    tagcade_app.service.importer.video_demand_partner_importer:
+        class: Tagcade\Service\Importer\VideoDemandPartnerImporter
+        arguments:
+            - @tagcade.domain_manager.video_demand_partner
+            - @tagcade_user.domain_manager.publisher
+
+    tagcade_app.service.importer.video_demand_ad_tag_importer:
+        class: Tagcade\Service\Importer\VideoDemandAdTagImporter
+        arguments:
+            - @tagcade.domain_manager.library_video_demand_ad_tag
+            - @tagcade.domain_manager.video_demand_partner
+            - @tagcade.domain_manager.video_waterfall_tag
+            - @tagcade.domain_manager.video_waterfall_tag_item
+            - @tagcade.domain_manager.video_demand_ad_tag
+            - @tagcade.repository.video_waterfall_tag_item
+
+    tagcade_app.service.importer.video_waterfall_tag_importer:
+        class: Tagcade\Service\Importer\VideoWaterfallTagImporter
+        arguments:
+            - @tagcade.domain_manager.video_waterfall_tag
+            - @tagcade.domain_manager.video_publisher

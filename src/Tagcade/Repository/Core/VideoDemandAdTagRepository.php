@@ -309,4 +309,30 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
             ->getResult()
             ;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByDemandPartnerWaterfallAndTagName($demandPartner, $waterfall, $tagName)
+    {
+        $qb = $this->createQueryBuilder('videoDemandAdTag')
+            ->leftJoin('videoDemandAdTag.videoWaterfallTagItem', 'videoWaterfallTagItem')
+            ->leftJoin('videoWaterfallTagItem.videoWaterfallTag', 'videoWaterfallTag')
+            ->leftJoin('videoDemandAdTag.libraryVideoDemandAdTag', 'libraryVideoDemandAdTag')
+            ->leftJoin('libraryVideoDemandAdTag.videoDemandPartner', 'videoDemandPartner');
+
+        $qb
+            ->andWhere('videoDemandPartner.name = :demandPartner')
+            ->setParameter('demandPartner', $demandPartner, Type::STRING);
+
+        $qb
+            ->andWhere('videoWaterfallTag.name = :waterfall')
+            ->setParameter('waterfall', $waterfall, Type::STRING);
+
+        $qb
+            ->andWhere('libraryVideoDemandAdTag.name = :tagName')
+            ->setParameter('tagName', $tagName, Type::STRING);
+
+        return $qb->getQuery()->getResult();
+    }
 }

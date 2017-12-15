@@ -36,4 +36,13 @@ interface VideoPublisherRepositoryInterface extends ObjectRepository
      */
     public function getVideoPublishersByFilterParams(FilterParameterInterface $filterParameter);
 
+    /**
+     * @param $name
+     * @param $publisherId
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByNameAndPublisherId($name, $publisherId, $limit = null, $offset = null);
+
 }

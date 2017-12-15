@@ -127,4 +127,12 @@ class VideoWaterfallTagManager implements VideoWaterfallTagManagerInterface
     {
         $this->om->flush();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndVideoPublisher($name, VideoPublisherInterface $videoPublisher, $limit = null, $offset = null)
+    {
+        return $this->repository->findByNameAndVideoPublisher($name, $videoPublisher, $limit, $offset);
+    }
 }

@@ -102,4 +102,12 @@ class VideoPublisherManager implements VideoPublisherManagerInterface
     {
         $this->om->flush();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndPublisherId($name, $publisherId, $limit = null, $offset = null)
+    {
+        return $this->repository->findByNameAndPublisherId($name, $publisherId, $limit, $offset);
+    }
 }

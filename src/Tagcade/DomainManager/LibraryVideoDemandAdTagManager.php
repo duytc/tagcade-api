@@ -183,4 +183,12 @@ class LibraryVideoDemandAdTagManager implements LibraryVideoDemandAdTagManagerIn
     {
         $this->deployLibraryVideoDemandAdTagService->deployLibraryVideoDemandAdTagToWaterfalls($libraryVideoDemandAdTag, $videoWaterfallTags);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndVideoDemandPartner($name, VideoDemandPartnerInterface $videoDemandPartner, $limit = null, $offset = null)
+    {
+        return $this->repository->findByNameAndVideoDemandPartner($name, $videoDemandPartner, $limit, $offset);
+    }
 }

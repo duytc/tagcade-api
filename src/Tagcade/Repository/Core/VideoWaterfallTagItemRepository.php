@@ -40,7 +40,9 @@ class VideoWaterfallTagItemRepository extends EntityRepository implements VideoW
     public function getVideoWaterfallTagItemsForAdTag(VideoWaterfallTagInterface $videoWaterfallTag, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('vti')
+            ->leftJoin('vti.videoDemandAdTags', 'vt')
             ->where('vti.videoWaterfallTag = :video_waterfall_tag_id')
+            ->andWhere('vt.videoWaterfallTagItem = vti.id')
             ->setParameter('video_waterfall_tag_id', $videoWaterfallTag->getId(), Type::INTEGER);
 
         if (is_int($limit)) {
@@ -70,7 +72,6 @@ class VideoWaterfallTagItemRepository extends EntityRepository implements VideoW
             ->andWhere('r.position = :position')
             ->setParameter('position', $position, Type::INTEGER)
             ->setParameter('waterfall', $videoWaterfallTag)
-            ->getQuery()->getOneOrNullResult()
-        ;
+            ->getQuery()->getOneOrNullResult();
     }
 }

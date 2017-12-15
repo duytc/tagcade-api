@@ -16,4 +16,13 @@ interface VideoPublisherManagerInterface extends ManagerInterface
      * @return array|VideoPublisherInterface[]
      */
     public function getVideoPublishersForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
+
+    /**
+     * @param $name
+     * @param $publisherId
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByNameAndPublisherId($name, $publisherId, $limit = null, $offset = null);
 }

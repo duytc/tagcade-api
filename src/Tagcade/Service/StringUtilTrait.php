@@ -75,6 +75,21 @@ trait StringUtilTrait
 
     /**
      * @param $domain
+     * @return bool
+     */
+    protected function validateDomainWithHTTP($domain) {
+        $domain = strtolower($domain);
+        $domain = str_replace(" ", "", $domain);
+
+        if ((strpos($domain, "http://") !== false) || (strpos($domain, "https://") !== false)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $domain
      * @param $throwException
      * @return mixed|string
      */

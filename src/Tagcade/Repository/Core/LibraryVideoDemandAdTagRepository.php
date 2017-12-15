@@ -4,8 +4,8 @@
 namespace Tagcade\Repository\Core;
 
 
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -129,5 +129,27 @@ class LibraryVideoDemandAdTagRepository extends EntityRepository implements Libr
         }
 
         return $qb;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndVideoDemandPartner($name, VideoDemandPartnerInterface $videoDemandPartner, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('lvdt')
+            ->where('lvdt.videoDemandPartner = :videoDemandPartner')
+            ->andWhere('lvdt.name = :name')
+            ->setParameter('videoDemandPartner', $videoDemandPartner)
+            ->setParameter('name', $name, Type::STRING);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

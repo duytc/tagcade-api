@@ -72,4 +72,20 @@ interface VideoDemandAdTagManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getVideoDemandAdTagsByStatus($status);
+
+    /**
+     * @param $name
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByName($name, $limit = null, $offset = null);
+
+    /**
+     * @param $demandPartner
+     * @param $waterfall
+     * @param $tagName
+     * @return mixed
+     */
+    public function findByDemandPartnerWaterfallAndTagName($demandPartner, $waterfall, $tagName);
 }

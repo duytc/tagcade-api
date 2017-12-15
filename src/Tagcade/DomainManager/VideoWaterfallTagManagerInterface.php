@@ -45,4 +45,13 @@ interface VideoWaterfallTagManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getWaterfallTagsForVideoDemandPartner(VideoDemandPartnerInterface $demandPartner, $limit = null, $offset = null);
+
+    /**
+     * @param $name
+     * @param VideoPublisherInterface $videoPublisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByNameAndVideoPublisher($name, VideoPublisherInterface $videoPublisher, $limit = null, $offset = null);
 }

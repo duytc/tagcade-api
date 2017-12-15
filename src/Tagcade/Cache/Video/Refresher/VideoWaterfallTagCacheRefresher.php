@@ -12,6 +12,7 @@ use Tagcade\Model\Core\IvtPixelInterface;
 use Tagcade\Model\Core\IvtPixelWaterfallTagInterface;
 use Tagcade\Model\Core\VideoDemandAdTag;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
+use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\Core\VideoTargetingInterface;
 use Tagcade\Model\Core\VideoWaterfallTag;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
@@ -174,6 +175,12 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
             $dataItem['demandTags'] = [];
 
             $videoDemandAdTags = $videoWaterfallTagItem->getVideoDemandAdTags();
+
+            $videoDemandAdTags = is_null($videoDemandAdTags) ? [] : $videoDemandAdTags;
+            if ($videoDemandAdTags instanceof Collection) {
+                $videoDemandAdTags = $videoDemandAdTags->toArray();
+            }
+
             /** @var VideoDemandAdTagInterface $videoDemandAdTag */
             foreach ($videoDemandAdTags as $videoDemandAdTag) {
                 if ($videoDemandAdTag->getActive() !== VideoDemandAdTag::ACTIVE || $videoDemandAdTag->getDeletedAt() !== null) {
@@ -200,7 +207,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 /** @var VideoDemandAdTagInterface $videoDemandAdTag */
                 // required fields
                 $demandAdTagItem['id'] = $videoDemandAdTag->getId();
-                $demandAdTagItem['demandPartner'] = $videoDemandAdTag->getVideoDemandPartner()->getNameCanonical();
+                $demandAdTagItem['demandPartner'] = $videoDemandAdTag->getVideoDemandPartner() instanceof VideoDemandPartnerInterface ? $videoDemandAdTag->getVideoDemandPartner()->getNameCanonical() : "";
                 $demandAdTagItem['tagUrl'] = $videoDemandAdTag->getTagURL();
 
                 // optional fields
@@ -220,6 +227,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
 
                 // build targeting
                 $targeting = $videoDemandAdTag->getTargeting();
+                $targeting = is_null($targeting) ? [] : $targeting;
 
                 foreach (VideoDemandAdTag::getSupportedTargetingKeys() as $vdtValue) {
                     if (!array_key_exists($vdtValue, $targeting)

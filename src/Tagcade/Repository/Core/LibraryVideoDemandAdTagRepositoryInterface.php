@@ -5,7 +5,6 @@ namespace Tagcade\Repository\Core;
 
 
 use Doctrine\Common\Persistence\ObjectRepository;
-use Symfony\Component\HttpFoundation\Request;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
 use Tagcade\Model\PagerParam;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -42,4 +41,13 @@ interface LibraryVideoDemandAdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function getLibraryVideoDemandAdTagsForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
+
+    /**
+     * @param $name
+     * @param VideoDemandPartnerInterface $videoDemandPartner
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByNameAndVideoDemandPartner($name, VideoDemandPartnerInterface $videoDemandPartner, $limit = null, $offset = null);
 }

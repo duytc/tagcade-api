@@ -276,4 +276,29 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
 
         return $waterfallTags;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndVideoPublisher($name, VideoPublisherInterface $videoPublisher, $limit, $offset)
+    {
+        $qb = $this->createQueryBuilder('wft')
+            ->where('wft.videoPublisher = :videoPublisher')
+            ->setParameter('videoPublisher', $videoPublisher->getId(), Type::INTEGER);
+
+        $qb
+            ->andWhere('wft.name = :name')
+            ->setParameter('name', $name, Type::STRING);
+
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

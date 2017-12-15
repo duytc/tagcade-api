@@ -138,4 +138,26 @@ class VideoDemandPartnerRepository extends EntityRepository implements VideoDema
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndPublisher($name, PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('vdm')
+            ->where('vdm.publisher = :publisher_id')
+            ->andWhere('vdm.name = :name')
+            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+            ->setParameter('name', $name, Type::STRING);
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -50,4 +50,13 @@ interface VideoDemandPartnerRepositoryInterface extends ObjectRepository
      * @return array|VideoDemandPartnerInterface[]
      */
     public function allHasCap($limit = null, $offset = null);
+
+    /**
+     * @param $name
+     * @param PublisherInterface $publisher
+     * @param $limit
+     * @param $offset
+     * @return mixed
+     */
+    public function findByNameAndPublisher($name, PublisherInterface $publisher, $limit = null, $offset = null);
 }

@@ -153,4 +153,30 @@ trait ParserUtilTrait
         return ['id'=>(int)$match[1], 'name'=>preg_replace($pattern, '', $name)];
     }
 
+    /**
+     * @param array $columns
+     * @return array
+     */
+    protected function normalizeColumns(array $columns)
+    {
+        foreach ($columns as &$column) {
+            $column = $this->normalizeColumn($column);
+        }
+
+        return $columns;
+    }
+
+    /**
+     * @param $column
+     * @return mixed|string
+     */
+    protected function normalizeColumn($column)
+    {
+        $column = strtolower($column);
+        $column = str_replace(" ", "", $column);
+        $column = $this->removeDollarSign($column);
+        $column = $this->removeComma($column);
+
+        return $column;
+    }
 }

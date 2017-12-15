@@ -39,4 +39,13 @@ interface VideoDemandPartnerManagerInterface extends ManagerInterface
      * @return array|VideoDemandAdTagInterface[]
      */
     public function allHasCap($limit = null, $offset = null);
+
+    /**
+     * @param $name
+     * @param PublisherInterface $publisher
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function findByNameAndPublisher($name, PublisherInterface $publisher, $limit = null, $offset = null);
 }

@@ -123,4 +123,12 @@ class VideoDemandPartnerManager implements VideoDemandPartnerManagerInterface
     {
         $this->om->flush();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByNameAndPublisher($name, PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        return $this->repository->findByNameAndPublisher($name, $publisher, $limit, $offset);
+    }
 }

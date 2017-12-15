@@ -267,4 +267,19 @@ class VideoDemandAdTagManager implements VideoDemandAdTagManagerInterface
     {
         return $this->repository->getVideoDemandAdTagsByStatus($status);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByName($name, $limit = null, $offset = null) {
+        return $this->repository->findByName($name, $limit, $offset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function findByDemandPartnerWaterfallAndTagName($demandPartner, $waterfall, $tagName)
+    {
+        return $this->repository->findByDemandPartnerWaterfallAndTagName($demandPartner, $waterfall, $tagName);
+    }
 }
