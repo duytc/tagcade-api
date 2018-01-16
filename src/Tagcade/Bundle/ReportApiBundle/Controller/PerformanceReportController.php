@@ -6,6 +6,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use InvalidArgumentException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Tagcade\Exception\LogicException;
@@ -806,6 +807,8 @@ class PerformanceReportController extends FOSRestController
      *
      * @Rest\Get("/adslots")
      *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
      * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
@@ -824,23 +827,47 @@ class PerformanceReportController extends FOSRestController
      * )
      *
      */
-    public function getAllAdSlotsAction()
+    public function getAllAdSlotsAction(Request $request)
     {
         $user = $this->getUser();
+        $page = $request->query->get('page');
+        $limit = (int) $request->query->get('limit', 10);
+        $offset = ($page - 1) * $limit;
 
         if ($user instanceof PublisherInterface) {
             if (!$user->hasDisplayModule()) {
                 throw new NotFoundHttpException();
             }
 
-            return $this->getResult(
+            $result = $this->getResult(
                 $this->getReportBuilder()->getPublisherAdSlotsReport($user, $this->getParams())
+            );
+        } else {
+            $result = $this->getResult(
+                $this->getReportBuilder()->getAllAdSlotsReport($this->getParams())
             );
         }
 
-        return $this->getResult(
-            $this->getReportBuilder()->getAllAdSlotsReport($this->getParams())
-        );
+        if ($page) {
+            $resultPagination = [];
+            $reportType = array_slice($result->reportType, $offset, $limit);
+            $reports = array_slice($result->reports, $offset, $limit);
+
+            $totalRecord = count($result->reportType);
+            $result->reports = $reports;
+            $result->reportType = $reportType;
+            $itemPerPage = $limit;
+            $currentPage = $page;
+
+            $resultPagination ['totalRecord'] = $totalRecord;
+            $resultPagination ['records'] = $result;
+            $resultPagination ['itemPerPage'] = $itemPerPage;
+            $resultPagination ['currentPage'] = $currentPage;
+
+            return $resultPagination;
+        }
+
+        return $this->getResult($result);
     }
 
     /**

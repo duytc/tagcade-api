@@ -9,8 +9,8 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 class AdSlotReportGroup extends BilledReportGroup implements AdSlotReportDataInterface
 {
     // inherited properties
-    protected $reportType;
-    protected $reports;
+    public $reportType;
+    public $reports;
     protected $name;
     protected $startDate;
     protected $endDate;
