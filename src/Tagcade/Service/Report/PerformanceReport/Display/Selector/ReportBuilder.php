@@ -371,9 +371,9 @@ class ReportBuilder implements ReportBuilderInterface
         return new ExpandedReportCollection($adTagReports, $siteReport);
     }
 
-    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params)
+    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params, $limit = null, $offset = null)
     {
-        $adSlots = $this->adSlotManager->getReportableAdSlotsForPublisher($publisher);
+        $adSlots = $this->adSlotManager->getReportableAdSlotsForPublisher($publisher, $limit, $offset);
 
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
@@ -387,10 +387,10 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new PlatformReportTypes\AdSlot($adSlot), $params);
     }
 
-    public function getAllAdSlotsReport(Params $params)
+    public function getAllAdSlotsReport(Params $params, $limit = null, $offset = null)
     {
         $publishers = $this->userManager->allPublisherWithDisplayModule();
-        $adSlots = $this->adSlotManager->getReportableAdSlotIdsForPublishers($publishers);
+        $adSlots = $this->adSlotManager->getReportableAdSlotIdsForPublishers($publishers, $limit, $offset);
         $reportTypes = array_map(function($adSlot) {
             return new PlatformReportTypes\AdSlot($adSlot);
         }, $adSlots);

@@ -37,6 +37,8 @@ interface AdSlotManagerInterface extends ManagerInterface
 
     public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
+    public function getReportableAdSlotsForPublishers($publishers, $limit = null, $offset = null);
+
     public function persistAndFlush(BaseAdSlotInterface $adSlot);
 
     /**

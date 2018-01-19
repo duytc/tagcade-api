@@ -832,7 +832,12 @@ class PerformanceReportController extends FOSRestController
         $user = $this->getUser();
         $page = $request->query->get('page');
         $limit = (int) $request->query->get('limit', 10);
-        $offset = ($page - 1) * $limit;
+        if($page) {
+            $offset = ($page - 1) * $limit;
+        } else {
+            $limit = null;
+            $offset = null;
+        }
 
         if ($user instanceof PublisherInterface) {
             if (!$user->hasDisplayModule()) {
@@ -840,33 +845,13 @@ class PerformanceReportController extends FOSRestController
             }
 
             $result = $this->getResult(
-                $this->getReportBuilder()->getPublisherAdSlotsReport($user, $this->getParams())
+                $this->getReportBuilder()->getPublisherAdSlotsReport($user, $this->getParams(), $limit, $offset)
             );
         } else {
             $result = $this->getResult(
-                $this->getReportBuilder()->getAllAdSlotsReport($this->getParams())
+                $this->getReportBuilder()->getAllAdSlotsReport($this->getParams(), $limit, $offset)
             );
         }
-
-        if ($page) {
-            $resultPagination = [];
-            $reportType = array_slice($result->reportType, $offset, $limit);
-            $reports = array_slice($result->reports, $offset, $limit);
-
-            $totalRecord = count($result->reportType);
-            $result->reports = $reports;
-            $result->reportType = $reportType;
-            $itemPerPage = $limit;
-            $currentPage = $page;
-
-            $resultPagination ['totalRecord'] = $totalRecord;
-            $resultPagination ['records'] = $result;
-            $resultPagination ['itemPerPage'] = $itemPerPage;
-            $resultPagination ['currentPage'] = $currentPage;
-
-            return $resultPagination;
-        }
-
         return $this->getResult($result);
     }
 

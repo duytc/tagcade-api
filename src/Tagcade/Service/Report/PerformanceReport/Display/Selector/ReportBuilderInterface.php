@@ -184,9 +184,11 @@ interface ReportBuilderInterface
     /**
      * @param PublisherInterface $publisher
      * @param Params $params
-     * @return ReportResultInterface|false
+     * @param null $limit
+     * @param null $offset
+     * @return false|ReportResultInterface
      */
-    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params);
+    public function getPublisherAdSlotsReport(PublisherInterface $publisher, Params $params, $limit = null, $offset = null);
 
     /**
      * @param ReportableAdSlotInterface $adSlot
@@ -253,9 +255,11 @@ interface ReportBuilderInterface
 
     /**
      * @param Params $params
+     * @param null $limit
+     * @param null $offset
      * @return mixed
      */
-    public function getAllAdSlotsReport(Params $params);
+    public function getAllAdSlotsReport(Params $params, $limit = null, $offset = null);
 
     /**
      * get report of all sites breakdown by day For a Partner

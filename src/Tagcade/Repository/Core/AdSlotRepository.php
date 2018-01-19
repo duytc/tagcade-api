@@ -127,6 +127,38 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getReportableAdSlotsForPublishers($publishers, $limit = null, $offset = null)
+    {
+        foreach ($publishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                continue;
+            }
+            $publisherIds [] = $publisher->getId();
+        }
+
+        $qb = $this->createQueryBuilder('sl')
+                ->leftJoin('sl.site', 'st')
+                ->leftJoin('st.publisher', 'p');
+        if (isset($publisherIds)) {
+            $qb->where(
+                $qb->expr()->in('p.id', array_values($publisherIds)));
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        $qb->andWhere(sprintf('sl INSTANCE OF %s OR sl INSTANCE OF %s', DisplayAdSlot::class, NativeAdSlot::class));
+
+        return $qb->getQuery()->getResult();
+    }
     public function allReportableAdSlots($limit = null, $offset = null)
     {
         return $this->getAllReportableAdSlotsQuery($limit, $offset)->getQuery()->getResult();

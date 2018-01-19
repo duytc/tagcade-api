@@ -55,6 +55,8 @@ interface AdSlotRepositoryInterface extends ObjectRepository
      */
     public function getReportableAdSlotsForPublisher(PublisherInterface $publisher, $limit = null, $offset = null);
 
+    public function getReportableAdSlotsForPublishers($publishers, $limit = null, $offset = null);
+
     public function allReportableAdSlots($limit = null, $offset = null);
 
     public function getReferencedAdSlotsForSite(BaseLibraryAdSlotInterface $libraryAdSlot, SiteInterface $site, $limit = null, $offset = null);
