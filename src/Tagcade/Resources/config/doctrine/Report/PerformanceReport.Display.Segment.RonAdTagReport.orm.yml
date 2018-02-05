@@ -57,6 +57,14 @@ Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdTagReport:
         clicks:
             type: integer
             nullable: true
+        supplyCost:
+            type: decimal
+            scale: 4
+            nullable: true
+        estProfit:
+            type: decimal
+            scale: 4
+            nullable: true
     manyToOne:
         ronAdTag:
             targetEntity: Tagcade\Entity\Core\LibrarySlotTag

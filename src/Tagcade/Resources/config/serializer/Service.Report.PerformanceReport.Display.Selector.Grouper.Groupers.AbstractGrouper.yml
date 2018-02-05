@@ -42,6 +42,13 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGro
         opportunityFillRate:
             expose: true
             groups: [report_group.detail, report_group.summary]
+        supplyCost:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        estProfit:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+
         averageTotalOpportunities:
             expose: true
             groups: [report_group.detail, report_group.summary]
@@ -64,5 +71,11 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGro
             expose: true
             groups: [report_group.detail, report_group.summary]
         averageOpportunityFillRate:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageSupplyCost:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageEstProfit:
             expose: true
             groups: [report_group.detail, report_group.summary]

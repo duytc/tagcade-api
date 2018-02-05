@@ -53,7 +53,10 @@ Tagcade\Entity\Core\LibraryAdTag:
         expressionDescriptor:
             type: json_array
             nullable: true
-
+        sellPrice:
+            type: float
+            scale: 4
+            nullable: true
     manyToOne:
         adNetwork:
             targetEntity: Tagcade\Entity\Core\AdNetwork

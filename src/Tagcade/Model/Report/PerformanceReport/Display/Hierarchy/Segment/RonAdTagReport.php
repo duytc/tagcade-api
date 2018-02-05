@@ -74,7 +74,8 @@ class RonAdTagReport extends AbstractReport implements RonAdTagReportInterface, 
 
     public function setCalculatedFields()
     {
-        $estRevenue = $this->calculateEstRevenue($this->getImpressions(), $this->getEstCpm());
+        $sellPrice = $this->getAdTagSellPrice($this->getRonAdTag());
+        $estRevenue = $this->calculateEstRevenue($this->getAdOpportunities(), $sellPrice);
         $this->setEstRevenue($estRevenue);
 
         parent::setCalculatedFields();

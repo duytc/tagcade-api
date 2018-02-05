@@ -57,9 +57,9 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
     public function overrideReport(AdSlotReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_ad_slot`
-                 (ad_slot_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities, opportunity_fill_rate,
+                 (ad_slot_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities, supply_cost, est_profit, opportunity_fill_rate,
                  slot_opportunities, refreshed_slot_opportunities, billed_rate, billed_amount, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
-                 ) VALUES (:adSlotId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities, :opportunityFillRate,
+                 ) VALUES (:adSlotId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities, :supply_cost, :est_profit, :opportunityFillRate,
                   :slotOpportunities, :refreshedSlotOpportunities, :billedRate, :billedAmount, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
@@ -72,6 +72,8 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
                  refreshed_slot_opportunities = :refreshedSlotOpportunities,
+                 supply_cost= :supply_cost,
+                 est_profit = :est_profit,
                  in_banner_requests = :inBannerRequests,
                  in_banner_impressions = :inBannerImpressions,
                  in_banner_timeouts = :inBannerTimeouts,
@@ -98,6 +100,8 @@ class AdSlotReportRepository extends AbstractReportRepository implements AdSlotR
         $qb->bindValue('opportunityFillRate', $report->getOpportunityFillRate() !== null ? $report->getOpportunityFillRate() : 0, Type::DECIMAL);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
         $qb->bindValue('refreshedSlotOpportunities', $report->getRefreshedSlotOpportunities() !== null ? $report->getRefreshedSlotOpportunities() : 0);
+        $qb->bindValue('supply_cost', $report->getSupplyCost() !== null ? $report->getSupplyCost() : 0);
+        $qb->bindValue('est_profit', $report->getEstProfit() !== null ? $report->getEstProfit() : 0);
         $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
         $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
         $qb->bindValue('inBannerTimeouts', $report->getInBannerTimeouts() !== null ? $report->getInBannerTimeouts() : 0);

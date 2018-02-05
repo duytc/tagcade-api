@@ -51,6 +51,10 @@ class AdSlotReportGroup extends BilledReportGroup implements AdSlotReportDataInt
      * @param $estCpm
      * @param $estRevenue
      * @param $adOpportunities
+     * @param $supplyCost
+     * @param $estProfit
+     * @param $averageSupplyCost
+     * @param $averageEstProfit
      * @param $opportunityFillRate
      * @param $averageTotalOpportunities
      * @param $averageImpressions
@@ -73,13 +77,13 @@ class AdSlotReportGroup extends BilledReportGroup implements AdSlotReportDataInt
      * @param $averageOpportunityFillRate
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-                                $totalOpportunities, $slotOpportunities, $refreshedSlotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $opportunityFillRate,
+                                $totalOpportunities, $slotOpportunities, $refreshedSlotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $supplyCost, $estProfit, $averageSupplyCost, $averageEstProfit, $opportunityFillRate,
                                 $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageRefreshedSlotOpportunities, $averageBilledAmount,
                                 $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions, $averageAdOpportunities, $averageOpportunityFillRate
     )
     {
         parent::__construct($reportType, $startDate, $endDate, $reports, $name,
-            $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $opportunityFillRate,
+            $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $supplyCost, $estProfit, $averageSupplyCost, $averageEstProfit, $opportunityFillRate,
             $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
             $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions, $averageAdOpportunities, $averageOpportunityFillRate
         );

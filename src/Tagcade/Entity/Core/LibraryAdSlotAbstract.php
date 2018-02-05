@@ -40,6 +40,11 @@ abstract class LibraryAdSlotAbstract
      */
     protected $publisher;
 
+    /**
+     * @var float
+     */
+    protected $buyPrice;
+
     protected $deletedAt;
 
     function __construct($name)
@@ -294,5 +299,23 @@ abstract class LibraryAdSlotAbstract
     function __toString()
     {
         return $this->id . $this->getName();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getBuyPrice()
+    {
+        return $this->buyPrice;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setBuyPrice($buyPrice)
+    {
+        $this->buyPrice = $buyPrice;
+
+        return $this;
     }
 }

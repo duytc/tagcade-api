@@ -13,6 +13,8 @@ class LibraryNativeAdSlot extends LibraryNativeAdSlotModel
     protected $visible;
     protected $libraryAdTags;
     protected $nativeAdSlots;
+    protected $buyPrice;
+
     public function __construct()
     {}
 

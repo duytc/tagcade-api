@@ -9,3 +9,7 @@ Tagcade\Model\Report\PerformanceReport\Display\AbstractReport:
             type: double
         estCpm:
             type: double
+        supplyCost:
+            type: double
+        estProfit:
+            type: double

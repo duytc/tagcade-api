@@ -26,6 +26,12 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport:
         estRevenue:
             expose: true
             groups: [platform_platform_report.detail, platform_platform_report.summary]
+        supplyCost:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
+        estProfit:
+            expose: true
+            groups: [platform_platform_report.detail, platform_platform_report.summary]
         estCpm:
             expose: true
             groups: [platform_platform_report.detail, platform_platform_report.summary]

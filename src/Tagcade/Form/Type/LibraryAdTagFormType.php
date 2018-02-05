@@ -68,6 +68,7 @@ class LibraryAdTagFormType extends AbstractRoleSpecificFormType
             ->add('name')
             ->add('id')
             ->add('expressionDescriptor')
+            ->add('sellPrice')
         ;
 
         $builder->addEventListener(

@@ -36,7 +36,8 @@ class UserFormType extends AbstractRoleSpecificFormType
         'adOpportunities',
         'refreshes',
         'networkOpportunityFillRate',
-        'inBannerImpressions'
+        'inBannerImpressions',
+        'estRevenue'
     ];
 
     const MODULE_CONFIG = 'moduleConfigs';

@@ -143,9 +143,9 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
     public function overrideReport(SiteReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_site`
-                 (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities, opportunity_fill_rate,
+                 (site_id, super_report_id, date, name, est_cpm, est_revenue, fill_rate, impressions, total_opportunities, passbacks, ad_opportunities, supply_cost, est_profit, opportunity_fill_rate,
                  slot_opportunities, billed_rate, billed_amount, in_banner_requests, in_banner_impressions, in_banner_timeouts, in_banner_billed_rate, in_banner_billed_amount
-                 ) VALUES (:siteId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities, :opportunityFillRate,
+                 ) VALUES (:siteId, :superReportId, :date, :name, :estCpm, :estRevenue, :fillRate, :impressions, :totalOpportunities, :passbacks, :adOpportunities, :supply_cost, :est_profit, :opportunityFillRate,
                   :slotOpportunities, :billedRate, :billedAmount, :inBannerRequests, :inBannerImpressions, :inBannerTimeouts, :inBannerBilledRate, :inBannerBilledAmount
                  ) ON DUPLICATE KEY UPDATE
                  est_revenue = :estRevenue,
@@ -157,6 +157,8 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
                  fill_rate = :impressions / :slotOpportunities,
                  est_cpm = 1000 * :estRevenue / :impressions,
                  slot_opportunities = :slotOpportunities,
+                 supply_cost= :supply_cost,
+                 est_profit = :est_profit,
                  in_banner_requests = :inBannerRequests,
                  in_banner_impressions = :inBannerImpressions,
                  in_banner_timeouts = :inBannerTimeouts,
@@ -182,6 +184,8 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
         $qb->bindValue('adOpportunities', $report->getAdOpportunities() !== null ? $report->getAdOpportunities() : 0, Type::INTEGER);
         $qb->bindValue('opportunityFillRate', $report->getOpportunityFillRate() !== null ? $report->getOpportunityFillRate() : 0, Type::DECIMAL);
         $qb->bindValue('slotOpportunities', $report->getSlotOpportunities() !== null ? $report->getSlotOpportunities() : 0);
+        $qb->bindValue('supply_cost', $report->getSupplyCost() !== null ? $report->getSupplyCost() : 0);
+        $qb->bindValue('est_profit', $report->getEstProfit() !== null ? $report->getEstProfit() : 0);
         $qb->bindValue('inBannerRequests', $report->getInBannerRequests() !== null ? $report->getInBannerRequests() : 0);
         $qb->bindValue('inBannerImpressions', $report->getInBannerImpressions() !== null ? $report->getInBannerImpressions() : 0);
         $qb->bindValue('inBannerTimeouts', $report->getInBannerTimeouts() !== null ? $report->getInBannerTimeouts() : 0);

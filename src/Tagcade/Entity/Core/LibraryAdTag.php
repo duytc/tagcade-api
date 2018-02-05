@@ -19,6 +19,7 @@ class LibraryAdTag extends LibraryAdTagModel {
     protected $updatedAt;
     protected $deletedAt;
     protected $expressionDescriptor;
+    protected $sellPrice;
 
     function __construct()
     {

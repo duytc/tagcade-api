@@ -2,28 +2,39 @@
 
 namespace Tagcade\Model\Report;
 
-use Tagcade\Exception\RuntimeException;
+use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\LibraryAdTagInterface;
 
 trait CalculateRevenueTrait
 {
     /**
-     * @param int $impressions
-     * @param float $estCpm
+     * @param $adOpportunities
+     * @param $sellPrice
      * @return float
      */
-    protected function calculateEstRevenue($impressions, $estCpm)
+    protected function calculateEstRevenue($adOpportunities, $sellPrice)
     {
-        if ($estCpm === null || $impressions === null) {
-            throw new RuntimeException('cannot calculate estRevenue, missing data');
-        }
+        $adOpportunities = empty($adOpportunities) ? 0 : floatval($adOpportunities);
+        $sellPrice = empty($sellPrice) ? 0 : floatval($sellPrice);
 
-        $estRevenue = $this->getRatio($impressions * $estCpm, 1000);
-
-        if (!$estRevenue) {
-            return (float) 0;
-        }
+        $estRevenue = $adOpportunities * $sellPrice / 1000;
 
         return $estRevenue;
+    }
+
+    /**
+     * @param $adTag
+     * @return float|int
+     */
+    public function getAdTagSellPrice($adTag)
+    {
+        if ($adTag instanceof AdTagInterface &&
+            $adTag->getLibraryAdTag() instanceof LibraryAdTagInterface
+        ) {
+            return $adTag->getLibraryAdTag()->getSellPrice();
+        }
+
+        return 0;
     }
 
     /**

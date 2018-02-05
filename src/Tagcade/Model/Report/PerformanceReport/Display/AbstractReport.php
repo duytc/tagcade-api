@@ -19,6 +19,8 @@ abstract class AbstractReport implements ReportInterface
     protected $estRevenue;
     protected $estCpm;
     protected $adOpportunities;
+    protected $supplyCost;
+    protected $estProfit;
 
     protected $inBannerRequests;
     protected $inBannerImpressions;
@@ -210,6 +212,42 @@ abstract class AbstractReport implements ReportInterface
     public function setAdOpportunities($adOpportunities)
     {
         $this->adOpportunities = (int)$adOpportunities;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSupplyCost()
+    {
+        return $this->supplyCost;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setSupplyCost($supplyCost)
+    {
+        $this->supplyCost = $supplyCost;
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEstProfit()
+    {
+        return $this->estProfit;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setEstProfit($estProfit)
+    {
+        $this->estProfit = $estProfit;
 
         return $this;
     }

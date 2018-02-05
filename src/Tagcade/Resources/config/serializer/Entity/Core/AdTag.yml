@@ -31,3 +31,6 @@ Tagcade\Entity\Core\AdTag:
         passback:
             expose: true
             groups: [adtag.detail, adtag.summary]
+        sellPrice:
+            expose: true
+            groups: [adtag.detail, adtag.summary]

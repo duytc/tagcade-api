@@ -145,7 +145,8 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                 ->setName("Display AdSlot " . $slotId)
                 ->setType('display')
                 ->setVisible(false)
-                ->setPublisher($publisher);
+                ->setPublisher($publisher)
+                ->setBuyPrice(rand(200, 2000));
 
             $adSlot = (new DisplayAdSlot())
                 ->setLibraryAdSlot($libraryAdSlot)
@@ -163,7 +164,8 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
                     ->setHtml(sprintf('ad tag %d html', $adTagId))
                     ->setAdType(2)
                     ->setAdNetwork($adNetwork)
-                    ->setInBannerDescriptor(array('platform' => null, 'timeout' => 12, 'playerWidth' => 33, 'playerHeight' => 55, 'vastTags' => [array('tag' => 'http://tagcade.dev/vasttag')]));
+                    ->setInBannerDescriptor(array('platform' => null, 'timeout' => 12, 'playerWidth' => 33, 'playerHeight' => 55, 'vastTags' => [array('tag' => 'http://tagcade.dev/vasttag')]))
+                    ->setSellPrice(rand(10, 100));
                 $tempObjs[] = $libraryAdTag;
                 $adTag = (new AdTag())
                     ->setLibraryAdTag($libraryAdTag)

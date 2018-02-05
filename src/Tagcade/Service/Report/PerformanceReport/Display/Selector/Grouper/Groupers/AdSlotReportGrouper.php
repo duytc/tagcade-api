@@ -30,6 +30,10 @@ class AdSlotReportGrouper extends BilledReportGrouper
             $this->getEstCpm(),
             $this->getEstRevenue(),
             $this->getAdOpportunities(),
+            $this->getSupplyCost(),
+            $this->getEstProfit(),
+            $this->getAverageSupplyCost(),
+            $this->getAverageEstProfit(),
             $this->getOpportunityFillRate(),
 
             $this->getAverageTotalOpportunities(),

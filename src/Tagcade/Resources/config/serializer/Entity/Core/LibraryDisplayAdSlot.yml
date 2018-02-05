@@ -16,3 +16,6 @@ Tagcade\Entity\Core\LibraryDisplayAdSlot:
         passbackMode:
             expose: true
             groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]
+        buyPrice:
+            expose: true
+            groups: [librarydisplayadslot.detail, librarydisplayadslot.summary]

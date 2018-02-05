@@ -61,6 +61,12 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\AdSlotRep
         opportunityFillRate:
             expose: true
             groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        supplyCost:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        estProfit:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
 
         averageTotalOpportunities:
             expose: true
@@ -84,6 +90,12 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\AdSlotRep
             expose: true
             groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
         averageOpportunityFillRate:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageSupplyCost:
+            expose: true
+            groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
+        averageEstProfit:
             expose: true
             groups: [ad_slot_report_group.detail, ad_slot_report_group.summary]
 

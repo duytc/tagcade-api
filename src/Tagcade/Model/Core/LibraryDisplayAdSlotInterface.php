@@ -70,4 +70,15 @@ interface LibraryDisplayAdSlotInterface extends BaseLibraryAdSlotInterface
      * @return DisplayAdSlotInterface[]
      */
     public function getDisplayAdSlots();
+
+    /**
+     * @return float
+     */
+    public function getBuyPrice();
+
+    /**
+     * @param float $buyPrice
+     * @return self
+     */
+    public function setBuyPrice($buyPrice);
 }

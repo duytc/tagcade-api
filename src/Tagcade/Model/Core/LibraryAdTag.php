@@ -44,6 +44,9 @@ class LibraryAdTag implements LibraryAdTagInterface
      */
     protected $expressionDescriptor;
 
+    /** @var float */
+    protected $sellPrice;
+
     /**
      * @inheritdoc
      */
@@ -269,5 +272,23 @@ class LibraryAdTag implements LibraryAdTagInterface
     public function setExpressionDescriptor($expressionDescriptor)
     {
         $this->expressionDescriptor = $expressionDescriptor;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSellPrice()
+    {
+        return $this->sellPrice;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setSellPrice($sellPrice)
+    {
+        $this->sellPrice = $sellPrice;
+
+        return $this;
     }
 }

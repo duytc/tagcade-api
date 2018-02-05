@@ -82,6 +82,28 @@ interface ReportInterface extends ReportDataInterface
     public function setAdOpportunities($adOpportunities);
 
     /**
+     * @return mixed
+     */
+    public function getSupplyCost();
+
+    /**
+     * @param mixed $supplyCost
+     * @return self
+     */
+    public function setSupplyCost($supplyCost);
+
+    /**
+     * @return mixed
+     */
+    public function getEstProfit();
+
+    /**
+     * @param mixed $estProfit
+     * @return self
+     */
+    public function setEstProfit($estProfit);
+
+    /**
      * @param int $inBannerRequests
      * @return self
      */

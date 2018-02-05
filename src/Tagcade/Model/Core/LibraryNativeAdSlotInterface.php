@@ -49,4 +49,15 @@ interface LibraryNativeAdSlotInterface extends BaseLibraryAdSlotInterface
      * @return int|null
      */
     public function getPublisherId();
+
+    /**
+     * @return float
+     */
+    public function getBuyPrice();
+
+    /**
+     * @param float $buyPrice
+     * @return self
+     */
+    public function setBuyPrice($buyPrice);
 }

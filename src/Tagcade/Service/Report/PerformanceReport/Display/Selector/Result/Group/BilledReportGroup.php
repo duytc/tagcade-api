@@ -25,6 +25,8 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     protected $passbacks;
     protected $estCpm;
     protected $estRevenue;
+    protected $supplyCost;
+    protected $estProfit;
 
     protected $averageTotalOpportunities;
     protected $averageImpressions;
@@ -32,6 +34,8 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     protected $averageEstCpm;
     protected $averageEstRevenue;
     protected $averageFillRate;
+    protected $averageSupplyCost;
+    protected $averageEstProfit;
 
     // new properties
     protected $slotOpportunities;
@@ -63,6 +67,10 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param $estCpm
      * @param $estRevenue
      * @param $adOpportunities
+     * @param $supplyCost
+     * @param $estProfit
+     * @param $averageSupplyCost
+     * @param $averageEstProfit
      * @param $opportunityFillRate
      * @param $averageTotalOpportunities
      * @param $averageImpressions
@@ -84,7 +92,7 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
      * @param $averageOpportunityFillRate
      */
     public function __construct($reportType, DateTime $startDate, DateTime $endDate, array $reports, $name,
-    $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $opportunityFillRate,
+    $totalOpportunities, $slotOpportunities, $impressions, $passbacks, $fillRate, $billedAmount, $estCpm, $estRevenue, $adOpportunities, $supplyCost, $estProfit, $averageSupplyCost, $averageEstProfit, $opportunityFillRate,
     $averageTotalOpportunities, $averageImpressions, $averagePassbacks, $averageEstCpm, $averageEstRevenue, $averageFillRate, $averageSlotOpportunities, $averageBilledAmount,
     $inBannerRequests, $inBannerTimeouts, $inBannerBilledAmount, $inBannerImpressions, $averageInBannerRequests, $averageInBannerTimeouts, $averageInBannerBilledAmount, $averageInBannerImpressions, $averageAdOpportunities, $averageOpportunityFillRate
     )
@@ -98,10 +106,14 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
         $this->slotOpportunities = $slotOpportunities;
         $this->opportunityFillRate = round($opportunityFillRate, 4);
         $this->billedAmount = round($billedAmount, 4);
+        $this->supplyCost = $supplyCost;
+        $this->estProfit = $estProfit;
 
         $this->averageSlotOpportunities = round($averageSlotOpportunities);
         $this->averageOpportunityFillRate = round($averageOpportunityFillRate, 4);
         $this->averageBilledAmount = round($averageBilledAmount, 4);
+        $this->averageSupplyCost = round($averageSupplyCost);
+        $this->averageEstProfit = round($averageEstProfit);
 
         $this->inBannerRequests = $inBannerRequests;
         $this->inBannerTimeouts = $inBannerTimeouts;
@@ -136,6 +148,38 @@ class BilledReportGroup extends ReportGroup implements BilledReportDataInterface
     public function getBilledAmount()
     {
         return $this->billedAmount;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSupplyCost()
+    {
+        return $this->supplyCost;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEstProfit()
+    {
+        return $this->estProfit;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageSupplyCost()
+    {
+        return $this->averageSupplyCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageEstProfit()
+    {
+        return $this->averageEstProfit;
     }
 
     /**

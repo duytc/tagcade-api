@@ -32,6 +32,12 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
         estRevenue:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]
+        supplyCost:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+        estProfit:
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
         estCpm:
             expose: true
             groups: [platform_ad_slot_report.detail, platform_ad_slot_report.summary]

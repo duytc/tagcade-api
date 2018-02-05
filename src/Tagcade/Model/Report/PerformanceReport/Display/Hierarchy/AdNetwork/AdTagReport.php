@@ -85,7 +85,8 @@ class AdTagReport extends AbstractReport implements AdTagReportInterface, Impres
 
     public function setCalculatedFields()
     {
-        $estRevenue = $this->calculateEstRevenue($this->getImpressions(), $this->getEstCpm());
+        $sellPrice = $this->getAdTagSellPrice($this->getAdTag());
+        $estRevenue = $this->calculateEstRevenue($this->getAdOpportunities(), $sellPrice);
         $this->setEstRevenue($estRevenue);
 
         // difference calculate at network/adTag level

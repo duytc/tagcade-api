@@ -25,7 +25,7 @@ Tagcade\Entity\Report\PerformanceReport\Display\SubPublisher\SubPublisherReport:
             groups: [sub_publisher_report.detail, sub_publisher_report.summary]
         estRevenue:
             expose: true
-            groups: [sub_publisher_report.detail, sub_publisher_report.summary]                                                                                    
+            groups: [sub_publisher_report.detail, sub_publisher_report.summary]
         estCpm:
             expose: true
             groups: [sub_publisher_report.detail, sub_publisher_report.summary]

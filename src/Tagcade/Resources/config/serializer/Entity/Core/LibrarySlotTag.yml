@@ -31,3 +31,6 @@ Tagcade\Entity\Core\LibrarySlotTag:
         networkOpportunityCap:
             expose: true
             groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]
+        sellPrice:
+            expose: true
+            groups: [libraryslottag.detail, libraryslottag.summary, libraryslottag.ref]

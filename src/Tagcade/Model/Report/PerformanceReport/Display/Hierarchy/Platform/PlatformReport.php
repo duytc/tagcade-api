@@ -52,6 +52,18 @@ class PlatformReport extends AbstractCalculatedReport implements PlatformReportI
             $this->setAdOpportunities($data['adOpportunities']);
         }
 
+        if (array_key_exists('estRevenue', $data)) {
+            $this->setEstRevenue($data['estRevenue']);
+        }
+
+        if (array_key_exists('supplyCost', $data)) {
+            $this->setSupplyCost($data['supplyCost']);
+        }
+
+        if (array_key_exists('estProfit', $data)) {
+            $this->setEstProfit($data['estProfit']);
+        }
+
         if (array_key_exists('opportunityFillRate', $data)) {
             $this->setOpportunityFillRate($data['opportunityFillRate']);
         }

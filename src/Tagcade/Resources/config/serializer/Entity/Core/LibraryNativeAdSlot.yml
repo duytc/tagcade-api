@@ -4,3 +4,5 @@ Tagcade\Entity\Core\LibraryNativeAdSlot:
         id:
             expose: true
             groups: [librarynativeadslot.detail, librarynativeadslot.summary, librarynativeadslot.ref]
+        buyPrice:
+            groups: [librarynativeadslot.detail, librarynativeadslot.summary, librarynativeadslot.ref]

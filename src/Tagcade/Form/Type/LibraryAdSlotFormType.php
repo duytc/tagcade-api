@@ -37,7 +37,8 @@ class LibraryAdSlotFormType extends AbstractRoleSpecificFormType
             ))
             ->add('autoFit')
             ->add('visible')
-            ->add('id');
+            ->add('id')
+            ->add('buyPrice');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(

@@ -27,7 +27,8 @@ class LibraryNativeAdSlotFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('name')
             ->add('visible')
-            ->add('id');
+            ->add('id')
+            ->add('buyPrice');
 
         if ($this->userRole instanceof AdminInterface) {
             $builder->add(

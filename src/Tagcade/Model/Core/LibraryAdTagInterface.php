@@ -130,4 +130,15 @@ interface LibraryAdTagInterface extends ModelInterface
      * @param array $expressionDescriptor
      */
     public function setExpressionDescriptor($expressionDescriptor);
+
+    /**
+     * @return float
+     */
+    public function getSellPrice();
+
+    /**
+     * @param float $sellPrice
+     * @return self
+     */
+    public function setSellPrice($sellPrice);
 }

@@ -49,6 +49,15 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport:
             type: decimal
             scale: 4
             nullable: true
+        supplyCost:
+            type: decimal
+            scale: 4
+            nullable: true
+        estProfit:
+            type: decimal
+            scale: 4
+            nullable: true
+
         # Slot Opportunities calculate
         billedRate:
             type: decimal

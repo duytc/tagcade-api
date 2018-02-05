@@ -45,6 +45,15 @@ Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
             type: decimal
             scale: 4
             nullable: true
+        supplyCost:
+            type: decimal
+            scale: 4
+            nullable: true
+        estProfit:
+            type: decimal
+            scale: 4
+            nullable: true
+
         # account
         billedRate:
             type: decimal

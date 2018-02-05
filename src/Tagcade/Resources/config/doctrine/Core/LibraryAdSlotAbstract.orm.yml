@@ -19,6 +19,10 @@ Tagcade\Entity\Core\LibraryAdSlotAbstract:
         deletedAt:
             type: date
             nullable: true
+        buyPrice:
+            type: float
+            scale: 4
+            nullable: true
 
     inheritanceType: JOINED
 

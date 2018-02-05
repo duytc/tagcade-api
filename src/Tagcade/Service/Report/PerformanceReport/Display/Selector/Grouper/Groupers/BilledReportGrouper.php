@@ -16,6 +16,11 @@ class BilledReportGrouper extends AbstractGrouper
     private $slotOpportunities;
     private $opportunityFillRate; // only for platform slot/site/account/platform level
     private $billedAmount;
+    private $supplyCost;
+    private $estProfit;
+
+    private $averageSupplyCost;
+    private $averageEstProfit;
 
     private $averageSlotOpportunities;
     private $averageOpportunityFillRate; // only for platform slot/site/account/platform level
@@ -52,6 +57,10 @@ class BilledReportGrouper extends AbstractGrouper
             $this->getEstCpm(),
             $this->getEstRevenue(),
             $this->getAdOpportunities(),
+            $this->getSupplyCost(),
+            $this->getEstProfit(),
+            $this->getAverageSupplyCost(),
+            $this->getAverageEstProfit(),
             $this->getOpportunityFillRate(),
 
             $this->getAverageTotalOpportunities(),
@@ -88,6 +97,8 @@ class BilledReportGrouper extends AbstractGrouper
         $this->averageSlotOpportunities = $this->getRatio($this->getSlotOpportunities(), $reportCount);
         $this->averageOpportunityFillRate = $this->getRatio($this->totalOpportunityFillRate, $reportCount);
         $this->averageBilledAmount = $this->getRatio($this->getBilledAmount(), $reportCount);
+        $this->averageSupplyCost = $this->getRatio($this->getSupplyCost(), $reportCount);
+        $this->averageEstProfit = $this->getRatio($this->getEstProfit(), $reportCount);
 
         $this->averageInBannerTimeouts = $this->getRatio($this->getInBannerTimeouts(), $reportCount);
         $this->averageInBannerRequests = $this->getRatio($this->getInBannerRequests(), $reportCount);
@@ -107,6 +118,9 @@ class BilledReportGrouper extends AbstractGrouper
         $this->addSlotOpportunities($report->getSlotOpportunities());
         $this->addOpportunityFillRate($report->getOpportunityFillRate());
         $this->addBilledAmount($report->getBilledAmount());
+        $this->addSupplyCost($report->getSupplyCost());
+        $this->addEstProfit($report->getEstProfit());
+
         $this->addInBannerBilledRate($report->getInBannerBilledRate());
         $this->addInBannerBilledAmount($report->getInBannerBilledAmount());
     }
@@ -124,6 +138,28 @@ class BilledReportGrouper extends AbstractGrouper
     protected function addBilledAmount($billedAmount)
     {
         $this->billedAmount += (float)$billedAmount;
+    }
+
+    /**
+     * @param $supplyCost
+     * @return $this
+     */
+    private function addSupplyCost($supplyCost)
+    {
+        $this->supplyCost += (float) $supplyCost;
+
+        return $this;
+    }
+
+    /**
+     * @param $estProfit
+     * @return $this
+     */
+    private function addEstProfit($estProfit)
+    {
+        $this->estProfit += (float) $estProfit;
+
+        return $this;
     }
 
     protected function addInBannerRequests($inBannerRequests)
@@ -243,6 +279,39 @@ class BilledReportGrouper extends AbstractGrouper
     {
         return $this->inBannerBilledAmount;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSupplyCost()
+    {
+        return $this->supplyCost;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getEstProfit()
+    {
+        return $this->estProfit;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAverageSupplyCost()
+    {
+        return $this->averageSupplyCost;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAverageEstProfit()
+    {
+        return $this->averageEstProfit;
+    }
+
 
     /**
      * @return mixed

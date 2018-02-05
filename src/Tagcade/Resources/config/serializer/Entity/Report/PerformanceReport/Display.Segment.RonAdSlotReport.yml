@@ -31,7 +31,13 @@ Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport:
             groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
         estRevenue:
             expose: true
-            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]                                                                                    
+            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
+        supplyCost:
+            expose: true
+            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
+        estProfit:
+            expose: true
+            groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]
         estCpm:
             expose: true
             groups: [segment_ron_ad_slot_report.detail, segment_ron_ad_slot_report.summary]

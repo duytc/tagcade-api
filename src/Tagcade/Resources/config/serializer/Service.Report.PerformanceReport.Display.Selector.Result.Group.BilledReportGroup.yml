@@ -55,6 +55,12 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledRep
         opportunityFillRate:
             expose: true
             groups: [billed_report_group.detail, billed_report_group.summary]
+        supplyCost:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        estProfit:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
 
         averageTotalOpportunities:
             expose: true
@@ -78,6 +84,12 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\BilledRep
             expose: true
             groups: [billed_report_group.detail, billed_report_group.summary]
         averageOpportunityFillRate:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageSupplyCost:
+            expose: true
+            groups: [billed_report_group.detail, billed_report_group.summary]
+        averageEstProfit:
             expose: true
             groups: [billed_report_group.detail, billed_report_group.summary]
 

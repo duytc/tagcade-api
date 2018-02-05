@@ -17,6 +17,7 @@ class LibraryDisplayAdSlot extends LibraryDisplayAdSlotModel
     protected $ronAdSlot;
     protected $publisher;
     protected $displayAdSlots;
+    protected $buyPrice;
 
     public function __construct()
     {}

@@ -39,6 +39,13 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGro
         adOpportunities:
             expose: true
             groups: [report_group.detail, report_group.summary]
+        supplyCost:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        estProfit:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+
         averageTotalOpportunities:
             expose: true
             groups: [report_group.detail, report_group.summary]
@@ -60,7 +67,13 @@ Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\Group\ReportGro
         averageAdOpportunities:
             expose: true
             groups: [report_group.detail, report_group.summary]
-
+        averageSupplyCost:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+        averageEstProfit:
+            expose: true
+            groups: [report_group.detail, report_group.summary]
+            
         inBannerRequests:
             expose: true
             groups: [report_group.detail, report_group.summary]

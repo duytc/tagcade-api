@@ -71,6 +71,8 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
         $this->addSlotOpportunities($subReport->getSlotOpportunities());
         $this->addBilledAmount($subReport->getBilledAmount());
         $this->addInBannerBilledAmount($subReport->getInBannerBilledAmount());
+        $this->addSupplyCost($subReport->getSupplyCost());
+        $this->addEstProfit($subReport->getEstProfit());
 
         parent::aggregateSubReport($subReport);
     }
@@ -88,5 +90,15 @@ abstract class AbstractCalculatedReport extends BaseAbstractCalculatedReport imp
     protected function addInBannerBilledAmount($inBannerBilledAmount)
     {
         $this->inBannerBilledAmount += (float)$inBannerBilledAmount;
+    }
+
+    protected function addSupplyCost($supplyCost)
+    {
+        $this->supplyCost += (float)$supplyCost;
+    }
+
+    protected function addEstProfit($estProfit)
+    {
+        $this->estProfit += (float)$estProfit;
     }
 }
