@@ -41,6 +41,7 @@ class LibraryVideoDemandAdTagChangeListener
         if ($entity instanceof LibraryVideoDemandAdTagInterface &&
             ($args->hasChangedField('videoDemandPartner') || $args->hasChangedField('tagURL') ||
                 $args->hasChangedField(ExpressionInterface::TARGETING) || $args->hasChangedField('timeout')
+                || $args->hasChangedField('sellPrice')
             )
         ) {
             $demandAdTags = $entity->getVideoDemandAdTags();

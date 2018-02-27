@@ -223,6 +223,10 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                     $demandAdTagItem['httpRequestTimeout'] = $videoDemandAdTag->getTimeout();
                 }
 
+                if (null != $videoDemandAdTag->getSellPrice()) {
+                    $demandAdTagItem['sellPrice'] = $videoDemandAdTag->getSellPrice();
+                }
+
                 $demandAdTagItem[ExpressionInterface::TARGETING] = [];
 
                 // build targeting

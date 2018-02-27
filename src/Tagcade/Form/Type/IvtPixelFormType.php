@@ -18,6 +18,9 @@ use Tagcade\Model\User\Role\AdminInterface;
 
 class IvtPixelFormType extends AbstractRoleSpecificFormType
 {
+
+    static $IVT_PIXEL_SUPPORTED_MACRO = ['country', 'timestamp', 'device_id', 'device_name', 'demand_sell_price'];
+
     /**
      * @var EntityManagerInterface
      */
@@ -77,6 +80,10 @@ class IvtPixelFormType extends AbstractRoleSpecificFormType
                     $event->getForm()->addError(new FormError('urls must be an array string and not null'));
                 }
 
+                if (!$this->validateMacroInUrls($ivtPixelUrls)) {
+                    $event->getForm()->addError(new FormError('There is a macro which does not support in system'));
+                }
+
                 $ivtPixel->setUrls($ivtPixelUrls);
 
                 $ivtPixelRunningLimit = $ivtPixel->getRunningLimit();
@@ -107,6 +114,43 @@ class IvtPixelFormType extends AbstractRoleSpecificFormType
             }
         );
     }
+
+    /**
+     * @param array $ivtPixelUrls
+     * @return bool
+     */
+    private function validateMacroInUrls(array $ivtPixelUrls)
+    {
+        foreach ($ivtPixelUrls as $ivtPixelUrl) {
+            $macros = $this->getMacrosInUrl($ivtPixelUrl);
+            $unSupportMacros = array_diff($macros, self::$IVT_PIXEL_SUPPORTED_MACRO);
+            if (!empty($unSupportMacros)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $url
+     * @return array
+     */
+    private function getMacrosInUrl($url)
+    {
+        if (empty($url)) {
+            return [];
+        }
+
+        $macros = [];
+        $regex = '/\$\{(.*?)\}/';
+        if (false !== preg_match_all($regex, $url, $matches)) {
+            $macros = $matches[1];
+        }
+
+        return $macros;
+    }
+
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
