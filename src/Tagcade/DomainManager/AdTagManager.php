@@ -262,6 +262,7 @@ class AdTagManager implements AdTagManagerInterface
             }
 
             //remove the Library Slot Tag itself
+            $adSlotLib->removeLibSlotTag($librarySlotTag);
             $this->em->remove($librarySlotTag);
 
             $this->replicator->replicateExistingLibrarySlotTagToAllReferencedAdTags($librarySlotTag, true);
