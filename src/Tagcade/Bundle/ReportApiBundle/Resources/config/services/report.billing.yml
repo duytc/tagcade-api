@@ -11,12 +11,13 @@ services:
 #        factory_class: '%tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%'
 #        factory_method: createConfig
 #        arguments:
-#            - '%tc.display.billing.thresholds%'
+#            - '%tc.display.slot_ops.billing.thresholds%'
 
     tagcade.service.report.performance_report.display.billing.cpm_rate_getter:
         class: '%tagcade.service.report.performance_report.display.billing.cpm_rate_getter.class%'
         arguments:
-            - '%tc.display.billing.thresholds%'
+            - '%tc.display.slot_ops.billing.thresholds%'
+            - '%tc.display.imp_ops.billing.thresholds%'
             - '%tc.header_bid.billing.thresholds%'
             - '%tc.inbanner.billing.thresholds%'
             - '@tagcade.repository.report.performance_report.display.hierarchy.platform.account'
@@ -50,6 +51,7 @@ services:
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
             - @tagcade.repository.report.header_bidding.hierarchy.platform.account
             - @tagcade.service.date_util
+            - @tagcade.repository.billing_configuration
 
     tagcade.service.report.video_report.billing.billing_calculator:
         class: Tagcade\Service\Report\VideoReport\Billing\BillingCalculator
@@ -104,6 +106,7 @@ services:
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.ad_slot
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.account
             - @tagcade.repository.report.video_report.hierarchy.platform.waterfall_tag
+            - @tagcade.repository.billing_configuration
 
     tagcade.service.report.video_report.billing.billed_amount_editor:
         class: Tagcade\Service\Report\VideoReport\Billing\BilledAmountEditor
@@ -121,3 +124,4 @@ services:
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.site
             - @tagcade.service.report.performance_report.display.billing.cpm_rate_getter
             - @tagcade.service.date_util
+            - @tagcade.repository.billing_configuration

@@ -5,14 +5,15 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Bundle\UserBundle\Entity\User as AbstractUser;
+use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
@@ -22,6 +23,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\RootReportInterface;
 use Tagcade\Model\Report\VideoReport\RootReportInterface as VideoRootReportInterface;
 use Tagcade\Model\Report\VideoReport\Hierarchy\Platform\WaterfallTagReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportRepositoryInterface;
 use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoWaterfallTagReportRepositoryInterface;
@@ -68,6 +70,9 @@ class BilledAmountEditor implements BilledAmountEditorInterface
      */
     protected $waterfallTagReportRepository;
 
+    /** @var BillingConfigurationRepositoryInterface */
+    private $billingConfigurationRepository;
+
     function __construct(
         ReportBuilderInterface $reportBuilder,
         BillingCalculatorInterface $billingCalculator,
@@ -77,7 +82,8 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         DateUtilInterface $dateUtil,
         AdSlotReportRepositoryInterface $adSlotReportRepository,
         AccountReportRepositoryInterface $accountReportRepository,
-        VideoWaterfallTagReportRepositoryInterface $waterfallTagReportRepository
+        VideoWaterfallTagReportRepositoryInterface $waterfallTagReportRepository,
+        BillingConfigurationRepositoryInterface $billingConfigurationRepository
     )
     {
         $this->reportBuilder = $reportBuilder;
@@ -89,6 +95,7 @@ class BilledAmountEditor implements BilledAmountEditorInterface
         $this->adSlotReportRepository = $adSlotReportRepository;
         $this->accountReportRepository = $accountReportRepository;
         $this->waterfallTagReportRepository = $waterfallTagReportRepository;
+        $this->billingConfigurationRepository = $billingConfigurationRepository;
     }
 
     /**
@@ -367,7 +374,15 @@ class BilledAmountEditor implements BilledAmountEditorInterface
                 continue;
             }
 
-            $billedAmount = $this->billingCalculator->calculateBilledAmount($newCpmRate->getCpmRate(), $reportRow->getSlotOpportunities());
+            $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($adSlot->getSite()->getPublisher(), User::MODULE_DISPLAY);
+
+            $billingFactor = $billingConfiguration->getBillingFactor();
+            if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
+                $weight = $reportRow->getAdOpportunities();
+            } else {
+                $weight = $reportRow->getSlotOpportunities();
+            }
+            $billedAmount = $this->billingCalculator->calculateBilledAmount($newCpmRate->getCpmRate(), $weight);
             $reportRow->setBilledAmount($billedAmount)
                 ->setBilledRate($newCpmRate->getCpmRate());
 

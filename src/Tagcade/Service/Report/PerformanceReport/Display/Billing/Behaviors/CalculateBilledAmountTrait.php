@@ -9,15 +9,15 @@ trait CalculateBilledAmountTrait {
 
     /**
      * @param float $cpmRate
-     * @param int $slotOpportunities
+     * @param int $weight
      * @return float
      */
-    public function calculateBilledAmount($cpmRate, $slotOpportunities)
+    public function calculateBilledAmount($cpmRate, $weight)
     {
         if (!is_numeric($cpmRate)) {
             throw new InvalidArgumentException('cpmRate must be a number');
         }
 
-        return (float) ($cpmRate * $slotOpportunities) / 1000;
+        return (float) ($cpmRate * $weight) / 1000;
     }
 } 

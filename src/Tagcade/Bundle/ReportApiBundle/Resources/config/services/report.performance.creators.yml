@@ -15,6 +15,7 @@ services:
         arguments:
             - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.repository.billing_configuration
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\Site
@@ -64,6 +65,7 @@ services:
         arguments:
             - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.ron_ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.repository.billing_configuration
 
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.segment.segment:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Segment\Segment

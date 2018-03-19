@@ -8,6 +8,7 @@ use Tagcade\Model\User\UserEntityInterface;
 class BillingConfiguration implements BillingConfigurationInterface
 {
     const BILLING_FACTOR_SLOT_OPPORTUNITY = 'SLOT_OPPORTUNITY';
+    const BILLING_FACTOR_IMPRESSION_OPPORTUNITY = 'IMPRESSION_OPPORTUNITY';
     const BILLING_FACTOR_VIDEO_IMPRESSION = 'VIDEO_IMPRESSION';
     const BILLING_FACTOR_VIDEO_VISIT = 'VISIT';
     const BILLING_FACTOR_HEADER_BID_REQUEST = 'BID_REQUEST';

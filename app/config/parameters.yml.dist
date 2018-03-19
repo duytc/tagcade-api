@@ -50,7 +50,14 @@ parameters:
 
     tc.statistics.number_previous_days_to_include: 7 # number of days included in statistics, counted from current day back.
     tc.max_cache_version: 20 # maximum cache version of a specific key is kept in Redis cache
-    tc.display.billing.thresholds:
+    tc.display.slot_ops.billing.thresholds:
+        - {threshold: 0, cpmRate: 0.030}
+        - {threshold: 100000000, cpmRate: 0.025}
+        - {threshold: 1000000000, cpmRate: 0.020}
+        - {threshold: 2000000000, cpmRate: 0.015}
+        - {threshold: 5000000000, cpmRate: 0.010}
+
+    tc.display.imp_ops.billing.thresholds:
         - {threshold: 0, cpmRate: 0.030}
         - {threshold: 100000000, cpmRate: 0.025}
         - {threshold: 1000000000, cpmRate: 0.020}

@@ -17,6 +17,7 @@ services:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.repository.billing_configuration
         calls:
             - [setLogger, [@logger]]
 
@@ -26,6 +27,7 @@ services:
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.repository.billing_configuration
         calls:
             - [setLogger, [@logger]]
 
@@ -34,6 +36,7 @@ services:
         arguments:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.repository.billing_configuration
         calls:
             - [setLogger, [@logger]]
 
@@ -78,6 +81,7 @@ services:
         arguments:
             - @tagcade.repository.library_slot_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
+            - @tagcade.repository.billing_configuration
         calls:
             - [setLogger, [@logger]]
 

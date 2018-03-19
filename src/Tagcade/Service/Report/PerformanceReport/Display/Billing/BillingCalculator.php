@@ -6,7 +6,10 @@ use DateTime;
 use Tagcade\Bundle\UserSystem\PublisherBundle\Entity\User;
 use Tagcade\Domain\DTO\Report\RateAmount;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
+use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Repository\Report\HeaderBiddingReport\Hierarchy\Platform\AccountReportRepositoryInterface as AccountHeaderBiddingReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
@@ -34,13 +37,17 @@ class BillingCalculator implements BillingCalculatorInterface
      */
     private $dateUtil;
 
+    /** @var BillingConfigurationRepositoryInterface */
+    private $billingConfigurationRepository;
+
     function __construct(CpmRateGetterInterface $defaultRateGetter, AccountReportRepositoryInterface $accountReportRepository,
-         AccountHeaderBiddingReportRepositoryInterface $accountHeaderBiddingReportRepository, DateUtilInterface $dateUtil)
+         AccountHeaderBiddingReportRepositoryInterface $accountHeaderBiddingReportRepository, DateUtilInterface $dateUtil, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
     {
         $this->cpmRateGetter = $defaultRateGetter;
         $this->accountReportRepository = $accountReportRepository;
         $this->dateUtil = $dateUtil;
         $this->accountHeaderBiddingReportRepository = $accountHeaderBiddingReportRepository;
+        $this->billingConfigurationRepository = $billingConfigurationRepository;
     }
 
     public function calculateBilledAmountForPublisher(DateTime $date, PublisherInterface $publisher, $newWeight)
@@ -55,7 +62,15 @@ class BillingCalculator implements BillingCalculatorInterface
 
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
         $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
-        $weight = $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
+
+        /** @var BillingConfigurationInterface $billingConfiguration */
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module = User::MODULE_DISPLAY);
+
+        if ($billingConfiguration->getBillingFactor() == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
+            $weight = $this->accountReportRepository->getSumImpressionOpportunities($publisher, $firstDateInMonth, $yesterday);
+        } else {
+            $weight = $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
+        }
 
         $weight += $newWeight;
         $cpmRate = $this->cpmRateGetter->getCpmRateForPublisher($publisher, User::MODULE_DISPLAY, $weight);

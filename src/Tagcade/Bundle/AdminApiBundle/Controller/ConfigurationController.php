@@ -149,7 +149,7 @@ class ConfigurationController extends RestControllerAbstract implements ClassRes
     public function getDefaultBillingConfigsAction()
     {
         return array (
-            'display' => $this->getParameter('tc.display.billing.thresholds'),
+            'display' => $this->getParameter('tc.display.slot_ops.billing.thresholds'),
             'video' => $this->getParameter('tc.video.billing.thresholds'),
             'header-bidding' => $this->getParameter('tc.header_bid.billing.thresholds'),
             'in-banner' => $this->getParameter('tc.inbanner.billing.thresholds'),

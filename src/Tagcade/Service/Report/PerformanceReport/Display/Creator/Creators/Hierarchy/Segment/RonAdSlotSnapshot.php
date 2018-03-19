@@ -6,6 +6,7 @@ use Tagcade\Entity\Report\PerformanceReport\Display\Segment\RonAdSlotReport;
 use Tagcade\Model\Core\SegmentInterface as SegmentModelInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Segment\RonAdSlot as RonAdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Core\LibrarySlotTagRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\BillableSnapshotCreatorAbstract;
@@ -20,9 +21,9 @@ class RonAdSlotSnapshot extends BillableSnapshotCreatorAbstract implements RonAd
      */
     private $ronAdTagRepository;
 
-    public function __construct(LibrarySlotTagRepositoryInterface $ronAdTagRepository, BillingCalculatorInterface $billingCalculator)
+    public function __construct(LibrarySlotTagRepositoryInterface $ronAdTagRepository, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
     {
-        parent::__construct($billingCalculator);
+        parent::__construct($billingCalculator, $billingConfigurationRepository);
 
         $this->ronAdTagRepository = $ronAdTagRepository;
     }

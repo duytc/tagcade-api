@@ -3,15 +3,17 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy;
 
 
-use Tagcade\Bundle\UserBundle\Entity\User as AbstractUser;
+use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
+use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Segment\RonAdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorAbstract;
 
@@ -20,9 +22,13 @@ abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
     /** @var BillingCalculatorInterface */
     protected $billingCalculator;
 
-    function __construct(BillingCalculatorInterface $billingCalculator)
+    /** @var BillingConfigurationRepositoryInterface */
+    protected $billingConfigurationRepository;
+
+    function __construct(BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
     {
         $this->billingCalculator = $billingCalculator;
+        $this->billingConfigurationRepository = $billingConfigurationRepository;
     }
 
     public function parseRawReportData(ReportInterface $report, array $redisReportData)
@@ -45,7 +51,16 @@ abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
             throw new LogicException('Billable Creator should be AdSlot, Site and Account report');
         }
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $publisher, $report->getSlotOpportunities());
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_DISPLAY);
+
+        $billingFactor = $billingConfiguration->getBillingFactor();
+        if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
+            $weight = $report->getAdOpportunities();
+        } else {
+            $weight = $report->getSlotOpportunities();
+        }
+
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $publisher, $weight);
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());

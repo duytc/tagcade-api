@@ -13,7 +13,6 @@ use Tagcade\Entity\Core\BillingConfiguration;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\User\Role\AdminInterface;
-use Tagcade\Model\User\UserEntityInterface;
 
 class BillingConfigurationFormType extends AbstractRoleSpecificFormType
 {
@@ -23,6 +22,7 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
             ->add('billingFactor', ChoiceType::class, array(
                 'choices'=>[
                     BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY  =>'Slot opportunity',
+                    BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY  =>'Impression opportunity',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION  =>'Video impression',
                     BillingConfiguration::BILLING_FACTOR_IN_BANNER_IMPRESSION  =>'Video ad impression',
                     BillingConfiguration::BILLING_FACTOR_VIDEO_VISIT       =>'Visit',
@@ -66,8 +66,8 @@ class BillingConfigurationFormType extends AbstractRoleSpecificFormType
 
                 switch ($billingConfig->getModule()) {
                     case User::MODULE_DISPLAY:
-                        if ($billingConfig->getBillingFactor() !== BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY) {
-                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" only accepts "%s" as billing factor', User::MODULE_DISPLAY, BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY)));
+                        if (!in_array($billingConfig->getBillingFactor(), [BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY, \Tagcade\Model\Core\BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY])) {
+                            $form->get('billingFactor')->addError(new FormError(sprintf('module "%s" can not accepts "%s" as billing factor', User::MODULE_DISPLAY, $billingConfig->getBillingFactor())));
                             return;
                         }
 

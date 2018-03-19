@@ -81,6 +81,30 @@ class AccountReportRepository extends AbstractReportRepository implements Accoun
     /**
      * @inheritdoc
      */
+    public function getSumImpressionOpportunities(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
+    {
+        $qb = $this->createQueryBuilder('r');
+
+        $result = $qb
+            ->select('SUM(r.adOpportunities) as total')
+            ->where($qb->expr()->between('r.date', ':start_date', ':end_date'))
+            ->andWhere('r.publisher = :publisher')
+            ->setParameter('start_date', $startDate, Type::DATE)
+            ->setParameter('end_date', $endDate, Type::DATE)
+            ->setParameter('publisher', $publisher->getId(), Type::INTEGER)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if (null === $result) {
+            return 0;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSumSlotInBannerImpressions(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate)
     {
         $qb = $this->createQueryBuilder('r');

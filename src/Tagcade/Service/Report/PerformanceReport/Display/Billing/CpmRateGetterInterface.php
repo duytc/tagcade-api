@@ -3,6 +3,7 @@
 namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 
 use DateTime;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
@@ -11,9 +12,10 @@ interface CpmRateGetterInterface
     /**
      * @param int $slotOpportunities
      * @param $module
+     * @param BillingConfigurationInterface $billingConfiguration
      * @return float
      */
-    public function getDefaultCpmRate($slotOpportunities, $module);
+    public function getDefaultCpmRate($slotOpportunities, $module, BillingConfigurationInterface $billingConfiguration = null);
 
     /**
      * @param PublisherInterface $publisher

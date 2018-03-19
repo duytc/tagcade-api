@@ -33,6 +33,14 @@ interface SiteReportRepositoryInterface
      */
     public function getSumSlotOpportunities(SiteInterface $site, DateTime $startDate, DateTime $endDate);
 
+    /**\
+     * @param SiteInterface $site
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @return mixed
+     */
+    public function getSumImpressionOpportunities(SiteInterface $site, DateTime $startDate, DateTime $endDate);
+
     /**
      * @param SiteInterface $site
      * @param DateTime $startDate

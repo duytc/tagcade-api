@@ -5,9 +5,11 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
+use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\BillableSnapshotCreatorAbstract;
 use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCreatorInterface;
@@ -19,9 +21,9 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
     /** @var AdTagManagerInterface */
     private $adTagManager;
 
-    public function __construct(AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator)
+    public function __construct(AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
     {
-        parent::__construct($billingCalculator);
+        parent::__construct($billingCalculator, $billingConfigurationRepository);
 
         $this->adTagManager = $adTagManager;
     }
@@ -63,7 +65,16 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
 
         $slot = $report->getAdSlot();
 
-        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $slot->getSite()->getPublisher(), $report->getSlotOpportunities());
+        $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($report->getAdSlot()->getSite()->getPublisher(), User::MODULE_DISPLAY);
+
+        $billingFactor = $billingConfiguration->getBillingFactor();
+        if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
+            $weight = $report->getAdOpportunities();
+        } else {
+            $weight = $report->getSlotOpportunities();
+        }
+
+        $rateAmount = $this->billingCalculator->calculateBilledAmountForPublisher($report->getDate(), $slot->getSite()->getPublisher(), $weight);
 
         $report->setBilledAmount($rateAmount->getAmount());
         $report->setBilledRate($rateAmount->getRate()->getCpmRate());

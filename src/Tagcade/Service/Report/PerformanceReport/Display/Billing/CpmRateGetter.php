@@ -13,7 +13,6 @@ use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportRepositoryInterface;
 use Tagcade\Repository\Report\SourceReport\ReportRepositoryInterface;
 use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoAccountReportRepositoryInterface;
-use Tagcade\Repository\Report\VideoReport\Hierarchy\Platform\VideoWaterfallTagReportRepositoryInterface;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\DataType\CpmRate;
 
@@ -24,7 +23,9 @@ class CpmRateGetter implements CpmRateGetterInterface
     /** @var BillingRateThreshold[] */
     protected $defaultBillingThresholds;
 
-    protected $displayBillingThresholds;
+    protected $displayBillingThresholdsForSlotOps;
+    protected $displayBillingThresholdsForImpressionOps;
+    
     protected $headerBidBillingThresholds;
     protected $inbannerBillingThresholds;
 
@@ -45,25 +46,27 @@ class CpmRateGetter implements CpmRateGetterInterface
     private $billingConfigurationRepository;
 
     /**
-     * @param $displayBillingThresholds
-     * @param $headerBidBillingThresholds
-     * @param $inbannerBillingThresholds
+     * @param array $displayBillingThresholdsForSlotOps
+     * @param array $displayBillingThresholdsForImpressionOps
+     * @param array $headerBidBillingThresholds
+     * @param array $inbannerBillingThresholds
      * @param AccountReportRepositoryInterface $accountReportRepository
      * @param DateUtilInterface $dateUtil
      * @param BillingConfigurationRepositoryInterface $billingConfigurationRepository
      * @param ReportRepositoryInterface $reportRepository
      * @param VideoAccountReportRepositoryInterface $videoAccountReportRepository
      */
-    public function __construct(array $displayBillingThresholds, array $headerBidBillingThresholds, array $inbannerBillingThresholds,
-        AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil,
-        BillingConfigurationRepositoryInterface $billingConfigurationRepository, ReportRepositoryInterface $reportRepository,
-        VideoAccountReportRepositoryInterface $videoAccountReportRepository
+    public function __construct(array $displayBillingThresholdsForSlotOps, array $displayBillingThresholdsForImpressionOps, array $headerBidBillingThresholds, array $inbannerBillingThresholds,
+                                AccountReportRepositoryInterface $accountReportRepository, DateUtilInterface $dateUtil,
+                                BillingConfigurationRepositoryInterface $billingConfigurationRepository, ReportRepositoryInterface $reportRepository,
+                                VideoAccountReportRepositoryInterface $videoAccountReportRepository
     )
     {
 
         $this->defaultBillingThresholds = [];
 
-        $this->displayBillingThresholds = $displayBillingThresholds;
+        $this->displayBillingThresholdsForSlotOps = $displayBillingThresholdsForSlotOps;
+        $this->displayBillingThresholdsForImpressionOps = $displayBillingThresholdsForImpressionOps;
         $this->headerBidBillingThresholds = $headerBidBillingThresholds;
         $this->inbannerBillingThresholds = $inbannerBillingThresholds;
 
@@ -74,12 +77,16 @@ class CpmRateGetter implements CpmRateGetterInterface
         $this->videoAccountReportRepository = $videoAccountReportRepository;
     }
 
-    protected function loadDefaultConfig($module)
+    protected function loadDefaultConfig($module, BillingConfigurationInterface $billingConfiguration = null)
     {
         $thresholds = [];
         switch ($module) {
             case User::MODULE_DISPLAY:
-                $thresholds = $this->displayBillingThresholds;
+                if ($billingConfiguration instanceof BillingConfigurationInterface && $billingConfiguration->getBillingFactor() == \Tagcade\Model\Core\BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
+                    $thresholds = $this->displayBillingThresholdsForImpressionOps;
+                } else {
+                    $thresholds = $this->displayBillingThresholdsForSlotOps;
+                }
                 break;
             case User::MODULE_HEADER_BIDDING:
                 $thresholds = $this->headerBidBillingThresholds;
@@ -127,9 +134,9 @@ class CpmRateGetter implements CpmRateGetterInterface
         return $config;
     }
 
-    public function getDefaultCpmRate($weight, $module)
+    public function getDefaultCpmRate($weight, $module, BillingConfigurationInterface $billingConfiguration = null)
     {
-        $this->loadDefaultConfig($module);
+        $this->loadDefaultConfig($module, $billingConfiguration);
 
         $billingThresholds = $this->defaultBillingThresholds;
         reset($billingThresholds);
@@ -163,7 +170,7 @@ class CpmRateGetter implements CpmRateGetterInterface
         }
 
         if ($billingConfiguration->isDefaultConfiguration()) {
-            return new CpmRate($this->getDefaultCpmRate($weight, $module));
+            return new CpmRate($this->getDefaultCpmRate($weight, $module, $billingConfiguration));
         }
 
         return new CpmRate($billingConfiguration->getCpmRate($weight));
@@ -189,12 +196,6 @@ class CpmRateGetter implements CpmRateGetterInterface
     protected function getBillingWeightForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $month)
     {
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
-
-        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
-            $billingConfiguration = new BillingConfiguration();
-            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
-        }
-
         $billingFactor = $billingConfiguration->getBillingFactor();
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($month);
         $lastDateInMonth = $this->dateUtil->getLastDateInMonth($month, true);
@@ -202,6 +203,8 @@ class CpmRateGetter implements CpmRateGetterInterface
         switch ($billingFactor) {
             case BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY:
                 return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $lastDateInMonth);
+            case BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY:
+                return $this->accountReportRepository->getSumImpressionOpportunities($publisher, $firstDateInMonth, $lastDateInMonth);
             case BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION:
                 if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
                     return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $lastDateInMonth);
@@ -218,12 +221,6 @@ class CpmRateGetter implements CpmRateGetterInterface
     public function getBillingWeightForPublisherInMonthBeforeDate(PublisherInterface $publisher, $module, DateTime $date)
     {
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
-
-        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
-            $billingConfiguration = new BillingConfiguration();
-            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
-        }
-
         $billingFactor = $billingConfiguration->getBillingFactor();
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
         $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');
@@ -231,6 +228,8 @@ class CpmRateGetter implements CpmRateGetterInterface
         switch ($billingFactor) {
             case BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY:
                 return $this->accountReportRepository->getSumSlotOpportunities($publisher, $firstDateInMonth, $yesterday);
+            case BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY:
+                return $this->accountReportRepository->getSumImpressionOpportunities($publisher, $firstDateInMonth, $yesterday);
             case BillingConfiguration::BILLING_FACTOR_VIDEO_IMPRESSION:
                 if ($billingConfiguration->getModule() === User::MODULE_VIDEO) {
                     return $this->videoAccountReportRepository->getSumVideoImpressionsForPublisher($publisher, $firstDateInMonth, $yesterday);
