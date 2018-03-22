@@ -2,6 +2,7 @@
 
 namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform;
 
+use Tagcade\Bundle\UserBundle\Entity\User;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdSlotReport;
 use Tagcade\Exception\InvalidArgumentException;
