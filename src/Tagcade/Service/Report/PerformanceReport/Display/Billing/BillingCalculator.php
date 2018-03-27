@@ -65,7 +65,11 @@ class BillingCalculator implements BillingCalculatorInterface
 
         /** @var BillingConfigurationInterface $billingConfiguration */
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module = User::MODULE_DISPLAY);
-
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         if ($billingConfiguration->getBillingFactor() == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $this->accountReportRepository->getSumImpressionOpportunities($publisher, $firstDateInMonth, $yesterday);
         } else {

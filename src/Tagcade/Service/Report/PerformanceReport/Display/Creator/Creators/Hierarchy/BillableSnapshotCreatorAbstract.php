@@ -7,6 +7,7 @@ use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AccountReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
@@ -52,7 +53,11 @@ abstract class BillableSnapshotCreatorAbstract extends SnapshotCreatorAbstract
         }
 
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_DISPLAY);
-
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $report->getAdOpportunities();

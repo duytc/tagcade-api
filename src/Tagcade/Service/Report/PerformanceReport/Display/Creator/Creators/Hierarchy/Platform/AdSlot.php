@@ -4,6 +4,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 
 use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User;
 use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
@@ -89,7 +90,11 @@ class AdSlot extends CreatorAbstract implements AdSlotInterface
      */
     private function setBillAmountForAdSlotReport(AdSlotReportInterface $adSlotReport, $adSlot){
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($adSlotReport->getAdSlot()->getSite()->getPublisher(), User::MODULE_DISPLAY);
-
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $adSlotReport->getAdOpportunities();

@@ -154,6 +154,14 @@ class BillingConfiguration implements BillingConfigurationInterface
     public function getCpmRate($weight)
     {
         $tiers = $this->getTiers();
+
+        // Not found any tiers => not bill this module then cpm = 0
+        if (empty($tiers)) {
+            return 0;
+        }
+
+        $tiers = is_array($tiers) ? $tiers : [$tiers];
+
         $convertedTiers = [];
         foreach ($tiers as $tier) {
             $convertedTiers[$tier[self::THRESHOLD_KEY]] = $tier[self::CPM_KEY];
@@ -161,13 +169,25 @@ class BillingConfiguration implements BillingConfigurationInterface
 
         krsort($convertedTiers);
 
-        foreach($convertedTiers as $key=>$value){
-            if($key <= $weight ){
-                return $value;
+        foreach ($convertedTiers as $threshold => $cpmRate) {
+            if ($threshold <= $weight) {
+                return $cpmRate;
             }
         }
 
-        throw new \Exception("Not found proper value");
+        //$convertedTiers = [
+        //      5000000000 => 0.01,
+        //      2000000000 => 0.015,
+        //      1000000000 => 0.02,
+        //      100000000 => 0.025,
+        //      0 => 0.030,
+        //  ]
+        //Return cpmRate for lowest threshold
+        if (!empty($convertedTiers)) {
+            return end($convertedTiers);
+        }
+
+        throw new \Exception(sprintf("Not found proper value: %s, with thresholds %s", $weight, json_encode($convertedTiers)));
     }
 
     /**

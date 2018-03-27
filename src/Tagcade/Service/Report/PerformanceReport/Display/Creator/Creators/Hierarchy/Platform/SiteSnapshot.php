@@ -8,6 +8,7 @@ use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
@@ -70,6 +71,11 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
         $site = $report->getSite();
 
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($site->getPublisher(), User::MODULE_DISPLAY);
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $report->getAdOpportunities();

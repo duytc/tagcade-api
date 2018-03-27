@@ -151,4 +151,12 @@ class RonAdTagReportCount implements BaseAdTagReportCountInterface
     {
         return $this->forcedPassbacks;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRefreshesCount()
+    {
+        return 0;
+    }
 }

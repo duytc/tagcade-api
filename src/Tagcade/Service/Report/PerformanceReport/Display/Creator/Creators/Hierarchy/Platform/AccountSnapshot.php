@@ -8,6 +8,7 @@ use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
@@ -81,7 +82,11 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
         $publisher = $report->getPublisher();
 
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_DISPLAY);
-
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $report->getAdOpportunities();

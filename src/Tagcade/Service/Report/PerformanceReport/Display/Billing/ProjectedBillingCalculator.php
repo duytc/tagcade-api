@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Billing;
 use DateTime;
 use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User;
 use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Core\SiteInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as ReportTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
@@ -53,6 +54,11 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
     public function calculateProjectedBilledAmountForPublisher(PublisherInterface $publisher)
     {
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, User::MODULE_DISPLAY);
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $this->calculatePublisherProjectedImpressionOpportunities($publisher);
@@ -68,6 +74,11 @@ class ProjectedBillingCalculator implements ProjectedBillingCalculatorInterface
     public function calculateProjectedBilledAmountForSite(SiteInterface $site)
     {
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($site->getPublisher(), User::MODULE_DISPLAY);
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $this->calculateSiteProjectedImpressionOpportunities($site);

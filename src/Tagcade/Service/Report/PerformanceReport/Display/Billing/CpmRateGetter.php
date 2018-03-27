@@ -196,6 +196,11 @@ class CpmRateGetter implements CpmRateGetterInterface
     protected function getBillingWeightForPublisherByMonth(PublisherInterface $publisher, $module, DateTime $month)
     {
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($month);
         $lastDateInMonth = $this->dateUtil->getLastDateInMonth($month, true);
@@ -221,6 +226,11 @@ class CpmRateGetter implements CpmRateGetterInterface
     public function getBillingWeightForPublisherInMonthBeforeDate(PublisherInterface $publisher, $module, DateTime $date)
     {
         $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($publisher, $module);
+        if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+            $billingConfiguration = new BillingConfiguration();
+            $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+        }
+        
         $billingFactor = $billingConfiguration->getBillingFactor();
         $firstDateInMonth = $this->dateUtil->getFirstDateInMonth($date);
         $yesterday = date_create($date->format('Y-m-d'))->modify('-1 day');

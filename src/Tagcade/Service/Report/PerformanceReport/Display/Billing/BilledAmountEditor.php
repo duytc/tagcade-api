@@ -14,6 +14,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\BillingConfiguration;
+use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\AdSlotReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\CalculatedReportInterface;
@@ -375,7 +376,11 @@ class BilledAmountEditor implements BilledAmountEditorInterface
             }
 
             $billingConfiguration = $this->billingConfigurationRepository->getConfigurationForModule($adSlot->getSite()->getPublisher(), User::MODULE_DISPLAY);
-
+            if (!$billingConfiguration instanceof BillingConfigurationInterface) {
+                $billingConfiguration = new BillingConfiguration();
+                $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
+            }
+            
             $billingFactor = $billingConfiguration->getBillingFactor();
             if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
                 $weight = $reportRow->getAdOpportunities();
