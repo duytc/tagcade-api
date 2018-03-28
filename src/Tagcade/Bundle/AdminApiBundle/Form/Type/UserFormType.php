@@ -152,6 +152,10 @@ class UserFormType extends AbstractRoleSpecificFormType
                 }
 
                 if ($this->userRole instanceof AdminInterface) {
+                    $email = $publisher->getEmail();
+                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                        throw new InvalidArgumentException('Invalid email format at ' . $email);
+                    }
                     $exchanges = $publisher->getExchanges();
                     foreach ($exchanges as $exchange) {
                         if (!in_array($exchange, $this->exchanges)) {
