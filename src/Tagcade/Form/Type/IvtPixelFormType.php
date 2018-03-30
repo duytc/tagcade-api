@@ -121,14 +121,6 @@ class IvtPixelFormType extends AbstractRoleSpecificFormType
      */
     private function validateMacroInUrls(array $ivtPixelUrls)
     {
-        foreach ($ivtPixelUrls as $ivtPixelUrl) {
-            $macros = $this->getMacrosInUrl($ivtPixelUrl);
-            $unSupportMacros = array_diff($macros, self::$IVT_PIXEL_SUPPORTED_MACRO);
-            if (!empty($unSupportMacros)) {
-                return false;
-            }
-        }
-
         return true;
     }
 

@@ -44,6 +44,7 @@ interface VideoTargetingInterface
     const TARGETING_REQUIRED_MACRO_DEMAND_TAG_ID = 'demand_tag_id';
     const TARGETING_REQUIRED_MACRO_DEVICE_ID = 'device_id';
     const TARGETING_REQUIRED_MACRO_DEVICE_NAME = 'device_name';
+    const TARGETING_REQUIRED_MACRO_DEMAND_SELL_PRICE = 'demand_sell_price';
     // macros for debugging
     const TARGETING_REQUIRED_MACRO__DEBUG = '_debug'; // not yet used, only for debug
     const TARGETING_REQUIRED_MACRO__ENV = '_env'; // not yet used, only for debug

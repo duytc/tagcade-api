@@ -38,6 +38,8 @@ class VideoVastTagGenerator
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEMAND_TAG_ID,
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEVICE_ID,
         VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEVICE_NAME,
+        VideoTargetingInterface::TARGETING_REQUIRED_MACRO_DEMAND_SELL_PRICE,
+
     ];
 
     protected $videoVastTagBaseUrl;
