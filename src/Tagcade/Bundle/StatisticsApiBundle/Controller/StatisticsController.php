@@ -3,8 +3,10 @@
 namespace Tagcade\Bundle\StatisticsApiBundle\Controller;
 
 use DateTime;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -12,6 +14,18 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform
 
 class StatisticsController extends FOSRestController
 {
+    const COMPARISON_TYPE_DAY_OVER_DAY = 'day-over-day';
+    const COMPARISON_TYPE_WEEK_OVER_WEEK = 'week-over-week';
+    const COMPARISON_TYPE_MONTH_OVER_MONTH = 'month-over-month';
+    const COMPARISON_TYPE_YEAR_OVER_YEAR = 'year-over-year';
+
+    static $SUPPORTED_COMPARISON_TYPES = [
+        self::COMPARISON_TYPE_DAY_OVER_DAY,
+        self::COMPARISON_TYPE_WEEK_OVER_WEEK,
+        self::COMPARISON_TYPE_MONTH_OVER_MONTH,
+        self::COMPARISON_TYPE_YEAR_OVER_YEAR
+    ];
+
     /**
      * @Security("has_role('ROLE_ADMIN')")
      *
@@ -158,7 +172,7 @@ class StatisticsController extends FOSRestController
             throw new NotFoundHttpException('That publisher does not exist');
         }
 
-        if ( false === $this->get('security.context')->isGranted('view', $publisher) ) {
+        if (false === $this->get('security.context')->isGranted('view', $publisher)) {
             throw new AccessDeniedException('You do not have permission to view this');
         }
 
@@ -183,5 +197,190 @@ class StatisticsController extends FOSRestController
         }
 
         return $site;
+    }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @Rest\Get("platform/comparison")
+     * Get statistics for the platform with comparison type
+     *
+     * @Rest\QueryParam(name="type", nullable=false)
+     *
+     * @ApiDoc(
+     *  section = "Statistics report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  },
+     *  parameters = {
+     *      {"name"="type", "dataType"="string", "required"=true, "description"="comparison type for Statistics report, such as day-over-day, week-over-week, month-over-month, year-over-year"},
+     *  }
+     * )
+     *
+     * @return array
+     */
+    public function getPlatformComparisonAction()
+    {
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $comparisonType = $paramFetcher->get('type');
+        if (empty($comparisonType) || !in_array($comparisonType, self::$SUPPORTED_COMPARISON_TYPES)) {
+            throw new BadRequestHttpException(sprintf('Do not support comparison type %s', $comparisonType));
+        }
+
+        /* get startDate-endDate based on comparison type */
+        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType($comparisonType);
+        if (!is_array($startDateEndDate)) {
+            throw new BadRequestHttpException(sprintf('Do not support comparison type %s', $comparisonType));
+        }
+
+        // get data for current time
+        $startDateCurrent = $dateUtil->getDateTime($startDateEndDate['current']['startDate']);
+        $endDateCurrent = $dateUtil->getDateTime($startDateEndDate['current']['endDate']);
+
+        $currentData = $this->get('tagcade.service.statistics')
+            ->getAdminDashboard($startDateCurrent, $endDateCurrent);
+
+        // get data for history time
+        $startDateHistory = $dateUtil->getDateTime($startDateEndDate['history']['startDate']);
+        $endDateHistory = $dateUtil->getDateTime($startDateEndDate['history']['endDate']);
+
+        $historyData = $this->get('tagcade.service.statistics')
+            ->getAdminDashboard($startDateHistory, $endDateHistory);
+
+        $result = [
+            'current' => $currentData,
+            'history' => $historyData
+        ];
+
+        return $result;
+    }
+
+    /**
+     * @Rest\Get("accounts/comparison/{publisherId}", requirements={"publisherId" = "\d+"})
+     *
+     * Get statistics for a publisher with optional date range.
+     *
+     * @Rest\QueryParam(name="type", nullable=false)
+     *
+     * @ApiDoc(
+     *  section = "Statistics report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  },
+     *  parameters = {
+     *      {"name"="type", "dataType"="string", "required"=true, "description"="comparison type for Statistics report, such as day-over-day, week-over-week, month-over-month, year-over-year"},
+     *  }
+     * )
+     *
+     * @param int $publisherId
+     * @return array
+     */
+    public function getAccountComparisonAction($publisherId)
+    {
+        $publisher = $this->getPublisher($publisherId);
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $dateUtil = $this->get('tagcade.service.date_util');
+
+        $comparisonType = $paramFetcher->get('type');
+        if (empty($comparisonType) || !in_array($comparisonType, self::$SUPPORTED_COMPARISON_TYPES)) {
+            throw new BadRequestHttpException(sprintf('Do not support comparison type %s', $comparisonType));
+        }
+
+        /* get startDate-endDate based on comparison type */
+        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType($comparisonType);
+        if (!is_array($startDateEndDate)) {
+            throw new BadRequestHttpException(sprintf('Do not support comparison type %s', $comparisonType));
+        }
+
+        // get data for current time
+        $startDateCurrent = $dateUtil->getDateTime($startDateEndDate['current']['startDate']);
+        $endDateCurrent = $dateUtil->getDateTime($startDateEndDate['current']['endDate']);
+
+        $currentData = $this->get('tagcade.service.statistics')
+            ->getPublisherDashboard($publisher, $startDateCurrent, $endDateCurrent);
+
+        // get data for history time
+        $startDateHistory = $dateUtil->getDateTime($startDateEndDate['history']['startDate']);
+        $endDateHistory = $dateUtil->getDateTime($startDateEndDate['history']['endDate']);
+
+        $historyData = $this->get('tagcade.service.statistics')
+            ->getPublisherDashboard($publisher, $startDateHistory, $endDateHistory);
+
+        $result = [
+            'current' => $currentData,
+            'history' => $historyData
+        ];
+
+        return $result;
+    }
+
+    /**
+     * @param string $comparisonType
+     * @return false|array format as
+     * [
+     *     'current': [
+     *         'startDate': '',
+     *         'endDate': ''
+     *     ],
+     *     'history': [
+     *         'startDate': '',
+     *         'endDate': ''
+     *     ]
+     * ]
+     */
+    private function getStartDateEndDateDueToComparisonType($comparisonType)
+    {
+        switch ($comparisonType) {
+            case self::COMPARISON_TYPE_DAY_OVER_DAY:
+                return [
+                    'current' => [
+                        'startDate' => (new \DateTime())->format('Y-m-d'),
+                        'endDate' => (new \DateTime())->format('Y-m-d')
+                    ],
+                    'history' => [
+                        'startDate' => (new \DateTime('yesterday'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
+                    ]
+                ];
+            case self::COMPARISON_TYPE_WEEK_OVER_WEEK:
+                return [
+                    'current' => [
+                        'startDate' => (new \DateTime('-6 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime())->format('Y-m-d')
+                    ],
+                    'history' => [
+                        'startDate' => (new \DateTime('-13 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('-7 days'))->format('Y-m-d')
+                    ]
+                ];
+            case self::COMPARISON_TYPE_MONTH_OVER_MONTH:
+                return [
+                    'current' => [
+                        'startDate' => (new \DateTime('-29 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime())->format('Y-m-d')
+                    ],
+                    'history' => [
+                        'startDate' => (new \DateTime('-59 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('-30 days'))->format('Y-m-d')
+                    ]
+                ];
+            case self::COMPARISON_TYPE_YEAR_OVER_YEAR:
+                return [
+                    'current' => [
+                        'startDate' => (new \DateTime('first day of January this year'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime())->format('Y-m-d')
+                    ],
+                    'history' => [
+                        'startDate' => (new \DateTime('first day of January last year'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('last day of December last year'))->format('Y-m-d')
+                    ]
+                ];
+        }
+
+        return false;
     }
 }

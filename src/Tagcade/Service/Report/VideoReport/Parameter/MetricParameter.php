@@ -18,6 +18,7 @@ class MetricParameter implements MetricParameterInterface
     const AD_TAG_ERRORS_KEY = 'adTagErrors';
     const AD_TAG_BIDS_KEY = 'adTagBids';
     const AD_TAG_REQUEST_KEY = 'adTagRequests';
+    const BLOCKED_REQUEST_KEY = 'blocks';
 
     static $SUPPORTED_METRICS = [
         self::REQUESTS_KEY,
@@ -32,6 +33,7 @@ class MetricParameter implements MetricParameterInterface
         self::AD_TAG_ERRORS_KEY,
         self::AD_TAG_BIDS_KEY,
         self::AD_TAG_REQUEST_KEY,
+        self::BLOCKED_REQUEST_KEY,
     ];
 
     protected $usedMetrics = [];
