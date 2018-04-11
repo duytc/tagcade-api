@@ -145,7 +145,11 @@ class ChannelRepository extends EntityRepository implements ChannelRepositoryInt
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
-            $qb->andWhere($qb->expr()->like('ch.name', ':searchKey'))
+            $qb->andWhere( $qb->expr()->orX(
+                    $qb->expr()->like('ch.id', ':searchKey'),
+                    $qb->expr()->like('ch.name', ':searchKey')
+                )
+            )
                 ->setParameter('searchKey', $searchLike);
         }
 

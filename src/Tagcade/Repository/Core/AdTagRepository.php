@@ -258,7 +258,10 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
 
     public function getAdTagsForAdNetworkWithPagination(AdNetworkInterface $adNetwork, PagerParam $param)
     {
-        $qb = $this->getAdTagsForAdNetworkQuery($adNetwork);
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'tLib')
+            ->where('tLib.adNetwork = :ad_network_id')
+            ->setParameter('ad_network_id', $adNetwork->getId(), Type::INTEGER);
 
         $qb->leftJoin('t.adSlot', 'sl')
             ->leftJoin('sl.libraryAdSlot', 'lsl')
@@ -368,7 +371,7 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
                     $qb->addOrderBy('st.' . 'name', $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['adSlot']:
-                    $qb->addOrderBy('lat.name', $param->getSortDirection());
+                    $qb->addOrderBy('lsl.name', $param->getSortDirection());
                     break;
                 case $this->SORT_FIELDS['adNetwork']:
                     $qb->addOrderBy('nw.name', $param->getSortDirection());

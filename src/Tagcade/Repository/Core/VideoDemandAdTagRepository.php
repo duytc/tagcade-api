@@ -266,8 +266,53 @@ class VideoDemandAdTagRepository extends EntityRepository implements VideoDemand
     public function getVideoDemandAdTagsForLibraryVideoDemandAdTagWithPagination(LibraryVideoDemandAdTagInterface $user, PagerParam $param)
     {
         $qb = $this->createQueryBuilder('vdt')
+            ->join('vdt.videoWaterfallTagItem','vdti')
+            ->join('vdti.videoWaterfallTag','vwtt')
+            ->join('vdt.libraryVideoDemandAdTag','lvdt')
             ->where('vdt.libraryVideoDemandAdTag = :libraryVideoDemandAdTag')
             ->setParameter('libraryVideoDemandAdTag', $user);
+
+        if (is_string($param->getSearchKey())) {
+            $searchLike = sprintf('%%%s%%', $param->getSearchKey());
+            $qb->andWhere( $qb->expr()->orX(
+                $qb->expr()->like('vdt.id', ':searchKey'),
+                $qb->expr()->like('vdt.priority', ':searchKey'),
+                $qb->expr()->like('vdt.rotationWeight', ':searchKey'),
+                $qb->expr()->like('lvdt.timeout', ':searchKey'),
+                $qb->expr()->like('lvdt.name', ':searchKey'),
+                $qb->expr()->like('vwtt.name', ':searchKey')
+            )
+            )
+                ->setParameter('searchKey', $searchLike);
+        }
+
+        if (is_string($param->getSortField()) &&
+            is_string($param->getSortDirection()) &&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])
+        ) {
+            switch ($param->getSortField()){
+                case 'id':
+                    $qb->addOrderBy('vdt.'.$param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'libraryVideoDemandAdTag.name':
+                    $qb->addOrderBy('lvdt.name', $param->getSortDirection());
+                    break;
+                case 'videoWaterfallTagItem.videoWaterfallTag.name':
+                    $qb->addOrderBy('vwtt.name', $param->getSortDirection());
+                    break;
+                case 'priority':
+                    $qb->addOrderBy('vdt.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'rotationWeight' :
+                    $qb->addOrderBy('vdt.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case 'timeout':
+                    $qb->addOrderBy('vdt.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
+        }
 
         return $qb;
     }

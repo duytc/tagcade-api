@@ -12,7 +12,13 @@ use Tagcade\Model\User\Role\UserRoleInterface;
 
 class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRepositoryInterface
 {
-    protected $SORT_FIELDS = ['id' => 'id', 'name' => 'name'];
+    protected $SORT_FIELDS = [
+        'id' => 'id',
+        'name' => 'name',
+        'adNetworkName' => 'adNetwork.name',
+        'publisherCompany' => 'adNetwork.publisher.company',
+        'associatedTagCount' => 'associatedTagCount'
+    ];
 
     /**
      * @inheritdoc
@@ -22,6 +28,30 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
         $qb = $this->getLibraryAdTagsForPublisherQuery($publisher, $limit, $offset);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLibraryAdTagsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
+    {
+        $qb = $this->createQueryBuilder('tl')
+            ->join('tl.adNetwork', 'nw')
+            ->where('nw.publisher = :publisher_id')
+            ->andWhere('tl.visible = :visible')
+            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
+            ->setParameter('visible', true, Type::INTEGER)
+            ->orderBy('tl.id', 'asc');
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb;
     }
 
     public function getLibraryAdTagsWithPagination(UserRoleInterface $user, PagerParam $param)
@@ -40,13 +70,17 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
             } else {
                 $qb->setParameter('publisher_id', $param->getPublisherId(), Type::INTEGER);
             }
+        } else {
+            $qb->join('lat.adNetwork', 'nw')
+                ->join('nw.publisher', 'pls');
         }
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
             $qb->andWhere($qb->expr()->orX(
                 $qb->expr()->like('lat.name', ':searchKey'),
-                $qb->expr()->like('lat.id', ':searchKey')
+                $qb->expr()->like('lat.id', ':searchKey'),
+                $qb->expr()->like('nw.name', ':searchKey')
             ))
                 ->setParameter('searchKey', $searchLike);
         }
@@ -56,33 +90,20 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
             in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
-        }
 
-        return $qb;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function getLibraryAdTagsForPublisherQuery(PublisherInterface $publisher, $limit = null, $offset = null)
-    {
-        $qb = $this->createQueryBuilder('tl')
-            ->join('tl.adNetwork', 'nw')
-            ->where('nw.publisher = :publisher_id')
-            ->andWhere('tl.visible = :visible')
-            ->setParameter('publisher_id', $publisher->getId(), Type::INTEGER)
-            ->setParameter('visible', true, Type::INTEGER)
-            ->orderBy('tl.id', 'asc')
-        ;
-
-        if (is_int($limit)) {
-            $qb->setMaxResults($limit);
-        }
-
-        if (is_int($offset)) {
-            $qb->setFirstResult($offset);
+            switch ($param->getSortField()) {
+                case $this->SORT_FIELDS['id']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['name']:
+                    $qb->addOrderBy('lat.' . $param->getSortField(), $param->getSortDirection());
+                    break;
+                case $this->SORT_FIELDS['adNetworkName']:
+                    $qb->addOrderBy('nw.name', $param->getSortDirection());
+                    break;
+                default:
+                    break;
+            }
         }
 
         return $qb;
@@ -105,11 +126,11 @@ class LibraryAdTagRepository extends EntityRepository implements LibraryAdTagRep
      * @param null $offset
      * @return array
      */
-    public function getLibraryAdTagsByHtml($htmlValue,  $limit = null, $offset = null)
+    public function getLibraryAdTagsByHtml($htmlValue, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('tl')
-                    ->andWhere('tl.html = :htmlValue')
-                    ->setParameter('htmlValue',$htmlValue);
+            ->andWhere('tl.html = :htmlValue')
+            ->setParameter('htmlValue', $htmlValue);
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
