@@ -338,41 +338,41 @@ class StatisticsController extends FOSRestController
             case self::COMPARISON_TYPE_DAY_OVER_DAY:
                 return [
                     'current' => [
-                        'startDate' => (new \DateTime())->format('Y-m-d'),
-                        'endDate' => (new \DateTime())->format('Y-m-d')
-                    ],
-                    'history' => [
                         'startDate' => (new \DateTime('yesterday'))->format('Y-m-d'),
                         'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
+                    ],
+                    'history' => [
+                        'startDate' => (new \DateTime('-2 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('-2 days'))->format('Y-m-d')
                     ]
                 ];
             case self::COMPARISON_TYPE_WEEK_OVER_WEEK:
                 return [
                     'current' => [
-                        'startDate' => (new \DateTime('-6 days'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime())->format('Y-m-d')
+                        'startDate' => (new \DateTime('-7 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
                     ],
                     'history' => [
-                        'startDate' => (new \DateTime('-13 days'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime('-7 days'))->format('Y-m-d')
+                        'startDate' => (new \DateTime('-14 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('-8 days'))->format('Y-m-d')
                     ]
                 ];
             case self::COMPARISON_TYPE_MONTH_OVER_MONTH:
                 return [
                     'current' => [
-                        'startDate' => (new \DateTime('-29 days'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime())->format('Y-m-d')
+                        'startDate' => (new \DateTime('-30 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
                     ],
                     'history' => [
-                        'startDate' => (new \DateTime('-59 days'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime('-30 days'))->format('Y-m-d')
+                        'startDate' => (new \DateTime('-60 days'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('-31 days'))->format('Y-m-d')
                     ]
                 ];
             case self::COMPARISON_TYPE_YEAR_OVER_YEAR:
                 return [
                     'current' => [
                         'startDate' => (new \DateTime('first day of January this year'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime())->format('Y-m-d')
+                        'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
                     ],
                     'history' => [
                         'startDate' => (new \DateTime('first day of January last year'))->format('Y-m-d'),
