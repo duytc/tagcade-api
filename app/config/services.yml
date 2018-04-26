@@ -214,6 +214,12 @@ services:
             - '@tagcade.domain_manager.ron_ad_slot'
             - '@tagcade.domain_manager.ad_slot'
 
+    tagcade.service.auto_optimize_config_generator:
+        class: Tagcade\Service\AutoOptimizeConfigGenerator
+        arguments:
+            - '@tagcade.repository.ad_tag'
+            - '@tagcade.repository.ad_slot'
+
     tagcade.service.video_vast_tag_generator:
         class: Tagcade\Service\VideoVastTagGenerator
         arguments:
@@ -348,6 +354,12 @@ services:
             - '@tagcade.cache.display.v2.tag_cache'
             - '@tagcade.domain_manager.ad_network'
             - '@tagcade.repository.ad_slot'
+
+    tagcade.worker.workers.update_ad_slot_cache_when_remove_optimization_integration_worker:
+        class: Tagcade\Worker\Workers\UpdateAdSlotCacheWhenRemoveOptimizationIntegrationWorker
+        arguments:
+            - '@tagcade.cache.display.v2.tag_cache'
+            - '@tagcade.domain_manager.ad_slot'
 
     tagcade.worker.workers.update_ad_slot_cache_worker:
         class: Tagcade\Worker\Workers\UpdateAdSlotCacheWorker

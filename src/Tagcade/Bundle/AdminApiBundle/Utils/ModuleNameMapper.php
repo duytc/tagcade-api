@@ -16,6 +16,7 @@ trait ModuleNameMapper {
             elseif($key === 'MODULE_UNIFIED_REPORT') return 'unifiedReport';
             elseif($key === 'MODULE_HEADER_BIDDING') return 'headerBidding';
             elseif($key === 'MODULE_SUB_PUBLISHER') return 'subPublisher';
+            elseif($key === 'MODULE_AUTO_OPTIMIZE') return 'autoOptimize';
             else return $key;
         }, $modules);
     }

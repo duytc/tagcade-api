@@ -55,6 +55,13 @@ services:
             - { name: doctrine.event_listener, event: postFlush }
             - { name: doctrine.event_listener, event: preRemove }
 
+    tagcade_api.event_listener.update_adslot_cache_when_site_auto_optimize_change_listener:
+            class: Tagcade\Bundle\ApiBundle\EventListener\UpdateAdSlotCacheWhenSiteAutoOptimizeChangeListener
+            arguments:
+                - '@tagcade.worker.manager'
+            tags:
+                - { name: doctrine.event_listener, event: preUpdate }
+
     tagcade_api.event_listener.move_ad_tag_to_library_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\MoveAdTagToLibraryListener
         tags:
@@ -127,6 +134,15 @@ services:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: preUpdate }
+
+    tagcade_api.event_listener.update_cache_when_adslot_auto_optimize_change_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateCacheWhenAdSlotAutoOptimizeChangeListener
+        arguments:
+            - '@tagcade.worker.manager'
+        tags:
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: postFlush }
+
 
     tagcade_api.event_listener.update_white_list_cache_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateWhiteListCacheListener

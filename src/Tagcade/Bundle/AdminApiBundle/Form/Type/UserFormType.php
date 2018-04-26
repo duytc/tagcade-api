@@ -99,7 +99,8 @@ class UserFormType extends AbstractRoleSpecificFormType
                         'MODULE_UNIFIED_REPORT' => 'Unified Report',
                         'MODULE_SUB_PUBLISHER' => 'Sub Publisher',
                         'MODULE_HEADER_BIDDING' => 'Header Bidding',
-                        'MODULE_IN_BANNER' => 'In-Banner Video'
+                        'MODULE_IN_BANNER' => 'In-Banner Video',
+                        'MODULE_AUTO_OPTIMIZE' => 'Auto Optimize'
                     ],
                 ])
                 ->add('billingRate')

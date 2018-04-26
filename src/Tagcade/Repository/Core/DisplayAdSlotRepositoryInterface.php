@@ -31,7 +31,8 @@ interface DisplayAdSlotRepositoryInterface extends ObjectRepository
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
+     * @param null $autoOptimize
      * @return mixed
      */
-    public function getAdSlotsForUserWithPagination(UserRoleInterface $user, PagerParam $param = null);
+    public function getAdSlotsForUserWithPagination(UserRoleInterface $user, PagerParam $param = null, $autoOptimize = null);
 }

@@ -173,4 +173,15 @@ interface AdTagInterface extends PositionInterface
      * @return self
      */
     public function setPassback($passback);
+
+    /**
+     * @return boolean
+     */
+    public function isPin();
+
+    /**
+     * @param boolean $pin
+     * @return self
+     */
+    public function setPin($pin);
 }

@@ -38,6 +38,7 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="siteIds", nullable=true, description="list site ids")
      *
      * @ApiDoc(
      *  section = "Ad Slots",
@@ -61,9 +62,19 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
             return $this->getPagination($qb, $request);
         }
 
-        return ($role instanceof PublisherInterface)
-            ? $adSlotManager->getAdSlotsForPublisher($role)
-            : $adSlotManager->all();
+        $siteIds = $request->query->get('siteIds');
+        $siteIds = explode(",", $siteIds);
+        $siteIds = array_filter($siteIds, function ($siteId) {
+            return !empty($siteId);
+        });
+
+        if (empty($siteIds)) {
+            return ($role instanceof PublisherInterface)
+                ? $adSlotManager->getAdSlotsForPublisher($role)
+                : $adSlotManager->all();
+        }
+
+        return $adSlotManager->getAdSlotsForUserBySites($role, $siteIds);
     }
 
     /**
@@ -108,6 +119,41 @@ class AdSlotController extends RestControllerAbstract implements ClassResourceIn
         }
 
         return $adSlot;
+    }
+
+    /**
+     * @Rest\Get("/adslots/{id}/adtags", requirements={"id" = "\d+"})
+     *
+     * @Rest\View(
+     *      serializerGroups={"adtag.detail", "libraryadtag.detail"}
+     * )
+     * Get a single adSlot for the given id
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     *
+     * @return BaseAdSlotInterface
+     * @throws NotFoundHttpException when the resource does not exist
+     */
+    public function getAdTagsAction($id)
+    {
+        $adSlot = $this->getAction($id);
+        if (!$adSlot instanceof BaseAdSlotInterface) {
+            return [];
+        }
+
+        $adTags = $adSlot->getAdTags();
+        $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
+
+        return $adTags;
     }
 
     /**

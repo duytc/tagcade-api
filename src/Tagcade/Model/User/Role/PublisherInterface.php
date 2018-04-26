@@ -137,6 +137,11 @@ interface PublisherInterface extends UserRoleInterface
     public function hasAnalyticsModule();
 
     /**
+     * @return mixed
+     */
+    public function hasAutoOptimizeModule();
+
+    /**
      * @return bool
      */
     public function hasVideoModule();

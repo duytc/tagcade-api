@@ -38,12 +38,14 @@ abstract class AdSlotAbstract
     protected $autoRefresh = false;
     protected $refreshEvery;
     protected $maximumRefreshTimes;
+    protected $autoOptimize;
 
     public function __construct()
     {
         $this->adTags = new ArrayCollection();
         $this->autoCreate = false;
         $this->autoRefresh = false;
+        $this->autoOptimize = false;
         $this->refreshEvery = 0;
         $this->maximumRefreshTimes = 0;
     }
@@ -259,5 +261,23 @@ abstract class AdSlotAbstract
     public function getDeletedAt()
     {
         return $this->deletedAt;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAutoOptimize()
+    {
+        return $this->autoOptimize;
+    }
+
+    /**
+     * @param boolean $autoOptimize
+     * @return self
+     */
+    public function setAutoOptimize($autoOptimize)
+    {
+        $this->autoOptimize = $autoOptimize;
+        return $this;
     }
 }

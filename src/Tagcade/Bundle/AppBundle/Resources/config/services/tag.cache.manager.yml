@@ -63,6 +63,16 @@ services:
 #                - '@tagcade.cache.display.legacy.tag_cache'
                 - '@tagcade.cache.display.v2.tag_cache'
 
+    tagcade.cache.v2.auto_optimized_cache:
+        class: Tagcade\Cache\V2\AutoOptimizedCache
+        arguments:
+            - '%tc.redis.display_tag_cache.host%'
+            - '%tc.redis.display_tag_cache.port%'
+            - '@tagcade.domain_manager.ad_tag'
+            - '@tagcade.domain_manager.ad_slot'
+            - '@tagcade.service.auto_optimize_config_generator'
+            - '@tagcade.cache.display.v2.refresher.ad_slot_cache'
+
     tagcade.cache.display_blacklist_cache_manager:
         class: Tagcade\Cache\V2\DisplayBlacklistCacheManager
         arguments:

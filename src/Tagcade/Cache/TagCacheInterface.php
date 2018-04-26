@@ -16,6 +16,13 @@ interface TagCacheInterface
     public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot);
 
     /**
+     * @param DisplayAdSlotInterface $adSlot
+     * @param array $cacheKeys
+     * @return mixed
+     */
+    public function removeKeysInSlotCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, array $cacheKeys);
+
+    /**
      * @param $adSlotId
      * @return mixed
      */

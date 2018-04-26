@@ -39,6 +39,7 @@ class AdTagFormType extends AbstractRoleSpecificFormType
             ->add('impressionCap')
             ->add('networkOpportunityCap')
             ->add('passback')
+            ->add('pin')
             ->add('libraryAdTag', 'entity', array(
                 'class' => LibraryAdTag::class,
                 'query_builder' => function (EntityRepository $er) {

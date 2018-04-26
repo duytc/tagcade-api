@@ -3,6 +3,7 @@
 namespace Tagcade\Cache\V2\Refresher;
 
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGeneratorInterface;
 use Tagcade\Cache\CacheNamespace\NamespaceCacheInterface;
@@ -12,6 +13,7 @@ use Tagcade\DomainManager\DisplayAdSlotManagerInterface;
 use Tagcade\DomainManager\DynamicAdSlotManagerInterface;
 use Tagcade\DomainManager\NativeAdSlotManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
@@ -59,9 +61,9 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     protected $whiteListPrefix;
 
     public function __construct(EntityManagerInterface $em, NamespaceCacheInterface $cache, Manager $workerManager,
-            DisplayAdSlotManagerInterface $displayAdSlotManager, NativeAdSlotManagerInterface $nativeAdSlotManager,
-            DynamicAdSlotManagerInterface $dynamicAdSlotManager, ExpressionRepositoryInterface $expressionRepository,
-            TagGenerator $tagGenerator, $blacklistPrefix, $whiteListPrefix, ExpressionInJsGeneratorInterface $expressionInJsGenerator)
+                                DisplayAdSlotManagerInterface $displayAdSlotManager, NativeAdSlotManagerInterface $nativeAdSlotManager,
+                                DynamicAdSlotManagerInterface $dynamicAdSlotManager, ExpressionRepositoryInterface $expressionRepository,
+                                TagGenerator $tagGenerator, $blacklistPrefix, $whiteListPrefix, ExpressionInJsGeneratorInterface $expressionInJsGenerator)
     {
         parent::__construct($cache, $workerManager);
 
@@ -111,16 +113,70 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     /**
      * @inheritdoc
      */
-    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true)
+    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true, $extraData = [])
     {
+        if (empty($extraData)) {
+            // sync version
+            $this->cache->setNamespace($this->getNamespaceByEntity($adSlot));
+            $oldVersion = (int)$this->cache->getNamespaceVersion($forceFromCache = true);
+            $this->cache->setNamespaceVersion($oldVersion);
+
+            $extraData = $this->getAutoOptimizeCacheForAdSlot($adSlot, self::CACHE_KEY_AD_SLOT);
+            $extraData = $this->refreshOptimizationData($extraData, $adSlot);
+        }
+
+        if (!$adSlot->isAutoOptimize()) {
+            $extraData = [];
+        }
+
         //step 1. refresh cache for AdSlot
-        $this->refreshForCacheKey(self::CACHE_KEY_AD_SLOT, $adSlot);
+        $this->refreshForCacheKey(self::CACHE_KEY_AD_SLOT, $adSlot, $extraData);
 
         if (!$alsoRefreshRelatedDynamicAdSlot) {
             return $this;
         }
 
         //step 2. refresh cache for all affected DynamicAdSlots
+        return $this->refreshCacheForReferencingDynamicAdSlot($adSlot);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeKeysInSlotCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, array $cacheKeys, $alsoRefreshRelatedDynamicAdSlot = true)
+    {
+        if (empty($cacheKeys)) {
+            return $this;
+        }
+
+        // sync version
+        $this->cache->setNamespace($this->getNamespaceByEntity($adSlot));
+        $oldVersion = (int)$this->cache->getNamespaceVersion($forceFromCache = true);
+        $this->cache->setNamespaceVersion($oldVersion);
+
+        // get current cache
+        $cache = $this->cache->fetch(self::CACHE_KEY_AD_SLOT);
+        if (!is_array($cache)) {
+            return $this;
+        }
+
+        // remove cache keys from cache
+        foreach ($cacheKeys as $cacheKey) {
+            if (!array_key_exists($cacheKey, $cache)) {
+                continue;
+            }
+
+            // remove cache key
+            unset($cache[$cacheKey]);
+        }
+
+        // save
+        $newVersion = $oldVersion + 1;
+        $this->cache->setNamespaceVersion($newVersion);
+        $this->cache->save(self::CACHE_KEY_AD_SLOT, $cache);
+        $this->cache->deleteAll();
+
+        // refresh cache for all affected DynamicAdSlots
         return $this->refreshCacheForReferencingDynamicAdSlot($adSlot);
     }
 
@@ -153,13 +209,13 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     /**
      * @inheritdoc
      */
-    public function refreshForCacheKey($cacheKey, ModelInterface $model)
+    public function refreshForCacheKey($cacheKey, ModelInterface $model, $extraData = [])
     {
         if ($cacheKey !== self::CACHE_KEY_AD_SLOT) {
             throw new InvalidArgumentException(sprintf('expect cache key %s', self::CACHE_KEY_AD_SLOT));
         }
 
-        return parent::refreshForCacheKey($cacheKey, $model);
+        return parent::refreshForCacheKey($cacheKey, $model, $extraData);
     }
 
     /**
@@ -171,7 +227,7 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         $this->cache->setNamespace($namespace);
         $cacheKey = 'all_tags_array';
 
-        $namespaceVersion = $this->cache->getNamespaceVersion(true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
+        $namespaceVersion = $this->cache->getNamespaceVersion($forceFromCache = true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
         $this->cache->setNamespaceVersion($namespaceVersion);
 
         if ($this->cache->contains($cacheKey)) {
@@ -285,5 +341,148 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
     protected function getExpressionInJsGenerator()
     {
         return $this->expressionInJsGenerator;
+    }
+
+    /**
+     * @param $extraData
+     * @param DisplayAdSlotInterface $adSlot
+     * @return mixed
+     */
+    private function refreshOptimizationData($extraData, DisplayAdSlotInterface $adSlot)
+    {
+        if (!is_array($extraData) || !array_key_exists('autoOptimize', $extraData)) {
+            return $extraData;
+        }
+
+        $extraData = $extraData['autoOptimize'];
+        $adTags = $adSlot->getAdTags();
+        $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
+        $adTags = is_array($adTags) ? $adTags : [$adTags];
+        $newAdTags = [];
+        foreach ($adTags as $adTag) {
+            if (!$adTag instanceof AdTagInterface) {
+                continue;
+            }
+            $newAdTags[$adTag->getId()] = $adTag;
+        }
+
+        //Process default
+        if (array_key_exists('default', $extraData)) {
+            $extraData['default'] = $this->refreshAdSlotKeys($extraData['default'], $newAdTags);
+        }
+
+        //Process other keys
+        foreach ($extraData as $key => $data) {
+            if ($key == 'default') {
+                continue;
+            }
+
+            foreach ($data as $identifier => $score) {
+                $score = $this->refreshAdSlotKeys($score, $newAdTags);
+                $data[$identifier] = $score;
+            }
+
+            $extraData[$key] = $data;
+        }
+
+        return ['autoOptimize' => $extraData];
+    }
+
+    /**
+     * @param array $score
+     * @param array $adTags
+     * @return array
+     */
+    private function refreshAdSlotKeys(array $score, array $adTags)
+    {
+        $adTagIds = array_keys($adTags);
+        $newTagIds = array_diff($adTagIds, $score);
+        $score = array_merge($score, $newTagIds);
+
+        /*
+         * scores [ 1, 2, 3, 4]
+         */
+
+        foreach ($score as $key => $adTagId) {
+            if (!array_key_exists($adTagId, $adTags)) {
+                unset($score[$key]);
+                continue;
+            }
+
+            $adTag = $adTags[$adTagId];
+            if (!$adTag instanceof AdTagInterface || !$adTag->isActive()) {
+                unset($score[$key]);
+                continue;
+            }
+        }
+
+        $score = array_values($score);
+
+        // do pin ad tags
+        $score = $this->doPinAdTags($score, $adTags);
+
+        return $score;
+    }
+
+    /**
+     * @param array $score
+     * @param array $adTags
+     * @return mixed
+     */
+    private function doPinAdTags(array $score, array $adTags)
+    {
+        //do pin same as in update cache when receive scores... (function handleKeepAdTagsPositionWithPinned)
+        // get adTags need to be pinned
+        $adTagsNeedToBePinned = array_filter($adTags, function ($adTag) {
+            return $adTag instanceof AdTagInterface && $adTag->isActive() && $adTag->isPin();
+        });
+
+        //// sort $adTagsNeedToBePinned by position asc
+        usort($adTagsNeedToBePinned, function ($adTag1, $adTag2) {
+            /** @var AdTagInterface $adTag1 */
+            /** @var AdTagInterface $adTag2 */
+            if ($adTag1->getPosition() === $adTag2->getPosition()) {
+                return 0;
+            }
+
+            return ($adTag1->getPosition() < $adTag2->getPosition()) ? -1 : 1;
+        });
+
+        //// remove needed pin ad tags from $score
+        //// we will add them to $score again by their positions
+        foreach ($score as $key => $adTagId) {
+
+            $adTag = $adTags[$adTagId];
+            if (!$adTag instanceof AdTagInterface) {
+                continue;
+            }
+            if ($adTag->isActive() && $adTag->isPin()) {
+                unset($score[$key]);
+                continue;
+            }
+        }
+
+        $score = array_values($score);
+
+        //// do pin for needed pin ad tags
+        foreach ($adTagsNeedToBePinned as $adTagNeedToBePinned) {
+            if (!$adTagNeedToBePinned instanceof AdTagInterface) {
+                continue;
+            }
+            $adTagPos = $adTagNeedToBePinned->getPosition();
+
+            // append to end of $orderOptimizedAdTagIds if over length of $orderOptimizedAdTagIds
+            // e.g $optimizedScore is [ 4, 2, 1 ] and ad tag 3 has position = 6, ad tag 5 has position = 8 (notice: 6 and 8 because we removed some paused ad tags before)
+            // then expected $orderOptimizedAdTagIds is [ 4, 2, 1, 3, 5 ]
+            if ($adTagPos > count($score)) {
+                $score[] = $adTagNeedToBePinned->getId();
+                continue;
+            }
+
+            // else, insert into middle...
+            array_splice($score, $adTagPos - 1, 0, [$adTagNeedToBePinned->getId()]); // splice in at $adTagPos
+        }
+
+        return $score;
     }
 }

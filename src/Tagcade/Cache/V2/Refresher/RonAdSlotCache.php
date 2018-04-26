@@ -98,7 +98,7 @@ class RonAdSlotCache extends RefresherAbstract implements RonAdSlotCacheInterfac
 
         $cacheKey = 'all_tags_array';
 
-        $namespaceVersion = $this->cache->getNamespaceVersion(true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
+        $namespaceVersion = $this->cache->getNamespaceVersion($forceFromCache = true); // version should be from redis cache not from memory to make sure it is in sync with tag cache
         $this->cache->setNamespaceVersion($namespaceVersion);
 
         if ($this->cache->contains($cacheKey)) {

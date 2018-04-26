@@ -121,9 +121,9 @@ class AdSlotManager implements AdSlotManagerInterface
     /**
      * @inheritdoc
      */
-    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
+    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null, $autoOptimize = null)
     {
-        return $this->adSlotRepository->getAdSlotsForSite($site, $limit, $offset);
+        return $this->adSlotRepository->getAdSlotsForSite($site, $limit, $offset, $autoOptimize);
     }
 
     public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null)
@@ -301,5 +301,13 @@ class AdSlotManager implements AdSlotManagerInterface
     public function getDisplayAdSlotByLibrary ($libraryDisplayAdSlot)
     {
         return $this->adSlotRepository->getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsForUserBySites(UserRoleInterface $user, $siteIds, $limit = null, $offset = null)
+    {
+        return $this->adSlotRepository->getAdSlotsForUserBySites($user, $siteIds, $limit, $offset);
     }
 }

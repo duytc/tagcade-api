@@ -3,7 +3,7 @@
 namespace Tagcade\Cache\V2;
 
 
-use Tagcade\Model\Core\BaseAdSlotInterface;
+use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\NativeAdSlotInterface;
 use Tagcade\Model\Core\ReportableAdSlotInterface;
@@ -36,6 +36,21 @@ interface TagCacheV2Interface
      * @return mixed
      */
     public function refreshCacheForReportableAdSlot(ReportableAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true);
+
+    /**
+     * @param DisplayAdSlotInterface $adSlot
+     * @param bool $alsoRefreshRelatedDynamicAdSlot
+     * @return mixed
+     */
+    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true);
+
+    /**
+     * @param DisplayAdSlotInterface $adSlot
+     * @param array $cacheKeys
+     * @param bool $alsoRefreshRelatedDynamicAdSlot
+     * @return mixed
+     */
+    public function removeKeysInSlotCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, array $cacheKeys, $alsoRefreshRelatedDynamicAdSlot = true);
 
     /**
      * @param $adSlotId

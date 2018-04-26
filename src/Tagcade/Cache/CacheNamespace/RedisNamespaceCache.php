@@ -31,7 +31,7 @@ class RedisNamespaceCache extends NamespaceCacheProvider
      */
     public function getNamespaceVersion($forceFromCache = false)
     {
-        if (false === $forceFromCache) {
+        if (false === $forceFromCache && null !== $this->namespaceVersion) {
             return $this->namespaceVersion;
         }
 
@@ -39,6 +39,7 @@ class RedisNamespaceCache extends NamespaceCacheProvider
         $version = $this->doFetch($namespaceCacheKey);
 
         $version = ($version == false) ? 0 : $version;
+        $this->namespaceVersion = $version;
 
         return $version;
     }
@@ -51,7 +52,7 @@ class RedisNamespaceCache extends NamespaceCacheProvider
     public function saveDataAndIncreaseVersion($id, $data, $lifetime = 0)
     {
         $namespaceVersionKey = $this->getNamespaceVersionKey($this->getNamespace());
-        $oldVersion = $this->getNamespaceVersion(true);
+        $oldVersion = $this->getNamespaceVersion($forceFromCache = true);
         $newVersion = $oldVersion + 1;
         $this->setNamespaceVersion(($newVersion));
 

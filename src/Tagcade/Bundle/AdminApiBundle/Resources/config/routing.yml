@@ -8,6 +8,11 @@ admin_api_log:
     resource: Tagcade\Bundle\AdminApiBundle\Controller\ActionLogController
     name_prefix: admin_api_1_
 
+admin_api_auto_optimze_cache:
+    type: rest
+    resource: Tagcade\Bundle\AdminApiBundle\Controller\AutoOptimizeCacheController
+    name_prefix: admin_api_1_
+
 admin_api_source_report_email_config:
     type: rest
     resource: Tagcade\Bundle\AdminApiBundle\Controller\SourceReportEmailConfigController

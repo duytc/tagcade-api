@@ -27,7 +27,7 @@ abstract class TagCacheAbstract
     {
         $this->cache->setNamespace($this->getNamespace($adSlot->getId()));
 
-        $oldVersion = (int)$this->cache->getNamespaceVersion();
+        $oldVersion = (int)$this->cache->getNamespaceVersion($forceFromCache = true);
         $newVersion = $oldVersion + 1;
 
         // create the new version of the cache first

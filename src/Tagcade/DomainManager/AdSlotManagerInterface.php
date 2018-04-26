@@ -21,9 +21,10 @@ interface AdSlotManagerInterface extends ManagerInterface
      * @param SiteInterface $site
      * @param int|null $limit
      * @param int|null $offset
-     * @return BaseAdSlotInterface[]
+     * @param null $autoOptimize
+     * @return \Tagcade\Model\Core\BaseAdSlotInterface[]
      */
-    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
+    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null, $autoOptimize = null);
 
     public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
@@ -138,4 +139,13 @@ interface AdSlotManagerInterface extends ManagerInterface
      * @return mixed
      */
     public function getDisplayAdSlotByLibrary($libraryDisplayAdSlot);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param $siteIds
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdSlotsForUserBySites(UserRoleInterface $user, $siteIds, $limit = null, $offset = null);
 }

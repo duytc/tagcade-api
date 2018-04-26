@@ -20,6 +20,7 @@ abstract class User extends BaseUser implements UserEntityInterface
     const MODULE_SUB_PUBLISHER = 'MODULE_SUB_PUBLISHER';
     const MODULE_HEADER_BIDDING = 'MODULE_HEADER_BIDDING';
     const MODULE_IN_BANNER = 'MODULE_IN_BANNER';
+    const MODULE_AUTO_OPTIMIZE = 'MODULE_AUTO_OPTIMIZE';
 
     // we have to redefine the properties we wish to expose with JMS Serializer Bundle
 
@@ -53,6 +54,11 @@ abstract class User extends BaseUser implements UserEntityInterface
     public function hasAnalyticsModule()
     {
         return in_array(static::MODULE_ANALYTICS, $this->getEnabledModules());
+    }
+
+    public function hasAutoOptimizeModule()
+    {
+        return in_array(static::MODULE_AUTO_OPTIMIZE, $this->getEnabledModules());
     }
 
     /**

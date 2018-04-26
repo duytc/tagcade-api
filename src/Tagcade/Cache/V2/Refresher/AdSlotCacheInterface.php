@@ -23,9 +23,10 @@ interface AdSlotCacheInterface
     /**
      * @param DisplayAdSlotInterface $adSlot
      * @param bool $alsoRefreshRelatedDynamicAdSlot
+     * @param array $extraData
      * @return mixed
      */
-    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true);
+    public function refreshCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $alsoRefreshRelatedDynamicAdSlot = true, $extraData = []);
 
     /**
      * @param NativeAdSlotInterface $nativeAdSlot
@@ -43,10 +44,19 @@ interface AdSlotCacheInterface
     /**
      * @param $cacheKey
      * @param ModelInterface $model
+     * @param array $extraData
      * @return mixed
      */
-    public function refreshForCacheKey($cacheKey, ModelInterface $model);
+    public function refreshForCacheKey($cacheKey, ModelInterface $model, $extraData = []);
 
+    /**
+     * @param DisplayAdSlotInterface $adSlot
+     * @param array $cacheKeys
+     * @param bool $alsoRefreshRelatedDynamicAdSlot
+     * @return mixed
+     */
+    public function removeKeysInSlotCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, array $cacheKeys, $alsoRefreshRelatedDynamicAdSlot = true);
+    
     /**
      * remove the specify cache key
      * @param $cacheKey

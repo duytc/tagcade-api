@@ -107,6 +107,14 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface, TagCacheV2
     }
 
     /**
+     * @inheritdoc
+     */
+    public function removeKeysInSlotCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, array $cacheKeys, $alsoRefreshRelatedDynamicAdSlot = true)
+    {
+        return $this->adSlotCache->removeKeysInSlotCacheForDisplayAdSlot($adSlot, $cacheKeys, $alsoRefreshRelatedDynamicAdSlot);
+    }
+
+    /**
      * refresh cache for DynamicAdSlot
      * @param DynamicAdSlotInterface $dynamicAdSlot
      * @return $this

@@ -115,11 +115,16 @@ class DisplayAdSlotRepository extends EntityRepository implements DisplayAdSlotR
     /**
      * @inheritdoc
      */
-    public function getAdSlotsForUserWithPagination(UserRoleInterface $user, PagerParam $param = null)
+    public function getAdSlotsForUserWithPagination(UserRoleInterface $user, PagerParam $param = null, $autoOptimize = null)
     {
         $qb = $this->createQueryBuilderForUser($user);
         if ($user instanceof AdminInterface) {
             $qb->join('sl.site', 'st');
+        }
+
+        if (!empty($autoOptimize)) {
+            $qb->andWhere('sl.autoOptimize = :autoOptimize')
+                ->setParameter('autoOptimize', $autoOptimize);
         }
 
         $qb->join('sl.libraryAdSlot', 'lsl');

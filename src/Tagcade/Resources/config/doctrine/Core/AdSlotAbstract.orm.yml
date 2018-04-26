@@ -34,6 +34,10 @@ Tagcade\Entity\Core\AdSlotAbstract:
             options:
                 default: false
             nullable: true
+        autoOptimize:
+             type: boolean
+             options:
+                default: false
         refreshEvery:
             type: integer
             nullable: true

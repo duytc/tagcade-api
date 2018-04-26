@@ -42,9 +42,9 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
     /**
      * @inheritdoc
      */
-    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null)
+    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null, $autoOptimize = null)
     {
-        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset);
+        $qb = $this->getAdSlotsForSiteQuery($site, $limit, $offset, $autoOptimize);
 
         return $qb->getQuery()->getResult();
     }
@@ -182,12 +182,16 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
         return $qb;
     }
 
-    protected function getAdSlotsForSiteQuery(SiteInterface $site, $limit = null, $offset = null)
+    protected function getAdSlotsForSiteQuery(SiteInterface $site, $limit = null, $offset = null, $autoOptimize = null)
     {
         $qb = $this->createQueryBuilder('sl')
             ->where('sl.site = :site_id')
-            ->setParameter('site_id', $site->getId(), Type::INTEGER)
-        ;
+            ->setParameter('site_id', $site->getId(), Type::INTEGER);
+
+        if (!empty($autoOptimize)) {
+            $qb->andWhere('sl.autoOptimize = :autoOptimize')
+                ->setParameter('autoOptimize', $autoOptimize);
+        }
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -205,7 +209,7 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
      * @param PagerParam $param
      * @return mixed
      */
-    public function getAdSlotsForSiteWithPagination(SiteInterface $site, $param)
+    public function getAdSlotsForSiteWithPagination(SiteInterface $site, $param, $autoOptimize = null)
     {
         $qb = $this->createQueryBuilder('sl')
             ->where('sl.site = :site_id')
@@ -214,6 +218,11 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
 
         $qb->join('sl.libraryAdSlot', 'lsl');
         $qb->join('sl.site', 'st');
+
+        if (!empty($autoOptimize)) {
+            $qb->andWhere('sl.autoOptimize = :autoOptimize')
+                ->setParameter('autoOptimize', $autoOptimize);
+        }
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());
@@ -704,5 +713,28 @@ class AdSlotRepository extends EntityRepository implements AdSlotRepositoryInter
             ->setParameter('libraryAdTag', $libraryAdTag)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdSlotsForUserBySites(UserRoleInterface $user, $siteIds, $limit = null, $offset = null) {
+        $qb = $this->createQueryBuilderForUser($user)
+            ->orderBy('sl.id', 'asc')
+        ;
+
+        if (!empty($siteIds)) {
+            $qb->andWhere($qb->expr()->in('sl.site', $siteIds));
+        }
+
+        if (is_int($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (is_int($offset)) {
+            $qb->setFirstResult($offset);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

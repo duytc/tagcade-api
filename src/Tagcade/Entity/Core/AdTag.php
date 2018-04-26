@@ -20,6 +20,7 @@ class AdTag extends AdTagModel
     protected $impressionCap;
     protected $networkOpportunityCap;
     protected $passback;
+    protected $pin;
 
     public function __construct()
     {

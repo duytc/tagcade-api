@@ -43,6 +43,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="autoOptimize", nullable=true, description="adSlot has autoOptimize or not")
      *
      * @ApiDoc(
      *  section = "Ad Slots",
@@ -60,8 +61,11 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         $role = $this->getUser();
         $displayAdSlotRepository = $this->get('tagcade.repository.display_ad_slot');
 
+        $autoOptimize = $request->query->get('autoOptimize');
+        $autoOptimize = (isset($autoOptimize) && $autoOptimize == "true") ? true : false;
+
         if ($request->query->get('page') > 0) {
-            $qb = $displayAdSlotRepository->getAdSlotsForUserWithPagination($role, $this->getParams());
+            $qb = $displayAdSlotRepository->getAdSlotsForUserWithPagination($role, $this->getParams(), $autoOptimize);
             return $this->getPagination($qb, $request);
         }
 
@@ -121,6 +125,48 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         $adSlot = $this->one($id);
 
         return $this->get('tagcade.service.tag_generator')->createJsTags($adSlot, $forceSecure);
+    }
+
+    /**
+     * Get Ad tags with optimized positions for an ad slot
+     * country=United States &domain=test.com.vn&browser=firefox
+     * * @Rest\Get("/displayadslots/{id}/optimizedPositions")
+     *
+     * @Rest\View(
+     *      serializerGroups={"adtag.summary", "site.summary", "user.min", "libraryadtag.summary", "adnetwork.summary"}
+     * )
+     *
+     * @Rest\QueryParam(name="by", nullable=true, description="Return list of ad tags was been process optimized positions based on this parameter")
+     * @Rest\QueryParam(name="country", nullable=true, description="Return list of countries value")
+     * @Rest\QueryParam(name="domain", nullable=true, description="Return list of domains value")
+     * @Rest\QueryParam(name="browser", nullable=true, description="Return list of browers value")
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param Request $request
+     * @param $id
+     * @return array
+     */
+    public function getOptimizedAdTagPositionsAction(Request $request, $id)
+    {
+        $country = $request->query->get('country', null);
+        $domain = $request->query->get('domain', null);
+        $browser = $request->query->get('browser', null);
+        /**
+         * 1. call service to get AdSlot cache
+         * 2. rebuild tag data array based on parameter
+         **/
+
+        $readCacheOptimizedService = $this->get('tagcade.cache.v2.auto_optimized_cache');
+
+        return $readCacheOptimizedService->getOptimizedAdTagPositionsForAdSlotBySegmentsValue($id, $country, $domain, $browser);
     }
 
 
@@ -397,7 +443,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         /** @var AdTagInterface[] $adTags */
         $adTags = $adSlot->getAdTags();
         foreach ($adTags as $adTag) {
-            $event->addAffectedEntity('WaterfallTag', $adTag->getId(), $adTag->getName());
+            $event->addAffectedEntity('AdTag', $adTag->getId(), $adTag->getName());
         }
 
         return $event;

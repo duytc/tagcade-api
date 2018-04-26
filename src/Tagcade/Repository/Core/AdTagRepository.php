@@ -746,4 +746,27 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->setParameter('status', $status)
             ->getQuery()->getSingleScalarResult();
     }
+
+    public function findAdTagByNameAndSlotId($name, $slotId)
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.libraryAdTag', 'lt')
+            ->where('lt.name = :name')
+            ->andWhere('t.adSlot = :adSlot')
+            ->setParameter('name', $name)
+            ->setParameter('adSlot', $slotId, Type::INTEGER)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findAdTagByIdAndSlotId($id, $slotId)
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.id = :id')
+            ->andWhere('t.adSlot = :adSlot')
+            ->setParameter('id', $id)
+            ->setParameter('adSlot', $slotId, Type::INTEGER)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

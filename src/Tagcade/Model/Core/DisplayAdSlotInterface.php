@@ -82,4 +82,15 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      * @return self
      */
     public function setHbBidPrice($hbBidPrice);
+
+    /**
+     * @return boolean
+     */
+    public function isAutoOptimize();
+
+    /**
+     * @param boolean $autoOptimize
+     * @return self
+     */
+    public function setAutoOptimize($autoOptimize);
 }

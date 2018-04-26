@@ -4,6 +4,7 @@ namespace Tagcade\Cache\V2\Refresher;
 
 
 use Tagcade\Cache\Legacy\Cache\Tag\NamespaceCacheInterface;
+use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
 use Tagcade\Model\ModelInterface;
 use Tagcade\Worker\Manager;
@@ -29,7 +30,7 @@ abstract class RefresherAbstract
         $this->workerManager = $workerManager;
     }
 
-    public function refreshForCacheKey($cacheKey, ModelInterface $model)
+    public function refreshForCacheKey($cacheKey, ModelInterface $model, $extraData = [])
     {
         $this->cache->setNamespace($this->getNamespaceByEntity($model));
 
@@ -38,10 +39,27 @@ abstract class RefresherAbstract
 
         // create the new version of the cache first
         $this->cache->setNamespaceVersion($newVersion);
-        $this->cache->save($cacheKey, $this->createCacheDataForEntity($model));
+
+        $data = $this->createCacheDataForEntity($model);
+        if (is_array($extraData) && !empty($extraData)) {
+            $data = array_merge($data, $extraData);
+        }
+
+        $this->cache->save($cacheKey, $data);
         $this->cache->deleteAll();
 
         return $this;
+    }
+
+    public function getAutoOptimizeCacheForAdSlot(BaseAdSlotInterface $adSlot, $cacheKey)
+    {
+        $this->cache->setNamespace($this->getNamespaceByEntity($adSlot));
+        $cache = $this->cache->fetch($cacheKey);
+        if (is_array($cache)  && array_key_exists('autoOptimize', $cache)) {
+            return ['autoOptimize' => $cache['autoOptimize']];
+        }
+
+        return [];
     }
 
     public function removeCacheKey($cacheKey, ModelInterface $model)

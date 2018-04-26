@@ -118,4 +118,15 @@ interface BaseAdSlotInterface extends ModelInterface
     public function setMaximumRefreshTimes($maximumRefreshTimes);
 
     public function getDeletedAt();
+
+    /**
+     * @return boolean
+     */
+    public function isAutoOptimize();
+
+    /**
+     * @param boolean $autoOptimize
+     * @return self
+     */
+    public function setAutoOptimize($autoOptimize);
 }

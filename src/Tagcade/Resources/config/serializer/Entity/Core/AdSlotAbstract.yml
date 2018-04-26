@@ -21,6 +21,9 @@ Tagcade\Entity\Core\AdSlotAbstract:
         autoRefresh:
             expose: true
             groups: [adslot.detail, adslot.summary]
+        autoOptimize:
+            expose: true
+            groups: [adslot.detail, adslot.summary]
         refreshEvery:
             expose: true
             groups: [adslot.detail, adslot.summary]

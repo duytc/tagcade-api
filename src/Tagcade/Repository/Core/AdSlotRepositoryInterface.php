@@ -22,14 +22,15 @@ interface AdSlotRepositoryInterface extends ObjectRepository
     /**
      * @inheritdoc
      */
-    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null);
+    public function getAdSlotsForSite(SiteInterface $site, $limit = null, $offset = null, $autoOptimize = null);
 
     /**
      * @param SiteInterface $site
      * @param PagerParam $param
+     * @param null $autoOptimize
      * @return mixed
      */
-    public function getAdSlotsForSiteWithPagination(SiteInterface $site, $param);
+    public function getAdSlotsForSiteWithPagination(SiteInterface $site, $param, $autoOptimize = null);
 
     public function getAdSlotIdsForSite(SiteInterface $site, $limit = null, $offset = null);
 
@@ -159,4 +160,14 @@ interface AdSlotRepositoryInterface extends ObjectRepository
     public function getDisplayAdSlostByLibrary ($libraryDisplayAdSlot);
 
     public function getAdSlotByLibraryAdTag(LibraryAdTagInterface $libraryAdTag);
+
+    /**
+     * @param UserRoleInterface $user
+     * @param $siteIds
+     * @param null $limit
+     * @param null $offset
+     * @return mixed
+     */
+    public function getAdSlotsForUserBySites(UserRoleInterface $user, $siteIds, $limit = null, $offset = null);
+
 }

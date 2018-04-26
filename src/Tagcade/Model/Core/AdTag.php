@@ -42,7 +42,13 @@ class AdTag implements AdTagInterface
      */
     protected $passback;
 
+    /**
+     * @var boolean
+     */
+    protected $pin;
+
     protected $expressionDescriptor;
+
     /**
      * @param LibraryAdTagInterface $libraryAdTag
      */
@@ -486,5 +492,21 @@ class AdTag implements AdTagInterface
     public function setPassback($passback)
     {
         $this->passback = $passback;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isPin()
+    {
+        return $this->pin;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPin($pin)
+    {
+        $this->pin = $pin;
     }
 }

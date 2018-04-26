@@ -34,6 +34,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * )
      *
      * @Rest\QueryParam(name="autoCreate", nullable=true)
+     * @Rest\QueryParam(name="autoOptimize", nullable=true, description="sites has autoOptimize or not")
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
      * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
      * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
@@ -65,8 +66,9 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
         if (is_string($request->query->get('autoCreate'))) {
             $autoCreate = filter_var($params['autoCreate'], FILTER_VALIDATE_INT);
         }
-
-        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate);
+        $autoOptimize = $request->query->get('autoOptimize');
+        $autoOptimize = (isset($autoOptimize) && $autoOptimize == "true") ? true : false;
+        $qb = $siteRepository->getSitesForUserWithPagination($this->getUser(), $this->getParams(), $autoCreate, null, $autoOptimize);
         return $this->getPagination($qb, $request);
     }
 
@@ -283,6 +285,7 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="autoOptimize", nullable=true, description="adSlot has autoOptimize or not")
      * @ApiDoc(
      *  section="Sites",
      *  resource = true,
@@ -300,14 +303,16 @@ class SiteController extends RestControllerAbstract implements ClassResourceInte
     {
         /** @var SiteInterface $site */
         $site = $this->one($id);
-
+        $autoOptimize = $request->query->get('autoOptimize');
+        $autoOptimize = (isset($autoOptimize) && $autoOptimize == "true") ? true : false;
         if ($request->query->get('page') > 0) {
             $adSlotRepository = $this->get('tagcade.repository.ad_slot');
-            $qb = $adSlotRepository->getAdSlotsForSiteWithPagination($site, $this->getParams());
+            $qb = $adSlotRepository->getAdSlotsForSiteWithPagination($site, $this->getParams(), $autoOptimize);
             return $this->getPagination($qb, $request);
         }
+
         return $this->get('tagcade.domain_manager.ad_slot')
-            ->getAdSlotsForSite($site);
+            ->getAdSlotsForSite($site, null, null, $autoOptimize);
     }
 
     /**

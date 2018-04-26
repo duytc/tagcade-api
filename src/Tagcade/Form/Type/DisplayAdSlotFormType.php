@@ -40,6 +40,7 @@ class DisplayAdSlotFormType extends AbstractRoleSpecificFormType
         $builder
             ->add('hbBidPrice')
             ->add('autoRefresh')
+            ->add('autoOptimize')
             ->add('refreshEvery')
             ->add('maximumRefreshTimes');
 

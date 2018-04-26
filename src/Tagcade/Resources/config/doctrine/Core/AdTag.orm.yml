@@ -57,6 +57,10 @@ Tagcade\Entity\Core\AdTag:
             type: boolean
             options:
                 default: false
+        pin:
+            type: boolean
+            options:
+                default: false
     manyToOne:
         adSlot:
             targetEntity: Tagcade\Entity\Core\AdSlotAbstract

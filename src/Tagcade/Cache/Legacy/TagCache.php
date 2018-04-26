@@ -132,6 +132,47 @@ class TagCache extends TagCacheAbstract implements TagCacheInterface
         return $data;
     }
 
+    /**
+     * @param DisplayAdSlotInterface $adSlot
+     * @param array $cacheKeys
+     * @return mixed
+     */
+    public function removeKeysInSlotCacheForDisplayAdSlot(DisplayAdSlotInterface $adSlot, array $cacheKeys)
+    {
+        if (empty($cacheKeys)) {
+            return $this;
+        }
+
+        // sync version
+        $this->cache->setNamespace($this->getNamespace($adSlot->getId()));
+        $oldVersion = (int)$this->cache->getNamespaceVersion($forceFromCache = true);
+        $this->cache->setNamespaceVersion($oldVersion);
+
+        // get current cache
+        $cache = $this->cache->fetch(self::CACHE_KEY_AD_SLOT);
+        if (!is_array($cache)) {
+            return $this;
+        }
+
+        // remove cache keys from cache
+        foreach ($cacheKeys as $cacheKey) {
+            if (!array_key_exists($cacheKey, $cache)) {
+                continue;
+            }
+
+            // remove cache key
+            unset($cache[$cacheKey]);
+        }
+
+        // save
+        $newVersion = $oldVersion + 1;
+        $this->cache->setNamespaceVersion($newVersion);
+        $this->cache->save(self::CACHE_KEY_AD_SLOT, $cache);
+        $this->cache->deleteAll();
+
+        return $this;
+    }
+
     protected function getNamespace($slotId)
     {
         return sprintf(static::NAMESPACE_CACHE_KEY, $slotId);
