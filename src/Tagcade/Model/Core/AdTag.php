@@ -61,6 +61,7 @@ class AdTag implements AdTagInterface
         }
 
         $this->passback = false;
+        $this->pin = false;
         $this->active = 1;
     }
 
