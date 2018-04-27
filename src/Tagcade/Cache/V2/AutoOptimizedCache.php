@@ -144,17 +144,28 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
         // get preview adTag position
         $currentAdTags = [];
         $currentSlotCache = $this->getSlotCache($adSlot->getId());
-        if (isset($currentSlotCache['autoOptimize']['default'])) {
+
+
+        if (isset($currentSlotCache['autoOptimize']['default']) && !empty($currentSlotCache['autoOptimize']['default'])) {
             $currentAdTags = $currentSlotCache['autoOptimize']['default'];
         } else {
-            $adTags = $adSlot->getAdTags();
-            $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
-            foreach ($adTags as $adTag) {
-                if (!$adTag instanceof AdTagInterface) {
-                    continue;
+            if (isset($currentSlotCache['tags']) && !empty($currentSlotCache['tags'])) {
+                $adTags = $currentSlotCache['tags'];
+                $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
+                foreach ($adTags as $adTag) {
+                    $currentAdTags[] = $adTag['id'];
                 }
-                $currentAdTags[$adTag->getPosition()][] = $adTag->getId();
+            } else {
+                $adTags = $adSlot->getAdTags();
+                $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
+                foreach ($adTags as $adTag) {
+                    if (!$adTag instanceof AdTagInterface) {
+                        continue;
+                    }
+                    $currentAdTags[$adTag->getPosition()][] = $adTag->getId();
+                }
             }
+
         }
 
         return $this->normalizeAdTags($currentAdTags, $mappedBy);
@@ -503,7 +514,7 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
                 if (!is_array($position)) {
                     return false;
                 }
-                
+
                 foreach ($position as $key => $adTag) {
                     if (empty($adTag)) {
                         unset($position[$key]);
