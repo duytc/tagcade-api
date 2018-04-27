@@ -400,7 +400,7 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsForAdNetworkAndSiteFilterPublisher($adNetwork, $site, $limit, $offset);
     }
 
-    public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true)
+    public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = AdTagInterface::ACTIVE)
     {
         $it = $this->em->getRepository(AdTag::class)->createQueryBuilder('t')
             ->join('t.libraryAdTag', 'lib')
@@ -413,7 +413,13 @@ class AdTagManager implements AdTagManagerInterface
         foreach ($it as $row) {
             $adTag = $row[0];
             if ($adTag->isActive() !== $active) {
+                if ($active == AdTagInterface::AUTO_PAUSED && !$adTag->isActive()) {
+                    //Not AUTO PAUSED to manual PAUSED ad tags
+                    continue;
+                }
                 $adTag->setActive($active);
+                //Checksum would fail
+                //Use AdTagManager->save() instead of $this->em->persist()
                 $this->em->persist($adTag);
                 $count++;
             }
@@ -458,7 +464,7 @@ class AdTagManager implements AdTagManagerInterface
         return $this->repository->getAdTagsByLibraryAdSlotAndDifferRefId($libraryAdSlot, $refId, $limit, $offset);
     }
 
-    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false)
+    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = AdTagInterface::PAUSED)
     {
         $it = $this->em->getRepository(AdTag::class)->createQueryBuilder('t')
             ->join('t.libraryAdTag', 'lib')
@@ -471,6 +477,10 @@ class AdTagManager implements AdTagManagerInterface
         foreach ($it as $row) {
             $adTag = $row[0];
             if ($adTag->isActive() !== $active && $adTag->getAdSlot()->getSite()->getId() === $site->getId()) {
+                if ($active == AdTagInterface::AUTO_PAUSED && !$adTag->isActive()) {
+                    //Not AUTO PAUSED to manual PAUSED ad tags
+                    continue;
+                }
                 $adTag->setActive($active);
                 $this->em->persist($adTag);
                 $count++;

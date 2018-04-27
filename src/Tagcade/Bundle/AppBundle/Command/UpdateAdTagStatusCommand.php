@@ -4,6 +4,7 @@
 namespace Tagcade\Bundle\AppBundle\Command;
 
 
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,6 +34,9 @@ class UpdateAdTagStatusCommand extends ContainerAwareCommand
 
         $siteManager = $this->getContainer()->get('tagcade.domain_manager.site');
         $adNetworkManager = $this->getContainer()->get('tagcade.domain_manager.ad_network');
+        /** @var Logger $logger */
+        $logger = $this->getContainer()->get('logger');
+
         $adNetwork = $adNetworkManager->find($adNetworkId);
         if (!$adNetwork instanceof AdNetworkInterface) {
             throw new InvalidArgumentException(sprintf('the ad network "%d" does not exist'));
@@ -43,15 +47,22 @@ class UpdateAdTagStatusCommand extends ContainerAwareCommand
         /** @var AdTagManagerInterface $adTagManager */
         $adTagManager = $this->getContainer()->get('tagcade.domain_manager.ad_tag');
 
-        if (!empty($siteId)) {
-            $site = $siteManager->find($siteId);
-            if (!$site instanceof SiteInterface) {
-                throw new InvalidArgumentException(sprintf('site "%d" does not exist'));
-            }
+        try {
+            if (!empty($siteId)) {
+                $site = $siteManager->find($siteId);
+                if (!$site instanceof SiteInterface) {
+                    throw new InvalidArgumentException(sprintf('site "%d" does not exist'));
+                }
 
-            $adTagManager->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $status);
-        } else {
-            $adTagManager->updateAdTagStatusForAdNetwork($adNetwork, $status);
+                $adTagManager->updateActiveStateBySingleSiteForAdNetwork($adNetwork, $site, $status);
+            } else {
+                $adTagManager->updateAdTagStatusForAdNetwork($adNetwork, $status);
+            }
+            $logger->info(sprintf("Successfully updating ad tags status for ad network '%s' (ID: %s)", $adNetwork->getName(), $adNetwork->getId()));
+        } catch (\Exception $e) {
+            $logger->error($e);
+
+            throw  $e;
         }
     }
 }

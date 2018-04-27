@@ -142,7 +142,7 @@ interface AdTagManagerInterface
 
     public function getAdTagsForAdNetworkAndSiteFilterPublisher(AdNetworkInterface $adNetwork, SiteInterface $site, $limit = null, $offset = null);
 
-    public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = true);
+    public function updateAdTagStatusForAdNetwork(AdNetworkInterface $adNetwork, $active = AdTagInterface::ACTIVE);
 
     public function getAdTagsByAdSlotAndRefId(BaseAdSlotInterface $adSlot, $refId, $limit = null, $offset = null);
 
@@ -159,7 +159,7 @@ interface AdTagManagerInterface
      */
     public function getAdTagsByLibraryAdSlotAndDifferRefId(BaseLibraryAdSlotInterface $libraryAdSlot, $refId, $limit = null, $offset = null);
 
-    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = false);
+    public function updateActiveStateBySingleSiteForAdNetwork(AdNetworkInterface $adNetwork, SiteInterface $site, $active = AdTagInterface::PAUSED);
 
     public function getAllAdTagsByStatus($status);
 

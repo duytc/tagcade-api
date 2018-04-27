@@ -14,6 +14,8 @@ use Tagcade\Model\Core\AdTagInterface;
 
 class AutoPauseAdNetworkCommand extends ContainerAwareCommand
 {
+    /** @var LoggerInterface */
+    private $logger;
 
     protected function configure()
     {
@@ -27,7 +29,7 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
     {
         $adNetwork = $input->getOption('adNetwork');
         $container = $this->getContainer();
-        $logger = $container->get('logger');
+        $this->logger = $container->get('logger');
         $adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
         $adTagManager = $container->get('tagcade.domain_manager.ad_tag');
         $eventCounter = $container->get('tagcade.service.report.performance_report.display.counter.cache_event_counter');
@@ -63,31 +65,39 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
                 continue; // ignore networks that do not set both impression cap and opportunity cap
             }
 
-            $logger->info(sprintf('Checking impression cap and network opportunity cap for ad network %d', $nw->getId()));
+            $this->logger->info(sprintf('Checking impression cap and network opportunity cap for ad network %d', $nw->getId()));
 
             $opportunityCount = 0;
             $impressionCount = 0;
+            $activeCount = 0;
             foreach ($adTags as $adTag) {
-                /**
-                 * @var AdTagInterface $adTag
-                 */
+                if (!$adTag instanceof AdTagInterface) {
+                    continue;
+                }
+
                 $opportunityCount += $eventCounter->getOpportunityCount($adTag->getId());
                 $impressionCount +=  $eventCounter->getImpressionCount($adTag->getId());
+                if ($adTag->isActive()) {
+                    $activeCount++;
+                }
             }
 
             if (($opportunityCap > 0 && $opportunityCap <= $opportunityCount) || ($impressionCap > 0 && $impressionCap <= $impressionCount)) {
-                $logger->info(sprintf('Ad network %d will be PAUSED shortly', $nw->getId()));
+                if ($activeCount < 1) {
+                    continue;
+                }
+                $this->logger->info(sprintf('Ad network %d will be AUTO PAUSED shortly', $nw->getId()));
                 $cmd = sprintf('%s tc:ad-tag-status:update %d --status=%d', $this->getAppConsoleCommand(), $nw->getId(), AdTagInterface::AUTO_PAUSED);
-                $this->executeProcess($process = new Process($cmd), ['timeout' => 200], $logger);
+                $this->executeProcess($process = new Process($cmd), ['timeout' => 1000], $this->logger);
 
                 $pausedNetworkCount ++;
             }
             else {
-                $logger->info(sprintf('Network %d is still RUNNING with (network opportunity cap %d, current opportunities %d) and (network impression cap %d, current impressions %d)', $nw->getId(), $opportunityCap, $opportunityCount, $impressionCap, $impressionCount));
+                $this->logger->info(sprintf('Network %d is still RUNNING with (network opportunity cap %d, current opportunities %d) and (network impression cap %d, current impressions %d)', $nw->getId(), $opportunityCap, $opportunityCount, $impressionCap, $impressionCount));
             }
         }
 
-        $logger->info(sprintf('There are %d ad networks get paused', $pausedNetworkCount));
+        $this->logger->info(sprintf('There are %d ad networks get paused', $pausedNetworkCount));
     }
 
     protected function getAppConsoleCommand()
@@ -111,13 +121,17 @@ class AutoPauseAdNetworkCommand extends ContainerAwareCommand
             $process->setTimeout($options['timeout']);
         }
 
-        $process->mustRun(function($type, $buffer) use($logger) {
-            if (Process::ERR === $type) {
-                $logger->error($buffer);
-            } else {
-                $logger->info($buffer);
+        try {
+            $process->mustRun(function($type, $buffer) use($logger) {
+                if (Process::ERR === $type) {
+                    $logger->error($buffer);
+                } else {
+                    $logger->info($buffer);
+                }
             }
+            );
+        } catch (\Exception $e) {
+            $this->logger->error($e);
         }
-        );
     }
 } 
