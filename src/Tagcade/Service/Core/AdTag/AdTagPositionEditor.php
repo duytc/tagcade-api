@@ -9,6 +9,7 @@ use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\AdTagInterface;
+use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibrarySlotTagInterface;
@@ -176,38 +177,39 @@ class AdTagPositionEditor implements AdTagPositionEditorInterface
                     }
 
                     $adTag = $adTagMap[$adTagId];
-                    if ($pos != $adTag->getPosition()) {
-                        $adTag->setPosition($pos);
-                        //update to slot tag if this is a shared ad slot
-                        $libAdSlot = $adTag instanceof AdTagInterface ? $adTag->getAdSlot()->getLibraryAdSlot() : $adTag->getContainer();
-                        // update position for library slot tag
-                        if ($adTag instanceof AdTagInterface) {
-                            $librarySlotTag = $this->getLibrarySlotAdTagManager()->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
-                            if ($librarySlotTag instanceof LibrarySlotTagInterface) {
-                                $librarySlotTag->setPosition($pos);
-                            }
+                    $adTag->setPosition($pos);
+                    //update to slot tag if this is a shared ad slot
+                    $libAdSlot = $adTag instanceof AdTagInterface ? $adTag->getAdSlot()->getLibraryAdSlot() : $adTag->getContainer();
+                    // update position for library slot tag
+                    if ($adTag instanceof AdTagInterface) {
+                        $librarySlotTag = $this->getLibrarySlotAdTagManager()->getByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
+                        if ($librarySlotTag instanceof LibrarySlotTagInterface) {
+                            $librarySlotTag->setPosition($pos);
                         }
-                        //update all referenced AdTags if they are shared ad slot library
-                        $works[] = array(
-                            'libAdSlot' => $libAdSlot,
-                            'adTag' => $adTag,
-                            'position' => $pos
-                        );
                     }
 
                     $processedAdTags[] = $adTag->getId();
                     $orderedAdTags[] = $adTag;
+
+                    if (!$libAdSlot instanceof BaseLibraryAdSlotInterface || !$libAdSlot->isVisible()) {
+                        continue;
+                    }
+                    //update all referenced AdTags if they are shared ad slot library
+                    $works[] = array(
+                        'libAdSlot' => $libAdSlot,
+                        'adTag' => $adTag,
+                    );
                 }
 
                 $pos ++;
             }
 
-            $this->em->flush();
+//            $this->em->flush();
             $this->em->getConnection()->commit();
 
             // push to job queue
             foreach($works as $work) {
-                $this->manager->updateAdTagPositionForLibSlot($work['libAdSlot']->getId(), $work['adTag']->getid(), $work['position']);
+                $this->manager->updateAdTagPositionForLibSlot($work['libAdSlot']->getId(), $work['adTag']->getid());
             }
         } catch(\Exception $e) {
             $this->em->getConnection()->rollBack();

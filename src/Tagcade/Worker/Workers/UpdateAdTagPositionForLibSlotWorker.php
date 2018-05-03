@@ -53,7 +53,7 @@ class UpdateAdTagPositionForLibSlotWorker
     {
         $libAdSlotId = filter_var($param->libSlotId, FILTER_VALIDATE_INT);
         $adTagId = $param->adTagId;
-        $position = filter_var($param->position, FILTER_VALIDATE_INT);
+//        $position = filter_var($param->position, FILTER_VALIDATE_INT);
 
         $libAdSlot = $this->libraryDisplayAdSlotRepository->find($libAdSlotId);
         if (!$libAdSlot instanceof LibraryDisplayAdSlotInterface) {
@@ -67,7 +67,7 @@ class UpdateAdTagPositionForLibSlotWorker
 
         //update all referenced AdTags if they are shared ad slot library
         $referencedTags = $this->adTagRepository->getAdTagsByLibraryAdSlotAndRefId($libAdSlot, $adTag->getRefId());
-
+        $position = $adTag->getPosition();
         $countRefTag = 0;
         /**
          * @var AdTagInterface $refTag

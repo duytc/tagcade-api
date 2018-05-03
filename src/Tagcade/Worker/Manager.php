@@ -202,12 +202,11 @@ class Manager
         $this->queueTask('replicateExistingLibSlotTag', $param);
     }
 
-    public function updateAdTagPositionForLibSlot($libSlotId, $adTagId, $position)
+    public function updateAdTagPositionForLibSlot($libSlotId, $adTagId)
     {
         $param = new StdClass();
         $param->libSlotId = $libSlotId;
         $param->adTagId = $adTagId;
-        $param->position = $position;
 
 
         $this->queueTask('updateAdTagPositionForLibSlot', $param);
@@ -281,15 +280,29 @@ class Manager
         $params = new StdClass();
         $params->adSlot =  $adSlot->getId();
 
-        $this->queueTask(UpdateAdSlotCacheWorker::JOB_NAME, $params);
+        $this->queueTask(
+            UpdateAdSlotCacheWorker::JOB_NAME,
+            $params,
+            Manager::TUBE,
+            Pheanstalk_PheanstalkInterface::DEFAULT_PRIORITY,
+            5 // seconds. Workaround until race condition fixed. Ensure this runs after position is updated
+        );
     }
 
     /**
      * @param string $task
      * @param StdClass $params
      * @param string $tube
+     * @param int $priority Default 1024
+     * @param int $delay Default 0 seconds
      */
-    protected function queueTask($task, StdClass $params, $tube = Manager::TUBE)
+    protected function queueTask(
+        $task,
+        StdClass $params,
+        $tube = Manager::TUBE,
+        $priority = Pheanstalk_PheanstalkInterface::DEFAULT_PRIORITY,
+        $delay = Pheanstalk_PheanstalkInterface::DEFAULT_DELAY
+    )
     {
         $payload = new StdClass;
 
@@ -299,8 +312,8 @@ class Manager
         $this->queue
             ->useTube($tube)
             ->put(json_encode($payload),
-                Pheanstalk_PheanstalkInterface::DEFAULT_PRIORITY,
-                Pheanstalk_PheanstalkInterface::DEFAULT_DELAY,
+                $priority,
+                $delay,
                 self::EXECUTION_TIME_THRESHOLD)
         ;
     }
