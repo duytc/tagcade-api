@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Bundle\ApiBundle\Service\ExpressionInJsGenerator;
 use Tagcade\DomainManager\NetworkBlacklistManagerInterface;
 use Tagcade\Entity\Core\AdNetwork;
-use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\PublicSimpleException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\AdNetworkInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
@@ -110,7 +110,7 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 }
 
                 if (count($networkWhiteLists) > 0 && count($networkBlacklists) > 0) {
-                    throw new InvalidArgumentException('Demand partner can not have both blacklist and white list');
+                    throw new PublicSimpleException('The demand partner cannot be in both blacklist and whitelist.');
                 }
 
                 foreach ($networkBlacklists as $networkBlacklist) {

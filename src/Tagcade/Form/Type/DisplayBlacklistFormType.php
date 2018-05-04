@@ -11,12 +11,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Tagcade\Entity\Core\DisplayBlacklist;
 use Tagcade\Entity\Core\NetworkWhiteList;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\PublicSimpleException;
 use Tagcade\Form\DataTransformer\RoleToUserEntityTransformer;
 use Tagcade\Model\Core\DisplayBlacklistInterface;
 use Tagcade\Model\Core\NetworkBlacklistInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Service\StringUtilTrait;
-use Tagcade\Exception\RuntimeException;
 
 class DisplayBlacklistFormType extends AbstractRoleSpecificFormType
 {
@@ -83,7 +83,7 @@ class DisplayBlacklistFormType extends AbstractRoleSpecificFormType
                 foreach ($networkBlacklists as $networkBlacklist) {
                     $networkWhiteLists = $networkWhiteListRepository->getForAdNetwork($networkBlacklist->getAdNetwork());
                     if (count($networkWhiteLists) > 0) {
-                        throw new RuntimeException('Demand partner can not have both blacklist and white list');
+                        throw new PublicSimpleException('The demand partner cannot be in both blacklist and whitelist.');
                     }
 
                     if (!$networkBlacklist->getDisplayBlacklist() instanceof DisplayBlacklistInterface) {
