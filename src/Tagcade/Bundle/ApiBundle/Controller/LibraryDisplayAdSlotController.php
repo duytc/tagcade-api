@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\DomainManager\LibraryDisplayAdSlotManagerInterface;
+use Tagcade\Exception\PublicSimpleException;
 use Tagcade\Handler\HandlerInterface;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\DisplayAdSlotInterface;
@@ -361,7 +362,7 @@ class LibraryDisplayAdSlotController extends RestControllerAbstract implements C
 
         $referencingSlots = $libraryDisplayAdSlot->getAdSlots()->toArray();
         if (count($referencingSlots) > 0) {
-            throw new BadRequestHttpException('There are some slots still referring to this library');
+            throw new PublicSimpleException('There are some slots still referring to this library');
         }
 
         return $this->delete($id);

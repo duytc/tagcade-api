@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Tagcade\Entity\Core\LibraryDynamicAdSlot;
 use Tagcade\Entity\Core\LibraryExpression;
 use Tagcade\Exception\LogicException;
+use Tagcade\Exception\PublicSimpleException;
 use Tagcade\Model\Core\BaseLibraryAdSlotInterface;
 use Tagcade\Model\Core\LibraryDisplayAdSlotInterface;
 use Tagcade\Model\Core\LibraryNativeAdSlotInterface;
@@ -26,7 +27,7 @@ trait RemoveLibraryAdSlotTrait {
         $ronAdSlot = $libraryAdSlot->getRonAdSlot();
 
         if (($adSlots !== null && count($adSlots) > 0) || $ronAdSlot instanceof RonAdSlotInterface) {
-            throw new LogicException('There are some slots still referring to this library');
+            throw new PublicSimpleException('There are some slots still referring to this library');
         }
 
         if($libraryAdSlot instanceof LibraryDisplayAdSlotInterface || $libraryAdSlot instanceof LibraryNativeAdSlotInterface) {

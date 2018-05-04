@@ -8,10 +8,10 @@ use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\ApiBundle\Behaviors\GetEntityFromIdTrait;
 use Tagcade\DomainManager\LibraryDynamicAdSlotManagerInterface;
+use Tagcade\Exception\PublicSimpleException;
 use Tagcade\Handler\Handlers\Core\LibraryDynamicAdSlotHandlerAbstract;
 use Tagcade\Model\Core\DynamicAdSlotInterface;
 use Tagcade\Model\Core\LibraryDynamicAdSlotInterface;
@@ -166,7 +166,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
             $libraryDynamicAdSlot = $this->getOr404($id);
             $referencingSlots = $libraryDynamicAdSlot->getAdSlots()->toArray();
             if (count($referencingSlots) > 0) {
-                throw new BadRequestHttpException('There are some slots still referring to this library');
+                throw new PublicSimpleException('There are some slots still referring to this library');
             }
 
         }
@@ -252,7 +252,7 @@ class LibraryDynamicAdSlotController extends RestControllerAbstract implements C
 
         $referencingSlots = $libraryDynamicAdSlot->getAdSlots()->toArray();
         if (count($referencingSlots) > 0) {
-            throw new BadRequestHttpException('There are some slots still referring to this library');
+            throw new PublicSimpleException('There are some slots still referring to this library');
         }
 
         return $this->delete($id);
