@@ -151,9 +151,23 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
         } else {
             if (isset($currentSlotCache['tags']) && !empty($currentSlotCache['tags'])) {
                 $adTags = $currentSlotCache['tags'];
-                $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
-                foreach ($adTags as $adTag) {
-                    $currentAdTags[] = $adTag['id'];
+                foreach ($adTags as $adTagsInAPosition) {
+                    if (!is_array($adTagsInAPosition)) {
+                        continue;
+                    }
+                    if (array_key_exists('id', $adTagsInAPosition)) {
+                        //1 ad tag in a position
+                        $currentAdTags[] = $adTagsInAPosition['id'];
+                    } else {
+                        //many ad tags in a position
+                        $currentAdTagsItem = [];
+                        foreach ($adTagsInAPosition as $adTagItem) {
+                            $currentAdTagsItem[] = $adTagItem['id'];
+                        }
+                        if (!empty($currentAdTagsItem)) {
+                            $currentAdTags[] = $currentAdTagsItem;
+                        }
+                    }
                 }
             } else {
                 $adTags = $adSlot->getAdTags();
