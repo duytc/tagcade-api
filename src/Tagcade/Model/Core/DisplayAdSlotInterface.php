@@ -93,4 +93,15 @@ interface DisplayAdSlotInterface extends BaseAdSlotInterface
      * @return self
      */
     public function setAutoOptimize($autoOptimize);
+
+    /**
+     * @return mixed
+     */
+    public function getOptimizationIntegration();
+
+    /**
+     * @param mixed $optimizationIntegration
+     * @return self
+     */
+    public function setOptimizationIntegration($optimizationIntegration);
 }

@@ -275,6 +275,17 @@ class Manager
         $this->queue->putInTube(Manager::UR_API_WORKER, json_encode($jobData));
     }
 
+    public function synchronizeAdSlotWithOptimizationIntegration($actions){
+        /* new worker design of ur api, so that the jobData is changed */
+
+        $jobData = [
+            'task' => 'synchronizeAdSlotWithOptimizationIntegration',
+            'actions' => $actions
+        ];
+
+        $this->queue->putInTube(Manager::UR_API_WORKER, json_encode($jobData));
+    }
+
     public function updateCacheForAdSlot(BaseAdSlotInterface $adSlot){
 
         $params = new StdClass();

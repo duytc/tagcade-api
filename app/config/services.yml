@@ -373,6 +373,11 @@ services:
             - '@tagcade.cache.display.tag_cache_manager'
             - '@tagcade.domain_manager.ad_slot'
 
+    tagcade.worker.workers.update_ad_slot_when_optimization_integration_change_worker:
+        class: Tagcade\Worker\Workers\UpdateAdSlotWhenOptimizationIntegrationChangeWorker
+        arguments:
+            - '@tagcade.domain_manager.ad_slot'
+
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil
 

@@ -66,6 +66,7 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.update_ad_slot_cache_due_to_display_blacklist_worker'),
     $container->get('tagcade.worker.workers.update_ad_slot_cache_worker'),
     $container->get('tagcade.worker.workers.update_ad_slot_cache_when_remove_optimization_integration_worker'),
+    $container->get('tagcade.worker.workers.update_ad_slot_when_optimization_integration_change_worker'),
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);

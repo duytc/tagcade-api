@@ -143,6 +143,15 @@ services:
             - { name: doctrine.event_listener, event: preUpdate }
             - { name: doctrine.event_listener, event: postFlush }
 
+    tagcade_api.event_listener.update_otimization_integration_when_ad_slot_change_listener:
+        class: Tagcade\Bundle\ApiBundle\EventListener\UpdateOptimizationIntegrationWhenAdSlotChangeListener
+        arguments:
+            - '@tagcade.worker.manager'
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: preUpdate }
+            - { name: doctrine.event_listener, event: preRemove }
+            - { name: doctrine.event_listener, event: postFlush }
 
     tagcade_api.event_listener.update_white_list_cache_listener:
         class: Tagcade\Bundle\ApiBundle\EventListener\UpdateWhiteListCacheListener

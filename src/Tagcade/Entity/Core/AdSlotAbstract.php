@@ -39,6 +39,7 @@ abstract class AdSlotAbstract
     protected $refreshEvery;
     protected $maximumRefreshTimes;
     protected $autoOptimize;
+    protected $optimizationIntegration;
 
     public function __construct()
     {
@@ -278,6 +279,26 @@ abstract class AdSlotAbstract
     public function setAutoOptimize($autoOptimize)
     {
         $this->autoOptimize = $autoOptimize;
+        
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptimizationIntegration()
+    {
+        return $this->optimizationIntegration;
+    }
+
+    /**
+     * @param mixed $optimizationIntegration
+     * @return self
+     */
+    public function setOptimizationIntegration($optimizationIntegration)
+    {
+        $this->optimizationIntegration = $optimizationIntegration;
+
         return $this;
     }
 }
