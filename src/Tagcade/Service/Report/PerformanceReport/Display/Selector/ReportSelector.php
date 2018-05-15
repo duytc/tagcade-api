@@ -171,6 +171,48 @@ class ReportSelector implements ReportSelectorInterface
         return $result;
     }
 
+    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params)
+    {
+        $onlyTodayInDateRange = $this->dateUtil->isOnlyTodayOrYesterdayInRange($params->getStartDate(), $params->getEndDate());
+
+        $reports = [];
+
+        if ($onlyTodayInDateRange && $this->reportCreator instanceof ReportCreatorInterface) {
+            if (
+                !$reportType instanceof SubPublisherReportType\SubPublisher &&
+                !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
+            ) {
+
+                for ($i = 0; $i <= 23; $i++) {
+                    $this->reportCreator->setDataWithDateHour(true);
+                    $this->reportCreator->setDate($params->getStartDate()->setTime($i, 0));
+
+                    // the report types above do not have creator, they're derived from other reports
+                    // Create today's report and add it to the first position in the array
+                    $report = [];
+                    $report = $this->reportCreator->getReport($reportType);
+                    if (!$report instanceof ReportInterface) {
+                        continue;
+                    }
+
+                    $date = $params->getStartDate()->setTime($i, 0)->format('Y-m-d G');
+                    $report->setDate(DateTime::createFromFormat('Y-m-d G', $date));
+
+                    $reports[] = $report;
+                }
+                $this->reportCreator->setDataWithDateHour(false);
+                $this->reportCreator->setDate($params->getStartDate());
+
+            }
+        }
+
+        if (empty($reports)) {
+            return [];
+        }
+
+        return $reports;
+    }
+
     public function getGroupedReports(ReportTypeInterface $reportType, ParamsInterface $params)
     {
         $params->setGrouped(true);

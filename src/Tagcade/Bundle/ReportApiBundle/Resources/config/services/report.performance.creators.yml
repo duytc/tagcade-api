@@ -99,6 +99,12 @@ services:
             - '@tagcade.domain_manager.ad_slot'
             - '%tc.report.performance.event_counter.redis_pipeline_size_threshold%'
 
+    tagcade.service.report.performance_report.display.counter.snapshot_cache_event_counter:
+        class: Tagcade\Service\Report\PerformanceReport\Display\Counter\SnapshotCacheEventCounter
+        arguments:
+            - '@tagcade.service.report.performance_report.display.counter.cache_event_counter'
+            - '%tc.report.performance.event_counter.cache_key_timeout%'
+
     ### Report creator service
 
     tagcade.service.report.performance_report.display.creator.report_creator:

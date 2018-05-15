@@ -20,6 +20,17 @@ interface ReportSelectorInterface
     public function getReports(ReportTypeInterface $reportType, ParamsInterface $params);
 
     /**
+     * Get reports for one report type with dateRange is only today -> get all hours passed
+     *
+     * i.e, a report for a single ad network over a date range
+     *
+     * @param ReportTypeInterface $reportType
+     * @param ParamsInterface $params
+     * @return ReportResultInterface|false
+     */
+    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params);
+
+    /**
      * Convenience method to have a defined return type of ReportGroup
      *
      * @param ReportTypeInterface $reportType

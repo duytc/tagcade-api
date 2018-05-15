@@ -22,6 +22,17 @@ interface EventCounterInterface
     public function getDate();
 
     /**
+     * @param boolean $dataWithDateHour
+     * @return self
+     */
+    public function setDataWithDateHour($dataWithDateHour);
+
+    /**
+     * @return boolean
+     */
+    public function getDataWithDateHour();
+
+    /**
      * @param int $slotId
      * @return mixed
      */

@@ -57,6 +57,14 @@ class TestEventCounter extends AbstractEventCounter
 
     protected $slotIds = [];
 
+    protected $adTagDataHourly = [];
+    protected $adSlotDataHourly = [];
+//    protected $ronAdSlotDataHourly = [];
+//    protected $ronAdSlotSegmentDataHourly = [];
+//    protected $ronAdTagDataHourly = [];
+//    protected $ronAdTagSegmentDataHourly = [];
+//
+//    protected $accountDataHourly = [];
     /**
      * @param ReportableAdSlotInterface[] $adSlots
      */
@@ -75,6 +83,15 @@ class TestEventCounter extends AbstractEventCounter
         $this->ronAdTagSegmentData = [];
 
         $this->accountData = [];
+
+        $this->adSlotDataHourly = [];
+        $this->adTagDataHourly = [];
+//        $this->ronAdSlotDataHourly = [];
+//        $this->ronAdSlotSegmentDataHourly = [];
+//        $this->ronAdTagDataHourly = [];
+//        $this->ronAdTagSegmentDataHourly = [];
+//
+//        $this->accountDataHourly = [];
 
         /**
          * @var BaseAdSlotInterface $adSlot
@@ -100,6 +117,22 @@ class TestEventCounter extends AbstractEventCounter
                 );
             }
 
+//            // create data for 24 hours for $accountDataHourly
+//            for ($i = 0; $i <= 23; $i++) {
+//                if (!isset($this->accountDataHourly[$publisherId][$i])) {
+//                    $this->accountDataHourly[$publisherId][$i] = array(
+//                        static::CACHE_KEY_ACC_SLOT_OPPORTUNITY => 0,
+//                        static::CACHE_KEY_ACC_OPPORTUNITY => 0,
+//                        static::KEY_IN_BANNER_REQUESTS => 0,
+//                        static::KEY_IN_BANNER_TIMEOUT => 0,
+//                        static::KEY_IN_BANNER_IMPRESSIONS => 0,
+//                        static::KEY_HB_BID_REQUEST => 0,
+//                        static::KEY_PASSBACK => 0,
+//                        static::KEY_IMPRESSION => 0,
+//                    );
+//                }
+//            }
+
             $this->adSlotData[$adSlot->getId()] = array (
                 static::KEY_IN_BANNER_REQUESTS => 0,
                 static::KEY_IN_BANNER_TIMEOUT => 0,
@@ -123,6 +156,42 @@ class TestEventCounter extends AbstractEventCounter
                 $this->adSlotData[$adSlot->getId()][static::KEY_HB_BID_REQUEST] = $hbRequests;
                 $this->accountData[$publisherId][static::KEY_HB_BID_REQUEST] += $hbRequests;
             }
+
+            // create data for 24 hours for adSlotDataHourly
+            $previousSlotOpportunities = 0; // ...
+            $previousSlotOpportunitiesRefreshes = 0; // ...
+            $previousHbRequests = 0; // ...
+            for ($i = 0; $i <= 23; $i++) {
+                $nextSlotOpportunities = mt_rand($previousSlotOpportunities, $slotOpportunities);
+                $nextSlotOpportunitiesRefreshes = mt_rand($previousSlotOpportunitiesRefreshes, isset($slotOpportunitiesRefreshes) ? $slotOpportunitiesRefreshes : 0);
+                $nextHbRequests = mt_rand($previousHbRequests, isset($hbRequests) ? $hbRequests : 0);
+
+                $this->adSlotDataHourly[$adSlot->getId()][$i] = array (
+                    static::KEY_IN_BANNER_REQUESTS => 0,
+                    static::KEY_IN_BANNER_TIMEOUT => 0,
+                    static::KEY_IN_BANNER_IMPRESSIONS => 0,
+                );
+
+                if (!$adSlot instanceof DynamicAdSlotInterface) {
+                    $this->adSlotDataHourly[$adSlot->getId()][$i][static::KEY_SLOT_OPPORTUNITY] = $nextSlotOpportunities;
+
+                    // $slotOpportunitiesRefreshes count, only for display ad slot
+                    if ($adSlot instanceof DisplayAdSlotInterface && $adSlot->isAutoRefresh()) {
+                        $this->adSlotDataHourly[$adSlot->getId()][$i][static::KEY_SLOT_OPPORTUNITY_REFRESHES] = $nextSlotOpportunitiesRefreshes;
+                    }
+                }
+
+                if($adSlot->getSite()->getPublisher()->hasHeaderBiddingModule()) {
+                    $this->adSlotDataHourly[$adSlot->getId()][$i][static::KEY_HB_BID_REQUEST] = $nextHbRequests;
+                }
+
+                $previousSlotOpportunities = $nextSlotOpportunities;
+                $previousSlotOpportunitiesRefreshes = $nextSlotOpportunitiesRefreshes;
+                $previousHbRequests = $nextHbRequests;
+            }
+            unset($previousSlotOpportunities, $nextSlotOpportunities);
+            unset($previousSlotOpportunitiesRefreshes, $nextSlotOpportunitiesRefreshes);
+            unset($previousHbRequests, $nextHbRequests);
 
             $ronAdSlot = $adSlot->getLibraryAdSlot()->getRonAdSlot();
             if ($ronAdSlot instanceof RonAdSlotInterface) {
@@ -189,6 +258,79 @@ class TestEventCounter extends AbstractEventCounter
                     static::KEY_REFRESHES => $refreshes
                 ];
 
+                // create date hourly
+                // $this->adTagDataHourly = [
+                //     tagid => [
+                //         '0' => [
+                //             'opportunities' => 1200,
+                //             'impressions' => 630,
+                //             ...,
+                //         ],
+                //         '1' => 1200,
+                //         '2' => 1400,
+                //         ...,
+                //         '22' => 1205450,
+                //         '23' => 1205450,
+                //     ]
+                //];
+                // create data for 24 hours for ronAdSlotDataHourly and ronAdSlotSegmentDataHourly
+                $previousOpportunitiesValue = 0;
+                $previousImpressionsValue = 0;
+                $previousPassbacks = 0;
+                $previousFirstOpportunities = 0;
+                $previousVerifiedImpressions = 0;
+                $previousUnverifiedImpressions = 0;
+                $previousBlankImpressions = 0;
+                $previousVoidImpressions = 0;
+                $previousClicks = 0;
+                $previousRefreshes = 0;
+                for ($i = 0; $i <= 23; $i++) {
+                    $nextOpportunitiesValue = mt_rand($previousOpportunitiesValue, $opportunities);
+                    $nextImpressionsValue = mt_rand($previousImpressionsValue, $impressions);
+                    $nextPassbacks = mt_rand($previousPassbacks, $passbacks);
+                    $nextFirstOpportunities = mt_rand($previousFirstOpportunities, $firstOpportunities);
+                    $nextVerifiedImpressions = mt_rand($previousVerifiedImpressions, $verifiedImpressions);
+                    $nextUnverifiedImpressions = mt_rand($previousUnverifiedImpressions, $unverifiedImpressions);
+                    $nextBlankImpressions = mt_rand($previousBlankImpressions, $blankImpressions);
+                    $nextVoidImpressions = mt_rand($previousVoidImpressions, $voidImpressions);
+                    $nextClicks = mt_rand($previousClicks, $clicks);
+                    $nextRefreshes = mt_rand($previousRefreshes , $refreshes);
+
+                    $this->adTagDataHourly[$adTag->getId()][$i] = [
+                        static::KEY_OPPORTUNITY => $nextOpportunitiesValue,
+                        static::KEY_IMPRESSION => $nextImpressionsValue,
+                        static::KEY_PASSBACK => $nextPassbacks,
+                        static::KEY_FIRST_OPPORTUNITY => $nextFirstOpportunities,
+                        static::KEY_VERIFIED_IMPRESSION => $nextVerifiedImpressions,
+                        static::KEY_UNVERIFIED_IMPRESSION => $nextUnverifiedImpressions,
+                        static::KEY_BLANK_IMPRESSION => $nextBlankImpressions,
+                        static::KEY_VOID_IMPRESSION => $nextVoidImpressions,
+                        static::KEY_CLICK => $nextClicks,
+                        static::KEY_REFRESHES => $nextRefreshes
+                    ];
+
+                    $previousOpportunitiesValue = $nextOpportunitiesValue;
+                    $previousImpressionsValue = $nextImpressionsValue;
+                    $previousPassbacks = $nextPassbacks;
+                    $previousFirstOpportunities = $nextFirstOpportunities;
+                    $previousVerifiedImpressions = $nextVerifiedImpressions;
+                    $previousUnverifiedImpressions = $nextUnverifiedImpressions;
+                    $previousBlankImpressions = $nextBlankImpressions;
+                    $previousVoidImpressions = $nextVoidImpressions;
+                    $previousClicks = $nextClicks;
+                    $previousRefreshes = $nextRefreshes;
+                }
+                unset($previousOpportunitiesValue, $nextOpportunitiesValue);
+                unset($previousImpressionsValue, $nextImpressionsValue);
+                unset($previousPassbacks, $nextPassbacks);
+                unset($previousFirstOpportunities, $nextFirstOpportunities);
+                unset($previousVerifiedImpressions, $nextVerifiedImpressions);
+                unset($previousUnverifiedImpressions, $nextUnverifiedImpressions);
+                unset($previousBlankImpressions, $nextBlankImpressions);
+                unset($previousVoidImpressions, $nextVoidImpressions);
+                unset($previousClicks, $nextClicks);
+                unset($previousRefreshes, $nextRefreshes);
+
                 if ($adSlot->getSite()->getPublisher()->hasInBannerModule() && $adTag->isActive() && $adTag->getLibraryAdTag()->getAdType() == 2) {
                     $this->adTagData[$adTag->getId()][static::KEY_IN_BANNER_IMPRESSIONS] = $inBannerImpressions;
                     $this->adTagData[$adTag->getId()][static::KEY_IN_BANNER_REQUESTS] = $inBannerRequests;
@@ -208,6 +350,37 @@ class TestEventCounter extends AbstractEventCounter
                 $this->accountData[$publisherId][static::KEY_PASSBACK] += $passbacks;
 
                 $opportunitiesRemaining = $passbacks;
+
+                // create data for 24 hours
+                $previousInBannerImpressions = 0;
+                $previousInBannerRequests = 0;
+                $previousInBannerTimeOut = 0;
+                $previousInBannerTimeOutSlot = 0;
+                for ($i = 0; $i <= 23; $i++) {
+                    if ($adSlot->getSite()->getPublisher()->hasInBannerModule() && $adTag->isActive() && $adTag->getLibraryAdTag()->getAdType() == 2) {
+                        $nextInBannerImpressions = mt_rand($previousInBannerImpressions, $inBannerImpressions);
+                        $nextInBannerRequests = mt_rand($previousInBannerRequests, $inBannerRequests);
+                        $nextInBannerTimeOut = mt_rand($previousInBannerTimeOut, $inBannerRequests - $inBannerImpressions);
+                        $nextInBannerTimeOutSlot = mt_rand($previousInBannerTimeOutSlot, $this->adTagData[$adTag->getId()][self::KEY_IN_BANNER_TIMEOUT]);
+
+                        $this->adTagDataHourly[$adTag->getId()][$i][static::KEY_IN_BANNER_IMPRESSIONS] = $nextInBannerImpressions;
+                        $this->adTagDataHourly[$adTag->getId()][$i][static::KEY_IN_BANNER_REQUESTS] = $nextInBannerRequests;
+                        $this->adTagDataHourly[$adTag->getId()][$i][static::KEY_IN_BANNER_TIMEOUT] = $nextInBannerTimeOut;
+
+                        $this->adSlotDataHourly[$adSlot->getId()][$i][static::KEY_IN_BANNER_IMPRESSIONS] += $nextInBannerImpressions;
+                        $this->adSlotDataHourly[$adSlot->getId()][$i][static::KEY_IN_BANNER_REQUESTS] += $nextInBannerRequests;
+                        $this->adSlotDataHourly[$adSlot->getId()][$i][static::KEY_IN_BANNER_TIMEOUT] += $nextInBannerTimeOutSlot;
+
+                        $previousInBannerImpressions = $nextInBannerImpressions;
+                        $previousInBannerRequests = $nextInBannerRequests;
+                        $previousInBannerTimeOut = $nextInBannerTimeOut;
+                        $previousInBannerTimeOutSlot = $nextInBannerTimeOutSlot;
+                    }
+                }
+                unset($previousInBannerImpressions, $nextInBannerImpressions);
+                unset($previousInBannerRequests, $nextInBannerRequests);
+                unset($previousInBannerTimeOut, $nextInBannerTimeOut);
+                unset($previousInBannerTimeOutSlot, $nextInBannerTimeOutSlot);
 
                 $libSlotTags = $adTag->getLibraryAdTag()->getLibSlotTags();
                 foreach ($libSlotTags as $slotTag) {
@@ -359,6 +532,16 @@ class TestEventCounter extends AbstractEventCounter
     public function getRonAdTagSegmentData()
     {
         return $this->ronAdTagSegmentData;
+    }
+
+    public function getAdSlotDataHourly()
+    {
+        return $this->adSlotDataHourly;
+    }
+
+    public function getAdTagDataHourly()
+    {
+        return $this->adTagDataHourly;
     }
 
     /**

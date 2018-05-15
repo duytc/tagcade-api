@@ -50,7 +50,9 @@ $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Count
     $container->getParameter('tc.report.performance.event_counter.redis_pipeline_size_threshold')
 );
 
-$cacheEventCounter->setDate(new DateTime('yesterday'));
+$cacheEventCounter->setDataWithDateHour(false);
+// set date again to make sure that can get right dateFormatter based on $dataWithDateHour
+$cacheEventCounter->setDate(new DateTime('now'));
 
 writeln('### creating test live data for account ###');
 foreach($testEventCounter->getAccountData() as $publisherId => $accountData) {
@@ -140,77 +142,36 @@ foreach($testEventCounter->getAccountData() as $publisherId => $accountData) {
 }
 
 writeln('### creating test live data for all ad slots ###');
+$originalDate = $cacheEventCounter->getDate();
+// full day
+writeln('### creating test live data full day for all ad slots ###');
+// set date again to make sure that can get right dateFormatter based on $dataWithDateHour
+$cacheEventCounter->setDate($originalDate);
 foreach($testEventCounter->getAdSlotData() as $slotId => $slotData) {
     $adSlot = findAdSlot($allAdSLotMap, $slotId);
-
-    if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY, $slotData)) {
-        $cache->save(
-            $cacheEventCounter->getCacheKey(
-                $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY,
-                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-            ),
-            $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
-        );
-    }
-
-    if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY_REFRESHES, $slotData)) {
-        $cache->save(
-            $cacheEventCounter->getCacheKey(
-                $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES,
-                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-            ),
-            $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY_REFRESHES]
-        );
-    }
-
-    if($adSlot->getSite()->getPublisher()->hasInBannerModule()) {
-        if (array_key_exists($testEventCounter::KEY_IN_BANNER_REQUESTS, $slotData)) {
-            $cache->hSave(
-                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
-                $cacheEventCounter->getCacheKey(
-                    $cacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST,
-                    $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-                ),
-                $slotData[$testEventCounter::KEY_IN_BANNER_REQUESTS]
-            );
-        }
-
-        if (array_key_exists($testEventCounter::KEY_IN_BANNER_IMPRESSIONS, $slotData)) {
-            $cache->hSave(
-                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
-                $cacheEventCounter->getCacheKey(
-                    $cacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION,
-                    $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-                ),
-                $slotData[$testEventCounter::KEY_IN_BANNER_IMPRESSIONS]
-            );
-        }
-
-        if (array_key_exists($testEventCounter::KEY_IN_BANNER_TIMEOUT, $slotData)) {
-            $cache->hSave(
-                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
-                $cacheEventCounter->getCacheKey(
-                    $cacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT,
-                    $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-                ),
-                $slotData[$testEventCounter::KEY_IN_BANNER_TIMEOUT]
-            );
-        }
-
-    }
-
-    if (array_key_exists($testEventCounter::KEY_HB_BID_REQUEST, $slotData)) {
-        $cache->save(
-            $cacheEventCounter->getCacheKey(
-                $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,
-                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
-            ),
-            $slotData[$testEventCounter::KEY_HB_BID_REQUEST]
-        );
-    }
-
-    unset($slotId, $slotData);
+    saveAdSlotData($cacheEventCounter, $slotId, $slotData, $allAdSLotMap, $container, $testEventCounter);
 }
+
+// hourly
+writeln('### creating test live data foreach hour for all ad slots ###');
+$cacheEventCounter->setDataWithDateHour(true);
+foreach($testEventCounter->getAdSlotDataHourly() as $slotId => $slotDataHourly) {
+    foreach ($slotDataHourly as $hour => $slotDataHourlyItem) {
+        $dataWithDateHour = clone $originalDate;
+        if (!$dataWithDateHour instanceof DateTime){
+            continue;
+        }
+
+        // set hour
+        $dataWithDateHour->setTime($hour, 0);
+        $cacheEventCounter->setDate($dataWithDateHour);
+        saveAdSlotData($cacheEventCounter, $slotId, $slotDataHourlyItem, $allAdSLotMap, $container, $testEventCounter);
+    }
+}
+
+$cacheEventCounter->setDataWithDateHour(false);
+// set date again to make sure that can get right dateFormatter based on $dataWithDateHour
+$cacheEventCounter->setDate($originalDate);
 
 // generate for ron ad slot
 writeln('### creating test live data for all ron ad slots ###');
@@ -369,7 +330,48 @@ foreach($testEventCounter->getRonAdSlotSegmentData() as $ronSlotId => $segments)
 }
 
 writeln('### creating test live data for all ad tags ###');
+
+$originalDate = $cacheEventCounter->getDate();
+
+// full day
+writeln('### creating test live data full day for all ad tags ###');
+$cacheEventCounter->setDataWithDateHour(false);
+// set date again to make sure that can get right dateFormatter based on $dataWithDateHour
+$cacheEventCounter->setDate($originalDate);
 foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
+    saveAdTagData($cacheEventCounter, $tagId, $tagData, $container, $testEventCounter);
+}
+
+// hourly
+writeln('### creating test live data day with hour for all ad tags ###');
+$cacheEventCounter->setDataWithDateHour(true);
+foreach($testEventCounter->getAdTagDataHourly() as $tagId => $tagDataHourly) {
+    foreach ($tagDataHourly as $hour => $tagDataHourlyItem) {
+        $dataWithDateHour = clone $originalDate;
+        if (!$dataWithDateHour instanceof DateTime){
+            continue;
+        }
+
+        // set hour
+        $dataWithDateHour->setTime($hour, 0);
+        $cacheEventCounter->setDate($dataWithDateHour);
+        saveAdTagData($cacheEventCounter, $tagId, $tagDataHourlyItem, $container, $testEventCounter);
+    }
+}
+
+$cacheEventCounter->setDataWithDateHour(false);
+// set date again to make sure that can get right dateFormatter based on $dataWithDateHour
+$cacheEventCounter->setDate($originalDate);
+
+/**
+ * @param \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter $cacheEventCounter
+ * @param $tagId
+ * @param $tagData
+ * @param ContainerInterface $container
+ * @param \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter$testEventCounter
+ */
+function saveAdTagData (\Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter $cacheEventCounter, $tagId, $tagData, ContainerInterface $container, \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter $testEventCounter) {
+    $cache = $container->get('tagcade.cache.app_cache');
     $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_TAG, $tagId);
 
     $cache->save(
@@ -422,10 +424,6 @@ foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
         $tagData[$testEventCounter::KEY_REFRESHES]
     );
 
-    if ($tagId == 3878) {
-        $test = 2;
-    }
-
     $slotId = $testEventCounter->getSlotIdForTag($tagId);
     if ($slotId) {
         $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId, $cacheEventCounter::NAMESPACE_AD_TAG, $tagId);
@@ -466,6 +464,95 @@ foreach($testEventCounter->getAdTagData() as $tagId => $tagData) {
     unset($tagId, $tagData);
 }
 
+/**
+ * @param \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter $cacheEventCounter
+ * @param $slotId
+ * @param $slotData
+ * @param $allAdSLotMap
+ * @param ContainerInterface $container
+ * @param \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter $testEventCounter
+ */
+function saveAdSlotData (\Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter $cacheEventCounter, $slotId, $slotData, $allAdSLotMap, ContainerInterface $container, \Tagcade\Service\Report\PerformanceReport\Display\Counter\TestEventCounter $testEventCounter) {
+    $cache = $container->get('tagcade.cache.app_cache');
+    $adSlot = findAdSlot($allAdSLotMap, $slotId);
+
+//    $namespace = $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId);
+//
+//    $cacheKey = $cacheEventCounter->getCacheKey(
+//        $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY,
+//        $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+//    );
+
+    if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY]
+        );
+    }
+
+    if (array_key_exists($testEventCounter::KEY_SLOT_OPPORTUNITY_REFRESHES, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_SLOT_OPPORTUNITY_REFRESHES,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_SLOT_OPPORTUNITY_REFRESHES]
+        );
+    }
+
+    if($adSlot->getSite()->getPublisher()->hasInBannerModule()) {
+        if (array_key_exists($testEventCounter::KEY_IN_BANNER_REQUESTS, $slotData)) {
+            $cache->hSave(
+                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+                $cacheEventCounter->getCacheKey(
+                    $cacheEventCounter::CACHE_KEY_IN_BANNER_REQUEST,
+                    $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+                ),
+                $slotData[$testEventCounter::KEY_IN_BANNER_REQUESTS]
+            );
+        }
+
+        if (array_key_exists($testEventCounter::KEY_IN_BANNER_IMPRESSIONS, $slotData)) {
+            $cache->hSave(
+                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+                $cacheEventCounter->getCacheKey(
+                    $cacheEventCounter::CACHE_KEY_IN_BANNER_IMPRESSION,
+                    $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+                ),
+                $slotData[$testEventCounter::KEY_IN_BANNER_IMPRESSIONS]
+            );
+        }
+
+        if (array_key_exists($testEventCounter::KEY_IN_BANNER_TIMEOUT, $slotData)) {
+            $cache->hSave(
+                $cacheEventCounter::REDIS_HASH_IN_BANNER_EVENT_COUNT,
+                $cacheEventCounter->getCacheKey(
+                    $cacheEventCounter::CACHE_KEY_IN_BANNER_TIMEOUT,
+                    $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+                ),
+                $slotData[$testEventCounter::KEY_IN_BANNER_TIMEOUT]
+            );
+        }
+
+    }
+
+    if (array_key_exists($testEventCounter::KEY_HB_BID_REQUEST, $slotData)) {
+        $cache->save(
+            $cacheEventCounter->getCacheKey(
+                $cacheEventCounter::CACHE_KEY_HB_BID_REQUEST,
+                $cacheEventCounter->getNamespace($cacheEventCounter::NAMESPACE_AD_SLOT, $slotId)
+            ),
+            $slotData[$testEventCounter::KEY_HB_BID_REQUEST]
+        );
+    }
+
+    unset($slotId, $slotData);
+
+    unset($tagId, $tagData);
+}
 writeln('### Finished creating test live data for performance reports ###');
 
 function writeln($str)

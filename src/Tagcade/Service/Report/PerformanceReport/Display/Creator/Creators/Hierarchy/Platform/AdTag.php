@@ -50,8 +50,7 @@ class AdTag extends CreatorAbstract implements AdTagInterface
             ->setNetworkOpportunityFillRate($this->calculateNetworkOpportunityFillRate($report->getAdOpportunities(), $totalOpportunities))
             ->setInBannerImpressions($this->eventCounter->getAdTagInBannerImpressionCount($adTag->getAdSlotId(), $adTag->getId()))
             ->setInBannerRequests($this->eventCounter->getAdTagInBannerRequestCount($adTag->getAdSlotId(), $adTag->getId()))
-            ->setInBannerTimeouts($this->eventCounter->getAdTagInBannerTimeoutCount($adTag->getAdSlotId(), $adTag->getId()))
-        ;
+            ->setInBannerTimeouts($this->eventCounter->getAdTagInBannerTimeoutCount($adTag->getAdSlotId(), $adTag->getId()));
 
         if (!$isNativeAdSlot) {
             $passbacks = $this->eventCounter->getPassbackCount($adTag->getId());
@@ -71,7 +70,6 @@ class AdTag extends CreatorAbstract implements AdTagInterface
                 ->setPassbacks(0)
                 ->setRefreshes(0);
         }
-
 
         return $report;
     }

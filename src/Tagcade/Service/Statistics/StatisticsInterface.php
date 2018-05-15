@@ -21,12 +21,25 @@ interface StatisticsInterface
     public function getAdminDashboard(DateTime $startDate = null, DateTime $endDate = null);
 
     /**
+     * @param DateTime $today
+     * @return AdminDashboard
+     */
+    public function getAdminDashboardHourly(DateTime $today = null);
+
+    /**
      * @param PublisherInterface $publisher
      * @param DateTime $startDate
      * @param DateTime $endDate
      * @return PublisherDashboard
      */
     public function getPublisherDashboard(PublisherInterface $publisher, DateTime $startDate = null, DateTime $endDate = null);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param DateTime $today
+     * @return PublisherDashboard
+     */
+    public function getPublisherDashboardHourly(PublisherInterface $publisher, DateTime $today = null);
 
     /**
      * @param PublisherInterface $publisher

@@ -22,6 +22,12 @@ interface ReportBuilderInterface
 
     /**
      * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getPlatformReportForHourly(Params $params);
+
+    /**
+     * @param Params $params
      * @param $inBanner
      * @return ReportResultInterface|false
      */
@@ -58,6 +64,12 @@ interface ReportBuilderInterface
      */
     public function getPublisherReport(PublisherInterface $publisher, Params $params);
 
+    /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @return ReportResultInterface|false
+     */
+    public function getPublisherReportForHourly(PublisherInterface $publisher, Params $params);
     /**
      * get Publisher AdNetworks Report breakdown by ad network
      *

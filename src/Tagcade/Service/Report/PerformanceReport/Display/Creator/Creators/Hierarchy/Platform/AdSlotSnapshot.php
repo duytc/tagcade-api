@@ -10,6 +10,7 @@ use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdTag as AdTagReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -23,11 +24,15 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
     /** @var AdTagManagerInterface */
     private $adTagManager;
 
-    public function __construct(AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
+    /** @var AdTagSnapshot */
+    private $adTagSnapshotCreator;
+
+    public function __construct(AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository, AdTagSnapshot $adTagSnapshotCreator)
     {
         parent::__construct($billingCalculator, $billingConfigurationRepository);
 
         $this->adTagManager = $adTagManager;
+        $this->adTagSnapshotCreator = $adTagSnapshotCreator;
     }
 
     /**
@@ -47,6 +52,17 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
         $result = $this->eventCounter->getAdSlotReport($adSlot);
 
         $this->parseRawReportData($adSlotReport, $result);
+
+        // aggregate ad Tag Snapshot reports
+        $estRevenue = 0;
+        $adTags = $adSlot->getAdTags();
+        $this->adTagSnapshotCreator->setEventCounter($this->eventCounter);
+        foreach ($adTags as $adTag) {
+            $adTagSnapshotReport = $this->adTagSnapshotCreator->createReport(new AdTagReportType($adTag));
+            $estRevenue += $adTagSnapshotReport->getEstRevenue();
+        }
+
+        $adSlotReport->setEstRevenue($estRevenue);
 
         return $adSlotReport;
     }
@@ -72,7 +88,7 @@ class AdSlotSnapshot extends BillableSnapshotCreatorAbstract implements AdSlotIn
             $billingConfiguration = new BillingConfiguration();
             $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
         }
-        
+
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $report->getAdOpportunities();

@@ -20,6 +20,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class CacheEventCounter extends AbstractEventCounter implements CacheEventCounterInterface
 {
     const KEY_DATE_FORMAT                  = 'ymd';
+    const KEY_DATE_HOUR_FORMAT             = 'ymdH';
 
     const CACHE_KEY_ACC_SLOT_OPPORTUNITY   = 'slot_opportunities';
     const CACHE_KEY_ACC_OPPORTUNITY        = 'opportunities';
@@ -120,7 +121,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         }
 
         $this->date = $date;
-        $this->formattedDate = $date->format(self::KEY_DATE_FORMAT);
+        $this->formattedDate = !$this->getDataWithDateHour() ? $date->format(self::KEY_DATE_FORMAT) : $date->format(self::KEY_DATE_HOUR_FORMAT);
     }
 
     public function getCache()
@@ -1215,7 +1216,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     public function getCacheKey($key, $namespace)
     {
-        $keyFormat = '%s:%s:%s';
+        $keyFormat = '%s:%s:%s'; // opportunities:adtag_100:2018040901
         return sprintf($keyFormat, $key, $namespace, $this->formattedDate);
     }
 }

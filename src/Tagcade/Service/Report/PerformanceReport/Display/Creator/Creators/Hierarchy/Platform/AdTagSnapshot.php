@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AdTagReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\NativeAdSlotInterface;
+use Tagcade\Model\Report\CalculateRevenueTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateAdOpportunitiesTrait;
 use Tagcade\Model\Report\PerformanceReport\CalculateNetworkOpportunityFillRateTrait;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -18,6 +19,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
 {
     use CalculateAdOpportunitiesTrait;
     use CalculateNetworkOpportunityFillRateTrait;
+    use CalculateRevenueTrait;
 
     /**
      * @var EstCpmCalculatorInterface
@@ -86,6 +88,7 @@ class AdTagSnapshot extends SnapshotCreatorAbstract implements AdTagInterface, S
 
         // TODO latter
         $report->setEstCpm((float)0);
-        $report->setEstRevenue((float)0);
+
+        $report->setEstRevenue($this->calculateEstRevenue($report->getAdOpportunities(), $report->getAdTag()->getLibraryAdTag()->getSellPrice()));
     }
 }

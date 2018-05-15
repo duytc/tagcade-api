@@ -147,3 +147,4 @@ parameters:
     tc.display.blacklist.prefix: 'dsp:nw_bl'
     tc.display.white_list.prefix: 'dsp:nw_wl'
     tc.display.domain.max_sub_domains: 6
+    tc.report.performance.event_counter.cache_key_timeout: 259200
