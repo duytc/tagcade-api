@@ -33,9 +33,53 @@ use Tagcade\Repository\Core\DisplayWhiteListRepositoryInterface;
 class AdNetworkController extends RestControllerAbstract implements ClassResourceInterface
 {
     /**
-     * Get all ad networks
+     * @Rest\Get("/adnetworks/adnetworksdetail")
+     * Get all ad networks with fulldetail
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary", "display.whitelist.summary", "network.whitelist.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "partner.summary", "display.blacklist.min", "network.blacklist.min", "display.whitelist.min", "network.whitelist.min"})
+     *
+     * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
+     * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
+     * @Rest\QueryParam(name="searchField", nullable=true, description="field to filter, must match field in Entity")
+     * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
+     * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
+     * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering sites")
+     *
+     * @ApiDoc(
+     *  section = "Ad Networks",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param $request
+     * @return AdNetworkInterface[]
+     */
+    public function getAllAdNetworkFullDetailAction(Request $request)
+    {
+        $role = $this->getUser();
+        /** @var AdNetworkRepositoryInterface $adNetworkRepository */
+        $adNetworkRepository = $this->get('tagcade.repository.ad_network');
+        if ($request->query->count() < 1) {
+            if ($role instanceof PublisherInterface) {
+                return $adNetworkRepository->getAdNetworksForPublisher($role);
+            }
+
+            return $this->all();
+        }
+
+        $qb = $adNetworkRepository->getAdNetworksForUserWithPagination($this->getUser(), $this->getParams());
+        return $this->getPagination($qb, $request);
+    }
+
+    /**
+     * Get all ad networks with adnetwork.min
+     * ignore getActiveAdTagsCount and getPausedAdTagsCount due to if the adnetWork has many adtags (supose 10000 adtags)
+     * Cause this one was slowing data retrieval process down
+     *
+     * @Rest\View(serializerGroups={"adnetwork.min", "user.min", "partner.summary", "display.blacklist.min", "network.blacklist.min", "display.whitelist.min", "network.whitelist.min"})
      *
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
      * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
@@ -59,7 +103,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     public function cgetAction(Request $request)
     {
         $role = $this->getUser();
-        $params = $this->get('fos_rest.request.param_fetcher')->all($strict = true);
         /** @var AdNetworkRepositoryInterface $adNetworkRepository */
         $adNetworkRepository = $this->get('tagcade.repository.ad_network');
         if ($request->query->count() < 1) {
@@ -77,7 +120,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
     /**
      * Get a single ad network for the given id
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.summary", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary", "display.whitelist.summary", "network.whitelist.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary", "display.blacklist.summary", "network.blacklist.summary", "display.whitelist.summary", "network.whitelist.summary"})
      *
      * @ApiDoc(
      *  section = "Ad Networks",
@@ -184,7 +227,6 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
             'currentPage' => $page
         );
     }
-
 
     /**
      * Get all active ad tags belonging to this ad network and publisher
@@ -364,7 +406,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Retrieve a list of displayBlacklist for this adNetwork
      *
      * @Rest\View(
-     *      serializerGroups={"adnetwork.summary", "user.summary", "display.blacklist.summary", "network.blacklist.min"}
+     *      serializerGroups={"adnetwork.min", "user.summary", "display.blacklist.summary", "network.blacklist.min"}
      * )
      *
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
@@ -410,7 +452,7 @@ class AdNetworkController extends RestControllerAbstract implements ClassResourc
      * Retrieve a list of displayWhiteList for this adNetwork
      *
      * @Rest\View(
-     *      serializerGroups={"adnetwork.summary", "user.summary", "display.whitelist.summary", "network.whitelist.min"}
+     *      serializerGroups={"adnetwork.min", "user.summary", "display.whitelist.summary", "network.whitelist.min"}
      * )
      *
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")

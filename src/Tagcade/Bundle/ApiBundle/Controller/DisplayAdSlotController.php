@@ -133,7 +133,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * * @Rest\Get("/displayadslots/{id}/optimizedPositions")
      *
      * @Rest\View(
-     *      serializerGroups={"adtag.summary", "site.summary", "user.min", "libraryadtag.summary", "adnetwork.summary"}
+     *      serializerGroups={"adtag.summary", "site.summary", "user.min", "libraryadtag.summary", "adnetwork.min"}
      * )
      *
      * @Rest\QueryParam(name="by", nullable=true, description="Return list of ad tags was been process optimized positions based on this parameter")
@@ -373,7 +373,7 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
      * Get Ad tags of an ad slot
      *
      * @Rest\View(
-     *      serializerGroups={"adtag.summary", "site.summary", "user.min", "libraryadtag.summary", "adnetwork.summary"}
+     *      serializerGroups={"adtag.summary", "site.summary", "user.min", "libraryadtag.summary", "adnetwork.min"}
      * )
      *
      * @ApiDoc(

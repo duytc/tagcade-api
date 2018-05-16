@@ -184,7 +184,7 @@ class UserController extends RestControllerAbstract implements ClassResourceInte
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
      *
-     * @Rest\View(serializerGroups={"adnetwork.extra", "user.min", "adtag.summary", "partner.summary"})
+     * @Rest\View(serializerGroups={"adnetwork.min", "user.min", "adtag.summary", "partner.summary"})
      *
      * @ApiDoc(
      *  section = "admin",

@@ -3,10 +3,10 @@ Tagcade\Entity\Core\AdNetwork:
     virtual_properties:
         getActiveAdTagsCount:
             serialized_name: activeAdTagsCount
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential, adnetwork.min]
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.credential]
         getPausedAdTagsCount:
             serialized_name: pausedAdTagsCount
-            groups: [adnetwork.extra, adnetwork.detail, adnetwork.summary, adnetwork.credential, adnetwork.min]
+            groups: [adnetwork.extra, adnetwork.detail, adnetwork.credential]
     properties:
         id:
             expose: true
