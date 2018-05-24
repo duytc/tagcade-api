@@ -65,11 +65,16 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
     /**
      * @inheritdoc
      */
-    public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $limit = null, $offset = null)
+    public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $autoOptimize = null, $limit = null, $offset = null)
     {
         $qb = $this->createQueryBuilder('vwt')
             ->where('vwt.videoPublisher = :videoPublisher')
             ->setParameter('videoPublisher', $videoPublisher->getId(), Type::INTEGER);
+
+        if ($autoOptimize !== null) {
+            $qb->andWhere('vwt.autoOptimize = :autoOptimize')
+                ->setParameter('autoOptimize', $autoOptimize);
+        }
 
         if (is_int($limit)) {
             $qb->setMaxResults($limit);
@@ -215,10 +220,15 @@ class VideoWaterfallTagRepository extends EntityRepository implements VideoWater
     /**
      * @inheritdoc
      */
-    public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param)
+    public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoOptimize = null)
     {
         $qb = $this->createQueryBuilderForUser($user);
         $qb->join('wt.videoPublisher', 'p');
+
+        if ($autoOptimize !== null) {
+            $qb->andWhere('wt.autoOptimize = :autoOptimize')
+                ->setParameter('autoOptimize', $autoOptimize);
+        }
 
         if (is_string($param->getSearchKey())) {
             $searchLike = sprintf('%%%s%%', $param->getSearchKey());

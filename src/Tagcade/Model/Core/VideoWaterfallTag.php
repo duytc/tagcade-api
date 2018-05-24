@@ -55,6 +55,16 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     protected $runOn;
 
     /**
+     * @var boolean
+     */
+    protected $autoOptimize;
+
+    /**
+     * @var integer
+     */
+    protected $optimizationIntegration;
+
+    /**
      * @var VideoWaterfallTagItemInterface[]
      */
     protected $videoWaterfallTagItems;
@@ -282,6 +292,7 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
         $this->ivtPixelWaterfallTags = $ivtPixelWaterfallTags;
         return $this;
     }
+
     /**
      * @inheritdoc
      */
@@ -338,6 +349,40 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     public function setRunOn($runOn)
     {
         $this->runOn = $runOn;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isAutoOptimize()
+    {
+        return $this->autoOptimize;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setAutoOptimize($autoOptimize)
+    {
+        $this->autoOptimize = $autoOptimize;
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptimizationIntegration()
+    {
+        return $this->optimizationIntegration;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOptimizationIntegration($optimizationIntegration)
+    {
+        $this->optimizationIntegration = $optimizationIntegration;
         return $this;
     }
 }

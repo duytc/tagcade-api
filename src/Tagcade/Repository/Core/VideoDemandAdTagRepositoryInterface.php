@@ -113,4 +113,18 @@ interface VideoDemandAdTagRepositoryInterface extends ObjectRepository
      * @return mixed
      */
     public function findByDemandPartnerWaterfallAndTagName($demandPartner, $waterfall, $tagName);
+
+    /**
+     * @param $name
+     * @param $waterfallTagId
+     * @return mixed
+     */
+    public function findDemandTagByNameAndWaterfallTagId($name, $waterfallTagId);
+
+    /**
+     * @param $id
+     * @param $waterfallTagId
+     * @return mixed
+     */
+    public function findDemandAdTagByIdAndWaterfallTagId($id, $waterfallTagId);
 }

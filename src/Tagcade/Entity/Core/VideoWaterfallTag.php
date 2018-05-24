@@ -20,6 +20,8 @@ class VideoWaterfallTag extends VideoWaterfallTagModel
     protected $deletedAt;
     protected $buyPrice;
     protected $targeting;
+    protected $autoOptimize;
+    protected $optimizationIntegration;
 
     /* new feature: Server-Side VAST+VAPID, Server-Side VAST Only, Client-Side VAST+VAPID (default)*/
     protected $runOn;

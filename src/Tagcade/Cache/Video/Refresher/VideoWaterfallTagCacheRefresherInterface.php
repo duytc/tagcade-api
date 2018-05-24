@@ -16,9 +16,17 @@ interface VideoWaterfallTagCacheRefresherInterface
 
     /**
      * @param VideoWaterfallTagInterface $videoWaterfallTag
+     * @param array $extraData
      * @return mixed
      */
-    public function refreshVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag);
+    public function refreshVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag, $extraData = []);
+
+    /**
+     * @param VideoWaterfallTagInterface $videoWaterfallTag
+     * @param array $cacheKeys
+     * @return mixed
+     */
+    public function removeKeysInVideoWaterfallTagCacheForVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag, array $cacheKeys);
 
     /**
      * @param VideoWaterfallTagInterface $videoWaterfallTag

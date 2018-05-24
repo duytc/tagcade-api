@@ -34,3 +34,9 @@ Tagcade\Entity\Core\VideoWaterfallTag:
         runOn:
             expose: true
             groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+        autoOptimize:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]
+        optimizationIntegration:
+            expose: true
+            groups: [videoWaterfallTag.summary, videoWaterfallTag.detail]

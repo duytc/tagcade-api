@@ -4,6 +4,7 @@
 namespace Tagcade\Model\Core;
 
 
+use Doctrine\Common\Collections\Collection;
 use Tagcade\Model\ModelInterface;
 
 interface VideoWaterfallTagItemInterface extends ModelInterface
@@ -42,7 +43,7 @@ interface VideoWaterfallTagItemInterface extends ModelInterface
     public function setVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag);
 
     /**
-     * @return array|VideoDemandAdTagInterface[]
+     * @return array|VideoDemandAdTagInterface[]|Collection
      */
     public function getVideoDemandAdTags();
 
@@ -53,7 +54,7 @@ interface VideoWaterfallTagItemInterface extends ModelInterface
     public function addVideoDemandAdTag(VideoDemandAdTagInterface $demandAdTag);
 
     /**
-     * @param array|VideoDemandAdTagInterface[] $videoDemandAdTags
+     * @param array|VideoDemandAdTagInterface[]||Collection $videoDemandAdTags
      */
     public function setVideoDemandAdTags($videoDemandAdTags);
 

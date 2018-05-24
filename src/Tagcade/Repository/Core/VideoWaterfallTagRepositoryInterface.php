@@ -5,6 +5,7 @@ namespace Tagcade\Repository\Core;
 
 
 use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
@@ -31,11 +32,12 @@ interface VideoWaterfallTagRepositoryInterface extends ObjectRepository
      * get all VideoWaterfallTags For a Video Publisher
      *
      * @param VideoPublisherInterface $videoPublisher
+     * @param null|bool $autoOptimize
      * @param null|int $limit
      * @param null|int $offset
      * @return mixed
      */
-    public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $limit = null, $offset = null);
+    public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $autoOptimize = null, $limit = null, $offset = null);
 
     /**
      * @param VideoPublisherInterface $user
@@ -69,9 +71,10 @@ interface VideoWaterfallTagRepositoryInterface extends ObjectRepository
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
-     * @return array
+     * @param null|bool $autoOptimize
+     * @return QueryBuilder
      */
-    public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param);
+    public function getWaterfallTagForUserWithPagination(UserRoleInterface $user, PagerParam $param, $autoOptimize = null);
 
     /**
      * @param PublisherInterface $publisher

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Model\Core\VideoPublisherInterface;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagParam;
 
@@ -31,6 +32,7 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
+     * @Rest\QueryParam(name="publisherId", nullable=true, description="the publisher id which is used for filtering video publishers")
      * @ApiDoc(
      *  section = "Video Publishers",
      *  resource = true,
@@ -49,14 +51,29 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
         $videoPublisherManager = $this->get('tagcade.domain_manager.video_publisher');
         $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
 
+        $params = $this->getParams();
+
         if ($request->query->get('page') > 0) {
-            $qb = $videoPublisherRepository->getVideoPublishersForPublisherWithPagination($this->getUser(), $this->getParams());
+            $qb = $videoPublisherRepository->getVideoPublishersForPublisherWithPagination($this->getUser(), $params);
             return $this->getPagination($qb, $request);
         }
 
-        return ($role instanceof PublisherInterface)
-            ? $videoPublisherManager->getVideoPublishersForPublisher($role)
-            : $this->all();
+        if ($role instanceof PublisherInterface) {
+            return $videoPublisherManager->getVideoPublishersForPublisher($role);
+        }
+
+        if ($role instanceof AdminInterface && $params->getPublisherId() > 0) {
+            $publisherId = $params->getPublisherId();
+            $publisherManager = $this->get('tagcade_user.domain_manager.publisher');
+            $publisher = $publisherManager->findPublisher($publisherId);
+            if (!$publisher instanceof PublisherInterface) {
+                return [];
+            }
+
+            return $videoPublisherManager->getVideoPublishersForPublisher($publisher);
+        }
+
+        return $this->all();
     }
 
     /**
@@ -150,6 +167,7 @@ class VideoPublisherController extends RestControllerAbstract implements ClassRe
      */
     public function getVideoWaterfallTagsAction($id, Request $request)
     {
+        /** @var VideoPublisherInterface $videoPublisher */
         $videoPublisher = $this->one($id);
 
         $videoWaterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');

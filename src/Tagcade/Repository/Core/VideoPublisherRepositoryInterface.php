@@ -25,9 +25,10 @@ interface VideoPublisherRepositoryInterface extends ObjectRepository
     /**
      * @param UserRoleInterface $user
      * @param PagerParam $param
+     * @param null|bool $autoOptimize
      * @return mixed
      */
-    public function getVideoPublishersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param);
+    public function getVideoPublishersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param, $autoOptimize = null);
 
     /**
      * Get all VideoPublishers by filter parameter
@@ -37,8 +38,8 @@ interface VideoPublisherRepositoryInterface extends ObjectRepository
     public function getVideoPublishersByFilterParams(FilterParameterInterface $filterParameter);
 
     /**
-     * @param $name
-     * @param $publisherId
+     * @param string $name
+     * @param int $publisherId
      * @param null $limit
      * @param null $offset
      * @return mixed

@@ -93,9 +93,9 @@ class VideoWaterfallTagManager implements VideoWaterfallTagManagerInterface
     /**
      * @inheritdoc
      */
-    public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $limit = null, $offset = null)
+    public function getVideoWaterfallTagsForVideoPublisher(VideoPublisherInterface $videoPublisher, $autoOptimize = null, $limit = null, $offset = null)
     {
-        return $this->repository->getVideoWaterfallTagsForVideoPublisher($videoPublisher, $limit, $offset);
+        return $this->repository->getVideoWaterfallTagsForVideoPublisher($videoPublisher, $autoOptimize, $limit, $offset);
     }
 
     /**

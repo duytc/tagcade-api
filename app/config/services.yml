@@ -220,6 +220,12 @@ services:
             - '@tagcade.repository.ad_tag'
             - '@tagcade.repository.ad_slot'
 
+    tagcade.service.video.auto_optimize_video_config_generator:
+        class: Tagcade\Service\Video\AutoOptimizeVideoConfigGenerator
+        arguments:
+            - '@tagcade.repository.video_demand_ad_tag'
+            - '@tagcade.repository.video_waterfall_tag'
+
     tagcade.service.video_vast_tag_generator:
         class: Tagcade\Service\VideoVastTagGenerator
         arguments:
@@ -361,6 +367,12 @@ services:
             - '@tagcade.cache.display.v2.tag_cache'
             - '@tagcade.domain_manager.ad_slot'
 
+    tagcade.worker.workers.update_video_waterfall_tag_cache_when_remove_optimization_integration_worker:
+        class: Tagcade\Worker\Workers\UpdateVideoWaterfallTagCacheWhenRemoveOptimizationIntegrationWorker
+        arguments:
+            - '@tagcade.domain_manager.video_waterfall_tag'
+            - '@tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher'
+
     tagcade.worker.workers.update_ad_slot_cache_worker:
         class: Tagcade\Worker\Workers\UpdateAdSlotCacheWorker
         arguments:
@@ -377,6 +389,11 @@ services:
         class: Tagcade\Worker\Workers\UpdateAdSlotWhenOptimizationIntegrationChangeWorker
         arguments:
             - '@tagcade.domain_manager.ad_slot'
+
+    tagcade.worker.workers.update_video_waterfall_tag_when_optimization_integration_change_worker:
+        class: Tagcade\Worker\Workers\UpdateVideoWaterfallTagWhenOptimizationIntegrationChangeWorker
+        arguments:
+            - '@tagcade.domain_manager.video_waterfall_tag'
 
     tagcade.service.array_util:
         class: Tagcade\Service\ArrayUtil

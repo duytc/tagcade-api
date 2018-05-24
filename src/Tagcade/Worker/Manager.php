@@ -286,6 +286,20 @@ class Manager
         $this->queue->putInTube(Manager::UR_API_WORKER, json_encode($jobData));
     }
 
+    /**
+     * @param $actions
+     */
+    public function synchronizeVideoWaterfallTagWithOptimizationIntegration($actions){
+        /* new worker design of ur api, so that the jobData is changed */
+
+        $jobData = [
+            'task' => 'synchronizeVideoWaterfallTagWithOptimizationIntegration',
+            'actions' => $actions
+        ];
+
+        $this->queue->putInTube(Manager::UR_API_WORKER, json_encode($jobData));
+    }
+
     public function updateCacheForAdSlot(BaseAdSlotInterface $adSlot){
 
         $params = new StdClass();

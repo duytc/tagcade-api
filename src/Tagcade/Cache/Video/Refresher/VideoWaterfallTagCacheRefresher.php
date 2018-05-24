@@ -53,18 +53,65 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
     }
 
     /**
-     * @param VideoWaterfallTagInterface $videoWaterfallTag
-     * @return mixed|void
-     * @throws \Exception
+     * @inheritdoc
      */
-    public function refreshVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag)
+    public function refreshVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag, $extraData = [])
     {
+        if (empty($extraData)) {
+            $extraData = $this->getAutoOptimizeCacheForWaterfallTag($videoWaterfallTag);
+            $extraData = $this->refreshOptimizationData($extraData, $videoWaterfallTag);
+        }
+
         $videoWaterfallTagId = $videoWaterfallTag->getUuid(); // using uuid instead of id
         $namespaceOfThisVideoWaterfallTag = $this->getCacheKeyOfVideoWaterfallTag($videoWaterfallTagId);
         $this->cacheNamespace->setNamespace($namespaceOfThisVideoWaterfallTag);
 
         $videoWaterfallTagData = $this->createCacheVideoWaterfallTagData($videoWaterfallTag);
+
+        // add auto optimize cache if enable
+        if ($videoWaterfallTag->isAutoOptimize()) {
+            $videoWaterfallTagData = array_merge($videoWaterfallTagData, $extraData);
+        }
+
         $this->cacheNamespace->saveDataAndIncreaseVersion(self::CACHE_KEY_VIDEO_DEMAND_AD_TAG, $videoWaterfallTagData);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function removeKeysInVideoWaterfallTagCacheForVideoWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag, array $cacheKeys)
+    {
+        if (empty($cacheKeys)) {
+            return $this;
+        }
+
+        // sync version
+        $namespaceOfThisVideoWaterfallTag = $this->getCacheKeyOfVideoWaterfallTag($videoWaterfallTag->getUuid());
+        $this->cacheNamespace->setNamespace($namespaceOfThisVideoWaterfallTag);
+        $namespaceVersionKey = $this->cacheNamespace->getNamespaceVersionKey($namespaceOfThisVideoWaterfallTag);
+        $oldVersion = $this->cacheNamespace->doFetch($namespaceVersionKey);
+        $this->cacheNamespace->setNamespaceVersion((string)($oldVersion));
+
+        // get current cache
+        $cache = $this->cacheNamespace->fetch(self::CACHE_KEY_VIDEO_DEMAND_AD_TAG);
+        if (!is_array($cache)) {
+            return $this;
+        }
+
+        // remove cache keys from cache
+        foreach ($cacheKeys as $cacheKey) {
+            if (!array_key_exists($cacheKey, $cache)) {
+                continue;
+            }
+
+            // remove cache key
+            unset($cache[$cacheKey]);
+        }
+
+        // save
+        $this->cacheNamespace->saveDataAndIncreaseVersion(self::CACHE_KEY_VIDEO_DEMAND_AD_TAG, $cache);
+
+        return $this;
     }
 
     /**
@@ -338,5 +385,97 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
         }
 
         return $data;
+    }
+
+    /**
+     * @param VideoWaterfallTagInterface $videoWaterfallTag
+     * @return array
+     * @throws \Exception
+     */
+    private function getAutoOptimizeCacheForWaterfallTag(VideoWaterfallTagInterface $videoWaterfallTag)
+    {
+        $videoWaterfallTagId = $videoWaterfallTag->getUuid(); // using uuid instead of id
+        $namespaceOfThisVideoWaterfallTag = $this->getCacheKeyOfVideoWaterfallTag($videoWaterfallTagId);
+        $this->cacheNamespace->setNamespace($namespaceOfThisVideoWaterfallTag);
+
+        //video:waterfall_tag:8e395550-6d62-466d-a6ca-ad17bdd804b8:tag_config[all_demand_ad_tags_array][2]
+        $cacheData = $this->cacheNamespace->fetch(self::CACHE_KEY_VIDEO_DEMAND_AD_TAG);
+
+        if (!is_array($cacheData) || !array_key_exists('autoOptimize', $cacheData)) {
+            return [];
+        }
+
+        return ['autoOptimize' => $cacheData['autoOptimize']];
+    }
+
+    /**
+     * @param $extraData
+     * @param VideoWaterfallTagInterface $videoWaterfallTag
+     * @return mixed
+     */
+    private function refreshOptimizationData($extraData, VideoWaterfallTagInterface $videoWaterfallTag)
+    {
+        if (!is_array($extraData) || !array_key_exists('autoOptimize', $extraData)) {
+            return $extraData;
+        }
+
+        $extraData = $extraData['autoOptimize'];
+        $videoWaterfallTagItems = $videoWaterfallTag->getVideoWaterfallTagItems();
+        $videoWaterfallTagItems = $videoWaterfallTagItems instanceof Collection ? $videoWaterfallTagItems->toArray() : $videoWaterfallTagItems;
+        $newDemandAdTags = [];
+        foreach ($videoWaterfallTagItems as $videoWaterfallTagItem) {
+            if (!$videoWaterfallTagItem instanceof VideoWaterfallTagItemInterface) {
+                continue;
+            }
+
+            $videoDemandAdTags = $videoWaterfallTagItem->getVideoDemandAdTags();
+            foreach ($videoDemandAdTags as $videoDemandAdTag) {
+                if (!$videoDemandAdTag instanceof VideoDemandAdTagInterface) {
+                    continue;
+                }
+
+                $newDemandAdTags[$videoDemandAdTag->getId()] = $videoDemandAdTag;
+            }
+        }
+
+        // Process default scores
+        if (array_key_exists('default', $extraData)) {
+            $extraData['default'] = $this->refreshVideoWaterfallTagKeys($extraData['default'], $newDemandAdTags);
+        }
+
+        return ['autoOptimize' => $extraData];
+    }
+
+    /**
+     * @param array $score
+     * @param array|VideoDemandAdTagInterface[] $demandAdTags
+     * @return array
+     */
+    private function refreshVideoWaterfallTagKeys(array $score, array $demandAdTags)
+    {
+        $demandAdTagIds = array_keys($demandAdTags);
+        $newDemandAdTagIds = array_diff($demandAdTagIds, $score);
+        $score = array_merge($score, $newDemandAdTagIds);
+
+        /*
+         * scores [ 1, 2, 3, 4]
+         */
+
+        foreach ($score as $key => $demandAdTagId) {
+            if (!array_key_exists($demandAdTagId, $demandAdTags)) {
+                unset($score[$key]);
+                continue;
+            }
+
+            $demandAdTag = $demandAdTags[$demandAdTagId];
+            if (!$demandAdTag instanceof VideoDemandAdTagInterface || !$demandAdTag->getActive()) {
+                unset($score[$key]);
+                continue;
+            }
+        }
+
+        $score = array_values($score);
+
+        return $score;
     }
 }

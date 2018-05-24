@@ -156,4 +156,26 @@ interface VideoWaterfallTagInterface extends ModelInterface
      * @return self
      */
     public function setRunOn($runOn);
+
+    /**
+     * @return bool
+     */
+    public function isAutoOptimize();
+
+    /**
+     * @param bool $autoOptimize
+     * @return self
+     */
+    public function setAutoOptimize($autoOptimize);
+
+    /**
+     * @return int
+     */
+    public function getOptimizationIntegration();
+
+    /**
+     * @param int $optimizationIntegration
+     * @return self
+     */
+    public function setOptimizationIntegration($optimizationIntegration);
 }

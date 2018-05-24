@@ -26,15 +26,14 @@ class UpdateCacheForVideoWaterfallTagWorker
      */
     public function updateCacheForVideoWaterfallTag(StdClass $param)
     {
-        $videoWaterfallTags = $param->videoWaterfallTags;
+        $videoWaterfallTagIds = $param->videoWaterfallTags;
 
-        if (!is_array($videoWaterfallTags)) {
-            throw new InvalidArgumentException(sprintf('Video ad tag expected an array, got type %s', gettype($videoWaterfallTags)));
+        if (!is_array($videoWaterfallTagIds)) {
+            throw new InvalidArgumentException(sprintf('Video ad tag expected an array, got type %s', gettype($videoWaterfallTagIds)));
         }
 
-        /** @var VideoWaterfallTag $videoWaterfallTag */
-        foreach ($videoWaterfallTags as $videoWaterfallTag) {
-            $this->videoCacheManger->refreshCacheForVideoWaterfallTag($videoWaterfallTag);
+        foreach ($videoWaterfallTagIds as $videoWaterfallTagId) {
+            $this->videoCacheManger->refreshCacheForVideoWaterfallTag($videoWaterfallTagId);
         }
     }
 }

@@ -73,6 +73,16 @@ services:
             - '@tagcade.service.auto_optimize_config_generator'
             - '@tagcade.cache.display.v2.refresher.ad_slot_cache'
 
+    tagcade.cache.video.auto_optimized_video_cache:
+        class: Tagcade\Cache\Video\AutoOptimizedVideoCache
+        arguments:
+            - '%tc.redis.display_tag_cache.host%'
+            - '%tc.redis.display_tag_cache.port%'
+            - '@tagcade.domain_manager.video_demand_ad_tag'
+            - '@tagcade.domain_manager.video_waterfall_tag'
+            - '@tagcade.service.video.auto_optimize_video_config_generator'
+            - '@tagcade.cache.video.refresher.video_waterfall_tag_cache_refresher'
+
     tagcade.cache.display_blacklist_cache_manager:
         class: Tagcade\Cache\V2\DisplayBlacklistCacheManager
         arguments:

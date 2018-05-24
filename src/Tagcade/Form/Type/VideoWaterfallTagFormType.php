@@ -31,7 +31,9 @@ class VideoWaterfallTagFormType extends AbstractRoleSpecificFormType
             ->add('videoPublisher')
             ->add('buyPrice')
             /* new feature: Server-Side VAST+VAPID, Server-Side VAST Only, Client-Side VAST+VAPID (default)*/
-            ->add('runOn');
+            ->add('runOn')
+            ->add('autoOptimize')
+            ->add('optimizationIntegration');
 
         $builder->add('ivtPixelWaterfallTags', 'collection', array(
                 'mapped' => true,

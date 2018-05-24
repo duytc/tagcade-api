@@ -6,6 +6,7 @@ namespace Tagcade\Repository\Core;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityRepository;
 use Tagcade\Model\PagerParam;
+use Tagcade\Model\User\Role\AdminInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Model\User\Role\UserRoleInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
@@ -17,17 +18,23 @@ class VideoPublisherRepository extends EntityRepository implements VideoPublishe
         'name' => 'name',
         'publisher.company' => 'publisher.company',
     ];
+
     /**
-     * @param UserRoleInterface $user
-     * @param PagerParam $param
-     * @return mixed
+     * @inheritdoc
      */
-    public function getVideoPublishersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param){
+    public function getVideoPublishersForPublisherWithPagination(UserRoleInterface $user, PagerParam $param, $autoOptimize = null)
+    {
         $qb = $this->createQueryBuilder('vp');
         if ($user instanceof PublisherInterface) {
             $qb
                 ->where('vp.publisher = :publisher_id')
                 ->setParameter('publisher_id', $user->getId(), Type::INTEGER);
+        }
+
+        if ($user instanceof AdminInterface && $param->getPublisherId() > 0) {
+            $qb
+                ->where('vp.publisher = :publisher_id')
+                ->setParameter('publisher_id', $param->getPublisherId(), Type::INTEGER);
         }
 
         if (is_string($param->getSearchKey())) {
@@ -42,20 +49,22 @@ class VideoPublisherRepository extends EntityRepository implements VideoPublishe
 
         if (is_string($param->getSortField()) &&
             is_string($param->getSortDirection()) &&
-            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC'])&&
+            in_array($param->getSortDirection(), ['asc', 'desc', 'ASC', 'DESC']) &&
             in_array($param->getSortField(), $this->SORT_FIELDS)
         ) {
-            switch ($param->getSortField()){
+            switch ($param->getSortField()) {
                 case 'publisher.company':
-                    $qb->addOrderBy('vp.publisher' , $param->getSortDirection());
+                    $qb->addOrderBy('vp.publisher', $param->getSortDirection());
                     break;
                 default:
                     $qb->addOrderBy('vp.' . $param->getSortField(), $param->getSortDirection());
                     break;
             }
         }
+
         return $qb;
     }
+
     /**
      * @inheritdoc
      */
@@ -95,11 +104,7 @@ class VideoPublisherRepository extends EntityRepository implements VideoPublishe
     }
 
     /**
-     * @param $name
-     * @param $publisherId
-     * @param null $limit
-     * @param null $offset
-     * @return mixed
+     * @inheritdoc
      */
     public function findByNameAndPublisherId($name, $publisherId, $limit = null, $offset = null)
     {

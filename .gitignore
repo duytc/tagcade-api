@@ -23,3 +23,10 @@ tests/acceptance/AcceptanceTester.php
 
 tests/_output/*
 app/var/jwt/
+
+dev/redis-cli.dev/css/*
+!dev/redis-cli.dev/css/.gitkeep
+dev/redis-cli.dev/fonts/*
+!dev/redis-cli.dev/fonts/.gitkeep
+dev/redis-cli.dev/js/*
+!dev/redis-cli.dev/js/.gitkeep

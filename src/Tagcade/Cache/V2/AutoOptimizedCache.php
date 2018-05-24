@@ -145,7 +145,6 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
         $currentAdTags = [];
         $currentSlotCache = $this->getSlotCache($adSlot->getId());
 
-
         if (isset($currentSlotCache['autoOptimize']['default']) && !empty($currentSlotCache['autoOptimize']['default'])) {
             $currentAdTags = $currentSlotCache['autoOptimize']['default'];
         } else {

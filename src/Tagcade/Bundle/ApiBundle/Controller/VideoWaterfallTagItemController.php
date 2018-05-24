@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\VideoWaterfallTag;
+use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagItemInterface;
 use Tagcade\Model\User\Role\AdminInterface;
 
@@ -76,6 +77,37 @@ class VideoWaterfallTagItemController extends RestControllerAbstract implements 
     public function getAction($id)
     {
         return $this->one($id);
+    }
+
+    /**
+     * Get DemandAdTags with optimized positions for an WaterfallTag
+     * @Rest\View(
+     *     serializerGroups={"videoWaterfallTagItem.summary", "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary", "videoDemandPartner.summary", "user.summary"}
+     * )
+     *
+     * @Rest\Get("/videowaterfalltagitems/adtag/{id}/optimizedPositions", requirements={"id" = "\d+"})
+     *
+     * @ApiDoc(
+     *  section = "WaterfallTagsItem",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      400 = "Returned when the submitted data has errors"
+     *  }
+     * )
+     *
+     * @param $id
+     * @return VideoWaterfallTagItemInterface[]
+     */
+    public function getOptimizedDemandTagPositionsAction($id)
+    {
+        $readCacheOptimizedService = $this->get('tagcade.cache.video.auto_optimized_video_cache');
+        $waterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');
+
+        /** @var VideoWaterfallTagInterface $waterfallTag */
+        $waterfallTag = $waterfallTagManager->find($id);
+
+        return $readCacheOptimizedService->getOptimizedDemandTagPositionsForWaterfallTag($waterfallTag);
     }
 
     /**

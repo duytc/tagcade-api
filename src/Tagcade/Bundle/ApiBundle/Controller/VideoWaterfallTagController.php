@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\LibraryVideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoDemandPartnerInterface;
+use Tagcade\Model\Core\VideoPublisherInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Core\VideoWaterfallTag\VideoWaterfallTagParam;
@@ -28,6 +29,7 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      *
      * @Rest\View(serializerGroups={"videoWaterfallTag.summary", "user.summary", "videoPublisher.summary", "videoWaterfallTagItem.summary", "videoDemandAdTag.summary", "libraryVideoDemandAdTag.summary"})
      *
+     * @Rest\QueryParam(name="autoOptimize", nullable=true, description="waterfall tags have autoOptimize or not")
      * @Rest\QueryParam(name="publisherId", nullable=true, requirements="\d+", description="the publisher id")
      * @Rest\QueryParam(name="page", requirements="\d+", nullable=true, description="the page to get")
      * @Rest\QueryParam(name="limit", requirements="\d+", nullable=true, description="number of item per page")
@@ -35,7 +37,7 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
      * @Rest\QueryParam(name="searchKey", nullable=true, description="value of above filter")
      * @Rest\QueryParam(name="sortField", nullable=true, description="field to sort, must match field in Entity and sortable")
      * @Rest\QueryParam(name="orderBy", nullable=true, description="value of sort direction : asc or desc")
-     *
+     * @Rest\QueryParam(name="videoPublisherIds", nullable=true, description="list video publisher ids")
      * @ApiDoc(
      *  section = "Video Waterfall Tags",
      *  resource = true,
@@ -53,14 +55,43 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
 
         $waterfallTagManager = $this->get('tagcade.domain_manager.video_waterfall_tag');
         $waterfallTagRepository = $this->get('tagcade.repository.video_waterfall_tag');
+        $videoPublisherRepository = $this->get('tagcade.repository.video_publisher');
+
+        if (!$request->query->has('autoOptimize')) {
+            $autoOptimize = null;
+        } else {
+            $autoOptimize = $request->query->get('autoOptimize');
+            $autoOptimize = ($autoOptimize && 'true' == $autoOptimize) ? true : false;
+        }
 
         if ($request->query->get('page') > 0) {
-            $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams());
+            $qb = $waterfallTagRepository->getWaterfallTagForUserWithPagination($this->getUser(), $this->getParams(), $autoOptimize);
             return $this->getPagination($qb, $request);
         }
 
+        $videoPublisherIds = $request->query->get('videoPublishersIds');
+
+        if (!empty($videoPublisherIds)) {
+            $videoPublisherIds = array_filter(explode(",", $videoPublisherIds), function ($videoPublisher) {
+                return !empty($videoPublisher);
+            });
+
+            $waterfallTagByVideoPublishers = [];
+            foreach ($videoPublisherIds as $videoPublisherId) {
+                /** @var VideoPublisherInterface $vp */
+                $vp = $videoPublisherRepository->find($videoPublisherId);
+                if (!$vp instanceof VideoPublisherInterface) {
+                    continue;
+                }
+
+                $waterfallTagByVideoPublishers = array_merge($waterfallTagByVideoPublishers, $waterfallTagManager->getVideoWaterfallTagsForVideoPublisher($vp, $autoOptimize, $limit = null, $offset = null));
+            }
+
+            return $waterfallTagByVideoPublishers ?: [];
+        }
+
         return ($role instanceof PublisherInterface)
-            ? $waterfallTagManager->getVideoWaterfallTagsForPublisher($role)
+            ? $waterfallTagManager->getVideoWaterfallTagsForPublisher($role, $autoOptimize)
             : $this->all();
     }
 
@@ -190,6 +221,7 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
 
         return $this->get('tagcade.service.video_vast_tag_generator')->createVideoVastTags($videoWaterfallTag, $videoWaterfallTagParam);
     }
+
 
     /**
      * Create a video ad tag from the submitted data

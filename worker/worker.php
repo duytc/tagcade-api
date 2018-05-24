@@ -67,6 +67,8 @@ $availableWorkers = [
     $container->get('tagcade.worker.workers.update_ad_slot_cache_worker'),
     $container->get('tagcade.worker.workers.update_ad_slot_cache_when_remove_optimization_integration_worker'),
     $container->get('tagcade.worker.workers.update_ad_slot_when_optimization_integration_change_worker'),
+    $container->get('tagcade.worker.workers.update_video_waterfall_tag_when_optimization_integration_change_worker'),
+    $container->get('tagcade.worker.workers.update_video_waterfall_tag_cache_when_remove_optimization_integration_worker'),
 ];
 
 $workerPool = new \Tagcade\Worker\Pool($availableWorkers);
@@ -118,7 +120,7 @@ while (true) {
         $worker->$task($params); // dynamic method call
         $logger->notice(sprintf('Job %s (ID: %s) with payload %s has been completed', $task, $job->getId(), $rawPayload));
         $queue->delete($job);
-// task finished successfully
+        // task finished successfully
     } catch (Exception $e) {
         $logger->warning(
             sprintf(

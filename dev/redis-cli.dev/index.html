@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redis tools</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+
+    <style>
+        @media (min-width: 1200px) {
+            .container {
+                width: 1600px;
+            }
+        }
+    </style>
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h3 class="text-center text-danger">REDIS TOOLS ver1.1</h3>
+
+    <div class="row">
+        <div class="form-group">
+            <label for="product" class="col-sm-2 text-info control-label">Product</label>
+            <div class="col-sm-2">
+                <select name="product" id="product" class="form-control">
+                    <option value="none">Select...</option>
+                    <option value="display">DISPLAY</option>
+                    <option value="video">VIDEO</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div id="display" style="display:none;">
+        <label for="formDisplay"></label>
+        <div>
+            <form id="formDisplay">
+                <div class="form-group">
+                    <div class="row">
+                        <label for="adSlot" class="col-sm-2 text-info">AdSlot</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="adSlot" name="adSlot" value="1" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="version" class="col-sm-2 text-info">Version</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="version" name="version" value="-1" class="form-control">
+                        </div>
+                        <span class="col-sm-offset-2 col-sm-10">Let version = -1 for latest version</span>
+                    </div>
+                </div>
+            </form>
+
+            <button id="submitDisplay" class="btn btn-success">Get cache</button>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Raw from Redis
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div id="result-alert" style="display:none;">
+                            result-alert
+                        </div>
+
+                        <div id="result-success" style="display:none;">
+                            result-success
+                        </div>
+
+                    <pre id="result">
+                    </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Expected template
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                    <pre id="expected">
+                    </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Output from Serve Ads
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div id="result-after-serve-ads-alert" style="display:none;">
+                            result-alert
+                        </div>
+
+                        <div id="result-after-serve-ads-success" style="display:none;">
+                            result-success
+                        </div>
+
+                    <textarea id="urlServeAds" class="text-info" contenteditable="false"
+                              style="width: 100%; display:none;">http://serve.tagcade.dev/ads/tags/slot/adSlotId?ver=2</textarea>
+
+                    <pre id="resultAfterServeAds">
+                    </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Expected template
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                    <pre id="expectedAfterServeAds">
+                    </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="video" style="display:none;">
+        <label for="formVideo"></label>
+        <div>
+            <form id="formVideo">
+                <div class="form-group">
+                    <div class="row">
+                        <label for="waterfallTag" class="col-sm-2 text-info">Waterfall Tag</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="waterfallTag" name="waterfallTag" value="60e1513f-a51b-45ec-bf95-d3092af93b0b" class="form-control">
+                        </div>
+                        <span class="col-sm-offset-2 col-sm-10">The Waterfall Tag UUID</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <label for="waterfallTagVersion" class="col-sm-2 text-info">Version</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="waterfallTagVersion" name="waterfallTagVersion" value="-1" class="form-control">
+                        </div>
+                        <span class="col-sm-offset-2 col-sm-10">Let version = -1 for latest version</span>
+                    </div>
+                </div>
+            </form>
+
+            <button id="submitVideo" class="btn btn-success">Get cache</button>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Raw from Redis
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                        <div id="result-video-alert" style="display:none;">
+                            result-alert
+                        </div>
+
+                        <div id="result-video-success" style="display:none;">
+                            result-success
+                        </div>
+
+                    <pre id="result-video">
+                    </pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="panel panel-default" style="margin-top: 20px;">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            Expected template
+                        </div>
+                    </div>
+
+                    <div class="panel-body">
+                    <pre id="expectedVideo">
+                    </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#product').on('change', function () {
+        var selection = $(this).val();
+        console.log('choose: ' + selection);
+        switch (selection) {
+            case "display":
+                $("#display").show();
+                $("#video").hide();
+                break;
+
+            case "video":
+                $("#display").hide();
+                $("#video").show();
+                break;
+
+            default:
+                $("#display").hide();
+                $("#video").hide();
+        }
+    });
+</script>
+
+<script>
+    var expected = {
+        "id": "positive number",
+        "type": "display|native|dynamic",
+        "width": "positive number",
+        "height": "positive number",
+        "passbackMode": "position",
+        "jsTag": "string",
+        "tags": [
+            {
+                "id": "positive number",
+                "tag": "\<script src=\"http://in-banner.pubvantage.dev:8081/inbannervideo.js\" data-pv-tag-url='[\"http://url1.com\",\"http://url2.com\"]' data-pv-platform=\"auto\"  data-pv-width=\"200\" data-pv-height=\"300\" data-pv-slot=\"1\" data-pv-tag=\"7\"><\/script>",
+                "rot": "positive number|null",
+                "cap": "positive number|null",
+                "customImpressionPixels": "array of url|[]",
+                "blacklist": "string such as 1,2,3",
+                "hasBlacklist": "true|false",
+                "whiteList": "string such as 1,2,3",
+                "hasWhiteList": "true|false"
+            },
+            [
+                {
+                    "id": "positive number",
+                    "tag": "\<script src=\"http://in-banner.pubvantage.dev:8081/inbannervideo.js\" data-pv-tag-url='[\"http://url1.com\",\"http://url2.com\"]' data-pv-platform=\"auto\"  data-pv-width=\"200\" data-pv-height=\"300\" data-pv-slot=\"1\" data-pv-tag=\"7\"><\/script>",
+                    "rot": "positive number|null",
+                    "cap": "positive number|null",
+                    "customImpressionPixels": "array of url|[]",
+                    "blacklist": "string such as 1,2,3",
+                    "hasBlacklist": "true|false",
+                    "whiteList": "string such as 1,2,3",
+                    "hasWhiteList": "true|false"
+                }
+            ]
+        ],
+        "cpm": "positive number|null"
+    };
+    $('#expected').text(JSON.stringify(expected, null, 4));
+
+    var expectedAfterServeAds = {
+        "id": 58,
+        "type": "display",
+        "width": 350,
+        "height": 250,
+        "passbackMode": "position",
+        "tags": [
+            {
+                "id": 114,
+                "tag": "demandPartner-2-bl-tag1",
+                "rot": 12,
+                "cap": 12
+            },
+            [
+                {
+                    "id": 115,
+                    "tag": "demandPartner-2-bl-tag1",
+                    "rot": 12,
+                    "cap": 12
+                }
+            ]
+        ],
+        "cpm": null
+    };
+    $('#expectedAfterServeAds').text(JSON.stringify(expectedAfterServeAds, null, 4));
+
+    var expectedVideo = {
+        "TAG_UUID": "f7654357-ba37-4c29-b1e6-28ce0f162633",
+        "VERSION": 2,
+        "CACHE": {
+            "id": "f7654357-ba37-4c29-b1e6-28ce0f162633",
+            "platform": [
+                "js"
+            ],
+            "adDuration": 30,
+            "waterfall": [
+                {
+                    "strategy": "parallel",
+                    "demandTags": [
+                        {
+                            "id": 1,
+                            "demandPartner": "vdemandparner-1",
+                            "tagUrl": "http://vast-dummy.tagcade.dev/dummy_tag.php?dir=local&example=spotx&min_delay=0.1&max_delay=1&fill_rate=100",
+                            "httpRequestTimeout": 6000,
+                            "targeting": []
+                        }
+                    ]
+                }
+            ],
+            "companionAds": []
+        }
+    };
+    $('#expectedVideo').text(JSON.stringify(expectedVideo, null, 4));
+</script>
+
+<script>
+    $('#submitDisplay').click(function () {
+        $.ajax({
+            url: 'tool.php' + getQueryParams(),
+            type: 'GET',
+            crossDomain: true,
+            data: {},
+            success: function (response) {
+                var adSlotId = response['SLOT_ID'];
+                var version = response['VERSION'];
+                var cache = response['CACHE'];
+
+                var msg = 'AD SLOT ID: ' + adSlotId + '\n'
+                        + 'VERSION   : ' + version + '\n'
+                        + 'CACHE     : ' + '\n' + JSON.stringify(cache, null, 4);
+                $('#result').text(msg);
+
+                // validate raw cache before send to serve ads
+                validateRawRedisCache(cache);
+            },
+            error: function (xhr, status) {
+                console.error('error: ', xhr, status);
+                $('#result').text('');
+
+                // validate raw cache before send to serve ads
+                validateRawRedisCache(false);
+            }
+        });
+
+        $.ajax({
+            url: 'get_serve_ads.php' + getQueryParamsServeAds(),
+            type: 'GET',
+            crossDomain: true,
+            data: {},
+            success: function (msg) {
+                msg = JSON.parse(msg);
+                msg = JSON.stringify(msg, null, 4);
+                $('#resultAfterServeAds').text(msg);
+
+                // validate data after serve ads
+                validateAfterServeAds(JSON.parse(msg));
+            },
+            error: function (xhr, status) {
+                console.error('error: ', xhr, status);
+                $('#resultAfterServeAds').text('');
+
+                // validate data after serve ads
+                validateAfterServeAds(false);
+            }
+        });
+
+        function getQueryParams() {
+            // get an associative array of the values
+            var input = {};
+            $('#formDisplay :input').each(function () {
+                input[this.name] = $(this).val();
+            });
+
+            console.log('input: ', input);
+
+            var adSlot = input['adSlot'];
+            var version = input['version'];
+            var template = '?type=display&adSlotId=$$AD_SLOT$$&adSlotVersion=$$VERSION$$';
+            var query = template;
+            query = query.replace('$$AD_SLOT$$', adSlot);
+            query = query.replace('$$VERSION$$', version);
+
+            return query;
+        }
+
+        function getQueryParamsServeAds() {
+            // get an associative array of the values
+            var input = {};
+            $('#formDisplay :input').each(function () {
+                input[this.name] = $(this).val();
+            });
+
+            console.log('input: ', input);
+
+            var adSlot = input['adSlot'];
+            var version = input['version'];
+            var template = '?adSlotId=$$AD_SLOT$$&ver=2';
+            var query = template;
+            query = query.replace('$$AD_SLOT$$', adSlot);
+
+            return query;
+        }
+
+        function validateRawRedisCache(data) {
+            var valid = true;
+            var error = null;
+
+            if (!data) {
+                valid = false;
+                error = 'cache empty';
+            }
+
+            try {
+                // validate all required keys
+                var allowedKeys = [
+                    "id",
+                    "type",
+                    "width",
+                    "height",
+                    "passbackMode",
+                    "jsTag",
+                    "tags",
+                    "cpm",
+                    "autoFit",
+                    "autoRefresh",
+                    "refreshEvery",
+                    "maximumRefreshTimes",
+                    // dynamic
+                    "native",
+                    "expressions",
+                    "defaultAdSlot",
+                    "slots",
+                    "serverVars",
+                    // auto Optimization feature
+                    "autoOptimize"
+                ];
+
+                for (var prop in data) {
+                    if (!data.hasOwnProperty(prop)) {
+                        continue;
+                    }
+
+                    if (allowedKeys.indexOf(prop) < 0) {
+                        throw 'not allow key "' + prop + '"';
+                    }
+                }
+
+                if (valid) {
+                    // validate tags
+                    var tags = data['tags'];
+                    if (!tags) {
+                        // if dynamic
+                        if (data['type'] !== 'dynamic') {
+                            throw 'invalid tags';
+                        }
+                    } else {
+                        for (var tagIdx = 0, len = tags.length; tagIdx < len; tagIdx++) {
+                            var tag = tags[tagIdx];
+
+                            if (tag instanceof Array) {
+                                for (var tagIdx2 = 0, len2 = tag.length; tagIdx2 < len2; tagIdx2++) {
+                                    var tag2 = tag[tagIdx2];
+                                    if (!tag2) {
+                                        throw 'invalid tag in tags';
+                                    }
+
+                                    validateTag(tag2);
+                                }
+                            } else {
+                                validateTag(tag);
+                            }
+                        }
+                    }
+
+                    function validateTag(tag) {
+                        if (!tag) {
+                            throw 'invalid tag in tags';
+                        }
+
+                        var allowedKeysInTag = [
+                            "id",
+                            "tag",
+                            "rot",
+                            "cap",
+                            "cpm",
+                            "targeting",
+                            "serverVars",
+                            "blacklist",
+                            "hasBlacklist",
+                            "whiteList",
+                            "hasWhiteList",
+                            "customImpressionPixels"
+                        ];
+
+                        for (var propTag in tag) {
+                            if (!tag.hasOwnProperty(propTag)) {
+                                continue;
+                            }
+
+                            if (allowedKeysInTag.indexOf(propTag) < 0) {
+                                throw 'not allow key "' + propTag + '" in tag';
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                valid = false;
+                error = e;
+            }
+
+            if (valid) {
+                $("#result-success").html('<p class="text-success"><span class="glyphicon glyphicon-ok"></span> Cache is valid!</p>');
+                $("#result-success").show();
+                $("#result-alert").hide();
+            } else {
+                $("#result-success").hide();
+                $("#result-alert").html('<p class="text-danger"><span class="glyphicon glyphicon-alert"></span> Cache is invalid! [' + error + ']</p>');
+                $("#result-alert").show();
+            }
+        }
+
+        function validateAfterServeAds(data) {
+            var valid = true;
+
+            if (!data) {
+                valid = false;
+            }
+
+            try {
+                // validate all required keys
+                var allowedKeys = [
+                    "id",
+                    "type",
+                    "width",
+                    "height",
+                    "passbackMode",
+                    "jsTag",
+                    "tags",
+                    "cpm",
+                    "autoFit",
+                    "autoRefresh",
+                    "refreshEvery",
+                    "maximumRefreshTimes",
+                    // dynamic
+                    "native",
+                    "expressions",
+                    "defaultAdSlot",
+                    "slots"
+                ];
+
+                for (var prop in data) {
+                    if (!data.hasOwnProperty(prop)) {
+                        continue;
+                    }
+
+                    if (allowedKeys.indexOf(prop) < 0) {
+                        throw 'not allow key "' + prop + '"';
+                    }
+                }
+
+                if (valid) {
+                    // validate tags
+                    var tags = data['tags'];
+                    if (!tags) {
+                        // if dynamic
+                        if (data['type'] !== 'dynamic') {
+                            throw 'invalid tags';
+                        }
+                    } else {
+                        for (var tagIdx = 0, len = tags.length; tagIdx < len; tagIdx++) {
+                            var tag = tags[tagIdx];
+
+                            if (tag instanceof Array) {
+                                for (var tagIdx2 = 0, len2 = tag.length; tagIdx2 < len2; tagIdx2++) {
+                                    var tag2 = tag[tagIdx2];
+                                    if (!tag2) {
+                                        throw 'invalid tag in tags';
+                                    }
+
+                                    validateTag(tag2);
+                                }
+                            } else {
+                                validateTag(tag);
+                            }
+                        }
+                    }
+
+                    function validateTag(tag) {
+                        if (!tag) {
+                            throw 'invalid tag in tags';
+                        }
+
+                        var allowedKeysInTag = [
+                            "id",
+                            "tag",
+                            "rot",
+                            "cap",
+                            "cpm",
+                            "targeting",
+                            "customImpressionPixels"
+                        ];
+
+                        for (var propTag in tag) {
+                            if (!tag.hasOwnProperty(propTag)) {
+                                continue;
+                            }
+
+                            if (allowedKeysInTag.indexOf(propTag) < 0) {
+                                throw 'not allow key "' + propTag + '" in tag';
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                valid = false;
+            }
+
+            if (valid) {
+                $("#result-after-serve-ads-success").html('<p class="text-success"><span class="glyphicon glyphicon-ok"></span> Output from Serve Ads is valid!</p>');
+                $("#result-after-serve-ads-success").show();
+                $("#result-after-serve-ads-alert").hide();
+            } else {
+                $("#result-after-serve-ads-success").hide();
+                $("#result-after-serve-ads-alert").html('<p class="text-danger"><span class="glyphicon glyphicon-alert"></span> Output from Serve Ads is invalid!</p>');
+                $("#result-after-serve-ads-alert").show();
+            }
+        }
+    });
+
+    $('#submitVideo').click(function () {
+        getQueryParams();
+
+        $.ajax({
+            url: 'tool.php' + getQueryParams(),
+            type: 'GET',
+            data: {},
+            success: function (msg) {
+                msg = JSON.stringify(msg, null, 4);
+                $('#result-video').text(msg);
+            }
+        });
+
+        function getQueryParams() {
+
+            // get an associative array of the values
+            var input = {};
+            $('#formVideo :input').each(function () {
+                input[this.name] = $(this).val();
+            });
+
+            console.log('input: ', input);
+
+            var waterfallTag = input['waterfallTag'];
+            var waterfallTagVersion = input['waterfallTagVersion'];
+            var template = '?type=video&waterfallTagId=$$WATERFALL_TAG$$&waterfallTagVersion=$$WATERFALL_TAG_VERSION$$';
+            var query = '?type=video&waterfallTagId=$$WATERFALL_TAG$$&waterfallTagVersion=$$WATERFALL_TAG_VERSION$$';
+            query = template;
+            query = query.replace('$$WATERFALL_TAG$$', waterfallTag);
+            query = query.replace('$$WATERFALL_TAG_VERSION$$', waterfallTagVersion);
+
+            return query;
+        }
+    });
+</script>
+
+</body>
+</html>
