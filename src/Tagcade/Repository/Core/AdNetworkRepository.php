@@ -16,6 +16,8 @@ class AdNetworkRepository extends EntityRepository implements AdNetworkRepositor
     protected $SORT_FIELDS = [
         'id' => 'id',
         'name' => 'name',
+        'pausedAdTagsCount' => 'pausedAdTagsCount',
+        'activeAdTagsCount' => 'activeAdTagsCount',
         'networkOpportunityCap' => 'networkOpportunityCap'
     ];
 

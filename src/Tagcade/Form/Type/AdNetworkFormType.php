@@ -84,6 +84,12 @@ class AdNetworkFormType extends AbstractRoleSpecificFormType
                 $adNetwork = $event->getData();
                 $form = $event->getForm();
 
+                // initialize adTags count when creating new ad network;
+                if ($adNetwork->getId() === null) {
+                    $adNetwork->setActiveAdTagsCount(0);
+                    $adNetwork->setPausedAdTagsCount(0);
+                }
+
                 $adNetworkName = $adNetwork->getName();
                 if (empty($adNetworkName) || strlen($adNetworkName) < 2) {
                     $event->getForm()->addError(new FormError('name should not be blank and must be more than two characters'));

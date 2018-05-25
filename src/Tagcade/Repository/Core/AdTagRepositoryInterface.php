@@ -156,4 +156,11 @@ interface AdTagRepositoryInterface extends ObjectRepository
     public function findAdTagByNameAndSlotId($name, $slotId);
 
     public function findAdTagByIdAndSlotId($id, $slotId);
+
+    /**
+     * @param AdNetworkInterface $adNetwork
+     * @param $status
+     * @return mixed
+     */
+    public function getAdTagsCountForAdNetworkByStatus(AdNetworkInterface $adNetwork, array $status);
 }

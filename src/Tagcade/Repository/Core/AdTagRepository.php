@@ -769,4 +769,20 @@ class AdTagRepository extends EntityRepository implements AdTagRepositoryInterfa
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAdTagsCountForAdNetworkByStatus(AdNetworkInterface $adNetwork, array $status)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.libraryAdTag', 'lib')
+            ->select('count(t.id)')
+            ->where('lib.adNetwork = :network')
+            ->setParameter('network', $adNetwork)
+            ->andWhere('t.active in (:status)')
+            ->setParameter('status', implode(",", $status));
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 }

@@ -11,6 +11,8 @@ class AdNetwork extends AdNetworkModel
     protected $publisher;
     protected $name;
     protected $defaultCpmRate;
+    protected $activeAdTagsCount;
+    protected $pausedAdTagsCount;
     protected $libraryAdTags;
     protected $emailHookToken;
     protected $impressionCap;
@@ -22,6 +24,8 @@ class AdNetwork extends AdNetworkModel
 
     public function __construct()
     {
+        $this->activeAdTagsCount = 0;
+        $this->pausedAdTagsCount = 0;
         $this->libraryAdTags = new ArrayCollection();
         $this->networkBlacklists = [];
         $this->networkWhiteLists = [];

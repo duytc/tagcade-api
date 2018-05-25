@@ -123,6 +123,8 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
         // create ad network
         $adNetwork = (new AdNetwork())
             ->setName('Test Ad Network ' . $id)
+            ->setActiveAdTagsCount(0) // why do I have to do this? it should default to 0
+            ->setPausedAdTagsCount(0)
             ->setPublisher($publisher);
         $em->persist($adNetwork);
         $tempObjs[] = $adNetwork;
@@ -198,6 +200,8 @@ foreach(xrange(NUM_PUBLISHER) as $userId) {
 
     $adNetworkForRON = (new AdNetwork())
         ->setName('Ad Network for RON')
+        ->setActiveAdTagsCount(0) // why do I have to do this? it should default to 0
+        ->setPausedAdTagsCount(0)
         ->setPublisher($publisher);
     $em->persist($adNetworkForRON);
 

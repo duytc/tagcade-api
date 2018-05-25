@@ -57,10 +57,24 @@ interface AdNetworkInterface extends ModelInterface
     public function getActiveAdTagsCount();
 
     /**
+     * set number of active ad tags
+     * @param int $activeAdTagsCount
+     * @return self
+     */
+    public function setActiveAdTagsCount($activeAdTagsCount);
+
+    /**
      * get number of paused ad tags
      * @return int
      */
     public function getPausedAdTagsCount();
+
+    /**
+     * set number of paused ad tags
+     * @param int $pausedAdTagsCount
+     * @return self
+     */
+    public function setPausedAdTagsCount($pausedAdTagsCount);
 
     /**
      * @return mixed

@@ -21,6 +21,8 @@ class AdNetwork implements AdNetworkInterface
      * This is the default CPM assigned to all ad tags unless it is overwritten
      */
     protected $defaultCpmRate;
+    protected $activeAdTagsCount;
+    protected $pausedAdTagsCount;
 
     protected $impressionCap;
     protected $networkOpportunityCap;
@@ -211,14 +213,17 @@ class AdNetwork implements AdNetworkInterface
      */
     public function getActiveAdTagsCount()
     {
-        $adTags = $this->getAdTags();
-        $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
+        return $this->activeAdTagsCount;
+    }
 
-        $activeAdTags = array_filter($adTags, function ($adTag) {
-            return $adTag instanceof AdTagInterface && $adTag->isActive();
-        });
+    /**
+     * @inheritdoc
+     */
+    public function setActiveAdTagsCount($activeAdTagsCount)
+    {
+        $this->activeAdTagsCount = $activeAdTagsCount;
 
-        return count($activeAdTags);
+        return $this;
     }
 
     /**
@@ -226,14 +231,17 @@ class AdNetwork implements AdNetworkInterface
      */
     public function getPausedAdTagsCount()
     {
-        $adTags = $this->getAdTags();
-        $adTags = $adTags instanceof Collection ? $adTags->toArray() : $adTags;
+        return $this->pausedAdTagsCount;
+    }
 
-        $notActiveAdTags = array_filter($adTags, function ($adTag) {
-            return $adTag instanceof AdTagInterface && !$adTag->isActive();
-        });
+    /**
+     * @inheritdoc
+     */
+    public function setPausedAdTagsCount($pausedAdTagsCount)
+    {
+        $this->pausedAdTagsCount = $pausedAdTagsCount;
 
-        return count($notActiveAdTags);
+        return $this;
     }
 
     /**
