@@ -20,6 +20,7 @@ use Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\SnapshotCr
 class CacheEventCounter extends AbstractEventCounter implements CacheEventCounterInterface
 {
     const KEY_DATE_FORMAT                  = 'ymd';
+    const KEY_DATE_HOUR_FORMAT             = 'ymdH';
 
     const CACHE_KEY_ACC_SLOT_OPPORTUNITY   = 'slot_opportunities';
     const CACHE_KEY_ACC_OPPORTUNITY        = 'opportunities';
@@ -120,7 +121,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         }
 
         $this->date = $date;
-        $this->formattedDate = $date->format(self::KEY_DATE_FORMAT);
+        $this->formattedDate = !$this->getDataWithDateHour() ? $date->format(self::KEY_DATE_FORMAT) : $date->format(self::KEY_DATE_HOUR_FORMAT);
     }
 
     public function getCache()
@@ -176,22 +177,25 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     public function getInBannerRequestCount($slotId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+        return $this->hFetchFromCache($hash,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
     }
 
     public function getAccountInBannerRequestCount($publisherId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+        return $this->hFetchFromCache($hash,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
     }
 
     public function getAdTagInBannerRequestCount($slotId, $tagId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId, self::NAMESPACE_AD_TAG, $tagId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
+        return $this->hFetchFromCache($hash,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_REQUEST, $namespace));
     }
 
 
@@ -206,22 +210,25 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     public function getInBannerImpressionCount($slotId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+        return $this->hFetchFromCache($hash,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
     }
 
     public function getAccountInBannerImpressionCount($publisherId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+        return $this->hFetchFromCache($hash, $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
     }
 
     public function getAdTagInBannerImpressionCount($slotId, $tagId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId, self::NAMESPACE_AD_TAG, $tagId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
+        return $this->hFetchFromCache($hash, $this->getCacheKey(static::CACHE_KEY_IN_BANNER_IMPRESSION, $namespace));
     }
 
 
@@ -236,22 +243,25 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
     public function getInBannerTimeoutCount($slotId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+        return $this->hFetchFromCache($hash, $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
     }
 
     public function getAccountInBannerTimeoutCount($publisherId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_ACCOUNT, $publisherId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+        return $this->hFetchFromCache($hash, $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
     }
 
     public function getAdTagInBannerTimeoutCount($slotId, $tagId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_AD_SLOT, $slotId, self::NAMESPACE_AD_TAG, $tagId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
 
-        return $this->hFetchFromCache(self::REDIS_HASH_IN_BANNER_EVENT_COUNT,  $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
+        return $this->hFetchFromCache($hash, $this->getCacheKey(static::CACHE_KEY_IN_BANNER_TIMEOUT, $namespace));
     }
 
 
@@ -508,7 +518,8 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
         );
 
         $results = $this->cache->mGet($cacheKeys);
-        $inBannerResults = $this->cache->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $inBannerCacheKeys);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate();
+        $inBannerResults = $this->cache->hMGet($hash, $inBannerCacheKeys);
 
         $adTagCacheKeys = $this->getAdTagCacheKeysForAdSlot($slot);
 
@@ -783,7 +794,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
                 $pipe = $this->cache->multi(Redis::PIPELINE);
                 array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
-                    $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
+                    $pipe->hMGet(!$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate(), $keys);
                 });
                 $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
@@ -807,7 +818,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
-            $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
+            $pipe->hMGet(!$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate(), $keys);
         });
         $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
@@ -902,7 +913,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
                 $pipe = $this->cache->multi(Redis::PIPELINE);
                 array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
-                    $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
+                    $pipe->hMGet(!$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate(), $keys);
                 });
                 $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
@@ -926,7 +937,7 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
         $pipe = $this->cache->multi(Redis::PIPELINE);
         array_walk($inBannerCacheKeys, function($keys) use ($pipe) {
-            $pipe->hMGet(self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $keys);
+            $pipe->hMGet(!$this->getDataWithDateHour() ? self::REDIS_HASH_IN_BANNER_EVENT_COUNT : $this->getHashFieldDate(), $keys);
         });
         $inBannerResults = $pipe->exec(); // sequence of output is sequence of slot ids
 
@@ -1215,7 +1226,17 @@ class CacheEventCounter extends AbstractEventCounter implements CacheEventCounte
 
     public function getCacheKey($key, $namespace)
     {
-        $keyFormat = '%s:%s:%s';
+        $keyFormat = '%s:%s:%s'; // opportunities:adtag_100:2018040901
         return sprintf($keyFormat, $key, $namespace, $this->formattedDate);
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getHashFieldDate()
+    {
+        $date = $this->getDate()->format('ymd');
+        //Build new hash field
+        return sprintf("%s:%s", self::REDIS_HASH_IN_BANNER_EVENT_COUNT, $date);
     }
 }

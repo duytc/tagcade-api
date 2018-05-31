@@ -56,4 +56,6 @@ interface RedisCacheInterface extends Cache
     public function mGet(array $keys);
 
     public function hMGet($key, array $fields);
+
+    public function expire($key, $ttl);
 }

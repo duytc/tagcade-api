@@ -26,6 +26,13 @@ interface AccountStatisticsInterface
 
     /**
      * @param PublisherInterface $publisher
+     * @param Params $params
+     * @param int $limit
+     * @return BilledReportGroup[]
+     */
+    public function getTopAdNetworksByTotalOpportunitiesForPublisher(PublisherInterface $publisher, Params $params, $limit = 10);
+    /**
+     * @param PublisherInterface $publisher
      * @return float
      */
     public function getProjectedBilledAmount(PublisherInterface $publisher);

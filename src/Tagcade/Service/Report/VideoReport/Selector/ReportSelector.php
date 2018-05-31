@@ -6,6 +6,7 @@ namespace Tagcade\Service\Report\VideoReport\Selector;
 
 use DateTime;
 use Symfony\Component\Validator\Constraints\Date;
+use Tagcade\Model\Report\VideoReport\ReportInterface;
 use Tagcade\Model\Report\VideoReport\ReportType\ReportTypeInterface;
 use Tagcade\Service\DateUtil;
 use Tagcade\Service\DateUtilInterface;
@@ -123,6 +124,22 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
+    public function getReportHourly(ReportTypeInterface $reportType, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
+    {
+        // 1. get reports due to reportType
+        $resultReport = $this->getRawReportHourly($reportType, $filterParameter);
+
+        if (empty($resultReport)) {
+            return false;
+        }
+
+        // 2. return reports by hourly
+        return $resultReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getMultipleReports(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
     {
         $reports = [];
@@ -200,6 +217,29 @@ class ReportSelector implements ReportSelectorInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getMultipleReportsHourly(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
+    {
+        $reports = [];
+        /**@var ReportTypeInterface $reportType */
+        foreach ($reportTypes as $reportType) {
+            // 1. get reports due to reportType
+            if ($reportResult = $this->getRawReportHourly($reportType, $filterParameter)) {
+                $reports = $reportResult;
+            }
+            unset($reportResult);
+        }
+
+        if (empty($reports)) {
+            return false;
+        }
+
+        // 2. return reports by hourly
+        return $reports;
+    }
+
+    /**
      * @param ReportTypeInterface $reportType
      * @param FilterParameterInterface $filterParameter
      * @return mixed
@@ -211,7 +251,7 @@ class ReportSelector implements ReportSelectorInterface
         $selector = $this->getSelectorFor($reportType);
 
         $todayIncludedInDateRange = $this->dateUtil->isTodayInRange($filterParameter->getStartDate(), $filterParameter->getEndDate());
-
+        $yesterdayIncludedInDateRange = $this->dateUtil->isYesterdayInRange($filterParameter->getStartDate(), $filterParameter->getEndDate());
         $reports = [];
 
         if ($todayIncludedInDateRange && $this->videoReportCreator instanceof ReportCreatorInterface) {
@@ -222,14 +262,26 @@ class ReportSelector implements ReportSelectorInterface
             // get historical reports only if the start date is before today's date
             $historicalEndDate = $filterParameter->getEndDate();
 
-            if ($todayIncludedInDateRange) {
+//            if ($todayIncludedInDateRange) {
+//                // since today is in the date range and we are building that report with the report creator
+//                // set the end date to yesterday to make sure we do not query for the current day
+//                $historicalEndDate = new DateTime('yesterday');
+//            }
+
+            if ($yesterdayIncludedInDateRange) {
                 // since today is in the date range and we are building that report with the report creator
-                // set the end date to yesterday to make sure we do not query for the current day
+                // set the end date to yesterday to get cache value for yesterday if there is no report
                 $historicalEndDate = new DateTime('yesterday');
+                $yesterdayReport = $selector->getReports($reportType, $filterParameter);
+                if ($yesterdayReport === false || empty($yesterdayReport)) {
+                    $this->videoReportCreator->setDate($historicalEndDate);
+                    $reports[] = $this->videoReportCreator->getReport($reportType);
+                } else {
+                    $reports = array_merge($reports, $yesterdayReport);
+                }
             }
 
             $historicalReports = $selector->getReports($reportType, $filterParameter);
-
             if ($historicalReports === null) {
                 $historicalReports = [];
             }
@@ -237,6 +289,46 @@ class ReportSelector implements ReportSelectorInterface
             $reports = array_merge($reports, $historicalReports);
 
             unset($historicalReports, $historicalEndDate);
+        }
+
+        return $reports;
+    }
+
+    /**
+     * @param ReportTypeInterface $reportType
+     * @param FilterParameterInterface $filterParameter
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function getRawReportHourly(ReportTypeInterface $reportType, FilterParameterInterface $filterParameter)
+    {
+        $todayIncludedInDateRange = $this->dateUtil->isOnlyTodayOrYesterdayInRange($filterParameter->getStartDate(), $filterParameter->getEndDate());
+
+        $reports = [];
+
+        if ($todayIncludedInDateRange && $this->videoReportCreator instanceof ReportCreatorInterface) {
+
+            $this->videoReportCreator->setDataWithDateHour(true);
+            // on dashboard chart will only display from 0 to current hour
+            $currentHour = (new \DateTime())->format('G');
+            for ($i = 0; $i <= $currentHour; $i++) {
+                $this->videoReportCreator->setDate($filterParameter->getStartDate()->setTime($i, 0));
+
+                // the report types above do not have creator, they're derived from other reports
+                // Create today's report and add it to the first position in the array
+                $report = [];
+                $report = $this->videoReportCreator->getReport($reportType);
+                if (!$report instanceof ReportInterface) {
+                    continue;
+                }
+
+                $date = $filterParameter->getStartDate()->setTime($i, 0)->format('Y-m-d G');
+                $report->setDate(DateTime::createFromFormat('Y-m-d G', $date));
+
+                $reports[] = $report;
+            }
+            $this->videoReportCreator->setDataWithDateHour(false);
+            $this->videoReportCreator->setDate($filterParameter->getStartDate());
         }
 
         return $reports;

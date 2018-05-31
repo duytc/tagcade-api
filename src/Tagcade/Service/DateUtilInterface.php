@@ -21,6 +21,8 @@ interface DateUtilInterface
 
     public function isTodayInRange(DateTime $startDate, DateTime $endDate);
 
+    public function isOnlyTodayOrYesterdayInRange(DateTime $startDate, DateTime $endDate);
+
     public function isYesterdayInRange(DateTime $startDate, DateTime $endDate);
 
     public function isDateBeforeToday(DateTime $date);

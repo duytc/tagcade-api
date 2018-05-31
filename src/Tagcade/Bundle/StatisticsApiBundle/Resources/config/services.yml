@@ -26,3 +26,8 @@ services:
             - @tagcade.repository.report.performance_report.display.hierarchy.platform.platform
             - @tagcade.service.date_util
             - %tc.statistics.number_previous_days_to_include%
+
+    tagcade.service.statistics.util.account_report_cache:
+        class: Tagcade\Service\Statistics\Util\AccountReportCache
+        arguments:
+            - '@tagcade.legacy.cache.performance_report_data'

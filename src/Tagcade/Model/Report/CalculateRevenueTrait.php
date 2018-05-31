@@ -36,11 +36,4 @@ trait CalculateRevenueTrait
 
         return 0;
     }
-
-    /**
-     * @param $numerator
-     * @param $denominator
-     * @return float|null
-     */
-    abstract protected function getRatio($numerator, $denominator);
 }

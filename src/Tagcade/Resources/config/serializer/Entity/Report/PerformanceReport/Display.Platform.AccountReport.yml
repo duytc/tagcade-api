@@ -1,5 +1,11 @@
 Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport:
     exclusion_policy: ALL
+    virtual_properties:
+        getDateTime:
+            # serialized_name: dateTime
+            expose: true
+            groups: [platform_account_report.detail, platform_account_report.summary]
+            type: DateTime<'Y-m-d G'>
     properties:
         id:
             expose: true

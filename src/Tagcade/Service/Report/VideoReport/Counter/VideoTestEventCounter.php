@@ -36,7 +36,6 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
         ]
     */
     protected $videoWaterfallTagData;
-
     /* video ad source data as
         [
             videoDemandAdTagId => [
@@ -49,7 +48,25 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             ...
         ]
     */
+
     protected $videoDemandAdTagData;
+
+    protected $videoWaterfallTagDataHourly;
+    /* video ad source data as
+      // key is hour from 0 -> 23
+        [0] => [
+            videoDemandAdTagId => [
+                request,
+                bid,
+                impression,
+                click,
+                error
+            ],
+            ...
+        ],
+        ...
+*/
+    protected $videoDemandAdTagDataHourly;
 
     /**
      * @var VideoDemandAdTagManagerInterface
@@ -89,6 +106,26 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
     }
 
     /**
+     * get All generated VideoWaterfallTags Data hourly
+     *
+     * @return array
+     */
+    public function getAllVideoWaterfallTagsDataHourly()
+    {
+        return $this->videoWaterfallTagDataHourly;
+    }
+
+    /**
+     * get All VideoDemandAdTags Data hourly
+     *
+     * @return array
+     */
+    public function getAllVideoDemandAdTagsDataHourly()
+    {
+        return $this->videoDemandAdTagDataHourly;
+    }
+
+    /**
      * refresh Test Data randomly
      *
      * @param int $minAdTagRequests
@@ -103,6 +140,9 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
 
         $this->videoWaterfallTagData = [];
         $this->videoDemandAdTagData = [];
+
+        $this->videoDemandAdTagDataHourly = [];
+        $this->videoDemandAdTagDataHourly = [];
 
         /** @var VideoWaterfallTagInterface $videoWaterfallTag */
         foreach ($this->videoWaterfallTags as $videoWaterfallTag) {
@@ -127,6 +167,35 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             $this->videoWaterfallTagData[$videoWaterfallTagUuid][$this->getCacheKey(self::KEY_ERRORS, $adTagNameSpace)] = $adTagErrors;
             $this->videoWaterfallTagData[$videoWaterfallTagUuid][$this->getCacheKey(self::KEY_BIDS, $adTagNameSpace)] = $adTagImpressions;
 
+            /* 2.1. create all video ad tags data for 24 hours for videoWaterfallTagDataHourly */
+            $previousAdTagRequest = 0; // ...
+            $previousAdTagErrors = 0; // ...
+            $originalDate = $this->getDate();
+            $this->setDataWithDateHour(true);
+            for ($i = 0; $i <= 23; $i++) {
+                // set hour
+                $dataWithDateHour = clone $originalDate;
+                if (!$dataWithDateHour instanceof DateTime){
+                    continue;
+                }
+                $dataWithDateHour->setTime($i, 0);
+                $this->setDate($dataWithDateHour);
+
+                $nextAdTagRequest = mt_rand($previousAdTagRequest, $adTagRequests);
+                $nextAdTagErrors = mt_rand($previousAdTagErrors, $adTagErrors);
+                $nextAdTagImpressions = $nextAdTagRequest - $nextAdTagErrors;
+                $this->videoWaterfallTagDataHourly[$videoWaterfallTagUuid][$i][$this->getCacheKey(self::KEY_REQUESTS, $adTagNameSpace)] = $nextAdTagRequest;
+                $this->videoWaterfallTagDataHourly[$videoWaterfallTagUuid][$i][$this->getCacheKey(self::KEY_ERRORS, $adTagNameSpace)] = $nextAdTagErrors;
+                $this->videoWaterfallTagDataHourly[$videoWaterfallTagUuid][$i][$this->getCacheKey(self::KEY_BIDS, $adTagNameSpace)] = $nextAdTagImpressions;
+
+                $previousAdTagRequest = $nextAdTagRequest;
+                $previousAdTagErrors = $nextAdTagErrors;
+            }
+            unset($previousAdTagRequest, $nextAdTagRequest);
+            unset($previousAdTagErrors, $nextAdTagErrors, $nextAdTagImpressions);
+            $this->setDataWithDateHour(false);
+            $this->setDate($originalDate);
+
             /* 3. generate random data for video ad sources */
             $demandAdTags = $this->videoDemandAdTagManager->getVideoDemandAdTagsForVideoWaterfallTag($videoWaterfallTag);
             $demandAdTagImpressionDatas = $this->distributeValueToArray($adTagImpressions, count($demandAdTags));
@@ -135,6 +204,7 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
             /** @var VideoDemandAdTagInterface $demandAdTag */
             foreach ($demandAdTags as $index => $demandAdTag) {
                 $demandAdTagNameSpace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $demandAdTag->getId());
+
                 $demandAdTagImpressions = $demandAdTagImpressionDatas[$index];
                 $demandAdTagBid = mt_rand($demandAdTagImpressions, $adTagRequests);
                 $demandAdTagRequest = mt_rand($demandAdTagBid, $adTagRequests);
@@ -146,6 +216,49 @@ class VideoTestEventCounter extends VideoAbstractEventCounter
                 $this->videoDemandAdTagData[$demandAdTag->getId()][$this->getCacheKey(self::KEY_CLICKS, $demandAdTagNameSpace)] = mt_rand(0, $demandAdTagImpressions);
                 $this->videoDemandAdTagData[$demandAdTag->getId()][$this->getCacheKey(self::KEY_ERRORS, $demandAdTagNameSpace)] = $demandAdTagRequest - $demandAdTagBid;
                 $this->videoDemandAdTagData[$demandAdTag->getId()][$this->getCacheKey(self::KEY_BLOCKS, $demandAdTagNameSpace)] = $demandAdTagBlocks;
+
+
+                /* 4.1. create all video ad sources data for 24 hours for videoWaterfallTagDataHourly */
+                $previousDemandAdTagRequest = 0; // ...
+                $previousDemandAdTagImpressions = 0; // ...
+                $previousDemandAdTagBid = 0; // ...
+                $previousDemandAdTagBlocks = 0; // ...
+                $originalDate = $this->getDate();
+                $this->setDataWithDateHour(true);
+                for ($i = 0; $i <= 23; $i++) {
+                    // set hour
+                    $dataWithDateHour = clone $originalDate;
+                    if (!$dataWithDateHour instanceof DateTime){
+                        continue;
+                    }
+                    $dataWithDateHour->setTime($i, 0);
+                    $this->setDate($dataWithDateHour);
+
+                    $nextDemandAdTagRequest = mt_rand($previousDemandAdTagRequest, $demandAdTagRequest);
+                    $nextDemandAdTagImpressions = mt_rand($previousDemandAdTagImpressions, $demandAdTagImpressions);
+                    $nextDemandAdTagBid = mt_rand($previousDemandAdTagBid, $demandAdTagBid);
+                    $nextDemandAdTagBlocks = mt_rand($previousDemandAdTagBlocks, $demandAdTagBlocks);
+
+                    $this->videoDemandAdTagDataHourly[$demandAdTag->getId()][$i][$this->getCacheKey(self::KEY_REQUESTS, $demandAdTagNameSpace)] = $nextDemandAdTagRequest;
+                    $this->videoDemandAdTagDataHourly[$demandAdTag->getId()][$i][$this->getCacheKey(self::KEY_IMPRESSIONS, $demandAdTagNameSpace)] = $nextDemandAdTagImpressions;
+                    $this->videoDemandAdTagDataHourly[$demandAdTag->getId()][$i][$this->getCacheKey(self::KEY_BIDS, $demandAdTagNameSpace)] = $nextDemandAdTagBid;
+                    $this->videoDemandAdTagDataHourly[$demandAdTag->getId()][$i][$this->getCacheKey(self::KEY_CLICKS, $demandAdTagNameSpace)] = mt_rand(0, $nextDemandAdTagImpressions);
+                    $this->videoDemandAdTagDataHourly[$demandAdTag->getId()][$i][$this->getCacheKey(self::KEY_ERRORS, $demandAdTagNameSpace)] = $nextDemandAdTagRequest - $nextDemandAdTagBid;
+                    $this->videoDemandAdTagDataHourly[$demandAdTag->getId()][$i][$this->getCacheKey(self::KEY_BLOCKS, $demandAdTagNameSpace)] = $nextDemandAdTagBlocks;
+
+                    $previousDemandAdTagRequest = $nextDemandAdTagRequest;
+                    $previousDemandAdTagImpressions = $nextDemandAdTagImpressions;
+                    $previousDemandAdTagBid = $nextDemandAdTagBid;
+                    $previousDemandAdTagBlocks = $nextDemandAdTagBlocks;
+                }
+
+                unset($previousDemandAdTagRequest, $nextDemandAdTagRequest);
+                unset($previousDemandAdTagImpressions, $nextDemandAdTagImpressions);
+                unset($previousDemandAdTagBid, $nextDemandAdTagBid);
+                unset($previousDemandAdTagBlocks, $nextDemandAdTagBlocks);
+
+                $this->setDataWithDateHour(false);
+                $this->setDate($originalDate);
             }
         }
     }

@@ -8,8 +8,10 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Tagcade\Model\Report\VideoReport\ReportInterface;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameter;
 use Tagcade\Service\Report\VideoReport\Parameter\MetricParameter;
@@ -18,18 +20,21 @@ use Tagcade\Service\Report\VideoReport\Selector\Result\ReportCollection;
 
 class VideoReportController extends FOSRestController
 {
+    const COMPARISON_TYPE_YESTERDAY = 'yesterday';
     const COMPARISON_TYPE_DAY_OVER_DAY = 'day-over-day';
     const COMPARISON_TYPE_WEEK_OVER_WEEK = 'week-over-week';
     const COMPARISON_TYPE_MONTH_OVER_MONTH = 'month-over-month';
     const COMPARISON_TYPE_YEAR_OVER_YEAR = 'year-over-year';
+    const COMPARISON_TYPE_CUSTOM = 'custom';
 
     static $SUPPORTED_COMPARISON_TYPES = [
+        self::COMPARISON_TYPE_YESTERDAY,
         self::COMPARISON_TYPE_DAY_OVER_DAY,
         self::COMPARISON_TYPE_WEEK_OVER_WEEK,
         self::COMPARISON_TYPE_MONTH_OVER_MONTH,
-        self::COMPARISON_TYPE_YEAR_OVER_YEAR
+        self::COMPARISON_TYPE_YEAR_OVER_YEAR,
+        self::COMPARISON_TYPE_CUSTOM
     ];
-
     /**
      * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
      *
@@ -75,6 +80,10 @@ class VideoReportController extends FOSRestController
      * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")
      *
      * @Rest\Get("/comparison")
+     * @Rest\QueryParam(name="currentStartDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="currentEndDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="historyStartDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="historyEndDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
      *
      * @Rest\QueryParam(name="type", nullable=false)
      *
@@ -102,12 +111,14 @@ class VideoReportController extends FOSRestController
      * )
      *
      * @return array
+     * @throws \Exception
      */
     public function getVideoReportComparisonAction()
     {
-        $comparisonType = $this->get('fos_rest.request.param_fetcher')->get('type');
+        $paramFetcher = $this->get('fos_rest.request.param_fetcher');
+        $comparisonType = $paramFetcher->get('type');
         if (empty($comparisonType) || !in_array($comparisonType, self::$SUPPORTED_COMPARISON_TYPES)) {
-            throw new BadRequestHttpException(sprintf('Not support comparison type %s', $comparisonType));
+            throw new BadRequestHttpException(sprintf('Do not support comparison type %s', $comparisonType));
         }
 
         /* build common params */
@@ -133,10 +144,26 @@ class VideoReportController extends FOSRestController
             MetricParameter::REQUEST_FILL_RATE_KEY
         ];
 
-        /* get startDate-endDate due to comparison type */
-        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType($comparisonType);
+        if ($comparisonType == self::COMPARISON_TYPE_CUSTOM) {
+            /* get start-end history Date based on comparison custom type */
+            /* get start-end current Date based on comparison custom type */
+            $startDateEndDate =  [
+                'current' => [
+                    'startDate' => $paramFetcher->get('currentStartDate', null),
+                    'endDate' => $paramFetcher->get('currentEndDate', null)
+                ],
+                'history' => [
+                    'startDate' => $paramFetcher->get('historyStartDate', null),
+                    'endDate' => $paramFetcher->get('historyEndDate', null)
+                ]
+            ];
+        } else {
+            /* get startDate-endDate due to comparison type */
+            $startDateEndDate = $this->getStartDateEndDateDueToComparisonType($comparisonType);
+        }
+
         if (!is_array($startDateEndDate)) {
-            throw new BadRequestHttpException(sprintf('Not support comparison type %s', $comparisonType));
+            throw new BadRequestHttpException(sprintf('Do not support comparison type %s', $comparisonType));
         }
 
         /* build params for current */
@@ -166,13 +193,52 @@ class VideoReportController extends FOSRestController
         try {
             $historyReports = $this->getReportByParams($paramsForYesterday);
         } catch (\Exception $e) {
+            //throw $e;
             $historyReports = [];
         }
 
         $result = [
             'current' => $currentReports,
-            'history' => $historyReports
+            'history' => $historyReports,
+            'startEndDateCurrent' => isset($startDateEndDate['current']) ? $startDateEndDate['current'] : []
         ];
+
+        try {
+            if ($comparisonType == 'day-over-day') {
+                $reportHourToday = $this->getReportByParamsHourly($paramsForToday);
+
+                //filter delete the hours that do not have data
+                $reportHourToday = $this->filterDataHourly($reportHourToday);
+                $resultReportHourly = [
+                    'reportHourToday' => $reportHourToday
+                ];
+                $result = array_merge($resultReportHourly, $result);
+            }
+        } catch (\Exception $e) {
+            $resultReportHourly = [
+                'reportHourToday' => []
+            ];
+            $result = array_merge($resultReportHourly, $result);
+        }
+
+        try {
+            if ($comparisonType == 'day-over-day') {
+                $reportHourHistory = $this->getReportByParamsHourly($paramsForYesterday);
+
+                //filter delete the hours that do not have data
+                $reportHourHistory = $this->filterDataHourly($reportHourHistory);
+
+                $resultReportHourly = [
+                    'reportHourHistory' => $reportHourHistory
+                ];
+                $result = array_merge($resultReportHourly, $result);
+            }
+        } catch (\Exception $e) {
+            $resultReportHourly = [
+                'reportHourHistory' => []
+            ];
+            $result = array_merge($resultReportHourly, $result);
+        }
 
         return $result;
     }
@@ -197,6 +263,25 @@ class VideoReportController extends FOSRestController
         );
     }
 
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    private function getReportByParamsHourly(array $params)
+    {
+        $parameterObject = new Parameter($params);
+        $filterObject = $parameterObject->getFilterObject();
+        $breakDownObject = $parameterObject->getBreakDownObject();
+
+        if ($this->getUser() instanceof PublisherInterface) {
+            $publisherId = $this->getUser()->getId();
+            $filterObject->setPublisherId([$publisherId]);
+        }
+
+        return $this->getResult(
+            $this->getReportBuilder()->getReportsHourly($filterObject, $breakDownObject)
+        );
+    }
     /**
      * @return \Tagcade\Service\Report\VideoReport\Selector\VideoReportBuilder
      */
@@ -238,15 +323,26 @@ class VideoReportController extends FOSRestController
     private function getStartDateEndDateDueToComparisonType($comparisonType)
     {
         switch ($comparisonType) {
-            case self::COMPARISON_TYPE_DAY_OVER_DAY:
+            case self::COMPARISON_TYPE_YESTERDAY:
                 return [
                     'current' => [
                         'startDate' => (new \DateTime('yesterday'))->format('Y-m-d'),
                         'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
                     ],
                     'history' => [
-                        'startDate' => (new \DateTime('-2 days'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime('-2 days'))->format('Y-m-d')
+                        'startDate' => (new \DateTime('yesterday'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
+                    ]
+                ];
+            case self::COMPARISON_TYPE_DAY_OVER_DAY:
+                return [
+                    'current' => [
+                        'startDate' => (new \DateTime('now'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('now'))->format('Y-m-d')
+                    ],
+                    'history' => [
+                        'startDate' => (new \DateTime('yesterday'))->format('Y-m-d'),
+                        'endDate' => (new \DateTime('yesterday'))->format('Y-m-d')
                     ]
                 ];
 
@@ -282,9 +378,57 @@ class VideoReportController extends FOSRestController
                     ],
                     'history' => [
                         'startDate' => (new \DateTime('first day of January last year'))->format('Y-m-d'),
-                        'endDate' => (new \DateTime('last day of December last year'))->format('Y-m-d')
+                        'endDate' => (new \DateTime('-1 year'))->format('Y-m-d')
                     ]
                 ];
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array $data
+     * @return mixed
+     */
+    private function filterDataHourly(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $hasData = $this->checkHasData($value);
+
+            if ($hasData == true) {
+
+                if ($key > 0) {
+                    array_splice($data, 0, $key);
+
+                    return $data;
+                } else {
+                    return $data;
+                }
+            }
+        }
+
+        return [];
+    }
+
+    /**
+     * @param $report
+     * @return bool
+     */
+    private function checkHasData($report)
+    {
+        if (!$report instanceof ReportInterface) {
+            return false;
+        }
+
+        if ($report->getRequests()
+            || $report->getImpressions()
+            || $report->getBids()
+            || $report->getErrors()
+            || $report->getBlocks()
+            || $report->getRequestFillRate()
+
+        ) {
+            return true;
         }
 
         return false;

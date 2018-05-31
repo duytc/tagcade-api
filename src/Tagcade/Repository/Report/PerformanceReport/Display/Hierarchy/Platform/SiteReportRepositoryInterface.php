@@ -71,6 +71,16 @@ interface SiteReportRepositoryInterface
     public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10);
 
     /**
+     * This will return array of pair (site id, slotOpportunities) sorted by slotOpportunities desc
+     *
+     * @param PublisherInterface $publisher
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @param int $limit
+     * @return mixed
+     */
+    public function getTopSitesForPublisherBySlotOpportunities(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10);
+    /**
      * @param SiteReportInterface $report
      * @return mixed
      */

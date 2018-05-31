@@ -19,6 +19,14 @@ interface ReportSelectorInterface
     public function getReport(ReportTypeInterface $reportType, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
 
     /**
+     * @param ReportTypeInterface $reportType
+     * @param FilterParameterInterface $filterParameter
+     * @param BreakDownParameterInterface $breakDownParameter
+     * @return mixed
+     */
+    public function getReportHourly(ReportTypeInterface $reportType, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
+
+    /**
      * @param array $reportTypes
      * @param FilterParameterInterface $filterParameter
      * @param BreakDownParameterInterface $breakDownParameter
@@ -26,4 +34,13 @@ interface ReportSelectorInterface
      */
 
     public function getMultipleReports(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
+
+    /**
+     * @param array $reportTypes
+     * @param FilterParameterInterface $filterParameter
+     * @param BreakDownParameterInterface $breakDownParameter
+     * @return mixed
+     */
+    public function getMultipleReportsHourly(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
+
 } 

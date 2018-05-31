@@ -7,6 +7,7 @@ namespace Tagcade\Service\Report\VideoReport\Counter;
 abstract class VideoAbstractEventCounter implements VideoEventCounterInterface
 {
     const KEY_DATE_FORMAT = 'ymd';
+    const KEY_DATE_HOUR_FORMAT = 'ymdH';
     /* namespace keys */
     const NAMESPACE_WATERFALL_AD_TAG = 'waterfall_tag_%s'; // USING UUID AS ID for video ad tag
     const NAMESPACE_DEMAND_AD_TAG = 'demand_tag_%d'; // using normal id for video ad source
@@ -15,6 +16,7 @@ abstract class VideoAbstractEventCounter implements VideoEventCounterInterface
      */
     protected $date;
     protected $formattedDate;
+    protected $dataWithDateHour;
     /**
      * @inheritdoc
      */
@@ -25,13 +27,13 @@ abstract class VideoAbstractEventCounter implements VideoEventCounterInterface
             $date = $today;
         }
 
-        if ($date > $today) {
+        if ($date->format('Y-m-d') > $today->format('Y-m-d')) {
             $date = $today;
         } else {
             $this->date = $date;
         }
 
-        $this->formattedDate = $date->format(self::KEY_DATE_FORMAT);
+        $this->formattedDate = !$this->getDataWithDateHour() ? $date->format(self::KEY_DATE_FORMAT) : $date->format(self::KEY_DATE_HOUR_FORMAT);
     }
 
     /**
@@ -44,6 +46,16 @@ abstract class VideoAbstractEventCounter implements VideoEventCounterInterface
         }
 
         return $this->date;
+    }
+
+    public function setDataWithDateHour($dataWithDateHour)
+    {
+        $this->dataWithDateHour = $dataWithDateHour;
+    }
+
+    public function getDataWithDateHour()
+    {
+        return $this->dataWithDateHour;
     }
 
     /**

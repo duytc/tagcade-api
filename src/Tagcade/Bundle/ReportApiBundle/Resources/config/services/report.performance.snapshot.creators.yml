@@ -14,10 +14,12 @@ services:
     tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.account_snapshot:
         class: Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hierarchy\Platform\AccountSnapshot
         arguments:
+            - @tagcade.domain_manager.site
             - @tagcade.domain_manager.ad_slot
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @tagcade.repository.billing_configuration
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.site_snapshot
         calls:
             - [setLogger, [@logger]]
 
@@ -28,6 +30,7 @@ services:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @tagcade.repository.billing_configuration
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_slot_snapshot
         calls:
             - [setLogger, [@logger]]
 
@@ -37,6 +40,7 @@ services:
             - @tagcade.domain_manager.ad_tag
             - @tagcade.service.report.performance_report.display.billing.billing_calculator
             - @tagcade.repository.billing_configuration
+            - @tagcade.service.report.performance_report.display.creator.creators.hierarchy.platform.ad_tag_snapshot
         calls:
             - [setLogger, [@logger]]
 

@@ -21,6 +21,9 @@ abstract class ReportCreatorAbstract
 
     protected $date;
 
+    /* @var boolean */
+    protected $dataWithDateHour;
+
     /**
      * @param CreatorInterface[] $creators
      * @param VideoEventCounterInterface $eventCounter
@@ -54,6 +57,19 @@ abstract class ReportCreatorAbstract
     public function getDate()
     {
         return $this->date;
+    }
+
+    public function setDataWithDateHour($dataWithDateHour)
+    {
+        $this->dataWithDateHour = $dataWithDateHour;
+        $this->eventCounter->setDataWithDateHour($dataWithDateHour);
+
+        return $this;
+    }
+
+    public function getDataWithDateHour()
+    {
+        return $this->dataWithDateHour;
     }
 
     public function getReport(ReportTypeInterface $reportType)

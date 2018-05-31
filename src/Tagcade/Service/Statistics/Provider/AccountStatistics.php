@@ -80,6 +80,15 @@ class AccountStatistics implements AccountStatisticsInterface
         return $this->topList($adNetworksReports, $sortBy = 'estRevenue', $limit);
     }
 
+    public function getTopAdNetworksByTotalOpportunitiesForPublisher(PublisherInterface $publisher, Params $params, $limit = 10)
+    {
+        $params->setGrouped(true);
+        $adNetworksReports = $this->reportBuilder->getPublisherAdNetworksReport($publisher, $params);
+
+        return $this->topList($adNetworksReports, $sortBy = 'totalOpportunities', $limit);
+    }
+
+
     public function getProjectedBilledAmount(PublisherInterface $publisher)
     {
         return $this->projectedBillingCalculator->calculateProjectedBilledAmountForPublisher($publisher);

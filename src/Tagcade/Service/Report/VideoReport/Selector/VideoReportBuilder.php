@@ -70,6 +70,27 @@ class VideoReportBuilder implements VideoReportBuilderInterface
     /**
      * @param FilterParameterInterface $filterParameter
      * @param BreakDownParameterInterface $breakDownParameter
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getReportsHourly(FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
+    {
+        /* 1. get all reportTypes with common params, BUT WITHOUT filtered entities */
+        /** @var array|ReportTypeInterface|ReportTypeInterface[] $reportTypes */
+        $reportTypes = $this->getReportTypes($filterParameter, $breakDownParameter);
+
+        /* 2. using report selector to get report due to a single reportType */
+        if (!is_array($reportTypes)) {
+            return $this->videoReportSelector->getReportHourly($reportTypes, $filterParameter, $breakDownParameter);
+        }
+
+        /* 2'. using report selector to get report due to an array reportTypes */
+        return $this->videoReportSelector->getMultipleReportsHourly($reportTypes, $filterParameter, $breakDownParameter);
+    }
+
+    /**
+     * @param FilterParameterInterface $filterParameter
+     * @param BreakDownParameterInterface $breakDownParameter
      * @return array|null
      * @throws \Exception
      */

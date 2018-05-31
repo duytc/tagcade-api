@@ -1,5 +1,11 @@
 Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport:
     exclusion_policy: ALL
+    virtual_properties:
+         getDateTime:
+             # serialized_name: dateTime
+             expose: true
+             groups: [platform_platform.detail, platform_platform.summary]
+             type: DateTime<'Y-m-d G'>
     properties:
         date:
             expose: true

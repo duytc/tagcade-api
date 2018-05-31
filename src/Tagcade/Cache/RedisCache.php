@@ -108,6 +108,13 @@ class RedisCache implements RedisCacheInterface
     /**
      * {@inheritdoc}
      */
+    public function expire( $key, $ttl ) {
+        return $this->getRedis()->expire($key, $ttl);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function hFetch($hash, $field)
     {
         return $this->getRedis()->hGet($hash, $field);

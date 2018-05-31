@@ -40,6 +40,15 @@ abstract class AbstractReport implements ReportInterface
     }
 
     /**
+     * get DateTime full as virtual_properties of platform report
+     * @return mixed
+     */
+    public function getDateTime()
+    {
+        return $this->date;
+    }
+
+    /**
      * @inheritdoc
      */
     public function setDate(DateTime $date = null)

@@ -5,12 +5,14 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Creator\Creators\Hier
 use Tagcade\Bundle\UserSystem\AdminBundle\Entity\User;
 use Tagcade\DomainManager\AdSlotManagerInterface;
 use Tagcade\DomainManager\AdTagManagerInterface;
+use Tagcade\DomainManager\SiteManagerInterface;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Core\BillingConfigurationInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Account as AccountReportType;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Billing\BillingCalculatorInterface;
@@ -23,18 +25,26 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
     use HasSubReportsTrait;
     use ConstructCalculatedReportTrait;
 
+    /** @var SiteManagerInterface */
+    private $siteManager;
+
     /** @var AdSlotManagerInterface */
     private $adSlotManager;
 
     /** @var AdTagManagerInterface */
     private $adTagManager;
 
-    public function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
+    /** @var SiteSnapshot */
+    private $siteSnapshotCreator;
+
+    public function __construct(SiteManagerInterface $siteManager, AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository, SiteSnapshot $siteSnapshotCreator)
     {
         parent::__construct($billingCalculator, $billingConfigurationRepository);
 
+        $this->siteManager = $siteManager;
         $this->adSlotManager = $adSlotManager;
         $this->adTagManager = $adTagManager;
+        $this->siteSnapshotCreator = $siteSnapshotCreator;
     }
 
     /**
@@ -56,6 +66,17 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
         $result = $this->eventCounter->getAccountReport($publisher);
 
         $this->parseRawReportData($accountReport, $result);
+
+        // aggregate ad Tag Snapshot reports
+        $estRevenue = 0;
+        $sites = $this->siteManager->getSitesForPublisher($publisher);
+        $this->siteSnapshotCreator->setEventCounter($this->eventCounter);
+        foreach ($sites as $site) {
+            $siteSnapshotReport = $this->siteSnapshotCreator->createReport(new SiteReportType($site));
+            $estRevenue += $siteSnapshotReport->getEstRevenue();
+        }
+
+        $accountReport->setEstRevenue($estRevenue);
 
         return $accountReport;
     }
@@ -86,7 +107,7 @@ class AccountSnapshot extends BillableSnapshotCreatorAbstract implements Account
             $billingConfiguration = new BillingConfiguration();
             $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
         }
-        
+
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $report->getAdOpportunities();

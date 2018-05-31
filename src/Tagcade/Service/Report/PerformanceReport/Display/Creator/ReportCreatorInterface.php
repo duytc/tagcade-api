@@ -21,6 +21,17 @@ interface ReportCreatorInterface
     public function getDate();
 
     /**
+     * @param bool $dataWithDateHour
+     * @return self
+     */
+    public function setDataWithDateHour($dataWithDateHour);
+
+    /**
+     * @return boolean
+     */
+    public function getDataWithDateHour();
+
+    /**
      * @return EventCounterInterface
      */
     public function getEventCounter();

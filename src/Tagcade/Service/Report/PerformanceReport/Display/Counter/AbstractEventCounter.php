@@ -11,6 +11,8 @@ abstract class AbstractEventCounter implements EventCounterInterface
      */
     protected $date;
 
+    protected $dataWithDateHour;
+
     /**
      * @inheritdoc
      */
@@ -26,5 +28,15 @@ abstract class AbstractEventCounter implements EventCounterInterface
         }
 
         return $this->date;
+    }
+
+    public function setDataWithDateHour($dataWithDateHour)
+    {
+        $this->dataWithDateHour = $dataWithDateHour;
+    }
+
+    public function getDataWithDateHour()
+    {
+        return $this->dataWithDateHour;
     }
 }

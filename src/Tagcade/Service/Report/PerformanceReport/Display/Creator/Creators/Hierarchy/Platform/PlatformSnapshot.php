@@ -69,6 +69,7 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
 
         $total = 0;
         $inBannerTotal = 0;
+        $estRevenue = 0;
         foreach ($allPublishers as $publisher) {
             if (!$publisher instanceof PublisherInterface) {
                 continue;
@@ -93,7 +94,7 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
 
             $total += $accountReport->getBilledRate() * $accountReport->getBilledAmount(); // for weighted value calculation latter
             $inBannerTotal += $accountReport->getInBannerBilledRate() * $accountReport->getInBannerBilledAmount(); // for in banner weighted value calculation latter
-
+            $estRevenue += $accountReport->getEstRevenue();
         }
 
         $this->logger->info('Finished getting all active publisher report');
@@ -104,6 +105,8 @@ class PlatformSnapshot extends SnapshotCreatorAbstract implements PlatformInterf
         $result[self::IN_BANNER_BILLED_RATE] = $inBannerBilledRate == null ? 0 : $inBannerBilledRate;
 
         $this->constructReportModel($report, $result);
+
+        $report->setEstRevenue($estRevenue);
 
         $this->logger->info('Finished constructing Platform report');
 

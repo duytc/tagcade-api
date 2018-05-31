@@ -86,6 +86,13 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports(new PlatformReportTypes\Platform($publishers), $params);
     }
 
+    public function getPlatformReportForHourly(Params $params, $force = false)
+    {
+        $publishers = $this->userManager->allPublishers();
+
+        return $this->getReportsHourly(new PlatformReportTypes\Platform($publishers), $params, $force);
+    }
+
     public function getAllPublishersReport(Params $params, $inBanner = false)
     {
         if ($inBanner === true) {
@@ -154,6 +161,11 @@ class ReportBuilder implements ReportBuilderInterface
     public function getPublisherReport(PublisherInterface $publisher, Params $params)
     {
         return $this->getReports(new PlatformReportTypes\Account($publisher), $params);
+    }
+
+    public function getPublisherReportForHourly(PublisherInterface $publisher, Params $params, $force = false)
+    {
+        return $this->getReportsHourly(new PlatformReportTypes\Account($publisher), $params, $force);
     }
 
     /**
@@ -442,7 +454,6 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->getReports($reportTypes, $params);
     }
 
-
     /**
      * @param RonAdSlotInterface $ronAdSlot
      * @param Params $params
@@ -545,6 +556,16 @@ class ReportBuilder implements ReportBuilderInterface
         return $this->reportSelector->getReports($reportType, $params);
     }
 
+    /**
+     * @param ReportTypeInterface|ReportTypeInterface[] $reportType
+     * @param Params $params
+     * @param bool $force
+     * @return false|ReportResultInterface
+     */
+    protected function getReportsHourly($reportType, Params $params, $force = false)
+    {
+        return $this->reportSelector->getReportsHourly($reportType, $params, $force);
+    }
     /**
      * @param SiteInterface $site
      * @return AdNetworkInterface[]

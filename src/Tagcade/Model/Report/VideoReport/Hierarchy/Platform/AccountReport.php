@@ -47,6 +47,11 @@ class AccountReport extends AbstractCalculatedReport implements AccountReportInt
         return $this->date;
     }
 
+    public function getDateTime()
+    {
+        return $this->date;
+    }
+
     public function isValidSuperReport(ReportInterface $report)
     {
         return $report instanceof PlatformReportInterface;

@@ -5,7 +5,9 @@ namespace Tagcade\Service\Report\VideoReport\Counter;
 
 use Tagcade\Cache\RedisCacheInterface;
 use Tagcade\Domain\DTO\Report\VideoReport\VideoDemandAdTagReportData;
+use Tagcade\Domain\DTO\Report\VideoReport\VideoDemandAdTagReportDataHourly;
 use Tagcade\Domain\DTO\Report\VideoReport\VideoWaterfallTagReportData;
+use Tagcade\Domain\DTO\Report\VideoReport\VideoWaterfallTagReportDataHourly;
 
 class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoCacheEventCounterInterface
 {
@@ -41,10 +43,14 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoWaterfallTagData($videoWaterfallTagId, $supportMGet = true, $date = null)
     {
         $cacheKeys = $this->createVideoCacheKeyForAdTag($videoWaterfallTagId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate() ;
 
-        $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_VIDEO_EVENT_COUNT, $cacheKeys) : $this->getSequentiallyMultipleFields(self::REDIS_HASH_VIDEO_EVENT_COUNT, $cacheKeys);
+        $results = $supportMGet === true ? $this->cache->hMGet($hash, $cacheKeys) : $this->getSequentiallyMultipleFields($hash, $cacheKeys);
 
-        return new VideoWaterfallTagReportData($videoWaterfallTagId, $results, $this->getDate());
+        // make sure that correct key will be returned
+        return !$this->getDataWithDateHour()
+            ? new VideoWaterfallTagReportData($videoWaterfallTagId, $results, $this->getDate())
+            : new VideoWaterfallTagReportDataHourly($videoWaterfallTagId, $results, $this->getDate());
     }
 
     /**
@@ -53,10 +59,14 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoDemandAdTagData($videoDemandAdTagId, $supportMGet = true, $date = null)
     {
         $cacheKeys = $this->createVideoCacheKeyForAdSource($videoDemandAdTagId);
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate();
 
-        $results = $supportMGet === true ? $this->cache->hMGet(self::REDIS_HASH_VIDEO_EVENT_COUNT, $cacheKeys) : $this->getSequentiallyMultipleFields(self::REDIS_HASH_VIDEO_EVENT_COUNT, $cacheKeys);
+        $results = $supportMGet === true ? $this->cache->hMGet($hash, $cacheKeys) : $this->getSequentiallyMultipleFields($hash, $cacheKeys);
 
-        return new VideoDemandAdTagReportData($videoDemandAdTagId, $results, $this->getDate());
+        // make sure that correct key will be returned
+        return !$this->getDataWithDateHour()
+            ? new VideoDemandAdTagReportData($videoDemandAdTagId, $results, $this->getDate())
+            : new VideoDemandAdTagReportDataHourly($videoDemandAdTagId, $results, $this->getDate());
     }
 
     /**
@@ -65,9 +75,9 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoWaterfallTagRequestCount($videoWaterfallTagId, $date = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
-
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate() ;
         return $this->cache->hFetch(
-            self::REDIS_HASH_VIDEO_EVENT_COUNT,
+            $hash,
             $this->getCacheKey(static::CACHE_KEY_REQUESTS, $namespace)
         );
     }
@@ -78,9 +88,9 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoWaterfallTagBidCount($videoWaterfallTagId, $date = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
-
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate() ;
         return $this->cache->hFetch(
-            self::REDIS_HASH_VIDEO_EVENT_COUNT,
+            $hash,
             $this->getCacheKey(static::CACHE_KEY_BIDS, $namespace)
         );
     }
@@ -91,9 +101,9 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoWaterfallTagErrorCount($videoWaterfallTagId, $date = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_WATERFALL_AD_TAG, $videoWaterfallTagId);
-
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate() ;
         return $this->cache->hFetch(
-            self::REDIS_HASH_VIDEO_EVENT_COUNT,
+            $hash,
             $this->getCacheKey(static::CACHE_KEY_ERRORS, $namespace)
         );
     }
@@ -102,9 +112,9 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoDemandAdTagImpressionsCount($videoDemandAdTagId, $date = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
-
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate() ;
         return $this->cache->hFetch(
-            self::REDIS_HASH_VIDEO_EVENT_COUNT,
+            $hash,
             $this->getCacheKey(static::CACHE_KEY_IMPRESSIONS, $namespace)
         );
     }
@@ -112,9 +122,9 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     public function getVideoDemandAdTagRequestsCount($videoDemandAdTagId, $date = null)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
-
+        $hash = !$this->getDataWithDateHour() ? self::REDIS_HASH_VIDEO_EVENT_COUNT : $this->getHashFieldDate() ;
         return $this->cache->hFetch(
-            self::REDIS_HASH_VIDEO_EVENT_COUNT,
+            $hash,
             $this->getCacheKey(static::CACHE_KEY_REQUESTS, $namespace)
         );
     }
@@ -126,7 +136,6 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
     protected function createVideoCacheKeyForAdSource($videoDemandAdTagId)
     {
         $namespace = $this->getNamespace(self::NAMESPACE_DEMAND_AD_TAG, $videoDemandAdTagId);
-
         return array (
             $this->getCacheKey(self::CACHE_KEY_REQUESTS, $namespace),
             $this->getCacheKey(self::CACHE_KEY_IMPRESSIONS, $namespace),
@@ -179,5 +188,15 @@ class VideoCacheEventCounter extends VideoAbstractEventCounter implements VideoC
         }
 
         return $results;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getHashFieldDate()
+    {
+        $date = $this->getDate()->format('ymd');
+        //Build new hash field
+        return sprintf("%s:%s", self::REDIS_HASH_VIDEO_EVENT_COUNT, $date);
     }
 }

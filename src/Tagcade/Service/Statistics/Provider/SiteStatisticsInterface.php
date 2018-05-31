@@ -26,6 +26,15 @@ interface SiteStatisticsInterface
     public function getTopSitesForPublisherByEstRevenue(PublisherInterface $publisher, Params $params, $limit = 10);
 
     /**
+     * @param PublisherInterface $publisher
+     * @param Params $params
+     * @param int $limit
+     * @return BilledReportGroup[]
+     */
+    public function getTopSitesForPublisherBySlotOpportunities(PublisherInterface $publisher, Params $params, $limit = 10);
+
+
+    /**
      * @param Params $params
      * @param int $limit
      * @return BilledReportGroup[]

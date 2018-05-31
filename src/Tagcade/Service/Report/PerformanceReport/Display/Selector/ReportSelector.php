@@ -5,6 +5,7 @@ namespace Tagcade\Service\Report\PerformanceReport\Display\Selector;
 use Tagcade\Exception\LogicException;
 use Tagcade\Exception\RuntimeException;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformReportTypes;
 use Tagcade\Service\DateUtilInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Grouper\ReportGrouperInterface;
 use Tagcade\Service\Report\PerformanceReport\Display\Selector\Result\ReportCollection;
@@ -14,6 +15,7 @@ use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterfac
 use DateTime;
 
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\SubPublisher as SubPublisherReportType;
+use Tagcade\Service\Statistics\Util\AccountReportCacheInterface;
 
 class ReportSelector implements ReportSelectorInterface
 {
@@ -37,14 +39,18 @@ class ReportSelector implements ReportSelectorInterface
      */
     protected $reportGrouper;
 
+    /** @var  AccountReportCacheInterface */
+    protected $accountReportCache;
+
     /**
      * initialize $reportCreator as null when we do not need to create new reports, when get unified reports ie.
      * @param SelectorInterface[] $selectors
      * @param DateUtilInterface $dateUtil
      * @param ReportGrouperInterface $reportGrouper
+     * @param AccountReportCacheInterface $accountReportCache
      * @param ReportCreatorInterface|null $reportCreator
      */
-    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportGrouperInterface $reportGrouper, $reportCreator = null)
+    public function __construct(array $selectors, DateUtilInterface $dateUtil, ReportGrouperInterface $reportGrouper, AccountReportCacheInterface $accountReportCache, $reportCreator = null)
     {
         foreach($selectors as $selector) {
             $this->addSelector($selector);
@@ -56,6 +62,7 @@ class ReportSelector implements ReportSelectorInterface
 
         $this->dateUtil = $dateUtil;
         $this->reportGrouper = $reportGrouper;
+        $this->accountReportCache = $accountReportCache;
     }
 
     public function addSelector(SelectorInterface $selector)
@@ -169,6 +176,64 @@ class ReportSelector implements ReportSelectorInterface
         }
 
         return $result;
+    }
+
+    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params, $force = false)
+    {
+        $onlyTodayInDateRange = $this->dateUtil->isOnlyTodayOrYesterdayInRange($params->getStartDate(), $params->getEndDate());
+
+        $reports = [];
+
+        if ($onlyTodayInDateRange && $this->reportCreator instanceof ReportCreatorInterface) {
+            if (
+                !$reportType instanceof SubPublisherReportType\SubPublisher &&
+                !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
+            ) {
+                //Get reports from Redis cache
+                if (!$force && $reportType instanceof PlatformReportTypes\Account) {
+                    $reports = $this->accountReportCache->getPublisherDashboardHourlyFromRedis($reportType->getPublisher(), $params->getStartDate());
+                }
+
+                if (!$force && $reportType instanceof PlatformReportTypes\Platform) {
+                    $reports = $this->accountReportCache->getPlatformDashboardHourlyFromRedis($params->getStartDate());
+                }
+                
+                if (!empty($reports)) {
+                    return $reports;
+                }
+                
+                // on dashboard chart will only display from 0 to current hour
+                $currentHour = (new \DateTime())->format('G');
+                for ($i = 0; $i <= $currentHour; $i++) {
+                    $this->reportCreator->setDataWithDateHour(true);
+                    $this->reportCreator->setDate($params->getStartDate()->setTime($i, 0));
+
+                    // the report types above do not have creator, they're derived from other reports
+                    // Create today's report and add it to the first position in the array
+                    $report = [];
+                    $report = $this->reportCreator->getReport($reportType);
+                    if (!$report instanceof ReportInterface) {
+                        continue;
+                    }
+
+                    $date = $params->getStartDate()->setTime($i, 0)->format('Y-m-d G');
+                    $report->setDate(DateTime::createFromFormat('Y-m-d G', $date));
+
+                    $reports[] = $report;
+                }
+                $this->reportCreator->setDataWithDateHour(false);
+                $this->reportCreator->setDate($params->getStartDate());
+
+                //Advance: save to redis
+                $this->accountReportCache->saveHourReports($reports);
+            }
+        }
+
+        if (empty($reports)) {
+            return [];
+        }
+
+        return $reports;
     }
 
     public function getGroupedReports(ReportTypeInterface $reportType, ParamsInterface $params)

@@ -18,6 +18,15 @@ interface CacheEventCounterInterface extends EventCounterInterface
      */
     public function getCacheKey($type, $id);
 
+    /**
+     * @param $namespaceFormat
+     * @param $id
+     * @param null $appendingFormat
+     * @param null $appendingId
+     * @return mixed
+     */
+    public function getNamespace($namespaceFormat, $id, $appendingFormat = null, $appendingId = null);
+
     public function useLocalCache($bool);
 
     /**

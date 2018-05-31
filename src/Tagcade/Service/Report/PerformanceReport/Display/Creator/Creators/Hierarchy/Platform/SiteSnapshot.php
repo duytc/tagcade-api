@@ -9,8 +9,10 @@ use Tagcade\DomainManager\AdTagManagerInterface;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\BillingConfiguration;
 use Tagcade\Model\Core\BillingConfigurationInterface;
+use Tagcade\Model\Core\ReportableAdSlotInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\Hierarchy\Platform\SiteReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\AdSlot as AdSlotReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform\Site as SiteReportType;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\ReportTypeInterface;
 use Tagcade\Repository\Core\BillingConfigurationRepositoryInterface;
@@ -28,12 +30,16 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
     /** @var AdTagManagerInterface */
     private $adTagManager;
 
-    public function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository)
+    /** @var AdSlotSnapshot */
+    private $adSlotSnapshotCreator;
+
+    public function __construct(AdSlotManagerInterface $adSlotManager, AdTagManagerInterface $adTagManager, BillingCalculatorInterface $billingCalculator, BillingConfigurationRepositoryInterface $billingConfigurationRepository, AdSlotSnapshot $adSlotSnapshotCreator)
     {
         parent::__construct($billingCalculator, $billingConfigurationRepository);
 
         $this->adSlotManager = $adSlotManager;
         $this->adTagManager = $adTagManager;
+        $this->adSlotSnapshotCreator = $adSlotSnapshotCreator;
     }
 
     /**
@@ -53,6 +59,17 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
         $result = $this->eventCounter->getSiteReportData($site);
 
         $this->parseRawReportData($siteReport, $result);
+
+        // aggregate ad slot Snapshot reports
+        $estRevenue = 0;
+        $adSlots = $site->getReportableAdSlots();
+        $this->adSlotSnapshotCreator->setEventCounter($this->eventCounter);
+        foreach ($adSlots as $adSlot) {
+            $adSlotSnapshotReport = $this->adSlotSnapshotCreator->createReport(new AdSlotReportType($adSlot));
+            $estRevenue += $adSlotSnapshotReport->getEstRevenue();
+        }
+
+        $siteReport->setEstRevenue($estRevenue);
 
         return $siteReport;
     }
@@ -75,7 +92,7 @@ class SiteSnapshot extends BillableSnapshotCreatorAbstract implements SiteInterf
             $billingConfiguration = new BillingConfiguration();
             $billingConfiguration->setBillingFactor(BillingConfiguration::BILLING_FACTOR_SLOT_OPPORTUNITY);
         }
-        
+
         $billingFactor = $billingConfiguration->getBillingFactor();
         if ($billingFactor == BillingConfiguration::BILLING_FACTOR_IMPRESSION_OPPORTUNITY) {
             $weight = $report->getAdOpportunities();

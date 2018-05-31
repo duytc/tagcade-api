@@ -115,6 +115,25 @@ class Statistics implements StatisticsInterface
     /**
      * @inheritdoc
      */
+    public function getAdminDashboardHourly(DateTime $today = null, $force = false)
+    {
+        $startDate = $endDate = $today;
+        $params = $this->_getDashboardParams($startDate, $endDate);
+        $onlyTodayInRange = $this->dateUtil->isOnlyTodayOrYesterdayInRange($params->getStartDate(), $params->getEndDate());
+        if (!$onlyTodayInRange) {
+            return [];
+        }
+        /**
+         * @var BilledReportGroup $platformReports
+         */
+        $platformReports = $this->reportBuilder->getPlatformReportForHourly($params, $force);
+
+        return $platformReports;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getPublisherDashboard(PublisherInterface $publisher, DateTime $startDate = null, DateTime $endDate = null)
     {
         $params = $this->_getDashboardParams($startDate, $endDate);
@@ -137,8 +156,8 @@ class Statistics implements StatisticsInterface
             $yesterdayReport = count($reports) > 1 ? array_slice($reports, 1, 1)[0] : null;
         }
 
-        $topSites = $this->siteStatistics->getTopSitesForPublisherByEstRevenue($publisher, $params);
-        $topAdNetworks = $this->accountStatistics->getTopAdNetworksByEstRevenueForPublisher($publisher, $params);
+        $topSites = $this->siteStatistics->getTopSitesForPublisherBySlotOpportunities($publisher, $params);
+        $topAdNetworks = $this->accountStatistics->getTopAdNetworksByTotalOpportunitiesForPublisher($publisher, $params);
 
         return new PublisherDashboard(
             $accountStatistics,
@@ -147,6 +166,25 @@ class Statistics implements StatisticsInterface
             $topSites,
             $topAdNetworks
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherDashboardHourly(PublisherInterface $publisher, DateTime $today = null, $force = false)
+    {
+        $startDate = $endDate = $today;
+        $params = $this->_getDashboardParams($startDate, $endDate);
+
+        /**
+         * @var BilledReportGroup $accountReports
+         */
+        $accountReports = $this->reportBuilder->getPublisherReportForHourly($publisher, $params, $force);
+        if (false === $accountReports) {
+            return [];
+        }
+
+        return $accountReports;
     }
 
     public function getProjectedBilledAmountForAllPublishers()

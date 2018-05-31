@@ -22,6 +22,17 @@ interface VideoEventCounterInterface
     public function getDate();
 
     /**
+     * @param boolean $dataWithDateHour
+     * @return self
+     */
+    public function setDataWithDateHour($dataWithDateHour);
+
+    /**
+     * @return boolean
+     */
+    public function getDataWithDateHour();
+
+    /**
      * @param $videoWaterfallTagId
      * @param bool $supportMGet
      * @param $date = null

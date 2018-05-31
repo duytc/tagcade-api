@@ -62,6 +62,24 @@ class SiteStatistics implements SiteStatisticsInterface
         return $this->topList($allSitesByPublisherReports, $sortBy = 'estRevenue', $limit);
     }
 
+    public function getTopSitesForPublisherBySlotOpportunities(PublisherInterface $publisher, Params $params, $limit = 10)
+    {
+
+        $topSites = $this->siteReportRepository->getTopSitesForPublisherBySlotOpportunities($publisher, $params->getStartDate(), $params->getEndDate());
+        $mySites = [];
+        foreach ($topSites as $siteObj) {
+            if (!array_key_exists('id', $siteObj)) {
+                throw new \LogicException('Expect id in site object');
+            }
+
+            $mySites[] = $siteObj['id'];
+        }
+
+        $params->setGrouped(true);
+        $allSitesByPublisherReports = $this->reportBuilder->getSitesReport($mySites, $params);
+
+        return $this->topList($allSitesByPublisherReports, $sortBy = 'slotOpportunities', $limit);
+    }
     public function getTopSitesByBilledAmount(Params $params, $limit = 10)
     {
         // We should not get report of all sites and trunk for top sites.

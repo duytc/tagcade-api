@@ -84,6 +84,15 @@ abstract class AbstractReport implements ReportInterface
     }
 
     /**
+     * get DateTime full as virtual_properties of video report
+     * @return mixed
+     */
+    public function getDateTime()
+    {
+        return $this->date;
+    }
+
+    /**
      * @param DateTime|null $date
      * @return $this
      */

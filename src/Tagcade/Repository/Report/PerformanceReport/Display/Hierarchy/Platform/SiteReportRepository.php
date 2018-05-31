@@ -164,6 +164,28 @@ class SiteReportRepository extends AbstractReportRepository implements SiteRepor
     /**
      * @inheritdoc
      */
+    public function getTopSitesForPublisherBySlotOpportunities(PublisherInterface $publisher, DateTime $startDate, DateTime $endDate, $limit = 10)
+    {
+        $qb = $this->createQueryBuilder('sr');
+        $qb->select('s.id, SUM(sr.slotOpportunities) AS totalSlotOpportunities')
+            ->join('sr.site', 's')
+            ->join('s.publisher', 'p')
+            ->where($qb->expr()->between('sr.date', ':startDate', ':endDate'))
+            ->andWhere('s.id = sr.site')
+            ->andWhere('p.id = :publisherId')
+            ->setParameter('startDate', $startDate, Type::DATE)
+            ->setParameter('endDate', $endDate, Type::DATE)
+            ->setParameter('publisherId', $publisher->getId(), Type::INTEGER)
+            ->groupBy('sr.site')
+            ->orderBy('totalSlotOpportunities', 'DESC')
+            ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function overrideReport(SiteReportInterface $report)
     {
         $sql = 'INSERT INTO `report_performance_display_hierarchy_platform_site`

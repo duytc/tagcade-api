@@ -48,6 +48,13 @@ services:
         arguments:
             - '@tagcade.cache.app_cache'
 
+    # snapshot video cache for hourly
+    tagcade.service.report.video_report.counter.snapshot_video_cache_event_counter:
+        class: Tagcade\Service\Report\VideoReport\Counter\SnapshotVideoCacheEventCounter
+        arguments:
+            - '@tagcade.service.report.video_report.counter.cache_event_counter'
+            - '%tc.report.video.event_counter.cache_key_timeout%'
+
     ### Report creator service
 
     tagcade.service.report.video_report.creator.report_creator:
