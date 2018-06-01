@@ -77,6 +77,7 @@ class VideoWaterfallTag implements VideoWaterfallTagInterface, VideoTargetingInt
     function __construct()
     {
         $this->adDuration = self::DEFAULT_AD_DURATION;
+        $this->autoOptimize = false;
     }
 
     /**
