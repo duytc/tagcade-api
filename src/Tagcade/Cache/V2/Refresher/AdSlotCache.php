@@ -395,15 +395,38 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
      */
     private function refreshAdSlotKeys(array $score, array $adTags)
     {
-        $adTagIds = array_keys($adTags);
-        $newTagIds = array_diff($adTagIds, $score);
-        $score = array_merge($score, $newTagIds);
-
+        // do not use array_diff when optimizecache supports the same positions for adTags
+//        $newTagIds = array_diff($adTagIds, $score);
+//        $score = array_merge($score, $newTagIds);
+        $score = $this->addMissingAdTags($score, $adTags);
         /*
          * scores [ 1, 2, 3, 4]
          */
 
         foreach ($score as $key => $adTagId) {
+            if (is_array($adTagId)) {
+                foreach ($adTagId as $keyItem => $adTagIdItem) {
+                    if (!array_key_exists($adTagIdItem, $adTags)) {
+                        unset($adTagId[$keyItem]);
+                        continue;
+                    }
+
+                    $adTag = $adTags[$adTagIdItem];
+                    if (!$adTag instanceof AdTagInterface || !$adTag->isActive()) {
+                        unset($adTagId[$keyItem]);
+                        continue;
+                    }
+                }
+
+                if (isset($adTagId) && !empty($adTagId)) {
+                    $score[$key] = $adTagId;
+                } else {
+                    unset($score[$key]);
+                }
+
+                continue;
+            }
+
             if (!array_key_exists($adTagId, $adTags)) {
                 unset($score[$key]);
                 continue;
@@ -424,6 +447,63 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         return $score;
     }
 
+    /**
+     * @param $orderAdTagIds
+     * @param $adTags
+     * @return mixed
+     */
+    private function addMissingAdTags($orderAdTagIds, $adTags)
+    {
+        $adTags = array_filter($adTags, function ($adTag) {
+            return $adTag instanceof AdTagInterface;
+        });
+
+        usort($adTags, function ($adTag1, $adTag2) {
+            /** @var AdTagInterface $adTag1 */
+            /** @var AdTagInterface $adTag2 */
+            if ($adTag1->getPosition() === $adTag2->getPosition()) {
+                return 0;
+            }
+
+            return ($adTag1->getPosition() < $adTag2->getPosition()) ? -1 : 1;
+        });
+
+        foreach ($adTags as $adTag) {
+            if (!$adTag instanceof AdTagInterface) {
+                continue;
+            }
+
+            $adTagId = $adTag->getId();
+
+            // need to support adTag the same position
+            $adTagIdExisted = false;
+            foreach ($orderAdTagIds as $orderAdTagId) {
+
+                if (!is_array($orderAdTagId) || empty($orderAdTagId)) {
+                    continue;
+                }
+
+                // if $adTagId existed in $orderAdTagId -> continue: do not need to add in to  $orderAdTagIds
+                if (in_array($adTagId, $orderAdTagId)) {
+                    $adTagIdExisted = true;
+                    break;
+                }
+            }
+
+            // check adTAgIdExisted
+            if ($adTagIdExisted == true) {
+                continue;
+            }
+
+            // add missing adTags
+            if (!in_array($adTagId, $orderAdTagIds)) {
+                $orderAdTagIds [] = $adTagId;
+            }
+        }
+
+        unset($adTagId, $adTag, $orderAdTagId);
+        return $orderAdTagIds;
+    }
     /**
      * @param array $score
      * @param array $adTags
@@ -451,6 +531,11 @@ class AdSlotCache extends RefresherAbstract implements AdSlotCacheInterface
         //// remove needed pin ad tags from $score
         //// we will add them to $score again by their positions
         foreach ($score as $key => $adTagId) {
+
+            // pin adTag always is one position, can not the same position with other adTags
+            if (is_array($adTagId)) {
+                continue;
+            }
 
             $adTag = $adTags[$adTagId];
             if (!$adTag instanceof AdTagInterface) {

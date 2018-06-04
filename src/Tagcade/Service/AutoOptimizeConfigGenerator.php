@@ -182,7 +182,7 @@ class AutoOptimizeConfigGenerator
 
             $orderOptimizedAdTagIds = $this->handleKeepAdTagsPositionWithPinned($orderOptimizedAdTagIds, $pinAdTags);
 
-            $result[$adSlotId] = $orderOptimizedAdTagIds;
+            $result[$adSlotId] = array_values($orderOptimizedAdTagIds);
         }
 
         return $result;
@@ -210,12 +210,16 @@ class AutoOptimizeConfigGenerator
             return ($scoreA < $scoreB) ? 1 : -1;
         });
 
+        // arrange adTag with the same position
         $orderAdTagIds = [];
+        $oldScoreValue = 0;
+        $keyAdTagOrder = 0;
         foreach ($adTagScores as $adTagScore) {
             if (!array_key_exists(AutoOptimizeCacheSlotParam::IDENTIFIER_KEY, $adTagScore)) {
                 continue;
             }
             $identifierValue = $adTagScore[AutoOptimizeCacheSlotParam::IDENTIFIER_KEY];
+            $scoreValue = $adTagScore[AutoOptimizeCacheSlotParam::SCORE_KEY];
             $adTag = null;
             switch ($identifier) {
                 case AutoOptimizeCacheParam::IDENTIFY_BY_ID :
@@ -227,11 +231,54 @@ class AutoOptimizeConfigGenerator
             }
 
             if ($adTag instanceof AdTagInterface && $adTag->isActive() && !$adTag->isPin()) {
-                $orderAdTagIds[] = $adTag->getId();
+
+                if (isset($oldScoreValue) && !empty($oldScoreValue)) {
+                    // compare score value
+                    $compareScore = $this->compareOptimizeScoreValue($oldScoreValue, $scoreValue);
+
+                    if ($compareScore == true) {
+                        if (!empty($orderAdTagIds)) {
+                            $oldAdTagId = $orderAdTagIds[$keyAdTagOrder - 1];
+                        }
+
+                        if (isset($oldAdTagId) && is_array($oldAdTagId)) {
+                            array_push($oldAdTagId, $adTag->getId());
+                            $adTagIdsSameScore = $oldAdTagId;
+                        } elseif (isset($oldAdTagId) && is_numeric($oldAdTagId)) {
+                            $adTagIdsSameScore [] = $oldAdTagId;
+                            $adTagIdsSameScore [] = $adTag->getId();
+                        }
+                    }
+                }
+
+                if (isset($adTagIdsSameScore) && !empty($adTagIdsSameScore)) {
+                    unset($orderAdTagIds[$keyAdTagOrder - 1]);
+                    $orderAdTagIds[$keyAdTagOrder - 1] = $adTagIdsSameScore;
+                } else {
+                    $orderAdTagIds[$keyAdTagOrder] = $adTag->getId();
+                    $keyAdTagOrder++;
+                }
+
+                $oldScoreValue = $scoreValue;
+                unset($adTagIdsSameScore);
             }
         }
 
         return $orderAdTagIds;
+    }
+
+    /**
+     * @param $oldScoreValue
+     * @param $newScoreValue
+     * @return mixed
+     */
+    private function compareOptimizeScoreValue($oldScoreValue, $newScoreValue)
+    {
+        if ($oldScoreValue == $newScoreValue) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -308,11 +355,34 @@ class AutoOptimizeConfigGenerator
             }
 
             $adTagId = $adTag->getId();
+
+            // need to support adTag the same position
+            $adTagIdExisted = false;
+            foreach ($orderAdTagIds as $orderAdTagId) {
+
+                if (!is_array($orderAdTagId) || empty($orderAdTagId)) {
+                    continue;
+                }
+
+                // if $adTagId existed in $orderAdTagId -> continue: do not need to add in to  $orderAdTagIds
+                if (in_array($adTagId, $orderAdTagId)) {
+                    $adTagIdExisted = true;
+                    break;
+                }
+            }
+
+            // check adTAgIdExisted
+            if ($adTagIdExisted == true) {
+                continue;
+            }
+
+            // add missing adTags
             if (!in_array($adTagId, $orderAdTagIds)) {
-                $orderAdTagIds[] = $adTag->getId();
+                $orderAdTagIds [] = $adTagId;
             }
         }
 
+        unset($adTagId, $adTag, $orderAdTagId);
         return $orderAdTagIds;
     }
 }

@@ -418,7 +418,7 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
                     }
 
                     $adTagItem->setPosition($position);
-                    $newAdTagsPosition [] = $newAdTags[$listOfAdTagId];
+                    $newAdTagsPosition [] = [$adTagItem];
                     $position++;
                 }
             }
