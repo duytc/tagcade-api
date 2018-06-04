@@ -39,8 +39,9 @@ interface ReportSelectorInterface
      * @param array $reportTypes
      * @param FilterParameterInterface $filterParameter
      * @param BreakDownParameterInterface $breakDownParameter
+     * @param bool $force
      * @return mixed
      */
-    public function getMultipleReportsHourly(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
+    public function getMultipleReportsHourly(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter, $force = false);
 
 } 

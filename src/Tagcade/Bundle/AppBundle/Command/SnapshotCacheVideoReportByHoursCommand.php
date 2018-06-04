@@ -6,12 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Tagcade\Behaviors\VideoUtilTrait;
+use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
 use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
+use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Service\Report\VideoReport\Counter\SnapshotVideoCacheEventCounterInterface;
+use Tagcade\Service\Report\VideoReport\Parameter\Parameter;
+use Tagcade\Service\Report\VideoReport\Selector\VideoReportBuilderInterface;
 
 class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
 {
+    use VideoUtilTrait;
+
     const COMMAND_NAME = 'tc:video-report:snapshot-by-hour';
     const KEY_DATE_TIME_FORMAT = 'H';
 
@@ -20,6 +27,12 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
 
     /** @var SymfonyStyle */
     private $io;
+
+    /** @var  VideoReportBuilderInterface */
+    private $reportBuilder;
+
+    /** @var PublisherManagerInterface */
+    private $publisherManager;
 
     protected function configure()
     {
@@ -39,6 +52,9 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
         $videoWaterfallTagManager = $container->get('tagcade.domain_manager.video_waterfall_tag');
         $videoDemandAdTagManager = $container->get('tagcade.domain_manager.video_demand_ad_tag');
         $this->snapshotVideoCacheEventCounter = $container->get('tagcade.service.report.video_report.counter.snapshot_video_cache_event_counter');
+        $this->reportBuilder = $container->get('tagcade.service.report.video_report.selector.video_report_builder');
+        $this->publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+
         $this->io = new SymfonyStyle($input, $output);
 
         $now = date_create('now');
@@ -82,6 +98,8 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
 
         }
 
+        $this->savePublisherDashboardHourlyToRedis();
+        $this->savePlatformDashboardHourlyToRedis();
     }
 
     /**
@@ -115,5 +133,58 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
         } catch (\Exception $e) {
             $this->io->error(sprintf("Error when snapshot cache for ad slot %s (ID: %s)", $videoWaterfallTag->getName(), $videoWaterfallTag->getId()));
         }
+    }
+
+    /**
+     *
+     */
+    private function savePublisherDashboardHourlyToRedis()
+    {
+        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType('day-over-day');
+        $params = $this->createParamsForReportComparison($startDateEndDate);
+        $paramsForToday = reset($params);
+
+        $publishers = $this->publisherManager->allActivePublishers();
+        foreach ($publishers as $publisher) {
+            if (!$publisher instanceof PublisherInterface) {
+                continue;
+            }
+
+            $this->getReportByParamsHourly($paramsForToday, $publisher);
+            $this->io->success(sprintf("Successfully save publisher dash board hourly to redis (ID: %s)", $publisher->getId()));
+        }
+    }
+
+    /**
+     *
+     */
+    private function savePlatformDashboardHourlyToRedis()
+    {
+        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType('day-over-day');
+        $params = $this->createParamsForReportComparison($startDateEndDate);
+        $paramsForToday = reset($params);
+
+        $this->io->text(sprintf("Start save platform dash board hourly to redis"));
+        $this->getReportByParamsHourly($paramsForToday);
+        $this->io->success(sprintf("Successfully save platform dash board hourly to redis"));
+    }
+
+    /**
+     * @param array $params
+     * @param null $publisher
+     * @return mixed
+     */
+    private function getReportByParamsHourly(array $params, $publisher = null)
+    {
+        $parameterObject = new Parameter($params);
+        $filterObject = $parameterObject->getFilterObject();
+        $breakDownObject = $parameterObject->getBreakDownObject();
+
+        if ($publisher instanceof PublisherInterface) {
+            $publisherId = $publisher->getId();
+            $filterObject->setPublisherId([$publisherId]);
+        }
+
+        return $this->reportBuilder->getReportsHourly($filterObject, $breakDownObject, $force = true);
     }
 }

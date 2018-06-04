@@ -86,4 +86,11 @@ interface ReportInterface extends ReportDataInterface
      * @return self
      */
     public function setEstDemandRevenue();
+
+    // support hourly data for video
+    // no need to save subReport to Redis -> so we provide setSubReports method to reset subReport to []
+    /**
+     * @param $subReports
+     */
+    public function setSubReports($subReports);
 }

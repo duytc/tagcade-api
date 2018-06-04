@@ -16,6 +16,7 @@ use Tagcade\Model\Report\VideoReport\ReportType\ReportTypeInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\BreakDownParameterInterface;
 use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 use Tagcade\Service\Report\VideoReport\VideoEntityService;
+use Tagcade\Service\Statistics\Util\AccountReportCacheInterface;
 
 
 class VideoReportBuilder implements VideoReportBuilderInterface
@@ -40,10 +41,14 @@ class VideoReportBuilder implements VideoReportBuilderInterface
      */
     private $videoEntityService;
 
-    function __construct(ReportSelectorInterface $videoReportSelector, VideoEntityService $videoEntityService)
+    /** @var AccountReportCacheInterface */
+    private $accountReportCache;
+
+    function __construct(ReportSelectorInterface $videoReportSelector, VideoEntityService $videoEntityService, AccountReportCacheInterface $accountReportCache)
     {
         $this->videoReportSelector = $videoReportSelector;
         $this->videoEntityService = $videoEntityService;
+        $this->accountReportCache = $accountReportCache;
     }
 
     /**
@@ -70,10 +75,11 @@ class VideoReportBuilder implements VideoReportBuilderInterface
     /**
      * @param FilterParameterInterface $filterParameter
      * @param BreakDownParameterInterface $breakDownParameter
+     * @param bool $force
      * @return mixed
      * @throws \Exception
      */
-    public function getReportsHourly(FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
+    public function getReportsHourly(FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter, $force = false)
     {
         /* 1. get all reportTypes with common params, BUT WITHOUT filtered entities */
         /** @var array|ReportTypeInterface|ReportTypeInterface[] $reportTypes */
@@ -81,11 +87,29 @@ class VideoReportBuilder implements VideoReportBuilderInterface
 
         /* 2. using report selector to get report due to a single reportType */
         if (!is_array($reportTypes)) {
-            return $this->videoReportSelector->getReportHourly($reportTypes, $filterParameter, $breakDownParameter);
+            //Get reports from Redis cache
+            if (!$force && $reportTypes instanceof PlatformAccountReportType) {
+                $reports = $this->accountReportCache->getVideoPublisherDashboardHourlyFromRedis($reportTypes->getPublisher(), $filterParameter->getStartDate());
+            }
+
+            if (!$force && $reportTypes instanceof PlatformReportType) {
+                $reports = $this->accountReportCache->getVideoPlatformDashboardHourlyFromRedis($filterParameter->getStartDate());
+            }
+
+            if (!empty($reports)) {
+                return $reports;
+            }
+
+            $reports = $this->videoReportSelector->getReportHourly($reportTypes, $filterParameter, $breakDownParameter);
+
+            //Advance: Save to redis
+            $this->accountReportCache->saveHourReports($reports);
+
+            return $reports;
         }
 
         /* 2'. using report selector to get report due to an array reportTypes */
-        return $this->videoReportSelector->getMultipleReportsHourly($reportTypes, $filterParameter, $breakDownParameter);
+        return $this->videoReportSelector->getMultipleReportsHourly($reportTypes, $filterParameter, $breakDownParameter, $force);
     }
 
     /**

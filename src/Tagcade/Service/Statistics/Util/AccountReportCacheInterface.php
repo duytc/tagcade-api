@@ -24,4 +24,18 @@ interface AccountReportCacheInterface
      * @return mixed
      */
     public function saveHourReports($reports = []);
+
+    /**
+     * @param PublisherInterface $publisher
+     * @param $date
+     * @param null $currentHour
+     * @return mixed
+     */
+    public function getVideoPublisherDashboardHourlyFromRedis(PublisherInterface $publisher, $date, $currentHour = null);
+
+    /**
+     * @param null $date
+     * @return mixed
+     */
+    public function getVideoPlatformDashboardHourlyFromRedis($date = null);
 }

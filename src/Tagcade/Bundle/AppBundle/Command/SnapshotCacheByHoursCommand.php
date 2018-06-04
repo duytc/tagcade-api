@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\AppBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Tagcade\Bundle\UserBundle\DomainManager\PublisherManagerInterface;
@@ -40,6 +41,7 @@ class SnapshotCacheByHoursCommand extends ContainerAwareCommand
     {
         $this
             ->setName(self::COMMAND_NAME)
+            ->addOption('date', 'd', InputOption::VALUE_OPTIONAL, 'date')
             ->setDescription('Snapshot live ad slot/ad tag report in redis by hour, support show dashboard chart day-over-day');
     }
 
@@ -121,7 +123,13 @@ class SnapshotCacheByHoursCommand extends ContainerAwareCommand
 
         }
 
-        $date = date_create('now');
+        $dateInput = $input->getOption('date');
+        $date = date_create($dateInput);
+
+        if (!$date instanceof \DateTime) {
+            $date = date_create('now');
+        }
+
         $this->savePublisherDashboardHourlyToRedis($date);
         $this->savePlatformDashboardHourlyToRedis($date);
     }
@@ -222,6 +230,7 @@ class SnapshotCacheByHoursCommand extends ContainerAwareCommand
 
             $accountReports = $this->statistics->getPublisherDashboardHourly($publisher, $date, $force = true);
             $this->accountReportCache->saveHourReports($accountReports);
+            $this->io->success(sprintf("Successfully save publisher dash board hourly to redis (ID: %s)", $publisher->getId()));
         }
     }
 
@@ -230,7 +239,9 @@ class SnapshotCacheByHoursCommand extends ContainerAwareCommand
      */
     private function savePlatformDashboardHourlyToRedis(\DateTime $date)
     {
+        $this->io->text(sprintf("Start save platform dash board hourly to redis"));
         $platformReports = $this->statistics->getAdminDashboardHourly($date, $force = true);
         $this->accountReportCache->saveHourReports($platformReports);
+        $this->io->success(sprintf("Successfully save platform dash board hourly to redis"));
     }
 }

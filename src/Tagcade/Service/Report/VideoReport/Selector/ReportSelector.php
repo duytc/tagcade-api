@@ -17,7 +17,10 @@ use Tagcade\Service\Report\VideoReport\Parameter\FilterParameterInterface;
 use Tagcade\Service\Report\VideoReport\Selector\Grouper\VideoReportGrouperInterface;
 use Tagcade\Service\Report\VideoReport\Selector\Result\ReportCollection;
 use Tagcade\Service\Report\VideoReport\Selector\Selectors\Hierarchy\SelectorInterface;
+use Tagcade\Service\Statistics\Util\AccountReportCacheInterface;
 use Tagcade\Service\StringUtilTrait;
+use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\Account as PlatformAccountReportType;
+use Tagcade\Model\Report\VideoReport\ReportType\Hierarchy\Platform\Platform as PlatformReportType;
 
 class ReportSelector implements ReportSelectorInterface
 {
@@ -43,14 +46,18 @@ class ReportSelector implements ReportSelectorInterface
      */
     private $videoReportCreator;
 
+    /** @var AccountReportCacheInterface */
+    private $accountReportCache;
+
     function __construct(array $selectors, VideoReportTransformerInterface $videoReportTransformer, VideoReportGrouperInterface $videoReportGrouper,
-            DateUtilInterface $dateUtil, $videoReportCreator = null)
+            DateUtilInterface $dateUtil, AccountReportCacheInterface $accountReportCache, $videoReportCreator = null)
     {
         $this->selectors = $selectors;
         $this->videoReportTransformer = $videoReportTransformer;
         $this->videoReportGrouper = $videoReportGrouper;
         $this->dateUtil = $dateUtil;
         $this->videoReportCreator = $videoReportCreator;
+        $this->accountReportCache = $accountReportCache;
     }
 
     /**
@@ -58,6 +65,7 @@ class ReportSelector implements ReportSelectorInterface
      */
     public function getReport(ReportTypeInterface $reportType, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
     {
+        //TODO: Request fail after 30s. Need mechanism as background worker, 1. Get report 2. Save to redis
         // 1. get reports due to reportType
         $resultReport = $this->getRawReport($reportType, $filterParameter);
 
@@ -146,6 +154,23 @@ class ReportSelector implements ReportSelectorInterface
         $reportTypesMap = [];
         /**@var ReportTypeInterface $reportType */
         foreach ($reportTypes as $reportType) {
+            //Get reports from Redis cache
+            if ($reportType instanceof PlatformAccountReportType) {
+                $reportsFromRedis = $this->accountReportCache->getVideoPublisherDashboardHourlyFromRedis($reportType->getPublisher(), $filterParameter->getStartDate(), $currentHour = 23);
+            }
+
+            if ($reportType instanceof PlatformReportType) {
+                $reportsFromRedis = $this->accountReportCache->getVideoPlatformDashboardHourlyFromRedis($filterParameter->getStartDate());
+            }
+
+            if (!empty($reportsFromRedis)) {
+                $reports[$reportType->getVideoObjectId()] = [end($reportsFromRedis)];
+                $reportTypesMap[$reportType->getVideoObjectId()] = $reportType;
+
+                continue;
+            }
+            
+            //TODO: Request fail after 30s. Need mechanism as background worker, 1. Get report 2. Save to redis  
             if ($reportResult = $this->getRawReport($reportType, $filterParameter)) {
                 $reports[$reportType->getVideoObjectId()] = $reportResult;
                 $reportTypesMap[$reportType->getVideoObjectId()] = $reportType;
@@ -219,11 +244,27 @@ class ReportSelector implements ReportSelectorInterface
     /**
      * @inheritdoc
      */
-    public function getMultipleReportsHourly(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter)
+    public function getMultipleReportsHourly(array $reportTypes, FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter, $force = false)
     {
         $reports = [];
         /**@var ReportTypeInterface $reportType */
         foreach ($reportTypes as $reportType) {
+            //Get reports from Redis cache
+            if (!$force && $reportType instanceof PlatformAccountReportType) {
+                $reportResult = $this->accountReportCache->getVideoPublisherDashboardHourlyFromRedis($reportType->getPublisher(), $filterParameter->getStartDate());
+            }
+
+            if (!$force && $reportType instanceof PlatformReportType) {
+                $reportResult = $this->accountReportCache->getVideoPlatformDashboardHourlyFromRedis($filterParameter->getStartDate());
+            }
+
+            if (!empty($reportResult)) {
+                $reportResult = is_array($reportResult) ? $reportResult : [$reportResult];
+                $reports = array_merge($reports, $reportResult);
+
+                continue;
+            }
+
             // 1. get reports due to reportType
             if ($reportResult = $this->getRawReportHourly($reportType, $filterParameter)) {
                 $reports = $reportResult;
@@ -234,6 +275,9 @@ class ReportSelector implements ReportSelectorInterface
         if (empty($reports)) {
             return false;
         }
+
+        //Advance: Save to redis
+        $this->accountReportCache->saveHourReports($reports);
 
         // 2. return reports by hourly
         return $reports;

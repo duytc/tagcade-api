@@ -24,6 +24,7 @@ abstract class AbstractReport implements ReportInterface
     protected $clickThroughRate;
     protected $blocks;
     protected $estDemandRevenue;
+    protected $subReports;
 
     /**
      * @param int $bids
@@ -32,6 +33,18 @@ abstract class AbstractReport implements ReportInterface
     public function setBids($bids)
     {
         $this->bids = (int)$bids;
+        return $this;
+    }
+
+    /**
+     * support hourly data for video
+     * no need to save subReport to Redis -> so we provide setSubReports method to reset subReport to []
+     * @param $subReports
+     * @return $this
+     */
+    public function setSubReports($subReports)
+    {
+        $this->subReports = $subReports;
         return $this;
     }
 

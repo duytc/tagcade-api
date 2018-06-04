@@ -11,5 +11,5 @@ interface VideoReportBuilderInterface
 {
     public function getReports(FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
 
-    public function getReportsHourly(FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter);
+    public function getReportsHourly(FilterParameterInterface $filterParameter, BreakDownParameterInterface $breakDownParameter, $force = false);
 }

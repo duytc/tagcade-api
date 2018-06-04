@@ -158,6 +158,7 @@ services:
             - @tagcade.service.report.video_report.selector.report_transformer
             - @tagcade.service.report.video_report.grouper.report_grouper
             - @tagcade.service.date_util
+            - '@tagcade.service.statistics.util.account_report_cache'
             - @tagcade.service.report.video_report.creator.report_creator
 
     tagcade.service.report.video_report.selector.video_report_builder:
@@ -165,6 +166,7 @@ services:
         arguments:
             - @tagcade.service.report.video_report.selector.report_selector
             - @tagcade.service.report.video_report.selector.video_entity_service
+            - @tagcade.service.statistics.util.account_report_cache
 
     tagcade.service.report.video_report.selector.video_entity_service:
         class: Tagcade\Service\Report\VideoReport\VideoEntityService
