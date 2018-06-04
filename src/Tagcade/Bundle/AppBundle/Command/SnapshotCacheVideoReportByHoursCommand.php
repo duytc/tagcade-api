@@ -66,6 +66,7 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
         $this->io = new SymfonyStyle($input, $output);
 
         $now = date_create('now');
+        $yesterday = date_create('yesterday');
 
         $videoWaterfallTags = $videoWaterfallTagManager->all();
         foreach ($videoWaterfallTags as $videoWaterfallTag) {
@@ -98,11 +99,11 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
         try {
             $this->snapshotVideoCacheEventCounter->setExpiredTimeForHashFieldDate();
 
-            $this->io->success(sprintf("Success setting expire time for %s:%s", 'video_event_processor:event_count', $now->format('ymd')));
+            $this->io->success(sprintf("Success setting expire time for %s:%s", 'video_event_processor:event_count', ($yesterdayOption == true) ? $yesterday->format('ymd') : $now->format('ymd')));
 
         } catch (\Exception $e) {
 
-            $this->io->success(sprintf("Error when setting expire time for %s:%s", 'video_event_processor:event_count', $now->format('ymd')));
+            $this->io->success(sprintf("Error when setting expire time for %s:%s", 'video_event_processor:event_count', ($yesterdayOption == true) ? $yesterday->format('ymd') : $now->format('ymd')));
 
         }
 
