@@ -10,6 +10,7 @@ use Tagcade\Model\Core\VideoDemandAdTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Repository\Core\VideoDemandAdTagRepositoryInterface;
 use Tagcade\Repository\Core\VideoWaterfallTagRepositoryInterface;
+use Tagcade\Service\ArrayUtil;
 
 class AutoOptimizeVideoConfigGenerator
 {
@@ -122,6 +123,38 @@ class AutoOptimizeVideoConfigGenerator
     }
 
     /**
+     * @param $segmentFields
+     * @return mixed
+     */
+    private function buildSegmentKey($segmentFields)
+    {
+        // common segment key
+        // segmentKey: domain, country, country.domain
+        $segmentKey = (is_array($segmentFields) && !empty($segmentFields)) ? join('.', array_keys($segmentFields)) : '';
+        if (empty($segmentKey)) {
+            $segmentKey = 'default'; // set key is "default", know as not has keys: domain, country or country.domain
+        }
+
+        return $segmentKey;
+    }
+
+    /**
+     * @param $segmentFields
+     * @return string
+     */
+    private function buildSegmentValue($segmentFields)
+    {
+        // special child segment key
+        // segmentValue: US, abc.com, US.abc.com
+        $segmentValue = join('.', array_values($segmentFields));
+        if ($segmentValue === '.' || empty($segmentValue)) {
+            $segmentValue = 'default'; // set key is "default"
+        }
+
+        return $segmentValue;
+    }
+
+    /**
      * input {
      * "waterfallTags": [1,2,3],
      * "demandAdTagScores": [
@@ -201,6 +234,8 @@ class AutoOptimizeVideoConfigGenerator
                 continue;
             }
             $identifierValue = $demandAdTagScore[AutoOptimizeCacheSlotParam::IDENTIFIER_KEY];
+            $score = $demandAdTagScore[AutoOptimizeCacheSlotParam::SCORE_KEY];
+
             $demandTag = null;
             switch ($identifier) {
                 case AutoOptimizeVideoCacheParam::IDENTIFY_BY_ID :
@@ -212,11 +247,33 @@ class AutoOptimizeVideoConfigGenerator
             }
 
             if ($demandTag instanceof VideoDemandAdTagInterface && $demandTag->getActive()) {
-                $orderAdTagIds[] = $demandTag->getId();
+                $orderAdTagIds[$demandTag->getId()] = $score;
             }
         }
 
-        return $orderAdTagIds;
+        return $this->makeOrderAdTagsForRedis($orderAdTagIds);
+    }
+
+    /**
+     * @param $orderAdTagIds
+     * @return array
+     */
+    private function makeOrderAdTagsForRedis($orderAdTagIds)
+    {
+        $newOrderAdTagIds = [];
+        //Handle case: two ad tags have same score
+        foreach ($orderAdTagIds as $id => $score) {
+            $newOrderAdTagIds[sprintf('%s', $score)][] = $id;
+        }
+
+        //If array has only one value, it is flatten
+        foreach ($newOrderAdTagIds as $key => $values) {
+            if (count($values) == 1) {
+                $newOrderAdTagIds[$key] = reset($values);
+            }
+        }
+
+        return array_values($newOrderAdTagIds);
     }
 
     /**
@@ -226,6 +283,9 @@ class AutoOptimizeVideoConfigGenerator
      */
     private function addMissingDemandAdTags($orderDemandAdTagIds, $demandAdTags)
     {
+        $arrayUtil = new ArrayUtil();
+        $orderDemandAdTagIdsFlatten = $arrayUtil->array_flatten($orderDemandAdTagIds);
+
         $demandAdTags = array_filter($demandAdTags, function ($demandAdTag) {
             return $demandAdTag instanceof VideoDemandAdTagInterface;
         });
@@ -246,43 +306,11 @@ class AutoOptimizeVideoConfigGenerator
             }
 
             $demandAdTagId = $demandAdTag->getId();
-            if (!in_array($demandAdTagId, $orderDemandAdTagIds)) {
+            if (!in_array($demandAdTagId, $orderDemandAdTagIdsFlatten)) {
                 $orderDemandAdTagIds[] = $demandAdTag->getId();
             }
         }
 
         return $orderDemandAdTagIds;
-    }
-
-    /**
-     * @param $segmentFields
-     * @return mixed
-     */
-    private function buildSegmentKey($segmentFields)
-    {
-        // common segment key
-        // segmentKey: domain, country, country.domain
-        $segmentKey = (is_array($segmentFields) && !empty($segmentFields)) ? join('.', array_keys($segmentFields)) : '';
-        if (empty($segmentKey)) {
-            $segmentKey = 'default'; // set key is "default", know as not has keys: domain, country or country.domain
-        }
-
-        return $segmentKey;
-    }
-
-    /**
-     * @param $segmentFields
-     * @return string
-     */
-    private function buildSegmentValue($segmentFields)
-    {
-        // special child segment key
-        // segmentValue: US, abc.com, US.abc.com
-        $segmentValue = join('.', array_values($segmentFields));
-        if ($segmentValue === '.' || empty($segmentValue)) {
-            $segmentValue = 'default'; // set key is "default"
-        }
-
-        return $segmentValue;
     }
 }

@@ -52,6 +52,7 @@ Tagcade\Entity\Core\VideoWaterfallTag:
             length: 50
         autoOptimize:
             type: boolean
+            nullable: true
             options:
                 default: false
         optimizationIntegration:

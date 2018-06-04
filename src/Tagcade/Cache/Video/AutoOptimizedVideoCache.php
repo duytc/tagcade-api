@@ -65,19 +65,18 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
     }
 
     /**
-     * @param $waterfallTagId
-     * @return bool|string
+     * @return Redis
      */
-    protected function getWaterfallTagCache($waterfallTagId)
+    private function getRedis()
     {
-        $this->getRedis();
+        if (!self::$redis instanceof Redis) {
+            self::$redis = new Redis();
 
-        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTagId);
-        $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
-        $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
+            self::$redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
+            self::$redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+        }
 
-        $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
-        return self::$redis->get($cacheKey);
+        return self::$redis;
     }
 
     /**
@@ -105,6 +104,24 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
                 $this->updateAutoOptimizedVideoConfigForWaterfallTag($waterfallTag, $waterfallTagAutoOptimizeConfigs[$waterfallTag]);
             }
         }
+    }
+
+    /**
+     * @param $waterfallTagId
+     * @param array $autoOptimizedConfig
+     * @return bool|mixed
+     */
+    public function updateAutoOptimizedVideoConfigForWaterfallTag($waterfallTagId, array $autoOptimizedConfig)
+    {
+        $waterfallTag = $this->waterfallTagManager->find($waterfallTagId);
+
+        if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
+            return false;
+        }
+
+        $this->videoWaterfallTagCacheRefresher->refreshVideoWaterfallTag($waterfallTag, array('autoOptimize' => $autoOptimizedConfig));
+
+        return true;
     }
 
     /**
@@ -205,235 +222,19 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
     }
 
     /**
-     * @param $waterfallTagAutoOptimizeConfig
-     * @param $mappedBy
-     * @return array
-     */
-    protected function getOptimizePositionDemandAdTags($waterfallTagAutoOptimizeConfig, $mappedBy)
-    {
-        // get preview demandAdTag position
-        $optimize = [];
-
-        if (isset($waterfallTagAutoOptimizeConfig['default'])) {
-            $optimize = $waterfallTagAutoOptimizeConfig['default'];
-        }
-
-        return $this->normalizeDemandAdTags($optimize, $mappedBy);
-    }
-
-    /**
      * @param $waterfallTagId
-     * @param array $autoOptimizedConfig
-     * @return bool|mixed
+     * @return bool|string
      */
-    public function updateAutoOptimizedVideoConfigForWaterfallTag($waterfallTagId, array $autoOptimizedConfig)
+    protected function getWaterfallTagCache($waterfallTagId)
     {
-        $waterfallTag = $this->waterfallTagManager->find($waterfallTagId);
+        $this->getRedis();
 
-        if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
-            return false;
-        }
-
-        $this->videoWaterfallTagCacheRefresher->refreshVideoWaterfallTag($waterfallTag, array('autoOptimize' => $autoOptimizedConfig));
-
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getExistingWaterfallTagCache(VideoWaterfallTagInterface $waterfallTag)
-    {
-        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTag->getUuid());
+        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTagId);
         $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
         $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
+
         $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
         return self::$redis->get($cacheKey);
-    }
-
-    /**
-     * @param VideoWaterfallTagInterface $waterfallTag
-     * @return mixed|void
-     * @throws \Exception
-     */
-    public function updateWaterfallTagCacheWhenAutoOptimizeIntegrationPaused(VideoWaterfallTagInterface $waterfallTag)
-    {
-        $slotCache = $this->getExistingWaterfallTagCache($waterfallTag);
-        if (is_array($slotCache)) {
-            if (array_key_exists('autoOptimize', $slotCache)) {
-                unset($slotCache['autoOptimize']);
-            }
-        }
-
-        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTag->getUuid());
-        $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
-        $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
-
-        $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
-        try {
-            self::$redis->set($cacheKey, $slotCache);
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getOptimizedDemandTagPositionsForWaterfallTag(VideoWaterfallTagInterface $waterfallTag)
-    {
-        /*
-         * input: the waterfallTag cache
-         * [
-         *     "id": "8e395550-6d62-466d-a6ca-ad17bdd804b8",
-         *     "waterfallId": 2,
-         *     "platform": [
-         *         "flash",
-         *     ],
-         *     "adDuration": 30,
-         *     "waterfall": [
-         *         {
-         *             "strategy": "parallel",
-         *             "demandTags": [
-         *                 {
-         *                     "id": 2,
-         *                     "demandPartner": "test",
-         *                     "tagUrl": "http://www.google.com",
-         *                     "targeting": []
-         *                 }
-         *             ]
-         *        },
-         *        ...
-         *    ],
-         *    ...,
-         *    "autoOptimize": {
-         *        "default": [
-         *            5,
-         *            2,
-         *            4
-         *       ]
-         *    }
-         * ]
-         */
-
-        /* 1. get current waterfallTag cache, based on waterfallTag */
-        $waterfallTagCache = $this->getExistingWaterfallTagCache($waterfallTag);
-
-        if (!is_array($waterfallTagCache)
-            || !array_key_exists('waterfall', $waterfallTagCache) || empty($waterfallTagCache['waterfall'])
-            || !array_key_exists('autoOptimize', $waterfallTagCache) || empty($waterfallTagCache['autoOptimize'])
-        ) {
-            return [];
-        }
-
-        /* 2. get optimizedPosition cache */
-        $autoOptimizedConfig = $waterfallTagCache['autoOptimize'];
-        $optimizedDemandAdTagIds = $autoOptimizedConfig['default'];
-        if (!is_array($optimizedDemandAdTagIds) || empty($optimizedDemandAdTagIds)) {
-            return [];
-        }
-
-        /* 3. mapping demandAdTag ids in optimizedPosition cache to waterfallTagItems */
-        $waterfallTagItems = [];
-
-        // get and map all demandAdTags of waterfallTag
-        $realDemandAdTags = $this->demandAdTagManager->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
-        if (!is_array($realDemandAdTags) || empty($realDemandAdTags)) {
-            return [];
-        }
-
-        $realDemandAdTagsMapping = [];
-        foreach ($realDemandAdTags as $realDemandAdTag) {
-            if (!$realDemandAdTag instanceof VideoDemandAdTagInterface) {
-                continue;
-            }
-
-            /** @var VideoDemandAdTagInterface $realDemandAdTag */
-            $realDemandAdTagsMapping[$realDemandAdTag->getId()] = $realDemandAdTag;
-        }
-
-        // map to waterfallTagItem
-        $position = 1;
-        foreach ($optimizedDemandAdTagIds as $optimizedDemandAdTagId) {
-            // check if in map
-            if (!array_key_exists($optimizedDemandAdTagId, $realDemandAdTagsMapping)) {
-                continue;
-            }
-
-            // check if active
-            /** @var VideoDemandAdTagInterface $videoDemandAdTag */
-            $videoDemandAdTag = $realDemandAdTagsMapping[$optimizedDemandAdTagId];
-            if (!$videoDemandAdTag->getActive()) {
-                continue;
-            }
-
-            // build waterfallTagItem
-            $videoDemandAdTags = new ArrayCollection([$videoDemandAdTag]);
-            $waterfallTagItem = (new VideoWaterfallTagItem())
-                ->setPosition($position)
-                ->setStrategy(VideoWaterfallTagItem::STRATEGY_PARALLELS)
-                ->setVideoDemandAdTags($videoDemandAdTags)
-                ->setVideoWaterfallTag($waterfallTag);
-
-            // add to waterfallTagItems list
-            $waterfallTagItems[] = $waterfallTagItem;
-
-            // increase position for next waterfallTagItem
-            $position++;
-        }
-
-        /*
-         * expected output:
-         * [
-         *     <waterfallTagItem 1>,
-         *     <waterfallTagItem 2>,
-         *     <waterfallTagItem 3>
-         * ]
-         *
-         * where <waterfallTagItem 1> is
-         * {
-         *     "id":1,
-         *     "position":1,
-         *     "strategy":"parallel",
-         *     "videoDemandAdTags":[
-         *         {
-         *             "id":5,
-         *             "priority":0,
-         *             "rotationWeight":null,
-         *             "active":1,
-         *             ...
-         *         }
-         *     ]
-         * }
-         */
-
-        /* 4. return result */
-        return $waterfallTagItems;
-    }
-
-    /**
-     * @param VideoWaterfallTagInterface $waterfallTag
-     * @param array $autoOptimizedConfig
-     * @return mixed|void
-     * @throws \Exception
-     */
-    public function updateAutoOptimizedDataForWaterfallTagCache(VideoWaterfallTagInterface $waterfallTag, array $autoOptimizedConfig)
-    {
-        $slotCache = $this->getExistingWaterfallTagCache($waterfallTag);
-        if (is_array($slotCache)) {
-            $slotCache['autoOptimize'] = $autoOptimizedConfig;
-        }
-
-        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTag->getUuid());
-        $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
-        $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
-
-        $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
-        try {
-            self::$redis->set($cacheKey, $slotCache);
-        } catch (\Exception $ex) {
-            throw $ex;
-        }
     }
 
     /**
@@ -487,17 +288,250 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
     }
 
     /**
-     * @return Redis
+     * @param $waterfallTagAutoOptimizeConfig
+     * @param $mappedBy
+     * @return array
      */
-    private function getRedis()
+    protected function getOptimizePositionDemandAdTags($waterfallTagAutoOptimizeConfig, $mappedBy)
     {
-        if (!self::$redis instanceof Redis) {
-            self::$redis = new Redis();
+        // get preview demandAdTag position
+        $optimize = [];
 
-            self::$redis->connect($this->host, $this->port, self::REDIS_CONNECT_TIMEOUT_IN_SECONDS);
-            self::$redis->setOption(Redis::OPT_SERIALIZER, Redis::SERIALIZER_PHP);
+        if (isset($waterfallTagAutoOptimizeConfig['default'])) {
+            $optimize = $waterfallTagAutoOptimizeConfig['default'];
         }
 
-        return self::$redis;
+        return $this->normalizeDemandAdTags($optimize, $mappedBy);
+    }
+
+    /**
+     * @param VideoWaterfallTagInterface $waterfallTag
+     * @return mixed|void
+     * @throws \Exception
+     */
+    public function updateWaterfallTagCacheWhenAutoOptimizeIntegrationPaused(VideoWaterfallTagInterface $waterfallTag)
+    {
+        $slotCache = $this->getExistingWaterfallTagCache($waterfallTag);
+        if (is_array($slotCache)) {
+            if (array_key_exists('autoOptimize', $slotCache)) {
+                unset($slotCache['autoOptimize']);
+            }
+        }
+
+        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTag->getUuid());
+        $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
+        $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
+
+        $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
+        try {
+            self::$redis->set($cacheKey, $slotCache);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExistingWaterfallTagCache(VideoWaterfallTagInterface $waterfallTag)
+    {
+        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTag->getUuid());
+        $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
+        $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
+        $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
+        return self::$redis->get($cacheKey);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOptimizedDemandTagPositionsForWaterfallTag(VideoWaterfallTagInterface $waterfallTag)
+    {
+        /*
+         * input: the waterfallTag cache
+         * [
+         *     "id": "8e395550-6d62-466d-a6ca-ad17bdd804b8",
+         *     "waterfallId": 2,
+         *     "platform": [
+         *         "flash",
+         *     ],
+         *     "adDuration": 30,
+         *     "waterfall": [
+         *         {
+         *             "strategy": "parallel",
+         *             "demandTags": [
+         *                 {
+         *                     "id": 2,
+         *                     "demandPartner": "test",
+         *                     "tagUrl": "http://www.google.com",
+         *                     "targeting": []
+         *                 }
+         *             ]
+         *        },
+         *        ...
+         *    ],
+         *    ...,
+         *    "autoOptimize": {
+         *        "default": [
+         *            5,
+         *            [2,3],
+         *            4
+         *       ]
+         *    }
+         * ]
+         */
+
+        /* 1. get current waterfallTag cache, based on waterfallTag */
+        $waterfallTagCache = $this->getExistingWaterfallTagCache($waterfallTag);
+
+        if (!is_array($waterfallTagCache)
+            || !array_key_exists('waterfall', $waterfallTagCache) || empty($waterfallTagCache['waterfall'])
+            || !array_key_exists('autoOptimize', $waterfallTagCache) || empty($waterfallTagCache['autoOptimize'])
+        ) {
+            return [];
+        }
+
+        /* 2. get optimizedPosition cache */
+        if (!array_key_exists('autoOptimize', $waterfallTagCache)) {
+            return [];
+        }
+        $autoOptimizedConfig = $waterfallTagCache['autoOptimize'];
+
+        if (!array_key_exists('default', $autoOptimizedConfig)) {
+            return [];
+        }
+        $optimizedDemandAdTagIds = $autoOptimizedConfig['default'];
+
+        if (!is_array($optimizedDemandAdTagIds) || empty($optimizedDemandAdTagIds)) {
+            return [];
+        }
+
+        /* 3. mapping demandAdTag ids in optimizedPosition cache to waterfallTagItems */
+        $waterfallTagItems = [];
+
+        // get and map all demandAdTags of waterfallTag
+        $realDemandAdTags = $this->demandAdTagManager->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
+        if (!is_array($realDemandAdTags) || empty($realDemandAdTags)) {
+            return [];
+        }
+
+        $realDemandAdTagsMapping = [];
+        foreach ($realDemandAdTags as $realDemandAdTag) {
+            if (!$realDemandAdTag instanceof VideoDemandAdTagInterface) {
+                continue;
+            }
+
+            /** @var VideoDemandAdTagInterface $realDemandAdTag */
+            $realDemandAdTagsMapping[$realDemandAdTag->getId()] = $realDemandAdTag;
+        }
+
+        // map to waterfallTagItem
+        $position = 1;
+        /** @var int/array $optimizedDemandAdTagIds */
+        foreach ($optimizedDemandAdTagIds as $idOrIds) {
+            $videoDemandAdTags = [];
+
+            if (!is_array($idOrIds)) {
+                $videoDemandAdTag = $this->getOneDemandAdTag($idOrIds, $realDemandAdTagsMapping);
+                if (empty($videoDemandAdTag)) {
+                    continue;
+                }
+                $videoDemandAdTags[] = $videoDemandAdTag;
+
+            } else { // many ad tags in one position
+                foreach ($idOrIds as $optimizedDemandAdTagId) {
+                    $videoDemandAdTag = $this->getOneDemandAdTag($optimizedDemandAdTagId, $realDemandAdTagsMapping);
+                    if (empty($videoDemandAdTag)) {
+                        continue;
+                    }
+
+                    $videoDemandAdTags[] = $videoDemandAdTag;
+                }
+            }
+
+            // build waterfallTagItem
+            $videoDemandAdTags = new ArrayCollection($videoDemandAdTags);
+            $waterfallTagItem = (new VideoWaterfallTagItem())
+                ->setPosition($position)
+                ->setStrategy(VideoWaterfallTagItem::STRATEGY_PARALLELS)
+                ->setVideoDemandAdTags($videoDemandAdTags)
+                ->setVideoWaterfallTag($waterfallTag);
+
+            // add to waterfallTagItems list
+            $waterfallTagItems[] = $waterfallTagItem;
+
+            // increase position for next waterfallTagItem
+            $position++;
+        }
+
+        /*
+         * expected output:
+         * [
+         *     <waterfallTagItem 1>,
+         *     <waterfallTagItem 2>,
+         *     <waterfallTagItem 3>
+         * ]
+         *
+         * where <waterfallTagItem 1> is
+         * {
+         *     "id":1,
+         *     "position":1,
+         *     "strategy":"parallel",
+         *     "videoDemandAdTags":[
+         *         {
+         *             "id":5,
+         *             "priority":0,
+         *             "rotationWeight":null,
+         *             "active":1,
+         *             ...
+         *         }
+         *     ]
+         * }
+         */
+
+        /* 4. return result */
+        return $waterfallTagItems;
+    }
+
+    private function getOneDemandAdTag($optimizedDemandAdTagIds, $realDemandAdTagsMapping)
+    {
+        // check if in map
+        if (!array_key_exists($optimizedDemandAdTagIds, $realDemandAdTagsMapping)) {
+            return false;
+        }
+
+        // check if active
+        /** @var VideoDemandAdTagInterface $videoDemandAdTag */
+        $videoDemandAdTag = $realDemandAdTagsMapping[$optimizedDemandAdTagIds];
+        if (!$videoDemandAdTag->getActive()) {
+            return false;
+        }
+
+        return $videoDemandAdTag;
+    }
+
+    /**
+     * @param VideoWaterfallTagInterface $waterfallTag
+     * @param array $autoOptimizedConfig
+     * @return mixed|void
+     * @throws \Exception
+     */
+    public function updateAutoOptimizedDataForWaterfallTagCache(VideoWaterfallTagInterface $waterfallTag, array $autoOptimizedConfig)
+    {
+        $slotCache = $this->getExistingWaterfallTagCache($waterfallTag);
+        if (is_array($slotCache)) {
+            $slotCache['autoOptimize'] = $autoOptimizedConfig;
+        }
+
+        $nameSpaceCacheKey = sprintf(self::NAMESPACE_CACHE_KEY, $waterfallTag->getUuid());
+        $keyGetCurrentVersion = sprintf(self::NAMESPACE_CACHE_KEY_VERSION, $nameSpaceCacheKey);
+        $currentVersionForWaterfallTag = (int)self::$redis->get($keyGetCurrentVersion);
+
+        $cacheKey = sprintf('%s[%s][%s]', $nameSpaceCacheKey, self::CACHE_KEY_WATERFALL_TAG, $currentVersionForWaterfallTag);
+        try {
+            self::$redis->set($cacheKey, $slotCache);
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
     }
 }

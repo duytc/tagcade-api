@@ -17,6 +17,7 @@ use Tagcade\Model\Core\VideoTargetingInterface;
 use Tagcade\Model\Core\VideoWaterfallTag;
 use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Model\Core\VideoWaterfallTagItemInterface;
+use Tagcade\Service\ArrayUtil;
 
 class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresherInterface
 {
@@ -454,23 +455,46 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
     private function refreshVideoWaterfallTagKeys(array $score, array $demandAdTags)
     {
         $demandAdTagIds = array_keys($demandAdTags);
-        $newDemandAdTagIds = array_diff($demandAdTagIds, $score);
+
+        $arrayUtil = new ArrayUtil();
+        $newDemandAdTagIds = array_diff($demandAdTagIds, $arrayUtil->array_flatten($score));
         $score = array_merge($score, $newDemandAdTagIds);
 
         /*
-         * scores [ 1, 2, 3, 4]
+         * scores [ 1, [2, 3], 4]
          */
 
-        foreach ($score as $key => $demandAdTagId) {
-            if (!array_key_exists($demandAdTagId, $demandAdTags)) {
-                unset($score[$key]);
-                continue;
-            }
+        foreach ($score as $key => $idOrIds) {
+            if (!is_array($idOrIds)) {
+                if (!array_key_exists($idOrIds, $demandAdTags)) {
+                    unset($score[$key]);
+                    continue;
+                }
 
-            $demandAdTag = $demandAdTags[$demandAdTagId];
-            if (!$demandAdTag instanceof VideoDemandAdTagInterface || !$demandAdTag->getActive()) {
-                unset($score[$key]);
-                continue;
+                $demandAdTag = $demandAdTags[$idOrIds];
+                if (!$demandAdTag instanceof VideoDemandAdTagInterface || !$demandAdTag->getActive()) {
+                    unset($score[$key]);
+                    continue;
+                }
+            } else {
+                foreach ($idOrIds as $subKey => $id) {
+                    if (!array_key_exists($id, $demandAdTags)) {
+                        unset($idOrIds[$subKey]);
+                        continue;
+                    }
+
+                    $demandAdTag = $demandAdTags[$id];
+                    if (!$demandAdTag instanceof VideoDemandAdTagInterface || !$demandAdTag->getActive()) {
+                        unset($idOrIds[$subKey]);
+                        continue;
+                    }
+                }
+
+                if (!empty($idOrIds)) {
+                    $score[$key] =  $idOrIds;
+                } else {
+                  unset($score[$key]);
+                }
             }
         }
 
