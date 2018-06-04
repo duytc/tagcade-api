@@ -4,6 +4,7 @@ namespace Tagcade\Bundle\AppBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Tagcade\Behaviors\VideoUtilTrait;
@@ -38,6 +39,12 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
     {
         $this
             ->setName(self::COMMAND_NAME)
+            ->addOption(
+                'yesterday',
+                'y',
+                InputOption::VALUE_NONE,
+                'force to create snapshot for yesterday'
+            )
             ->setDescription('Snapshot live waterfall/ demand tag video report in redis by hour, support show dashboard chart day-over-day');
     }
 
@@ -55,6 +62,7 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
         $this->reportBuilder = $container->get('tagcade.service.report.video_report.selector.video_report_builder');
         $this->publisherManager = $container->get('tagcade_user.domain_manager.publisher');
 
+        $yesterdayOption = $input->getOption('yesterday' , '');
         $this->io = new SymfonyStyle($input, $output);
 
         $now = date_create('now');
@@ -71,7 +79,7 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
                 continue;
             }
             /* 1. generate cache key hour for waterfallTag */
-            $this->snapshotWaterfallTagCache($videoWaterfallTag, $now);
+            $this->snapshotWaterfallTagCache($videoWaterfallTag, $now, $yesterdayOption);
 
             /* 2. get all demandAdTags from WaterfallTag */
             $demandAdTags = $videoDemandAdTagManager->getVideoDemandAdTagsForVideoWaterfallTag($videoWaterfallTag);
@@ -82,7 +90,7 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
                 if (!$demandAdTag instanceof VideoDemandAdTagInterface) {
                     continue;
                 }
-                $this->snapshotDemandTagCache($demandAdTag, $now);
+                $this->snapshotDemandTagCache($demandAdTag, $now, $yesterdayOption);
             }
         }
 
@@ -98,20 +106,21 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
 
         }
 
-        $this->savePublisherDashboardHourlyToRedis();
-        $this->savePlatformDashboardHourlyToRedis();
+        $this->savePublisherDashboardHourlyToRedis($yesterdayOption);
+        $this->savePlatformDashboardHourlyToRedis($yesterdayOption);
     }
 
     /**
      * @param VideoDemandAdTagInterface $demandAdTag
      * @param \DateTime $time
+     * @param bool $yesterdayOption
      */
-    private function snapshotDemandTagCache(VideoDemandAdTagInterface $demandAdTag, \DateTime $time)
+    private function snapshotDemandTagCache(VideoDemandAdTagInterface $demandAdTag, \DateTime $time,  $yesterdayOption = false)
     {
         $postFix = $time->format(self::KEY_DATE_TIME_FORMAT);
 
         try {
-            $this->snapshotVideoCacheEventCounter->snapshotDemandAdTag($demandAdTag->getId(), $postFix);
+            $this->snapshotVideoCacheEventCounter->snapshotDemandAdTag($demandAdTag->getId(), $postFix,  $yesterdayOption);
             $this->io->success(sprintf("Success snapshot cache for demand tag %s (ID: %s)", $demandAdTag->getName(), $demandAdTag->getId()));
         } catch (\Exception $e) {
             $this->io->error(sprintf("Error when snapshot cache for demand tag %s (ID: %s)", $demandAdTag->getName(), $demandAdTag->getId()));
@@ -121,13 +130,14 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
     /**
      * @param VideoWaterfallTagInterface $videoWaterfallTag
      * @param \DateTime $time
+     * @param bool $yesterdayOption
      */
-    private function snapshotWaterfallTagCache(VideoWaterfallTagInterface $videoWaterfallTag, \DateTime $time)
+    private function snapshotWaterfallTagCache(VideoWaterfallTagInterface $videoWaterfallTag, \DateTime $time, $yesterdayOption = false)
     {
         $postFix = $time->format(self::KEY_DATE_TIME_FORMAT);
 
         try {
-            $this->snapshotVideoCacheEventCounter->snapshotWaterfallTag($videoWaterfallTag->getUuid(), $postFix);
+            $this->snapshotVideoCacheEventCounter->snapshotWaterfallTag($videoWaterfallTag->getUuid(), $postFix,  $yesterdayOption);
 
             $this->io->success(sprintf("Success snapshot cache for watefall tag %s (ID: %s)", $videoWaterfallTag->getName(), $videoWaterfallTag->getId()));
         } catch (\Exception $e) {
@@ -136,11 +146,16 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
     }
 
     /**
-     *
+     * @param bool $yesterdayOption
      */
-    private function savePublisherDashboardHourlyToRedis()
+    private function savePublisherDashboardHourlyToRedis($yesterdayOption = false)
     {
-        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType('day-over-day');
+        if ($yesterdayOption) {
+            $comparisonType = 'yesterday';
+        } else {
+            $comparisonType = 'day-over-day';
+        }
+        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType($comparisonType);
         $params = $this->createParamsForReportComparison($startDateEndDate);
         $paramsForToday = reset($params);
 
@@ -156,11 +171,16 @@ class SnapshotCacheVideoReportByHoursCommand extends ContainerAwareCommand
     }
 
     /**
-     *
+     * @param bool $yesterdayOption
      */
-    private function savePlatformDashboardHourlyToRedis()
+    private function savePlatformDashboardHourlyToRedis($yesterdayOption = false)
     {
-        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType('day-over-day');
+        if ($yesterdayOption) {
+            $comparisonType = 'yesterday';
+        } else {
+            $comparisonType = 'day-over-day';
+        }
+        $startDateEndDate = $this->getStartDateEndDateDueToComparisonType($comparisonType);
         $params = $this->createParamsForReportComparison($startDateEndDate);
         $paramsForToday = reset($params);
 

@@ -27,8 +27,13 @@ class SnapshotVideoCacheEventCounter implements SnapshotVideoCacheEventCounterIn
     /**
      * @inheritdoc
      */
-    public function snapshotDemandAdTag($videoDemandAdTagId, $postFix)
+    public function snapshotDemandAdTag($videoDemandAdTagId, $postFix,  $yesterdayOption = false)
     {
+        if ($yesterdayOption) {
+            $this->videoCacheEventCounter->setDate(new \DateTime('yesterday'));
+        } else {
+            $this->videoCacheEventCounter->setDate(new \DateTime('now'));
+        }
         $videoDemandAdTagData = $this->videoCacheEventCounter->getVideoDemandAdTagData($videoDemandAdTagId, true);
 
         // save new key Request for demand Adtag
@@ -49,13 +54,21 @@ class SnapshotVideoCacheEventCounter implements SnapshotVideoCacheEventCounterIn
         // save new key block for demand Adtag
         $this->saveNewKeyForDemandTag($videoDemandAdTagId, VideoCacheEventCounter::CACHE_KEY_BLOCKS, $videoDemandAdTagData->getBlocks(), $postFix);
 
+        // revert to now
+        $this->videoCacheEventCounter->setDate(new \DateTime('now'));
     }
 
     /**
      * @inheritdoc
      */
-    public function snapshotWaterfallTag($videoWaterfallTagId, $postFix)
+    public function snapshotWaterfallTag($videoWaterfallTagId, $postFix,  $yesterdayOption = false)
     {
+        if ($yesterdayOption) {
+            $this->videoCacheEventCounter->setDate(new \DateTime('yesterday'));
+        } else {
+            $this->videoCacheEventCounter->setDate(new \DateTime('now'));
+        }
+
         $videoWaterfallTagData = $this->videoCacheEventCounter->getVideoWaterfallTagData($videoWaterfallTagId, true);
 
         // save new key Request for WaterfallTag
@@ -66,6 +79,9 @@ class SnapshotVideoCacheEventCounter implements SnapshotVideoCacheEventCounterIn
 
         // save new key errors for WaterfallTag
         $this->saveNewKeyForWaterfallTag($videoWaterfallTagId, VideoCacheEventCounter::CACHE_KEY_ERRORS, $videoWaterfallTagData->getErrors(), $postFix);
+
+        // revert to now
+        $this->videoCacheEventCounter->setDate(new \DateTime('now'));
     }
 
     /**
