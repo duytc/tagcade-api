@@ -51,28 +51,28 @@ class AutoOptimizeCacheController extends FOSRestController
                 try {
                     $cacheParam = new AutoOptimizeCacheParam($data);
                 } catch (InvalidArgumentException $exception) {
-                    return $this->view(['message' => "Bad Request", 'code' => Codes::HTTP_BAD_REQUEST]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_BAD_REQUEST]);
                 }
 
                 $autoOptimizedCache = $this->get('tagcade.cache.v2.auto_optimized_cache');
                 try {
                     $autoOptimizedCache->updateCacheForAdSlots($cacheParam);
                 } catch (\Exception $exception) {
-                    return $this->view(['message' => "Error", 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
                 }
                 break;
             case 'pubvantage-video':
                 try {
                     $cacheParam = new AutoOptimizeVideoCacheParam($data);
                 } catch (InvalidArgumentException $exception) {
-                    return $this->view(['message' => "Bad Request", 'code' => Codes::HTTP_BAD_REQUEST]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_BAD_REQUEST]);
                 }
 
                 $autoOptimizedCache = $this->get('tagcade.cache.video.auto_optimized_video_cache');
                 try {
                     $autoOptimizedCache->updateCacheForWaterfallTags($cacheParam);
                 } catch (\Exception $exception) {
-                    return $this->view(['message' => "Error", 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
                 }
                 break;
             default:
@@ -115,14 +115,14 @@ class AutoOptimizeCacheController extends FOSRestController
                 try {
                     $cacheParam = new AutoOptimizeCacheParam($data);
                 } catch (InvalidArgumentException $exception) {
-                    return $this->view(['message' => "Bad Request", 'code' => Codes::HTTP_BAD_REQUEST]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_BAD_REQUEST]);
                 }
 
                 $autoOptimizedCache = $this->get('tagcade.cache.v2.auto_optimized_cache');
                 try {
                     $previewPositionResult = $autoOptimizedCache->getPreviewPositionForAdSlots($cacheParam);
                 } catch (\Exception $exception) {
-                    return $this->view(['message' => "Error", 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
                 }
 
                 break;
@@ -131,14 +131,14 @@ class AutoOptimizeCacheController extends FOSRestController
                 try {
                     $cacheParam = new AutoOptimizeVideoCacheParam($data);
                 } catch (InvalidArgumentException $exception) {
-                    return $this->view(['message' => "Bad Request", 'code' => Codes::HTTP_BAD_REQUEST]);
+                    return $this->view(['message' => $exception->getMessage(), 'code' => Codes::HTTP_BAD_REQUEST]);
                 }
 
                 $autoOptimizedVideoCache = $this->get('tagcade.cache.video.auto_optimized_video_cache');
                 try {
                     $previewPositionResult = $autoOptimizedVideoCache->getPreviewPositionForWaterfallTags($cacheParam);
                 } catch (\Exception $exception) {
-                    return $this->view(['message' => "Error", 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
+                    return $this->view(['message' =>  $exception->getMessage(), 'code' => Codes::HTTP_INTERNAL_SERVER_ERROR]);
                 }
 
                 break;

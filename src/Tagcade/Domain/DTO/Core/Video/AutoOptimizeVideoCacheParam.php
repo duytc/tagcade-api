@@ -28,31 +28,32 @@ class AutoOptimizeVideoCacheParam
      */
     public function __construct(array $data)
     {
-        if (!array_key_exists(self::MAPPED_BY_KEY, $data)) {
+        // validate map key
+        if (!array_key_exists(self::MAPPED_BY_KEY, $data) || empty($data[self::MAPPED_BY_KEY])) {
             throw new InvalidArgumentException(sprintf('"%s" should not be empty', self::MAPPED_BY_KEY));
         }
 
         $this->mappedBy = $data[self::MAPPED_BY_KEY];
 
-        if (!array_key_exists(self::WATERFALL_TAGS_KEY, $data)) {
+        // validate waterfall tags key
+        if (!array_key_exists(self::WATERFALL_TAGS_KEY, $data) || empty($data[self::WATERFALL_TAGS_KEY])) {
             throw new InvalidArgumentException(sprintf('"%s" should not be empty', self::WATERFALL_TAGS_KEY));
         }
 
         $this->waterfallTags = $data[self::WATERFALL_TAGS_KEY];
 
-        if (array_key_exists(self::SCORES_KEY, $data)) {
-            $this->scores = $data[self::SCORES_KEY];
+        // validate score
+        if (!array_key_exists(self::SCORES_KEY, $data) || !is_array($data[self::SCORES_KEY]) || empty($data[self::SCORES_KEY])) {
+            throw new InvalidArgumentException(sprintf('"%s" should not be an empty array', self::SCORES_KEY));
+        }
 
-            if (!is_array($this->scores) || empty($this->scores)) {
-                throw new InvalidArgumentException(sprintf('"%s" should not be an empty array', self::SCORES_KEY));
-            }
+        $this->scores = $data[self::SCORES_KEY];
 
-            foreach ($this->scores as &$score) {
-                try {
-                    $score = new AutoOptimizeVideoCacheSegmentParam($score);
-                } catch (InvalidArgumentException $exception) {
-                    throw $exception;
-                }
+        foreach ($this->scores as &$score) {
+            try {
+                $score = new AutoOptimizeVideoCacheSegmentParam($score);
+            } catch (InvalidArgumentException $exception) {
+                throw $exception;
             }
         }
     }
