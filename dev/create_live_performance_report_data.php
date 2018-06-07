@@ -52,7 +52,7 @@ $cacheEventCounter = new \Tagcade\Service\Report\PerformanceReport\Display\Count
 
 $cacheEventCounter->setDataWithDateHour(false);
 // set date again to make sure that can get right dateFormatter based on $dataWithDateHour
-$cacheEventCounter->setDate(new DateTime('now'));
+$cacheEventCounter->setDate(new DateTime('yesterday'));
 
 writeln('### creating test live data for account ###');
 foreach($testEventCounter->getAccountData() as $publisherId => $accountData) {

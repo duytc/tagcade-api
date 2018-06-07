@@ -1,6 +1,8 @@
 <?php
 
-$loader = require_once __DIR__.'/../app/autoload.php';
+use Tagcade\Service\ArrayUtil;
+
+$loader = require_once __DIR__ . '/../app/autoload.php';
 require_once __DIR__ . '/../app/AppKernel.php';
 
 $kernel = new AppKernel('dev', true);
@@ -10,29 +12,25 @@ $container = $kernel->getContainer();
 
 $em = $container->get('doctrine.orm.entity_manager');
 
-use Tagcade\Model\User\UserEntityInterface;
-use Tagcade\Model\User\Role\PublisherInterface;
+//$orderAdTagIds[$demandTag->getId()] = $score;
 
-$userManager = $container->get('tagcade_user.domain_manager.user');
-$adNetworkManager = $container->get('tagcade.domain_manager.ad_network');
+$orderAdTagIds = ['1' => 1, '2' => 0.8, '3' => 0.7, '4' => 0.7, '5' => 0.5];
 
-/** @var UserEntityInterface $user */
-$user = $userManager->find(2);
-if (!$user instanceof PublisherInterface) {
-     throw new \Tagcade\Exception\InvalidArgumentException('Expect publisher');
+//Case: There are number of ad tags have same scores
+$newOrderAdTagIds = [];
+foreach ($orderAdTagIds as $id => $score) {
+    $newOrderAdTagIds[sprintf('%s', $score)][] = $id;
 }
 
-
-for($i=0; $i < 2; $i++){
-    $name = 'adNetwork' . '-' . (new DateTime('now'))->format('YmdHis') . '-' .$i;
-    $url = 'http://' . $name . '.com';
-
-    /** @var \Tagcade\Model\Core\AdNetworkInterface $adNetwork */
-    $adNetwork = $adNetworkManager->createNew();
-    $adNetwork->setName($name);
-    $adNetwork->setUrl($url);
-    $adNetwork->setDefaultCpmRate(1.0);
-    $adNetwork->setPublisher($user);
-
-    $adNetworkManager->save($adNetwork);
+foreach ($newOrderAdTagIds as $key =>$values) {
+    if(count($values) ==1 ) {
+        $newOrderAdTagIds[$key] = reset($values);
+    }
 }
+
+$newOrderAdTagIds = array_values($newOrderAdTagIds);
+
+$arrayUtil = new ArrayUtil();
+$orderDemandAdTagIdsFlatten = $arrayUtil->array_flatten($newOrderAdTagIds);
+
+$newOrderAdTagIds = array_values($orderDemandAdTagIdsFlatten);
