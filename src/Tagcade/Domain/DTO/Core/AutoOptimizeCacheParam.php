@@ -28,31 +28,32 @@ class AutoOptimizeCacheParam
      */
     public function __construct(array $data)
     {
-        if (!array_key_exists(self::MAPPED_BY_KEY, $data)) {
+        // validate map key
+        if (!array_key_exists(self::MAPPED_BY_KEY, $data) || empty($data[self::MAPPED_BY_KEY])) {
             throw new InvalidArgumentException(sprintf('"%s" should not be empty', self::MAPPED_BY_KEY));
         }
 
         $this->mappedBy = $data[self::MAPPED_BY_KEY];
 
-        if (!array_key_exists(self::AD_SLOTS_KEY, $data)) {
+        // validate adSlots key
+        if (!array_key_exists(self::AD_SLOTS_KEY, $data) || empty($data[self::AD_SLOTS_KEY])) {
             throw new InvalidArgumentException(sprintf('"%s" should not be empty', self::AD_SLOTS_KEY));
         }
 
         $this->adSlots = $data[self::AD_SLOTS_KEY];
 
-        if (array_key_exists(self::SCORES_KEY, $data)) {
-            $this->scores = $data[self::SCORES_KEY];
+        // validate score
+        if (!array_key_exists(self::SCORES_KEY, $data) || !is_array($data[self::SCORES_KEY]) || empty($data[self::SCORES_KEY])) {
+            throw new InvalidArgumentException(sprintf('"%s" should not be an empty array', self::SCORES_KEY));
+        }
 
-            if (!is_array($this->scores) || empty($this->scores)) {
-                throw new InvalidArgumentException(sprintf('"%s" should not be an empty array', self::SCORES_KEY));
-            }
+        $this->scores = $data[self::SCORES_KEY];
 
-            foreach ($this->scores as &$score) {
-                try {
-                    $score = new AutoOptimizeCacheSegmentParam($score);
-                } catch (InvalidArgumentException $exception) {
-                    throw $exception;
-                }
+        foreach ($this->scores as &$score) {
+            try {
+                $score = new AutoOptimizeCacheSegmentParam($score);
+            } catch (InvalidArgumentException $exception) {
+                throw $exception;
             }
         }
     }

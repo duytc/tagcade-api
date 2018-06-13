@@ -294,19 +294,19 @@ trait CreateAdSlotDataTrait
     }
 
     /**
-     * @param $groupVals
+     * @param $groupVal
      * @param $data
      */
-    protected function updateServerVars(array $groupVals, &$data)
+    protected function updateServerVars(array $groupVal, &$data)
     {
-        foreach ($groupVals as $groupVal) {
-            if (!array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $groupVal)) {
-                $varName = $groupVal['var'];
+        foreach ($groupVal as $groupValItem) {
+            if (!array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $groupValItem)) {
+                $varName = $groupValItem['var'];
                 if (in_array($varName, ExpressionInJsGenerator::$SERVER_VARS) && (!isset($data['serverVars']) || !in_array($varName, $data['serverVars']))) {
                     $data['serverVars'][] = $varName;
                 }
             } else {
-                $this->updateServerVars($groupVal[ExpressionInJsGenerator::KEY_GROUP_VAL], $data);
+                $this->updateServerVars($groupValItem[ExpressionInJsGenerator::KEY_GROUP_VAL], $data);
             }
         }
     }
@@ -388,11 +388,13 @@ trait CreateAdSlotDataTrait
             $dataItem[ExpressionInterface::TARGETING] = [];
         }
 
-        $expressionDescriptor = [];
+        $expressionDescriptors = [];
 
         if (!empty($adTag->getAdNetwork()->getExpressionDescriptor())) {
-            $expressionDescriptor = $adTag->getAdNetwork()->getExpressionDescriptor();
-            $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+            $expressionDescriptorFromAdNetwork = $adTag->getAdNetwork()->getExpressionDescriptor();
+            $expressionDescriptors[] = $expressionDescriptorFromAdNetwork;
+
+            $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptorFromAdNetwork);
             $dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
         }
 
@@ -400,15 +402,20 @@ trait CreateAdSlotDataTrait
         // The merge logic is adding '&&' to expression as: <expression from demand partner> && <expression from lib ad tag>
         // TODO: think about override instead of merge
         if (!empty($adTag->getLibraryAdTag()->getExpressionDescriptor())) {
-            $expressionDescriptor = $adTag->getLibraryAdTag()->getExpressionDescriptor();
-            $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptor);
+            $expressionDescriptorFromLibraryAdTag = $adTag->getLibraryAdTag()->getExpressionDescriptor();
+            $expressionDescriptors[] = $expressionDescriptorFromLibraryAdTag;
+
+            $targeting = $this->getExpressionInJsGenerator()->generateExpressionInJsFromDescriptor($expressionDescriptorFromLibraryAdTag);
             $dataItem[ExpressionInterface::TARGETING] = $this->mergeTargetings([$dataItem[ExpressionInterface::TARGETING], $targeting]);
         }
 
-        if (array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $expressionDescriptor)) {
-            $groupVals = $expressionDescriptor[ExpressionInJsGenerator::KEY_GROUP_VAL];
-            if (is_array($groupVals)) {
-                $this->updateServerVars($groupVals, $dataItem);
+        // update server vars for ad tag
+        foreach ($expressionDescriptors as $expressionDescriptor) {
+            if (array_key_exists(ExpressionInJsGenerator::KEY_GROUP_VAL, $expressionDescriptor)) {
+                $groupVal = $expressionDescriptor[ExpressionInJsGenerator::KEY_GROUP_VAL];
+                if (is_array($groupVal)) {
+                    $this->updateServerVars($groupVal, $dataItem);
+                }
             }
         }
 
