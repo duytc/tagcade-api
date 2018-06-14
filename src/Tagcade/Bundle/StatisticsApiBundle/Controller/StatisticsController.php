@@ -366,16 +366,39 @@ class StatisticsController extends FOSRestController
         $startDateCurrent = $dateUtil->getDateTime($startDateEndDate['current']['startDate']);
         $endDateCurrent = $dateUtil->getDateTime($startDateEndDate['current']['endDate']);
 
-        // get history report
+        // get current report
         if (isset($startDateCurrent) && isset($endDateCurrent)) {
-            $currentData = $this->get('tagcade.service.statistics')
-                ->getPublisherDashboard($publisher, $startDateCurrent, $endDateCurrent);
+            if ($comparisonType == 'day-over-day') {
+                // try get report for current hour, that means current data
+                $currentData = $this->get('tagcade.service.statistics.util.account_report_cache')->getPublisherDashboardSnapshot($publisher, $startDateCurrent);
+
+                // DO NOT need fallback to aggregate from cache, this takes more time. TODO: remove...
+                // if (empty($currentData)) {
+                //     // force get from redis again by creator
+                //     $currentData = $this->get('tagcade.service.statistics')
+                //         ->getPublisherDashboard($publisher, $startDateCurrent, $endDateCurrent);
+                // }
+            } else {
+                $currentData = $this->get('tagcade.service.statistics')
+                    ->getPublisherDashboard($publisher, $startDateCurrent, $endDateCurrent);
+            }
         }
 
         // get history report
         if (isset($startDateHistory) && isset($endDateHistory)) {
-            $historyData = $this->get('tagcade.service.statistics')
-                ->getPublisherDashboard($publisher, $startDateHistory, $endDateHistory);
+            if ($comparisonType == 'day-over-day') {
+                $historyData = $this->get('tagcade.service.statistics.util.account_report_cache')->getPublisherDashboardSnapshot($publisher, $startDateHistory);
+
+                // DO NOT need fallback to aggregate from cache, this takes more time. TODO: remove...
+                // if (empty($historyData)) {
+                //     // force get from redis again by creator
+                //     $historyData = $this->get('tagcade.service.statistics')
+                //         ->getPublisherDashboard($publisher, $startDateHistory, $endDateHistory);
+                // }
+            } else {
+                $historyData = $this->get('tagcade.service.statistics')
+                    ->getPublisherDashboard($publisher, $startDateHistory, $endDateHistory);
+            }
         }
 
         $result = [

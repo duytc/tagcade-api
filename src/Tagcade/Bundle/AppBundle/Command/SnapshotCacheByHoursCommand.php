@@ -231,6 +231,11 @@ class SnapshotCacheByHoursCommand extends ContainerAwareCommand
             $accountReports = $this->statistics->getPublisherDashboardHourly($publisher, $date, $force = true);
             $this->accountReportCache->saveHourReports($accountReports);
             $this->io->success(sprintf("Successfully save publisher dash board hourly to redis (ID: %s)", $publisher->getId()));
+
+            // also save publisher dashboard statistic snapshot to redis
+            $accountReports = $this->statistics->getPublisherDashboard($publisher, $date, $date);
+            $this->accountReportCache->saveCurrentStatisticReports($accountReports);
+            $this->io->success(sprintf('Successfully save publisher dashboard statistic snapshot to redis (ID: %s)', $publisher->getId()));
         }
     }
 
@@ -240,8 +245,15 @@ class SnapshotCacheByHoursCommand extends ContainerAwareCommand
     private function savePlatformDashboardHourlyToRedis(\DateTime $date)
     {
         $this->io->text(sprintf("Start save platform dash board hourly to redis"));
+
         $platformReports = $this->statistics->getAdminDashboardHourly($date, $force = true);
         $this->accountReportCache->saveHourReports($platformReports);
         $this->io->success(sprintf("Successfully save platform dash board hourly to redis"));
+
+
+        // also save platform dashboard statistic snapshot to redis
+        $platformReports = $this->statistics->getAdminDashboard($date, $date);
+        $this->accountReportCache->saveCurrentStatisticReports($platformReports);
+        $this->io->success(sprintf("Successfully save platform dashboard statistic snapshot to redis"));
     }
 }

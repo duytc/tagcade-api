@@ -178,7 +178,10 @@ class ReportSelector implements ReportSelectorInterface
         return $result;
     }
 
-    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params, $force = false)
+    /**
+     * @inheritdoc
+     */
+    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params, $forceAggregateFromCache = false)
     {
         $onlyTodayInDateRange = $this->dateUtil->isOnlyTodayOrYesterdayInRange($params->getStartDate(), $params->getEndDate());
 
@@ -189,21 +192,22 @@ class ReportSelector implements ReportSelectorInterface
                 !$reportType instanceof SubPublisherReportType\SubPublisher &&
                 !$reportType instanceof SubPublisherReportType\SubPublisherAdNetwork
             ) {
-                //Get reports from Redis cache
-                if (!$force && $reportType instanceof PlatformReportTypes\Account) {
-                    $reports = $this->accountReportCache->getPublisherDashboardHourlyFromRedis($reportType->getPublisher(), $params->getStartDate());
-                }
+                if (!$forceAggregateFromCache) {
+                    //Get reports from Redis cache
+                    if ($reportType instanceof PlatformReportTypes\Account) {
+                        $reports = $this->accountReportCache->getPublisherDashboardHourlyFromRedis($reportType->getPublisher(), $params->getStartDate());
+                    }
 
-                if (!$force && $reportType instanceof PlatformReportTypes\Platform) {
-                    $reports = $this->accountReportCache->getPlatformDashboardHourlyFromRedis($params->getStartDate());
-                }
-                
-                if (!empty($reports)) {
+                    if ($reportType instanceof PlatformReportTypes\Platform) {
+                        $reports = $this->accountReportCache->getPlatformDashboardHourlyFromRedis($params->getStartDate());
+                    }
+
                     return $reports;
                 }
-                
-                // on dashboard chart will only display from 0 to current hour
-                $currentHour = (new \DateTime())->format('G');
+
+                // on dashboard chart will only display from 0 to current hour if today
+                // for yesterday, that is 23 hrs
+                $currentHour = $this->dateUtil->isToday($params->getStartDate()) ? (new \DateTime())->format('G') : 23;
                 for ($i = 0; $i <= $currentHour; $i++) {
                     $this->reportCreator->setDataWithDateHour(true);
                     $this->reportCreator->setDate($params->getStartDate()->setTime($i, 0));
@@ -224,8 +228,10 @@ class ReportSelector implements ReportSelectorInterface
                 $this->reportCreator->setDataWithDateHour(false);
                 $this->reportCreator->setDate($params->getStartDate());
 
-                //Advance: save to redis
-                $this->accountReportCache->saveHourReports($reports);
+                // Advance: save to redis
+                // DO NOT save here, let outside decides to save or not
+                // TODO: remove...
+                // $this->accountReportCache->saveHourReports($reports);
             }
         }
 

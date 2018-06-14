@@ -36,9 +36,11 @@ class DateUtil implements DateUtilInterface
 
     public function isTodayInRange(DateTime $startDate, DateTime $endDate)
     {
-        $today = new DateTime('today');
+        $today = (new DateTime('today'))->setTime(0, 0);
+        $startDateClone = clone $startDate;
+        $endDateClone = clone $endDate;
 
-        return $today >= $startDate && $today <= $endDate;
+        return $today >= $startDateClone->setTime(0, 0) && $today <= $endDateClone->setTime(0, 0);
     }
 
     public function isOnlyTodayOrYesterdayInRange(DateTime $startDate, DateTime $endDate)
@@ -50,11 +52,27 @@ class DateUtil implements DateUtilInterface
                ||$yesterday == $startDate->format('Y-m-d') && $yesterday == $endDate->format('Y-m-d');
     }
 
+    public function isToday(DateTime $startDate)
+    {
+        $today = (new DateTime('today'))->format('Y-m-d');
+
+        return $today == $startDate->format('Y-m-d');
+    }
+
+    public function isYesterday(DateTime $endDate)
+    {
+        $yesterday = (new DateTime('yesterday'))->format('Y-m-d');
+
+        return $yesterday == $endDate->format('Y-m-d');
+    }
+
     public function isYesterdayInRange(DateTime $startDate, DateTime $endDate)
     {
-        $today = new DateTime('yesterday');
+        $yesterday = (new DateTime('yesterday'))->setTime(0, 0);
+        $startDateClone = clone $startDate;
+        $endDateClone = clone $endDate;
 
-        return $today >= $startDate && $today <= $endDate;
+        return $yesterday >= $startDateClone->setTime(0, 0) && $yesterday <= $endDateClone->setTime(0, 0);
     }
 
 

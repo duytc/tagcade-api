@@ -26,10 +26,11 @@ interface ReportSelectorInterface
      *
      * @param ReportTypeInterface $reportType
      * @param ParamsInterface $params
-     * @param bool $force
+     * @param bool $forceAggregateFromCache force get and aggregate from cache or not.
+     * If true, it takes more time to finish and should be use for background running
      * @return false|ReportResultInterface
      */
-    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params, $force = false);
+    public function getReportsHourly(ReportTypeInterface $reportType, ParamsInterface $params, $forceAggregateFromCache = false);
 
     /**
      * Convenience method to have a defined return type of ReportGroup
