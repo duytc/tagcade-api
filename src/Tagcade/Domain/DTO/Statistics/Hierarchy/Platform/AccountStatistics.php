@@ -33,5 +33,10 @@ class AccountStatistics
         return $this->reports;
     }
 
+    public function setReports($reports)
+    {
+        $this->reports = $reports;
 
+        return $this;
+    }
 }

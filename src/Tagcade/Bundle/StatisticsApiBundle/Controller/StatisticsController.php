@@ -2,6 +2,8 @@
 
 namespace Tagcade\Bundle\StatisticsApiBundle\Controller;
 
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -281,13 +283,33 @@ class StatisticsController extends FOSRestController
             'startEndDateCurrent' => isset($startDateEndDate['current']) ? $startDateEndDate['current'] : []
         ];
 
-        if ($comparisonType == 'day-over-day') {
+        if ($comparisonType == self::COMPARISON_TYPE_DAY_OVER_DAY) {
+            /* current */
+            $maxHour = (new DateTime())->format('G');
+
+            /* get hourly */
             $reportHourToday = $this->get('tagcade.service.statistics')->getAdminDashboardHourly($startDateCurrent);
             $reportHourHistory = $this->get('tagcade.service.statistics')->getAdminDashboardHourly($startDateHistory);
 
-            //filter delete the hours that do not have data
-            $reportHourToday = $this->filterDataHourly($reportHourToday);
-            $reportHourHistory = $this->filterDataHourly($reportHourHistory);
+            // trim left today
+            $reportHourToday = $this->trimLeftDataHourly($reportHourToday);
+
+            /* calculate min hour */
+            $minHour = $this->getMinHour($reportHourToday);
+
+            /*
+             * => expected hour range = [minHour, maxHour]
+             */
+
+            /* filter yesterday */
+            $reportHourToday = $this->filterDataHourly($reportHourToday, $minHour, $maxHour);
+            $reportHourHistory = $this->filterDataHourly($reportHourHistory, $minHour, $maxHour);
+
+            /* patch missing for today, yesterday */
+            $reportHourToday = $this->patchMissingDataHourly($reportHourToday, $minHour, $maxHour, new DateTime('now'));
+            $reportHourHistory = $this->patchMissingDataHourly($reportHourHistory, $minHour, $maxHour,  new DateTime('yesterday'));
+
+            /* result */
             $resultReportHourly = [
                 'reportHourToday' => $reportHourToday,
                 'reportHourHistory' => $reportHourHistory
@@ -368,7 +390,7 @@ class StatisticsController extends FOSRestController
 
         // get current report
         if (isset($startDateCurrent) && isset($endDateCurrent)) {
-            if ($comparisonType == 'day-over-day') {
+            if ($comparisonType == self::COMPARISON_TYPE_DAY_OVER_DAY) {
                 // try get report for current hour, that means current data
                 $currentData = $this->get('tagcade.service.statistics.util.account_report_cache')->getPublisherDashboardSnapshot($publisher, $startDateCurrent);
 
@@ -386,7 +408,7 @@ class StatisticsController extends FOSRestController
 
         // get history report
         if (isset($startDateHistory) && isset($endDateHistory)) {
-            if ($comparisonType == 'day-over-day') {
+            if ($comparisonType == self::COMPARISON_TYPE_DAY_OVER_DAY) {
                 $historyData = $this->get('tagcade.service.statistics.util.account_report_cache')->getPublisherDashboardSnapshot($publisher, $startDateHistory);
 
                 // DO NOT need fallback to aggregate from cache, this takes more time. TODO: remove...
@@ -407,14 +429,33 @@ class StatisticsController extends FOSRestController
             'startEndDateCurrent' => isset($startDateEndDate['current']) ? $startDateEndDate['current'] : []
         ];
 
-        if ($comparisonType == 'day-over-day') {
+        if ($comparisonType == self::COMPARISON_TYPE_DAY_OVER_DAY) {
+            /* current */
+            $maxHour = (new DateTime())->format('G');
+
+            /* get hourly */
             $reportHourToday = $this->get('tagcade.service.statistics')->getPublisherDashboardHourly($publisher, $startDateCurrent);
             $reportHourHistory = $this->get('tagcade.service.statistics')->getPublisherDashboardHourly($publisher, $startDateHistory);
 
-            //filter delete the hours that do not have data
-            $reportHourToday = $this->filterDataHourly($reportHourToday);
-            $reportHourHistory = $this->filterDataHourly($reportHourHistory);
+            // trim left today
+            $reportHourToday = $this->trimLeftDataHourly($reportHourToday);
 
+            /* calculate min hour */
+            $minHour = $this->getMinHour($reportHourToday);
+
+            /*
+             * => expected hour range = [minHour, maxHour]
+             */
+
+            /* filter yesterday */
+            $reportHourToday = $this->filterDataHourly($reportHourToday, $minHour, $maxHour);
+            $reportHourHistory = $this->filterDataHourly($reportHourHistory, $minHour, $maxHour);
+
+            /* patch missing for today, yesterday */
+            $reportHourToday = $this->patchMissingDataHourly($reportHourToday, $minHour, $maxHour,  new DateTime('now'));
+            $reportHourHistory = $this->patchMissingDataHourly($reportHourHistory, $minHour, $maxHour,  new DateTime('yesterday'));
+
+            /* result */
             $resultReportHourly = [
                 'reportHourToday' => $reportHourToday,
                 'reportHourHistory' => $reportHourHistory
@@ -507,7 +548,7 @@ class StatisticsController extends FOSRestController
      * @param array $data
      * @return mixed
      */
-    private function filterDataHourly(array $data)
+    private function trimLeftDataHourly(array $data)
     {
         foreach ($data as $key => $value) {
             $hasData = $this->checkHasData($value);
@@ -517,9 +558,9 @@ class StatisticsController extends FOSRestController
                 if ($key > 0) {
                     array_splice($data, 0, $key);
 
-                    return $data;
+                    return array_values($data);
                 } else {
-                    return $data;
+                    return array_values($data);
                 }
             }
         }
@@ -550,5 +591,169 @@ class StatisticsController extends FOSRestController
         }
 
         return false;
+    }
+
+    /**
+     * @param array $data
+     * @return int
+     */
+    private function getMinHour(array $data)
+    {
+        $minHour = 0;
+        foreach ($data as $key => $report) {
+            if (!$report instanceof ReportInterface) {
+                continue;
+            }
+
+            // get minHour from the first element
+            $minHour = $report->getDate()->format('G');
+            break;
+        }
+
+        return (int) $minHour;
+    }
+
+    /**
+     * @param array $data
+     * @param $minHour
+     * @param $maxHour
+     * @return mixed
+     */
+    private function filterDataHourly(array $data, $minHour, $maxHour)
+    {
+        if(empty($data)) {
+            return $data;
+        }
+
+        // do min hour: delete elements that have hour less than minHour
+        foreach ($data as $key => $report) {
+
+            if (!$report instanceof ReportInterface) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $hour = (int) $report->getDate()->format('G');
+
+            if ($hour < $minHour ) {
+                unset($data[$key]);
+            }
+        }
+
+        // do max hour: delete elements that have hour more than minHour
+        foreach ($data as $key => $report) {
+
+            if (!$report instanceof ReportInterface) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $hour = (int) $report->getDate()->format('G');
+
+            if ($hour > $maxHour ) {
+                unset($data[$key]);
+            }
+        }
+
+        return array_values($data);
+    }
+
+    /**
+     * @param array $data
+     * @param $minHour
+     * @param $maxHour
+     * @param DateTime $date
+     * @return mixed
+     */
+    private function patchMissingDataHourly(array $data, $minHour, $maxHour, DateTime $date)
+    {
+        if(empty($data)) {
+            return $data;
+        }
+
+        // add min hour if the first element of array has hour less than $minHour
+        /** @var ReportInterface $firstReport */
+        $firstReport = $data[0];
+        $hour = (int) $firstReport->getDate()->format('G');
+        if ($hour > $minHour) {
+            $newDate = $date->setTime($minHour, 0)->format('Y-m-d G');
+            $newReportMinHour = clone $firstReport;
+            $newReportMinHour->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+
+            array_unshift($data, $newReportMinHour);
+        }
+
+        // add max hour if the last element of array has hour mor than $maxHour
+        /** @var ReportInterface $lastReport */
+        $lastReport = $data[count($data) - 1];
+        $hour = (int) $lastReport->getDate()->format('G');
+        if ($hour < $maxHour) {
+            $newDate = $date->setTime($maxHour, 0)->format('Y-m-d G');
+            $newReportMaxHour = clone $lastReport;
+            $newReportMaxHour->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+
+            array_push($data, $newReportMaxHour);
+        }
+
+        $newData = [];
+        foreach ($data as $key => $report) {
+
+            if (!$report instanceof ReportInterface) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $hour = (int) $report->getDate()->format('G');
+
+            if (!isset($previousHour)) {
+                // the first loop
+                $newData [] = $report;
+
+                $previousHour = $hour;
+                continue;
+            }
+
+            if ($hour - 1 == $previousHour ) {
+                // for from the second loop
+                $newData [] = $report;
+
+                $previousHour = $hour;
+                continue;
+            }
+
+            // else need to patch missing data
+            // data [0, 1, 4, 5, 6] ==> expected: [0, 1, 2, 3, 4, 5, 6]
+            // or data [0, 1, 5, 6] ==> expected: [0, 1, 2, 3, 4, 5, 6]
+            if ($hour - $previousHour >= 3) {
+                for ($i = $previousHour + 1; $i < $hour; $i++) {
+                    $newReport = clone $report;
+                    $newDate = $date->setTime($i, 0)->format('Y-m-d G');
+
+                    $newReport->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+                    $newData [] = $newReport;
+                    $newReport = [];
+                }
+
+                $newData [] = $report;
+                $previousHour = $hour;
+
+                continue;
+            }
+
+            // data [0, 1, 3, 4, 5, 6] ==> expected: [0, 1, 2, 3, 4, 5, 6]
+            $newReport = clone $report;
+            $newDate = $date->setTime($previousHour + 1, 0)->format('Y-m-d G');
+
+            $newReport->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+            $newData [] = $newReport;
+            $newData [] = $report;
+            $newReport = [];
+
+            $previousHour = $previousHour + 1;
+        }
+
+        unset($data, $newReport, $hour, $previousHour, $date, $newDate);
+
+        return array_values($newData);
     }
 }

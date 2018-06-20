@@ -4,6 +4,7 @@
 namespace Tagcade\Bundle\ReportApiBundle\Controller;
 
 
+use DateTime;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -155,7 +156,6 @@ class VideoReportController extends FOSRestController
             }
         }
 
-
         try {
             $historyReports = $this->getReportByParams($paramsForYesterday);
         } catch (\Exception $e) {
@@ -169,18 +169,50 @@ class VideoReportController extends FOSRestController
             'startEndDateCurrent' => isset($startDateEndDate['current']) ? $startDateEndDate['current'] : []
         ];
 
+        $minHour = 0;
+        /* current */
+        $maxHour = (new DateTime())->format('G');
         try {
             if ($comparisonType == 'day-over-day') {
+                /* get hourly */
                 $reportHourToday = $this->getReportByParamsHourly($paramsForToday);
 
-                //filter delete the hours that do not have data
-                $reportHourToday = $this->filterDataHourly($reportHourToday);
+                // trim left today
+                $reportHourToday = $this->trimLeftDataHourly($reportHourToday);
+
+                /* calculate min hour */
+                $minHour = $this->getMinHour($reportHourToday);
+
+                /*
+                 * => expected hour range = [minHour, maxHour]
+                 */
+
+                /* filter */
+                $reportHourToday = $this->filterDataHourly($reportHourToday, $minHour, $maxHour);
+
+                /* patch missing for today, yesterday */
+                $reportHourToday = $this->patchMissingDataHourly($reportHourToday, $minHour, $maxHour,  new DateTime('now'));
+
+                /* result */
                 $resultReportHourly = [
-                    'reportHourToday' => $reportHourToday
+                    'reportHourToday' => $reportHourToday,
                 ];
+
                 $result = array_merge($resultReportHourly, $result);
                 $result['current'] = end($reportHourToday);
             }
+
+//            if ($comparisonType == 'day-over-day') {
+//                $reportHourToday = $this->getReportByParamsHourly($paramsForToday);
+//
+//                //filter delete the hours that do not have data
+//                $reportHourToday = $this->filterDataHourly($reportHourToday);
+//                $resultReportHourly = [
+//                    'reportHourToday' => $reportHourToday
+//                ];
+//                $result = array_merge($resultReportHourly, $result);
+//                $result['current'] = end($reportHourToday);
+//            }
         } catch (\Exception $e) {
             $resultReportHourly = [
                 'reportHourToday' => []
@@ -190,16 +222,38 @@ class VideoReportController extends FOSRestController
 
         try {
             if ($comparisonType == 'day-over-day') {
+
+                /* get hourly */
                 $reportHourHistory = $this->getReportByParamsHourly($paramsForYesterday);
 
-                //filter delete the hours that do not have data
-                $reportHourHistory = $this->filterDataHourly($reportHourHistory);
+                /*
+                 * => expected hour range = [minHour, maxHour]
+                 */
 
+                /* filter yesterday */
+                $reportHourHistory = $this->filterDataHourly($reportHourHistory, $minHour, $maxHour);
+
+                /* patch missing for today, yesterday */
+                $reportHourHistory = $this->patchMissingDataHourly($reportHourHistory, $minHour, $maxHour,  new DateTime('now'));
+
+                /* result */
                 $resultReportHourly = [
-                    'reportHourHistory' => $reportHourHistory
+                    'reportHourHistory' => $reportHourHistory,
                 ];
+
                 $result = array_merge($resultReportHourly, $result);
             }
+//            if ($comparisonType == 'day-over-day') {
+//                $reportHourHistory = $this->getReportByParamsHourly($paramsForYesterday);
+//
+//                //filter delete the hours that do not have data
+//                $reportHourHistory = $this->filterDataHourly($reportHourHistory);
+//
+//                $resultReportHourly = [
+//                    'reportHourHistory' => $reportHourHistory
+//                ];
+//                $result = array_merge($resultReportHourly, $result);
+//            }
         } catch (\Exception $e) {
             $resultReportHourly = [
                 'reportHourHistory' => []
@@ -277,7 +331,7 @@ class VideoReportController extends FOSRestController
      * @param array $data
      * @return mixed
      */
-    private function filterDataHourly(array $data)
+    private function trimLeftDataHourly(array $data)
     {
         foreach ($data as $key => $value) {
             $hasData = $this->checkHasData($value);
@@ -319,5 +373,165 @@ class VideoReportController extends FOSRestController
         }
 
         return false;
+    }
+
+    /**
+     * @param array $data
+     * @return int
+     */
+    private function getMinHour(array $data)
+    {
+        $minHour = 0;
+        foreach ($data as $key => $report) {
+            if (!$report instanceof ReportInterface) {
+                continue;
+            }
+
+            $minHour = $report->getDate()->format('G');
+            break;
+        }
+
+        return (int) $minHour;
+    }
+
+    /**
+     * @param array $data
+     * @param $minHour
+     * @param $maxHour
+     * @return mixed
+     */
+    private function filterDataHourly(array $data, $minHour, $maxHour)
+    {
+        if(empty($data)) {
+            return $data;
+        }
+
+        // do min hour
+        foreach ($data as $key => $report) {
+
+            if (!$report instanceof ReportInterface) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $hour = (int) $report->getDate()->format('G');
+
+            if ($hour < $minHour ) {
+                unset($data[$key]);
+            }
+        }
+
+        // do max hour
+        foreach ($data as $key => $report) {
+
+            if (!$report instanceof ReportInterface) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $hour = (int) $report->getDate()->format('G');
+
+            if ($hour > $maxHour ) {
+                unset($data[$key]);
+            }
+        }
+
+        return array_values($data);
+    }
+
+    /**
+     * @param array $data
+     * @param $minHour
+     * @param $maxHour
+     * @param DateTime $date
+     * @return mixed
+     */
+    private function patchMissingDataHourly(array $data, $minHour, $maxHour, DateTime $date)
+    {
+        if(empty($data)) {
+            return $data;
+        }
+
+        // add min hour if the first element of array has hour less than $minHour
+        /** @var ReportInterface $firstReport */
+        $firstReport = $data[0];
+        $hour = (int) $firstReport->getDate()->format('G');
+        if ($hour > $minHour) {
+            $newDate = $date->setTime($minHour, 0)->format('Y-m-d G');
+            $newReportMinHour = clone $firstReport;
+            $newReportMinHour->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+
+            array_unshift($data, $newReportMinHour);
+        }
+
+        // add max hour if the last element of array has hour mor than $maxHour
+        /** @var ReportInterface $lastReport */
+        $lastReport = $data[count($data) - 1];
+        $hour = (int) $lastReport->getDate()->format('G');
+        if ($hour < $maxHour) {
+            $newDate = $date->setTime($maxHour, 0)->format('Y-m-d G');
+            $newReportMaxHour = clone $lastReport;
+            $newReportMaxHour->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+
+            array_push($data, $newReportMaxHour);
+        }
+
+        $newData = [];
+        foreach ($data as $key => $report) {
+
+            if (!$report instanceof ReportInterface) {
+                unset($data[$key]);
+                continue;
+            }
+
+            $hour = (int) $report->getDate()->format('G');
+
+            if (!isset($previousHour)) {
+                // the first loop
+                $newData [] = $report;
+
+                $previousHour = $hour;
+                continue;
+            }
+
+            if ($hour - 1 == $previousHour ) {
+                $newData [] = $report;
+
+                $previousHour = $hour;
+                continue;
+            }
+
+            // else need to patch missing data
+            if ($hour - $previousHour >= 3) {
+                for ($i = $previousHour + 1; $i < $hour; $i++) {
+                    $newReport = clone $report;
+                    $newDate = $date->setTime($i, 0)->format('Y-m-d G');
+
+                    $newReport->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+                    $newData [] = $newReport;
+                    $newReport = [];
+                }
+
+                $newData [] = $report;
+                $previousHour = $hour;
+
+                continue;
+            }
+
+            $newReport = clone $report;
+            $newDate = $date->setTime($previousHour + 1, 0)->format('Y-m-d G');
+
+            $newReport->setDate(DateTime::createFromFormat('Y-m-d G', $newDate));
+            $newData [] = $newReport;
+            $newData [] = $report;
+            $newReport = [];
+
+            $previousHour = $previousHour + 1;
+
+        }
+
+        unset($data, $newReport, $hour, $previousHour, $date, $newDate);
+
+        return array_values($newData);
     }
 }

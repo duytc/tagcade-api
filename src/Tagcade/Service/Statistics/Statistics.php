@@ -13,8 +13,11 @@ use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics as Platf
 use Tagcade\Domain\DTO\Statistics\ProjectedBilling;
 use Tagcade\Domain\DTO\Statistics\Summary\PlatformSummary;
 use Tagcade\Domain\DTO\Statistics\Summary\Summary;
+use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
+use Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport;
 use Tagcade\Exception\InvalidArgumentException;
 use Tagcade\Model\Core\SiteInterface;
+use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportType\Hierarchy\Platform as PlatformTypes;
 use Tagcade\Model\User\Role\PublisherInterface;
 use Tagcade\Repository\Report\PerformanceReport\Display\Hierarchy\Platform\PlatformReportRepositoryInterface;
@@ -27,6 +30,9 @@ use Tagcade\Service\Statistics\Provider\SiteStatisticsInterface;
 
 class Statistics implements StatisticsInterface
 {
+    const REPORT_TYPE_PLATFORM_TO_PATCH_MISSING = 'platformReport';
+    const REPORT_TYPE_ACCOUNT_TO_PATCH_MISSING = 'accountReport';
+
     /** @var ReportBuilderInterface */
     protected $reportBuilder;
 
@@ -92,6 +98,16 @@ class Statistics implements StatisticsInterface
 
         $platformStatistics = new PlatformStatisticsDTO($platformReports);
 
+        // Do make sure return same number of points
+        // it takes 30 milliseconds to finished this with year-over-year comparision (today is 2018-06-20)
+        // do this at the last step to avoid loop and take many time with elements which is added in this
+        //$startTime = round(microtime(true) * 1000);
+        $reports = $platformReports->getReports() ;
+        $reports = $this->makeCorrectNumberOfDate($reports, $startDate, $endDate, self::REPORT_TYPE_PLATFORM_TO_PATCH_MISSING);
+        $platformStatistics->setReports($reports);
+        //$endTime = round(microtime(true) * 1000);
+        //$time = $endTime - $startTime;
+
         $topPublishers = $this->accountStatistics->getTopPublishersByBilledAmount($params);
         $topSites = $this->siteStatistics->getTopSitesByBilledAmount($params);
 
@@ -147,6 +163,16 @@ class Statistics implements StatisticsInterface
             return new PublisherDashboard();
         }
         $accountStatistics = new AccountStatisticsDTO($accountReports);
+
+        // Do make sure return same number of points
+        // it takes 30 milliseconds to finished this with year-over-year comparision (today is 2018-06-20)
+        // do this at the last step to avoid loop and take many time with elements which is added in this
+        //$startTime = round(microtime(true) * 1000);
+        $reports = $accountStatistics->getReports() ;
+        $reports = $this->makeCorrectNumberOfDate($reports, $startDate, $endDate, self::REPORT_TYPE_ACCOUNT_TO_PATCH_MISSING);
+        $accountStatistics->setReports($reports);
+        //$endTime = round(microtime(true) * 1000);
+        //$time = $endTime - $startTime;
 
         $todayReport = null;
         $yesterdayReport = null;
@@ -320,5 +346,66 @@ class Statistics implements StatisticsInterface
         $endDate->setTime(23, 59, 59);
 
         return (new Params($startDate, $endDate))->setGrouped(true);
+    }
+
+    /**
+     * @param array $reports
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @param $reportType
+     * @return mixed
+     * @internal param array $data
+     */
+    private function makeCorrectNumberOfDate(array $reports, DateTime $startDate, DateTime $endDate, $reportType)
+    {
+        $interval = new DateInterval('P1D');
+        $dateRange = new DatePeriod($startDate, $interval, $endDate);
+
+        $newReports = [];
+        foreach ($dateRange as $i => $singleDate) {
+            /** @var DateTime $singleDate */
+            foreach ($reports as $report) {
+                if (!$report instanceof ReportInterface) {
+                    continue;
+                }
+
+                if ($singleDate->format('Y-m-d') == $report->getDate()->format('Y-m-d')) {
+                    $newReport = clone $report;
+                    break;
+                }
+            }
+
+            if (isset($newReport) && !empty($newReport)) {
+                $newReports [] = $newReport;
+                $newReport = [];
+            } else {
+                $newReport = $this->createNewReportToPatchMissing($reportType);
+                $newReport->setDate($singleDate);
+
+                $newReports [] = $newReport;
+                $newReport = [];
+            }
+        }
+
+        return $newReports;
+    }
+
+    /**
+     * @param $reportType
+     * @return AccountReport|PlatformReport
+     */
+    private function createNewReportToPatchMissing ($reportType) {
+        switch ($reportType) {
+            case self::REPORT_TYPE_PLATFORM_TO_PATCH_MISSING:
+                $newReport = new PlatformReport();
+                break;
+            case self::REPORT_TYPE_ACCOUNT_TO_PATCH_MISSING:
+                $newReport = new AccountReport();
+                break;
+            default:
+                $newReport = new PlatformReport();
+        }
+
+        return $newReport;
     }
 }
