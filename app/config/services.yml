@@ -225,6 +225,7 @@ services:
         arguments:
             - '@tagcade.repository.video_demand_ad_tag'
             - '@tagcade.repository.video_waterfall_tag'
+            - '@tagcade.service.optimization.kmean_clustering_service'
 
     tagcade.service.video_vast_tag_generator:
         class: Tagcade\Service\VideoVastTagGenerator

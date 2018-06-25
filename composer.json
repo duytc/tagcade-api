@@ -14,7 +14,7 @@
         { "type": "vcs", "url": "https://github.com/gfreeau/GfreeauCustomValidationPathBundle" }
     ],
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=7.1",
         "symfony/symfony": "2.8.22",
         "doctrine/orm": "^2.4.8",
         "doctrine/doctrine-bundle": "~1.4",
@@ -43,7 +43,8 @@
         "data-dog/pager-bundle": "^0.2.4",
         "defuse/php-encryption": "^1.2",
         "doctrine/doctrine-cache-bundle": "^1.3",
-        "akeneo-labs/spreadsheet-parser": "1.2.0"
+        "akeneo-labs/spreadsheet-parser": "1.2.0",
+        "php-ai/php-ml": "^0.4.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8",

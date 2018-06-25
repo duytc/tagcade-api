@@ -351,3 +351,18 @@ services:
         arguments:
             - @tagcade.domain_manager.video_waterfall_tag
             - @tagcade.domain_manager.video_publisher
+
+    tagcade.service.optimization.kmean_clustering.elbow_method_service:
+        class: Tagcade\Service\Optimization\KMeanClustering\ElbowMethodService
+
+    tagcade.service.optimization.kmean_clustering.optimum_kmean_cluster_service_manager:
+        class: Tagcade\Service\Optimization\KMeanClustering\OptimumKMeanClusterServiceManager
+        arguments:
+            -
+                - @tagcade.service.optimization.kmean_clustering.elbow_method_service
+
+    tagcade.service.optimization.kmean_clustering_service:
+        class: Tagcade\Service\Optimization\KMeanClusteringService
+        arguments:
+            - @tagcade.service.optimization.kmean_clustering.optimum_kmean_cluster_service_manager
+
