@@ -27,6 +27,14 @@ interface AutoOptimizedCacheInterface
     public function getOptimizedAdTagPositionsForAdSlotBySegmentsValue($adSlotId, $countryValue = '', $domainValue = '', $browserValue = '');
 
     /**
+     * @param DisplayAdSlotInterface $adSlot
+     * @param $ids
+     * @param $params
+     * @return mixed
+     */
+    public function reorderOptimizeKeyForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $ids, $params);
+
+    /**
      * update AutoOptimized Data For Ad Slot Cache
      *
      * @param DisplayAdSlotInterface $adSlot
