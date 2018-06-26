@@ -534,4 +534,48 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
             throw $ex;
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function reorderOptimizeKeyForWaterfallTag(VideoWaterfallTagInterface $waterfallTag, $newVideoWaterfallTagItemOrderIds)
+    {
+        $newOptimizedDemandAdTagIds = [];
+        foreach ($newVideoWaterfallTagItemOrderIds as $newVideoWaterfallTagItemOrderId) {
+            if (is_array($newVideoWaterfallTagItemOrderId) && array_key_exists('videoDemandAdTags', $newVideoWaterfallTagItemOrderId)) {
+
+                $newVideoDemandAdTags = $newVideoWaterfallTagItemOrderId['videoDemandAdTags'];
+
+                // remove videoDemandAdTags is paused
+                foreach ($newVideoDemandAdTags as $key => $newVideoDemandAdTag) {
+
+                    $videoDemandAdTag = $this->demandAdTagManager->find($newVideoDemandAdTag);
+
+                    if (!$videoDemandAdTag instanceof VideoDemandAdTagInterface) {
+                        continue;
+                    }
+
+                    if (!$videoDemandAdTag->getActive()) {
+                        unset($newVideoDemandAdTags[$key]);
+                    }
+                }
+
+                if (empty($newVideoDemandAdTags)){
+                    continue;
+                }
+
+                $newVideoDemandAdTags = array_values($newVideoDemandAdTags);
+                if (is_array($newVideoDemandAdTags) && count($newVideoDemandAdTags) == 1 ){
+                    $newOptimizedDemandAdTagIds [] = $newVideoDemandAdTags[0];
+                    continue;
+                }
+
+                $newOptimizedDemandAdTagIds [] = $newVideoDemandAdTags;
+            }
+        }
+
+        $newAutoOptimizedConfig['default'] = array_values($newOptimizedDemandAdTagIds);
+
+        $this->videoWaterfallTagCacheRefresher->refreshVideoWaterfallTag($waterfallTag, array('autoOptimize' => $newAutoOptimizedConfig));
+    }
 }
