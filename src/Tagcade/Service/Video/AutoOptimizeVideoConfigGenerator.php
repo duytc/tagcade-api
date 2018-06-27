@@ -11,6 +11,7 @@ use Tagcade\Model\Core\VideoWaterfallTagInterface;
 use Tagcade\Repository\Core\VideoDemandAdTagRepositoryInterface;
 use Tagcade\Repository\Core\VideoWaterfallTagRepositoryInterface;
 use Tagcade\Service\ArrayUtil;
+use Tagcade\Service\Optimization\KMeanClusteringServiceInterface;
 
 class AutoOptimizeVideoConfigGenerator
 {
@@ -20,15 +21,20 @@ class AutoOptimizeVideoConfigGenerator
     /** @var VideoWaterfallTagRepositoryInterface */
     private $videoWaterfallTagRepository;
 
+    /** @var KMeanClusteringServiceInterface KMeanClusteringServiceInterface  */
+    private $kMeanClusteringService;
+
     /**
      * AutoOptimizeConfigGenerator constructor.
      * @param VideoDemandAdTagRepositoryInterface $videoDemandAdTagRepository
      * @param VideoWaterfallTagRepositoryInterface $videoWaterfallTagRepository
+     * @param KMeanClusteringServiceInterface $kMeanClusteringService
      */
-    public function __construct(VideoDemandAdTagRepositoryInterface $videoDemandAdTagRepository, VideoWaterfallTagRepositoryInterface $videoWaterfallTagRepository)
+    public function __construct(VideoDemandAdTagRepositoryInterface $videoDemandAdTagRepository, VideoWaterfallTagRepositoryInterface $videoWaterfallTagRepository, KMeanClusteringServiceInterface $kMeanClusteringService)
     {
         $this->videoDemandAdTagRepository = $videoDemandAdTagRepository;
         $this->videoWaterfallTagRepository = $videoWaterfallTagRepository;
+        $this->kMeanClusteringService = $kMeanClusteringService;
     }
 
 
@@ -193,7 +199,18 @@ class AutoOptimizeVideoConfigGenerator
             $videoDemandAdTags = $this->videoDemandAdTagRepository->getVideoDemandAdTagsForVideoWaterfallTag($waterfallTag);
             $videoDemandAdTags = $videoDemandAdTags instanceof Collection ? $videoDemandAdTags->toArray() : $videoDemandAdTags;
 
-            $orderOptimizedAdTagIds = $this->addActiveDemandAdTagsByScores($demandAdTagScores, $identifier, $waterfallTagId);
+            /*
+             * find k for k-mean algorithm
+             * current set k = number of original positions of waterfall tag
+             */
+            $waterfallTag = $this->videoWaterfallTagRepository->find($waterfallTagId);
+            if (!$waterfallTag instanceof VideoWaterfallTagInterface) {
+                continue;
+            }
+
+            $kForKMean = count($waterfallTag->getVideoWaterfallTagItems());
+
+            $orderOptimizedAdTagIds = $this->addActiveDemandAdTagsByScores($demandAdTagScores, $identifier, $waterfallTagId, $kForKMean);
 
             $missingDemandAdTags = array_filter($videoDemandAdTags, function ($demandAdTag) {
                 return $demandAdTag instanceof VideoDemandAdTagInterface && $demandAdTag->getActive();
@@ -210,9 +227,10 @@ class AutoOptimizeVideoConfigGenerator
      * @param $demandAdTagScores
      * @param $identifier
      * @param $waterfallTagId
+     * @param $kForKMean
      * @return array
      */
-    private function addActiveDemandAdTagsByScores($demandAdTagScores, $identifier, $waterfallTagId)
+    private function addActiveDemandAdTagsByScores($demandAdTagScores, $identifier, $waterfallTagId, $kForKMean)
     {
         $demandAdTagScores = array_filter($demandAdTagScores, function ($demandAdTagScore) {
             return is_array($demandAdTagScore) && array_key_exists(AutoOptimizeCacheSlotParam::SCORE_KEY, $demandAdTagScore);
@@ -251,29 +269,54 @@ class AutoOptimizeVideoConfigGenerator
             }
         }
 
-        return $this->makeOrderAdTagsForRedis($orderAdTagIds);
+        return $this->makeOrderAdTagsForRedis($orderAdTagIds, $kForKMean);
     }
 
     /**
      * @param $orderAdTagIds
+     * @param $kForKMean
      * @return array
      */
-    private function makeOrderAdTagsForRedis($orderAdTagIds)
+    private function makeOrderAdTagsForRedis($orderAdTagIds, $kForKMean)
     {
         $newOrderAdTagIds = [];
         //Handle case: two ad tags have same score
         foreach ($orderAdTagIds as $id => $score) {
             $newOrderAdTagIds[sprintf('%s', $score)][] = $id;
         }
-
-        //If array has only one value, it is flatten
-        foreach ($newOrderAdTagIds as $key => $values) {
-            if (count($values) == 1) {
-                $newOrderAdTagIds[$key] = reset($values);
+        //  kMeanClusteringService
+        $clusters = $this->kMeanClusteringService->getClusters($orderAdTagIds, $kForKMean);
+        if(!is_array($clusters) || !array_key_exists('clusters', $clusters)){
+            return [];
+        }
+        $clusters = $clusters['clusters'];
+        usort($clusters, function ($a, $b){
+            $a = array_shift($a);
+            $b = array_shift($b);
+            if ($a == $b) {
+                return 0;
+            }
+            return ($a > $b) ? -1 : 1;
+        });
+        foreach ($clusters as &$cluster){
+            foreach ($cluster as $key => $values) {
+                if (count($values) == 1) {
+                    $cluster[$key] = reset($values);
+                    $cluster[$key] = array_shift($newOrderAdTagIds[reset($values)]);
+                }
             }
         }
 
-        return array_values($newOrderAdTagIds);
+        //If array has only one value, it is flatten
+        foreach ($clusters as $key => $values) {
+            if (count($values) == 1) {
+                $clusters[$key] = reset($values);
+            }
+            if(count($values) == 0){
+                unset($clusters[$key]);
+            }
+        }
+        return array_values($clusters);
     }
 
     /**

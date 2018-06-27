@@ -222,7 +222,6 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
         return $this->get('tagcade.service.video_vast_tag_generator')->createVideoVastTags($videoWaterfallTag, $videoWaterfallTagParam);
     }
 
-
     /**
      * Create a video ad tag from the submitted data
      *
@@ -262,11 +261,40 @@ class VideoWaterfallTagController extends RestControllerAbstract implements Clas
             throw new BadRequestHttpException('Missing videoWaterfallTagItems (ids) is an array');
         }
 
-
         return $result = array_values(
             $this->get('tagcade_app.service.core.video_waterfall_tag_item.video_waterfall_tag_item_position_editor')
                 ->setVideoWaterfallTagItemPositionForVideoWaterfallTag($videoWaterfallTag, $newVideoWaterfallTagItemOrderIds)
         );
+    }
+
+    /**
+     * @Rest\Post("/videowaterfalltags/{id}/optimize/positions", requirements={"id" = "\d+"})
+     *
+     * @ApiDoc(
+     *  section = "Video Waterfall Tags",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     * @param Request $request
+     */
+    public function postOptimizeReorderAction($id, Request $request)
+    {
+        /** @var VideoWaterfallTagInterface $videoWaterfallTag */
+        $videoWaterfallTag = $this->one($id);
+
+        $newVideoWaterfallTagItemOrderIds = $request->request->get('videoWaterfallTagItems', null);
+
+        if (!is_array($newVideoWaterfallTagItemOrderIds)) {
+            throw new BadRequestHttpException('Missing videoWaterfallTagItems (ids) is an array');
+        }
+
+        $readCacheOptimizedService = $this->get('tagcade.cache.video.auto_optimized_video_cache');
+        $readCacheOptimizedService->reorderOptimizeKeyForWaterfallTag($videoWaterfallTag, $newVideoWaterfallTagItemOrderIds);
     }
 
     /**

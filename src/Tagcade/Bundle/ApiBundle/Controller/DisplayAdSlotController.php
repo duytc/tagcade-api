@@ -15,6 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tagcade\Bundle\AdminApiBundle\Event\HandlerEventLog;
 use Tagcade\Bundle\ApiBundle\Behaviors\UpdateSiteForAdSlotValidator;
 use Tagcade\Exception\InvalidArgumentException;
+use Tagcade\Exception\PublicSimpleException;
 use Tagcade\Handler\Handlers\Core\AdSlotHandlerAbstract;
 use Tagcade\Model\Core\AdTagInterface;
 use Tagcade\Model\Core\BaseAdSlotInterface;
@@ -169,6 +170,37 @@ class DisplayAdSlotController extends RestControllerAbstract implements ClassRes
         return $readCacheOptimizedService->getOptimizedAdTagPositionsForAdSlotBySegmentsValue($id, $country, $domain, $browser);
     }
 
+    /**
+     * @Rest\Post("/displayadslots/{id}/optimize/positions", requirements={"id" = "\d+"})
+     *
+     * @ApiDoc(
+     *  section = "Ad Slots",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful",
+     *      404 = "Returned when the resource is not found"
+     *  }
+     * )
+     *
+     * @param int $id the resource id
+     * @param Request $request
+     * @throws PublicSimpleException
+     */
+    public function postOptimizeReorderAction($id, Request $request)
+    {
+        $adSlot = $this->get('tagcade.domain_manager.ad_slot')->find($id);
+        if (!$adSlot instanceof DisplayAdSlotInterface) {
+            throw new PublicSimpleException(sprintf("adslot %s do not exist", $id));
+        }
+
+        $params = array_merge($request->request->all(), $request->query->all());
+        if (!isset($params['ids'])) {
+            throw new PublicSimpleException(sprintf("missing order ids of ad tags"));
+        }
+
+        $readCacheOptimizedService = $this->get('tagcade.cache.v2.auto_optimized_cache');
+        $readCacheOptimizedService->reorderOptimizeKeyForDisplayAdSlot($adSlot, $params['ids'], $params);
+    }
 
     /**
      * @Security("has_role('ROLE_ADMIN') or has_role('ROLE_PUBLISHER')")

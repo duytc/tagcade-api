@@ -26,4 +26,11 @@ class PlatformStatistics
     {
         return $this->reports;
     }
+
+    public function setReports($reports)
+    {
+        $this->reports = $reports;
+
+        return $this;
+    }
 }

@@ -3,6 +3,10 @@
 namespace Tagcade\Service\Statistics\Util;
 
 use Tagcade\Cache\Legacy\Cache\RedisCache;
+use Tagcade\Domain\DTO\Statistics\Dashboard\AdminDashboard;
+use Tagcade\Domain\DTO\Statistics\Dashboard\PublisherDashboard;
+use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\AccountStatistics;
+use Tagcade\Domain\DTO\Statistics\Hierarchy\Platform\PlatformStatistics;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\AccountReport;
 use Tagcade\Entity\Report\PerformanceReport\Display\Platform\PlatformReport;
 use Tagcade\Model\Report\PerformanceReport\Display\ReportInterface;
@@ -13,11 +17,12 @@ use Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport as VideoA
 
 class AccountReportCache implements AccountReportCacheInterface
 {
-    const ACCOUNT_TEMPLATE = "account_report_%s_%s";
-    const PLATFORM_TEMPLATE = "platform_report_%s";
-    const VIDEO_ACCOUNT_TEMPLATE = "video_account_report_%s_%s";
-    const VIDEO_PLATFORM_TEMPLATE = "video_platform_report_%s";
-    const DATE_TIME_TEMPLATE_WITH_HOUR = "Y-m-d_G";
+    const ACCOUNT_TEMPLATE = 'account_report_%s_%s';
+    const PLATFORM_TEMPLATE = 'platform_report_%s';
+    const VIDEO_ACCOUNT_TEMPLATE = 'video_account_report_%s_%s';
+    const VIDEO_PLATFORM_TEMPLATE = 'video_platform_report_%s';
+    const DATE_TIME_TEMPLATE = 'Y-m-d';
+    const DATE_TIME_TEMPLATE_WITH_HOUR = 'Y-m-d_G';
     const LIFE_TIME = 259200; //3 days
 
     /** @var RedisCache */
@@ -159,6 +164,107 @@ class AccountReportCache implements AccountReportCacheInterface
     }
 
     /**
+     * @param $reports
+     * @return mixed
+     */
+    public function saveCurrentStatisticReports($reports)
+    {
+        if (!($reports instanceof PublisherDashboard || $reports instanceof AdminDashboard)) {
+            return;
+        }
+
+        $key = $this->buildCacheKeyForCurrentStatistic($reports);
+
+        if (!empty($key)) {
+            $this->redisCache->save($key, $reports, self::LIFE_TIME);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherDashboardByHourFromRedis(PublisherInterface $publisher, $date = null)
+    {
+        $publisherId = $publisher->getId();
+        if (empty($date)) {
+            $date = date_create('now');
+        }
+
+        // get report for date with hour
+        $accountReport = [];
+        $dateWithHour = $date;
+
+        $key = sprintf(self::ACCOUNT_TEMPLATE, $publisherId, $dateWithHour->format(self::DATE_TIME_TEMPLATE_WITH_HOUR));
+        if ($this->redisCache->contains($key)) {
+            $accountReport = $this->redisCache->fetch($key);
+        }
+
+        return $accountReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPlatformDashboardByHourFromRedis($date = null)
+    {
+        if (empty($date)) {
+            $date = date_create('now');
+        }
+
+        // get report for data with hour
+        $platformReport = [];
+        $dateWithHour = $date;
+
+        $key = sprintf(self::PLATFORM_TEMPLATE, $dateWithHour->format(self::DATE_TIME_TEMPLATE_WITH_HOUR));
+        if ($this->redisCache->contains($key)) {
+            $platformReport = $this->redisCache->fetch($key);
+        }
+
+        return $platformReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPublisherDashboardSnapshot(PublisherInterface $publisher, $date = null)
+    {
+        $publisherId = $publisher->getId();
+        if (empty($date)) {
+            $date = date_create('now');
+        }
+
+        // get report for date with hour
+        $accountReport = [];
+
+        $key = sprintf(self::ACCOUNT_TEMPLATE, $publisherId, $date->format(self::DATE_TIME_TEMPLATE));
+        if ($this->redisCache->contains($key)) {
+            $accountReport = $this->redisCache->fetch($key);
+        }
+
+        return $accountReport;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPlatformDashboardSnapshot($date = null)
+    {
+        if (empty($date)) {
+            $date = date_create('now');
+        }
+
+        // get report for data with hour
+        $platformReport = [];
+
+        $key = sprintf(self::PLATFORM_TEMPLATE, $date->format(self::DATE_TIME_TEMPLATE));
+        if ($this->redisCache->contains($key)) {
+            $platformReport = $this->redisCache->fetch($key);
+        }
+
+        return $platformReport;
+    }
+
+    /**
      * @param $report
      * @param \DateTime $dateWithHour
      * @return mixed
@@ -179,6 +285,43 @@ class AccountReportCache implements AccountReportCacheInterface
 
         if ($report instanceof VideoPlatformReport) {
             return sprintf(self::VIDEO_PLATFORM_TEMPLATE, $dateWithHour->format(self::DATE_TIME_TEMPLATE_WITH_HOUR));
+        }
+
+        return null;
+    }
+
+    /**
+     * @param $report
+     * @return mixed
+     */
+    private function buildCacheKeyForCurrentStatistic($report)
+    {
+        if ($report instanceof PublisherDashboard && $report->getAccountStatistics() instanceof AccountStatistics) {
+            $accountStatisticsReports = $report->getAccountStatistics()->getReports();
+            if (!is_array($accountStatisticsReports) || empty($accountStatisticsReports)) {
+                return null;
+            }
+
+            $accountStatisticsReport = $accountStatisticsReports[0];
+            if (!$accountStatisticsReport instanceof AccountReport) {
+                return null;
+            }
+
+            return sprintf(self::ACCOUNT_TEMPLATE, $accountStatisticsReport->getPublisherId(), $accountStatisticsReport->getDate()->format(self::DATE_TIME_TEMPLATE));
+        }
+
+        if ($report instanceof AdminDashboard && $report->getPlatformStatistics() instanceof PlatformStatistics) {
+            $platformStatisticsReports = $report->getPlatformStatistics()->getReports();
+            if (!is_array($platformStatisticsReports) || empty($platformStatisticsReports)) {
+                return null;
+            }
+
+            $platformStatisticsReport = $platformStatisticsReports[0];
+            if (!$platformStatisticsReport instanceof PlatformReport) {
+                return null;
+            }
+
+            return sprintf(self::PLATFORM_TEMPLATE, $platformStatisticsReport->getDate()->format(self::DATE_TIME_TEMPLATE));
         }
 
         return null;

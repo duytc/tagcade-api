@@ -4,8 +4,12 @@
 namespace Tagcade\Service\Report\VideoReport\Selector;
 
 
+use DateInterval;
+use DatePeriod;
 use DateTime;
 use Symfony\Component\Validator\Constraints\Date;
+use Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\AccountReport;
+use Tagcade\Entity\Report\VideoReport\Hierarchy\Platform\PlatformReport;
 use Tagcade\Model\Report\VideoReport\ReportInterface;
 use Tagcade\Model\Report\VideoReport\ReportType\ReportTypeInterface;
 use Tagcade\Service\DateUtil;
@@ -115,6 +119,15 @@ class ReportSelector implements ReportSelectorInterface
                 }
             }
         }
+
+        // Do make sure return same number of points
+        // it takes 30 milliseconds to finished this with year-over-year comparision (today is 2018-06-20)
+        // do this at the last step to avoid loop and take many time with elements which is added in this
+        //$startTime = round(microtime(true) * 1000);
+        $reportTypeName = (new \ReflectionClass($reportType))->getShortName();
+        $reports = $this->makeCorrectNumberOfDate($reports ? $reports : [], $filterParameter->getStartDate(), $filterParameter->getEndDate(), $reportTypeName);
+        //$endTime = round(microtime(true) * 1000);
+        //$time = $endTime - $startTime;
 
         // 3. create reportCollection: check if need using actualStartDate/EndDate, reportName
         $reportCollection = new ReportCollection($reportType, $reports, $filterParameter->getStartDate(),$filterParameter->getEndDate());
@@ -227,6 +240,15 @@ class ReportSelector implements ReportSelectorInterface
             }
         }
 
+        // Do make sure return same number of points
+        // it takes 30 milliseconds to finished this with year-over-year comparision (today is 2018-06-20)
+        // do this at the last step to avoid loop and take many time with elements which is added in this
+        //$startTime = round(microtime(true) * 1000);
+        $reportTypeName = (new \ReflectionClass($reportType))->getShortName();
+        $reports = $this->makeCorrectNumberOfDate($reports ? $reports : [], $filterParameter->getStartDate(), $filterParameter->getEndDate(), $reportTypeName);
+        //$endTime = round(microtime(true) * 1000);
+        //$time = $endTime - $startTime;
+
         // 3. create reportCollection: check if need using actualStartDate/EndDate, reportName
         $reportType = reset($reportTypesMap);
         $reportCollection = new ReportCollection($reportType, $reports, $filterParameter->getStartDate(), $filterParameter->getEndDate());
@@ -336,6 +358,70 @@ class ReportSelector implements ReportSelectorInterface
         }
 
         return $reports;
+    }
+
+
+    /**
+     * @param array $reports
+     * @param DateTime $startDate
+     * @param DateTime $endDate
+     * @param $reportType
+     * @return mixed
+     * @internal param array $data
+     */
+    private function makeCorrectNumberOfDate(array $reports, DateTime $startDate, DateTime $endDate, $reportType)
+    {
+        $startDate->setTime(0, 0, 0);
+        $endDate->setTime(23, 59, 59);
+        $interval = new DateInterval('P1D');
+        $dateRange = new DatePeriod($startDate, $interval, $endDate);
+
+        $newReports = [];
+        foreach ($dateRange as $i => $singleDate) {
+            /** @var DateTime $singleDate */
+            foreach ($reports as $report) {
+                if (!$report instanceof ReportInterface) {
+                    continue;
+                }
+
+                if ($singleDate->format('Y-m-d') == $report->getDate()->format('Y-m-d')) {
+                    $newReport = clone $report;
+                    break;
+                }
+            }
+
+            if (isset($newReport) && !empty($newReport)) {
+                $newReports [] = $newReport;
+                $newReport = [];
+            } else {
+                $newReport = $this->createNewReportToPatchMissing($reportType);
+                $newReport->setDate($singleDate);
+
+                $newReports [] = $newReport;
+                $newReport = [];
+            }
+        }
+
+        return $newReports;
+    }
+
+    /**
+     * @param $reportType
+     * @return AccountReport|PlatformReport
+     */
+    private function createNewReportToPatchMissing ($reportType) {
+        switch ($reportType) {
+            case 'Platform':
+                $newReport = new PlatformReport();
+                break;
+            case 'Account':
+                $newReport = new AccountReport();
+                break;
+            default:
+                $newReport = new PlatformReport();
+        }
+
+        return $newReport;
     }
 
     /**

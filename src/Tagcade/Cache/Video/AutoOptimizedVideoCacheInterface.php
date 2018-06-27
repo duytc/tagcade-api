@@ -60,4 +60,11 @@ interface AutoOptimizedVideoCacheInterface
      * @return mixed|void
      */
     public function getPreviewPositionForWaterfallTags(AutoOptimizeVideoCacheParam $param);
+
+    /**
+     * @param VideoWaterfallTagInterface $waterfallTag
+     * @param $newVideoWaterfallTagItemOrderIds
+     * @return mixed
+     */
+    public function reorderOptimizeKeyForWaterfallTag(VideoWaterfallTagInterface $waterfallTag, $newVideoWaterfallTagItemOrderIds);
 }

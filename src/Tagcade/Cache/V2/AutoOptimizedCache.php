@@ -264,38 +264,13 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
 
     public function getOptimizedAdTagPositionsForAdSlotBySegmentsValue($adSlotId, $countryValue = '', $domainValue = '', $browserValue = '')
     {
-        $byArray = [];
-        if (!empty($countryValue)) $byArray [] = 'country';
-        if (!empty($domainValue)) $byArray [] = 'domain';
-        if (!empty($browserValue)) $byArray [] = 'browser';
-        $by = '';
-
-        if (!empty($byArray)) {
-            sort($byArray); // sort by alphabet (this is very helpful in serve ads, ui, scoring service and api
-
-            // get value to compare
-            $valuesToGet = '';
-            foreach ($byArray as $item) {
-                $dot = empty($valuesToGet) ? "" : ".";
-                if ($item == 'country' && !empty($countryValue) && $countryValue != 'global') {
-                    $valuesToGet = $valuesToGet . $dot . $countryValue;
-                    $by = $by . $dot . $item;
-                }
-                if ($item == 'domain' && !empty($domainValue) && $domainValue != 'global') {
-                    $valuesToGet = $valuesToGet . $dot . $domainValue;
-                    $by = $by . $dot . $item;
-
-                }
-                if ($item == 'browser' && !empty($browserValue) && $browserValue == 'global') {
-                    $valuesToGet = $valuesToGet . $dot . $browserValue;
-                    $by = $by . $dot . $item;
-                }
-            }
-
-            unset($byArray);
-        } else {
+        $array = $this->extractInfoFromSegmentValues($countryValue, $domainValue, $browserValue);
+        if (empty($array)) {
             return [];
         }
+
+        $by = reset($array);
+        $valuesToGet = end($array);
 
         // get adSlot cache based on adSlotId
         $slotCache = $this->getExistingAdSlotCache($adSlotId);
@@ -464,6 +439,27 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function reorderOptimizeKeyForDisplayAdSlot(DisplayAdSlotInterface $adSlot, $ids, $params)
+    {
+        $params = array_merge(['domain' => null, 'country' => null, 'browser' => null], $params);
+        $info = $this->extractInfoFromSegmentValues($params['country'], $params['domain'], $params['browser']);
+        if (empty($info)) {
+            return;
+        }
+
+        $by = reset($info);
+        $key = end($info);
+
+        // get adSlot cache based on adSlotId
+        $slotCache = $this->getExistingAdSlotCache($adSlot->getId());
+        $slotCache['autoOptimize'][$by][$key] = $ids;
+
+        $this->adSlotCache->refreshCacheForDisplayAdSlot($adSlot, true, array('autoOptimize' => $slotCache['autoOptimize']));
+    }
+
+    /**
      * @param DisplayAdSlotInterface $adSlot
      * @param array $autoOptimizedConfig
      * @return mixed|void
@@ -559,5 +555,49 @@ class AutoOptimizedCache implements AutoOptimizedCacheInterface
         }
 
         return self::$redis;
+    }
+
+    /**
+     * @param $countryValue
+     * @param $domainValue
+     * @param $browserValue
+     * @return array
+     */
+    private function extractInfoFromSegmentValues($countryValue, $domainValue, $browserValue)
+    {
+        $byArray = [];
+        if (!empty($countryValue)) $byArray [] = 'country';
+        if (!empty($domainValue)) $byArray [] = 'domain';
+        if (!empty($browserValue)) $byArray [] = 'browser';
+        $by = '';
+
+        if (!empty($byArray)) {
+            sort($byArray); // sort by alphabet (this is very helpful in serve ads, ui, scoring service and api
+
+            // get value to compare
+            $valuesToGet = '';
+            foreach ($byArray as $item) {
+                $dot = empty($valuesToGet) ? "" : ".";
+                if ($item == 'country' && !empty($countryValue) && $countryValue != 'global') {
+                    $valuesToGet = $valuesToGet . $dot . $countryValue;
+                    $by = $by . $dot . $item;
+                }
+                if ($item == 'domain' && !empty($domainValue) && $domainValue != 'global') {
+                    $valuesToGet = $valuesToGet . $dot . $domainValue;
+                    $by = $by . $dot . $item;
+
+                }
+                if ($item == 'browser' && !empty($browserValue) && $browserValue == 'global') {
+                    $valuesToGet = $valuesToGet . $dot . $browserValue;
+                    $by = $by . $dot . $item;
+                }
+            }
+
+            unset($byArray);
+        } else {
+            return [];
+        }
+
+        return [$by, $valuesToGet];
     }
 }

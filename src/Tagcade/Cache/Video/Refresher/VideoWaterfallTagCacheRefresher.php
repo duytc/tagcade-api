@@ -491,7 +491,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 }
 
                 if (!empty($idOrIds)) {
-                    $score[$key] =  $idOrIds;
+                    $score[$key] =  array_values($idOrIds);
                 } else {
                   unset($score[$key]);
                 }

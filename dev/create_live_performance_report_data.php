@@ -363,6 +363,18 @@ $cacheEventCounter->setDataWithDateHour(false);
 // set date again to make sure that can get right dateFormatter based on $dataWithDateHour
 $cacheEventCounter->setDate($originalDate);
 
+// create and save Dashboard Hourly for account and platform
+// this will save much time when getting day-over-day for dashboard
+// the command "tc:report:snapshot-by-hour" is already created for production
+/** @var \Tagcade\Service\Statistics\Statistics */
+$statistics = $container->get('tagcade.service.statistics');
+$publisherManager = $container->get('tagcade_user.domain_manager.publisher');
+$publishers = $publisherManager->allActivePublishers();
+/** @var \Tagcade\Service\Statistics\Util\AccountReportCacheInterface */
+$accountReportCache = $container->get('tagcade.service.statistics.util.account_report_cache');
+savePublisherDashboardHourlyToRedis($statistics, $originalDate, $publishers, $accountReportCache);
+savePlatformDashboardHourlyToRedis($statistics, $originalDate, $accountReportCache);
+
 /**
  * @param \Tagcade\Service\Report\PerformanceReport\Display\Counter\CacheEventCounter $cacheEventCounter
  * @param $tagId
@@ -548,6 +560,49 @@ function saveAdSlotData (\Tagcade\Service\Report\PerformanceReport\Display\Count
 
     unset($tagId, $tagData);
 }
+
+/**
+ * @param \Tagcade\Service\Statistics\Statistics $statistics
+ * @param \DateTime $date
+ * @param array|\Tagcade\Model\User\Role\PublisherInterface[] $publishers
+ * @param \Tagcade\Service\Statistics\Util\AccountReportCacheInterface $accountReportCache
+ */
+function savePublisherDashboardHourlyToRedis(\Tagcade\Service\Statistics\Statistics $statistics, \DateTime $date, array $publishers, \Tagcade\Service\Statistics\Util\AccountReportCacheInterface $accountReportCache)
+{
+    foreach ($publishers as $publisher) {
+        if (!$publisher instanceof \Tagcade\Model\User\Role\PublisherInterface) {
+            continue;
+        }
+
+        $accountReports = $statistics->getPublisherDashboardHourly($publisher, $date, $force = true);
+        $accountReportCache->saveHourReports($accountReports);
+        writeln(sprintf('Successfully save publisher dashboard hourly to redis (ID: %s)', $publisher->getId()));
+
+        // also save publisher dashboard statistic snapshot to redis
+        $accountReports = $statistics->getPublisherDashboard($publisher, $date, $date);
+        $accountReportCache->saveCurrentStatisticReports($accountReports);
+        writeln(sprintf('Successfully save publisher dashboard statistic snapshot to redis (ID: %s)', $publisher->getId()));
+    }
+}
+
+/**
+ * @param \Tagcade\Service\Statistics\Statistics $statistics
+ * @param \DateTime $date
+ * @param \Tagcade\Service\Statistics\Util\AccountReportCacheInterface $accountReportCache
+ */
+function savePlatformDashboardHourlyToRedis(\Tagcade\Service\Statistics\Statistics $statistics, \DateTime $date, \Tagcade\Service\Statistics\Util\AccountReportCacheInterface $accountReportCache)
+{
+    $platformReports = $statistics->getAdminDashboardHourly($date, $force = true);
+    $accountReportCache->saveHourReports($platformReports);
+    writeln(sprintf("Successfully save platform dashboard hourly to redis"));
+
+    // also save platform dashboard statistic snapshot to redis
+    $platformReports = $statistics->getAdminDashboard($date, $date);
+    $accountReportCache->saveCurrentStatisticReports($platformReports);
+    writeln(sprintf("Successfully save platform dashboard statistic snapshot to redis"));
+}
+
+
 writeln('### Finished creating test live data for performance reports ###');
 
 function writeln($str)
