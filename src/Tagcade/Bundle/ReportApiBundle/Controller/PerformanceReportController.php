@@ -6,9 +6,12 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use InvalidArgumentException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Tagcade\Bundle\ReportApiBundle\Command\DailyRotateCommand;
 use Tagcade\Exception\LogicException;
 use Tagcade\Model\Core\BaseAdSlotInterface;
 use Tagcade\Model\Core\RonAdSlotInterface;
@@ -1226,6 +1229,40 @@ class PerformanceReportController extends FOSRestController
             $this->getReportBuilder()->getAdTagReport($adTag, $this->getParams())
         );
     }
+
+    /**
+     * @Security("has_role('ROLE_ADMIN') or ( (has_role('ROLE_PUBLISHER') or has_role('ROLE_SUB_PUBLISHER') ) and has_role('MODULE_DISPLAY'))")
+     *
+     * @Rest\Get("/dailyrotate")
+     *
+     * @Rest\QueryParam(name="startDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="endDate", requirements="\d{4}-\d{2}-\d{2}", nullable=true)
+     * @Rest\QueryParam(name="group", requirements="(true|false)", nullable=true)
+     *
+     * @ApiDoc(
+     *  section = "Performance Report",
+     *  resource = true,
+     *  statusCodes = {
+     *      200 = "Returned when successful"
+     *  }
+     * )
+     *
+     * @param int $adTagId
+     *
+     * @return int
+     * @throws \Exception
+     */
+    public function getActivateDailyRotateCommandAction()
+    {
+        $command = new DailyRotateCommand();
+        $command->setContainer($this->container);
+        $input = new ArrayInput(array('--force' => true));
+        $output = new NullOutput();
+        $resultCode = $command->run($input, $output);
+
+        return $resultCode;
+    }
+
 
     /**
      * @param ModelInterface|ModelInterface[] $entity The entity instance
