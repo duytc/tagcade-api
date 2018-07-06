@@ -252,17 +252,28 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
 
         if ($mappedBy == 'demandAdTagName') {
             $currentDemandAdTags = array_map(function ($demandAdTagId) {
-                if (!is_array($demandAdTagId)) {
+                if (!is_array($demandAdTagId)) {   /// support for old cache : when groupt have 1 demandAdtag
                     $demandAdTag = $this->demandAdTagManager->find($demandAdTagId);
                     if ($demandAdTag instanceof VideoDemandAdTagInterface && $demandAdTag->getActive()) {
                         return $demandAdTag->getName();
                     }
                 } else {
-                    return array_map(function ($tagId) {
-                        if (!is_array($tagId)) {
-                            $demandAdTag = $this->demandAdTagManager->find($tagId);
+                    return array_map(function ($tag) {
+                        if (!is_array($tag)) { // support for group have 1 demandAdtag
+                            $demandAdTag = $this->demandAdTagManager->find($tag);
                             if ($demandAdTag instanceof VideoDemandAdTagInterface && $demandAdTag->getActive()) {
                                 return $demandAdTag->getName();
+                            }
+                        } else {
+                            if (!array_key_exists('id', $tag) || empty($tag['id'])) {
+                                return false;
+                            }
+                            $tagId = $tag['id'];
+                            if (!is_array($tagId)) {
+                                $demandAdTag = $this->demandAdTagManager->find($tagId);
+                                if ($demandAdTag instanceof VideoDemandAdTagInterface && $demandAdTag->getActive()) {
+                                    return $demandAdTag->getName();
+                                }
                             }
                         }
                     }, $demandAdTagId);
@@ -439,13 +450,27 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
                 $videoDemandAdTags[] = $videoDemandAdTag;
 
             } else { // many ad tags in one position
-                foreach ($idOrIds as $optimizedDemandAdTagId) {
-                    $videoDemandAdTag = $this->getOneDemandAdTag($optimizedDemandAdTagId, $realDemandAdTagsMapping);
-                    if (empty($videoDemandAdTag)) {
-                        continue;
+                foreach ($idOrIds as $optimizedDemandAdTag) {
+                    if (!is_array($optimizedDemandAdTag)) {
+                        $videoDemandAdTag = $this->getOneDemandAdTag($optimizedDemandAdTag, $realDemandAdTagsMapping);
+                        if (empty($videoDemandAdTag)) {
+                            continue;
+                        }
+                        $videoDemandAdTags[] = $videoDemandAdTag;
+                    } else {
+                        if (!array_key_exists('id', $optimizedDemandAdTag) || empty($optimizedDemandAdTag['id'])) {
+                            continue;
+                        }
+                        $optimizedDemandAdTagId = $optimizedDemandAdTag['id'];
+                        $videoDemandAdTag = $this->getOneDemandAdTag($optimizedDemandAdTagId, $realDemandAdTagsMapping);
+                        if (empty($videoDemandAdTag)) {
+                            continue;
+                        }
+                        if (array_key_exists('weight', $optimizedDemandAdTag)) {
+                            $videoDemandAdTag->setRotationWeight($optimizedDemandAdTag['weight']);
+                        }
+                        $videoDemandAdTags[] = $videoDemandAdTag;
                     }
-
-                    $videoDemandAdTags[] = $videoDemandAdTag;
                 }
             }
 
@@ -560,12 +585,12 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
                     }
                 }
 
-                if (empty($newVideoDemandAdTags)){
+                if (empty($newVideoDemandAdTags)) {
                     continue;
                 }
 
                 $newVideoDemandAdTags = array_values($newVideoDemandAdTags);
-                if (is_array($newVideoDemandAdTags) && count($newVideoDemandAdTags) == 1 ){
+                if (is_array($newVideoDemandAdTags) && count($newVideoDemandAdTags) == 1) {
                     $newOptimizedDemandAdTagIds [] = $newVideoDemandAdTags[0];
                     continue;
                 }
@@ -574,8 +599,82 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
             }
         }
 
-        $newAutoOptimizedConfig['default'] = array_values($newOptimizedDemandAdTagIds);
+        /* re-mapping new order ids with old optimized data from cache */
+        $slotCache = $this->getExistingWaterfallTagCache($waterfallTag);
+        $oldAutoOptimizedConfig = (is_array($slotCache) && array_key_exists('autoOptimize', $slotCache)) ? $slotCache['autoOptimize'] : [];
+        if (!empty($oldAutoOptimizedConfig)) {
+            $newAutoOptimizedConfig['default'] = $this->mappingOptimizeCache($oldAutoOptimizedConfig, $newOptimizedDemandAdTagIds);
+        } else {
+            $newAutoOptimizedConfig = [];
+        }
 
         $this->videoWaterfallTagCacheRefresher->refreshVideoWaterfallTag($waterfallTag, array('autoOptimize' => $newAutoOptimizedConfig));
+    }
+
+
+    /**
+     * @param array $oldAutoOptimizedConfig
+     * @param array $newOptimizedDemandAdTagIds
+     * @return array
+     */
+    private function mappingOptimizeCache(array $oldAutoOptimizedConfig, array $newOptimizedDemandAdTagIds)
+    {
+        $oldAutoOptimizedConfig = $oldAutoOptimizedConfig['default'];
+        $oldAutoOptimizedConfigMapping = [];
+        foreach ($oldAutoOptimizedConfig as $item) {
+            // backward compatibility for old cache
+            if (!is_array($item)) {
+                $oldAutoOptimizedConfigMapping[$item] = [
+                    'id' => $item
+                ];
+
+                continue;
+            }
+
+            // position with only one demand ad tag
+            if (array_key_exists('id', $item)) {
+                $oldAutoOptimizedConfigMapping[$item['id']] = $item;
+
+                continue;
+            }
+
+            // position with multiple demand ad tags
+            foreach ($item as $ite) {
+                // backward compatibility for old cache
+                if (!is_array($ite)) {
+                    $oldAutoOptimizedConfigMapping[$ite] = [
+                        'id' => $ite
+                    ];
+
+                    continue;
+                }
+
+                if (!array_key_exists('id', $ite)) {
+                    continue;
+                }
+
+                $oldAutoOptimizedConfigMapping[$ite['id']] = $ite;
+            }
+        }
+
+        foreach ($newOptimizedDemandAdTagIds as &$newOptimizedDemandAdTag) {
+            if (!is_array($newOptimizedDemandAdTag)) {
+                $newOptimizedDemandAdTagId = $newOptimizedDemandAdTag;
+                $newOptimizedDemandAdTag = $oldAutoOptimizedConfigMapping[$newOptimizedDemandAdTagId];
+                continue;
+            }
+            foreach ($newOptimizedDemandAdTag as &$newOptimizedDemandAdTagId) {
+                if (!array_key_exists($newOptimizedDemandAdTagId, $oldAutoOptimizedConfigMapping)) {
+                    continue;
+                }
+
+                $newOptimizedDemandAdTagId = $oldAutoOptimizedConfigMapping[$newOptimizedDemandAdTagId];
+            }
+            unset($newOptimizedDemandAdTagId);
+        }
+
+
+        unset($newOptimizedDemandAdTag);
+        return $newOptimizedDemandAdTagIds;
     }
 }

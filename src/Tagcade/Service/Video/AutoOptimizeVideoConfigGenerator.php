@@ -21,7 +21,7 @@ class AutoOptimizeVideoConfigGenerator
     /** @var VideoWaterfallTagRepositoryInterface */
     private $videoWaterfallTagRepository;
 
-    /** @var KMeanClusteringServiceInterface KMeanClusteringServiceInterface  */
+    /** @var KMeanClusteringServiceInterface KMeanClusteringServiceInterface */
     private $kMeanClusteringService;
 
     /**
@@ -280,17 +280,20 @@ class AutoOptimizeVideoConfigGenerator
     private function makeOrderAdTagsForRedis($orderAdTagIds, $kForKMean)
     {
         $newOrderAdTagIds = [];
+
         //Handle case: two ad tags have same score
         foreach ($orderAdTagIds as $id => $score) {
             $newOrderAdTagIds[sprintf('%s', $score)][] = $id;
         }
+
         //  kMeanClusteringService
         $clusters = $this->kMeanClusteringService->getClusters($orderAdTagIds, $kForKMean);
-        if(!is_array($clusters) || !array_key_exists('clusters', $clusters)){
+        if (!is_array($clusters) || !array_key_exists('clusters', $clusters)) {
             return [];
         }
+
         $clusters = $clusters['clusters'];
-        usort($clusters, function ($a, $b){
+        usort($clusters, function ($a, $b) {
             $a = array_shift($a);
             $b = array_shift($b);
             if ($a == $b) {
@@ -298,24 +301,41 @@ class AutoOptimizeVideoConfigGenerator
             }
             return ($a > $b) ? -1 : 1;
         });
-        foreach ($clusters as &$cluster){
+
+        foreach ($clusters as &$cluster) {
+            $sum_scores = 0;
+            foreach ($cluster as $k => $v) {
+                $sum_scores += reset($v);
+            }
             foreach ($cluster as $key => $values) {
+                if (!is_array($values)) {
+                    continue;
+                }
                 if (count($values) == 1) {
-                    $cluster[$key] = reset($values);
-                    $cluster[$key] = array_shift($newOrderAdTagIds[reset($values)]);
+                    $value = reset($values);
+                    $weight = round($value * 100 / $sum_scores);
+                    if ($weight >= 100 || $weight < 0 || $sum_scores == 0) {
+                        $cluster[$key] = [
+                            'id' => array_shift($newOrderAdTagIds[$value])
+                        ];
+                    } else {
+                        $cluster[$key] = [
+                            'id' => array_shift($newOrderAdTagIds[$value]),
+                            'weight' => $weight
+                        ];
+                    }
                 }
             }
         }
 
         //If array has only one value, it is flatten
         foreach ($clusters as $key => $values) {
-            if (count($values) == 1) {
-                $clusters[$key] = reset($values);
-            }
-            if(count($values) == 0){
+
+            if (count($values) == 0) {
                 unset($clusters[$key]);
             }
         }
+
         return array_values($clusters);
     }
 
@@ -350,7 +370,7 @@ class AutoOptimizeVideoConfigGenerator
 
             $demandAdTagId = $demandAdTag->getId();
             if (!in_array($demandAdTagId, $orderDemandAdTagIdsFlatten)) {
-                $orderDemandAdTagIds[] = $demandAdTag->getId();
+                $orderDemandAdTagIds[] = ['id' => $demandAdTag->getId()];
             }
         }
 

@@ -476,8 +476,22 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                     unset($score[$key]);
                     continue;
                 }
+
+                if (!empty($idOrIds)) {
+                    $score[$key] = ['id' => $idOrIds];
+                } else {
+                    unset($score[$key]);
+                }
             } else {
-                foreach ($idOrIds as $subKey => $id) {
+                foreach ($idOrIds as $subKey => $ids) {
+                    if(!is_array($ids)){
+                        $id = $ids;
+                    }else{
+                        if(empty($ids) || !array_key_exists('id', $ids)){
+                            continue;
+                        }
+                        $id = $ids['id'];
+                    }
                     if (!array_key_exists($id, $demandAdTags)) {
                         unset($idOrIds[$subKey]);
                         continue;
@@ -491,7 +505,7 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 }
 
                 if (!empty($idOrIds)) {
-                    $score[$key] =  array_values($idOrIds);
+                    $score[$key] = $idOrIds;
                 } else {
                   unset($score[$key]);
                 }
