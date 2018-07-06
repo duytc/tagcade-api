@@ -429,6 +429,10 @@ class VideoWaterfallTagCacheRefresher implements VideoWaterfallTagCacheRefresher
                 continue;
             }
 
+            if ($videoWaterfallTagItem->getDeletedAt() !== null) {
+                continue;
+            }
+
             $videoDemandAdTags = $videoWaterfallTagItem->getVideoDemandAdTags();
             foreach ($videoDemandAdTags as $videoDemandAdTag) {
                 if (!$videoDemandAdTag instanceof VideoDemandAdTagInterface) {
