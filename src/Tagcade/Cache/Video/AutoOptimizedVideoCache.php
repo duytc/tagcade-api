@@ -660,7 +660,11 @@ class AutoOptimizedVideoCache implements AutoOptimizedVideoCacheInterface
         foreach ($newOptimizedDemandAdTagIds as &$newOptimizedDemandAdTag) {
             if (!is_array($newOptimizedDemandAdTag)) {
                 $newOptimizedDemandAdTagId = $newOptimizedDemandAdTag;
-                $newOptimizedDemandAdTag = $oldAutoOptimizedConfigMapping[$newOptimizedDemandAdTagId];
+                if(array_key_exists('weight', $oldAutoOptimizedConfigMapping[$newOptimizedDemandAdTagId])){
+                    $newOptimizedDemandAdTag = [$oldAutoOptimizedConfigMapping[$newOptimizedDemandAdTagId]];
+                }else{
+                    $newOptimizedDemandAdTag = $oldAutoOptimizedConfigMapping[$newOptimizedDemandAdTagId];
+                }
                 continue;
             }
             foreach ($newOptimizedDemandAdTag as &$newOptimizedDemandAdTagId) {
